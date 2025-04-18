@@ -1,4 +1,5 @@
 import { Button, FormHeader, Spacer } from '@/components/atoms';
+import { ApiDocsContent } from '@/components/molecules';
 import { PlanDetailsSection } from '@/components/organisms';
 import { RouteNames } from '@/core/routes/Routes';
 import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
@@ -67,6 +68,7 @@ const CreatePlanPage = () => {
 
 	return (
 		<div className='p-6 w-full'>
+			<ApiDocsContent tags={['Plans']} />
 			<FormHeader
 				title={'Plan Details'}
 				subtitle={'A Plan defines the features your customers have access to, the pricing structure, and the billing cadence.'}
