@@ -84,7 +84,7 @@ const CreatePlanPage = () => {
 					onClick={handleSubmit}
 					variant='default'
 					className='mr-4'
-					disabled={isPending || !tempPlan.name || !tempPlan.lookup_key}
+					disabled={isPending || !tempPlan.name?.trim() || !tempPlan.lookup_key?.trim()}
 					isLoading={isPending}>
 					Save
 				</Button>
