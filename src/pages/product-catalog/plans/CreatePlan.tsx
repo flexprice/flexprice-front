@@ -59,7 +59,6 @@ const CreatePlanPage = () => {
 
 	const handleSubmit = () => {
 		if (isPending) return;
-		console.log('validatePlan', validatePlan());
 		if (validatePlan()) {
 			submitPlan();
 		}
