@@ -126,6 +126,7 @@ const DeveloperPage = () => {
 		mutationFn: (id: string) => SecretKeysApi.deleteSecretKey(id),
 		onSuccess: () => {
 			refetchQueries(['secret-keys']);
+			toast.success('Api key deleted successfully');
 		},
 		onError: (error: ServerError) => {
 			toast.error(error.error.message || 'Failed to delete secret key');
