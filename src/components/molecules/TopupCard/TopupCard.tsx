@@ -212,7 +212,6 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 						value={topupPayload.credits_to_add}
 						suffix='credits'
 						label='Purchased Credits'
-						inputPrefix={currency ? getCurrencySymbol(currency) : undefined}
 						placeholder='Enter purchased credits'
 						description={
 							<span>
