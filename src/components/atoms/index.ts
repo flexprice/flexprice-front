@@ -65,3 +65,5 @@ export { default as Progress } from './Progress';
 export { default as NoDataCard } from './NoDataCard';
 
 export { default as CodeBlock } from './CodeBlock';
+
+export { default as Label } from './Label';

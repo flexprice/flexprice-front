@@ -3,17 +3,20 @@ import { ChargesForBillingPeriodOne } from './PriceTable';
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card'; // Adjust import path if necessary
 import { ChevronDownIcon, ChevronUpIcon, Info } from 'lucide-react';
-import { formatBillingPeriodForPrice, getTotalPayableInfo, getTotalPayableText } from '@/utils/common/helper_functions';
+import { getTotalPayableInfo, getTotalPayableText } from '@/utils/common/helper_functions';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
+import { BILLING_PERIOD } from '@/core/data/constants';
+import formatDate from '@/utils/common/format_date';
 
 interface PreviewProps {
 	data: ChargesForBillingPeriodOne[];
-	startDate: Date | undefined;
+	startDate: Date;
 	className?: string;
 }
 
-const Preview = ({ data, className }: PreviewProps) => {
+const Preview = ({ data, className, startDate }: PreviewProps) => {
 	// Separate charges into recurring and usage
 	const recurringCharges = data.filter((charge) => charge.type === 'FIXED');
 	const usageCharges = data.filter((charge) => charge.type === 'USAGE');
@@ -26,6 +29,37 @@ const Preview = ({ data, className }: PreviewProps) => {
 
 	const displayedRecurring = showAllRecurringRows ? recurringCharges : recurringCharges.slice(0, 5);
 	const displayedUsage = showAllUsageRows ? usageCharges : usageCharges.slice(0, 5);
+
+	const displayMessage = () => {
+		if (recurringCharges.length === 0 && usageCharges.length === 0) {
+			return 'No charges for this subscription';
+		}
+
+		const billingPeriod = data[0].billing_period.toUpperCase() as BILLING_PERIOD;
+
+		const nextDate = calculateCalendarBillingAnchor(startDate, billingPeriod);
+		let nextDateString = formatDate(nextDate);
+
+		if (billingPeriod === BILLING_PERIOD.WEEKLY) {
+			const weekday = nextDate.toLocaleDateString('en-US', { weekday: 'long' });
+			nextDateString = `every week on ${weekday}`;
+		} else if (billingPeriod === BILLING_PERIOD.MONTHLY) {
+			const day = nextDate.getDate();
+			nextDateString = `every month on ${day}st`;
+		} else if (billingPeriod === BILLING_PERIOD.QUARTERLY) {
+			const day = nextDate.getDate();
+			nextDateString = `every quarter on ${day}st`;
+		} else if (billingPeriod === BILLING_PERIOD.HALF_YEARLY) {
+			const day = nextDate.getDate();
+			nextDateString = `every half year on ${day}st`;
+		} else if (billingPeriod === BILLING_PERIOD.ANNUAL) {
+			const month = nextDate.toLocaleString('default', { month: 'short' });
+			const day = nextDate.getDate();
+			nextDateString = `every year on ${month} ${day}`;
+		}
+
+		return `The customer will be charged ${getTotalPayableInfo(recurringCharges, usageCharges, recurringTotal)} for this subscription ${nextDateString}`;
+	};
 
 	return (
 		<div>
@@ -128,13 +162,7 @@ const Preview = ({ data, className }: PreviewProps) => {
 						<Info className='w-5 h-5 ' />
 					</div>
 
-					<p className='text-gray-500 text-sm font-normal'>
-						{`The customer will be charged ${getTotalPayableInfo(
-							recurringCharges,
-							usageCharges,
-							recurringTotal,
-						)} for this subscription every ${formatBillingPeriodForPrice(data[0].billing_period || '')}`}
-					</p>
+					<p className='text-gray-500 text-sm font-normal'>{displayMessage()}</p>
 				</CardContent>
 			</Card>
 		</div>
