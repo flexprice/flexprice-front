@@ -62,7 +62,6 @@ const CreatePlanPage = () => {
 		if (validatePlan()) {
 			submitPlan();
 		}
-		console.log('errors', errors);
 	};
 
 	return (
