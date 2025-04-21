@@ -14,7 +14,7 @@ interface Props {
 const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 	const handleCopyCode = () => {
 		if (!event) return;
-		navigator.clipboard.writeText(JSON.stringify(event.properties, null, 2));
+		navigator.clipboard.writeText(JSON.stringify(event, null, 2));
 		toast.success('Properties copied to clipboard!');
 	};
 
