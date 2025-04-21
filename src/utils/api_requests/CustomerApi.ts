@@ -2,7 +2,7 @@ import { AxiosClient } from '@/core/axios/verbs';
 import Customer from '@/models/Customer';
 import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 import { PaginationType } from '@/models/Pagination';
-import { Subscription } from '@/models/Subscription';
+import { BILLING_CYCLE, Subscription } from '@/models/Subscription';
 import CustomerUsage from '@/models/CustomerUsage';
 import { generateQueryParams } from '../common/api_helper';
 interface GetCustomerResponse {
@@ -27,16 +27,17 @@ interface GetCustomerEntitlementPayload {
 
 export interface CreateCustomerSubscriptionPayload {
 	customer_id: string;
-	billing_cadence: 'RECURRING';
+	billing_cadence: string;
 	billing_period: string;
 	billing_period_count: number;
 	currency: string;
-	invoice_cadence: 'ARREAR';
+	invoice_cadence: string;
 	plan_id: string;
 	start_date: string;
 	end_date: string | null;
 	lookup_key: string;
 	trial_end: string | null;
+	billing_cycle?: BILLING_CYCLE;
 	trial_start: string | null;
 }
 

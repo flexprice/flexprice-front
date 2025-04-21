@@ -1,4 +1,4 @@
-import { Select, DatePicker, Button, SelectOption, FormHeader } from '@/components/atoms';
+import { Select, DatePicker, Button, SelectOption, FormHeader, Label } from '@/components/atoms';
 import CustomerCard from '@/components/molecules/Customer/CustomerCard';
 import Preview from '@/components/organisms/Subscription/Preview';
 import ChargeTable from '@/components/organisms/Subscription/PriceTable';
@@ -18,6 +18,7 @@ import { ApiDocsContent } from '@/components/molecules';
 import { invalidateQueries } from '@/core/tanstack/ReactQueryProvider';
 import { RouteNames } from '@/core/routes/Routes';
 import useEnvironment from '@/hooks/useEnvironment';
+import { BILLING_CYCLE } from '@/models/Subscription';
 
 type Params = {
 	id: string;
@@ -32,6 +33,7 @@ type SubscriptionState = {
 	billingPeriodOptions: SelectOption[];
 	startDate: Date | undefined;
 	endDate: Date | undefined;
+	billingCycle?: BILLING_CYCLE;
 };
 
 // Custom hook for managing plans
@@ -89,7 +91,13 @@ const CustomerSubscription: React.FC = () => {
 		billingPeriodOptions: [],
 		startDate: new Date(),
 		endDate: undefined,
+		billingCycle: BILLING_CYCLE.ANNIVERSARY,
 	});
+	// billingcycle options
+	const billingCycleOptions = [
+		{ label: 'Anniversary', value: BILLING_CYCLE.ANNIVERSARY },
+		{ label: 'Calendar', value: BILLING_CYCLE.CALENDAR },
+	];
 
 	// Update breadcrumb when customer data changes
 	useEffect(() => {
@@ -114,6 +122,7 @@ const CustomerSubscription: React.FC = () => {
 					})),
 					startDate: new Date(subscriptionData.details.start_date),
 					endDate: subscriptionData.details.end_date ? new Date(subscriptionData.details.end_date) : undefined,
+					billingCycle: subscriptionData.details.billing_cycle as BILLING_CYCLE,
 				});
 			}
 		}
@@ -165,6 +174,7 @@ const CustomerSubscription: React.FC = () => {
 				label: toSentenceCase(period),
 				value: period,
 			})),
+			billingCycle: BILLING_CYCLE.ANNIVERSARY,
 		});
 	};
 
@@ -182,18 +192,29 @@ const CustomerSubscription: React.FC = () => {
 			...subscriptionState,
 			billingPeriod: value,
 			currency: defaultCurrency,
+			billingCycle: BILLING_CYCLE.ANNIVERSARY,
 		});
 	};
 
 	const handleCurrencyChange = (value: string) => {
-		setSubscriptionState((prev) => ({ ...prev, currency: value }));
+		setSubscriptionState((prev) => ({ ...prev, currency: value, billingCycle: BILLING_CYCLE.ANNIVERSARY }));
 	};
 
 	const handleSubscriptionSubmit = () => {
-		const { billingPeriod, selectedPlan, currency, startDate, endDate } = subscriptionState;
+		const { billingPeriod, selectedPlan, currency, startDate, endDate, billingCycle } = subscriptionState;
 
 		if (!billingPeriod || !selectedPlan) {
 			toast.error('Please select a plan and billing period.');
+			return;
+		}
+
+		if (!billingCycle) {
+			toast.error('Please select a billing cycle.');
+			return;
+		}
+
+		if (!startDate) {
+			toast.error('Please select a start date.');
 			return;
 		}
 
@@ -210,82 +231,11 @@ const CustomerSubscription: React.FC = () => {
 			lookup_key: '',
 			trial_end: null,
 			trial_start: null,
+			billing_cycle: billingCycle,
 		});
 	};
 
 	const navigateBack = () => navigate(`/customer-management/customers/details/${customerId}`);
-
-	// Render functions
-	const renderSubscriptionForm = () => (
-		<div className='p-6 rounded-xl border border-gray-300 space-y-6'>
-			<FormHeader title='Subscription Details' variant='sub-header' />
-
-			{!plansLoading && (
-				<Select
-					value={subscriptionState.selectedPlan}
-					options={plans?.map((plan) => ({ label: plan.name, value: plan.id })) ?? []}
-					onChange={handlePlanChange}
-					label='Plan*'
-					disabled={!!subscription_id}
-					placeholder='Select plan'
-					error={plansError ? 'Failed to load plans' : undefined}
-				/>
-			)}
-
-			{subscriptionState.selectedPlan && subscriptionState.billingPeriodOptions.length > 0 && (
-				<Select
-					key={subscriptionState.billingPeriodOptions.map((opt) => opt.value).join(',')}
-					value={subscriptionState.billingPeriod}
-					options={subscriptionState.billingPeriodOptions}
-					onChange={handleBillingPeriodChange}
-					label='Billing Period*'
-					disabled={!!subscription_id}
-					placeholder='Select billing period'
-				/>
-			)}
-
-			{subscriptionState.selectedPlan && subscriptionState.prices?.charges[subscriptionState.billingPeriod] && (
-				<Select
-					key={Object.keys(subscriptionState.prices.charges[subscriptionState.billingPeriod]).join(',')}
-					value={subscriptionState.currency}
-					options={Object.keys(subscriptionState.prices.charges[subscriptionState.billingPeriod]).map((currency) => ({
-						label: currency.toUpperCase(),
-						value: currency,
-					}))}
-					onChange={handleCurrencyChange}
-					label='Select Currency*'
-					placeholder='Select currency'
-					disabled={!!subscription_id}
-				/>
-			)}
-
-			{subscriptionState.prices && subscriptionState.selectedPlan && (
-				<ChargeTable data={subscriptionState.prices.charges[subscriptionState.billingPeriod][subscriptionState.currency]} />
-			)}
-
-			{subscriptionState.selectedPlan && (
-				<div className='flex items-center space-x-4 relative'>
-					<div className='relative'>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>Subscription Start Date</label>
-						<DatePicker
-							disabled={!!subscription_id}
-							date={subscriptionState.startDate}
-							setDate={(date) => setSubscriptionState((prev) => ({ ...prev, startDate: date }))}
-						/>
-					</div>
-					<div className='relative'>
-						<label className='block text-sm font-medium text-gray-700 mb-1'>Subscription End Date</label>
-						<DatePicker
-							disabled={!!subscription_id}
-							date={subscriptionState.endDate}
-							setDate={(date) => setSubscriptionState((prev) => ({ ...prev, endDate: date }))}
-							placeholder='Forever'
-						/>
-					</div>
-				</div>
-			)}
-		</div>
-	);
 
 	return (
 		<div className={cn('flex gap-8 mt-5 relative mb-12')}>
@@ -299,7 +249,97 @@ const CustomerSubscription: React.FC = () => {
 					</div>
 				)}
 
-				{renderSubscriptionForm()}
+				<div className='p-6 rounded-xl border border-gray-300 space-y-6'>
+					<FormHeader title='Subscription Details' variant='sub-header' />
+
+					{!plansLoading && (
+						<Select
+							value={subscriptionState.selectedPlan}
+							options={plans?.map((plan) => ({ label: plan.name, value: plan.id })) ?? []}
+							onChange={handlePlanChange}
+							label='Plan*'
+							disabled={!!subscription_id}
+							placeholder='Select plan'
+							error={plansError ? 'Failed to load plans' : undefined}
+						/>
+					)}
+
+					{subscriptionState.selectedPlan && subscriptionState.billingPeriodOptions.length > 0 && (
+						<Select
+							key={subscriptionState.billingPeriodOptions.map((opt) => opt.value).join(',')}
+							value={subscriptionState.billingPeriod}
+							options={subscriptionState.billingPeriodOptions}
+							onChange={handleBillingPeriodChange}
+							label='Billing Period*'
+							disabled={!!subscription_id}
+							placeholder='Select billing period'
+						/>
+					)}
+
+					{subscriptionState.selectedPlan && subscriptionState.prices?.charges[subscriptionState.billingPeriod] && (
+						<Select
+							key={Object.keys(subscriptionState.prices.charges[subscriptionState.billingPeriod]).join(',')}
+							value={subscriptionState.currency}
+							options={Object.keys(subscriptionState.prices.charges[subscriptionState.billingPeriod]).map((currency) => ({
+								label: currency.toUpperCase(),
+								value: currency,
+							}))}
+							onChange={handleCurrencyChange}
+							label='Select Currency*'
+							placeholder='Select currency'
+							disabled={!!subscription_id}
+						/>
+					)}
+
+					{subscriptionState.prices && subscriptionState.selectedPlan && (
+						<ChargeTable data={subscriptionState.prices.charges[subscriptionState.billingPeriod][subscriptionState.currency]} />
+					)}
+
+					{subscriptionState.selectedPlan && (
+						<div className='flex items-center space-x-4 relative'>
+							<div className='relative'>
+								<label className='block text-sm font-medium text-gray-700 mb-1'>Subscription Start Date</label>
+								<DatePicker
+									disabled={!!subscription_id}
+									date={subscriptionState.startDate}
+									setDate={(date) => setSubscriptionState((prev) => ({ ...prev, startDate: date }))}
+								/>
+							</div>
+							<div className='relative'>
+								<label className='block text-sm font-medium text-gray-700 mb-1'>Subscription End Date</label>
+								<DatePicker
+									disabled={!!subscription_id}
+									date={subscriptionState.endDate}
+									setDate={(date) => setSubscriptionState((prev) => ({ ...prev, endDate: date }))}
+									placeholder='Forever'
+								/>
+							</div>
+						</div>
+					)}
+
+					{subscriptionState.selectedPlan && (
+						<div className='space-y-2'>
+							<Label label='Subscription Cycle' />
+							<div className='flex items-center space-x-2'>
+								{billingCycleOptions.map((option, index) => {
+									const isChecked = subscriptionState.billingCycle === option.value;
+									return (
+										<div
+											className={cn(
+												' flex h-full group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background ',
+												'cursor-pointer',
+												isChecked ? 'border-primary text-black' : 'border-gray-300 text-gray-500',
+											)}
+											onClick={() => setSubscriptionState((prev) => ({ ...prev, billingCycle: option.value }))}
+											key={index}>
+											<p className='text-sm font-normal text-muted-foreground'>{option.label}</p>
+										</div>
+									);
+								})}
+							</div>
+						</div>
+					)}
+				</div>
 
 				{subscriptionState.selectedPlan && !subscription_id && (
 					<div className='flex items-center justify-start space-x-4'>
@@ -317,7 +357,7 @@ const CustomerSubscription: React.FC = () => {
 				<div className='sticky top-24'>
 					{subscriptionState.selectedPlan && !subscriptionData?.usage && (
 						<Preview
-							startDate={subscriptionState.startDate}
+							startDate={subscriptionState.startDate!}
 							data={subscriptionState.prices?.charges[subscriptionState.billingPeriod][subscriptionState.currency] ?? []}
 						/>
 					)}

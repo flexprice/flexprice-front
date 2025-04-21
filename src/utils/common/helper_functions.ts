@@ -1,4 +1,5 @@
 import { ChargesForBillingPeriodOne } from '@/components/organisms/Subscription/PriceTable';
+import { BILLING_PERIOD } from '@/core/data/constants';
 import { getAllISOCodes } from 'iso-country-currency';
 
 export const getCurrencyOptions = () => {
@@ -9,9 +10,20 @@ export const getCurrencyOptions = () => {
 export function getCurrencySymbol(currency: string): string {
 	try {
 		const info = getAllISOCodes().filter((code) => code.currency === currency.toUpperCase());
+		console.log('info', info);
 		return info[0].symbol;
 	} catch (error) {
 		console.error('Error getting currency symbol', error);
+		return currency;
+	}
+}
+
+export function getCurrencyName(currency: string): string {
+	try {
+		const info = getAllISOCodes().filter((code) => code.currency === currency.toUpperCase());
+		return info[0].countryName;
+	} catch (error) {
+		console.error('Error getting currency name', error);
 		return currency;
 	}
 }
@@ -36,17 +48,17 @@ export const formatBillingModel = (billingModel: string) => {
  */
 export const formatBillingPeriodForPrice = (billingPeriod: string) => {
 	switch (billingPeriod.toUpperCase()) {
-		case 'DAILY':
+		case BILLING_PERIOD.DAILY:
 			return 'day';
-		case 'WEEKLY':
+		case BILLING_PERIOD.WEEKLY:
 			return 'week';
-		case 'MONTHLY':
+		case BILLING_PERIOD.MONTHLY:
 			return 'month';
-		case 'ANNUAL':
+		case BILLING_PERIOD.ANNUAL:
 			return 'year';
-		case 'QUARTERLY':
+		case BILLING_PERIOD.QUARTERLY:
 			return 'quarter';
-		case 'HALF_YEARLY':
+		case BILLING_PERIOD.HALF_YEARLY:
 			return 'half year';
 		default:
 			return '--';
@@ -60,17 +72,17 @@ export const formatBillingPeriodForPrice = (billingPeriod: string) => {
  */
 export const formatBillingPeriodForDisplay = (billingPeriod: string) => {
 	switch (billingPeriod.toUpperCase()) {
-		case 'DAILY':
+		case BILLING_PERIOD.DAILY:
 			return 'daily';
-		case 'WEEKLY':
+		case BILLING_PERIOD.WEEKLY:
 			return 'weekly';
-		case 'MONTHLY':
+		case BILLING_PERIOD.MONTHLY:
 			return 'monthly';
-		case 'ANNUAL':
+		case BILLING_PERIOD.ANNUAL:
 			return 'annually';
-		case 'QUARTERLY':
+		case BILLING_PERIOD.QUARTERLY:
 			return 'quarterly';
-		case 'HALF_YEARLY':
+		case BILLING_PERIOD.HALF_YEARLY:
 			return 'half-yearly';
 		default:
 			return '--';

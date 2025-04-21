@@ -1,4 +1,25 @@
-import { getCurrencyOptions } from '@/utils/common/helper_functions';
+import { getAllISOCodes } from 'iso-country-currency';
+
+export enum BILLING_PERIOD {
+	DAILY = 'DAILY',
+	WEEKLY = 'WEEKLY',
+	MONTHLY = 'MONTHLY',
+	QUARTERLY = 'QUARTERLY',
+	HALF_YEARLY = 'HALF_YEARLY',
+	ANNUAL = 'ANNUAL',
+}
+
+const getCurrencyOptions = () => {
+	const codes = getAllISOCodes();
+	const map = new Map();
+	codes.forEach((code) => {
+		map.set(code.currency, {
+			currency: code.currency,
+			symbol: code.symbol,
+		});
+	});
+	return Array.from(map.values());
+};
 
 export const currencyOptions = Array.from(
 	new Map(
@@ -17,9 +38,9 @@ export const currencyOptions = Array.from(
 
 export const billlingPeriodOptions = [
 	// { label: 'Daily', value: 'DAILY' },
-	{ label: 'Weekly', value: 'WEEKLY' },
-	{ label: 'Monthly', value: 'MONTHLY' },
-	{ label: 'Yearly', value: 'ANNUAL' },
-	{ label: 'Quarterly', value: 'QUARTERLY' },
-	{ label: 'Half-Yearly', value: 'HALF_YEARLY' },
+	{ label: 'Weekly', value: BILLING_PERIOD.WEEKLY },
+	{ label: 'Monthly', value: BILLING_PERIOD.MONTHLY },
+	{ label: 'Yearly', value: BILLING_PERIOD.ANNUAL },
+	{ label: 'Quarterly', value: BILLING_PERIOD.QUARTERLY },
+	{ label: 'Half-Yearly', value: BILLING_PERIOD.HALF_YEARLY },
 ];
