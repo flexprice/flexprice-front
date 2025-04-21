@@ -121,15 +121,6 @@ const BillingPage = () => {
 					},
 				]}
 			/>
-			<div className='space-y-6'>
-				{/* <Card variant='notched'>
-					<CardHeader title='Invoices' />
-					<div className='flex items-center gap-2 mt-6'>
-						<Input value={user?.email} disabled />
-					</div>
-				</Card> */}
-			</div>
-
 			<UpdateTenantDrawer data={user} open={isEditDrawerOpen} onOpenChange={setIsEditDrawerOpen} />
 		</Page>
 	);

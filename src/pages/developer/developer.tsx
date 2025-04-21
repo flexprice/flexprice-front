@@ -11,7 +11,7 @@ import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
 import { toast } from 'react-hot-toast';
 import { EmptyPage } from '@/components/organisms';
 import GUIDES from '@/core/constants/guides';
-// Utility function to format permissions for display
+
 export const formatPermissionDisplay = (permissions: readonly string[]): string => {
 	const hasRead = permissions.includes('read');
 	const hasWrite = permissions.includes('write');

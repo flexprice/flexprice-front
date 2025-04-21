@@ -23,6 +23,7 @@ interface UpdateTenantPayload {
 		help_email?: string;
 		phone?: string;
 	};
+	name?: string;
 }
 
 interface Props {
@@ -44,6 +45,7 @@ const UpdateTenantDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) =>
 				address_country: '',
 			},
 		},
+		name: '',
 	});
 	const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
 	const [internalOpen, setInternalOpen] = useState(false);
@@ -59,6 +61,7 @@ const UpdateTenantDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) =>
 						...data.tenant.billing_details.address,
 					},
 				},
+				name: data.tenant.name,
 			});
 			if (data.tenant.billing_details.address.address_country && data.tenant.billing_details.address.address_state) {
 				const stateObj = State.getStatesOfCountry(data.tenant.billing_details.address.address_country).find(
@@ -97,6 +100,7 @@ const UpdateTenantDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) =>
 			: [];
 
 	const tenantSchema = z.object({
+		name: z.string().optional(),
 		billing_details: z.object({
 			address: z.object({
 				address_line1: z.string().min(1, 'Address Line 1 is required'),
@@ -173,6 +177,14 @@ const UpdateTenantDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) =>
 				description='Update your billing address details.'
 				trigger={trigger}>
 				<div className='space-y-4'>
+					<Spacer className='!h-4' />
+					<Input
+						label='Organization Name'
+						placeholder='Enter your organization name'
+						value={formData.name}
+						onChange={(e) => handleChange('name', e)}
+						error={errors['name']}
+					/>
 					<Spacer className='!h-4' />
 					<div className='relative card !p-4'>
 						<span className='absolute -top-4 left-2 text-[#18181B] text-sm bg-white font-medium px-2 py-1'>Billing Details</span>

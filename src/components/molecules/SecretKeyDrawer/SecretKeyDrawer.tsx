@@ -11,11 +11,17 @@ interface Props {
 	onOpenChange: (value: boolean) => void;
 }
 
-enum PermissionType {
+export enum PermissionType {
 	READ = 'read',
 	WRITE = 'write',
 	READ_WRITE = 'read_write',
 }
+
+export const ApiKeyPermissions = {
+	[PermissionType.READ]: ['read'],
+	[PermissionType.WRITE]: ['write'],
+	[PermissionType.READ_WRITE]: ['read', 'write'],
+};
 
 const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 	// Combined state for form fields
@@ -49,14 +55,6 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 	);
 
 	// Use memoized mapper functions to derive values from formData
-	const getPermissions = useMemo(
-		() => ({
-			[PermissionType.READ]: ['read'],
-			[PermissionType.WRITE]: ['write'],
-			[PermissionType.READ_WRITE]: ['read', 'write'],
-		}),
-		[],
-	);
 
 	const getExpirationDate = useMemo(
 		() => ({
@@ -92,7 +90,7 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 		data,
 	} = useMutation({
 		mutationFn: async () => {
-			const permissions = getPermissions[formData.permissionType as keyof typeof getPermissions];
+			const permissions = ApiKeyPermissions[formData.permissionType as keyof typeof ApiKeyPermissions];
 			const expirationFn = getExpirationDate[formData.expirationType as keyof typeof getExpirationDate];
 			const expires_at = typeof expirationFn === 'function' ? expirationFn() : expirationFn;
 

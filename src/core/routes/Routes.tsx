@@ -41,6 +41,7 @@ import PaymentPage from '@/pages/customer/payments/PaymentPage';
 import BillingPage from '@/pages/settings/Billing';
 import AddChargesPage from '@/pages/product-catalog/plans/AddCharges';
 import CreateInvoicePage from '@/pages/customer/invoices/CreateInvoice';
+import OnboardingTenant from '@/pages/onboarding/OnboardingTenant';
 
 export const RouteNames = {
 	home: '/',
@@ -90,6 +91,7 @@ export const RouteNames = {
 	developers: '/developers',
 	onboarding: '/onboarding',
 	billing: '/billing',
+	onboardingTenant: '/onboarding/tenant',
 };
 
 export const MainRouter = createBrowserRouter([
@@ -298,6 +300,10 @@ export const MainRouter = createBrowserRouter([
 			{
 				path: RouteNames.onboarding,
 				element: <OnboardingPage />,
+			},
+			{
+				path: RouteNames.onboardingTenant,
+				element: <OnboardingTenant />,
 			},
 			{
 				path: RouteNames.billing,

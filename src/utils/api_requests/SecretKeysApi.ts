@@ -19,19 +19,19 @@ export const formatPermissionDisplay = (permissions: string[]): string => {
 	}
 };
 
-interface GetAllSecretKeysResponse {
+export interface GetAllSecretKeysResponse {
 	items: SecretKey[];
 	pagination: PaginationType;
 }
 
-interface CreateSecretKeyPayload {
+export interface CreateSecretKeyPayload {
 	name: string;
 	permissions: string[];
 	expires_at?: string;
 	type: string;
 }
 
-interface CreateSecretKeyResponse {
+export interface CreateSecretKeyResponse {
 	api_key: string;
 	secret: SecretKey;
 }

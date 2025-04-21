@@ -25,8 +25,8 @@ class TenantApi {
 		return await AxiosClient.get<Tenant>(`${this.baseUrl}/${id}`);
 	}
 
-	public static async updateTenant(id: string, data: Partial<Tenant>) {
-		return await AxiosClient.put<Tenant, Partial<Tenant>>(`${this.baseUrl}/${id}`, data);
+	public static async updateTenant(data: Partial<Tenant>) {
+		return await AxiosClient.put<Tenant, Partial<Tenant>>(`${this.baseUrl}/update`, data);
 	}
 
 	public static async getTenantBillingDetails() {
