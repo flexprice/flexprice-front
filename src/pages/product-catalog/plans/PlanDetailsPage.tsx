@@ -103,9 +103,9 @@ const getFeatureValue = (entitlement: ExtendedEntitlement) => {
 					<span className='text-[#64748B] text-sm font-normal font-sans'>
 						{value
 							? Number(value) > 0
-								? entitlement.feature.unit_plural
-								: entitlement.feature.unit_singular
-							: entitlement.feature.unit_plural}
+								? entitlement.feature.unit_plural || 'units'
+								: entitlement.feature.unit_singular || 'unit'
+							: entitlement.feature.unit_plural || 'units'}
 					</span>
 				</span>
 			);
