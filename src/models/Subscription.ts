@@ -106,6 +106,6 @@ export interface Charge {
 }
 
 export enum BILLING_CYCLE {
-	ANNIVERSARY = 'anniversary',
-	CALENDAR = 'calendar',
+	ANNIVERSARY = 'ANNIVERSARY',
+	CALENDAR = 'CALENDAR',
 }
