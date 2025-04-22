@@ -168,7 +168,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		return (
 			<div className='space-y-1 w-full flex flex-col'>
 				{/* Label */}
-				{label && <Label label={label} disabled={disabled} labelClassName={labelClassName}></Label>}
+				{label && <Label label={label} disabled={disabled} labelClassName={labelClassName} htmlFor={id} />}
 				{/* Input */}
 				<div
 					className={cn(
