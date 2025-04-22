@@ -91,14 +91,22 @@ const chargeColumns: ColumnData<Price>[] = [
 ];
 
 const getFeatureValue = (entitlement: ExtendedEntitlement) => {
+	const value = entitlement.usage_limit?.toFixed() || '';
+
 	switch (entitlement.feature_type) {
 		case FeatureType.static:
 			return entitlement.static_value;
 		case FeatureType.metered:
 			return (
 				<span className='flex items-end gap-1'>
-					{formatAmount(entitlement.usage_limit?.toFixed() || '') ?? 'Unlimited'}
-					<span className='text-[#64748B] text-sm font-normal font-sans'>units</span>
+					{formatAmount(value || 'Unlimited')}
+					<span className='text-[#64748B] text-sm font-normal font-sans'>
+						{value
+							? Number(value) > 0
+								? entitlement.feature.unit_plural
+								: entitlement.feature.unit_singular
+							: entitlement.feature.unit_plural}
+					</span>
 				</span>
 			);
 		case FeatureType.boolean:
