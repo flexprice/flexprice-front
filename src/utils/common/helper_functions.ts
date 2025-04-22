@@ -10,7 +10,6 @@ export const getCurrencyOptions = () => {
 export function getCurrencySymbol(currency: string): string {
 	try {
 		const info = getAllISOCodes().filter((code) => code.currency === currency.toUpperCase());
-		console.log('info', info);
 		return info[0].symbol;
 	} catch (error) {
 		console.error('Error getting currency symbol', error);
