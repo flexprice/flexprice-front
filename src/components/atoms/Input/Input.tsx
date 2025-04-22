@@ -170,7 +170,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 				{/* Label */}
 				{label && (
 					<Label label={label} disabled={disabled} labelClassName={labelClassName}>
-						{label}
 					</Label>
 				)}
 				{/* Input */}
