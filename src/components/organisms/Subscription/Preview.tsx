@@ -43,7 +43,7 @@ const formatNextBillingDate = (startDate: Date, billingPeriod: BILLING_PERIOD, b
 
 	const calendarBillingMessages: Record<BILLING_PERIOD, string> = {
 		[BILLING_PERIOD.DAILY]: 'every day starting ' + formattedNextBillingDate,
-		[BILLING_PERIOD.WEEKLY]: 'every week on monday starting ' + formattedNextBillingDate,
+		[BILLING_PERIOD.WEEKLY]: 'every week on Monday starting ' + formattedNextBillingDate,
 		[BILLING_PERIOD.MONTHLY]: 'on the 1st of every month starting ' + formattedNextBillingDate,
 		[BILLING_PERIOD.QUARTERLY]: 'on the 1st of January, April, July, and October starting ' + formattedNextBillingDate,
 		[BILLING_PERIOD.HALF_YEARLY]: 'on the 1st of January and July starting ' + formattedNextBillingDate,
