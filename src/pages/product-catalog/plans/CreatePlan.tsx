@@ -33,9 +33,9 @@ const CreatePlanPage = () => {
 				invoice_cadence: 'ARREAR',
 			} as Partial<Plan>);
 		},
-		async onSuccess() {
+		async onSuccess(data: Plan) {
 			toast.success('Plan created successfully');
-			navigate(RouteNames.plan);
+			navigate(`${RouteNames.plan}/${data.id}`);
 			await refetchQueries(['fetchPlans']);
 		},
 		onError: (error: ServerError) => {

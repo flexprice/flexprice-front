@@ -174,7 +174,6 @@ const CustomerSubscription: React.FC = () => {
 				label: toSentenceCase(period),
 				value: period,
 			})),
-			billingCycle: BILLING_CYCLE.ANNIVERSARY,
 		});
 	};
 
@@ -192,7 +191,6 @@ const CustomerSubscription: React.FC = () => {
 			...subscriptionState,
 			billingPeriod: value,
 			currency: defaultCurrency,
-			billingCycle: BILLING_CYCLE.ANNIVERSARY,
 		});
 	};
 
