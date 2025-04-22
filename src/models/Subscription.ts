@@ -83,6 +83,7 @@ export interface Subscription {
 	readonly updated_by: string;
 	readonly customer: Customer;
 	readonly plan: Plan;
+	readonly billing_cycle: BILLING_CYCLE;
 	readonly line_items: LineItem[];
 	readonly pauses: Pause[];
 }
@@ -102,4 +103,9 @@ export interface Charge {
 	readonly display_amount: string;
 	readonly quantity: number;
 	readonly meter_display_name: string;
+}
+
+export enum BILLING_CYCLE {
+	ANNIVERSARY = 'anniversary',
+	CALENDAR = 'calendar',
 }
