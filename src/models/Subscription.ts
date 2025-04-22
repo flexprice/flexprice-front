@@ -83,7 +83,7 @@ export interface Subscription {
 	readonly updated_by: string;
 	readonly customer: Customer;
 	readonly plan: Plan;
-	readonly billing_cycle: string;
+	readonly billing_cycle: BILLING_CYCLE;
 	readonly line_items: LineItem[];
 	readonly pauses: Pause[];
 }
