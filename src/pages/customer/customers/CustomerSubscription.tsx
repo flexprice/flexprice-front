@@ -357,6 +357,7 @@ const CustomerSubscription: React.FC = () => {
 				<div className='sticky top-24'>
 					{subscriptionState.selectedPlan && !subscriptionData?.usage && (
 						<Preview
+							billingCycle={subscriptionState.billingCycle ?? BILLING_CYCLE.ANNIVERSARY}
 							startDate={subscriptionState.startDate!}
 							data={subscriptionState.prices?.charges[subscriptionState.billingPeriod][subscriptionState.currency] ?? []}
 						/>
