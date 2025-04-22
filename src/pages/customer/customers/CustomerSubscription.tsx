@@ -81,6 +81,13 @@ const CustomerSubscription: React.FC = () => {
 	const { data: plans, isLoading: plansLoading, isError: plansError } = usePlans();
 	const { data: customerData } = useCustomerData(customerId);
 	const { data: subscriptionData } = useSubscriptionData(subscription_id);
+	const plansWithCharges: SelectOption[] =
+		plans
+			?.filter((plan) => Object.keys(plan.charges).length > 0)
+			.map((plan) => ({
+				label: plan.name,
+				value: plan.id,
+			})) ?? [];
 
 	// Local state
 	const [subscriptionState, setSubscriptionState] = useState<SubscriptionState>({
@@ -117,7 +124,7 @@ const CustomerSubscription: React.FC = () => {
 					billingPeriod: subscriptionData.details.billing_period.toLowerCase(),
 					currency: subscriptionData.details.currency,
 					billingPeriodOptions: Object.keys(planDetails.charges).map((period) => ({
-						label: toSentenceCase(period),
+						label: toSentenceCase(period.replace('_', ' ')),
 						value: period,
 					})),
 					startDate: new Date(subscriptionData.details.start_date),
@@ -171,7 +178,7 @@ const CustomerSubscription: React.FC = () => {
 			billingPeriod: defaultBillingPeriod,
 			currency: defaultCurrency,
 			billingPeriodOptions: billingPeriods.map((period) => ({
-				label: toSentenceCase(period),
+				label: toSentenceCase(period.replace('_', ' ')),
 				value: period,
 			})),
 		});
@@ -253,7 +260,7 @@ const CustomerSubscription: React.FC = () => {
 					{!plansLoading && (
 						<Select
 							value={subscriptionState.selectedPlan}
-							options={plans?.map((plan) => ({ label: plan.name, value: plan.id })) ?? []}
+							options={plansWithCharges}
 							onChange={handlePlanChange}
 							label='Plan*'
 							disabled={!!subscription_id}
@@ -323,14 +330,18 @@ const CustomerSubscription: React.FC = () => {
 									const isChecked = subscriptionState.billingCycle === option.value;
 									return (
 										<div
+											data-state={isChecked ? 'active' : 'inactive'}
 											className={cn(
-												' flex h-full group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background ',
+												'text-[15px] font-normal text-gray-500 px-3 py-1 rounded-md',
+												'data-[state=active]:text-gray-900 data-[state=active]:bg-gray-100',
+												'hover:text-gray-900 transition-colors',
+												'data-[state=inactive]:border data-[state=inactive]:border-border  data-[state=active]:border-primary',
+												'bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0',
 												'cursor-pointer',
-												isChecked ? 'border-primary text-black' : 'border-gray-300 text-gray-500',
 											)}
 											onClick={() => setSubscriptionState((prev) => ({ ...prev, billingCycle: option.value }))}
 											key={index}>
-											<p className='text-sm font-normal text-muted-foreground'>{option.label}</p>
+											{option.label}
 										</div>
 									);
 								})}

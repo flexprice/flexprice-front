@@ -58,3 +58,75 @@ export function calculateCalendarBillingAnchor(startDate: Date, billingPeriod: B
 			return now;
 	}
 }
+export function calculateAnniversaryBillingAnchor(startDate: Date, billingPeriod: BILLING_PERIOD): Date {
+	const now = new Date(startDate.toUTCString());
+
+	const preserveTime = (d: Date) =>
+		new Date(
+			Date.UTC(
+				d.getUTCFullYear(),
+				d.getUTCMonth(),
+				d.getUTCDate(),
+				now.getUTCHours(),
+				now.getUTCMinutes(),
+				now.getUTCSeconds(),
+				now.getUTCMilliseconds(),
+			),
+		);
+
+	switch (billingPeriod.toUpperCase()) {
+		case BILLING_PERIOD.DAILY:
+			now.setUTCDate(now.getUTCDate() + 1);
+			return preserveTime(now);
+
+		case BILLING_PERIOD.WEEKLY:
+			now.setUTCDate(now.getUTCDate() + 7);
+			return preserveTime(now);
+
+		case BILLING_PERIOD.MONTHLY: {
+			const targetMonth = now.getUTCMonth() + 1;
+			const year = now.getUTCFullYear() + Math.floor(targetMonth / 12);
+			const month = targetMonth % 12;
+			const result = new Date(Date.UTC(year, month, 1));
+			const day = Math.min(now.getUTCDate(), daysInMonth(year, month));
+			result.setUTCDate(day);
+			return preserveTime(result);
+		}
+
+		case BILLING_PERIOD.QUARTERLY: {
+			const targetMonth = now.getUTCMonth() + 3;
+			const year = now.getUTCFullYear() + Math.floor(targetMonth / 12);
+			const month = targetMonth % 12;
+			const result = new Date(Date.UTC(year, month, 1));
+			const day = Math.min(now.getUTCDate(), daysInMonth(year, month));
+			result.setUTCDate(day);
+			return preserveTime(result);
+		}
+
+		case BILLING_PERIOD.HALF_YEARLY: {
+			const targetMonth = now.getUTCMonth() + 6;
+			const year = now.getUTCFullYear() + Math.floor(targetMonth / 12);
+			const month = targetMonth % 12;
+			const result = new Date(Date.UTC(year, month, 1));
+			const day = Math.min(now.getUTCDate(), daysInMonth(year, month));
+			result.setUTCDate(day);
+			return preserveTime(result);
+		}
+
+		case BILLING_PERIOD.ANNUAL: {
+			const year = now.getUTCFullYear() + 1;
+			const month = now.getUTCMonth();
+			const result = new Date(Date.UTC(year, month, 1));
+			const day = Math.min(now.getUTCDate(), daysInMonth(year, month));
+			result.setUTCDate(day);
+			return preserveTime(result);
+		}
+
+		default:
+			return now;
+	}
+}
+
+function daysInMonth(year: number, month: number): number {
+	return new Date(Date.UTC(year, month + 1, 0)).getUTCDate(); // 0 gives last day of previous month
+}

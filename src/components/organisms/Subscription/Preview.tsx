@@ -2,14 +2,15 @@ import { getActualPriceForTotal, getPriceTableCharge } from '@/utils/models/tran
 import { ChargesForBillingPeriodOne } from './PriceTable';
 import { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronDownIcon, ChevronUpIcon, Info } from 'lucide-react';
-import { getTotalPayableInfo, getTotalPayableText } from '@/utils/common/helper_functions';
+import { CalendarIcon, ChevronDownIcon, ChevronUpIcon, Info } from 'lucide-react';
+import { formatBillingPeriodForDisplay, getTotalPayableInfo, getTotalPayableText } from '@/utils/common/helper_functions';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { BILLING_PERIOD } from '@/core/data/constants';
 import { BILLING_CYCLE } from '@/models/Subscription';
 import formatDate from '@/utils/common/format_date';
-import { calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
+import { calculateAnniversaryBillingAnchor, calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
+import { Spacer } from '@/components/atoms';
 
 interface PreviewProps {
 	data: ChargesForBillingPeriodOne[];
@@ -31,35 +32,6 @@ const useChargeDisplay = (charges: ChargesForBillingPeriodOne[]) => {
 		toggleShowAllRows: () => setShowAllRows((prev) => !prev),
 		hasMoreRows: charges.length > MAX_ROWS_TO_SHOW,
 	};
-};
-
-const formatNextBillingDate = (startDate: Date, billingPeriod: BILLING_PERIOD, billingCycle: BILLING_CYCLE): string => {
-	const day = startDate.getDate();
-	const weekday = startDate.toLocaleDateString('en-US', { weekday: 'long' });
-	const month = startDate.toLocaleString('default', { month: 'short' });
-	const ordinalDay = `${day}${day === 1 ? 'st' : day === 2 ? 'nd' : day === 3 ? 'rd' : 'th'}`;
-	const nextBillingDate = calculateCalendarBillingAnchor(startDate, billingPeriod);
-	const formattedNextBillingDate = formatDate(nextBillingDate);
-
-	const calendarBillingMessages: Record<BILLING_PERIOD, string> = {
-		[BILLING_PERIOD.DAILY]: 'every day starting ' + formattedNextBillingDate,
-		[BILLING_PERIOD.WEEKLY]: 'every week on Monday starting ' + formattedNextBillingDate,
-		[BILLING_PERIOD.MONTHLY]: 'on the 1st of every month starting ' + formattedNextBillingDate,
-		[BILLING_PERIOD.QUARTERLY]: 'on the 1st of January, April, July, and October starting ' + formattedNextBillingDate,
-		[BILLING_PERIOD.HALF_YEARLY]: 'on the 1st of January and July starting ' + formattedNextBillingDate,
-		[BILLING_PERIOD.ANNUAL]: 'on the 1st of January every year starting ' + formattedNextBillingDate,
-	};
-
-	const anniversaryBillingMessages: Record<BILLING_PERIOD, string> = {
-		[BILLING_PERIOD.DAILY]: `every day`,
-		[BILLING_PERIOD.WEEKLY]: `every ${weekday}`,
-		[BILLING_PERIOD.MONTHLY]: `on the ${ordinalDay} of every month`,
-		[BILLING_PERIOD.QUARTERLY]: `every 3 months on the ${ordinalDay} (January, April, July, October)`,
-		[BILLING_PERIOD.HALF_YEARLY]: `every 6 months on the ${ordinalDay} (January, July)`,
-		[BILLING_PERIOD.ANNUAL]: `every year on ${month} ${day}`,
-	};
-
-	return billingCycle === BILLING_CYCLE.CALENDAR ? calendarBillingMessages[billingPeriod] : anniversaryBillingMessages[billingPeriod];
 };
 
 const Preview = ({ data, className, startDate, billingCycle }: PreviewProps) => {
@@ -87,18 +59,6 @@ const Preview = ({ data, className, startDate, billingCycle }: PreviewProps) => 
 		toggleShowAllRows: toggleUsageRows,
 		hasMoreRows: hasMoreUsageRows,
 	} = useChargeDisplay(usageCharges);
-
-	const displayMessage = () => {
-		if (recurringCharges.length === 0 && usageCharges.length === 0) {
-			return 'No charges for this subscription';
-		}
-
-		const billingPeriod = data[0].billing_period.toUpperCase() as BILLING_PERIOD;
-		const nextDateString = formatNextBillingDate(startDate, billingPeriod, billingCycle);
-		const totalPayableInfo = getTotalPayableInfo(recurringCharges, usageCharges, recurringTotal);
-
-		return `The customer will be charged ${totalPayableInfo} ${nextDateString}`;
-	};
 
 	const renderChargeSection = (
 		title: string,
@@ -165,14 +125,53 @@ const Preview = ({ data, className, startDate, billingCycle }: PreviewProps) => 
 					</div>
 				</div>
 			</div>
+			<Spacer className='mt-4' />
 
-			<Card className='max-w-md mx-auto mt-4 shadow-sm'>
-				<CardContent className='flex items-center gap-2 p-5'>
-					<div className='flex-shrink-0'>
-						<Info className='w-5 h-5' />
+			<Card className=''>
+				<CardContent className='p-6 space-y-4'>
+					<div className='space-y-4'>
+						<div className='flex items-center gap-4'>
+							<CalendarIcon className='size-4 text-gray-500' />
+							<div className='flex-1 flex justify-between items-center'>
+								<span className=''>Starts</span>
+								<span className='text-gray-600'>{formatDate(startDate)}</span>
+							</div>
+						</div>
+
+						<div className='flex items-center gap-4'>
+							<svg
+								width='24'
+								height='24'
+								viewBox='0 0 24 24'
+								fill='none'
+								xmlns='http://www.w3.org/2000/svg'
+								className='size-4 text-gray-500'>
+								<path
+									d='M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z'
+									stroke='currentColor'
+									strokeWidth='2'
+									strokeLinecap='round'
+									strokeLinejoin='round'
+								/>
+							</svg>
+							<div className='flex-1 flex justify-between items-center'>
+								<span className=''>First Invoice</span>
+								<span className='text-gray-600'>
+									{billingCycle.toUpperCase() === BILLING_CYCLE.CALENDAR
+										? formatDate(calculateCalendarBillingAnchor(startDate, data[0].billing_period.toUpperCase() as BILLING_PERIOD))
+										: formatDate(calculateAnniversaryBillingAnchor(startDate, data[0].billing_period.toUpperCase() as BILLING_PERIOD))}
+								</span>
+							</div>
+						</div>
+
+						<div className='bg-gray-50 p-3 rounded-lg flex items-center gap-3'>
+							<Info className='size-4 flex-shrink-0' />
+							<p className='text-sm'>
+								Charged {getTotalPayableInfo(recurringCharges, usageCharges, recurringTotal)}{' '}
+								{formatBillingPeriodForDisplay(data[0].billing_period.toUpperCase() as BILLING_PERIOD).toLowerCase()}
+							</p>
+						</div>
 					</div>
-
-					<p className='text-gray-500 text-sm font-normal'>{displayMessage()}</p>
 				</CardContent>
 			</Card>
 		</div>

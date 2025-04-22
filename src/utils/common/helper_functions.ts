@@ -1,7 +1,7 @@
 import { ChargesForBillingPeriodOne } from '@/components/organisms/Subscription/PriceTable';
 import { BILLING_PERIOD } from '@/core/data/constants';
 import { getAllISOCodes } from 'iso-country-currency';
-
+import { v4 as uuidv4 } from 'uuid';
 export const getCurrencyOptions = () => {
 	const codes = getAllISOCodes();
 	return [...codes.filter((code) => code.currency === 'USD'), ...codes.filter((code) => code.currency !== 'USD')];
@@ -152,4 +152,12 @@ export const formatDateShort = (dateString: string): string => {
 	const date = new Date(dateString);
 	const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
 	return date.toLocaleDateString('en-US', options);
+};
+
+/**
+ * Generates a unique ID using Math.random()
+ * @returns A unique ID
+ */
+export const generateUniqueId = (): string => {
+	return uuidv4().replace(/-/g, '');
 };
