@@ -96,31 +96,45 @@ const CustomerPage = () => {
 					config={{
 						searchPlaceholder: 'Search by Name or lookup key',
 						enableSearch: true,
+				<Toolbar
+					config={{
+						searchPlaceholder: 'Search by customer name',
+						enableSearch: true,
+					}}
+					filters={filters}
+					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
+				/>
+				<CustomerTable
+					onEdit={(data) => {
+						setactiveCustomer(data);
+						setcustomerDrawerOpen(true);
 					}}
 					filters={filters}
 					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
 				/> */}
 				{/* Conditional rendering for table or empty search state */}
-				{isLoading || (filters.searchQuery && isFetching) ? (
-					<div className='flex justify-center py-4'>
-						<Loader />
-					</div>
-				) : (
-					<>
-						<CustomerTable
-							onEdit={(data) => {
-								setactiveCustomer(data);
-								setcustomerDrawerOpen(true);
-							}}
-							data={customerData?.items || []}
-						/>
-						<Spacer className='!h-4' />
-						<ShortPagination unit='Customers' totalItems={customerData?.pagination.total ?? 0} />
-					</>
-				)}
-			</div>
+				{
+					isLoading || (filters.searchQuery && isFetching) ? (
+						<div className='flex justify-center py-4'>
+							<Loader />
+						</div>
+					) : (
+						<>
+							<CustomerTable
+								onEdit={(data) => {
+									setactiveCustomer(data);
+									setcustomerDrawerOpen(true);
+								}}
+								data={customerData?.items || []}
+							/>
+							<Spacer className='!h-4' />
+							<ShortPagination unit='Customers' totalItems={customerData?.pagination.total ?? 0} />
+						</>
+					)
+				}
+			</div >
 			<CreateCustomerDrawer open={customerDrawerOpen} onOpenChange={setcustomerDrawerOpen} data={activeCustomer} />
-		</Page>
+		</Page >
 	);
 };
 
