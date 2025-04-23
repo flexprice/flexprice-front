@@ -58,6 +58,7 @@ const CustomerTable: FC<Props> = ({ data, onEdit }) => {
 
 	return (
 		<FlexpriceTable
+			showEmptyRow
 			columns={columns}
 			data={mappedData}
 			onRowClick={(row) => {
