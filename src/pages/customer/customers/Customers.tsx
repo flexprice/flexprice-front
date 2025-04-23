@@ -10,21 +10,23 @@ import { useQuery } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useDebounce } from 'use-debounce';
 
 const CustomerPage = () => {
 	const { limit, offset, page } = usePagination();
 
-	const fetchCustomers = async () => {
-		return await CustomerApi.getCustomerByQuery({ limit, offset, external_id: filters.searchQuery, name: filters.searchQuery });
-	};
-
-	const [activeCustomer, setactiveCustomer] = useState<Customer>();
-	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
 	const [filters, setfilters] = useState<FilterState>({
 		searchQuery: '',
 		sortBy: '',
 		sortDirection: 'asc',
 	});
+
+	// Add debounce to search query
+	const [debouncedSearchQuery] = useDebounce(filters.searchQuery, 300);
+
+	const fetchCustomers = async () => {
+		return await CustomerApi.getCustomerByQuery({ limit, offset, external_id: debouncedSearchQuery, name: debouncedSearchQuery });
+	};
 
 	const {
 		data: customerData,
@@ -32,9 +34,12 @@ const CustomerPage = () => {
 		isError,
 		isFetching,
 	} = useQuery({
-		queryKey: ['fetchCustomers', page, filters.searchQuery],
+		queryKey: ['fetchCustomers', page, debouncedSearchQuery],
 		queryFn: fetchCustomers,
 	});
+
+	const [activeCustomer, setactiveCustomer] = useState<Customer>();
+	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
 
 	// Render empty state when no customers and no search query
 	if (!isLoading && customerData?.items?.length === 0 && !filters.searchQuery) {
