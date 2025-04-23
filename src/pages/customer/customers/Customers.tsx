@@ -1,5 +1,5 @@
 import { AddButton, Input, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { CreateCustomerDrawer, ApiDocsContent, FilterState } from '@/components/molecules';
+import { CreateCustomerDrawer, ApiDocsContent, FilterState, Toolbar } from '@/components/molecules';
 import CustomerTable from '@/components/molecules/Customer/CustomerTable';
 import EmptyPage from '@/components/organisms/EmptyPage/EmptyPage';
 import GUIDES from '@/core/constants/guides';
@@ -15,6 +15,10 @@ import { useDebounce } from 'use-debounce';
 const CustomerPage = () => {
 	const { limit, offset, page } = usePagination();
 
+
+
+	const [activeCustomer, setactiveCustomer] = useState<Customer>();
+	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
 	const [filters, setfilters] = useState<FilterState>({
 		searchQuery: '',
 		sortBy: '',
@@ -32,17 +36,21 @@ const CustomerPage = () => {
 		data: customerData,
 		isLoading,
 		isError,
-		isFetching,
 	} = useQuery({
-		queryKey: ['fetchCustomers', page, debouncedSearchQuery],
+		queryKey: ['fetchCustomers', page],
 		queryFn: fetchCustomers,
 	});
 
-	const [activeCustomer, setactiveCustomer] = useState<Customer>();
-	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
+	if (isLoading) {
+		return <Loader />;
+	}
 
-	// Render empty state when no customers and no search query
-	if (!isLoading && customerData?.items?.length === 0 && !filters.searchQuery) {
+	if (isError) {
+		toast.error('Error fetching customers');
+		return null;
+	}
+
+	if (customerData?.items?.length === 0) {
 		return (
 			<EmptyPage
 				heading='Customer'
@@ -92,13 +100,17 @@ const CustomerPage = () => {
 			}>
 			<ApiDocsContent tags={['Customers']} />
 			<div>
-				{/* <Toolbar
+				<Toolbar
 					config={{
 						searchPlaceholder: 'Search by Name or lookup key',
 						enableSearch: true,
+					}}
+					filters={filters}
+					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
+				/>
 				<Toolbar
 					config={{
-						searchPlaceholder: 'Search by customer name',
+						searchPlaceholder: 'Search by Name or lookup key',
 						enableSearch: true,
 					}}
 					filters={filters}
@@ -109,32 +121,12 @@ const CustomerPage = () => {
 						setactiveCustomer(data);
 						setcustomerDrawerOpen(true);
 					}}
-					filters={filters}
-					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
-				/> */}
-				{/* Conditional rendering for table or empty search state */}
-				{
-					isLoading || (filters.searchQuery && isFetching) ? (
-						<div className='flex justify-center py-4'>
-							<Loader />
-						</div>
-					) : (
-						<>
-							<CustomerTable
-								onEdit={(data) => {
-									setactiveCustomer(data);
-									setcustomerDrawerOpen(true);
-								}}
-								data={customerData?.items || []}
-							/>
-							<Spacer className='!h-4' />
-							<ShortPagination unit='Customers' totalItems={customerData?.pagination.total ?? 0} />
-						</>
-					)
-				}
-			</div >
-			<CreateCustomerDrawer open={customerDrawerOpen} onOpenChange={setcustomerDrawerOpen} data={activeCustomer} />
-		</Page >
+					data={customerData?.items || []}
+				/>
+				<Spacer className='!h-4' />
+				<ShortPagination unit='Customers' totalItems={customerData?.pagination.total ?? 0} />
+			</div>
+		</Page>
 	);
 };
 
