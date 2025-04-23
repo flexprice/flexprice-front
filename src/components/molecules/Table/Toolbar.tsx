@@ -1,6 +1,6 @@
 import { Button, Input } from '@/components/atoms';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ArrowUpDown, ListFilter, Search } from 'lucide-react';
+import { ArrowUpDown, Search } from 'lucide-react';
 import { ReactNode } from 'react';
 
 // Define more comprehensive filter and configuration types
@@ -50,10 +50,10 @@ const Toolbar = ({ config, filters, onFilterChange }: ToolbarProps) => {
 	};
 
 	return (
-		<div className='flex justify-between items-center my-6'>
+		<div className='flex justify-between items-center mt-4 mb-2'>
 			<div className='flex items-center gap-2'>
 				{/* Filters Popover */}
-				<Popover>
+				{/* <Popover>
 					<PopoverTrigger disabled asChild>
 						<Button variant='outline' size='xs' className='text-gray-700 hover:bg-gray-50 border-gray-300'>
 							<ListFilter className='w-4 h-4 mr-2 text-gray-500' />
@@ -61,7 +61,7 @@ const Toolbar = ({ config, filters, onFilterChange }: ToolbarProps) => {
 						</Button>
 					</PopoverTrigger>
 					<PopoverContent className='p-0 bg-white shadow-2xl rounded-xl border-none' align='start'></PopoverContent>
-				</Popover>
+				</Popover> */}
 
 				{/* Sort Popover */}
 				{sortOptions.length > 0 && (
@@ -101,7 +101,7 @@ const Toolbar = ({ config, filters, onFilterChange }: ToolbarProps) => {
 						placeholder={searchPlaceholder}
 						value={filters.searchQuery}
 						onChange={(e) => onFilterChange({ searchQuery: e })}
-						size='sm'
+						size='xs'
 					/>
 				</div>
 			)}
