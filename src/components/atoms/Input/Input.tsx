@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import Label from '../Label';
+import { sizes, SizeVariant } from '@/lib/sizing';
 
 type InputVariant = 'text' | 'number' | 'formatted-number' | 'integer';
 
@@ -68,7 +69,7 @@ const getInputPattern = (variant: InputVariant, options: NumberFormatOptions = D
 	}
 };
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
 	label?: string;
 	description?: React.ReactNode;
 	error?: string;
@@ -83,6 +84,7 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 	labelClassName?: string;
 	variant?: InputVariant;
 	formatOptions?: NumberFormatOptions;
+	size?: SizeVariant;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -102,6 +104,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			inputPrefix,
 			labelClassName,
 			variant = 'text',
+			size = 'default',
 			formatOptions = DEFAULT_FORMAT_OPTIONS,
 			...props
 		},
@@ -169,7 +172,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 				{/* Input */}
 				<div
 					className={cn(
-						'w-full flex h-full group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground disabled:opacity-50 md:text-sm disabled:cursor-not-allowed',
+						sizes[size].height,
+						sizes[size].padding,
+						sizes[size].text,
+						sizes[size].display,
+						'w-full flex h-full group items-center rounded-md border bg-background ring-offset-background placeholder:text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed',
 						error ? 'border-destructive' : 'border-input focus-within:ring-ring focus-within:ring-offset-2',
 						'focus-within:border-black',
 						className,
