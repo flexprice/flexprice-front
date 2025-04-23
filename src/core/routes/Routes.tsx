@@ -125,7 +125,7 @@ export const MainRouter = createBrowserRouter([
 		children: [
 			{
 				path: RouteNames.home,
-				element: <Navigate to={RouteNames.pricing} />,
+				element: <Navigate to={RouteNames.onboarding} />,
 			},
 
 			{

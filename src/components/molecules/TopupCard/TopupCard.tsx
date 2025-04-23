@@ -186,11 +186,15 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 					label='Free Credits'
 					placeholder='Enter free credits'
 					description={
-						<span>
-							{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
-							{getCurrencySymbol(currency!)}
-							{` will be credited to the wallet`}
-						</span>
+						<>
+							{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
+								<span>
+									{getCurrencySymbol(currency!)}
+									{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
+									{` will be credited to the wallet`}
+								</span>
+							)}
+						</>
 					}
 				/>
 			)}
@@ -206,11 +210,15 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 						label='Purchased Credits'
 						placeholder='Enter purchased credits'
 						description={
-							<span>
-								{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
-								{getCurrencySymbol(currency!)}
-								{` will be credited to the wallet`}
-							</span>
+							<>
+								{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
+									<span>
+										{getCurrencySymbol(currency!)}
+										{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
+										{` will be credited to the wallet`}
+									</span>
+								)}
+							</>
 						}
 					/>
 
