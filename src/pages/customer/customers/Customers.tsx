@@ -1,5 +1,5 @@
 import { AddButton, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { CreateCustomerDrawer, ApiDocsContent } from '@/components/molecules';
+import { CreateCustomerDrawer, ApiDocsContent, Toolbar, FilterState } from '@/components/molecules';
 import CustomerTable from '@/components/molecules/Customer/CustomerTable';
 import EmptyPage from '@/components/organisms/EmptyPage/EmptyPage';
 import GUIDES from '@/core/constants/guides';
@@ -19,6 +19,11 @@ const CustomerPage = () => {
 
 	const [activeCustomer, setactiveCustomer] = useState<Customer>();
 	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
+	const [filters, setfilters] = useState<FilterState>({
+		searchQuery: '',
+		sortBy: '',
+		sortDirection: 'asc',
+	});
 
 	const {
 		data: customerData,
@@ -74,6 +79,14 @@ const CustomerPage = () => {
 			}>
 			<ApiDocsContent tags={['Customers']} />
 			<div>
+				<Toolbar
+					config={{
+						searchPlaceholder: 'Search by customer name',
+						enableSearch: true,
+					}}
+					filters={filters}
+					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
+				/>
 				<CustomerTable
 					onEdit={(data) => {
 						setactiveCustomer(data);

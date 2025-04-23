@@ -21,7 +21,7 @@ const CustomerTable: FC<Props> = ({ data, onEdit }) => {
 	}));
 	const columns: ColumnData[] = [
 		{ fieldName: 'name', title: 'Name', width: '400px', fieldVariant: 'title' },
-		{ fieldName: 'external_id', title: 'Slug' },
+		{ fieldName: 'external_id', title: 'Lookup Key' },
 		{
 			title: 'Status',
 

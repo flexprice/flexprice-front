@@ -220,7 +220,7 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 								error={errors.name}
 							/>
 							<Input
-								label='External customer ID'
+								label='Lookup Key'
 								placeholder='customer-'
 								value={formData.external_id || ''}
 								onChange={(e) => handleChange('external_id', e)}
