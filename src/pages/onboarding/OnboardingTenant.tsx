@@ -22,7 +22,7 @@ const exploreTutorials: TutorialItem[] = [
 		title: 'Getting Started',
 		description: 'Learn the basics of Flexprice in 5 minutes',
 		icon: <Globe className='w-5 h-5 text-[#3293D9]' />,
-		onClick: () => window.open('https://docs.flexprice.io/guides/getting-started/video', '_blank'),
+		onClick: () => window.open('https://docs.flexprice.io/guides/getting-started/video', '_blank', 'noopener,noreferrer'),
 	},
 	{
 		title: 'Define Usage Metering',
