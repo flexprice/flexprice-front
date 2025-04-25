@@ -65,3 +65,6 @@ export { default as Progress } from './Progress';
 export { default as NoDataCard } from './NoDataCard';
 
 export { default as CodeBlock } from './CodeBlock';
+
+export { Combobox } from './Combobox';
+export type { ComboboxOption, ComboboxProps } from './Combobox';

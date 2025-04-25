@@ -8,9 +8,39 @@ import FeatureApi from '@/utils/api_requests/FeatureApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { FilterCondition } from '@/types/common/QueryBuilder';
+import { QueryBuilder } from '@/components/molecules';
+import { SortDirection, SortOption } from '@/components/molecules/QueryBuilder/QueryBuilder';
+
+const sortingOptions: SortOption[] = [
+	{
+		key: 'name',
+		label: 'Name',
+		direction: SortDirection.ASC,
+	},
+	{
+		key: 'createdAt',
+		label: 'Created At',
+		direction: SortDirection.DESC,
+	},
+	{
+		key: 'updatedAt',
+		label: 'Updated At',
+		direction: SortDirection.DESC,
+	},
+	{
+		key: 'isActive',
+		label: 'Status',
+		direction: SortDirection.DESC,
+	},
+];
 
 const FeaturesPage = () => {
 	const { limit, offset, page } = usePagination();
+
+	const [filters, setFilters] = useState<FilterCondition[]>([]);
+	const [selectedSorts, setSelectedSorts] = useState<SortOption[]>([]);
 
 	const fetchFeatures = async () => {
 		return await FeatureApi.getAllFeatures({
@@ -57,6 +87,14 @@ const FeaturesPage = () => {
 			}>
 			<ApiDocsContent tags={['Features']} />
 			<div>
+				<QueryBuilder
+					fields={[]}
+					filters={filters}
+					onFilterChange={setFilters}
+					sortOptions={sortingOptions}
+					onSortChange={setSelectedSorts}
+					selectedSorts={selectedSorts}
+				/>
 				<FeatureTable data={featureData?.items || []} />
 				<Spacer className='!h-4' />
 				<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
