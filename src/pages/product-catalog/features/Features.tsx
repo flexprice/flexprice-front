@@ -1,5 +1,5 @@
-import { AddButton, Input, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { ApiDocsContent, FeatureTable, FilterState } from '@/components/molecules';
+import { AddButton, Page, ShortPagination, Spacer } from '@/components/atoms';
+import { ApiDocsContent, FeatureTable } from '@/components/molecules';
 import EmptyPage from '@/components/organisms/EmptyPage/EmptyPage';
 import { RouteNames } from '@/core/routes/Routes';
 import GUIDES from '@/core/constants/guides';
@@ -8,26 +8,47 @@ import FeatureApi from '@/utils/api_requests/FeatureApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search } from 'lucide-react';
-import { useDebounce } from 'use-debounce';
 import { useState } from 'react';
+import { FilterCondition } from '@/types/common/QueryBuilder';
+import { QueryBuilder } from '@/components/molecules';
+import { SortDirection, SortOption } from '@/components/molecules/QueryBuilder/QueryBuilder';
+
+const sortingOptions: SortOption[] = [
+	{
+		key: 'name',
+		label: 'Name',
+		direction: SortDirection.ASC,
+	},
+	{
+		key: 'createdAt',
+		label: 'Created At',
+		direction: SortDirection.DESC,
+	},
+	{
+		key: 'updatedAt',
+		label: 'Updated At',
+		direction: SortDirection.DESC,
+	},
+	{
+		key: 'isActive',
+		label: 'Status',
+		direction: SortDirection.DESC,
+	},
+];
 
 const FeaturesPage = () => {
 	const { limit, offset, page } = usePagination();
-	const [filters, setfilters] = useState<FilterState>({
-		searchQuery: '',
-		sortBy: '',
-		sortDirection: 'asc',
-	});
+
 
 	// Add debounce to search query
-	const [debouncedSearchQuery] = useDebounce(filters.searchQuery, 300);
+
+	const [filters, setFilters] = useState<FilterCondition[]>([]);
+	const [selectedSorts, setSelectedSorts] = useState<SortOption[]>([]);
 
 	const fetchFeatures = async () => {
 		return await FeatureApi.getAllFeatures({
 			limit,
 			offset,
-			name_contains: debouncedSearchQuery,
 		});
 	};
 	const navigate = useNavigate();
@@ -36,9 +57,8 @@ const FeaturesPage = () => {
 		data: featureData,
 		isLoading,
 		isError,
-		isFetching,
 	} = useQuery({
-		queryKey: ['fetchFeatures', page, debouncedSearchQuery],
+		queryKey: ['fetchFeatures', page],
 		queryFn: fetchFeatures,
 	});
 
@@ -49,7 +69,7 @@ const FeaturesPage = () => {
 	}
 
 	// Render empty state when no features and no search query
-	if (!isLoading && featureData?.items.length === 0 && !filters.searchQuery) {
+	if (!isLoading && featureData?.items.length === 0) {
 		return (
 			<EmptyPage
 				heading='Feature'
@@ -65,14 +85,6 @@ const FeaturesPage = () => {
 			heading='Features'
 			headingCTA={
 				<div className='flex justify-between items-center gap-2'>
-					<Input
-						className='min-w-[400px]'
-						suffix={<Search className='size-[14px] text-gray-500' />}
-						placeholder='Search by Name'
-						value={filters.searchQuery}
-						onChange={(e) => setfilters({ ...filters, searchQuery: e })}
-						size='sm'
-					/>
 					<Link to={RouteNames.createFeature}>
 						<AddButton />
 					</Link>
@@ -80,19 +92,19 @@ const FeaturesPage = () => {
 			}>
 			<ApiDocsContent tags={['Features']} />
 			<div>
-				{isLoading || (filters.searchQuery && isFetching) ? (
-					<div className='flex justify-center py-4'>
-						<Loader />
-					</div>
-				) : (
-					<>
-						<FeatureTable data={featureData?.items || []} />
-						<Spacer className='!h-4' />
-						<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
-					</>
-				)}
-			</div>
-		</Page>
+				<QueryBuilder
+					fields={[]}
+					filters={filters}
+					onFilterChange={setFilters}
+					sortOptions={sortingOptions}
+					onSortChange={setSelectedSorts}
+					selectedSorts={selectedSorts}
+				/>
+				<FeatureTable data={featureData?.items || []} />
+				<Spacer className='!h-4' />
+				<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
+			</div >
+		</Page >
 	);
 };
 

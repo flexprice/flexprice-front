@@ -88,3 +88,5 @@ export { default as PlanDrawer } from './PlanDrawer';
 export { default as UpdateTenantDrawer } from './Tenant/UpdateTenantDrawer';
 
 export { default as TerminateWalletModal } from './TerminateWalletModal';
+
+export { default as QueryBuilder } from './QueryBuilder/QueryBuilder';
