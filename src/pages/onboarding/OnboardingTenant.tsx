@@ -103,7 +103,7 @@ const OnboardingTenant = () => {
 
 	const handleStepComplete = (stepIndex: number) => {
 		if (!completedSteps.includes(stepIndex)) {
-			setCompletedSteps([...completedSteps, stepIndex]);
+			setCompletedSteps(prev => [...prev, stepIndex]);
 		}
 		// Move to next step
 		if (stepIndex < steps.length - 1) {
