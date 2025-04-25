@@ -30,19 +30,9 @@ const PERIOD_DURATION = {
 	[BILLING_PERIOD.ANNUAL]: '12 months',
 } as const;
 
-const getBillingDescription = (
-	charges: ChargesForBillingPeriodOne[],
-	billingPeriod: BILLING_PERIOD,
-	date: Date,
-	selectedPlan: PreviewProps['selectedPlan'],
-) => {
+const getBillingDescription = (charges: ChargesForBillingPeriodOne[], billingPeriod: BILLING_PERIOD, date: Date) => {
 	// Check if any fixed charge has ADVANCE invoice_cadence
-	const hasAdvanceCharge = selectedPlan
-		? Object.values(selectedPlan.charges)
-				.flatMap((periodCharges) => Object.values(periodCharges))
-				.flat()
-				.some((charge) => charge.type === 'FIXED' && charge.invoice_cadence === 'ADVANCE')
-		: false;
+	const hasAdvanceCharge = charges ? charges.some((charge) => charge.type === 'FIXED' && charge.invoice_cadence === 'ADVANCE') : false;
 
 	console.log(hasAdvanceCharge, charges);
 	const period = PERIOD_DURATION[billingPeriod] || formatBillingPeriodForDisplay(billingPeriod).toLowerCase();
@@ -67,37 +57,35 @@ const Preview = ({ data, startDate, className, billingCycle, selectedPlan }: Pre
 	}, [billingCycle, data, startDate]);
 
 	const billingDescription = useMemo(() => {
-		return getBillingDescription(data, data[0]?.billing_period.toUpperCase() as BILLING_PERIOD, firstInvoiceDate, selectedPlan);
-	}, [data, firstInvoiceDate, selectedPlan]);
+		return getBillingDescription(data, data[0]?.billing_period.toUpperCase() as BILLING_PERIOD, firstInvoiceDate);
+	}, [data, firstInvoiceDate]);
 
 	return (
 		<div className={cn('w-full', className)}>
 			<Card className='bg-white border border-gray-200'>
 				<CardContent className='p-5'>
-					<div className='space-y-4'>
+					<div className='space-y-6'>
 						{/* Timeline container */}
 						<div className='relative'>
 							{/* Connecting line */}
-							<div className='absolute left-[11px] top-[28px] h-[calc(100%-36px)] border-l border-gray-200'></div>
+							<div className='absolute left-[11px] top-[28px] h-[50px] border-l-2 border-dashed border-gray-200'></div>
 
-							<div className='space-y-4'>
+							<div className='space-y-8'>
 								{/* Subscription Start */}
-								<div className='flex gap-4 items-start'>
-									<Calendar className='h-[22px] w-[22px] text-gray-500 mt-0.5' />
-									<div>
+								<div className='flex gap-3 items-start'>
+									<Calendar className='h-[22px] w-[22px] text-gray-500 shrink-0' />
+									<div className='space-y-1.5'>
 										<p className='text-base font-medium text-gray-900'>{formatDate(startDate)}</p>
 										<p className='text-sm text-gray-600'>Subscription starts</p>
 									</div>
 								</div>
 
 								{/* First Invoice */}
-								<div className='flex gap-4 items-start'>
-									<Receipt className='h-[22px] w-[22px] text-gray-500 mt-0.5' />
-									<div>
-										<div className='mb-2'>
-											<p className='text-base font-medium text-gray-900'>First invoice: {formatDate(firstInvoiceDate)}</p>
-										</div>
-										<div className='space-y-1'>
+								<div className='flex gap-3 items-start'>
+									<Receipt className='h-[22px] w-[22px] text-gray-500 shrink-0' />
+									<div className='space-y-1.5'>
+										<p className='text-base font-medium text-gray-900'>{`First invoice: ${formatDate(firstInvoiceDate)}`}</p>
+										<div>
 											<p className='text-sm text-gray-600'>
 												Amount due: {getTotalPayableText(recurringCharges, usageCharges, recurringTotal)}
 											</p>
