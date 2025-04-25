@@ -26,6 +26,7 @@ export interface TopupWalletPayload {
 	walletId: string;
 	description?: string;
 	expiry_date?: number;
+	expiry_date_utc?: Date;
 	metadata?: Record<string, any>;
 	idempotency_key: string;
 	transaction_reason: TransactionReason;
@@ -59,22 +60,9 @@ class WalletApi {
 		});
 	}
 
-	static async topupWallet({
-		walletId,
-		credits_to_add,
-		idempotency_key,
-		transaction_reason,
-		description,
-		expiry_date,
-		metadata,
-	}: TopupWalletPayload): Promise<Wallet> {
-		return await AxiosClient.post<Wallet>(`/wallets/${walletId}/top-up`, {
-			credits_to_add,
-			idempotency_key,
-			transaction_reason,
-			description,
-			expiry_date,
-			metadata,
+	static async topupWallet(data: TopupWalletPayload): Promise<Wallet> {
+		return await AxiosClient.post<Wallet>(`/wallets/${data.walletId}/top-up`, {
+			...data,
 		});
 	}
 

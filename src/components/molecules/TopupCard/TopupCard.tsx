@@ -20,23 +20,6 @@ enum CreditsType {
 	PurchasedCredits = 'PurchasedCredits',
 }
 
-// Utility functions for date conversion
-const convertToYYYYMMDD = (date: Date): number => {
-	const year = date.getUTCFullYear();
-	const month = date.getUTCMonth() + 1; // getUTCMonth() is zero-indexed
-	const day = date.getUTCDate();
-
-	return parseInt(`${year}${month.toString().padStart(2, '0')}${day.toString().padStart(2, '0')}`, 10);
-};
-
-const convertFromYYYYMMDD = (yyyymmdd: number): Date => {
-	const year = Math.floor(yyyymmdd / 10000);
-	const month = Math.floor((yyyymmdd % 10000) / 100) - 1; // Subtract 1 for zero-indexed month
-	const day = yyyymmdd % 100;
-
-	return new Date(Date.UTC(year, month, day));
-};
-
 // Centralized credits type options
 const CREDITS_TYPE_OPTIONS: RectangleRadiogroupOption[] = [
 	{
@@ -98,7 +81,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 
 	// Validate topup payload
 	const validateTopup = useCallback((): boolean => {
-		const { credits_type, credits_to_add, expiry_date } = topupPayload;
+		const { credits_type, credits_to_add, expiry_date_utc } = topupPayload;
 
 		if (!credits_type) {
 			toast.error('Please select a credits type');
@@ -110,9 +93,19 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 			return false;
 		}
 
-		if (expiry_date && convertFromYYYYMMDD(expiry_date).getTime() < Date.now()) {
-			toast.error('Expiry date cannot be in the past');
-			return false;
+		if (expiry_date_utc) {
+			// Reset time to start of the day for both dates
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+
+			// Convert ISO string to Date object if it's a string
+			const expiryDate = typeof expiry_date_utc === 'string' ? new Date(expiry_date_utc) : new Date(expiry_date_utc);
+			expiryDate.setHours(0, 0, 0, 0);
+
+			if (expiryDate.getTime() < today.getTime()) {
+				toast.error('Expiry date cannot be in the past');
+				return false;
+			}
 		}
 
 		return true;
@@ -136,7 +129,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 				credits_to_add: topupPayload.credits_to_add,
 				idempotency_key: uuidv4(),
 				transaction_reason: getTransactionReason(),
-				expiry_date: topupPayload.expiry_date,
+				expiry_date_utc: topupPayload.expiry_date_utc,
 			});
 		},
 		onSuccess: async () => {
@@ -181,7 +174,6 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 						expiry_date: undefined,
 					});
 				}}
-				description=''
 			/>
 
 			{/* Free Credits Input */}
@@ -194,11 +186,15 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 					label='Free Credits'
 					placeholder='Enter free credits'
 					description={
-						<span>
-							{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
-							{getCurrencySymbol(currency!)}
-							{` will be credited to the wallet`}
-						</span>
+						<>
+							{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
+								<span>
+									{getCurrencySymbol(currency!)}
+									{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
+									{` will be credited to the wallet`}
+								</span>
+							)}
+						</>
 					}
 				/>
 			)}
@@ -214,11 +210,15 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 						label='Purchased Credits'
 						placeholder='Enter purchased credits'
 						description={
-							<span>
-								{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
-								{getCurrencySymbol(currency!)}
-								{` will be credited to the wallet`}
-							</span>
+							<>
+								{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
+									<span>
+										{getCurrencySymbol(currency!)}
+										{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
+										{` will be credited to the wallet`}
+									</span>
+								)}
+							</>
 						}
 					/>
 
@@ -239,12 +239,12 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 
 			{topupPayload.credits_type && (
 				<DatePicker
-					minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
+					minDate={new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 0, 0, 0))}
 					label='Expiry Date'
-					date={topupPayload.expiry_date ? convertFromYYYYMMDD(topupPayload.expiry_date) : undefined}
+					date={topupPayload.expiry_date_utc}
 					setDate={(value) =>
 						updateTopupPayload({
-							expiry_date: value ? convertToYYYYMMDD(value) : undefined,
+							expiry_date_utc: value ? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)) : undefined,
 						})
 					}
 					className='w-full'
