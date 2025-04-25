@@ -339,7 +339,10 @@ const CustomerSubscription: React.FC = () => {
 												'bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0',
 												'cursor-pointer',
 											)}
-											onClick={() => setSubscriptionState((prev) => ({ ...prev, billingCycle: option.value }))}
+											onClick={() => {
+												console.log('clicked', option.value);
+												setSubscriptionState((prev) => ({ ...prev, billingCycle: option.value }));
+											}}
 											key={index}>
 											{option.label}
 										</div>
@@ -363,12 +366,13 @@ const CustomerSubscription: React.FC = () => {
 			</div>
 
 			<div className='flex-[4]'>
-				<div className='sticky top-24'>
+				<div className='sticky top-6'>
 					{subscriptionState.selectedPlan && !subscriptionData?.usage && (
 						<Preview
 							billingCycle={subscriptionState.billingCycle ?? BILLING_CYCLE.ANNIVERSARY}
 							startDate={subscriptionState.startDate!}
 							data={subscriptionState.prices?.charges[subscriptionState.billingPeriod][subscriptionState.currency] ?? []}
+							selectedPlan={subscriptionState.prices}
 						/>
 					)}
 				</div>
