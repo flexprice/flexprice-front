@@ -44,7 +44,7 @@ const getBillingDescription = (charges: ChargesForBillingPeriodOne[], billingPer
 	return `Bills on ${formatDate(date)} for ${period}`;
 };
 
-const Preview = ({ data, startDate, className, billingCycle, selectedPlan }: PreviewProps) => {
+const Preview = ({ data, startDate, className, billingCycle }: PreviewProps) => {
 	const recurringCharges = useMemo(() => data.filter((charge) => charge.type === 'FIXED'), [data]);
 	const usageCharges = useMemo(() => data.filter((charge) => charge.type === 'USAGE'), [data]);
 	const recurringTotal = useMemo(() => recurringCharges.reduce((acc, charge) => acc + parseFloat(charge.amount), 0), [recurringCharges]);
