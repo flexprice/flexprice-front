@@ -1,175 +1,111 @@
-import { getActualPriceForTotal, getPriceTableCharge } from '@/utils/models/transformed_plan';
 import { ChargesForBillingPeriodOne } from './PriceTable';
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { CalendarIcon, ChevronDownIcon, ChevronUpIcon, Info } from 'lucide-react';
-import { formatBillingPeriodForDisplay, getTotalPayableInfo, getTotalPayableText } from '@/utils/common/helper_functions';
-import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { formatBillingPeriodForDisplay, getTotalPayableText } from '@/utils/common/helper_functions';
 import { BILLING_PERIOD } from '@/core/data/constants';
 import { BILLING_CYCLE } from '@/models/Subscription';
 import formatDate from '@/utils/common/format_date';
 import { calculateAnniversaryBillingAnchor, calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
-import { Spacer } from '@/components/atoms';
+import { cn } from '@/lib/utils';
+import { Calendar, Receipt } from 'lucide-react';
 
 interface PreviewProps {
 	data: ChargesForBillingPeriodOne[];
 	startDate: Date;
 	className?: string;
 	billingCycle: BILLING_CYCLE;
+	selectedPlan?: {
+		charges: Record<string, Record<string, Array<ChargesForBillingPeriodOne & { invoice_cadence?: string }>>>;
+		id: string;
+		name: string;
+	} | null;
 }
 
-const MAX_ROWS_TO_SHOW = 5;
+const PERIOD_DURATION = {
+	[BILLING_PERIOD.DAILY]: '1 day',
+	[BILLING_PERIOD.WEEKLY]: '1 week',
+	[BILLING_PERIOD.MONTHLY]: '1 month',
+	[BILLING_PERIOD.QUARTERLY]: '3 months',
+	[BILLING_PERIOD.HALF_YEARLY]: '6 months',
+	[BILLING_PERIOD.ANNUAL]: '12 months',
+} as const;
 
-const useChargeDisplay = (charges: ChargesForBillingPeriodOne[]) => {
-	const [showAllRows, setShowAllRows] = useState(false);
+const getBillingDescription = (
+	charges: ChargesForBillingPeriodOne[],
+	billingPeriod: BILLING_PERIOD,
+	date: Date,
+	selectedPlan: PreviewProps['selectedPlan'],
+) => {
+	// Check if any fixed charge has ADVANCE invoice_cadence
+	const hasAdvanceCharge = selectedPlan
+		? Object.values(selectedPlan.charges)
+				.flatMap((periodCharges) => Object.values(periodCharges))
+				.flat()
+				.some((charge) => charge.type === 'FIXED' && charge.invoice_cadence === 'ADVANCE')
+		: false;
 
-	const displayedCharges = useMemo(() => (showAllRows ? charges : charges.slice(0, MAX_ROWS_TO_SHOW)), [charges, showAllRows]);
+	console.log(hasAdvanceCharge, charges);
+	const period = PERIOD_DURATION[billingPeriod] || formatBillingPeriodForDisplay(billingPeriod).toLowerCase();
 
-	return {
-		displayedCharges,
-		showAllRows,
-		toggleShowAllRows: () => setShowAllRows((prev) => !prev),
-		hasMoreRows: charges.length > MAX_ROWS_TO_SHOW,
-	};
+	if (hasAdvanceCharge) {
+		return `Bills immediately for ${period}`;
+	}
+
+	return `Bills on ${formatDate(date)} for ${period}`;
 };
 
-const Preview = ({ data, className, startDate, billingCycle }: PreviewProps) => {
-	// Separate charges into recurring and usage
+const Preview = ({ data, startDate, className, billingCycle, selectedPlan }: PreviewProps) => {
 	const recurringCharges = useMemo(() => data.filter((charge) => charge.type === 'FIXED'), [data]);
-
 	const usageCharges = useMemo(() => data.filter((charge) => charge.type === 'USAGE'), [data]);
+	const recurringTotal = useMemo(() => recurringCharges.reduce((acc, charge) => acc + parseFloat(charge.amount), 0), [recurringCharges]);
 
-	// Calculate totals for both types
-	const recurringTotal = useMemo(
-		() => recurringCharges.reduce((acc, charge) => acc + getActualPriceForTotal(charge), 0),
-		[recurringCharges],
-	);
+	const firstInvoiceDate = useMemo(() => {
+		const period = data[0]?.billing_period.toUpperCase() as BILLING_PERIOD;
+		return billingCycle === BILLING_CYCLE.CALENDAR
+			? calculateCalendarBillingAnchor(startDate, period)
+			: calculateAnniversaryBillingAnchor(startDate, period);
+	}, [billingCycle, data, startDate]);
 
-	const {
-		displayedCharges: displayedRecurring,
-		showAllRows: showAllRecurringRows,
-		toggleShowAllRows: toggleRecurringRows,
-		hasMoreRows: hasMoreRecurringRows,
-	} = useChargeDisplay(recurringCharges);
-
-	const {
-		displayedCharges: displayedUsage,
-		showAllRows: showAllUsageRows,
-		toggleShowAllRows: toggleUsageRows,
-		hasMoreRows: hasMoreUsageRows,
-	} = useChargeDisplay(usageCharges);
-
-	const renderChargeSection = (
-		title: string,
-		charges: ChargesForBillingPeriodOne[],
-		displayedCharges: ChargesForBillingPeriodOne[],
-		showAllRows: boolean,
-		toggleRows: () => void,
-		hasMoreRows: boolean,
-	) =>
-		charges.length > 0 && (
-			<div>
-				<p className='text-sm text-black font-semibold mb-3'>{title}</p>
-				<div className='space-y-2 border-b border-gray-300 pb-2'>
-					<motion.div
-						initial={{ height: 'auto' }}
-						animate={{ height: 'auto' }}
-						transition={{ duration: 0.3, ease: 'easeInOut' }}
-						style={{ overflow: 'hidden' }}>
-						{displayedCharges.map((charge, index) => (
-							<div key={`${title.toLowerCase()}-${index}`} className='flex justify-between items-center py-2'>
-								<span className='text-gray-700 font-normal text-sm'>
-									{charge.meter_name ? `${charge.name}/${charge.meter_name}` : charge.name}
-								</span>
-								<span className='text-gray-700 font-normal text-sm'>{getPriceTableCharge(charge)}</span>
-							</div>
-						))}
-					</motion.div>
-
-					{hasMoreRows && (
-						<div className='flex justify-center mt-4'>
-							<span className='flex items-center' onClick={toggleRows}>
-								{showAllRows ? <ChevronUpIcon className='w-4 h-4' /> : <ChevronDownIcon className='w-4 h-4' />}
-							</span>
-						</div>
-					)}
-				</div>
-			</div>
-		);
+	const billingDescription = useMemo(() => {
+		return getBillingDescription(data, data[0]?.billing_period.toUpperCase() as BILLING_PERIOD, firstInvoiceDate, selectedPlan);
+	}, [data, firstInvoiceDate, selectedPlan]);
 
 	return (
-		<div>
-			<div className={cn('bg-[#FAFAFA] border rounded-lg shadow-sm', className)}>
-				<div className='flex justify-between py-3 px-6 items-center w-full'>
-					<p className='font-semibold text-lg'>{'Subscription Preview'}</p>
-				</div>
-				<div className='bg-[#F4F4F5] p-6 space-y-6'>
-					{renderChargeSection(
-						'Recurring Charges',
-						recurringCharges,
-						displayedRecurring,
-						showAllRecurringRows,
-						toggleRecurringRows,
-						hasMoreRecurringRows,
-					)}
-
-					{renderChargeSection('Usage Charges', usageCharges, displayedUsage, showAllUsageRows, toggleUsageRows, hasMoreUsageRows)}
-
-					{/* Overall Total */}
-					<div className='flex justify-between items-center mt-6'>
-						<span className='text-gray-700 font-semibold text-sm'>Total Payable</span>
-						<span className='text-gray-600 font-semibold text-sm'>
-							{getTotalPayableText(recurringCharges, usageCharges, recurringTotal)}
-						</span>
-					</div>
-				</div>
-			</div>
-			<Spacer className='mt-4' />
-
-			<Card className=''>
-				<CardContent className='p-6 space-y-4'>
+		<div className={cn('w-full', className)}>
+			<Card className='bg-white border border-gray-200'>
+				<CardContent className='p-5'>
 					<div className='space-y-4'>
-						<div className='flex items-center gap-4'>
-							<CalendarIcon className='size-4 text-gray-500' />
-							<div className='flex-1 flex justify-between items-center'>
-								<span className=''>Starts</span>
-								<span className='text-gray-600'>{formatDate(startDate)}</span>
-							</div>
-						</div>
+						{/* Timeline container */}
+						<div className='relative'>
+							{/* Connecting line */}
+							<div className='absolute left-[11px] top-[28px] h-[calc(100%-36px)] border-l border-gray-200'></div>
 
-						<div className='flex items-center gap-4'>
-							<svg
-								width='24'
-								height='24'
-								viewBox='0 0 24 24'
-								fill='none'
-								xmlns='http://www.w3.org/2000/svg'
-								className='size-4 text-gray-500'>
-								<path
-									d='M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z'
-									stroke='currentColor'
-									strokeWidth='2'
-									strokeLinecap='round'
-									strokeLinejoin='round'
-								/>
-							</svg>
-							<div className='flex-1 flex justify-between items-center'>
-								<span className=''>First Invoice</span>
-								<span className='text-gray-600'>
-									{billingCycle.toUpperCase() === BILLING_CYCLE.CALENDAR
-										? formatDate(calculateCalendarBillingAnchor(startDate, data[0].billing_period.toUpperCase() as BILLING_PERIOD))
-										: formatDate(calculateAnniversaryBillingAnchor(startDate, data[0].billing_period.toUpperCase() as BILLING_PERIOD))}
-								</span>
-							</div>
-						</div>
+							<div className='space-y-4'>
+								{/* Subscription Start */}
+								<div className='flex gap-4 items-start'>
+									<Calendar className='h-[22px] w-[22px] text-gray-500 mt-0.5' />
+									<div>
+										<p className='text-base font-medium text-gray-900'>{formatDate(startDate)}</p>
+										<p className='text-sm text-gray-600'>Subscription starts</p>
+									</div>
+								</div>
 
-						<div className='bg-gray-50 p-3 rounded-lg flex items-center gap-3'>
-							<Info className='size-4 flex-shrink-0' />
-							<p className='text-sm'>
-								Charged {getTotalPayableInfo(recurringCharges, usageCharges, recurringTotal)}{' '}
-								{formatBillingPeriodForDisplay(data[0].billing_period.toUpperCase() as BILLING_PERIOD).toLowerCase()}
-							</p>
+								{/* First Invoice */}
+								<div className='flex gap-4 items-start'>
+									<Receipt className='h-[22px] w-[22px] text-gray-500 mt-0.5' />
+									<div>
+										<div className='mb-2'>
+											<p className='text-base font-medium text-gray-900'>First invoice: {formatDate(firstInvoiceDate)}</p>
+										</div>
+										<div className='space-y-1'>
+											<p className='text-sm text-gray-600'>
+												Amount due: {getTotalPayableText(recurringCharges, usageCharges, recurringTotal)}
+											</p>
+											<p className='text-sm text-gray-600'>{billingDescription}</p>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</CardContent>
