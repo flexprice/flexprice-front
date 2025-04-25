@@ -27,6 +27,7 @@ interface Props {
 	className?: string;
 	noOptionsText?: string;
 	hideSelectedTick?: boolean;
+	trigger?: React.ReactNode;
 }
 
 const RadioSelectItem = React.forwardRef<
@@ -67,6 +68,7 @@ const FlexPriceSelect: React.FC<Props> = ({
 	noOptionsText,
 	defaultOpen,
 	hideSelectedTick = true,
+	trigger,
 }) => {
 	return (
 		<div className={cn('space-y-1 ')}>
@@ -88,9 +90,13 @@ const FlexPriceSelect: React.FC<Props> = ({
 				value={value}
 				disabled={disabled}>
 				<SelectTrigger className={cn(disabled && 'cursor-not-allowed', className)}>
-					<span className={cn('truncate', value ? '' : 'text-muted-foreground')}>
-						{value ? options.find((option) => option.value === value)?.label.trim() : placeholder}
-					</span>
+					{trigger ? (
+						trigger
+					) : (
+						<span className={cn('truncate', value ? '' : 'text-muted-foreground')}>
+							{value ? options.find((option) => option.value === value)?.label.trim() : placeholder}
+						</span>
+					)}
 				</SelectTrigger>
 				<SelectContent className='w-[var(--radix-select-trigger-width)]'>
 					<SelectGroup>
