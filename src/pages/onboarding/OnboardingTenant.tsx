@@ -116,7 +116,6 @@ const OnboardingTenant = () => {
 		});
 		if (orgName) {
 			updateTenant();
-			handleStepComplete(0);
 		} else {
 			setErrors({
 				orgName: 'Organization name is required',
