@@ -35,6 +35,7 @@ export type NormalizedPlan = {
 		[billingPeriod: string]: {
 			[currency: string]: {
 				name: string;
+				invoice_cadence: string;
 				price_id: string;
 				amount: string;
 				display_amount: string;
@@ -82,6 +83,7 @@ export const normalizePlan = (originalData: ExpandedPlan): NormalizedPlan => {
 			billing_model: price.billing_model,
 			tiers: price.tiers ?? [],
 			meter_name: price.meter?.name,
+			invoice_cadence: price.invoice_cadence,
 		});
 	}
 
