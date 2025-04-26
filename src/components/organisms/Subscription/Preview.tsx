@@ -6,6 +6,7 @@ import { ChevronDownIcon, ChevronUpIcon, Info } from 'lucide-react';
 import { formatBillingPeriodForPrice, getTotalPayableInfo, getTotalPayableText } from '@/utils/common/helper_functions';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { Spacer } from '@/components/atoms';
 
 interface PreviewProps {
 	data: ChargesForBillingPeriodOne[];
@@ -121,6 +122,7 @@ const Preview = ({ data, className }: PreviewProps) => {
 					</div>
 				</div>
 			</div>
+			<Spacer className='mt-4' />
 
 			<Card className='max-w-md mx-auto mt-4 shadow-sm'>
 				<CardContent className='flex items-center gap-2 p-5'>

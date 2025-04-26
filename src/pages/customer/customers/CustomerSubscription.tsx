@@ -109,7 +109,7 @@ const CustomerSubscription: React.FC = () => {
 					billingPeriod: subscriptionData.details.billing_period.toLowerCase(),
 					currency: subscriptionData.details.currency,
 					billingPeriodOptions: Object.keys(planDetails.charges).map((period) => ({
-						label: toSentenceCase(period),
+						label: toSentenceCase(period.replace('_', ' ')),
 						value: period,
 					})),
 					startDate: new Date(subscriptionData.details.start_date),
@@ -162,7 +162,7 @@ const CustomerSubscription: React.FC = () => {
 			billingPeriod: defaultBillingPeriod,
 			currency: defaultCurrency,
 			billingPeriodOptions: billingPeriods.map((period) => ({
-				label: toSentenceCase(period),
+				label: toSentenceCase(period.replace('_', ' ')),
 				value: period,
 			})),
 		});
