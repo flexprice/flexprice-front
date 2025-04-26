@@ -50,10 +50,6 @@ export const sanitizeFilterConditions = (conditions: FilterCondition[]) => {
 				// For number type, numberValue should be defined and be a valid number
 				return condition.valueNumber !== undefined && !isNaN(condition.valueNumber);
 
-			case DataType.BOOLEAN:
-				// For boolean type, booleanValue should be defined
-				return condition.valueBoolean !== undefined;
-
 			case DataType.DATE:
 				// For date type, dateValue should be defined and be a valid date
 				return condition.valueDate !== undefined && !isNaN(condition.valueDate.getTime());
@@ -92,11 +88,7 @@ export const convertFilterConditionToQuery = (conditions: FilterCondition[]): Ty
 			};
 
 			// Handle special operators that don't need values
-			if (
-				[FilterOperator.IS_NULL, FilterOperator.IS_NOT_NULL, FilterOperator.IS_EMPTY, FilterOperator.IS_NOT_EMPTY].includes(
-					condition.operator,
-				)
-			) {
+			if ([FilterOperator.EQUAL, FilterOperator.NOT_EQUAL].includes(condition.operator)) {
 				return baseFilter;
 			}
 
@@ -112,12 +104,6 @@ export const convertFilterConditionToQuery = (conditions: FilterCondition[]): Ty
 					return {
 						...baseFilter,
 						value_number: condition.valueNumber,
-					};
-
-				case DataType.BOOLEAN:
-					return {
-						...baseFilter,
-						value_boolean: condition.valueBoolean,
 					};
 
 				case DataType.DATE:
@@ -149,9 +135,7 @@ export const validateBackendQueryPayload = (payload: TypedBackendQueryPayload): 
 		if (!filter.field || !filter.operator || !filter.dataType) return false;
 
 		// For operators that don't need values
-		if (
-			[FilterOperator.IS_NULL, FilterOperator.IS_NOT_NULL, FilterOperator.IS_EMPTY, FilterOperator.IS_NOT_EMPTY].includes(filter.operator)
-		) {
+		if ([FilterOperator.EQUAL, FilterOperator.NOT_EQUAL].includes(filter.operator)) {
 			return true;
 		}
 
@@ -161,8 +145,6 @@ export const validateBackendQueryPayload = (payload: TypedBackendQueryPayload): 
 				return filter.value_string !== undefined && filter.value_string !== null;
 			case DataType.NUMBER:
 				return filter.value_number !== undefined && filter.value_number !== null;
-			case DataType.BOOLEAN:
-				return filter.value_boolean !== undefined && filter.value_boolean !== null;
 			case DataType.DATE:
 				return filter.value_date !== undefined && filter.value_date !== null;
 			case DataType.ARRAY:
