@@ -66,6 +66,9 @@ const QueryBuilder = ({ fields, onFilterChange, filters, sortOptions = [], onSor
 
 	return (
 		<div className='flex flex-wrap items-center gap-3'>
+			{/* Filter options */}
+			{fields.length > 0 && <FilterPopover fields={fields} value={filter} onChange={handleFilterChange} />}
+
 			{/* Sort options */}
 			{sortOptions.length > 0 && selectedSorts && (
 				<SortDropdown
@@ -74,9 +77,6 @@ const QueryBuilder = ({ fields, onFilterChange, filters, sortOptions = [], onSor
 					onChange={handleSortChange}
 				/>
 			)}
-
-			{/* Filter options */}
-			{fields.length > 0 && <FilterPopover fields={fields} value={filter} onChange={handleFilterChange} />}
 		</div>
 	);
 };
