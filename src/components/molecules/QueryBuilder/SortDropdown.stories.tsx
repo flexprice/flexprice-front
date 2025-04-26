@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import SortDropdown, { SortConfig } from './SortDropdown';
+import SortDropdown, { SortOption, SortDirection } from './SortDropdown';
 
 const meta: Meta<typeof SortDropdown> = {
 	title: 'Molecules/QueryBuilder/SortDropdown',
@@ -16,19 +16,19 @@ const meta: Meta<typeof SortDropdown> = {
 export default meta;
 type Story = StoryObj<typeof SortDropdown>;
 
-const options = [
-	{ key: 'name', label: 'Name' },
-	{ key: 'created_at', label: 'Created At' },
-	{ key: 'updated_at', label: 'Updated At' },
-	{ key: 'status', label: 'Status' },
-	{ key: 'priority', label: 'Priority' },
-	{ key: 'est_hours', label: 'Est. Hours' },
-	{ key: 'assigned_to', label: 'Assigned To' },
-	{ key: 'due_date', label: 'Due Date' },
+const options: SortOption[] = [
+	{ field: 'name', label: 'Name' },
+	{ field: 'created_at', label: 'Created At' },
+	{ field: 'updated_at', label: 'Updated At' },
+	{ field: 'status', label: 'Status' },
+	{ field: 'priority', label: 'Priority' },
+	{ field: 'est_hours', label: 'Est. Hours' },
+	{ field: 'assigned_to', label: 'Assigned To' },
+	{ field: 'due_date', label: 'Due Date' },
 ];
 
 const DefaultStory = () => {
-	const [sorts, setSorts] = useState<SortConfig[]>([]);
+	const [sorts, setSorts] = useState<SortOption[]>([]);
 
 	return (
 		<div className='p-10'>
@@ -38,9 +38,9 @@ const DefaultStory = () => {
 };
 
 const WithInitialSortsStory = () => {
-	const [sorts, setSorts] = useState<SortConfig[]>([
-		{ field: 'created_at', direction: 'desc' },
-		{ field: 'priority', direction: 'asc' },
+	const [sorts, setSorts] = useState<SortOption[]>([
+		{ field: 'created_at', label: 'Created At', direction: SortDirection.DESC },
+		{ field: 'priority', label: 'Priority', direction: SortDirection.ASC },
 	]);
 
 	return (

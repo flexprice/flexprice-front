@@ -64,22 +64,24 @@ export interface FilterField {
 	label: string;
 	fieldType: FilterFieldType;
 	operators: FilterOperator[];
-	options?: string[];
+	options?: { value: string; label: string }[];
 	enumValues?: string[];
-	dataType?: string;
+	dataType: DataType;
 }
 
 export interface FilterCondition {
-	id: string; // Unique ID for each filter
 	field: string;
 	operator: FilterOperator;
-	fieldType: FilterFieldType;
+	dataType?: DataType;
+
+	// values option
 	stringValue?: string;
 	numberValue?: number;
-	arrayValue?: Array<any>;
+	arrayValue?: Array<string>;
 	dateValue?: Date;
+
+	// future use
 	booleanValue?: boolean;
-	dataType?: string;
 }
 
 // !INFO: only for future use

@@ -6,20 +6,21 @@ import { ArrowUpDown, GripVertical, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Combobox, Button, Select } from '@/components/atoms';
 
-export interface SortOption {
-	key: string;
-	label: string;
+export enum SortDirection {
+	ASC = 'ASC',
+	DESC = 'DESC',
 }
 
-export interface SortConfig {
+export interface SortOption {
 	field: string;
-	direction: 'asc' | 'desc';
+	label: string;
+	direction?: SortDirection;
 }
 
 interface Props {
 	options: SortOption[];
-	value?: SortConfig[];
-	onChange?: (value: SortConfig[]) => void;
+	value?: SortOption[];
+	onChange?: (value: SortOption[]) => void;
 	className?: string;
 	maxSorts?: number;
 	disabled?: boolean;
@@ -33,12 +34,13 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 
 		// Find first unused option
 		const usedFields = new Set(value.map((v) => v.field));
-		const firstAvailable = options.find((opt) => !usedFields.has(opt.key));
+		const firstAvailable = options.find((opt) => !usedFields.has(opt.field));
 
 		if (firstAvailable) {
-			const newSort: SortConfig = {
-				field: firstAvailable.key,
-				direction: 'asc',
+			const newSort: SortOption = {
+				field: firstAvailable.field,
+				label: firstAvailable.label,
+				direction: SortDirection.ASC,
 			};
 			const newValue = [...value, newSort];
 			onChange?.(newValue);
@@ -52,7 +54,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 		onChange?.(newValue);
 	};
 
-	const handleSortUpdate = (index: number, updates: Partial<SortConfig>) => {
+	const handleSortUpdate = (index: number, updates: Partial<SortOption>) => {
 		const newValue = [...value];
 		newValue[index] = { ...newValue[index], ...updates };
 		onChange?.(newValue);
@@ -62,7 +64,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 		onChange?.([]);
 	};
 
-	const handleReorder = (items: SortConfig[]) => {
+	const handleReorder = (items: SortOption[]) => {
 		onChange?.(items);
 	};
 
@@ -98,7 +100,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 									<SortableItem key={sort.field} value={sort.field} className='flex items-center gap-2 rounded-md'>
 										<Combobox
 											options={options.map((opt) => ({
-												value: opt.key,
+												value: opt.field,
 												label: opt.label,
 											}))}
 											value={sort.field}
@@ -109,7 +111,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 										<Select
 											options={[
 												{
-													value: 'asc',
+													value: SortDirection.ASC,
 													label: 'Asc',
 												},
 												{
@@ -118,7 +120,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 												},
 											]}
 											value={sort.direction}
-											onChange={(value) => handleSortUpdate(index, { direction: value as 'asc' | 'desc' })}
+											onChange={(value) => handleSortUpdate(index, { direction: value as SortDirection })}
 											className='w-[80px] h-8'
 										/>
 

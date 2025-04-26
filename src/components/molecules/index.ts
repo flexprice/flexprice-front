@@ -89,4 +89,6 @@ export { default as UpdateTenantDrawer } from './Tenant/UpdateTenantDrawer';
 
 export { default as TerminateWalletModal } from './TerminateWalletModal';
 
-export { default as QueryBuilder } from './QueryBuilder/QueryBuilder';
+export { QueryBuilder, FilterPopover, SortDropdown, FilterMultiSelect } from './QueryBuilder';
+export type { FilterCondition, FilterField, FilterFieldType, FilterOperator, DataType } from '@/types/common/QueryBuilder';
+export { sanitizeFilterConditions, sanitizeSortConditions } from '@/types/formatters/QueryBuilder';

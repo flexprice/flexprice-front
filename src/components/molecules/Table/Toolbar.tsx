@@ -37,6 +37,7 @@ interface ToolbarProps {
 	onFilterChange: (filterState: Partial<FilterState>) => void;
 }
 
+// TODO: Deprecate this component and use QueryBuilder instead
 const Toolbar = ({ config, filters, onFilterChange }: ToolbarProps) => {
 	const { searchPlaceholder = 'Search', enableSearch = true, sortOptions = [] } = config;
 
