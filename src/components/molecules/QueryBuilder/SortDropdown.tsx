@@ -1,12 +1,10 @@
-import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOverlay } from '@/components/ui/sortable';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ArrowUpDown, GripVertical, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { Combobox } from '@/components/atoms';
-import FlexPriceSelect from '@/components/atoms/Select';
+import { Combobox, Button, Select } from '@/components/atoms';
 
 export interface SortOption {
 	key: string;
@@ -108,7 +106,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 											placeholder='Select field'
 										/>
 
-										<FlexPriceSelect
+										<Select
 											options={[
 												{
 													value: 'asc',
