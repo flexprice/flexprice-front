@@ -74,7 +74,7 @@ const SignupConfirmation = () => {
 						<p className='text-gray-600 mt-2'>Please wait while we set up your account</p>
 					</div>
 				)}
-
+				§
 				{!isPending && (
 					<div className='text-center'>
 						<h2 className='text-xl font-semibold'>Processing your information...</h2>

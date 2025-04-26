@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { v4 as uuidv4 } from 'uuid';
 import { Combobox, DatePicker, Toggle, Button, Select } from '@/components/atoms';
 import { Switch } from '@/components/ui/switch';
+import FilterMultiSelect from './FilterMultiSelect';
 
 interface Props {
 	fields: FilterField[];
@@ -58,6 +59,10 @@ const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => {
 
 	if (field.fieldType === FilterFieldType.SELECT) {
 		newFilter.stringValue = field.options?.[0] || '';
+	}
+
+	if (field.fieldType === FilterFieldType.MULTI_SELECT) {
+		newFilter.arrayValue = [];
 	}
 
 	return newFilter;
@@ -166,6 +171,15 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						onCheckedChange={(checked) => handleFilterUpdate(filter.id, { booleanValue: checked })}
 					/>
 				);
+			case FilterFieldType.MULTI_SELECT:
+				return (
+					<FilterMultiSelect
+						options={field.options?.map((opt) => ({ value: opt, label: opt })) || []}
+						value={filter.arrayValue || []}
+						onChange={(value) => handleFilterUpdate(filter.id, { arrayValue: value })}
+						placeholder={'Select options'}
+					/>
+				);
 			default:
 				return (
 					<Input
@@ -190,7 +204,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 					)}
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent align='start' className='p-4 w-screen' style={{ maxWidth: '600px', minWidth: MIN_POPOVER_WIDTH }}>
+			<PopoverContent align='start' className='p-4 w-screen' style={{ maxWidth: '620px', minWidth: MIN_POPOVER_WIDTH }}>
 				<div className='flex flex-col gap-4'>
 					{value.length === 0 ? (
 						<div className='flex flex-col gap-2'>
