@@ -6,7 +6,6 @@ import { Trash2, GripVertical, ListFilter } from 'lucide-react';
 import { useState } from 'react';
 import { FilterField, FilterCondition, FilterOperator, FilterFieldType } from '@/types/common/QueryBuilder';
 import { Input } from '@/components/ui/input';
-import { v4 as uuidv4 } from 'uuid';
 import { Combobox, DatePicker, Toggle, Button, Select } from '@/components/atoms';
 import { Switch } from '@/components/ui/switch';
 import FilterMultiSelect from './FilterMultiSelect';
@@ -26,15 +25,9 @@ const MIN_VALUE_WIDTH = 160;
 
 const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => {
 	const newFilter: FilterCondition = {
-		id: uuidv4(),
 		field: field.field,
 		operator: field.operators[0],
-		fieldType: field.fieldType,
-		booleanValue: false,
-		dateValue: new Date(),
-		stringValue: '',
-		arrayValue: [],
-		numberValue: 0,
+		dataType: field.dataType,
 	};
 
 	if (field.fieldType === FilterFieldType.DATEPICKER) {
@@ -42,7 +35,7 @@ const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => {
 	}
 
 	if (field.fieldType === FilterFieldType.COMBOBOX) {
-		newFilter.arrayValue = [field.options?.[0] || ''];
+		newFilter.arrayValue = [field.options?.[0]?.value || ''];
 	}
 
 	if (field.fieldType === FilterFieldType.CHECKBOX) {
@@ -50,7 +43,7 @@ const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => {
 	}
 
 	if (field.fieldType === FilterFieldType.RADIO) {
-		newFilter.stringValue = field.options?.[0] || '';
+		newFilter.stringValue = field.options?.[0]?.value || '';
 	}
 
 	if (field.fieldType === FilterFieldType.SWITCH) {
@@ -58,7 +51,7 @@ const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => {
 	}
 
 	if (field.fieldType === FilterFieldType.SELECT) {
-		newFilter.stringValue = field.options?.[0] || '';
+		newFilter.stringValue = field.options?.[0]?.value || '';
 	}
 
 	if (field.fieldType === FilterFieldType.MULTI_SELECT) {
@@ -79,11 +72,11 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 	};
 
 	const handleRemoveFilter = (id: string) => {
-		onChange(value.filter((filter) => filter.id !== id));
+		onChange(value.filter((filter) => filter.field !== id));
 	};
 
 	const handleFilterUpdate = (id: string, updates: Partial<FilterCondition>) => {
-		onChange(value.map((filter) => (filter.id === id ? { ...filter, ...updates } : filter)));
+		onChange(value.map((filter) => (filter.field === id ? { ...filter, ...updates } : filter)));
 	};
 
 	const handleFieldChange = (id: string, fieldName: string) => {
@@ -113,7 +106,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 				return (
 					<Input
 						value={filter.stringValue || ''}
-						onChange={(e) => handleFilterUpdate(filter.id, { stringValue: e.target.value })}
+						onChange={(e) => handleFilterUpdate(filter.field, { stringValue: e.target.value })}
 						{...commonProps}
 						className={cn(commonProps.className, 'h-8')}
 					/>
@@ -121,21 +114,24 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 			case FilterFieldType.SELECT:
 				return (
 					<Select
-						options={field.options?.map((opt) => ({ value: opt, label: opt })) || []}
+						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
 						value={filter.stringValue}
-						onChange={(value) => handleFilterUpdate(filter.id, { stringValue: value })}
+						onChange={(value) => handleFilterUpdate(filter.field, { stringValue: value })}
 						className={cn(commonProps.className, 'h-8')}
 						placeholder={commonProps.placeholder}
 					/>
 				);
 			case FilterFieldType.CHECKBOX:
 				return (
-					<Toggle checked={filter.booleanValue || false} onChange={(checked) => handleFilterUpdate(filter.id, { booleanValue: checked })} />
+					<Toggle
+						checked={filter.booleanValue || false}
+						onChange={(checked) => handleFilterUpdate(filter.field, { booleanValue: checked })}
+					/>
 				);
 			case FilterFieldType.DATEPICKER:
 				return (
 					<DatePicker
-						setDate={(date) => handleFilterUpdate(filter.id, { dateValue: date })}
+						setDate={(date) => handleFilterUpdate(filter.field, { dateValue: date })}
 						date={filter.dateValue || new Date()}
 						{...commonProps}
 						placeholder='Select date'
@@ -145,9 +141,9 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 			case FilterFieldType.RADIO:
 				return (
 					<Select
-						options={field.options?.map((opt) => ({ value: opt, label: opt })) || []}
+						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
 						value={filter.stringValue}
-						onChange={(value) => handleFilterUpdate(filter.id, { stringValue: value })}
+						onChange={(value) => handleFilterUpdate(filter.field, { stringValue: value })}
 						isRadio
 						className={cn(commonProps.className, 'h-8')}
 						placeholder={commonProps.placeholder}
@@ -156,9 +152,9 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 			case FilterFieldType.COMBOBOX:
 				return (
 					<Combobox
-						options={field.options?.map((opt) => ({ value: opt, label: opt })) || []}
+						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
 						value={filter.stringValue}
-						onChange={(value) => handleFilterUpdate(filter.id, { stringValue: value })}
+						onChange={(value) => handleFilterUpdate(filter.field, { stringValue: value })}
 						width='100%'
 						triggerClassName='h-8'
 						placeholder={commonProps.placeholder}
@@ -168,15 +164,15 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 				return (
 					<Switch
 						checked={filter.booleanValue || false}
-						onCheckedChange={(checked) => handleFilterUpdate(filter.id, { booleanValue: checked })}
+						onCheckedChange={(checked) => handleFilterUpdate(filter.field, { booleanValue: checked })}
 					/>
 				);
 			case FilterFieldType.MULTI_SELECT:
 				return (
 					<FilterMultiSelect
-						options={field.options?.map((opt) => ({ value: opt, label: opt })) || []}
+						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
 						value={filter.arrayValue || []}
-						onChange={(value) => handleFilterUpdate(filter.id, { arrayValue: value })}
+						onChange={(value) => handleFilterUpdate(filter.field, { arrayValue: value })}
 						placeholder={'Select options'}
 					/>
 				);
@@ -184,7 +180,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 				return (
 					<Input
 						value={filter.stringValue || ''}
-						onChange={(e) => handleFilterUpdate(filter.id, { stringValue: e.target.value })}
+						onChange={(e) => handleFilterUpdate(filter.field, { stringValue: e.target.value })}
 						{...commonProps}
 					/>
 				);
@@ -220,14 +216,14 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 								<h4 className='font-medium leading-none'>Filter by</h4>
 							</div>
 
-							<Sortable value={value} onValueChange={handleReorder} getItemValue={(item) => item.id}>
-								<SortableContent className='flex flex-col gap-1'>
+							<Sortable value={value} onValueChange={handleReorder} getItemValue={(item) => item.field}>
+								<SortableContent className='flex flex-col gap-0'>
 									{value.map((filter, index) => {
 										const field = fields.find((f) => f.field === filter.field);
 										if (!field) return null;
 
 										return (
-											<SortableItem key={filter.id} value={filter.id}>
+											<SortableItem key={filter.field} value={filter.field}>
 												<div
 													className='grid items-center gap-2 p-2 w-full'
 													style={{
@@ -240,7 +236,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 															label: field.label,
 														}))}
 														value={filter.field}
-														onChange={(value) => handleFieldChange(filter.id, value)}
+														onChange={(value) => handleFieldChange(filter.field, value)}
 														placeholder='Select field'
 														width='100%'
 														triggerClassName='h-8'
@@ -250,10 +246,13 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 													<Select
 														options={field.operators.map((operator) => ({
 															value: operator,
-															label: operator.toLowerCase().replace(/_/g, ' '),
+															label: operator
+																.toLowerCase()
+																.replace(/_/g, ' ')
+																.replace(/\b\w/g, (char) => char.toUpperCase()),
 														}))}
 														value={filter.operator}
-														onChange={(value) => handleFilterUpdate(filter.id, { operator: value as FilterOperator })}
+														onChange={(value) => handleFilterUpdate(filter.field, { operator: value as FilterOperator })}
 														placeholder='Select operator'
 														className='h-8'
 													/>
@@ -265,7 +264,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 															variant='outline'
 															size='icon'
 															className='h-8 w-8 shrink-0'
-															onClick={() => handleRemoveFilter(filter.id)}>
+															onClick={() => handleRemoveFilter(filter.field)}>
 															<Trash2 className='h-4 w-4' />
 														</Button>
 

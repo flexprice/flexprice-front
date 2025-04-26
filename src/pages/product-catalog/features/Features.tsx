@@ -8,29 +8,36 @@ import FeatureApi from '@/utils/api_requests/FeatureApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { FilterCondition, FilterField, FilterFieldType, FilterOperator, ALLOWED_OPERATORS_PER_TYPE } from '@/types/common/QueryBuilder';
+import { useEffect, useState } from 'react';
+import {
+	FilterCondition,
+	FilterField,
+	FilterFieldType,
+	FilterOperator,
+	ALLOWED_OPERATORS_PER_TYPE,
+	DataType,
+} from '@/types/common/QueryBuilder';
 import { QueryBuilder } from '@/components/molecules';
-import { SortDirection, SortOption } from '@/components/molecules/QueryBuilder/QueryBuilder';
-
+import { SortDirection, SortOption } from '@/components/molecules/QueryBuilder/SortDropdown';
+import { sanitizeFilterConditions, sanitizeSortConditions } from '@/types/formatters/QueryBuilder';
 const sortingOptions: SortOption[] = [
 	{
-		key: 'name',
+		field: 'name',
 		label: 'Name',
 		direction: SortDirection.ASC,
 	},
 	{
-		key: 'createdAt',
+		field: 'createdAt',
 		label: 'Created At',
 		direction: SortDirection.DESC,
 	},
 	{
-		key: 'updatedAt',
+		field: 'updatedAt',
 		label: 'Updated At',
 		direction: SortDirection.DESC,
 	},
 	{
-		key: 'isActive',
+		field: 'isActive',
 		label: 'Status',
 		direction: SortDirection.DESC,
 	},
@@ -42,19 +49,25 @@ const filterOptions: FilterField[] = [
 		label: 'Status',
 		fieldType: FilterFieldType.MULTI_SELECT,
 		operators: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
-		options: ['Active', 'Inactive'],
+		options: [
+			{ value: 'TRUE', label: 'Active' },
+			{ value: 'FALSE', label: 'Inactive' },
+		],
+		dataType: DataType.ARRAY,
 	},
 	{
 		field: 'name',
 		label: 'Name',
 		fieldType: FilterFieldType.INPUT,
 		operators: ALLOWED_OPERATORS_PER_TYPE[FilterFieldType.INPUT],
+		dataType: DataType.STRING,
 	},
 	{
 		field: 'createdAt',
 		label: 'Created At',
 		fieldType: FilterFieldType.DATEPICKER,
 		operators: ALLOWED_OPERATORS_PER_TYPE[FilterFieldType.DATEPICKER],
+		dataType: DataType.DATE,
 	},
 ];
 
@@ -74,6 +87,16 @@ const FeaturesPage = () => {
 		});
 	};
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const sanitizedFilters = sanitizeFilterConditions(filters);
+		const sanitizedSorts = sanitizeSortConditions(selectedSorts);
+		console.log('filters', filters);
+		console.log('selectedSorts', selectedSorts);
+
+		console.log('sanitizedFilters', sanitizedFilters);
+		console.log('sanitizedSorts', sanitizedSorts);
+	}, [filters, selectedSorts]);
 
 	const {
 		data: featureData,

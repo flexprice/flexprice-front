@@ -1,20 +1,8 @@
 import { FilterField, FilterCondition } from '@/types/common/QueryBuilder';
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import SortDropdown, { SortConfig } from './SortDropdown';
-import FilterPopover from './FilterPopover';
 import { debounce } from 'lodash';
-
-export enum SortDirection {
-	ASC = 'asc',
-	DESC = 'desc',
-}
-
-export interface SortOption {
-	key: string;
-	label: string;
-	direction?: SortDirection;
-}
-
+import { FilterPopover, SortDropdown } from '@/components/molecules';
+import { SortOption, SortDirection } from '@/components/molecules/QueryBuilder/SortDropdown';
 interface Props {
 	// Filter options
 	filterOptions: FilterField[];
@@ -26,6 +14,9 @@ interface Props {
 	onSortChange?: (sort: SortOption[]) => void;
 	selectedSorts?: SortOption[];
 
+	// debounce time for the filter and sort changes
+	// default is 500ms
+	// give time in milliseconds
 	debounceTime?: number;
 }
 
@@ -77,17 +68,17 @@ const QueryBuilder = ({
 
 	// Sort options
 	const handleSortChange = useCallback(
-		(sortConfigs: SortConfig[]) => {
+		(sortConfigs: SortOption[]) => {
 			// Convert all sort configs to SortOptions
 			const updatedSorts = sortConfigs
 				.map((sortConfig) => {
-					const matchedOption = sortOptions.find((option) => option.key === sortConfig.field);
+					const matchedOption = sortOptions.find((option) => option.field === sortConfig.field);
 					if (!matchedOption) return null;
 
 					const updatedSort: SortOption = {
-						key: matchedOption.key,
+						field: matchedOption.field,
 						label: matchedOption.label,
-						direction: sortConfig.direction as SortDirection,
+						direction: sortConfig.direction,
 					};
 					return updatedSort;
 				})
@@ -110,8 +101,9 @@ const QueryBuilder = ({
 	// Transform selectedSorts into the format expected by SortDropdown
 	const sortDropdownValue = useMemo(() => {
 		return localSorts.map((sort) => ({
-			field: sort.key,
-			direction: (sort.direction || 'asc') as 'asc' | 'desc',
+			field: sort.field,
+			direction: (sort.direction || SortDirection.ASC) as SortDirection,
+			label: sort.label,
 		}));
 	}, [localSorts]);
 
@@ -122,11 +114,7 @@ const QueryBuilder = ({
 
 			{/* Sort options */}
 			{sortOptions.length > 0 && selectedSorts && (
-				<SortDropdown
-					options={sortOptions.map((opt) => ({ key: opt.key, label: opt.label }))}
-					value={sortDropdownValue}
-					onChange={handleSortChange}
-				/>
+				<SortDropdown options={sortOptions} value={sortDropdownValue} onChange={handleSortChange} />
 			)}
 		</div>
 	);
