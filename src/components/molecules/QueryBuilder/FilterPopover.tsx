@@ -3,12 +3,13 @@ import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOv
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Trash2, GripVertical, ListFilter } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { FilterField, FilterCondition, FilterOperator, FilterFieldType } from '@/types/common/QueryBuilder';
 import { Input } from '@/components/ui/input';
 import { Combobox, DatePicker, Toggle, Button, Select } from '@/components/atoms';
 import { Switch } from '@/components/ui/switch';
 import FilterMultiSelect from './FilterMultiSelect';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Props {
 	fields: FilterField[];
@@ -23,169 +24,173 @@ const MIN_FIELD_WIDTH = 160;
 const MIN_OPERATOR_WIDTH = 120;
 const MIN_VALUE_WIDTH = 160;
 
-const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => {
-	const newFilter: FilterCondition = {
-		field: field.field,
-		operator: field.operators[0],
-		dataType: field.dataType,
-	};
-
-	if (field.fieldType === FilterFieldType.DATEPICKER) {
-		newFilter.dateValue = new Date();
+const getDefaultValueByFieldType = (field: FilterField) => {
+	switch (field.fieldType) {
+		case FilterFieldType.DATEPICKER:
+			return { valueDate: new Date() };
+		case FilterFieldType.COMBOBOX:
+			return { valueArray: [field.options?.[0]?.value || ''] };
+		case FilterFieldType.CHECKBOX:
+		case FilterFieldType.SWITCH:
+			return { valueBoolean: false };
+		case FilterFieldType.RADIO:
+		case FilterFieldType.SELECT:
+			return { valueString: field.options?.[0]?.value || '' };
+		case FilterFieldType.MULTI_SELECT:
+			return { valueArray: [] };
+		default:
+			return { valueString: '' };
 	}
-
-	if (field.fieldType === FilterFieldType.COMBOBOX) {
-		newFilter.arrayValue = [field.options?.[0]?.value || ''];
-	}
-
-	if (field.fieldType === FilterFieldType.CHECKBOX) {
-		newFilter.booleanValue = false;
-	}
-
-	if (field.fieldType === FilterFieldType.RADIO) {
-		newFilter.stringValue = field.options?.[0]?.value || '';
-	}
-
-	if (field.fieldType === FilterFieldType.SWITCH) {
-		newFilter.booleanValue = false;
-	}
-
-	if (field.fieldType === FilterFieldType.SELECT) {
-		newFilter.stringValue = field.options?.[0]?.value || '';
-	}
-
-	if (field.fieldType === FilterFieldType.MULTI_SELECT) {
-		newFilter.arrayValue = [];
-	}
-
-	return newFilter;
 };
+
+const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => ({
+	id: uuidv4(),
+	field: field.field,
+	operator: field.operators[0],
+	dataType: field.dataType,
+	...getDefaultValueByFieldType(field),
+});
 
 const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, className, sortable = false }) => {
 	const [isOpen, setIsOpen] = useState(false);
 
-	const handleAddFilter = () => {
+	const handleAddFilter = useCallback(() => {
 		const firstField = fields[0];
 		if (!firstField) return;
 		const newFilter = getNewFilterWithDefaultValues(firstField);
 		onChange([...value, newFilter]);
-	};
+	}, [fields, value, onChange]);
 
-	const handleRemoveFilter = (id: string) => {
-		onChange(value.filter((filter) => filter.field !== id));
-	};
+	const handleRemoveFilter = useCallback(
+		(id: string) => {
+			onChange(value.filter((filter) => filter.id !== id));
+		},
+		[value, onChange],
+	);
 
-	const handleFilterUpdate = (id: string, updates: Partial<FilterCondition>) => {
-		onChange(value.map((filter) => (filter.field === id ? { ...filter, ...updates } : filter)));
-	};
+	const handleFilterUpdate = useCallback(
+		(id: string, updates: Partial<FilterCondition>) => {
+			onChange(value.map((filter) => (filter.id === id ? { ...filter, ...updates } : filter)));
+		},
+		[value, onChange],
+	);
 
-	const handleFieldChange = (id: string, fieldName: string) => {
-		const field = fields.find((f) => f.field === fieldName);
-		if (!field) return;
+	const handleFieldChange = useCallback(
+		(id: string, fieldName: string) => {
+			const field = fields.find((f) => f.field === fieldName);
+			if (!field) return;
+			const newFilter = getNewFilterWithDefaultValues(field);
+			handleFilterUpdate(id, newFilter);
+		},
+		[fields, handleFilterUpdate],
+	);
 
-		const newFilter = getNewFilterWithDefaultValues(field);
+	const handleReorder = useCallback(
+		(items: FilterCondition[]) => {
+			onChange(items);
+		},
+		[onChange],
+	);
 
-		handleFilterUpdate(id, newFilter);
-	};
+	const renderValueInput = useCallback(
+		(filter: FilterCondition) => {
+			const field = fields.find((f) => f.field === filter.field);
+			if (!field) return null;
 
-	const handleReorder = (items: FilterCondition[]) => {
-		onChange(items);
-	};
+			const commonProps = {
+				className: 'min-w-0 flex-1',
+				placeholder: 'Enter value...',
+			};
 
-	const renderValueInput = (filter: FilterCondition) => {
-		const field = fields.find((f) => f.field === filter.field);
-		if (!field) return null;
+			const inputProps = {
+				...commonProps,
+				className: cn(commonProps.className, 'h-8'),
+			};
 
-		const commonProps = {
-			className: 'min-w-0 flex-1',
-			placeholder: 'Enter value...',
-		};
-
-		switch (field.fieldType) {
-			case FilterFieldType.INPUT:
-				return (
+			const valueComponents = {
+				[FilterFieldType.INPUT]: (
 					<Input
-						value={filter.stringValue || ''}
-						onChange={(e) => handleFilterUpdate(filter.field, { stringValue: e.target.value })}
-						{...commonProps}
-						className={cn(commonProps.className, 'h-8')}
+						value={filter.valueString || ''}
+						onChange={(e) => handleFilterUpdate(filter.id, { valueString: e.target.value })}
+						{...inputProps}
 					/>
-				);
-			case FilterFieldType.SELECT:
-				return (
+				),
+				[FilterFieldType.SELECT]: (
 					<Select
 						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
-						value={filter.stringValue}
-						onChange={(value) => handleFilterUpdate(filter.field, { stringValue: value })}
-						className={cn(commonProps.className, 'h-8')}
+						value={filter.valueString}
+						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
+						className={inputProps.className}
 						placeholder={commonProps.placeholder}
 					/>
-				);
-			case FilterFieldType.CHECKBOX:
-				return (
-					<Toggle
-						checked={filter.booleanValue || false}
-						onChange={(checked) => handleFilterUpdate(filter.field, { booleanValue: checked })}
-					/>
-				);
-			case FilterFieldType.DATEPICKER:
-				return (
+				),
+				[FilterFieldType.CHECKBOX]: (
+					<Toggle checked={filter.valueBoolean || false} onChange={(checked) => handleFilterUpdate(filter.id, { valueBoolean: checked })} />
+				),
+				[FilterFieldType.DATEPICKER]: (
 					<DatePicker
-						setDate={(date) => handleFilterUpdate(filter.field, { dateValue: date })}
-						date={filter.dateValue || new Date()}
-						{...commonProps}
+						setDate={(date) => handleFilterUpdate(filter.id, { valueDate: date })}
+						date={filter.valueDate || new Date()}
+						{...inputProps}
 						placeholder='Select date'
-						className={cn(commonProps.className, 'h-8')}
 					/>
-				);
-			case FilterFieldType.RADIO:
-				return (
+				),
+				[FilterFieldType.RADIO]: (
 					<Select
 						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
-						value={filter.stringValue}
-						onChange={(value) => handleFilterUpdate(filter.field, { stringValue: value })}
+						value={filter.valueString}
+						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
 						isRadio
-						className={cn(commonProps.className, 'h-8')}
+						className={inputProps.className}
 						placeholder={commonProps.placeholder}
 					/>
-				);
-			case FilterFieldType.COMBOBOX:
-				return (
+				),
+				[FilterFieldType.COMBOBOX]: (
 					<Combobox
 						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
-						value={filter.stringValue}
-						onChange={(value) => handleFilterUpdate(filter.field, { stringValue: value })}
+						value={filter.valueString}
+						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
 						width='100%'
 						triggerClassName='h-8'
 						placeholder={commonProps.placeholder}
 					/>
-				);
-			case FilterFieldType.SWITCH:
-				return (
+				),
+				[FilterFieldType.SWITCH]: (
 					<Switch
-						checked={filter.booleanValue || false}
-						onCheckedChange={(checked) => handleFilterUpdate(filter.field, { booleanValue: checked })}
+						checked={filter.valueBoolean || false}
+						onCheckedChange={(checked) => handleFilterUpdate(filter.id, { valueBoolean: checked })}
 					/>
-				);
-			case FilterFieldType.MULTI_SELECT:
-				return (
+				),
+				[FilterFieldType.MULTI_SELECT]: (
 					<FilterMultiSelect
 						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
-						value={filter.arrayValue || []}
-						onChange={(value) => handleFilterUpdate(filter.field, { arrayValue: value })}
-						placeholder={'Select options'}
+						value={filter.valueArray || []}
+						onChange={(value) => handleFilterUpdate(filter.id, { valueArray: value })}
+						placeholder='Select options'
 					/>
-				);
-			default:
-				return (
-					<Input
-						value={filter.stringValue || ''}
-						onChange={(e) => handleFilterUpdate(filter.field, { stringValue: e.target.value })}
-						{...commonProps}
-					/>
-				);
-		}
-	};
+				),
+			};
+
+			return valueComponents[field.fieldType] || valueComponents[FilterFieldType.INPUT];
+		},
+		[fields, handleFilterUpdate],
+	);
+
+	const gridTemplateColumns = useMemo(
+		() => ({
+			gridTemplateColumns: `50px minmax(${MIN_FIELD_WIDTH}px, 1fr) minmax(${MIN_OPERATOR_WIDTH}px, 1fr) minmax(${MIN_VALUE_WIDTH}px, 2fr) auto`,
+		}),
+		[],
+	);
+
+	const fieldOptions = useMemo(
+		() =>
+			fields.map((field) => ({
+				value: field.field,
+				label: field.label,
+			})),
+		[fields],
+	);
 
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -223,20 +228,13 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 										if (!field) return null;
 
 										return (
-											<SortableItem key={filter.field} value={filter.field}>
-												<div
-													className='grid items-center gap-2 p-2 w-full'
-													style={{
-														gridTemplateColumns: `50px minmax(${MIN_FIELD_WIDTH}px, 1fr) minmax(${MIN_OPERATOR_WIDTH}px, 1fr) minmax(${MIN_VALUE_WIDTH}px, 2fr) auto`,
-													}}>
+											<SortableItem key={filter.id} value={filter.field}>
+												<div className='grid items-center gap-2 p-2 w-full' style={gridTemplateColumns}>
 													<span className='text-sm text-muted-foreground'>{index > 0 ? 'and' : 'Where'}</span>
 													<Combobox
-														options={fields.map((field) => ({
-															value: field.field,
-															label: field.label,
-														}))}
+														options={fieldOptions}
 														value={filter.field}
-														onChange={(value) => handleFieldChange(filter.field, value)}
+														onChange={(value) => handleFieldChange(filter.id, value)}
 														placeholder='Select field'
 														width='100%'
 														triggerClassName='h-8'
@@ -252,7 +250,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 																.replace(/\b\w/g, (char) => char.toUpperCase()),
 														}))}
 														value={filter.operator}
-														onChange={(value) => handleFilterUpdate(filter.field, { operator: value as FilterOperator })}
+														onChange={(value) => handleFilterUpdate(filter.id, { operator: value as FilterOperator })}
 														placeholder='Select operator'
 														className='h-8'
 													/>
@@ -264,7 +262,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 															variant='outline'
 															size='icon'
 															className='h-8 w-8 shrink-0'
-															onClick={() => handleRemoveFilter(filter.field)}>
+															onClick={() => handleRemoveFilter(filter.id)}>
 															<Trash2 className='h-4 w-4' />
 														</Button>
 
@@ -282,11 +280,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 									})}
 								</SortableContent>
 								<SortableOverlay>
-									<div
-										className='grid gap-2 p-2 w-full'
-										style={{
-											gridTemplateColumns: `minmax(${MIN_FIELD_WIDTH}px, 1fr) minmax(${MIN_OPERATOR_WIDTH}px, 1fr) minmax(${MIN_VALUE_WIDTH}px, 2fr) auto`,
-										}}>
+									<div className='grid gap-2 p-2 w-full' style={gridTemplateColumns}>
 										<div className='h-8 rounded-md border bg-background' />
 										<div className='h-8 rounded-md border bg-background' />
 										<div className='h-8 rounded-md border bg-background' />
