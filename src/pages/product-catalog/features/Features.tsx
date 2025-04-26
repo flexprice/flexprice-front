@@ -13,13 +13,15 @@ import {
 	FilterCondition,
 	FilterField,
 	FilterFieldType,
-	FilterOperator,
-	ALLOWED_OPERATORS_PER_TYPE,
+	DEFAULT_OPERATORS_PER_DATA_TYPE,
 	DataType,
+	FilterOperator,
 } from '@/types/common/QueryBuilder';
 import { QueryBuilder } from '@/components/molecules';
 import { SortDirection, SortOption } from '@/components/molecules/QueryBuilder/SortDropdown';
-import { sanitizeFilterConditions, sanitizeSortConditions } from '@/types/formatters/QueryBuilder';
+import { sanitizeFilterConditions, sanitizeSortConditions, convertToBackendPayload } from '@/types/formatters/QueryBuilder';
+import { BaseEntityStatus } from '@/types/common';
+import { FeatureType } from '@/models/Feature';
 const sortingOptions: SortOption[] = [
 	{
 		field: 'name',
@@ -36,38 +38,45 @@ const sortingOptions: SortOption[] = [
 		label: 'Updated At',
 		direction: SortDirection.DESC,
 	},
-	{
-		field: 'isActive',
-		label: 'Status',
-		direction: SortDirection.DESC,
-	},
 ];
 
 const filterOptions: FilterField[] = [
 	{
-		field: 'isActive',
-		label: 'Status',
-		fieldType: FilterFieldType.MULTI_SELECT,
-		operators: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
-		options: [
-			{ value: 'TRUE', label: 'Active' },
-			{ value: 'FALSE', label: 'Inactive' },
-		],
-		dataType: DataType.ARRAY,
-	},
-	{
 		field: 'name',
 		label: 'Name',
 		fieldType: FilterFieldType.INPUT,
-		operators: ALLOWED_OPERATORS_PER_TYPE[FilterFieldType.INPUT],
+		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.STRING],
 		dataType: DataType.STRING,
 	},
 	{
 		field: 'createdAt',
 		label: 'Created At',
 		fieldType: FilterFieldType.DATEPICKER,
-		operators: ALLOWED_OPERATORS_PER_TYPE[FilterFieldType.DATEPICKER],
+		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.DATE],
 		dataType: DataType.DATE,
+	},
+	{
+		field: 'Status',
+		label: 'Status',
+		fieldType: FilterFieldType.MULTI_SELECT,
+		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
+		dataType: DataType.ARRAY,
+		options: [
+			{ value: BaseEntityStatus.PUBLISHED, label: 'Active' },
+			{ value: BaseEntityStatus.ARCHIVED, label: 'Inactive' },
+		],
+	},
+	{
+		field: 'type',
+		label: 'Type',
+		fieldType: FilterFieldType.SELECT,
+		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.ARRAY],
+		dataType: DataType.ARRAY,
+		options: [
+			{ value: FeatureType.metered, label: 'Metered' },
+			{ value: FeatureType.boolean, label: 'Boolean' },
+			{ value: FeatureType.static, label: 'Static' },
+		],
 	},
 ];
 
@@ -91,11 +100,9 @@ const FeaturesPage = () => {
 	useEffect(() => {
 		const sanitizedFilters = sanitizeFilterConditions(filters);
 		const sanitizedSorts = sanitizeSortConditions(selectedSorts);
-		console.log('filters', filters);
-		console.log('selectedSorts', selectedSorts);
 
-		console.log('sanitizedFilters', sanitizedFilters);
-		console.log('sanitizedSorts', sanitizedSorts);
+		const backendPayload = convertToBackendPayload(sanitizedFilters, sanitizedSorts);
+		console.log('backendPayload', backendPayload);
 	}, [filters, selectedSorts]);
 
 	const {
