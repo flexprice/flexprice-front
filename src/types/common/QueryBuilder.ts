@@ -11,6 +11,10 @@ export enum FilterOperator {
 	EQUAL = 'EQUAL',
 	NOT_EQUAL = 'NOT_EQUAL',
 
+	// is
+	IS = 'IS',
+	IS_NOT = 'IS_NOT',
+
 	// string
 	CONTAINS = 'CONTAINS',
 	NOT_CONTAINS = 'NOT_CONTAINS',
@@ -70,18 +74,19 @@ export interface FilterField {
 }
 
 export interface FilterCondition {
+	id: string;
 	field: string;
 	operator: FilterOperator;
 	dataType?: DataType;
 
 	// values option
-	stringValue?: string;
-	numberValue?: number;
-	arrayValue?: Array<string>;
-	dateValue?: Date;
+	valueString?: string;
+	valueNumber?: number;
+	valueArray?: Array<string>;
+	valueDate?: Date;
 
 	// future use
-	booleanValue?: boolean;
+	valueBoolean?: boolean;
 }
 
 // !INFO: only for future use
@@ -119,6 +124,6 @@ export const DEFAULT_OPERATORS_PER_DATA_TYPE: Record<DataType, FilterOperator[]>
 	[DataType.STRING]: [FilterOperator.EQUAL, FilterOperator.CONTAINS],
 	[DataType.NUMBER]: [FilterOperator.EQUAL, FilterOperator.GREATER_THAN, FilterOperator.LESS_THAN],
 	[DataType.BOOLEAN]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
-	[DataType.DATE]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
+	[DataType.DATE]: [FilterOperator.EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
 	[DataType.ARRAY]: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 };
