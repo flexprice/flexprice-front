@@ -40,7 +40,7 @@ const filterOptions: FilterField[] = [
 	{
 		field: 'isActive',
 		label: 'Status',
-		fieldType: FilterFieldType.SELECT,
+		fieldType: FilterFieldType.MULTI_SELECT,
 		operators: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
 		options: ['Active', 'Inactive'],
 	},
@@ -115,7 +115,7 @@ const FeaturesPage = () => {
 			<ApiDocsContent tags={['Features']} />
 			<div>
 				<QueryBuilder
-					fields={filterOptions}
+					filterOptions={filterOptions}
 					filters={filters}
 					onFilterChange={setFilters}
 					sortOptions={sortingOptions}

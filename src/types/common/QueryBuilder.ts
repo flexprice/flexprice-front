@@ -1,3 +1,11 @@
+export enum DataType {
+	STRING = 'STRING',
+	NUMBER = 'NUMBER',
+	BOOLEAN = 'BOOLEAN',
+	DATE = 'DATE',
+	ARRAY = 'ARRAY',
+}
+
 export enum FilterOperator {
 	// equal
 	EQUAL = 'EQUAL',
@@ -20,7 +28,9 @@ export enum FilterOperator {
 
 	// array
 	IN = 'IN',
+	IS_ANY_OF = 'IS_ANY_OF',
 	NOT_IN = 'NOT_IN',
+	IS_NOT_ANY_OF = 'IS_NOT_ANY_OF',
 	CONTAINS_ANY = 'CONTAINS_ANY',
 	CONTAINS_ALL = 'CONTAINS_ALL',
 	BEFORE = 'BEFORE',
@@ -46,6 +56,7 @@ export enum FilterFieldType {
 	RADIO = 'RADIO',
 	COMBOBOX = 'COMBOBOX',
 	SWITCH = 'SWITCH',
+	MULTI_SELECT = 'MULTI_SELECT',
 }
 
 export interface FilterField {
@@ -97,4 +108,15 @@ export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterFieldType, FilterOperator[
 	[FilterFieldType.RADIO]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
 	[FilterFieldType.COMBOBOX]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.CONTAINS],
 	[FilterFieldType.SWITCH]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
+	[FilterFieldType.MULTI_SELECT]: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
+};
+
+// !ALERT: Add more operators for each data type
+// !ALERT: currently only keep operators which we have implemented on backend
+export const DEFAULT_OPERATORS_PER_DATA_TYPE: Record<DataType, FilterOperator[]> = {
+	[DataType.STRING]: [FilterOperator.EQUAL, FilterOperator.CONTAINS],
+	[DataType.NUMBER]: [FilterOperator.EQUAL, FilterOperator.GREATER_THAN, FilterOperator.LESS_THAN],
+	[DataType.BOOLEAN]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
+	[DataType.DATE]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
+	[DataType.ARRAY]: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 };
