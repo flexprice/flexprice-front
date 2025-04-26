@@ -1,7 +1,7 @@
 export enum DataType {
 	STRING = 'STRING',
 	NUMBER = 'NUMBER',
-	BOOLEAN = 'BOOLEAN',
+	// BOOLEAN = 'BOOLEAN',
 	DATE = 'DATE',
 	ARRAY = 'ARRAY',
 }
@@ -12,8 +12,6 @@ export enum FilterOperator {
 	NOT_EQUAL = 'NOT_EQUAL',
 
 	// is
-	IS = 'IS',
-	IS_NOT = 'IS_NOT',
 
 	// string
 	CONTAINS = 'CONTAINS',
@@ -24,31 +22,12 @@ export enum FilterOperator {
 	// number
 	GREATER_THAN = 'GREATER_THAN',
 	LESS_THAN = 'LESS_THAN',
-	BETWEEN = 'BETWEEN',
-
-	// date
-	OVERLAPS = 'OVERLAPS',
-	CONTAINED_BY = 'CONTAINED_BY',
 
 	// array
-	IN = 'IN',
 	IS_ANY_OF = 'IS_ANY_OF',
-	NOT_IN = 'NOT_IN',
 	IS_NOT_ANY_OF = 'IS_NOT_ANY_OF',
-	CONTAINS_ANY = 'CONTAINS_ANY',
-	CONTAINS_ALL = 'CONTAINS_ALL',
 	BEFORE = 'BEFORE',
 	AFTER = 'AFTER',
-
-	// boolean
-	TRUE = 'TRUE',
-	FALSE = 'FALSE',
-	IS_NULL = 'IS_NULL',
-	IS_NOT_NULL = 'IS_NOT_NULL',
-	IS_EMPTY = 'IS_EMPTY',
-	IS_NOT_EMPTY = 'IS_NOT_EMPTY',
-	IS_TRUE = 'IS_TRUE',
-	IS_FALSE = 'IS_FALSE',
 }
 
 export enum FilterFieldType {
@@ -110,11 +89,11 @@ export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterFieldType, FilterOperator[
 		FilterOperator.ENDS_WITH,
 	],
 	[FilterFieldType.SELECT]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
-	[FilterFieldType.CHECKBOX]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
+	[FilterFieldType.CHECKBOX]: [FilterOperator.EQUAL],
 	[FilterFieldType.DATEPICKER]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
 	[FilterFieldType.RADIO]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
 	[FilterFieldType.COMBOBOX]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.CONTAINS],
-	[FilterFieldType.SWITCH]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
+	[FilterFieldType.SWITCH]: [FilterOperator.EQUAL],
 	[FilterFieldType.MULTI_SELECT]: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 };
 
@@ -123,7 +102,6 @@ export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterFieldType, FilterOperator[
 export const DEFAULT_OPERATORS_PER_DATA_TYPE: Record<DataType, FilterOperator[]> = {
 	[DataType.STRING]: [FilterOperator.EQUAL, FilterOperator.CONTAINS],
 	[DataType.NUMBER]: [FilterOperator.EQUAL, FilterOperator.GREATER_THAN, FilterOperator.LESS_THAN],
-	[DataType.BOOLEAN]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
 	[DataType.DATE]: [FilterOperator.EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
 	[DataType.ARRAY]: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 };
