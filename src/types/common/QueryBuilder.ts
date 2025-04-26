@@ -37,34 +37,38 @@ export enum FilterOperator {
 	IS_FALSE = 'IS_FALSE',
 }
 
-export enum FilterDataType {
-	STRING = 'STRING',
-	NUMBER = 'NUMBER',
-	ARRAY = 'ARRAY',
-	DATE = 'DATE',
-	DATERANGE = 'DATERANGE',
-	BOOLEAN = 'BOOLEAN',
+export enum FilterFieldType {
+	// enum
+	INPUT = 'INPUT',
+	SELECT = 'SELECT',
+	CHECKBOX = 'CHECKBOX',
+	DATEPICKER = 'DATEPICKER',
+	RADIO = 'RADIO',
+	COMBOBOX = 'COMBOBOX',
+	SWITCH = 'SWITCH',
 }
 
 export interface FilterField {
 	field: string;
 	label: string;
-	dataType: FilterDataType;
+	fieldType: FilterFieldType;
 	operators: FilterOperator[];
 	options?: string[];
+	enumValues?: string[];
+	dataType?: string;
 }
 
 export interface FilterCondition {
 	id: string; // Unique ID for each filter
 	field: string;
 	operator: FilterOperator;
-	dataType: FilterDataType;
+	fieldType: FilterFieldType;
 	stringValue?: string;
 	numberValue?: number;
-	arrayValue?: Array<string | number>;
-	dateValue?: string;
-	dateRangeValue?: [string, string];
+	arrayValue?: Array<any>;
+	dateValue?: Date;
 	booleanValue?: boolean;
+	dataType?: string;
 }
 
 // !INFO: only for future use
@@ -78,8 +82,8 @@ export interface FilterGroup {
 // !ALERT: Add more operators for each data type
 // !ALERT: Add more data types
 // !ALERT: currently only keep operators which we have implemented on backend
-export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterDataType, string[]> = {
-	[FilterDataType.STRING]: [
+export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterFieldType, FilterOperator[]> = {
+	[FilterFieldType.INPUT]: [
 		FilterOperator.EQUAL,
 		FilterOperator.NOT_EQUAL,
 		FilterOperator.CONTAINS,
@@ -87,18 +91,10 @@ export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterDataType, string[]> = {
 		FilterOperator.STARTS_WITH,
 		FilterOperator.ENDS_WITH,
 	],
-	[FilterDataType.NUMBER]: [FilterOperator.GREATER_THAN, FilterOperator.LESS_THAN, FilterOperator.BETWEEN],
-	[FilterDataType.ARRAY]: [FilterOperator.IN, FilterOperator.NOT_IN, FilterOperator.CONTAINS_ANY, FilterOperator.CONTAINS_ALL],
-	[FilterDataType.DATE]: [FilterOperator.OVERLAPS, FilterOperator.CONTAINED_BY],
-	[FilterDataType.DATERANGE]: [FilterOperator.OVERLAPS, FilterOperator.CONTAINED_BY],
-	[FilterDataType.BOOLEAN]: [
-		FilterOperator.TRUE,
-		FilterOperator.FALSE,
-		FilterOperator.IS_NULL,
-		FilterOperator.IS_NOT_NULL,
-		FilterOperator.IS_EMPTY,
-		FilterOperator.IS_NOT_EMPTY,
-		FilterOperator.IS_TRUE,
-		FilterOperator.IS_FALSE,
-	],
+	[FilterFieldType.SELECT]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
+	[FilterFieldType.CHECKBOX]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
+	[FilterFieldType.DATEPICKER]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
+	[FilterFieldType.RADIO]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
+	[FilterFieldType.COMBOBOX]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.CONTAINS],
+	[FilterFieldType.SWITCH]: [FilterOperator.IS_TRUE, FilterOperator.IS_FALSE],
 };

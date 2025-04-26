@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { FilterCondition } from '@/types/common/QueryBuilder';
+import { FilterCondition, FilterField, FilterFieldType, FilterOperator, ALLOWED_OPERATORS_PER_TYPE } from '@/types/common/QueryBuilder';
 import { QueryBuilder } from '@/components/molecules';
 import { SortDirection, SortOption } from '@/components/molecules/QueryBuilder/QueryBuilder';
 
@@ -33,6 +33,28 @@ const sortingOptions: SortOption[] = [
 		key: 'isActive',
 		label: 'Status',
 		direction: SortDirection.DESC,
+	},
+];
+
+const filterOptions: FilterField[] = [
+	{
+		field: 'isActive',
+		label: 'Status',
+		fieldType: FilterFieldType.SELECT,
+		operators: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL],
+		options: ['Active', 'Inactive'],
+	},
+	{
+		field: 'name',
+		label: 'Name',
+		fieldType: FilterFieldType.INPUT,
+		operators: ALLOWED_OPERATORS_PER_TYPE[FilterFieldType.INPUT],
+	},
+	{
+		field: 'createdAt',
+		label: 'Created At',
+		fieldType: FilterFieldType.DATEPICKER,
+		operators: ALLOWED_OPERATORS_PER_TYPE[FilterFieldType.DATEPICKER],
 	},
 ];
 
@@ -93,7 +115,7 @@ const FeaturesPage = () => {
 			<ApiDocsContent tags={['Features']} />
 			<div>
 				<QueryBuilder
-					fields={[]}
+					fields={filterOptions}
 					filters={filters}
 					onFilterChange={setFilters}
 					sortOptions={sortingOptions}
