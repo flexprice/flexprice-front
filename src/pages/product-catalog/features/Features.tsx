@@ -68,7 +68,7 @@ const FeaturesPage = () => {
 					<Input
 						className='min-w-[400px]'
 						suffix={<Search className='size-[14px] text-gray-500' />}
-						placeholder='Search by Name or lookup key'
+						placeholder='Search by Name'
 						value={filters.searchQuery}
 						onChange={(e) => setfilters({ ...filters, searchQuery: e })}
 						size='sm'
