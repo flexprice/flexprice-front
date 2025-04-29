@@ -11,6 +11,7 @@ interface GetFeaturesPayload {
 	offset?: number;
 	order?: string;
 	sort?: string;
+	name_contains?: string;
 	start_time?: string;
 	status?: string;
 }
