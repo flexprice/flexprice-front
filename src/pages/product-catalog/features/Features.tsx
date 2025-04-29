@@ -80,7 +80,7 @@ const FeaturesPage = () => {
 			}>
 			<ApiDocsContent tags={['Features']} />
 			<div>
-				{filters.searchQuery && isFetching ? (
+				{isLoading || (filters.searchQuery && isFetching) ? (
 					<div className='flex justify-center py-4'>
 						<Loader />
 					</div>

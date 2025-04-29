@@ -101,7 +101,7 @@ const CustomerPage = () => {
 					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
 				/> */}
 				{/* Conditional rendering for table or empty search state */}
-				{filters.searchQuery && isFetching ? (
+				{isLoading || (filters.searchQuery && isFetching) ? (
 					<div className='flex justify-center py-4'>
 						<Loader />
 					</div>
