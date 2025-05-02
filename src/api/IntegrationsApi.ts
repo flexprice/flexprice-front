@@ -1,24 +1,5 @@
 import { AxiosClient } from '@/core/axios/verbs';
-import { Integration } from '@/models/Integration';
-import { Pagination } from '@supabase/supabase-js';
-
-interface CreateIntegrationRequest {
-	provider: string;
-	credentials: {
-		key: string;
-	};
-	name: string;
-}
-
-interface LinkedinIntegrationResponse {
-	providers: string[];
-}
-
-interface IntegrationResponse {
-	items: Integration[];
-	pagination: Pagination;
-}
-
+import { CreateIntegrationRequest, IntegrationResponse, LinkedinIntegrationResponse } from '@/types/dto';
 class IntegrationsApi {
 	private static baseUrl = '/secrets/integrations';
 

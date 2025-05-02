@@ -5,7 +5,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import { Price } from '@/models/Price';
 import { FeatureType } from '@/models/Feature';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import EntitlementApi, { ExtendedEntitlement } from '@/api/EntitlementApi';
+import EntitlementApi from '@/api/EntitlementApi';
 import { PlanApi } from '@/api/PlanApi';
 import formatDate from '@/utils/common/format_date';
 import { getPriceTypeLabel } from '@/utils/common/helper_functions';
@@ -20,7 +20,8 @@ import { getFeatureTypeChips } from '@/components/molecules/CustomerUsageTable/C
 import { formatAmount } from '@/components/atoms/Input/Input';
 import ChargeValueCell from './ChargeValueCell';
 import { BaseEntityStatus } from '@/types/common';
-
+import { Entitlement } from '@/models/Entitlement';
+import { ExtendedEntitlement } from '@/types/dto/Entitlement';
 const formatBillingPeriod = (billingPeriod: string) => {
 	switch (billingPeriod.toUpperCase()) {
 		case 'DAILY':
@@ -89,7 +90,7 @@ const chargeColumns: ColumnData<Price>[] = [
 	},
 ];
 
-const getFeatureValue = (entitlement: ExtendedEntitlement) => {
+const getFeatureValue = (entitlement: Entitlement) => {
 	const value = entitlement.usage_limit?.toFixed() || '';
 
 	switch (entitlement.feature_type) {

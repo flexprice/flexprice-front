@@ -61,7 +61,7 @@ const EventsPage: React.FC = () => {
 					event_name: queryData?.eventName,
 					event_id: queryData?.eventId,
 				});
-				setEvents((prev) => [...prev, ...response.events]);
+				setEvents((prev) => [...prev, ...(response.events as Event[])]);
 				setHasMore(response.has_more);
 				setIterLastKey(response.iter_last_key);
 			} catch (error) {

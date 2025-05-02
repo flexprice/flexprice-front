@@ -1,31 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import Feature from '@/models/Feature';
 import { generateQueryParams } from '@/utils/common/api_helper';
-import { PaginationType } from '@/models/Pagination';
-import { TypedBackendSort, TypedBackendFilter } from '@/types/formatters/QueryBuilder';
-
-interface GetFeaturesPayload {
-	end_time?: string;
-	expand?: string;
-	feature_ids?: string[];
-	limit?: number;
-	lookup_key?: string;
-	offset?: number;
-	order?: string;
-	sort?: string;
-	start_time?: string;
-	status?: string;
-}
-
-interface GetFeaturesResponse {
-	items: Feature[];
-	pagination: PaginationType;
-}
-
-interface GetFeatureByFilterPayload extends PaginationType {
-	filters: TypedBackendFilter[];
-	sorts: TypedBackendSort[];
-}
+import { GetFeaturesPayload, GetFeaturesResponse, GetFeatureByFilterPayload } from '@/types/dto';
 
 class FeatureApi {
 	private static baseUrl = '/features';

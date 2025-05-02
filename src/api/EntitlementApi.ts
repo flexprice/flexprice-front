@@ -1,34 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Entitlement } from '@/models/Entitlement';
-import { Plan } from '@/models/Plan';
 import { generateQueryParams } from '@/utils/common/api_helper';
-import { PaginationType } from '@/models/Pagination';
-import Feature from '@/models/Feature';
-import { BaseEntityStatus } from '@/types/common';
-interface EntitlementFilters {
-	end_time?: string;
-	expand?: string;
-	feature_ids?: string[];
-	feature_type?: 'metered' | 'boolean' | 'static';
-	is_enabled?: boolean;
-	limit?: number;
-	offset?: number;
-	order?: 'asc' | 'desc';
-	plan_ids?: string[];
-	sort?: string;
-	start_time?: string;
-	status?: BaseEntityStatus;
-}
-
-export interface ExtendedEntitlement extends Entitlement {
-	plan: Plan;
-	feature: Feature;
-}
-
-interface EntitlementResponse {
-	items: ExtendedEntitlement[] | Entitlement[];
-	pagination: PaginationType;
-}
+import { EntitlementFilters, EntitlementResponse } from '@/types/dto';
 
 class EntitlementApi {
 	private static baseUrl = '/entitlements';

@@ -1,12 +1,6 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Price } from '@/models/Price';
-
-interface GetAllPricesResponse {
-	prices: Price[];
-	total: number;
-	offset: number;
-	limit: number;
-}
+import { GetAllPricesResponse } from '@/types/dto';
 
 export class PriceApi {
 	private static baseUrl = '/prices';
