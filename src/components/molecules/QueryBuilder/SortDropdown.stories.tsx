@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
-import SortDropdown, { SortOption, SortDirection } from './SortDropdown';
+import SortDropdown from './SortDropdown';
+import { SortOption, SortDirection } from '@/types/common/QueryBuilder';
 
 const meta: Meta<typeof SortDropdown> = {
 	title: 'Molecules/QueryBuilder/SortDropdown',

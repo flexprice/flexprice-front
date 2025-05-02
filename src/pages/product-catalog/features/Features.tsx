@@ -16,12 +16,14 @@ import {
 	DEFAULT_OPERATORS_PER_DATA_TYPE,
 	DataType,
 	FilterOperator,
+	SortOption,
+	SortDirection,
 } from '@/types/common/QueryBuilder';
 import { QueryBuilder } from '@/components/molecules';
-import { SortDirection, SortOption } from '@/components/molecules/QueryBuilder/SortDropdown';
-import { sanitizeFilterConditions, sanitizeSortConditions, convertToBackendPayload } from '@/types/formatters/QueryBuilder';
+import { convertFiltersAndSortToBackendPayload } from '@/types/formatters/QueryBuilder';
 import { BaseEntityStatus } from '@/types/common';
 import { FeatureType } from '@/models/Feature';
+
 const sortingOptions: SortOption[] = [
 	{
 		field: 'name',
@@ -29,12 +31,12 @@ const sortingOptions: SortOption[] = [
 		direction: SortDirection.ASC,
 	},
 	{
-		field: 'createdAt',
+		field: 'created_at',
 		label: 'Created At',
 		direction: SortDirection.DESC,
 	},
 	{
-		field: 'updatedAt',
+		field: 'updated_at',
 		label: 'Updated At',
 		direction: SortDirection.DESC,
 	},
@@ -49,14 +51,14 @@ const filterOptions: FilterField[] = [
 		dataType: DataType.STRING,
 	},
 	{
-		field: 'createdAt',
+		field: 'created_at',
 		label: 'Created At',
 		fieldType: FilterFieldType.DATEPICKER,
 		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.DATE],
 		dataType: DataType.DATE,
 	},
 	{
-		field: 'Status',
+		field: 'status',
 		label: 'Status',
 		fieldType: FilterFieldType.MULTI_SELECT,
 		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
@@ -69,7 +71,7 @@ const filterOptions: FilterField[] = [
 	{
 		field: 'type',
 		label: 'Type',
-		fieldType: FilterFieldType.SELECT,
+		fieldType: FilterFieldType.MULTI_SELECT,
 		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.ARRAY],
 		dataType: DataType.ARRAY,
 		options: [
@@ -87,18 +89,18 @@ const FeaturesPage = () => {
 	const [selectedSorts, setSelectedSorts] = useState<SortOption[]>([]);
 
 	const fetchFeatures = async () => {
-		return await FeatureApi.getAllFeatures({
+		const { filters: backendFilters, sorts: backendSorts } = convertFiltersAndSortToBackendPayload(filters, selectedSorts);
+		return await FeatureApi.getFeaturesByFilter({
 			limit,
 			offset,
+			filters: backendFilters,
+			sorts: backendSorts,
 		});
 	};
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const sanitizedFilters = sanitizeFilterConditions(filters);
-		const sanitizedSorts = sanitizeSortConditions(selectedSorts);
-
-		const backendPayload = convertToBackendPayload(sanitizedFilters, sanitizedSorts);
+		const backendPayload = convertFiltersAndSortToBackendPayload(filters, selectedSorts);
 		console.log('backendPayload', backendPayload);
 	}, [filters, selectedSorts]);
 
@@ -107,18 +109,18 @@ const FeaturesPage = () => {
 		isLoading,
 		isError,
 	} = useQuery({
-		queryKey: ['fetchFeatures', page],
+		queryKey: ['fetchFeatures', page, filters, selectedSorts],
 		queryFn: fetchFeatures,
 	});
-
-	if (isLoading) {
-		return <Loader />;
-	}
 
 	if (isError) {
 		toast.error('Error fetching features');
 	}
-	if (featureData?.items.length === 0) {
+
+	// Show empty page only when there are no filters/sorts and no data
+	const showEmptyPage = !isLoading && featureData?.items.length === 0 && filters.length === 0 && selectedSorts.length === 0;
+
+	if (showEmptyPage) {
 		return (
 			<EmptyPage
 				heading='Feature'
@@ -147,9 +149,15 @@ const FeaturesPage = () => {
 					onSortChange={setSelectedSorts}
 					selectedSorts={selectedSorts}
 				/>
-				<FeatureTable data={featureData?.items || []} />
-				<Spacer className='!h-4' />
-				<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
+				{isLoading ? (
+					<Loader />
+				) : (
+					<>
+						<FeatureTable showEmptyRow data={featureData?.items || []} />
+						<Spacer className='!h-4' />
+						<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
+					</>
+				)}
 			</div>
 		</Page>
 	);

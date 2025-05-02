@@ -5,17 +5,7 @@ import { cn } from '@/lib/utils';
 import { ArrowUpDown, GripVertical, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { Combobox, Button, Select } from '@/components/atoms';
-
-export enum SortDirection {
-	ASC = 'ASC',
-	DESC = 'DESC',
-}
-
-export interface SortOption {
-	field: string;
-	label: string;
-	direction?: SortDirection;
-}
+import { SortOption, SortDirection } from '@/types/common/QueryBuilder';
 
 interface Props {
 	options: SortOption[];
