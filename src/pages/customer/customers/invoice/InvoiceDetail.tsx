@@ -2,7 +2,7 @@ import { FormHeader, Spacer, Button, Divider, Loader } from '@/components/atoms'
 import { InvoiceTableMenu, InvoicePaymentStatusModal, InvoiceStatusModal, InvoiceLineItemTable } from '@/components/molecules';
 import useUser from '@/hooks/useUser';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import InvoiceApi from '@/utils/api_requests/InvoiceApi';
+import InvoiceApi from '@/api/InvoiceApi';
 import formatDate from '@/utils/common/format_date';
 import { useQuery } from '@tanstack/react-query';
 import { Download } from 'lucide-react';

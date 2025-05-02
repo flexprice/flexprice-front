@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import useEnvironment from '@/hooks/useEnvironment';
 import { useQuery } from '@tanstack/react-query';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { Link, useNavigate } from 'react-router-dom';
 import { Progress } from '@/components/ui/progress';
 import { RouteNames } from '@/core/routes/Routes';
-import EventsApi from '@/utils/api_requests/EventsApi';
+import EventsApi from '@/api/EventsApi';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { queryClient } from '@/core/tanstack/ReactQueryProvider';
+import { queryClient } from '@/core/services/tanstack/ReactQueryProvider';
 
 const TOTAL_EVENTS = 60; // Number of events to simulate
 const STREAM_DURATION = TOTAL_EVENTS * 1000; // 1 minute

@@ -1,7 +1,7 @@
 import { SelectOption, Select } from '@/components/atoms';
 import { cn } from '@/lib/utils';
 import Feature, { FeatureType } from '@/models/Feature';
-import FeatureApi from '@/utils/api_requests/FeatureApi';
+import FeatureApi from '@/api/FeatureApi';
 import { useQuery } from '@tanstack/react-query';
 import { Gauge, SquareCheckBig, Wrench } from 'lucide-react';
 import { FC } from 'react';

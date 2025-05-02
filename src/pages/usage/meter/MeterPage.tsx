@@ -2,7 +2,7 @@ import { Button, Loader, Page, SectionHeader, ShortPagination, Spacer } from '@/
 import { FiFolderPlus } from 'react-icons/fi';
 import { BillableMetricTable } from '@/components/molecules';
 import { Link, useNavigate } from 'react-router-dom';
-import { MeterApi } from '@/utils/api_requests/MeterApi';
+import { MeterApi } from '@/api/MeterApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { ReactSVG } from 'react-svg';

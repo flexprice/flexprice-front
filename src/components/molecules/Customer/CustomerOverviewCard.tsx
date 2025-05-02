@@ -1,5 +1,5 @@
 import { Button, FormHeader, Spacer } from '@/components/atoms';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { useQuery } from '@tanstack/react-query';
 import CreateCustomerDrawer from './CreateCustomerDrawer';
 import { Pencil } from 'lucide-react';

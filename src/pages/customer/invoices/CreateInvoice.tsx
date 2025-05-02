@@ -1,13 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Button, FormHeader, Input, Loader, Page, Select, Spacer, Divider } from '@/components/atoms';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import useUser from '@/hooks/useUser';
-import { currencyOptions } from '@/core/data/constants';
+import { currencyOptions } from '@/constants/constants';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
-import InvoiceApi from '@/utils/api_requests/InvoiceApi';
+import InvoiceApi from '@/api/InvoiceApi';
 import toast from 'react-hot-toast';
 import { RouteNames } from '@/core/routes/Routes';
 import { Trash2 } from 'lucide-react';

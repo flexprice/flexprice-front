@@ -2,12 +2,12 @@ import { Button, Checkbox, FormHeader, Input, Select, SelectFeature, Sheet, Spac
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 
-import { billlingPeriodOptions } from '@/core/data/constants';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { billlingPeriodOptions } from '@/constants/constants';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { Entitlement } from '@/models/Entitlement';
 import Feature, { FeatureType } from '@/models/Feature';
 import { METER_USAGE_RESET_PERIOD } from '@/models/Meter';
-import { PlanApi } from '@/utils/api_requests/PlanApi';
+import { PlanApi } from '@/api/PlanApi';
 import { useMutation } from '@tanstack/react-query';
 import { X } from 'lucide-react';
 import { FC, useState, useEffect } from 'react';

@@ -4,7 +4,7 @@ import Button from '@/components/atoms/Button/Button';
 import Input from '@/components/atoms/Input/Input';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import supabase from '@/core/supbase/config';
+import supabase from '@/core/services/supbase/config';
 
 const ResendVerification = () => {
 	const [email, setEmail] = useState('');

@@ -1,7 +1,7 @@
 import { MeterForm } from '@/components/organisms';
 import { RouteNames } from '@/core/routes/Routes';
 import { Meter } from '@/models/Meter';
-import { MeterApi } from '@/utils/api_requests/MeterApi';
+import { MeterApi } from '@/api/MeterApi';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';

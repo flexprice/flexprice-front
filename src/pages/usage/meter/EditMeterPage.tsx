@@ -1,7 +1,7 @@
 import { Loader } from '@/components/atoms';
 import { MeterForm } from '@/components/organisms';
 import { Meter } from '@/models/Meter';
-import { MeterApi } from '@/utils/api_requests/MeterApi';
+import { MeterApi } from '@/api/MeterApi';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';

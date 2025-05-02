@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import EnvironmentApi from '@/utils/api_requests/EnvironmentApi';
+import EnvironmentApi from '@/api/EnvironmentApi';
 import AuthService from '@/core/auth/AuthService';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 

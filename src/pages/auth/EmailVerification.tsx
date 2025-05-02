@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/atoms';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import supabase from '@/core/supbase/config';
+import supabase from '@/core/services/supbase/config';
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const EmailVerification = () => {

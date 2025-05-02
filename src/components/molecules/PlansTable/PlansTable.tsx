@@ -4,7 +4,7 @@ import FlexpriceTable, { ColumnData } from '../Table';
 import { Plan } from '@/models/Plan';
 import formatChips from '@/utils/common/format_chips';
 import formatDate from '@/utils/common/format_date';
-import { PlanApi } from '@/utils/api_requests/PlanApi';
+import { PlanApi } from '@/api/PlanApi';
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate } from 'react-router-dom';
 export interface PlansTableProps {

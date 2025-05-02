@@ -4,10 +4,10 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Country, State, City, IState } from 'country-state-city';
 import { z } from 'zod';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { logger } from '@/utils/common/Logger';
 import { User } from '@/models/User';
-import { UserApi } from '@/utils/api_requests/UserApi';
+import { UserApi } from '@/api/UserApi';
 
 interface UpdateTenantPayload {
 	billing_details: {

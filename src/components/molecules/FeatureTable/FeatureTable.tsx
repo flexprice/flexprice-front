@@ -7,7 +7,7 @@ import formatChips from '@/utils/common/format_chips';
 import formatDate from '@/utils/common/format_date';
 import { useNavigate } from 'react-router-dom';
 import { RouteNames } from '@/core/routes/Routes';
-import FeatureApi from '@/utils/api_requests/FeatureApi';
+import FeatureApi from '@/api/FeatureApi';
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 
 interface Props {

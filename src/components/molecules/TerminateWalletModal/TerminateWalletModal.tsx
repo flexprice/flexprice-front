@@ -1,7 +1,7 @@
 import { Button, FormHeader, Modal, Spacer } from '@/components/atoms';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { Wallet } from '@/models/Wallet';
-import WalletApi from '@/utils/api_requests/WalletApi';
+import WalletApi from '@/api/WalletApi';
 import { useMutation } from '@tanstack/react-query';
 import { FC } from 'react';
 import toast from 'react-hot-toast';

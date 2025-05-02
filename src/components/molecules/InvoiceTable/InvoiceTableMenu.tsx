@@ -3,12 +3,12 @@ import { FC, useState } from 'react';
 import { DropdownMenu } from '..';
 import { DropdownMenuOption } from '../DropdownMenu/DropdownMenu';
 import { useMutation } from '@tanstack/react-query';
-import InvoiceApi from '@/utils/api_requests/InvoiceApi';
+import InvoiceApi from '@/api/InvoiceApi';
 import toast from 'react-hot-toast';
 import InvoiceStatusModal from './InvoiceStatusModal';
 import InvoicePaymentStatusModal from './InvoicePaymentStatusModal';
 import { useNavigate } from 'react-router-dom';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 interface Props {
 	data: Invoice;

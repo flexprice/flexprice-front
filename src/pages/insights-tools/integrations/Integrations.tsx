@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { PremiumFeature, PremiumFeatureTag, ApiDocsContent } from '@/components/molecules';
 import { useQuery } from '@tanstack/react-query';
-import IntegrationsApi from '@/utils/api_requests/IntegrationsApi';
+import IntegrationsApi from '@/api/IntegrationsApi';
 
 const Integrations = () => {
 	// Fetch integrations data
