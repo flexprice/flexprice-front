@@ -1,27 +1,6 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { User } from '@/models/User';
-
-interface CreateUserRequest {
-	name: string;
-	email: string;
-	password: string;
-}
-
-interface UpdateTenantPayload {
-	billing_details: {
-		address: {
-			address_line1: string;
-			address_line2: string;
-			address_city: string;
-			address_state: string;
-			address_postal_code: string;
-			address_country: string;
-		};
-		email?: string;
-		help_email?: string;
-		phone?: string;
-	};
-}
+import { CreateUserRequest, UpdateTenantPayload } from '@/types/dto';
 
 export class UserApi {
 	private static baseUrl = '/users';

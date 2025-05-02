@@ -6,11 +6,12 @@ import { currencyOptions } from '@/constants/constants';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { cn } from '@/lib/utils';
 import { Wallet } from '@/models/Wallet';
-import WalletApi, { CreateWalletPayload } from '@/api/WalletApi';
+import WalletApi from '@/api/WalletApi';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { useMutation } from '@tanstack/react-query';
 import { FC, useState } from 'react';
 import toast from 'react-hot-toast';
+import { CreateWalletPayload } from '@/types/dto';
 
 interface Props {
 	customerId: string;

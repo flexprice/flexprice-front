@@ -4,7 +4,7 @@ import ChargeTable from '@/components/organisms/Subscription/PriceTable';
 import UsageTable from '@/components/organisms/Subscription/UsageTable';
 import { cn } from '@/lib/utils';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import CustomerApi, { CreateCustomerSubscriptionPayload } from '@/api/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { PlanApi } from '@/api/PlanApi';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { toSentenceCase } from '@/utils/common/helper_functions';
@@ -18,6 +18,7 @@ import { invalidateQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { RouteNames } from '@/core/routes/Routes';
 import useEnvironment from '@/hooks/useEnvironment';
 import { BILLING_CYCLE } from '@/models/Subscription';
+import { CreateCustomerSubscriptionPayload } from '@/types/dto';
 
 type Params = {
 	id: string;

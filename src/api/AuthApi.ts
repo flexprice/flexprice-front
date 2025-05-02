@@ -1,21 +1,5 @@
 import { AxiosClient } from '@/core/axios/verbs';
-
-interface SignupData {
-	email: string;
-	password?: string;
-	token?: string;
-}
-
-interface LoginData {
-	email: string;
-	password: string;
-}
-
-interface LocalUser {
-	token: string;
-	user_id: string;
-	tenant_id: string;
-}
+import { LoginData, LocalUser, SignupData } from '@/types/dto';
 
 class AuthApi {
 	private static baseUrl = '/auth';
