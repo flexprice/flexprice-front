@@ -8,7 +8,8 @@ import { v4 as uuidv4 } from 'uuid';
 // Core utilities and APIs
 import { RouteNames } from '@/core/routes/Routes';
 import FeatureApi from '@/api/FeatureApi';
-import EntitlementApi, { ExtendedEntitlement } from '@/api/EntitlementApi';
+import EntitlementApi from '@/api/EntitlementApi';
+import { ExtendedEntitlement } from '@/types/dto/Entitlement';
 import formatChips from '@/utils/common/format_chips';
 
 // Store
