@@ -4,7 +4,7 @@ import { ApiDocsContent } from '@/components/molecules';
 import CustomerUsageTable from '@/components/molecules/CustomerUsageTable/CustomerUsageTable';
 import SubscriptionTable from '@/components/organisms/Subscription/SubscriptionTable';
 import useUser from '@/hooks/useUser';
-import TenantApi from '@/utils/api_requests/TenantApi';
+import TenantApi from '@/api/TenantApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { UpdateTenantDrawer } from '@/components/molecules';

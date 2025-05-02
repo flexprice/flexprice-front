@@ -1,7 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Entitlement } from '@/models/Entitlement';
 import { Plan } from '@/models/Plan';
-import { generateQueryParams } from '../common/api_helper';
+import { generateQueryParams } from '@/utils/common/api_helper';
 import { PaginationType } from '@/models/Pagination';
 import Feature from '@/models/Feature';
 import { BaseEntityStatus } from '@/types/common';

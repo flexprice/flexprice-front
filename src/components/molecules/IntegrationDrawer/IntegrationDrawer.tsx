@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import IntegrationsApi from '@/utils/api_requests/IntegrationsApi';
+import IntegrationsApi from '@/api/IntegrationsApi';
 import { LoaderCircleIcon } from 'lucide-react';
 import { logger } from '@/utils/common/Logger';
 

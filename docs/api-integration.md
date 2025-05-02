@@ -67,7 +67,7 @@ export const FeatureApi = {
 ```typescript
 // src/pages/product-catalog/features/Features.tsx
 import { useQuery } from '@tanstack/react-query';
-import { FeatureApi } from '@/utils/api_requests/FeatureApi';
+import { FeatureApi } from '@/api/FeatureApi';
 
 const FeaturesPage = () => {
 	const { limit, offset, page } = usePagination();
@@ -147,7 +147,7 @@ export const FeatureApi = {
 ```typescript
 // src/components/molecules/FeatureForm.tsx
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FeatureApi } from '@/utils/api_requests/FeatureApi';
+import { FeatureApi } from '@/api/FeatureApi';
 
 const FeatureForm = () => {
 	const queryClient = useQueryClient();

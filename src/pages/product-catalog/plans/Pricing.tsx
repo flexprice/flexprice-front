@@ -1,18 +1,18 @@
 import { Loader, Page, Select } from '@/components/atoms';
 import usePagination from '@/hooks/usePagination';
-import { PlanApi } from '@/utils/api_requests/PlanApi';
+import { PlanApi } from '@/api/PlanApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { billlingPeriodOptions } from '@/core/data/constants';
+import { billlingPeriodOptions } from '@/constants/constants';
 import { useState, useMemo } from 'react';
 import { ExpandedPlan } from '@/utils/models/transformed_plan';
-import { GetAllPlansResponse } from '@/utils/api_requests/PlanApi';
+import { GetAllPlansResponse } from '@/api/PlanApi';
 import PricingCard, { PricingCardProps } from '@/components/molecules/PricingCard';
 import { ApiDocsContent } from '@/components/molecules';
 import { RouteNames } from '@/core/routes/Routes';
 import { EmptyPage } from '@/components/organisms';
 import { useNavigate } from 'react-router-dom';
-import GUIDES from '@/core/constants/guides';
+import GUIDES from '@/constants/guides';
 
 type PriceType = {
 	currency: string;

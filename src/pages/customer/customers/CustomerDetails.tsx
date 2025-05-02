@@ -3,7 +3,7 @@ import CustomerHeader from '@/components/molecules/Customer/CustomerHeader';
 import { useEffect, useState } from 'react';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import { useQuery } from '@tanstack/react-query';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { Page } from '@/components/atoms';
 import { cn } from '@/lib/utils';
 import { ApiDocsContent } from '@/components/molecules';

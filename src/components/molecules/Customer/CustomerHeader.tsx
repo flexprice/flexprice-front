@@ -1,4 +1,4 @@
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { useQuery } from '@tanstack/react-query';
 
 const fetchCustomer = async (customerId: string) => {

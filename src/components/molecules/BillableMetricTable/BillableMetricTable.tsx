@@ -4,7 +4,7 @@ import FlexpriceTable, { ColumnData } from '../Table';
 import { Meter } from '@/models/Meter';
 import formatChips from '@/utils/common/format_chips';
 import formatDate from '@/utils/common/format_date';
-import { MeterApi } from '@/utils/api_requests/MeterApi';
+import { MeterApi } from '@/api/MeterApi';
 import { formatAggregationType } from '@/components/organisms/MeterForm/MeterForm';
 import { BaseEntityStatus } from '@/types/common';
 

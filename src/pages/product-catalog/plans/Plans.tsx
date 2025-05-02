@@ -2,13 +2,13 @@ import { AddButton, Loader, Page, ShortPagination, Spacer } from '@/components/a
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { PlanApi } from '@/utils/api_requests/PlanApi';
+import { PlanApi } from '@/api/PlanApi';
 import { PlansTable, ApiDocsContent, EditPlanDrawer } from '@/components/molecules';
 import { Plan } from '@/models/Plan';
 import usePagination from '@/hooks/usePagination';
 import { RouteNames } from '@/core/routes/Routes';
 import { EmptyPage } from '@/components/organisms';
-import GUIDES from '@/core/constants/guides';
+import GUIDES from '@/constants/guides';
 import { useState } from 'react';
 const PricingPlan = () => {
 	const { limit, offset, page } = usePagination();

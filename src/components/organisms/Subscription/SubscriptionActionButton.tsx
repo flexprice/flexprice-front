@@ -2,11 +2,11 @@ import { Subscription } from '@/models/Subscription';
 import { useMutation } from '@tanstack/react-query';
 import { CirclePause, CirclePlay, X } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
-import SubscriptionApi from '@/utils/api_requests/SubscriptionApi';
+import SubscriptionApi from '@/api/SubscriptionApi';
 import { DatePicker, Modal, Input, Button, FormHeader, Spacer } from '@/components/atoms';
 import { toast } from 'react-hot-toast';
 import DropdownMenu, { DropdownMenuOption } from '@/components/molecules/DropdownMenu/DropdownMenu';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { addDays, format } from 'date-fns';
 
 interface Props {

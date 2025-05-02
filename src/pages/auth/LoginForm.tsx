@@ -1,4 +1,4 @@
-import supabase from '@/core/supbase/config';
+import supabase from '@/core/services/supbase/config';
 import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { data, useNavigate } from 'react-router-dom';
@@ -6,8 +6,8 @@ import { useUser } from '@/hooks/UserContext';
 import { Button, Input } from '@/components/atoms';
 import { EyeIcon, EyeOff } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
-import AuthApi from '@/utils/api_requests/AuthApi';
-import EnvironmentApi from '@/utils/api_requests/EnvironmentApi';
+import AuthApi from '@/api/AuthApi';
+import EnvironmentApi from '@/api/EnvironmentApi';
 import { NODE_ENV, NodeEnv } from '@/types/env';
 import { RouteNames } from '@/core/routes/Routes';
 

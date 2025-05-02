@@ -1,7 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { PaginationType } from '@/models/Pagination';
 import { SecretKey } from '@/models/SecretKey';
-import { generateQueryParams } from '../common/api_helper';
+import { generateQueryParams } from '@/utils/common/api_helper';
 
 // Utility function to format permissions for display
 export const formatPermissionDisplay = (permissions: string[]): string => {

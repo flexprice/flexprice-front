@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import PaymentApi from '@/utils/api_requests/PaymentApi';
+import PaymentApi from '@/api/PaymentApi';
 import usePagination from '@/hooks/usePagination';
 import { Loader, ShortPagination } from '@/components/atoms';
 import toast from 'react-hot-toast';
 import { ApiDocsContent, InvoicePaymentsTable } from '@/components/molecules';
 import { Page } from '@/components/atoms';
 import { EmptyPage } from '@/components/organisms';
-import GUIDES from '@/core/constants/guides';
+import GUIDES from '@/constants/guides';
 
 const PaymentPage = () => {
 	const { limit, offset, page } = usePagination();

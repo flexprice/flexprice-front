@@ -1,7 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { PaginationType } from '@/models/Pagination';
 import { Payment } from '@/models/Payment';
-import { generateQueryParams } from '../common/api_helper';
+import { generateQueryParams } from '@/utils/common/api_helper';
 
 export interface GetAllPaymentsPayload {
 	currency?: string;

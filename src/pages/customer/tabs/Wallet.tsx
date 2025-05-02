@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import usePagination from '@/hooks/usePagination';
 import { Wallet } from '@/models/Wallet';
-import WalletApi from '@/utils/api_requests/WalletApi';
+import WalletApi from '@/api/WalletApi';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';

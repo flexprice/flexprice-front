@@ -3,9 +3,9 @@ import { InvoiceTable, ApiDocsContent } from '@/components/molecules';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import usePagination from '@/hooks/usePagination';
-import InvoiceApi from '@/utils/api_requests/InvoiceApi';
+import InvoiceApi from '@/api/InvoiceApi';
 import { EmptyPage } from '@/components/organisms';
-import GUIDES from '@/core/constants/guides';
+import GUIDES from '@/constants/guides';
 
 const InvoicesPage = () => {
 	const { limit, offset, page } = usePagination();

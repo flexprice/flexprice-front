@@ -4,7 +4,7 @@ import FlexpriceTable, { ColumnData } from '../Table';
 import formatDate from '@/utils/common/format_date';
 import formatChips from '@/utils/common/format_chips';
 import Customer from '@/models/Customer';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { useNavigate } from 'react-router-dom';
 import { RouteNames } from '@/core/routes/Routes';
 import { BaseEntityStatus } from '@/types/common';

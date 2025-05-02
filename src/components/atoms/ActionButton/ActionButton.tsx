@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Button, Dialog } from '@/components/atoms';
 import { EyeOff, Pencil } from 'lucide-react';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 interface ActionProps {
 	id: string;

@@ -1,6 +1,6 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import Feature from '@/models/Feature';
-import { generateQueryParams } from '../common/api_helper';
+import { generateQueryParams } from '@/utils/common/api_helper';
 import { PaginationType } from '@/models/Pagination';
 import { TypedBackendSort, TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 

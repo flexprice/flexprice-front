@@ -1,6 +1,6 @@
 import { useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import { AddButton, Card, CardHeader, NoDataCard } from '@/components/atoms';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { useQuery } from '@tanstack/react-query';
 import SubscriptionTable from '@/components/organisms/Subscription/SubscriptionTable';
 import { Subscription } from '@/models/Subscription';

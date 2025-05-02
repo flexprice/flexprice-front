@@ -1,5 +1,5 @@
 import { Button } from '@/components/atoms';
-import supabase from '@/core/supbase/config';
+import supabase from '@/core/services/supbase/config';
 import toast from 'react-hot-toast';
 import { useMutation } from '@tanstack/react-query';
 import { RouteNames } from '@/core/routes/Routes';

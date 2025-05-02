@@ -1,10 +1,10 @@
 import { Button, Chip, Loader, Page, ShortPagination } from '@/components/atoms';
 import { ApiDocsContent, ColumnData, FlexpriceTable, ImportFileDrawer } from '@/components/molecules';
 import { EmptyPage } from '@/components/organisms';
-import GUIDES from '@/core/constants/guides';
+import GUIDES from '@/constants/guides';
 import usePagination from '@/hooks/usePagination';
 import { ImportTask } from '@/models/ImportTask';
-import TaskApi from '@/utils/api_requests/TaskApi';
+import TaskApi from '@/api/TaskApi';
 import formatDate from '@/utils/common/format_date';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import { useQuery } from '@tanstack/react-query';

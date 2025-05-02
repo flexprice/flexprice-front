@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import loadingQuotes from '@/core/constants/loading_quotes';
+import loadingQuotes from '@/constants/loading_quotes';
 
 // Helper function to get random quote
 const getRandomQuote = () => {

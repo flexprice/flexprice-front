@@ -1,6 +1,6 @@
 import { FormHeader } from '@/components/atoms';
 import { SubscriptionUsage } from '@/models/Subscription';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import formatDate from '@/utils/common/format_date';
 import { useQuery } from '@tanstack/react-query';
 

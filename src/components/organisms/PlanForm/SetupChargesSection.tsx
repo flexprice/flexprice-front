@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Plan } from '@/models/Plan';
 import { useState } from 'react';
 import { Price } from '@/models/Price';
-import { currencyOptions, billlingPeriodOptions } from '@/core/data/constants';
+import { currencyOptions, billlingPeriodOptions } from '@/constants/constants';
 import RecurringChargesForm from './RecurringChargesForm';
 import UsagePricingForm from './UsagePricingForm';
 import { CirclePlus } from 'lucide-react';
