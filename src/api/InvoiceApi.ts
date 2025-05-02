@@ -1,9 +1,9 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Invoice } from '@/models/Invoice';
-import { generateQueryParams } from '../common/api_helper';
+import { generateQueryParams } from '@/utils/common/api_helper';
 import { PaginationType } from '@/models/Pagination';
 import AuthService from '@/core/auth/AuthService';
-import EnvironmentApi from '@/utils/api_requests/EnvironmentApi';
+import EnvironmentApi from '@/api/EnvironmentApi';
 
 interface GetInvoicesResponse {
 	items: Invoice[];

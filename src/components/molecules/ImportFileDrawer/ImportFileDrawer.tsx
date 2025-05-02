@@ -5,11 +5,11 @@ import { cn } from '@/lib/utils';
 import { CircleAlert, Download, LoaderCircleIcon, RefreshCcw, X } from 'lucide-react';
 import formatDate from '@/utils/common/format_date';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import TaskApi from '@/utils/api_requests/TaskApi';
+import TaskApi from '@/api/TaskApi';
 import { ImportTask } from '@/models/ImportTask';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 interface Props {
 	isOpen: boolean;

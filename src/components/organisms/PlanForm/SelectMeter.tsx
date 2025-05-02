@@ -1,7 +1,7 @@
 import { SelectOption, Select } from '@/components/atoms';
 import { cn } from '@/lib/utils';
 import { Meter } from '@/models/Meter';
-import { MeterApi } from '@/utils/api_requests/MeterApi';
+import { MeterApi } from '@/api/MeterApi';
 import { useQuery } from '@tanstack/react-query';
 import { FC } from 'react';
 

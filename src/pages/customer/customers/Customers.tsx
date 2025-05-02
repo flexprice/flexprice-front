@@ -2,10 +2,10 @@ import { AddButton, Input, Loader, Page, ShortPagination, Spacer } from '@/compo
 import { CreateCustomerDrawer, ApiDocsContent, FilterState, Toolbar } from '@/components/molecules';
 import CustomerTable from '@/components/molecules/Customer/CustomerTable';
 import EmptyPage from '@/components/organisms/EmptyPage/EmptyPage';
-import GUIDES from '@/core/constants/guides';
+import GUIDES from '@/constants/guides';
 import usePagination from '@/hooks/usePagination';
 import Customer from '@/models/Customer';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { useQuery } from '@tanstack/react-query';
 import { Search } from 'lucide-react';
 import { useState } from 'react';

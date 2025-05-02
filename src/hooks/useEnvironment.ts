@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ExtendedEnvironment } from '@/utils/api_requests/EnvironmentApi';
+import { ExtendedEnvironment } from '@/api/EnvironmentApi';
 
 const STORAGE_KEY = 'flex_price_environments';
 const POLL_INTERVAL = 1000; // Check every second

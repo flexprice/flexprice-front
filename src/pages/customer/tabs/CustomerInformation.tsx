@@ -1,5 +1,5 @@
 import { FormHeader, Spacer, Button } from '@/components/atoms';
-import CustomerApi from '@/utils/api_requests/CustomerApi';
+import CustomerApi from '@/api/CustomerApi';
 import { useQuery } from '@tanstack/react-query';
 import { Country } from 'country-state-city';
 import { CreateCustomerDrawer, Detail, DetailsCard } from '@/components/molecules';

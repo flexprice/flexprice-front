@@ -7,8 +7,8 @@ import { EyeOff } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 // Core utilities and APIs
 import { RouteNames } from '@/core/routes/Routes';
-import FeatureApi from '@/utils/api_requests/FeatureApi';
-import EntitlementApi, { ExtendedEntitlement } from '@/utils/api_requests/EntitlementApi';
+import FeatureApi from '@/api/FeatureApi';
+import EntitlementApi, { ExtendedEntitlement } from '@/api/EntitlementApi';
 import formatChips from '@/utils/common/format_chips';
 
 // Store
@@ -28,7 +28,7 @@ import { formatMeterUsageResetPeriodToDisplay } from '@/types/formatters/Feature
 import { formatAggregationType } from './AddFeature';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { ApiDocsSnippet } from '@/store/useApiDocsStore';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 const FeatureDetails = () => {
 	const { id: featureId } = useParams() as { id: string };

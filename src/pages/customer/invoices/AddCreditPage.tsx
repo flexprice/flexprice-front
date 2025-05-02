@@ -2,7 +2,7 @@ import { Button, Chip, DatePicker, Dialog, FormHeader, Page, Select, SelectOptio
 import { InvoiceCreditLineItemTable } from '@/components/molecules';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import InvoiceApi from '@/utils/api_requests/InvoiceApi';
+import InvoiceApi from '@/api/InvoiceApi';
 import formatDate from '@/utils/common/format_date';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { useQuery } from '@tanstack/react-query';

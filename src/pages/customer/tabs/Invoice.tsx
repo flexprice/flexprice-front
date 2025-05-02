@@ -1,6 +1,6 @@
 import { AddButton, CardHeader, Loader, NoDataCard } from '@/components/atoms';
 import { ApiDocsContent, CustomerInvoiceTable } from '@/components/molecules';
-import InvoiceApi from '@/utils/api_requests/InvoiceApi';
+import InvoiceApi from '@/api/InvoiceApi';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams, useOutletContext } from 'react-router-dom';
 import { Card } from '@/components/atoms';

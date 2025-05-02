@@ -5,7 +5,7 @@ import { Button, FormHeader, Loader, Page } from '@/components/atoms';
 import { useState } from 'react';
 import IntegrationDrawer from '@/components/molecules/IntegrationDrawer/IntegrationDrawer';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import IntegrationsApi from '@/utils/api_requests/IntegrationsApi';
+import IntegrationsApi from '@/api/IntegrationsApi';
 import { TrashIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ApiDocsContent } from '@/components/molecules';

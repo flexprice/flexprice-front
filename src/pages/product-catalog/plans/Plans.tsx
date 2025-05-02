@@ -1,12 +1,12 @@
 import { AddButton, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { PlanApi } from '@/utils/api_requests/PlanApi';
+import { PlanApi } from '@/api/PlanApi';
 import { PlansTable, ApiDocsContent, PlanDrawer } from '@/components/molecules';
 import { Plan } from '@/models/Plan';
 import usePagination from '@/hooks/usePagination';
 import { EmptyPage } from '@/components/organisms';
-import GUIDES from '@/core/constants/guides';
+import GUIDES from '@/constants/guides';
 import { useState } from 'react';
 const PricingPlan = () => {
 	const { limit, offset, page } = usePagination();

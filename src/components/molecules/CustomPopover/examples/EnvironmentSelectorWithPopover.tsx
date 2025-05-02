@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import EnvironmentApi from '@/utils/api_requests/EnvironmentApi';
+import EnvironmentApi from '@/api/EnvironmentApi';
 import { Blocks, Rocket, Server, ChevronsUpDown } from 'lucide-react';
-import { queryClient } from '@/core/tanstack/ReactQueryProvider';
+import { queryClient } from '@/core/services/tanstack/ReactQueryProvider';
 import useUser from '@/hooks/useUser';
 import { Skeleton } from '@/components/ui/skeleton';
 import CustomPopover from '../CustomPopover';

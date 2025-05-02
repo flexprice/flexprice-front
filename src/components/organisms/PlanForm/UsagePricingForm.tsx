@@ -5,7 +5,7 @@ import SelectMeter from './SelectMeter';
 // import { Pencil, Trash2 } from 'lucide-react';
 import { Meter } from '@/models/Meter';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { billlingPeriodOptions, currencyOptions } from '@/core/data/constants';
+import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
 import VolumeTieredPricingForm from './VolumeTieredPricingForm';
 import { InternalPrice } from './SetupChargesSection';
 import UsageChargePreview from './UsageChargePreview';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { billlingPeriodOptions, currencyOptions } from '@/core/data/constants';
+import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
 import { InternalPrice } from './SetupChargesSection';
 import { CheckboxRadioGroup, FormHeader, Input, Spacer, Button, Select } from '@/components/atoms';
 import { Label } from '@/components/ui/label';

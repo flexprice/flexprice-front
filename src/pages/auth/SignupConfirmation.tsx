@@ -1,11 +1,11 @@
-import supabase from '@/core/supbase/config';
+import supabase from '@/core/services/supbase/config';
 import { useUser } from '@/hooks/UserContext';
-import AuthApi from '@/utils/api_requests/AuthApi';
+import AuthApi from '@/api/AuthApi';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import EnvironmentApi from '@/utils/api_requests/EnvironmentApi';
+import EnvironmentApi from '@/api/EnvironmentApi';
 
 const SignupConfirmation = () => {
 	const userContext = useUser();

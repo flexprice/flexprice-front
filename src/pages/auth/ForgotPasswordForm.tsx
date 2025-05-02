@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Input } from '@/components/atoms';
 import toast from 'react-hot-toast';
-import supabase from '@/core/supbase/config';
+import supabase from '@/core/services/supbase/config';
 import { useMutation } from '@tanstack/react-query';
 
 interface ForgotPasswordFormProps {

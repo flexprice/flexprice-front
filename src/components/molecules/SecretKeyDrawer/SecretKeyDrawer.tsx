@@ -1,10 +1,10 @@
 import { FC, useEffect, useState, useMemo } from 'react';
 import { Input, Sheet, Spacer, Select, Button, Modal, SelectOption } from '@/components/atoms';
 import { useMutation } from '@tanstack/react-query';
-import SecretKeysApi from '@/utils/api_requests/SecretKeysApi';
+import SecretKeysApi from '@/api/SecretKeysApi';
 import { toast } from 'react-hot-toast';
 import { Copy, AlertTriangle, Eye, EyeOff } from 'lucide-react';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 interface Props {
 	isOpen: boolean;

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Input } from '@/components/atoms';
 import toast from 'react-hot-toast';
-import supabase from '@/core/supbase/config';
-import AuthApi from '@/utils/api_requests/AuthApi';
+import supabase from '@/core/services/supbase/config';
+import AuthApi from '@/api/AuthApi';
 import { useMutation } from '@tanstack/react-query';
 import { EyeOff } from 'lucide-react';
 import { EyeIcon } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { NODE_ENV, NodeEnv } from '@/types/env';
-import EnvironmentApi from '@/utils/api_requests/EnvironmentApi';
+import EnvironmentApi from '@/api/EnvironmentApi';
 interface SignupFormProps {
 	switchTab: (tab: string) => void;
 }

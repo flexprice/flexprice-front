@@ -3,7 +3,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button, DateRangePicker, Input, Page } from '@/components/atoms';
 import { EventsTable, ApiDocsContent } from '@/components/molecules';
 import { Event } from '@/models/Event';
-import EventsApi from '@/utils/api_requests/EventsApi';
+import EventsApi from '@/api/EventsApi';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RefreshCw, Search } from 'lucide-react';
 

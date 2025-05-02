@@ -4,7 +4,7 @@ import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 import { PaginationType } from '@/models/Pagination';
 import { BILLING_CYCLE, Subscription } from '@/models/Subscription';
 import CustomerUsage from '@/models/CustomerUsage';
-import { generateQueryParams } from '../common/api_helper';
+import { generateQueryParams } from '@/utils/common/api_helper';
 interface GetCustomerResponse {
 	items: Customer[];
 	pagination: PaginationType;

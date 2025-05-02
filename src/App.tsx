@@ -3,7 +3,7 @@ import { MainRouter } from '@/core/routes/Routes';
 import { UserProvider } from '@/hooks/UserContext';
 import { Toaster } from 'react-hot-toast';
 import { DocsProvider } from './context/DocsContext';
-import ReactQueryProvider from './core/tanstack/ReactQueryProvider';
+import ReactQueryProvider from './core/services/tanstack/ReactQueryProvider';
 const App = () => {
 	return (
 		<ReactQueryProvider>

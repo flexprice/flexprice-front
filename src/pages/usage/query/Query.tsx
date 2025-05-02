@@ -1,7 +1,7 @@
 import { Button, DateRangePicker, Input, Page } from '@/components/atoms';
 import SelectMeter from '@/components/organisms/PlanForm/SelectMeter';
 import { Skeleton } from '@/components/ui/skeleton';
-import EventsApi from '@/utils/api_requests/EventsApi';
+import EventsApi from '@/api/EventsApi';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
