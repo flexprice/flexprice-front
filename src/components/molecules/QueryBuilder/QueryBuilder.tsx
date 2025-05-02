@@ -1,8 +1,8 @@
-import { FilterField, FilterCondition } from '@/types/common/QueryBuilder';
+import { FilterField, FilterCondition, SortOption, SortDirection } from '@/types/common/QueryBuilder';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { FilterPopover, SortDropdown } from '@/components/molecules';
-import { SortOption, SortDirection } from '@/components/molecules/QueryBuilder/SortDropdown';
+
 interface Props {
 	// Filter options
 	filterOptions: FilterField[];

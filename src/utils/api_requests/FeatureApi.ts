@@ -2,6 +2,8 @@ import { AxiosClient } from '@/core/axios/verbs';
 import Feature from '@/models/Feature';
 import { generateQueryParams } from '../common/api_helper';
 import { PaginationType } from '@/models/Pagination';
+import { TypedBackendSort, TypedBackendFilter } from '@/types/formatters/QueryBuilder';
+
 interface GetFeaturesPayload {
 	end_time?: string;
 	expand?: string;
@@ -19,6 +21,11 @@ interface GetFeaturesPayload {
 interface GetFeaturesResponse {
 	items: Feature[];
 	pagination: PaginationType;
+}
+
+interface GetFeatureByFilterPayload extends PaginationType {
+	filters: TypedBackendFilter[];
+	sorts: TypedBackendSort[];
 }
 
 class FeatureApi {
@@ -46,6 +53,10 @@ class FeatureApi {
 
 	public static async deleteFeature(id: string) {
 		return await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);
+	}
+
+	public static async getFeaturesByFilter(payload: GetFeatureByFilterPayload) {
+		return await AxiosClient.post<GetFeaturesResponse, GetFeatureByFilterPayload>(`${this.baseUrl}/search`, payload);
 	}
 }
 

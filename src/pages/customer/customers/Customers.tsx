@@ -75,7 +75,7 @@ const CustomerPage = () => {
 		<Page
 			heading='Customers'
 			headingCTA={
-				<div className='flex justify-between items-center gap-2'>
+				<div className='flex justify-between gap-2 items-center'>
 					<Input
 						className='min-w-[400px]'
 						suffix={<Search className='size-[14px] text-gray-500' />}
