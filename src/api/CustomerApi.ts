@@ -1,10 +1,10 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import Customer from '@/models/Customer';
-import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 import { PaginationType } from '@/models/Pagination';
 import { BILLING_CYCLE, Subscription } from '@/models/Subscription';
 import CustomerUsage from '@/models/CustomerUsage';
 import { generateQueryParams } from '@/utils/common/api_helper';
+import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 interface GetCustomerResponse {
 	items: Customer[];
 	pagination: PaginationType;

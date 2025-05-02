@@ -2,7 +2,7 @@ import { AxiosClient } from '@/core/axios/verbs';
 import { PaginationType } from '@/models/Pagination';
 import { SecretKey } from '@/models/SecretKey';
 import { generateQueryParams } from '@/utils/common/api_helper';
-
+import { GetAllSecretKeysResponse, CreateSecretKeyPayload, CreateSecretKeyResponse } from '@/types/dto';
 // Utility function to format permissions for display
 export const formatPermissionDisplay = (permissions: string[]): string => {
 	const hasRead = permissions.includes('read');
@@ -18,23 +18,6 @@ export const formatPermissionDisplay = (permissions: string[]): string => {
 		return 'none';
 	}
 };
-
-interface GetAllSecretKeysResponse {
-	items: SecretKey[];
-	pagination: PaginationType;
-}
-
-interface CreateSecretKeyPayload {
-	name: string;
-	permissions: string[];
-	expires_at?: string;
-	type: string;
-}
-
-interface CreateSecretKeyResponse {
-	api_key: string;
-	secret: SecretKey;
-}
 
 class SecretKeysApi {
 	private static baseUrl = '/secrets/api/keys';

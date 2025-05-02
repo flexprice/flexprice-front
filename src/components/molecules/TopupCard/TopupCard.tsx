@@ -3,7 +3,7 @@ import { Gift, Receipt } from 'lucide-react';
 import { FC, useState, useCallback } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
 import { useMutation } from '@tanstack/react-query';
-import WalletApi, { TopupWalletPayload } from '@/api/WalletApi';
+import WalletApi from '@/api/WalletApi';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { getCurrencyAmountFromCredits } from '@/utils/helpers/wallet';
+import { TopupWalletPayload } from '@/types/dto';
 
 // Enum for credits type with more descriptive names
 enum CreditsType {

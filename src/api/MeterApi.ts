@@ -1,11 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Meter } from '@/models/Meter';
 import { PaginationType } from '@/models/Pagination';
-
-interface getAllMetersResponse {
-	items: Meter[];
-	pagination: PaginationType;
-}
+import { getAllMetersResponse } from '@/types/dto';
 
 export class MeterApi {
 	private static baseUrl = '/meters';

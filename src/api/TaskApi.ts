@@ -1,35 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { ImportTask } from '@/models/ImportTask';
 import { generateQueryParams } from '@/utils/common/api_helper';
-import { PaginationType } from '@/models/Pagination';
-
-interface AddTaskPayload {
-	entity_type: string;
-	file_type: string;
-	file_url: string;
-	task_type: string;
-	file_name?: string;
-	metadata?: Record<string, any>;
-}
-
-type GetTasksPayload = {
-	created_by?: string;
-	end_time?: string;
-	expand?: string;
-	limit?: number;
-	offset?: number;
-	order?: string;
-	sort?: string;
-	start_time?: string;
-	status?: string;
-	task_status?: string;
-	task_type?: string;
-};
-
-type GetTasksResponse = {
-	items: ImportTask[];
-	pagination: PaginationType;
-};
+import { GetTasksPayload, GetTasksResponse, AddTaskPayload } from '@/types/dto';
 
 class TaskApi {
 	private static baseUrl = '/tasks';

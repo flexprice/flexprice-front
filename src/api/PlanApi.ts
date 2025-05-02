@@ -2,6 +2,7 @@ import { AxiosClient } from '@/core/axios/verbs';
 import { Plan } from '@/models/Plan';
 import { PaginationType } from '@/models/Pagination';
 import { ExpandedPlan } from '@/utils/models/transformed_plan';
+import { generateQueryParams } from '@/utils/common/api_helper';
 
 export interface GetAllPlansResponse {
 	items: Plan[] | ExpandedPlan[];
@@ -16,31 +17,57 @@ export class PlanApi {
 	}
 
 	public static async getAllPlans({ limit, offset }: PaginationType) {
-		return await AxiosClient.get<GetAllPlansResponse>(
-			`${this.baseUrl}?limit=${limit}&offset=${offset}&expand=entitlements%2Cprices%2Cmeters%2Cfeatures`,
-		);
+		const payload = {
+			limit,
+			offset,
+			expand: 'entitlements%2Cprices%2Cmeters%2Cfeatures',
+		};
+		const url = generateQueryParams(this.baseUrl, payload);
+		return await AxiosClient.get<GetAllPlansResponse>(url);
 	}
 	public static async getAllActivePlans({ limit, offset }: PaginationType) {
-		return await AxiosClient.get<GetAllPlansResponse>(
-			`${this.baseUrl}?status=published&limit=${limit}&offset=${offset}&expand=entitlements%2Cprices%2Cmeters%2Cfeatures`,
-		);
+		const payload = {
+			status: 'published',
+			limit,
+			offset,
+			expand: 'entitlements%2Cprices%2Cmeters%2Cfeatures',
+		};
+		const url = generateQueryParams(this.baseUrl, payload);
+		return await AxiosClient.get<GetAllPlansResponse>(url);
 	}
 
 	public static async getExpandedPlan() {
-		const response = await AxiosClient.get<GetAllPlansResponse>(`${this.baseUrl}?expand=prices%2Cmeters%2Centitlements`);
+		const payload = {
+			expand: 'prices%2Cmeters%2Centitlements',
+		};
+		const url = generateQueryParams(this.baseUrl, payload);
+		const response = await AxiosClient.get<GetAllPlansResponse>(url);
 		return response.items as ExpandedPlan[];
 	}
 	public static async getActiveExpandedPlan() {
-		const response = await AxiosClient.get<GetAllPlansResponse>(`${this.baseUrl}?expand=prices%2Cmeters&status=published`);
+		const payload = {
+			expand: 'prices%2Cmeters',
+			status: 'published',
+		};
+		const url = generateQueryParams(this.baseUrl, payload);
+		const response = await AxiosClient.get<GetAllPlansResponse>(url);
 		return response.items as ExpandedPlan[];
 	}
 
 	public static async getPlanById(id: string) {
-		return await AxiosClient.get<Plan>(`${this.baseUrl}/${id}?expand=meters%2Centitlements%2Cprices%2Cfeatures`);
+		const payload = {
+			expand: 'meters%2Centitlements%2Cprices%2Cfeatures',
+		};
+		const url = generateQueryParams(`${this.baseUrl}/${id}`, payload);
+		return await AxiosClient.get<Plan>(url);
 	}
 
 	public static async updatePlan(id: string, data: Partial<Plan>) {
-		return await AxiosClient.put<Plan, Partial<Plan>>(`${this.baseUrl}/${id}`, data);
+		const payload = {
+			expand: 'meters%2Centitlements%2Cprices%2Cfeatures',
+		};
+		const url = generateQueryParams(`${this.baseUrl}/${id}`, payload);
+		return await AxiosClient.put<Plan, Partial<Plan>>(url, data);
 	}
 
 	public static async deletePlan(id: string) {

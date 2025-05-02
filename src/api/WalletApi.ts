@@ -1,36 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
-import { Wallet, TransactionReason } from '@/models/Wallet';
+import { Wallet } from '@/models/Wallet';
 import { RealtimeWalletBalance } from '@/models/WalletBalance';
-import { WalletTransaction } from '@/models/WalletTransaction';
-import { PaginationType } from '@/models/Pagination';
-
-interface WalletTransactionPayload extends PaginationType {
-	walletId: string;
-}
-interface WalletTransactionResponse {
-	items: WalletTransaction[];
-	pagination: PaginationType;
-}
-
-export interface CreateWalletPayload {
-	customerId: string;
-	currency: string;
-	name?: string;
-	metadata?: Record<string, any>;
-	initial_credits_to_load?: number;
-	conversion_rate?: number;
-}
-
-export interface TopupWalletPayload {
-	credits_to_add: number;
-	walletId: string;
-	description?: string;
-	expiry_date?: number;
-	expiry_date_utc?: Date;
-	metadata?: Record<string, any>;
-	idempotency_key: string;
-	transaction_reason: TransactionReason;
-}
+import { CreateWalletPayload, TopupWalletPayload, WalletTransactionResponse, WalletTransactionPayload } from '@/types/dto';
 
 class WalletApi {
 	static async getWallets(customerId: string): Promise<Wallet[]> {

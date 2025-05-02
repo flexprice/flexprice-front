@@ -1,22 +1,6 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Tenant } from '@/models/Tenant';
-import { Subscription } from '@/models/Subscription';
-import { PaginationType } from '@/models/Pagination';
-import CustomerUsage from '@/models/CustomerUsage';
-
-interface GetBillingdetailsResponse {
-	subscriptions: Subscription[];
-	usage: {
-		customer_id: string;
-		features: CustomerUsage[];
-		pagination: PaginationType;
-		period: {
-			end_time: string;
-			period: string;
-			start_time: string;
-		};
-	};
-}
+import { GetBillingdetailsResponse } from '@/types/dto';
 
 class TenantApi {
 	private static baseUrl = '/tenants';

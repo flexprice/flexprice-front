@@ -1,54 +1,15 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Invoice } from '@/models/Invoice';
 import { generateQueryParams } from '@/utils/common/api_helper';
-import { PaginationType } from '@/models/Pagination';
 import AuthService from '@/core/auth/AuthService';
 import EnvironmentApi from '@/api/EnvironmentApi';
-
-interface GetInvoicesResponse {
-	items: Invoice[];
-	pagination: PaginationType;
-}
-
-interface GetAllInvoicesPayload {
-	customer_id?: string;
-	end_time?: string;
-	invoice_status?: string;
-	invoice_type?: string;
-	limit?: number;
-	offset?: number;
-	order?: string;
-	payment_status?: string;
-	start_time?: string;
-	sort?: string;
-	status?: string;
-	subscription_id?: string;
-}
-
-interface UpdateInvoiceStatusPayload {
-	invoiceId: string;
-	payment_status?: string;
-	amount?: number;
-}
-
-interface GetInvoicePreviewPayload {
-	period_end: string;
-	period_start: string;
-	subscription_id: string;
-}
-
-interface CreateOneOffInvoicePayload {
-	customer_id: string;
-	invoice_type: 'ONE_OFF';
-	currency: string;
-	amount_due: string;
-	period_start: string;
-	line_items: Array<{
-		display_name: string;
-		quantity: string;
-		amount: number;
-	}>;
-}
+import {
+	GetInvoicesResponse,
+	GetAllInvoicesPayload,
+	UpdateInvoiceStatusPayload,
+	GetInvoicePreviewPayload,
+	CreateOneOffInvoicePayload,
+} from '@/types/dto';
 
 class InvoiceApi {
 	private static baseurl = '/invoices';
