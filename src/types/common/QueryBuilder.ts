@@ -105,3 +105,15 @@ export const DEFAULT_OPERATORS_PER_DATA_TYPE: Record<DataType, FilterOperator[]>
 	[DataType.DATE]: [FilterOperator.EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
 	[DataType.ARRAY]: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 };
+
+// sorting
+export enum SortDirection {
+	ASC = 'asc',
+	DESC = 'desc',
+}
+
+export interface SortOption {
+	field: string;
+	label: string;
+	direction?: SortDirection;
+}
