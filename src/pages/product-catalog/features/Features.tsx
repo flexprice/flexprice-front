@@ -83,7 +83,7 @@ const filterOptions: FilterField[] = [
 ];
 
 const FeaturesPage = () => {
-	const { limit, offset, page } = usePagination();
+	const { limit, offset, page, reset } = usePagination();
 
 	const [filters, setFilters] = useState<FilterCondition[]>([]);
 	const [selectedSorts, setSelectedSorts] = useState<SortOption[]>([]);
@@ -94,14 +94,13 @@ const FeaturesPage = () => {
 			limit,
 			offset,
 			filters: backendFilters,
-			sorts: backendSorts,
+			sort: backendSorts,
 		});
 	};
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const backendPayload = convertFiltersAndSortToBackendPayload(filters, selectedSorts);
-		console.log('backendPayload', backendPayload);
+		reset();
 	}, [filters, selectedSorts]);
 
 	const {
