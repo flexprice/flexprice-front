@@ -9,14 +9,30 @@ export enum BILLING_PERIOD {
 	ANNUAL = 'ANNUAL',
 }
 
-const getCurrencyOptions = () => {
+export const getCurrencyOptions = () => {
 	const codes = getAllISOCodes();
 	const map = new Map();
+	const priorityCurrencies = ['USD', 'INR', 'EUR'];
+
+	// First add priority currencies
+	priorityCurrencies.forEach((currency) => {
+		const code = codes.find((c) => c.currency === currency);
+		if (code) {
+			map.set(currency, {
+				currency: code.currency,
+				symbol: code.symbol,
+			});
+		}
+	});
+
+	// Then add all other currencies
 	codes.forEach((code) => {
-		map.set(code.currency, {
-			currency: code.currency,
-			symbol: code.symbol,
-		});
+		if (!priorityCurrencies.includes(code.currency)) {
+			map.set(code.currency, {
+				currency: code.currency,
+				symbol: code.symbol,
+			});
+		}
 	});
 	return Array.from(map.values());
 };
@@ -35,7 +51,6 @@ export const currencyOptions = Array.from(
 		]),
 	).values(),
 );
-
 export const billlingPeriodOptions = [
 	// { label: 'Daily', value: 'DAILY' },
 	{ label: 'Weekly', value: BILLING_PERIOD.WEEKLY },
