@@ -1,12 +1,10 @@
 import { AddButton, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PlanApi } from '@/utils/api_requests/PlanApi';
-import { PlansTable, ApiDocsContent, EditPlanDrawer } from '@/components/molecules';
+import { PlansTable, ApiDocsContent, PlanDrawer } from '@/components/molecules';
 import { Plan } from '@/models/Plan';
 import usePagination from '@/hooks/usePagination';
-import { RouteNames } from '@/core/routes/Routes';
 import { EmptyPage } from '@/components/organisms';
 import GUIDES from '@/core/constants/guides';
 import { useState } from 'react';
@@ -21,7 +19,6 @@ const PricingPlan = () => {
 			offset,
 		});
 	};
-	const navigate = useNavigate();
 
 	const {
 		data: plansData,
@@ -34,6 +31,11 @@ const PricingPlan = () => {
 		// staleTime: 1000 * 60 * 5,
 	});
 
+	const handleOnAdd = () => {
+		setActivePlan(null);
+		setPlanDrawerOpen(true);
+	};
+
 	if (isLoading) {
 		return <Loader />;
 	}
@@ -44,37 +46,31 @@ const PricingPlan = () => {
 
 	if ((plansData?.items ?? []).length === 0) {
 		return (
-			<EmptyPage
-				tutorials={GUIDES.plans.tutorials}
-				heading='Pricing Plan'
-				tags={['Plans']}
-				onAddClick={() => navigate(RouteNames.createPlan)}
-			/>
+			<div className='space-y-6'>
+				<PlanDrawer data={activePlan} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlans']} />
+				<EmptyPage tutorials={GUIDES.plans.tutorials} heading='Pricing Plan' tags={['Plans']} onAddClick={handleOnAdd} />
+			</div>
 		);
 	}
 
 	return (
-		<Page
-			heading='Plans'
-			headingCTA={
-				<Link to={RouteNames.createPlan}>
-					<AddButton />
-				</Link>
-			}>
-			<EditPlanDrawer data={activePlan!} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlans']} />
-			<ApiDocsContent tags={['Plans']} />
-			<div>
-				<PlansTable
-					data={(plansData?.items || []) as Plan[]}
-					onEdit={(plan) => {
-						setActivePlan(plan);
-						setPlanDrawerOpen(true);
-					}}
-				/>
-				<Spacer className='!h-4' />
-				<ShortPagination unit='Pricing Plans' totalItems={plansData?.pagination.total ?? 0} />
-			</div>
-		</Page>
+		<div>
+			<Page heading='Plans' headingCTA={<AddButton onClick={handleOnAdd} />}>
+				<PlanDrawer data={activePlan} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlans']} />
+				<ApiDocsContent tags={['Plans']} />
+				<div className='space-y-6'>
+					<PlansTable
+						data={(plansData?.items || []) as Plan[]}
+						onEdit={(plan) => {
+							setActivePlan(plan);
+							setPlanDrawerOpen(true);
+						}}
+					/>
+					<Spacer className='!h-4' />
+					<ShortPagination unit='Pricing Plans' totalItems={plansData?.pagination.total ?? 0} />
+				</div>
+			</Page>
+		</div>
 	);
 };
 
