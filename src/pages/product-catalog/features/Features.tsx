@@ -83,7 +83,7 @@ const filterOptions: FilterField[] = [
 ];
 
 const FeaturesPage = () => {
-	const { limit, offset, page } = usePagination();
+	const { limit, offset, page, reset } = usePagination();
 
 
 	// Add debounce to search query
@@ -97,14 +97,13 @@ const FeaturesPage = () => {
 			limit,
 			offset,
 			filters: backendFilters,
-			sorts: backendSorts,
+			sort: backendSorts,
 		});
 	};
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const backendPayload = convertFiltersAndSortToBackendPayload(filters, selectedSorts);
-		console.log('backendPayload', backendPayload);
+		reset();
 	}, [filters, selectedSorts]);
 
 	const {

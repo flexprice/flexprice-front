@@ -24,5 +24,5 @@ export interface GetFeaturesResponse extends PaginationType {
 
 export interface GetFeatureByFilterPayload extends PaginationType {
 	filters: TypedBackendFilter[];
-	sorts: TypedBackendSort[];
+	sort: TypedBackendSort[];
 }
