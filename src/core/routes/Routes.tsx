@@ -7,7 +7,6 @@ import MeterPage from '@/pages/usage/meter/MeterPage';
 import AddMeterPage from '@/pages/usage/meter/AddMeter';
 import EditMeterPage from '@/pages/usage/meter/EditMeterPage';
 import PricingPlans from '@/pages/product-catalog/plans/Plans';
-import CreatePlanPage from '@/pages/product-catalog/plans/CreatePlan';
 import CustomerSubscription from '@/pages/customer/customers/CustomerSubscription';
 import CustomerDetails from '@/pages/customer/customers/CustomerDetails';
 import ErrorPage from '@/pages/error/ErrorPage';
@@ -67,9 +66,7 @@ export const RouteNames = {
 
 	// product catalog routes
 	productCatalog: '/product-catalog',
-	createPlan: '/product-catalog/plan/create-plan',
 	plan: '/product-catalog/plan',
-	editPlan: '/product-catalog/plan/edit-plan',
 	pricing: '/product-catalog/pricing-widget',
 	addCharges: '/product-catalog/plan/:planId/add-charges',
 
@@ -142,14 +139,6 @@ export const MainRouter = createBrowserRouter([
 					{
 						path: `${RouteNames.plan}/:planId`,
 						element: <PlanDetailsPage />,
-					},
-					{
-						path: RouteNames.createPlan,
-						element: <CreatePlanPage />,
-					},
-					{
-						path: RouteNames.editPlan,
-						element: <CreatePlanPage />,
 					},
 					{
 						path: RouteNames.features,

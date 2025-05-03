@@ -1,5 +1,5 @@
 import { ActionButton, Button, CardHeader, Chip, Loader, Page, Spacer, NoDataCard } from '@/components/atoms';
-import { AddEntitlementDrawer, ApiDocsContent, ColumnData, EditPlanDrawer, FlexpriceTable, RedirectCell } from '@/components/molecules';
+import { AddEntitlementDrawer, ApiDocsContent, ColumnData, FlexpriceTable, RedirectCell, PlanDrawer } from '@/components/molecules';
 import { DetailsCard } from '@/components/molecules';
 import { RouteNames } from '@/core/routes/Routes';
 import { Price } from '@/models/Price';
@@ -239,7 +239,7 @@ const PlanDetailsPage = () => {
 					</Button>
 				</>
 			}>
-			<EditPlanDrawer data={planData} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlan']} />
+			<PlanDrawer data={planData} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlan']} />
 			<ApiDocsContent tags={['Plans']} />
 			<AddEntitlementDrawer
 				selectedFeatures={planData.entitlements?.map((v) => v.feature)}
