@@ -5,6 +5,10 @@ const usePagination = (initialLimit: number = 10) => {
 	const [searchParams, setSearchParams] = useSearchParams();
 	const page = Number(searchParams.get('page') || '1');
 
+	const reset = () => {
+		setSearchParams({ page: '1' });
+	};
+
 	// Ensure `page` is set in the query parameters
 	useEffect(() => {
 		if (!searchParams.get('page')) {
@@ -21,6 +25,7 @@ const usePagination = (initialLimit: number = 10) => {
 		offset,
 		page,
 		setPage: (newPage: number) => setSearchParams({ page: String(newPage) }),
+		reset,
 	};
 };
 
