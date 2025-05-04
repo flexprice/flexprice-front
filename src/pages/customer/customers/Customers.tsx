@@ -1,5 +1,5 @@
 import { AddButton, Input, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { CreateCustomerDrawer, ApiDocsContent, FilterState, Toolbar } from '@/components/molecules';
+import { CreateCustomerDrawer, ApiDocsContent, FilterState } from '@/components/molecules';
 import CustomerTable from '@/components/molecules/Customer/CustomerTable';
 import EmptyPage from '@/components/organisms/EmptyPage/EmptyPage';
 import GUIDES from '@/constants/guides';
