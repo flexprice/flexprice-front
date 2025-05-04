@@ -31,7 +31,7 @@ export type {
 	GetInvoicePdfPayload,
 } from './InvoiceApi';
 
-export type { getAllMetersResponse } from './Meter';
+export type { GetAllMetersResponse } from './Meter';
 
 export type { GetAllPaymentsPayload, GetAllPaymentsResponse } from './Payment';
 
