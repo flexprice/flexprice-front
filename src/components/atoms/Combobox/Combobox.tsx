@@ -85,7 +85,7 @@ const Combobox = ({
 					aria-expanded={open}
 					disabled={disabled}
 					className={cn('justify-between', typeof width === 'number' ? `w-[${width}px]` : `w-[${width}]`, triggerClassName)}>
-					<p className='text-sm font-normal'>{selectedOption?.label || placeholder}</p>
+					<p className='font-normal'>{selectedOption?.label || placeholder}</p>
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>

@@ -11,6 +11,7 @@ interface FilterMultiSelectProps {
 	onChange: (value: string[]) => void;
 	placeholder?: string;
 	searchPlaceholder?: string;
+	className?: string;
 }
 
 const FilterMultiSelect: React.FC<FilterMultiSelectProps> = ({
@@ -19,6 +20,7 @@ const FilterMultiSelect: React.FC<FilterMultiSelectProps> = ({
 	onChange,
 	placeholder = 'Select options...',
 	searchPlaceholder = 'Search options...',
+	className,
 }) => {
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -27,7 +29,7 @@ const FilterMultiSelect: React.FC<FilterMultiSelectProps> = ({
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<PopoverTrigger asChild>
-				<Button variant='outline' size='sm' className='h-8 w-full justify-start font-normal'>
+				<Button variant='outline' size='sm' className={cn(className, 'h-7 text-xs w-full justify-start font-normal')}>
 					{value.length === 0 ? (
 						<span className='truncate text-sm'>{placeholder}</span>
 					) : (
