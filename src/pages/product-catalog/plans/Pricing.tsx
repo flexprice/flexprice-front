@@ -191,18 +191,18 @@ const PricingPage = () => {
 		// Filter available options based on selections
 		const availableCurrencyOptions = selectedBillingPeriod
 			? allCurrencyOptions.filter((currency) =>
-				plans.some((plan) =>
-					plan.prices?.some((price) => price.currency.toUpperCase() === currency.value && price.billing_period === selectedBillingPeriod),
-				),
-			)
+					plans.some((plan) =>
+						plan.prices?.some((price) => price.currency.toUpperCase() === currency.value && price.billing_period === selectedBillingPeriod),
+					),
+				)
 			: allCurrencyOptions;
 
 		const availablePeriodOptions = selectedCurrency
 			? allPeriodOptions.filter((period) =>
-				plans.some((plan) =>
-					plan.prices?.some((price) => price.currency.toUpperCase() === selectedCurrency && price.billing_period === period.value),
-				),
-			)
+					plans.some((plan) =>
+						plan.prices?.some((price) => price.currency.toUpperCase() === selectedCurrency && price.billing_period === period.value),
+					),
+				)
 			: allPeriodOptions;
 
 		// Set default selections if needed

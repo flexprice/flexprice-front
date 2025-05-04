@@ -3,8 +3,8 @@ import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOv
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Trash2, GripVertical, ListFilter, X } from 'lucide-react';
-import { useState, useCallback, useMemo } from 'react';
-import { FilterField, FilterCondition, FilterOperator, FilterFieldType } from '@/types/common/QueryBuilder';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { FilterField, FilterCondition, FilterOperator, FilterFieldType, DataType } from '@/types/common/QueryBuilder';
 import { Input } from '@/components/ui/input';
 import { Combobox, DatePicker, Toggle, Button, Select } from '@/components/atoms';
 import { Switch } from '@/components/ui/switch';
@@ -202,6 +202,16 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 			})),
 		[fields],
 	);
+
+	useEffect(() => {
+		if (value.length === 0) {
+			const stringFilter = fields.find((field) => field.dataType === DataType.STRING);
+			if (stringFilter) {
+				const newFilter = getNewFilterWithDefaultValues(stringFilter);
+				onChange([newFilter]);
+			}
+		}
+	}, []);
 
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>

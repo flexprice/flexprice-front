@@ -15,8 +15,6 @@ import { useDebounce } from 'use-debounce';
 const CustomerPage = () => {
 	const { limit, offset, page } = usePagination();
 
-
-
 	const [activeCustomer, setactiveCustomer] = useState<Customer>();
 	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
 	const [filters, setfilters] = useState<FilterState>({

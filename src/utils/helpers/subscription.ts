@@ -1,4 +1,4 @@
-import { BILLING_PERIOD } from '@/core/data/constants';
+import { BILLING_PERIOD } from '@/constants/constants';
 
 export function calculateCalendarBillingAnchor(startDate: Date, billingPeriod: BILLING_PERIOD): Date {
 	const now = new Date(startDate.toUTCString());

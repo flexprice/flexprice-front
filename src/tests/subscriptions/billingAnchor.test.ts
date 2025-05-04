@@ -1,4 +1,4 @@
-import { BILLING_PERIOD } from '@/core/data/constants';
+import { BILLING_PERIOD } from '@/constants/constants';
 import { calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
 import { describe, test, expect } from 'vitest';
 

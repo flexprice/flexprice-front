@@ -8,9 +8,8 @@ import FeatureApi from '@/api/FeatureApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
-	FilterCondition,
 	FilterField,
 	FilterFieldType,
 	DEFAULT_OPERATORS_PER_DATA_TYPE,
@@ -20,9 +19,9 @@ import {
 	SortDirection,
 } from '@/types/common/QueryBuilder';
 import { QueryBuilder } from '@/components/molecules';
-import { convertFiltersAndSortToBackendPayload } from '@/types/formatters/QueryBuilder';
 import { BaseEntityStatus } from '@/types/common';
 import { FeatureType } from '@/models/Feature';
+import useFilterSorting from '@/hooks/useFilterSorting';
 
 const sortingOptions: SortOption[] = [
 	{
@@ -85,33 +84,34 @@ const filterOptions: FilterField[] = [
 const FeaturesPage = () => {
 	const { limit, offset, page, reset } = usePagination();
 
-
 	// Add debounce to search query
 
-	const [filters, setFilters] = useState<FilterCondition[]>([]);
-	const [selectedSorts, setSelectedSorts] = useState<SortOption[]>([]);
+	const { filters, sorts, setFilters, setSorts, sanitizedFilters, sanitizedSorts } = useFilterSorting({
+		initialFilters: [],
+		initialSorts: [],
+		debounceTime: 500,
+	});
 
 	const fetchFeatures = async () => {
-		const { filters: backendFilters, sorts: backendSorts } = convertFiltersAndSortToBackendPayload(filters, selectedSorts);
 		return await FeatureApi.getFeaturesByFilter({
 			limit,
 			offset,
-			filters: backendFilters,
-			sort: backendSorts,
+			filters: sanitizedFilters,
+			sort: sanitizedSorts,
 		});
 	};
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		reset();
-	}, [filters, selectedSorts]);
+	}, [sanitizedFilters, sanitizedSorts]);
 
 	const {
 		data: featureData,
 		isLoading,
 		isError,
 	} = useQuery({
-		queryKey: ['fetchFeatures', page, JSON.stringify(filters), JSON.stringify(selectedSorts)],
+		queryKey: ['fetchFeatures', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
 		queryFn: fetchFeatures,
 	});
 
@@ -120,49 +120,46 @@ const FeaturesPage = () => {
 		toast.error('Error fetching features');
 		return null;
 	}
+	const showEmptyPage = !isLoading && featureData?.items.length === 0 && filters.length === 0 && sorts.length === 0;
 
 	// Render empty state when no features and no search query
-	if (!isLoading && featureData?.items.length === 0) {
-		// Show empty page only when there are no filters/sorts and no data
-		const showEmptyPage = !isLoading && featureData?.items.length === 0 && filters.length === 0 && selectedSorts.length === 0;
 
-		if (showEmptyPage) {
-			return (
-				<EmptyPage
-					heading='Feature'
-					onAddClick={() => navigate(RouteNames.createFeature)}
-					tags={['Features']}
-					tutorials={GUIDES.features.tutorials}
-				/>
-			);
-		}
-
+	if (showEmptyPage) {
 		return (
-			<Page
-				heading='Features'
-				headingCTA={
-					<div className='flex justify-between items-center gap-2'>
-						<Link to={RouteNames.createFeature}>
-							<AddButton />
-						</Link>
-					</div>
-				}>
-				<ApiDocsContent tags={['Features']} />
-				<div>
-					<QueryBuilder
-						filterOptions={filterOptions}
-						filters={filters}
-						onFilterChange={setFilters}
-						sortOptions={sortingOptions}
-						onSortChange={setSelectedSorts}
-						selectedSorts={selectedSorts}
-					/>
-					<FeatureTable data={featureData?.items || []} />
-					<Spacer className='!h-4' />
-					<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
-				</div >
-			</Page >
+			<EmptyPage
+				heading='Feature'
+				onAddClick={() => navigate(RouteNames.createFeature)}
+				tags={['Features']}
+				tutorials={GUIDES.features.tutorials}
+			/>
 		);
 	}
-}
+
+	return (
+		<Page
+			heading='Features'
+			headingCTA={
+				<div className='flex justify-between items-center gap-2'>
+					<Link to={RouteNames.createFeature}>
+						<AddButton />
+					</Link>
+				</div>
+			}>
+			<ApiDocsContent tags={['Features']} />
+			<div>
+				<QueryBuilder
+					filterOptions={filterOptions}
+					filters={filters}
+					onFilterChange={setFilters}
+					sortOptions={sortingOptions}
+					onSortChange={setSorts}
+					selectedSorts={sorts}
+				/>
+				<FeatureTable data={featureData?.items || []} />
+				<Spacer className='!h-4' />
+				<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
+			</div>
+		</Page>
+	);
+};
 export default FeaturesPage;
