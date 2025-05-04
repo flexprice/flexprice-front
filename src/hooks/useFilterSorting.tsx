@@ -35,6 +35,10 @@ const useFilterSorting = ({ initialFilters, initialSorts, debounceTime, onFilter
 	useEffect(() => {
 		debouncedFilterChange(filters);
 		debouncedSortChange(sorts);
+		return () => {
+			debouncedFilterChange.cancel();
+			debouncedSortChange.cancel();
+		};
 	}, [filters, sorts]);
 
 	const sanitizedValues = useMemo(() => convertFiltersAndSortToBackendPayload(filters, sorts), [filters, sorts]);
