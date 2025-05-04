@@ -111,7 +111,7 @@ const FeaturesPage = () => {
 		isLoading,
 		isError,
 	} = useQuery({
-		queryKey: ['fetchFeatures', page, filters, selectedSorts],
+		queryKey: ['fetchFeatures', page, JSON.stringify(filters), JSON.stringify(selectedSorts)],
 		queryFn: fetchFeatures,
 	});
 
