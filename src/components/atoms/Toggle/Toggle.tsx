@@ -10,14 +10,15 @@ interface Props {
 	description?: string;
 	error?: string;
 	disabled?: boolean;
+	className?: string;
 }
 
-const Toggle: FC<Props> = ({ onChange, checked, description, error, label, title, disabled }) => {
+const Toggle: FC<Props> = ({ onChange, checked, description, error, label, title, disabled, className }) => {
 	return (
 		<div>
 			<FormHeader title={title} variant='form-component-title' />
 			<div className='flex items-start space-x-4 font-open-sans'>
-				<Switch id='airplane-mode' checked={checked} onCheckedChange={onChange} disabled={disabled} />
+				<Switch id='airplane-mode' checked={checked} onCheckedChange={onChange} disabled={disabled} className={className} />
 				<Label htmlFor='airplane-mode'>
 					<p className='font-medium text-sm text-[#18181B] peer-checked:text-black'>{label}</p>
 					<Spacer height={'4px'} />

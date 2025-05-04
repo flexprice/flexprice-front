@@ -2,7 +2,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOverlay } from '@/components/ui/sortable';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { Trash2, GripVertical, ListFilter } from 'lucide-react';
+import { Trash2, GripVertical, ListFilter, X } from 'lucide-react';
 import { useState, useCallback, useMemo } from 'react';
 import { FilterField, FilterCondition, FilterOperator, FilterFieldType } from '@/types/common/QueryBuilder';
 import { Input } from '@/components/ui/input';
@@ -23,11 +23,14 @@ const MIN_POPOVER_WIDTH = 400;
 const MIN_FIELD_WIDTH = 160;
 const MIN_OPERATOR_WIDTH = 120;
 const MIN_VALUE_WIDTH = 160;
+const POPOVER_PADDING = 'px-4 py-3';
+const GRID_GAP = 'gap-1.5';
+const ITEM_PADDING = 'py-1.5 px-2';
 
 const getDefaultValueByFieldType = (field: FilterField) => {
 	switch (field.fieldType) {
 		case FilterFieldType.DATEPICKER:
-			return { valueDate: new Date() };
+			return { valueDate: undefined };
 		case FilterFieldType.COMBOBOX:
 			return { valueArray: [field.options?.[0]?.value || ''] };
 		case FilterFieldType.CHECKBOX:
@@ -113,6 +116,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						value={filter.valueString || ''}
 						onChange={(e) => handleFilterUpdate(filter.id, { valueString: e.target.value })}
 						{...inputProps}
+						className={cn(inputProps.className, 'h-7 text-xs')}
 					/>
 				),
 				[FilterFieldType.SELECT]: (
@@ -120,18 +124,23 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
 						value={filter.valueString}
 						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
-						className={inputProps.className}
+						className={cn(inputProps.className, 'h-7 text-xs')}
 						placeholder={commonProps.placeholder}
 					/>
 				),
 				[FilterFieldType.CHECKBOX]: (
-					<Toggle checked={filter.valueBoolean || false} onChange={(checked) => handleFilterUpdate(filter.id, { valueBoolean: checked })} />
+					<Toggle
+						checked={filter.valueBoolean || false}
+						onChange={(checked) => handleFilterUpdate(filter.id, { valueBoolean: checked })}
+						className={cn(inputProps.className, 'h-7 text-xs')}
+					/>
 				),
 				[FilterFieldType.DATEPICKER]: (
 					<DatePicker
 						setDate={(date) => handleFilterUpdate(filter.id, { valueDate: date })}
-						date={filter.valueDate || new Date()}
+						date={filter.valueDate}
 						{...inputProps}
+						className={cn(inputProps.className, 'h-7 min-w-[168px] text-xs')}
 						placeholder='Select date'
 					/>
 				),
@@ -141,7 +150,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						value={filter.valueString}
 						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
 						isRadio
-						className={inputProps.className}
+						className={cn(inputProps.className, 'h-7 text-xs')}
 						placeholder={commonProps.placeholder}
 					/>
 				),
@@ -151,7 +160,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						value={filter.valueString}
 						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
 						width='100%'
-						triggerClassName='h-8'
+						triggerClassName={cn(inputProps.className, 'h-7 text-xs')}
 						placeholder={commonProps.placeholder}
 					/>
 				),
@@ -159,6 +168,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 					<Switch
 						checked={filter.valueBoolean || false}
 						onCheckedChange={(checked) => handleFilterUpdate(filter.id, { valueBoolean: checked })}
+						className={cn(inputProps.className, 'h-7 text-xs')}
 					/>
 				),
 				[FilterFieldType.MULTI_SELECT]: (
@@ -167,6 +177,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						value={filter.valueArray || []}
 						onChange={(value) => handleFilterUpdate(filter.id, { valueArray: value })}
 						placeholder='Select options'
+						className={cn(inputProps.className, 'h-7 text-xs')}
 					/>
 				),
 			};
@@ -205,39 +216,61 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 					)}
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent align='start' className='p-4 w-screen' style={{ maxWidth: '620px', minWidth: MIN_POPOVER_WIDTH }}>
-				<div className='flex flex-col gap-4'>
+			<PopoverContent
+				align='start'
+				className={cn('w-screen border-border/40', POPOVER_PADDING)}
+				style={{ maxWidth: '600px', minWidth: MIN_POPOVER_WIDTH }}>
+				<div className='flex flex-col gap-1.5'>
 					{value.length === 0 ? (
 						<div className='flex flex-col gap-2'>
-							<h4 className='font-medium leading-none'>No filters applied</h4>
-							<p className='text-muted-foreground text-sm'>Add filters to refine your rows.</p>
-							<Button size='sm' onClick={handleAddFilter} className='w-fit'>
-								Add filter
-							</Button>
+							<div className='flex justify-between items-start'>
+								<div className='flex flex-col gap-1'>
+									<h4 className='text-sm font-medium leading-none'>No filters applied</h4>
+									<p className='text-muted-foreground text-xs'>Add filters to refine your rows.</p>
+								</div>
+								<Button variant='ghost' size='icon' className='h-7 w-7 -mr-1' onClick={() => setIsOpen(false)}>
+									<X className='h-3.5 w-3.5' />
+								</Button>
+							</div>
+							<div>
+								<Button size='sm' onClick={handleAddFilter} className='my-3 w-fit h-7 text-xs px-2.5'>
+									Add filter
+								</Button>
+							</div>
 						</div>
 					) : (
-						<>
-							<div className='flex flex-col gap-1'>
-								<h4 className='font-medium leading-none'>Filter by</h4>
+						<div className='flex flex-col gap-1.5'>
+							<div className='flex justify-between items-center'>
+								<h4 className='text-sm font-medium leading-none'>Filter by</h4>
+								<Button variant='ghost' size='icon' className='h-7 w-7 -mr-1' onClick={() => setIsOpen(false)}>
+									<X className='h-3.5 w-3.5' />
+								</Button>
 							</div>
 
 							<Sortable value={value} onValueChange={handleReorder} getItemValue={(item) => item.field}>
-								<SortableContent className='flex flex-col gap-0'>
+								<SortableContent className='flex flex-col gap-1'>
 									{value.map((filter, index) => {
 										const field = fields.find((f) => f.field === filter.field);
 										if (!field) return null;
 
 										return (
 											<SortableItem key={filter.id} value={filter.field}>
-												<div className='grid items-center gap-2 p-2 w-full' style={gridTemplateColumns}>
-													<span className='text-sm text-muted-foreground'>{index > 0 ? 'and' : 'Where'}</span>
+												<div
+													className={cn(
+														'grid items-center',
+														GRID_GAP,
+														ITEM_PADDING,
+														'w-full rounded-[4px] hover:bg-accent/40 transition-colors',
+													)}
+													style={gridTemplateColumns}>
+													<span className='text-xs text-muted-foreground'>{index > 0 ? 'And' : 'Where'}</span>
 													<Combobox
 														options={fieldOptions}
 														value={filter.field}
 														onChange={(value) => handleFieldChange(filter.id, value)}
 														placeholder='Select field'
 														width='100%'
-														triggerClassName='h-8'
+														triggerClassName='h-7 text-xs'
 														searchPlaceholder='Search fields...'
 													/>
 
@@ -252,24 +285,24 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 														value={filter.operator}
 														onChange={(value) => handleFilterUpdate(filter.id, { operator: value as FilterOperator })}
 														placeholder='Select operator'
-														className='h-8'
+														className='h-7 text-xs'
 													/>
 
 													<div className='min-w-0'>{renderValueInput(filter)}</div>
 
 													<div className='flex items-center gap-1 justify-end'>
 														<Button
-															variant='outline'
+															variant='ghost'
 															size='icon'
-															className='h-8 w-8 shrink-0'
+															className='h-7 w-7 shrink-0 hover:bg-destructive/10 hover:text-destructive'
 															onClick={() => handleRemoveFilter(filter.id)}>
-															<Trash2 className='h-4 w-4' />
+															<Trash2 className='h-3.5 w-3.5' />
 														</Button>
 
 														{sortable && (
 															<SortableItemHandle asChild>
-																<Button variant='outline' size='icon' className='h-8 w-8 shrink-0'>
-																	<GripVertical className='h-4 w-4' />
+																<Button variant='ghost' size='icon' className='h-7 w-7 shrink-0'>
+																	<GripVertical className='h-3.5 w-3.5' />
 																</Button>
 															</SortableItemHandle>
 														)}
@@ -280,27 +313,27 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 									})}
 								</SortableContent>
 								<SortableOverlay>
-									<div className='grid gap-2 p-2 w-full' style={gridTemplateColumns}>
-										<div className='h-8 rounded-md border bg-background' />
-										<div className='h-8 rounded-md border bg-background' />
-										<div className='h-8 rounded-md border bg-background' />
+									<div className={cn('grid', GRID_GAP, ITEM_PADDING, 'w-full bg-accent/40 rounded-[4px]')} style={gridTemplateColumns}>
+										<div className='h-7 rounded-[4px] border-border/40 bg-background' />
+										<div className='h-7 rounded-[4px] border-border/40 bg-background' />
+										<div className='h-7 rounded-[4px] border-border/40 bg-background' />
 										<div className='flex gap-1 justify-end'>
-											<div className='h-8 w-8 rounded-md border bg-background' />
-											<div className='h-8 w-8 rounded-md border bg-background' />
+											<div className='h-7 w-7 rounded-[4px] border-border/40 bg-background' />
+											<div className='h-7 w-7 rounded-[4px] border-border/40 bg-background' />
 										</div>
 									</div>
 								</SortableOverlay>
 							</Sortable>
 
-							<div className='flex items-center gap-2'>
-								<Button size='sm' onClick={handleAddFilter} className='flex items-center gap-2'>
+							<div className='flex items-center gap-2 pt-1.5'>
+								<Button size='sm' onClick={handleAddFilter} className='h-7 text-xs px-2.5 flex items-center gap-1'>
 									Add filter
 								</Button>
-								<Button variant='outline' size='sm' onClick={() => onChange([])}>
+								<Button variant='outline' size='sm' onClick={() => onChange([])} className='h-7 text-xs px-2.5'>
 									Reset filters
 								</Button>
 							</div>
-						</>
+						</div>
 					)}
 				</div>
 			</PopoverContent>
