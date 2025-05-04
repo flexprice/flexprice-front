@@ -100,8 +100,8 @@ export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterFieldType, FilterOperator[
 // !ALERT: Add more operators for each data type
 // !ALERT: currently only keep operators which we have implemented on backend
 export const DEFAULT_OPERATORS_PER_DATA_TYPE: Record<DataType, FilterOperator[]> = {
-	[DataType.STRING]: [FilterOperator.EQUAL, FilterOperator.CONTAINS],
-	[DataType.NUMBER]: [FilterOperator.EQUAL, FilterOperator.GREATER_THAN, FilterOperator.LESS_THAN],
+	[DataType.STRING]: [FilterOperator.CONTAINS, FilterOperator.EQUAL],
+	[DataType.NUMBER]: [FilterOperator.EQUAL, FilterOperator.NOT_EQUAL, FilterOperator.GREATER_THAN, FilterOperator.LESS_THAN],
 	[DataType.DATE]: [FilterOperator.EQUAL, FilterOperator.BEFORE, FilterOperator.AFTER],
 	[DataType.ARRAY]: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 };

@@ -51,8 +51,8 @@ const SelectMeter: FC<Props> = ({
 	}
 
 	const activeMeters: SelectOption[] = metersData!.items
-		.filter((meter) => meter.status === 'published')
-		.map((meter) => {
+		.filter((meter: Meter) => meter.status === 'published')
+		.map((meter: Meter) => {
 			return {
 				label: meter.name,
 				value: meter.id,
@@ -65,7 +65,7 @@ const SelectMeter: FC<Props> = ({
 				className={className}
 				error={error}
 				value={value}
-				onChange={(e) => onChange(metersData.items.find((meter) => meter.id === e) as Meter)}
+				onChange={(e) => onChange(metersData.items.find((meter: Meter) => meter.id === e) as Meter)}
 				options={activeMeters}
 				placeholder={placeholder}
 				label={label}

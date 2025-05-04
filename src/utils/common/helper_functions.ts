@@ -1,5 +1,5 @@
 import { ChargesForBillingPeriodOne } from '@/components/organisms/Subscription/PriceTable';
-import { BILLING_PERIOD } from '@/core/data/constants';
+import { BILLING_PERIOD } from '@/constants/constants';
 import { getAllISOCodes } from 'iso-country-currency';
 import { v4 as uuidv4 } from 'uuid';
 

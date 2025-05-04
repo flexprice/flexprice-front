@@ -66,6 +66,8 @@ const QueryBuilder = ({
 		setLocalSorts(selectedSorts);
 	}, [selectedSorts]);
 
+	// add string filter to the filter array if filterconsitions are empty
+
 	// Sort options
 	const handleSortChange = useCallback(
 		(sortConfigs: SortOption[]) => {

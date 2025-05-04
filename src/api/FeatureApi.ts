@@ -25,7 +25,7 @@ interface GetFeaturesResponse {
 
 interface GetFeatureByFilterPayload extends PaginationType {
 	filters: TypedBackendFilter[];
-	sorts: TypedBackendSort[];
+	sort: TypedBackendSort[];
 }
 
 class FeatureApi {

@@ -2,9 +2,9 @@ import { Button, Input, Sheet, Spacer, Textarea } from '@/components/atoms';
 import { Plan } from '@/models/Plan';
 import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { PlanApi } from '@/utils/api_requests/PlanApi';
+import { PlanApi } from '@/api/PlanApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 interface Props {
 	data?: Plan | null;

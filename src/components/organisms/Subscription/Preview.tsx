@@ -2,7 +2,7 @@ import { ChargesForBillingPeriodOne } from './PriceTable';
 import { useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatBillingPeriodForDisplay, getTotalPayableText } from '@/utils/common/helper_functions';
-import { BILLING_PERIOD } from '@/core/data/constants';
+import { BILLING_PERIOD } from '@/constants/constants';
 import { BILLING_CYCLE } from '@/models/Subscription';
 import formatDate from '@/utils/common/format_date';
 import { calculateAnniversaryBillingAnchor, calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
