@@ -12,7 +12,8 @@ import { RecurringChargesForm } from '@/components/organisms';
 import UsagePricingForm from '@/components/organisms/PlanForm/UsagePricingForm';
 import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-
+import { RectangleRadiogroup, RectangleRadiogroupOption } from '@/components/molecules';
+import { Gauge, Repeat } from 'lucide-react';
 // Types and constants
 enum ChargeType {
 	FIXED = 'FIXED',
@@ -39,6 +40,21 @@ const updatePriceInList = <T extends InternalPrice>(list: T[], index: number, up
 	return list.map((item, i) => (i === index ? { ...item, ...updates, internal_state: state } : item));
 };
 
+const chargeOptions: RectangleRadiogroupOption[] = [
+	{
+		label: 'Recurring Charges',
+		value: ChargeType.FIXED,
+		icon: Repeat,
+		description: '	Billed on a fixed schedule (monthly, yearly, etc.)',
+	},
+	{
+		label: 'Usage Charges',
+		value: ChargeType.USAGE,
+		icon: Gauge,
+		description: 'Pay only for what customers actually use',
+	},
+];
+
 const AddChargesPage = () => {
 	// Hooks and state
 	const { planId } = useParams<{ planId: string }>();
@@ -47,7 +63,6 @@ const AddChargesPage = () => {
 	const [tempPlan, setTempPlan] = useState<Partial<Plan>>({});
 	const [recurringCharges, setRecurringCharges] = useState<InternalPrice[]>([]);
 	const [usageCharges, setUsageCharges] = useState<InternalPrice[]>([]);
-
 	// Data fetching
 	const {
 		data: planData,
@@ -161,10 +176,23 @@ const AddChargesPage = () => {
 					))}
 
 					{/* Add Charge Buttons */}
-					<div className='flex gap-2'>
-						<AddChargesButton onClick={() => handleAddNewPrice(ChargeType.FIXED)} label='Add Recurring Charges' />
-						<AddChargesButton onClick={() => handleAddNewPrice(ChargeType.USAGE)} label='Add Usage Based Charges' />
-					</div>
+
+					{recurringCharges.length === 0 && usageCharges.length === 0 ? (
+						<div>
+							<RectangleRadiogroup
+								title='Select Charge Type'
+								options={chargeOptions}
+								onChange={(value) => {
+									handleAddNewPrice(value as ChargeType);
+								}}
+							/>
+						</div>
+					) : (
+						<div className='flex gap-2'>
+							<AddChargesButton onClick={() => handleAddNewPrice(ChargeType.FIXED)} label='Add Recurring Charges' />
+							<AddChargesButton onClick={() => handleAddNewPrice(ChargeType.USAGE)} label='Add Usage Based Charges' />
+						</div>
+					)}
 				</div>
 
 				{/* Save Button */}
