@@ -9,6 +9,46 @@ import { calculateAnniversaryBillingAnchor, calculateCalendarBillingAnchor } fro
 import { cn } from '@/lib/utils';
 import { Calendar, Receipt } from 'lucide-react';
 
+// daily billing period
+
+//     - calendar : Bills immediately for 1 day
+//     - anniversary:  on Jun 1 for 1 day
+
+// weekly billing period
+
+//     - calendar : Bills on june 11 for 1 week
+//     - anniversary:  Bills immediately for 1 week
+
+// monthly billing period
+
+//     - calendar : Bills on Jun 1 for 1 month
+//     - anniversary:  Bills immediately for 1 month
+
+// quarterly billing period
+
+//     - calendar : Bills on Jun 1 for 3 months
+//     - anniversary:  Bills immediately for 3 months
+
+// half yearly billing period
+
+//     - calendar : Bills on Jun 1 for 6 months
+//     - anniversary:  Bills immediately for 6 months
+
+// yearly billing period
+
+//     - calendar : Bills on Jun 1 for 1 year
+//     - anniversary:  Bills immediately for 12 year
+
+// Constants for billing period durations
+const PERIOD_DURATION: Record<BILLING_PERIOD, string> = {
+	[BILLING_PERIOD.DAILY]: '1 day',
+	[BILLING_PERIOD.WEEKLY]: '1 week',
+	[BILLING_PERIOD.MONTHLY]: '1 month',
+	[BILLING_PERIOD.QUARTERLY]: '3 months',
+	[BILLING_PERIOD.HALF_YEARLY]: '6 months',
+	[BILLING_PERIOD.ANNUAL]: '1 year',
+} as const;
+
 interface PreviewProps {
 	data: ChargesForBillingPeriodOne[];
 	startDate: Date;
@@ -21,43 +61,50 @@ interface PreviewProps {
 	} | null;
 }
 
-const PERIOD_DURATION = {
-	[BILLING_PERIOD.DAILY]: '1 day',
-	[BILLING_PERIOD.WEEKLY]: '1 week',
-	[BILLING_PERIOD.MONTHLY]: '1 month',
-	[BILLING_PERIOD.QUARTERLY]: '3 months',
-	[BILLING_PERIOD.HALF_YEARLY]: '6 months',
-	[BILLING_PERIOD.ANNUAL]: '12 months',
-} as const;
-
-const getBillingDescription = (charges: ChargesForBillingPeriodOne[], billingPeriod: BILLING_PERIOD, date: Date) => {
-	// Check if any fixed charge has ADVANCE invoice_cadence
-	const hasAdvanceCharge = charges ? charges.some((charge) => charge.type === 'FIXED' && charge.invoice_cadence === 'ADVANCE') : false;
-
-	console.log(hasAdvanceCharge, charges);
-	const period = PERIOD_DURATION[billingPeriod] || formatBillingPeriodForDisplay(billingPeriod).toLowerCase();
-
-	if (hasAdvanceCharge) {
-		return `Bills immediately for ${period}`;
-	}
-
-	return `Bills on ${formatDate(date)} for ${period}`;
+/**
+ * Determines if any charge has ADVANCE invoice cadence
+ */
+// TODO: This is a temporary function to check if any charge has ADVANCE invoice cadence
+// TODO: This should be removed once the invoice cadence is implemented
+const hasAdvanceCharge = (charges: ChargesForBillingPeriodOne[]): boolean => {
+	return charges?.some((charge) => charge.invoice_cadence === 'ADVANCE') ?? false;
 };
 
+/**
+ * Generates billing description based on charges and billing period
+ */
+const getBillingDescription = (charges: ChargesForBillingPeriodOne[], billingPeriod: BILLING_PERIOD, date: Date): string => {
+	const period = PERIOD_DURATION[billingPeriod] || formatBillingPeriodForDisplay(billingPeriod).toLowerCase();
+	return hasAdvanceCharge(charges) ? `Bills immediately for ${period}` : `Bills on ${formatDate(date)} for ${period}`;
+};
+
+/**
+ * Calculates the first invoice date based on billing cycle and period
+ */
+const calculateFirstInvoiceDate = (startDate: Date, billingPeriod: BILLING_PERIOD, billingCycle: BILLING_CYCLE): Date => {
+	return billingCycle === BILLING_CYCLE.CALENDAR
+		? calculateCalendarBillingAnchor(startDate, billingPeriod)
+		: calculateAnniversaryBillingAnchor(startDate, billingPeriod);
+};
+
+/**
+ * Component that displays subscription preview information including start date and first invoice details
+ */
 const Preview = ({ data, startDate, className, billingCycle }: PreviewProps) => {
 	const recurringCharges = useMemo(() => data.filter((charge) => charge.type === 'FIXED'), [data]);
+
 	const usageCharges = useMemo(() => data.filter((charge) => charge.type === 'USAGE'), [data]);
+
 	const recurringTotal = useMemo(() => recurringCharges.reduce((acc, charge) => acc + parseFloat(charge.amount), 0), [recurringCharges]);
 
 	const firstInvoiceDate = useMemo(() => {
-		const period = data[0]?.billing_period.toUpperCase() as BILLING_PERIOD;
-		return billingCycle === BILLING_CYCLE.CALENDAR
-			? calculateCalendarBillingAnchor(startDate, period)
-			: calculateAnniversaryBillingAnchor(startDate, period);
+		const billingPeriod = data[0]?.billing_period.toUpperCase() as BILLING_PERIOD;
+		return calculateFirstInvoiceDate(startDate, billingPeriod, billingCycle);
 	}, [billingCycle, data, startDate]);
 
 	const billingDescription = useMemo(() => {
-		return getBillingDescription(data, data[0]?.billing_period.toUpperCase() as BILLING_PERIOD, firstInvoiceDate);
+		const billingPeriod = data[0]?.billing_period.toUpperCase() as BILLING_PERIOD;
+		return getBillingDescription(data, billingPeriod, firstInvoiceDate);
 	}, [data, firstInvoiceDate]);
 
 	return (
