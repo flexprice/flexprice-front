@@ -1,5 +1,4 @@
-import { Select, DatePicker, Button, SelectOption, FormHeader, Label } from '@/components/atoms';
-import CustomerCard from '@/components/molecules/Customer/CustomerCard';
+import { Select, DatePicker, Button, SelectOption, FormHeader, Label, Toggle } from '@/components/atoms';
 import Preview from '@/components/organisms/Subscription/Preview';
 import ChargeTable from '@/components/organisms/Subscription/PriceTable';
 import UsageTable from '@/components/organisms/Subscription/UsageTable';
@@ -34,6 +33,7 @@ type SubscriptionState = {
 	startDate: Date | undefined;
 	endDate: Date | undefined;
 	billingCycle?: BILLING_CYCLE;
+	prorateCharges?: boolean;
 };
 
 // Custom hook for managing plans
@@ -99,6 +99,7 @@ const CustomerSubscription: React.FC = () => {
 		startDate: new Date(),
 		endDate: undefined,
 		billingCycle: BILLING_CYCLE.ANNIVERSARY,
+		prorateCharges: false,
 	});
 	// billingcycle options
 	const billingCycleOptions = [
@@ -246,7 +247,7 @@ const CustomerSubscription: React.FC = () => {
 		<div className={cn('flex gap-8 mt-5 relative mb-12')}>
 			<ApiDocsContent tags={['Subscriptions']} />
 			<div className='flex-[6] space-y-6 mb-12 overflow-y-auto pr-4'>
-				<CustomerCard customerId={customerId!} subscriptionData={subscriptionData?.usage} />
+				{/* <CustomerCard customerId={customerId!} subscriptionData={subscriptionData?.usage} /> */}
 
 				{subscriptionData?.usage?.charges && subscriptionData.usage.charges.length > 0 && (
 					<div>
@@ -349,6 +350,17 @@ const CustomerSubscription: React.FC = () => {
 									);
 								})}
 							</div>
+						</div>
+					)}
+					{subscriptionState.selectedPlan && (
+						<div className='mt-4'>
+							<Label label='Prorate Charges' />
+							<Toggle
+								disabled
+								description='Prorate Charges'
+								checked={subscriptionState.prorateCharges ?? false}
+								onChange={(value) => setSubscriptionState((prev) => ({ ...prev, prorateCharges: value }))}
+							/>
 						</div>
 					)}
 				</div>
