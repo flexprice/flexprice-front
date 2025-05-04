@@ -98,22 +98,6 @@ const CustomerPage = () => {
 			}>
 			<ApiDocsContent tags={['Customers']} />
 			<div>
-				<Toolbar
-					config={{
-						searchPlaceholder: 'Search by Name or lookup key',
-						enableSearch: true,
-					}}
-					filters={filters}
-					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
-				/>
-				<Toolbar
-					config={{
-						searchPlaceholder: 'Search by Name or lookup key',
-						enableSearch: true,
-					}}
-					filters={filters}
-					onFilterChange={(filterState) => setfilters(filterState as FilterState)}
-				/>
 				<CustomerTable
 					onEdit={(data) => {
 						setactiveCustomer(data);
