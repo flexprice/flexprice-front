@@ -3,7 +3,7 @@ import usePagination from '@/hooks/usePagination';
 import { PlanApi } from '@/api/PlanApi';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { billlingPeriodOptions } from '@/constants/constants';
+import { billingPeriodOptions } from '@/constants/constants';
 import { useState, useMemo } from 'react';
 import { ExpandedPlan } from '@/utils/models/transformed_plan';
 import { GetAllPlansResponse } from '@/api/PlanApi';
@@ -186,7 +186,7 @@ const PricingPage = () => {
 			value: currency.toUpperCase(),
 		}));
 
-		const allPeriodOptions = billlingPeriodOptions;
+		const allPeriodOptions = billingPeriodOptions;
 
 		// Filter available options based on selections
 		const availableCurrencyOptions = selectedBillingPeriod

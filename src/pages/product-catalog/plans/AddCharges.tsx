@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { PlanApi } from '@/api/PlanApi';
 import toast from 'react-hot-toast';
 import { AddChargesButton, InternalPrice } from '@/components/organisms/PlanForm/SetupChargesSection';
-import { billlingPeriodOptions } from '@/constants/constants';
+import { billingPeriodOptions } from '@/constants/constants';
 import { currencyOptions } from '@/constants/constants';
 import { RecurringChargesForm } from '@/components/organisms';
 import UsagePricingForm from '@/components/organisms/PlanForm/UsagePricingForm';
@@ -26,7 +26,7 @@ type PriceState = 'new' | 'edit' | 'saved';
 const getEmptyPrice = (type: ChargeType): InternalPrice => ({
 	amount: '',
 	currency: currencyOptions[0].value,
-	billing_period: billlingPeriodOptions[1].value,
+	billing_period: billingPeriodOptions[1].value,
 	type,
 	isEdit: true,
 	billing_period_count: 1,

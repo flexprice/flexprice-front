@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Plan } from '@/models/Plan';
 import { useState } from 'react';
 import { Price } from '@/models/Price';
-import { currencyOptions, billlingPeriodOptions } from '@/constants/constants';
+import { currencyOptions, billingPeriodOptions } from '@/constants/constants';
 import RecurringChargesForm from './RecurringChargesForm';
 import UsagePricingForm from './UsagePricingForm';
 import { CirclePlus } from 'lucide-react';
@@ -66,7 +66,7 @@ const SetupChargesSection: React.FC<Props> = ({ plan, setPlanField }) => {
 	const getEmptyPrice = (type: SubscriptionType): InternalPrice => ({
 		amount: '',
 		currency: currencyOptions[0].value,
-		billing_period: billlingPeriodOptions[1].value,
+		billing_period: billingPeriodOptions[1].value,
 		type,
 		isEdit: true,
 		billing_period_count: 1,

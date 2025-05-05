@@ -51,7 +51,7 @@ export const currencyOptions = Array.from(
 		]),
 	).values(),
 );
-export const billlingPeriodOptions = [
+export const billingPeriodOptions = [
 	// { label: 'Daily', value: 'DAILY' },
 	{ label: 'Weekly', value: BILLING_PERIOD.WEEKLY },
 	{ label: 'Monthly', value: BILLING_PERIOD.MONTHLY },

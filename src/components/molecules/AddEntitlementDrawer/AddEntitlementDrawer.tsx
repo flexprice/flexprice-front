@@ -2,7 +2,7 @@ import { Button, Checkbox, FormHeader, Input, Select, SelectFeature, Sheet, Spac
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 
-import { billlingPeriodOptions } from '@/constants/constants';
+import { billingPeriodOptions } from '@/constants/constants';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { Entitlement } from '@/models/Entitlement';
 import Feature, { FeatureType } from '@/models/Feature';
@@ -317,7 +317,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 										error={errors.usage_reset_period}
 										label='Usage reset'
 										placeholder='Select usage reset period'
-										options={billlingPeriodOptions}
+										options={billingPeriodOptions}
 										description='The values get reset in the given interval'
 										value={tempEntitlement.usage_reset_period ?? ''}
 										onChange={(value) => {

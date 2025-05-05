@@ -1,5 +1,5 @@
 import { NODE_ENV, NodeEnv } from '@/types/env';
-import supabase from '../services/supbase/config';
+import supabase from '../services/supabase/config';
 
 class AuthService {
 	public static async getAcessToken() {

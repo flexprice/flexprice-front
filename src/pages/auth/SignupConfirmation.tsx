@@ -1,4 +1,4 @@
-import supabase from '@/core/services/supbase/config';
+import supabase from '@/core/services/supabase/config';
 import { useUser } from '@/hooks/UserContext';
 import AuthApi from '@/api/AuthApi';
 import { useMutation } from '@tanstack/react-query';

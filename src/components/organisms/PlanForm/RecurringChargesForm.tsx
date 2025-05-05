@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
+import { billingPeriodOptions, currencyOptions } from '@/constants/constants';
 import { InternalPrice } from './SetupChargesSection';
 import { CheckboxRadioGroup, FormHeader, Input, Spacer, Button, Select } from '@/components/atoms';
 import { Label } from '@/components/ui/label';
@@ -76,7 +76,7 @@ const RecurringChargesForm = ({ price, onAdd, onUpdate, onEditClicked, onDeleteC
 			<Spacer height={'8px'} />
 			<Select
 				value={localPrice.billing_period}
-				options={billlingPeriodOptions}
+				options={billingPeriodOptions}
 				onChange={(value) => setLocalPrice({ ...localPrice, billing_period: value })}
 				label='Billing Period'
 				error={errors.billing_period}

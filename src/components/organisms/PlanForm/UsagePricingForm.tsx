@@ -5,7 +5,7 @@ import SelectMeter from './SelectMeter';
 // import { Pencil, Trash2 } from 'lucide-react';
 import { Meter } from '@/models/Meter';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
+import { billingPeriodOptions, currencyOptions } from '@/constants/constants';
 import VolumeTieredPricingForm from './VolumeTieredPricingForm';
 import { InternalPrice } from './SetupChargesSection';
 import UsageChargePreview from './UsageChargePreview';
@@ -48,7 +48,7 @@ const UsagePricingForm: FC<Props> = ({ onAdd, onUpdate, onEditClicked, onDeleteC
 		{ from: 1, up_to: 1 },
 		{ from: 2, up_to: null },
 	]);
-	const [billingPeriod, setBillingPeriod] = useState(price.billing_period || billlingPeriodOptions[1].value);
+	const [billingPeriod, setBillingPeriod] = useState(price.billing_period || billingPeriodOptions[1].value);
 	const [flatFee, setFlatFee] = useState<string>(price.amount || '');
 	const [packagedFee, setPackagedFee] = useState<{ unit: string; price: string }>({
 		unit: '',
@@ -77,7 +77,7 @@ const UsagePricingForm: FC<Props> = ({ onAdd, onUpdate, onEditClicked, onDeleteC
 					name: price.meter.name,
 				} as Meter);
 			}
-			setBillingPeriod(price.billing_period || billlingPeriodOptions[1].value);
+			setBillingPeriod(price.billing_period || billingPeriodOptions[1].value);
 
 			if (price.billing_model === 'FLAT_FEE') {
 				setFlatFee(price.amount || '');
@@ -254,7 +254,7 @@ const UsagePricingForm: FC<Props> = ({ onAdd, onUpdate, onEditClicked, onDeleteC
 			<Spacer height='8px' />
 			<Select
 				value={billingPeriod}
-				options={billlingPeriodOptions}
+				options={billingPeriodOptions}
 				onChange={(value) => {
 					setBillingPeriod(value);
 				}}

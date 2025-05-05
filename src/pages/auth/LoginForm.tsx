@@ -1,4 +1,4 @@
-import supabase from '@/core/services/supbase/config';
+import supabase from '@/core/services/supabase/config';
 import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { data, useNavigate } from 'react-router-dom';
