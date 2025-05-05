@@ -1,10 +1,9 @@
-import { SortOption } from '@/components/molecules/Table/Toolbar';
 import Customer from '@/models/Customer';
 import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 import CustomerUsage from '@/models/CustomerUsage';
 import { PaginationType } from '@/models/Pagination';
 import { Subscription, BILLING_CYCLE } from '@/models/Subscription';
-import { TypedBackendFilter, TypedBackendQueryWithSortPayload, TypedBackendSort } from '../formatters/QueryBuilder';
+import { TypedBackendFilter, TypedBackendSort } from '../formatters/QueryBuilder';
 
 export interface FilterCondition {
 	field: string;
