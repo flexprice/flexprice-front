@@ -3,14 +3,14 @@ import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOv
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ArrowUpDown, GripVertical, Trash2, X } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Combobox, Button, Select } from '@/components/atoms';
 import { SortOption, SortDirection } from '@/types/common/QueryBuilder';
-
+import { sanitizeSortConditions } from '@/types/formatters/QueryBuilder';
 interface Props {
 	options: SortOption[];
-	value?: SortOption[];
-	onChange?: (value: SortOption[]) => void;
+	value: SortOption[];
+	onChange: (value: SortOption[]) => void;
 	className?: string;
 	maxSorts?: number;
 	disabled?: boolean;
@@ -44,10 +44,24 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 				direction: SortDirection.ASC,
 			};
 			const newValue = [...value, newSort];
-			onChange?.(newValue);
+			onChange(newValue);
 			setIsOpen(true);
 		}
 	};
+
+	useEffect(() => {
+		if (value.length === 0) {
+			const updatedAtSort = options.find((field) => field.field === 'updated_at');
+			if (updatedAtSort) {
+				const newSort: SortOption = {
+					field: updatedAtSort.field,
+					label: updatedAtSort.label,
+					direction: SortDirection.DESC,
+				};
+				onChange([newSort]);
+			}
+		}
+	}, []);
 
 	const handleSortRemove = (index: number) => {
 		const newValue = [...value];
@@ -78,15 +92,20 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 		gridTemplateColumns: `minmax(${MIN_FIELD_WIDTH}px, 1fr) minmax(${MIN_DIRECTION_WIDTH}px, 1fr) auto auto`,
 	};
 
+	const appliedSorts = useMemo(() => {
+		const sanitizedValue = sanitizeSortConditions(value);
+		return sanitizedValue.length;
+	}, [value]);
+
 	return (
 		<Popover open={isOpen} onOpenChange={handleOpenChange}>
 			<PopoverTrigger disabled={disabled} asChild>
 				<Button variant='outline' size='sm' className={cn('flex items-center gap-2 text-xs', className)}>
 					<ArrowUpDown className='h-3.5 w-3.5' />
 					<span>Sort</span>
-					{value.length > 0 && (
+					{appliedSorts > 0 && (
 						<Badge variant='secondary' className='ml-1 h-5 rounded px-1.5 font-mono text-xs'>
-							{value.length}
+							{appliedSorts}
 						</Badge>
 					)}
 				</Button>

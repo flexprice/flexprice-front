@@ -44,10 +44,12 @@ export class PlanApi {
 		const response = await AxiosClient.get<GetAllPlansResponse>(url);
 		return response.items as ExpandedPlan[];
 	}
-	public static async getActiveExpandedPlan() {
+	public static async getActiveExpandedPlan(query?: PaginationType) {
 		const payload = {
-			expand: 'prices%2Cmeters',
+			expand: 'prices,meters',
 			status: 'published',
+			limit: query?.limit,
+			offset: query?.offset,
 		};
 		const url = generateQueryParams(this.baseUrl, payload);
 		const response = await AxiosClient.get<GetAllPlansResponse>(url);
