@@ -110,12 +110,6 @@ const OnboardingPage = () => {
 										}}>
 										Book a Demo
 									</Button>
-									{/* Optional reset button for testing */}
-									{process.env.NODE_ENV === 'development' && (
-										<Button variant='secondary' onClick={resetOnboarding}>
-											Reset Onboarding
-										</Button>
-									)}
 								</div>
 							</div>
 							<div className='flex-shrink-0 ml-8 w-[40%]'>

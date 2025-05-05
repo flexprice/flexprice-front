@@ -5,7 +5,7 @@ import { refetchQueries } from '@/core/tanstack/ReactQueryProvider';
 import SecretKeysApi, { CreateSecretKeyResponse } from '@/utils/api_requests/SecretKeysApi';
 import TenantApi from '@/utils/api_requests/TenantApi';
 import { useMutation } from '@tanstack/react-query';
-import { Copy, CheckCircle, Check, Eye, EyeOff, Lock, Globe, Gauge, Users, ArrowRight } from 'lucide-react';
+import { Copy, CheckCircle, Check, Eye, EyeOff, Lock, Globe, Gauge, Users, ArrowRight, ExternalLink } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { cn } from '@/lib/utils';
@@ -103,7 +103,7 @@ const OnboardingTenant = () => {
 
 	const handleStepComplete = (stepIndex: number) => {
 		if (!completedSteps.includes(stepIndex)) {
-			setCompletedSteps(prev => [...prev, stepIndex]);
+			setCompletedSteps((prev) => [...prev, stepIndex]);
 		}
 		// Move to next step
 		if (stepIndex < steps.length - 1) {
@@ -148,8 +148,8 @@ const OnboardingTenant = () => {
 			),
 		},
 		{
-			label: 'Create a Flexprice Secret Key',
-			description: 'Create a secret key to authenticate your requests to the Flexprice API.',
+			label: 'Add an API Key',
+			description: 'Use the following generated key to authenticate requests',
 			showAfterComplete: true,
 			component: (
 				<div className='flex flex-col gap-4'>
@@ -196,12 +196,22 @@ const OnboardingTenant = () => {
 		{
 			label: 'Demo Video',
 			description: 'Watch a demo video to get started',
+			showAfterComplete: true,
 			component: (
 				<div className='flex flex-col gap-4'>
 					<iframe
 						src='https://www.loom.com/embed/60d8308781254fe0bc5be341501f9fd5?sid=c034e9a8-e243-4def-ab50-976f08d56cee&amp;hideEmbedTopBar=true&amp;hide_title=true&amp;hide_owner=true&amp;hide_speed=true&amp;hide_share=true'
 						allowFullScreen
 						className='aspect-video max-w-96 max-h-96 rounded-lg overflow-clip'></iframe>
+					<div>
+						<Button
+							onClick={() => {
+								window.open('https://calendly.com/flexprice-30mins-chat/manish', '_blank');
+							}}>
+							Book a Personalized Demo
+							<ExternalLink className='h-4 w-4' />
+						</Button>
+					</div>
 				</div>
 			),
 		},
@@ -240,14 +250,8 @@ const OnboardingTenant = () => {
 
 							{/* Right side content */}
 							<div className={cn('flex-1 pb-12 transition-opacity duration-200', isUpcoming && 'opacity-50')}>
-								<h1
-									className={cn(
-										'text-base font-medium mb-2',
-										isCompleted ? 'text-green-800' : isActive ? 'text-[#3293D9]' : 'text-gray-900',
-									)}>
-									{step.label}
-								</h1>
-								<p className='text-sm text-gray-500 mb-4'>{step.description}</p>
+								<h1 className={cn('text-base font-medium mb-2')}>{step.label}</h1>
+								<p className='text-sm text-gray-500'>{step.description}</p>
 								{(isActive || step.showAfterComplete) && <div className='mt-2'>{step.component}</div>}
 							</div>
 						</div>
