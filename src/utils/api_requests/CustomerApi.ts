@@ -2,8 +2,9 @@ import { AxiosClient } from '@/core/axios/verbs';
 import Customer from '@/models/Customer';
 import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 import { PaginationType } from '@/models/Pagination';
-import { Subscription } from '@/models/Subscription';
+import { BILLING_CYCLE, Subscription } from '@/models/Subscription';
 import CustomerUsage from '@/models/CustomerUsage';
+import { generateQueryParams } from '../common/api_helper';
 interface GetCustomerResponse {
 	items: Customer[];
 	pagination: PaginationType;
@@ -26,16 +27,17 @@ interface GetCustomerEntitlementPayload {
 
 export interface CreateCustomerSubscriptionPayload {
 	customer_id: string;
-	billing_cadence: 'RECURRING';
+	billing_cadence: string;
 	billing_period: string;
 	billing_period_count: number;
 	currency: string;
-	invoice_cadence: 'ARREAR';
+	invoice_cadence: string;
 	plan_id: string;
 	start_date: string;
 	end_date: string | null;
 	lookup_key: string;
 	trial_end: string | null;
+	billing_cycle?: BILLING_CYCLE;
 	trial_start: string | null;
 }
 
@@ -50,6 +52,13 @@ interface GetUsageSummaryResponse {
 	};
 }
 
+interface GetCustomerByQueryPayload {
+	external_id?: string;
+	name?: string;
+	limit?: number;
+	offset?: number;
+}
+
 class CustomerApi {
 	private static baseUrl = '/customers';
 
@@ -57,7 +66,13 @@ class CustomerApi {
 		return await AxiosClient.get(`${this.baseUrl}/${id}`);
 	}
 	public static async getAllCustomers({ limit = 10, offset = 0 }: PaginationType): Promise<GetCustomerResponse> {
-		return await AxiosClient.get(`${this.baseUrl}?limit=${limit}&offset=${offset}`);
+		const url = generateQueryParams(this.baseUrl, { limit, offset });
+		return await AxiosClient.get(url);
+	}
+
+	public static async getCustomerByQuery(payload: GetCustomerByQueryPayload): Promise<GetCustomerResponse> {
+		const url = generateQueryParams(`${this.baseUrl}/search`, payload);
+		return await AxiosClient.get(url);
 	}
 
 	public static async deleteCustomerById(id: string): Promise<void> {

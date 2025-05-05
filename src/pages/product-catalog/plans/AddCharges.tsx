@@ -89,8 +89,8 @@ const AddChargesPage = () => {
 
 	const [tempPlan, setTempPlan] = useState<Partial<Plan>>(planData ?? {});
 
-	const existingRecurringCharges = tempPlan.prices?.filter((price) => price.type === 'FIXED');
-	const existingUsageCharges = tempPlan.prices?.filter((price) => price.type === 'USAGE');
+	const existingRecurringCharges = (tempPlan.prices ?? []).filter((price) => price.type === 'FIXED');
+	const existingUsageCharges = (tempPlan.prices ?? []).filter((price) => price.type === 'USAGE');
 
 	const canAddRecurringCharges = existingRecurringCharges?.length === 0 && recurringCharges.length === 0;
 

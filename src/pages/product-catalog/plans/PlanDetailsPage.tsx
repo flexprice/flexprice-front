@@ -20,20 +20,21 @@ import { getFeatureTypeChips } from '@/components/molecules/CustomerUsageTable/C
 import { formatAmount } from '@/components/atoms/Input/Input';
 import ChargeValueCell from './ChargeValueCell';
 import { BaseEntityStatus } from '@/types/common';
+import { BILLING_PERIOD } from '@/core/data/constants';
 
 const formatBillingPeriod = (billingPeriod: string) => {
 	switch (billingPeriod.toUpperCase()) {
-		case 'DAILY':
+		case BILLING_PERIOD.DAILY:
 			return 'Daily';
-		case 'WEEKLY':
+		case BILLING_PERIOD.WEEKLY:
 			return 'Weekly';
-		case 'MONTHLY':
+		case BILLING_PERIOD.MONTHLY:
 			return 'Monthly';
-		case 'ANNUAL':
+		case BILLING_PERIOD.ANNUAL:
 			return 'Yearly';
-		case 'QUARTERLY':
+		case BILLING_PERIOD.QUARTERLY:
 			return 'Quarterly';
-		case 'HALF_YEARLY':
+		case BILLING_PERIOD.HALF_YEARLY:
 			return 'Half Yearly';
 		default:
 			return '--';
@@ -252,7 +253,7 @@ const PlanDetailsPage = () => {
 				<DetailsCard variant='stacked' title='Plan Details' data={planDetails} />
 
 				{/* plan charges table */}
-				{(planData?.prices?.length ?? 0) > 0 && (
+				{(planData?.prices?.length ?? 0) > 0 ? (
 					<Card variant='notched'>
 						<CardHeader
 							title='Charges'
@@ -264,6 +265,16 @@ const PlanDetailsPage = () => {
 						/>
 						<FlexpriceTable columns={chargeColumns} data={planData?.prices ?? []} />
 					</Card>
+				) : (
+					<NoDataCard
+						title='Charges'
+						subtitle='No charges added to the plan yet'
+						cta={
+							<Button prefixIcon={<Plus />} onClick={() => navigate(`${RouteNames.plan}/${planId}/add-charges`)}>
+								Add
+							</Button>
+						}
+					/>
 				)}
 
 				{planData.entitlements?.length || 0 > 0 ? (

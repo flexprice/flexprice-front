@@ -2,10 +2,19 @@ export { Sidebar } from './Sidebar';
 
 export { BillableMetricTable } from './BillableMetricTable';
 
-export { Table, TableHeader, TableBody, TableHead, TableRow, TableCell, TooltipCell, RedirectCell } from './Table';
-export type { ColumnData, FlexpriceTableProps } from './Table';
-
-export { default as FlexpriceTable } from './Table';
+export {
+	Table,
+	TableHeader,
+	TableBody,
+	TableHead,
+	TableRow,
+	TableCell,
+	TooltipCell,
+	RedirectCell,
+	default as FlexpriceTable,
+	Toolbar,
+} from './Table';
+export type { ColumnData, FlexpriceTableProps, FilterState } from './Table';
 
 export { default as EventFilter } from './EventFilter';
 export type { EventFilterData } from './EventFilter';
