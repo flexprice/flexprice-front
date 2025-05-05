@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { sizes, SizeVariant } from '@/lib/sizing';
 import Label from '../Label';
 import { sizes, SizeVariant } from '@/lib/sizing';
 
