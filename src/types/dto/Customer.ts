@@ -1,8 +1,16 @@
+import { SortOption } from '@/components/molecules/Table/Toolbar';
 import Customer from '@/models/Customer';
 import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 import CustomerUsage from '@/models/CustomerUsage';
 import { PaginationType } from '@/models/Pagination';
 import { Subscription, BILLING_CYCLE } from '@/models/Subscription';
+import { TypedBackendFilter, TypedBackendQueryWithSortPayload, TypedBackendSort } from '../formatters/QueryBuilder';
+
+export interface FilterCondition {
+	field: string;
+	operator: string;
+	value: string;
+}
 
 export interface GetCustomerResponse {
 	items: Customer[];
@@ -51,9 +59,7 @@ export interface GetUsageSummaryResponse {
 	};
 }
 
-export interface GetCustomerByQueryPayload {
-	external_id?: string;
-	name?: string;
-	limit?: number;
-	offset?: number;
+export interface GetCustomerByFiltersPayload extends PaginationType {
+	filters: TypedBackendFilter[];
+	sort: TypedBackendSort[];
 }

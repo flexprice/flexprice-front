@@ -15,7 +15,7 @@ export type {
 	GetCustomerEntitlementPayload,
 	CreateCustomerSubscriptionPayload,
 	GetUsageSummaryResponse,
-	GetCustomerByQueryPayload,
+	GetCustomerByFiltersPayload as GetCustomerByQueryPayload,
 } from './Customer';
 
 export type { EntitlementFilters, EntitlementResponse } from './Entitlement';

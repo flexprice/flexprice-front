@@ -1,63 +1,17 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import Customer from '@/models/Customer';
 import { PaginationType } from '@/models/Pagination';
-import { BILLING_CYCLE, Subscription } from '@/models/Subscription';
-import CustomerUsage from '@/models/CustomerUsage';
+import { Subscription } from '@/models/Subscription';
+import {
+	GetCustomerResponse,
+	GetCustomerByFiltersPayload,
+	GetCustomerSubscriptionsResponse,
+	GetCustomerEntitlementPayload,
+	GetUsageSummaryResponse,
+	CreateCustomerSubscriptionPayload,
+	GetCustomerEntitlementsResponse,
+} from '@/types/dto/Customer';
 import { generateQueryParams } from '@/utils/common/api_helper';
-import { CustomerEntitlement } from '@/models/CustomerEntitlement';
-interface GetCustomerResponse {
-	items: Customer[];
-	pagination: PaginationType;
-}
-
-interface GetCustomerSubscriptionsResponse {
-	items: Subscription[];
-	pagination: PaginationType;
-}
-
-interface GetCustomerEntitlementsResponse {
-	customer_id: string;
-	features: CustomerEntitlement[];
-}
-
-interface GetCustomerEntitlementPayload {
-	customer_id: string;
-	feature_id?: string;
-}
-
-export interface CreateCustomerSubscriptionPayload {
-	customer_id: string;
-	billing_cadence: string;
-	billing_period: string;
-	billing_period_count: number;
-	currency: string;
-	invoice_cadence: string;
-	plan_id: string;
-	start_date: string;
-	end_date: string | null;
-	lookup_key: string;
-	trial_end: string | null;
-	billing_cycle?: BILLING_CYCLE;
-	trial_start: string | null;
-}
-
-interface GetUsageSummaryResponse {
-	customer_id: string;
-	features: CustomerUsage[];
-	pagination: PaginationType;
-	period: {
-		end_time: string;
-		period: string;
-		start_time: string;
-	};
-}
-
-interface GetCustomerByQueryPayload {
-	external_id?: string;
-	name?: string;
-	limit?: number;
-	offset?: number;
-}
 
 class CustomerApi {
 	private static baseUrl = '/customers';
@@ -70,9 +24,8 @@ class CustomerApi {
 		return await AxiosClient.get(url);
 	}
 
-	public static async getCustomerByQuery(payload: GetCustomerByQueryPayload): Promise<GetCustomerResponse> {
-		const url = generateQueryParams(`${this.baseUrl}/search`, payload);
-		return await AxiosClient.get(url);
+	public static async getCustomersByFilters(payload: GetCustomerByFiltersPayload): Promise<GetCustomerResponse> {
+		return await AxiosClient.post(`${this.baseUrl}/search`, payload);
 	}
 
 	public static async deleteCustomerById(id: string): Promise<void> {

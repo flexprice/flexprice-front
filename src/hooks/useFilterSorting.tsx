@@ -12,9 +12,9 @@ interface Props {
 	onSortChange?: (sorts: SortOption[]) => void;
 }
 
-const useFilterSorting = ({ initialFilters, initialSorts, debounceTime, onFilterChange, onSortChange }: Props) => {
-	const [filters, setFilters] = useState<FilterCondition[]>(initialFilters || []);
-	const [sorts, setSorts] = useState<SortOption[]>(initialSorts || []);
+const useFilterSorting = ({ initialFilters = [], initialSorts = [], debounceTime = 300, onFilterChange, onSortChange }: Props) => {
+	const [filters, setFilters] = useState<FilterCondition[]>(initialFilters);
+	const [sorts, setSorts] = useState<SortOption[]>(initialSorts);
 
 	const debouncedFilterChange = useMemo(
 		() =>
