@@ -10,6 +10,7 @@ import { Combobox, DatePicker, Toggle, Button, Select } from '@/components/atoms
 import { Switch } from '@/components/ui/switch';
 import FilterMultiSelect from './FilterMultiSelect';
 import { v4 as uuidv4 } from 'uuid';
+import { sanitizeFilterConditions } from '@/types/formatters/QueryBuilder';
 
 interface Props {
 	fields: FilterField[];
@@ -213,15 +214,21 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 		}
 	}, []);
 
+	// calculate the total number of filters
+	const appliedFilters = useMemo(() => {
+		const sanitizedValue = sanitizeFilterConditions(value);
+		return sanitizedValue.length;
+	}, [value]);
+
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<PopoverTrigger asChild>
 				<Button variant='outline' size='sm' className={cn('flex items-center gap-2', className)}>
 					<ListFilter className='h-4 w-4' />
 					<span>Filter</span>
-					{value.length > 0 && (
+					{appliedFilters > 0 && (
 						<Badge variant='secondary' className='ml-1 h-5 rounded px-1.5 font-mono text-xs'>
-							{value.length}
+							{appliedFilters}
 						</Badge>
 					)}
 				</Button>

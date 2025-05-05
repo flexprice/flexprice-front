@@ -66,17 +66,6 @@ const OnboardingPage = () => {
 			console.error('Error setting localStorage:', error);
 		}
 	};
-
-	// Optional: Add a method to reset onboarding (for testing or user preference)
-	const resetOnboarding = () => {
-		try {
-			localStorage.removeItem(ONBOARDING_STORAGE_KEY);
-			setShowVideoModal(true);
-		} catch (error) {
-			console.error('Error resetting localStorage:', error);
-		}
-	};
-
 	return (
 		<>
 			{showVideoModal && (
@@ -110,12 +99,6 @@ const OnboardingPage = () => {
 										}}>
 										Book a Demo
 									</Button>
-									{/* Optional reset button for testing */}
-									{process.env.NODE_ENV === 'development' && (
-										<Button variant='secondary' onClick={resetOnboarding}>
-											Reset Onboarding
-										</Button>
-									)}
 								</div>
 							</div>
 							<div className='flex-shrink-0 ml-8 w-[40%]'>

@@ -42,7 +42,7 @@ const usePlans = () => {
 	return useQuery({
 		queryKey: ['plans'],
 		queryFn: async () => {
-			const plansResponse = await PlanApi.getActiveExpandedPlan();
+			const plansResponse = await PlanApi.getActiveExpandedPlan({ limit: 1000, offset: 0 });
 			return plansResponse.map(normalizePlan);
 		},
 	});
