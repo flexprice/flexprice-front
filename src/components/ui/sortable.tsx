@@ -366,7 +366,7 @@ const SortableItem = React.forwardRef<HTMLDivElement, SortableItemProps>((props,
 				ref={composedRef}
 				style={composedStyle}
 				className={cn(
-					'focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1',
+					'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1',
 					{
 						'touch-none select-none': asHandle,
 						'cursor-default': context.flatCursor,
