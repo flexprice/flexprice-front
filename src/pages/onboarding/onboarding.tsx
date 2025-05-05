@@ -67,16 +67,6 @@ const OnboardingPage = () => {
 		}
 	};
 
-	// Optional: Add a method to reset onboarding (for testing or user preference)
-	const resetOnboarding = () => {
-		try {
-			localStorage.removeItem(ONBOARDING_STORAGE_KEY);
-			setShowVideoModal(true);
-		} catch (error) {
-			console.error('Error resetting localStorage:', error);
-		}
-	};
-
 	return (
 		<>
 			{showVideoModal && (
