@@ -4,17 +4,39 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import CustomerApi from '@/api/CustomerApi';
 import Customer from '@/models/Customer';
-import { Plus } from 'lucide-react';
+import { Plus, LinkIcon } from 'lucide-react';
 import { Country, State, City, IState } from 'country-state-city';
 import { z } from 'zod';
 import { invalidateQueries, refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { logger } from '@/utils/common/Logger';
+import { useUser } from '@/hooks/UserContext';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface Props {
 	data?: Customer;
 	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
 	trigger?: React.ReactNode;
+}
+
+// Type for stored connections
+interface StoredConnection {
+	id: string;
+	provider: string;
+	name: string;
+	code: string;
+	apiKey: string;
+}
+
+// Helper to get storage key
+const getStorageKey = (userId: string) => `connections_${userId}`;
+
+// Helper to mask sensitive information
+function maskCode(code: string) {
+	if (!code) return '********';
+	if (code.length <= 8) return '*'.repeat(code.length);
+	return code.slice(0, 4) + '*'.repeat(4) + code.slice(-4);
 }
 
 const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) => {
@@ -24,6 +46,22 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 	const [internalOpen, setInternalOpen] = useState(false);
 	const isControlled = open !== undefined && onOpenChange !== undefined;
 	const [showBillingDetails, setShowBillingDetails] = useState(false);
+
+	// Connection linking
+	const [linkConnection, setLinkConnection] = useState(false);
+	const [selectedConnection, setSelectedConnection] = useState<string>('');
+	const [availableConnections, setAvailableConnections] = useState<StoredConnection[]>([]);
+	const { user } = useUser();
+
+	// Load available connections from localStorage
+	useEffect(() => {
+		if (!user?.id) return;
+		const key = getStorageKey(user.id);
+		const allConnections = JSON.parse(localStorage.getItem(key) || '[]');
+		// Filter only Stripe connections
+		const stripeConnections = allConnections.filter((c: StoredConnection) => c.provider === 'stripe');
+		setAvailableConnections(stripeConnections);
+	}, [user]);
 
 	const handleChange = (name: keyof typeof formData, value: string | undefined) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
@@ -73,14 +111,11 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 				}))
 			: [];
 
-	// const timezoneOptions: SelectOption[] = formData.address_country
-	// 	? Country.getCountryByCode(formData.address_country)?.timezones?.map(({ zoneName, abbreviation }) => ({
-	// 		label: zoneName,
-	// 		value: abbreviation,
-	// 	})) || []
-	// 	: [];
-
-	// const phoneCode = formData.address_country ? Country.getCountryByCode(formData.address_country)?.phonecode : '+91';
+	// Connection options for the dropdown
+	const connectionOptions: SelectOption[] = availableConnections.map((connection) => ({
+		label: `${connection.name} (${maskCode(connection.code)})`,
+		value: connection.id,
+	}));
 
 	useEffect(() => {
 		if (!isEdit) {
@@ -128,39 +163,66 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 			setErrors(newErrors);
 			return false;
 		}
+
+		// Custom validation for connection
+		if (linkConnection && !selectedConnection) {
+			setErrors((prev) => ({ ...prev, connection: 'Please select a connection' }));
+			return false;
+		}
+
 		setErrors({});
 		return true;
 	};
 
 	const { mutate: createCustomer, isPending } = useMutation({
 		mutationFn: async () => {
-			if (data) {
-				const updatedData = {
-					email: formData.email || undefined,
-					name: formData.name || undefined,
-					address_city: formData.address_city || '',
-					address_country: formData.address_country || '',
-					address_line1: formData.address_line1 || undefined,
-					address_line2: formData.address_line2 || undefined,
-					address_state: activeState?.name || '',
-					phone: formData.phone || undefined,
-					timezone: formData.timezone || undefined,
-				};
+			// Get connection details if linked
+			const connectionData = linkConnection && selectedConnection ? availableConnections.find((c) => c.id === selectedConnection) : null;
 
-				return await CustomerApi.updateCustomer(updatedData as Customer, data.id);
+			// Mock payload structure with connection
+			const payload = {
+				customer: {
+					...(data
+						? {
+								email: formData.email || undefined,
+								name: formData.name || undefined,
+								address_city: formData.address_city || '',
+								address_country: formData.address_country || '',
+								address_line1: formData.address_line1 || undefined,
+								address_line2: formData.address_line2 || undefined,
+								address_state: activeState?.name || '',
+								phone: formData.phone || undefined,
+								timezone: formData.timezone || undefined,
+							}
+						: {
+								email: formData.email!,
+								name: formData.name,
+								external_id: formData.external_id!,
+								address_city: formData.address_city,
+								address_country: formData.address_country || undefined,
+								address_state: activeState?.name || undefined,
+								address_line1: formData.address_line1 || undefined,
+								address_line2: formData.address_line2 || undefined,
+								phone: formData.phone || undefined,
+								timezone: formData.timezone || undefined,
+							}),
+				},
+				connection: connectionData
+					? {
+							provider: 'stripe',
+							connection_id: connectionData.id,
+							connection_name: connectionData.name,
+						}
+					: undefined,
+			};
+
+			console.log('Customer payload with connection:', payload);
+
+			// Keep the original API calls for now
+			if (data) {
+				return await CustomerApi.updateCustomer(payload.customer as Customer, data.id);
 			} else {
-				return await CustomerApi.createCustomer({
-					email: formData.email!,
-					name: formData.name,
-					external_id: formData.external_id!,
-					address_city: formData.address_city,
-					address_country: formData.address_country || undefined,
-					address_state: activeState?.name || undefined,
-					address_line1: formData.address_line1 || undefined,
-					address_line2: formData.address_line2 || undefined,
-					phone: formData.phone || undefined,
-					timezone: formData.timezone || undefined,
-				});
+				return await CustomerApi.createCustomer(payload.customer as any);
 			}
 		},
 
@@ -173,9 +235,6 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 				setFormData({});
 			}
 
-			// if (!details) {
-			// 	toast.error('Error adding customer');
-			// } else
 			if (data) {
 				toast.success('Customer updated successfully');
 			} else {
@@ -196,7 +255,7 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 		}
 	};
 
-	const isCtaDisabled = !formData.name || !formData.external_id;
+	const isCtaDisabled = !formData.name || !formData.external_id || (linkConnection && !selectedConnection);
 
 	return (
 		<div>
@@ -236,6 +295,41 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 								onChange={(e) => handleChange('email', e)}
 								error={errors.email}
 							/>
+						</div>
+					</div>
+
+					{/* Payment integration section */}
+					<div className='relative card !p-4 !mb-6'>
+						<span className='absolute -top-4 left-2 text-[#18181B] text-sm bg-white font-medium px-2 py-1'>Payment Integration</span>
+						<div className='space-y-4'>
+							<div className='flex items-center justify-between'>
+								<div className='flex items-center space-x-2'>
+									<LinkIcon className='h-4 w-4 text-muted-foreground' />
+									<Label htmlFor='link-payment' className='text-sm font-medium'>
+										Link Stripe Payment Account
+									</Label>
+								</div>
+								<Switch id='link-payment' checked={linkConnection} onCheckedChange={setLinkConnection} />
+							</div>
+
+							{linkConnection && (
+								<div className='space-y-2'>
+									{availableConnections.length === 0 ? (
+										<div className='text-sm text-amber-600 p-2 bg-amber-50 rounded-md'>
+											No Stripe connections available. Please add a connection in the Integrations section first.
+										</div>
+									) : (
+										<Select
+											label='Select Stripe Connection'
+											placeholder='Choose a payment connection'
+											options={connectionOptions}
+											value={selectedConnection}
+											onChange={setSelectedConnection}
+											description='This will link the customer to your Stripe account'
+										/>
+									)}
+								</div>
+							)}
 						</div>
 					</div>
 
@@ -308,24 +402,6 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 										onChange={(e) => handleChange('address_city', e)}
 									/>
 								</div>
-
-								{/* <Input
-									label='Phone'
-									type='number'
-									placeholder='Enter Phone Number'
-									value={formData.phone || ''}
-									inputPrefix={phoneCode || '+91-'}
-									onChange={(e) => handleChange('phone', e)}
-									error={errors.phone}
-								/>
-								<Select
-									label='Timezone'
-									placeholder='Select Timezone'
-									options={timezoneOptions}
-									value={formData.timezone}
-									noOptionsText='No timezones Available'
-									onChange={(e) => handleChange('timezone', e)}
-								/> */}
 							</div>
 						</div>
 					)}

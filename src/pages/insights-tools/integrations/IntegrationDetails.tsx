@@ -1,63 +1,93 @@
 import { useParams } from 'react-router-dom';
 import { integrations } from './integrationsData';
 import { cn } from '@/lib/utils';
-import { Button, FormHeader, Loader, Page } from '@/components/atoms';
-import { useState } from 'react';
+import { Button, FormHeader, Page } from '@/components/atoms';
+import { useState, useEffect } from 'react';
 import IntegrationDrawer from '@/components/molecules/IntegrationDrawer/IntegrationDrawer';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import IntegrationsApi from '@/api/IntegrationsApi';
-import { TrashIcon } from 'lucide-react';
+import { PencilIcon, TrashIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ApiDocsContent } from '@/components/molecules';
+import { generateUniqueId } from '@/utils/common/helper_functions';
+import { useUser } from '@/hooks/UserContext';
+
+const getStorageKey = (userId: string) => `connections_${userId}`;
+
+function maskCode(code: string, options = { start: 1, end: 4, maskChar: '*', maskLength: 4, defaultMask: '********' }) {
+	if (typeof code !== 'string' || code.length === 0) return options.defaultMask;
+
+	const { start, end, maskChar, maskLength } = options;
+
+	// If code is too short to preserve visible chars
+	if (code.length <= start + end) {
+		return maskChar.repeat(code.length);
+	}
+
+	return code.slice(0, start) + maskChar.repeat(maskLength) + code.slice(code.length - end);
+}
 
 const IntegrationDetails = () => {
 	const { id: name } = useParams() as { id: string };
 	const integration = integrations.find((integration) => integration.name.toLocaleLowerCase() === name.toLocaleLowerCase())!;
+	const { user } = useUser();
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [editingConnection, setEditingConnection] = useState<any | null>(null);
+	const [connections, setConnections] = useState<any[]>([]);
 
-	// Query to check if integration exists
-	const {
-		data: existingIntegration,
-		isLoading: isCheckingIntegration,
-		refetch: refetchIntegration,
-	} = useQuery({
-		queryKey: ['integration', name],
-		queryFn: async () => {
-			return await IntegrationsApi.getIntegration(name);
-		},
-	});
+	// Load connections from localStorage
+	useEffect(() => {
+		if (!user?.id) return;
+		const key = getStorageKey(user.id);
+		const allConnections = JSON.parse(localStorage.getItem(key) || '[]');
+		setConnections(allConnections.filter((c: any) => c.provider === name));
+	}, [user, name]);
 
-	// Mutation for uninstalling integration
-	const { mutate: uninstallIntegration, isPending: isUninstallingIntegration } = useMutation({
-		mutationFn: async (id: string) => {
-			return await IntegrationsApi.uninstallIntegration(id);
-		},
-		onSuccess: () => {
-			toast.success(`${integration.name} integration uninstalled successfully`);
-			refetchIntegration();
-		},
-		onError: (error: ServerError) => {
-			console.error(error);
-			toast.error(error.error.message || `Failed to uninstall ${integration.name} integration. Please try again.`);
-		},
-	});
-
-	const handleUninstall = () => {
-		uninstallIntegration(existingIntegration?.items[0].id || '');
+	// Save connections to localStorage
+	const saveConnections = (updated: any[]) => {
+		if (!user?.id) return;
+		const key = getStorageKey(user.id);
+		// Get all connections, update only those for this provider
+		const allConnections = JSON.parse(localStorage.getItem(key) || '[]');
+		const filtered = allConnections.filter((c: any) => c.provider !== name);
+		const merged = [...filtered, ...updated];
+		localStorage.setItem(key, JSON.stringify(merged));
+		setConnections(updated);
 	};
 
-	const handleInstall = () => {
+	// Add or update connection
+	const handleSaveConnection = (connection: any) => {
+		let updated;
+		if (connection.id) {
+			// Edit
+			updated = connections.map((c) => (c.id === connection.id ? connection : c));
+			toast.success('Connection updated');
+		} else {
+			// Add
+			const newConn = { ...connection, id: generateUniqueId(), provider: name };
+			updated = [...connections, newConn];
+			toast.success('Connection added');
+		}
+		saveConnections(updated);
+		setIsDrawerOpen(false);
+		setEditingConnection(null);
+	};
+
+	// Delete connection
+	const handleDeleteConnection = (id: string) => {
+		const updated = connections.filter((c) => c.id !== id);
+		saveConnections(updated);
+		toast.success('Connection deleted');
+	};
+
+	// Open drawer for add/edit
+	const handleAdd = () => {
+		setEditingConnection(null);
 		setIsDrawerOpen(true);
 	};
-
-	// Determine if integration is installed
-	const isInstalled = existingIntegration?.items && existingIntegration.items.length > 0;
-
-	// Handle loading state
-	if (isCheckingIntegration) {
-		return <Loader />;
-	}
+	const handleEdit = (connection: any) => {
+		setEditingConnection(connection);
+		setIsDrawerOpen(true);
+	};
 
 	return (
 		<Page>
@@ -85,69 +115,58 @@ const IntegrationDetails = () => {
 					</div>
 				</div>
 				<div className='flex gap-2 items-center'>
-					{/* Installation/Uninstallation buttons */}
 					{integration.premium ? (
 						<Button disabled variant='outline' className='flex gap-2 items-center'>
 							Coming Soon
 						</Button>
-					) : isInstalled ? (
-						<Button variant='outline' onClick={handleUninstall} disabled={isUninstallingIntegration} className='flex gap-2 items-center'>
-							{isUninstallingIntegration ? (
-								'Uninstalling...'
-							) : (
-								<>
-									<TrashIcon className='size-4' />
-									Uninstall
-								</>
-							)}
-						</Button>
 					) : (
-						<Button onClick={handleInstall} className='flex gap-2 items-center'>
-							Install
+						<Button onClick={handleAdd} className='flex gap-2 items-center'>
+							Add a connection
 						</Button>
 					)}
 				</div>
 			</div>
 
-			{/* Integration Drawer */}
+			{/* Integration Drawer for Add/Edit */}
 			<IntegrationDrawer
 				isOpen={isDrawerOpen}
-				onOpenChange={setIsDrawerOpen}
+				onOpenChange={(open) => {
+					setIsDrawerOpen(open);
+					if (!open) setEditingConnection(null);
+				}}
 				provider={name}
 				providerName={integration.name}
-				onSuccess={() => refetchIntegration()}
+				connection={editingConnection}
+				onSave={handleSaveConnection}
 			/>
 
-			{/* Display account details when installed */}
-			{/* {isInstalled && (
-				<div className=' mt-6'>
-					<FormHeader variant='form-component-title' title='Installed Accounts' />
+			{/* List all connections for this provider */}
+			{connections.length > 0 && (
+				<div className='mt-6'>
+					<FormHeader variant='form-component-title' title='Connected Accounts' />
 					<div className='card'>
-						{existingIntegration?.items.map((item, idx) => (
-							<div key={idx} className='flex items-center justify-between text-sm p-3 border-b last:border-b-0'>
-								<p className='text-gray-900'>{item.display_id || item.name}</p>
-								<div className='flex items-center gap-2'>
-									<span className={cn(
-										'text-xs px-2 py-1 rounded-md',
-										item.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-									)}>
-										{item.status}
-									</span>
-									<Button
-										variant='outline'
-										size='icon'
-										className='ml-auto'
-										onClick={handleUninstall}
-										disabled={isUninstallingIntegration}
-									>
-										<TrashIcon className='size-4' />
-									</Button>
+						{connections.map((item, idx) => {
+							const maskedCode = maskCode(item.code);
+							return (
+								<div key={idx} className='flex items-center justify-between text-sm p-3 border-b last:border-b-0'>
+									<div>
+										<p className='text-gray-900 font-medium'>{item.name}</p>
+										{item.code && <p className='text-xs text-gray-500'>{maskedCode}</p>}
+									</div>
+									<div className='flex items-center gap-2'>
+										<Button className='hidden' variant='outline' size='icon' onClick={() => handleEdit(item)}>
+											<PencilIcon className='size-4' />
+										</Button>
+										<Button variant='outline' size='icon' onClick={() => handleDeleteConnection(item.id)}>
+											<TrashIcon className='size-4' />
+										</Button>
+									</div>
 								</div>
-							</div>
-						))}
+							);
+						})}
 					</div>
 				</div>
-			)} */}
+			)}
 
 			{/* Details section */}
 			<div className='card space-y-6 mt-6'>
