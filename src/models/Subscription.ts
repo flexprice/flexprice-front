@@ -1,4 +1,6 @@
 import Customer from './Customer';
+import { BILLING_CADENCE, INVOICE_CADENCE } from './Invoice';
+import { BILLING_PERIOD } from '@/constants/constants';
 import { Plan } from './Plan';
 
 export interface LineItem {
@@ -68,10 +70,10 @@ export interface Subscription {
 	readonly cancel_at_period_end: boolean;
 	readonly trial_start: string;
 	readonly trial_end: string;
-	readonly billing_cadence: string;
-	readonly billing_period: string;
+	readonly billing_cadence: BILLING_CADENCE;
+	readonly billing_period: BILLING_PERIOD;
 	readonly billing_period_count: number;
-	readonly invoice_cadence: string;
+	readonly invoice_cadence: INVOICE_CADENCE;
 	readonly version: number;
 	readonly active_pause_id: string;
 	readonly pause_status: string;
@@ -108,4 +110,25 @@ export interface Charge {
 export enum BILLING_CYCLE {
 	ANNIVERSARY = 'anniversary',
 	CALENDAR = 'calendar',
+}
+
+export enum CREDIT_SCOPE {
+	PLAN = 'plan',
+	SUBSCRIPTION = 'subscription',
+}
+
+export interface CreditGrant {
+	readonly id: string;
+	readonly amount: number;
+	readonly cadence: BILLING_CADENCE;
+	readonly currency: string;
+	readonly expire_in_days: number;
+	readonly metadata: Record<string, any>;
+	readonly name: string;
+	readonly period: BILLING_PERIOD;
+	readonly period_count: number;
+	readonly plan_id: string;
+	readonly priority: number;
+	readonly scope: CREDIT_SCOPE;
+	readonly subscription_id: string;
 }
