@@ -651,7 +651,7 @@ const SubscriptionForm = ({
 						return (
 							<div
 								key={index}
-								className={`group flex items-center justify-between p-2 border border-gray-200 rounded-md bg-white hover:bg-gray-50 mb-2 ${state.isPhaseEditing && !isSelected ? 'opacity-50 border-gray-300' : ''}`}>
+								className={`group flex items-center justify-between p-2 border border-gray-200 rounded-md bg-white hover:bg-gray-50 mb-2 ${state.isPhaseEditing ? 'opacity-50 border-gray-300' : ''}`}>
 								<div
 									className={`flex-1 ${state.isPhaseEditing ? 'cursor-not-allowed' : 'cursor-pointer'}`}
 									onClick={() => !state.isPhaseEditing && handlePhaseChange(index)}>
@@ -888,6 +888,7 @@ const CustomerSubscription: React.FC = () => {
 							startDate={subscriptionState.startDate!}
 							data={subscriptionState.prices?.charges[subscriptionState.billingPeriod][subscriptionState.currency] ?? []}
 							selectedPlan={subscriptionState.prices}
+							phases={subscriptionState.phases}
 						/>
 					)}
 				</div>

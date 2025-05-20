@@ -1,6 +1,5 @@
 import { ChargesForBillingPeriodOne } from './PriceTable';
 import { useMemo } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { formatBillingPeriodForDisplay, getTotalPayableText } from '@/utils/common/helper_functions';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { BILLING_CYCLE } from '@/models/Subscription';
@@ -8,38 +7,9 @@ import formatDate from '@/utils/common/format_date';
 import { calculateAnniversaryBillingAnchor, calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
 import { cn } from '@/lib/utils';
 import { Calendar, Receipt } from 'lucide-react';
+import TimelinePreview, { PreviewTimelineItem } from './TimelinePreview';
+import { SubscriptionPhase } from '@/types/dto/Customer';
 
-// daily billing period
-
-//     - calendar : Bills immediately for 1 day
-//     - anniversary:  on Jun 1 for 1 day
-
-// weekly billing period
-
-//     - calendar : Bills on june 11 for 1 week
-//     - anniversary:  Bills immediately for 1 week
-
-// monthly billing period
-
-//     - calendar : Bills on Jun 1 for 1 month
-//     - anniversary:  Bills immediately for 1 month
-
-// quarterly billing period
-
-//     - calendar : Bills on Jun 1 for 3 months
-//     - anniversary:  Bills immediately for 3 months
-
-// half yearly billing period
-
-//     - calendar : Bills on Jun 1 for 6 months
-//     - anniversary:  Bills immediately for 6 months
-
-// yearly billing period
-
-//     - calendar : Bills on Jun 1 for 1 year
-//     - anniversary:  Bills immediately for 12 year
-
-// Constants for billing period durations
 const PERIOD_DURATION: Record<BILLING_PERIOD, string> = {
 	[BILLING_PERIOD.DAILY]: '1 day',
 	[BILLING_PERIOD.WEEKLY]: '1 week',
@@ -59,6 +29,7 @@ interface PreviewProps {
 		id: string;
 		name: string;
 	} | null;
+	phases: SubscriptionPhase[];
 }
 
 /**
@@ -90,61 +61,60 @@ const calculateFirstInvoiceDate = (startDate: Date, billingPeriod: BILLING_PERIO
 /**
  * Component that displays subscription preview information including start date and first invoice details
  */
-const Preview = ({ data, startDate, className, billingCycle }: PreviewProps) => {
+const Preview = ({ data, startDate, className, billingCycle, phases }: PreviewProps) => {
 	const recurringCharges = useMemo(() => data.filter((charge) => charge.type === 'FIXED'), [data]);
 
 	const usageCharges = useMemo(() => data.filter((charge) => charge.type === 'USAGE'), [data]);
 
 	const recurringTotal = useMemo(() => recurringCharges.reduce((acc, charge) => acc + parseFloat(charge.amount), 0), [recurringCharges]);
 
+	const billingPeriod = useMemo(() => data[0]?.billing_period.toUpperCase() as BILLING_PERIOD, [data]);
+
 	const firstInvoiceDate = useMemo(() => {
-		const billingPeriod = data[0]?.billing_period.toUpperCase() as BILLING_PERIOD;
 		return startDate ? calculateFirstInvoiceDate(startDate, billingPeriod, billingCycle) : undefined;
-	}, [billingCycle, data, startDate]);
+	}, [billingCycle, billingPeriod, startDate]);
 
 	const billingDescription = useMemo(() => {
-		const billingPeriod = data[0]?.billing_period.toUpperCase() as BILLING_PERIOD;
 		return firstInvoiceDate ? getBillingDescription(data, billingPeriod, firstInvoiceDate) : '';
-	}, [data, firstInvoiceDate]);
+	}, [data, billingPeriod, firstInvoiceDate]);
+
+	const timelineItems = useMemo(() => {
+		const items: PreviewTimelineItem[] = phases.map((phase, index) => ({
+			icon: <Calendar className='h-[22px] w-[22px] text-gray-500 shrink-0' />,
+			subtitle: index === 0 ? 'Subscription Start' : 'Subscription Updates',
+			label: formatDate(phase.start_date),
+		}));
+
+		// Insert first invoice preview after the first item
+		const invoicePreview: PreviewTimelineItem = {
+			icon: <Receipt className='h-[22px] w-[22px] text-gray-500 shrink-0' />,
+			subtitle: (
+				<div>
+					<p className='text-sm text-gray-600'>Amount due: {getTotalPayableText(recurringCharges, usageCharges, recurringTotal)}</p>
+					<p className='text-sm text-gray-600'>{billingDescription}</p>
+				</div>
+			),
+			label: `First invoice: ${firstInvoiceDate ? formatDate(firstInvoiceDate) : ''}`,
+		};
+
+		const updatedItems = [items[0], invoicePreview, ...items.slice(1)];
+
+		// Add end date if it exists
+		const lastPhase = phases[phases.length - 1];
+		if (lastPhase.end_date) {
+			updatedItems.push({
+				icon: <Calendar className='h-[22px] w-[22px] text-gray-500 shrink-0' />,
+				subtitle: 'Subscription ends',
+				label: formatDate(lastPhase.end_date),
+			});
+		}
+
+		return updatedItems;
+	}, [phases, firstInvoiceDate, recurringCharges, usageCharges, recurringTotal, billingDescription]);
 
 	return (
 		<div className={cn('w-full', className)}>
-			<Card className='bg-white border border-gray-200'>
-				<CardContent className='p-5'>
-					<div className='space-y-6'>
-						{/* Timeline container */}
-						<div className='relative'>
-							{/* Connecting line */}
-							<div className='absolute left-[11px] top-[28px] h-[50px] border-l-2 border-dashed border-gray-200'></div>
-
-							<div className='space-y-8'>
-								{/* Subscription Start */}
-								<div className='flex gap-3 items-start'>
-									<Calendar className='h-[22px] w-[22px] text-gray-500 shrink-0' />
-									<div className='space-y-1.5'>
-										<p className='text-base font-medium text-gray-900'>{startDate ? formatDate(startDate) : ''}</p>
-										<p className='text-sm text-gray-600'>Subscription starts</p>
-									</div>
-								</div>
-
-								{/* First Invoice */}
-								<div className='flex gap-3 items-start'>
-									<Receipt className='h-[22px] w-[22px] text-gray-500 shrink-0' />
-									<div className='space-y-1.5'>
-										<p className='text-base font-medium text-gray-900'>{`First invoice: ${firstInvoiceDate ? formatDate(firstInvoiceDate) : ''}`}</p>
-										<div>
-											<p className='text-sm text-gray-600'>
-												Amount due: {getTotalPayableText(recurringCharges, usageCharges, recurringTotal)}
-											</p>
-											<p className='text-sm text-gray-600'>{billingDescription}</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
+			<TimelinePreview items={timelineItems} />
 		</div>
 	);
 };

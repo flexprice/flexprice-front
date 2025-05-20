@@ -90,8 +90,6 @@ const CreditGrantTable: React.FC<Props> = ({ data, onChange, disabled, getEmptyC
 					<FormHeader className='mb-0' title='Credit Grants' variant='sub-header' />
 					<AddButton
 						size='sm'
-						label='Add Credit'
-						variant='outline'
 						onClick={() => {
 							setSelectedCreditGrant(null);
 							setIsOpen(true);

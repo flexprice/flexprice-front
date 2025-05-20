@@ -50,6 +50,8 @@ export interface CreateCustomerSubscriptionPayload {
 	billing_cycle?: BILLING_CYCLE;
 	phases?: SubscriptionPhase[];
 	credit_grants?: CreditGrant[];
+	commitment_amount?: number;
+	overage_factor?: number;
 }
 
 export interface GetUsageSummaryResponse {
