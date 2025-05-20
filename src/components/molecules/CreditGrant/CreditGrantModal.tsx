@@ -77,12 +77,7 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 							variant='formatted-number'
 							value={formData.amount?.toString()}
 							onChange={(value) => {
-								const parsedValue = parseFloat(value);
-								if (isNaN(parsedValue)) {
-									setFormData((prev) => ({ ...prev, amount: undefined }));
-								} else {
-									setFormData((prev) => ({ ...prev, amount: parsedValue }));
-								}
+								setFormData((prev) => ({ ...prev, amount: value as any }));
 							}}
 						/>
 					</div>
@@ -98,6 +93,7 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 								decimalSeparator: ',',
 								thousandSeparator: ',',
 							}}
+							suffix='days'
 							value={formData.expire_in_days?.toString()}
 							onChange={(value) => setFormData((prev) => ({ ...prev, expire_in_days: parseInt(value) || undefined }))}
 						/>

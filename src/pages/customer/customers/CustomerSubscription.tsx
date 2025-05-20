@@ -43,10 +43,6 @@ type SubscriptionFormState = {
 	billingPeriod: BILLING_PERIOD;
 	currency: string;
 	billingPeriodOptions: SelectOption[];
-	startDate: Date | undefined;
-	endDate: Date | undefined;
-	billingCycle: BILLING_CYCLE;
-	prorate_charges: boolean;
 
 	// Subscription Phase
 	phases: SubscriptionPhase[];
@@ -172,7 +168,7 @@ const SubscriptionForm = ({
 		const defaultCurrency = currencies.includes(state.currency) ? state.currency : currencies[0];
 
 		// Create a new phase with the default values
-		const newPhase = getEmptyPhase(state.billingCycle);
+		const newPhase = getEmptyPhase();
 
 		// reset phases and add a new phase with the default values
 		setState({
@@ -220,8 +216,6 @@ const SubscriptionForm = ({
 			line_items: [],
 			credit_grants: [],
 			prorate_charges: false,
-			commitment_amount: 0,
-			overage_factor: 1,
 		};
 	};
 
@@ -230,7 +224,7 @@ const SubscriptionForm = ({
 			id: uniqueId(),
 			amount: 0,
 			currency: state.currency,
-			period: state.billingPeriod,
+			period: state.billingPeriod.toUpperCase() as BILLING_PERIOD,
 			name: 'Free Credits',
 			scope: CREDIT_SCOPE.SUBSCRIPTION,
 			cadence: BILLING_CADENCE.ONETIME,
@@ -330,7 +324,7 @@ const SubscriptionForm = ({
 				return prev;
 			}
 
-			const newPhase = getEmptyPhase(prev.billingCycle);
+			const newPhase = getEmptyPhase();
 			// Set the start date of the new phase to the end date of the last phase
 			if (prev.phases.length > 0) {
 				if (lastPhase.end_date) {
@@ -584,7 +578,7 @@ const SubscriptionForm = ({
 										<Toggle
 											disabled
 											description='Prorate Charges'
-											checked={state.prorate_charges ?? false}
+											checked={phase.prorate_charges ?? false}
 											onChange={(value) => setState((prev) => ({ ...prev, prorate_charges: value }))}
 										/>
 									</div>
@@ -598,15 +592,9 @@ const SubscriptionForm = ({
 												label='Commitment Amount'
 												inputPrefix={getCurrencySymbol(state.currency)}
 												onChange={(e) => {
-													if (e === '') {
-														updatePhase(index, {
-															commitment_amount: 0,
-														});
-													} else {
-														updatePhase(index, {
-															commitment_amount: parseFloat(e),
-														});
-													}
+													updatePhase(index, {
+														commitment_amount: e as any,
+													});
 												}}
 											/>
 										</span>
@@ -614,18 +602,12 @@ const SubscriptionForm = ({
 											<Input
 												placeholder='1.3'
 												value={phase.overage_factor?.toString() ?? ''}
-												variant='formatted-number'
+												variant='number'
 												label='Overage Factor'
 												onChange={(e) => {
-													if (e === '') {
-														updatePhase(index, {
-															overage_factor: 1,
-														});
-													} else {
-														updatePhase(index, {
-															overage_factor: parseFloat(e),
-														});
-													}
+													updatePhase(index, {
+														overage_factor: e as any,
+													});
 												}}
 											/>
 										</span>
@@ -691,13 +673,13 @@ const SubscriptionForm = ({
 				</div>
 			)}
 
-			{state.startDate && state.endDate && (
+			{/* {state.startDate && state.endDate && (
 				<div className='mt-4 p-3 bg-blue-50 rounded-md text-sm'>
 					<p className='font-medium'>Subscription Period:</p>
 					<p>From: {state.startDate.toLocaleDateString()}</p>
 					<p>To: {state.endDate ? state.endDate.toLocaleDateString() : 'Forever'}</p>
 				</div>
-			)}
+			)} */}
 		</div>
 	);
 };
@@ -720,10 +702,6 @@ const CustomerSubscription: React.FC = () => {
 		billingPeriod: BILLING_PERIOD.MONTHLY,
 		currency: '',
 		billingPeriodOptions: [],
-		startDate: new Date(),
-		endDate: undefined,
-		billingCycle: BILLING_CYCLE.ANNIVERSARY,
-		prorate_charges: false,
 		phases: [],
 		selectedPhase: 0,
 		phaseStates: [],
@@ -762,10 +740,6 @@ const CustomerSubscription: React.FC = () => {
 						label: toSentenceCase(period.replace('_', ' ')),
 						value: period,
 					})),
-					startDate: new Date(subscriptionData.details.start_date),
-					endDate: subscriptionData.details.end_date ? new Date(subscriptionData.details.end_date) : undefined,
-					billingCycle: subscriptionData.details.billing_cycle as BILLING_CYCLE,
-					prorate_charges: false,
 					phases: [initialPhase],
 					selectedPhase: 0,
 					phaseStates: [SubscriptionPhaseState.SAVED],
@@ -796,20 +770,10 @@ const CustomerSubscription: React.FC = () => {
 	});
 
 	const handleSubscriptionSubmit = () => {
-		const { billingPeriod, selectedPlan, currency, startDate, endDate, billingCycle, phases } = subscriptionState;
+		const { billingPeriod, selectedPlan, currency, phases } = subscriptionState;
 
 		if (!billingPeriod || !selectedPlan) {
 			toast.error('Please select a plan and billing period.');
-			return;
-		}
-
-		if (!billingCycle) {
-			toast.error('Please select a billing cycle.');
-			return;
-		}
-
-		if (!startDate) {
-			toast.error('Please select a start date.');
 			return;
 		}
 
@@ -818,28 +782,68 @@ const CustomerSubscription: React.FC = () => {
 			return;
 		}
 
+		phases.forEach((phase, index) => {
+			if (!phase.billing_cycle) {
+				toast.error(`Please select a billing cycle for ${index + 1}	phase`);
+				return;
+			}
+
+			if (!phase.start_date) {
+				toast.error(`Please select a start date for ${index + 1}	phase`);
+				return;
+			}
+		});
+
 		// Check for any unsaved changes
-		if (subscriptionState.isPhaseEditing) {
+		if (subscriptionState.isPhaseEditing && subscriptionState.phases.length > 1) {
 			toast.error('Please save your changes before submitting.');
 			return;
 		}
+
+		// TODO: Remove this once the feature is released
+		const tempSubscriptionId = uniqueId('tempsubscription_');
+		const sanitizedPhases = phases.map((phase) => ({
+			...phase,
+			start_date: phase.start_date,
+			end_date: phase.end_date,
+			commitment_amount: phase.commitment_amount,
+			overage_factor: phase.overage_factor,
+			credit_grants: phase.credit_grants?.map((grant) => ({
+				...grant,
+				id: undefined as any,
+				currency: currency.toLowerCase(),
+				subscription_id: tempSubscriptionId,
+				period: grant.period.toUpperCase() as BILLING_PERIOD,
+			})),
+		}));
+		const firstPhase = sanitizedPhases[0];
+		console.log('firstPhase', firstPhase);
 
 		const payload: CreateCustomerSubscriptionPayload = {
 			billing_cadence: BILLING_CADENCE.RECURRING,
 			billing_period: billingPeriod.toUpperCase() as BILLING_PERIOD,
 			billing_period_count: 1,
-			currency,
+
+			// TODO: remove lower case currency after the feature is released
+			currency: currency.toLowerCase(),
 			customer_id: customerId!,
 			invoice_cadence: INVOICE_CADENCE.ARREAR,
 			plan_id: selectedPlan,
-			start_date: startDate?.toISOString() ?? '',
-			end_date: endDate?.toISOString() ?? null,
+			start_date: firstPhase.start_date.toISOString(),
+			end_date: firstPhase.end_date?.toISOString() ?? null,
 			lookup_key: '',
 			trial_end: null,
 			trial_start: null,
-			billing_cycle: billingCycle,
-			phases,
+			billing_cycle: firstPhase.billing_cycle,
+			phases: sanitizedPhases.length > 1 ? sanitizedPhases : undefined,
+			credit_grants: firstPhase.credit_grants,
+			commitment_amount: firstPhase.commitment_amount,
+
+			// TODO: remove this once the feature is released
+			overage_factor: firstPhase.overage_factor ?? 1,
 		};
+
+		console.log('payload', payload);
 
 		createSubscription(payload);
 	};
@@ -883,8 +887,6 @@ const CustomerSubscription: React.FC = () => {
 				<div className='sticky top-6'>
 					{showPreview && (
 						<Preview
-							billingCycle={subscriptionState.billingCycle}
-							startDate={subscriptionState.startDate!}
 							data={subscriptionState.prices?.charges[subscriptionState.billingPeriod][subscriptionState.currency] ?? []}
 							selectedPlan={subscriptionState.prices}
 							phases={subscriptionState.phases}

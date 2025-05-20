@@ -20,9 +20,7 @@ const PERIOD_DURATION: Record<BILLING_PERIOD, string> = {
 
 interface PreviewProps {
 	data: ChargesForBillingPeriodOne[];
-	startDate?: Date;
 	className?: string;
-	billingCycle: BILLING_CYCLE;
 	selectedPlan?: {
 		charges: Record<string, Record<string, Array<ChargesForBillingPeriodOne & { invoice_cadence?: string }>>>;
 		id: string;
@@ -60,7 +58,11 @@ const calculateFirstInvoiceDate = (startDate: Date, billingPeriod: BILLING_PERIO
 /**
  * Component that displays subscription preview information including start date and first invoice details
  */
-const Preview = ({ data, startDate, className, billingCycle, phases }: PreviewProps) => {
+const Preview = ({ data, className, phases }: PreviewProps) => {
+	const firstPhase = phases.at(0);
+	const startDate = firstPhase?.start_date;
+	const billingCycle = firstPhase?.billing_cycle || BILLING_CYCLE.ANNIVERSARY;
+
 	const recurringCharges = useMemo(() => data.filter((charge) => charge.type === 'FIXED'), [data]);
 
 	const usageCharges = useMemo(() => data.filter((charge) => charge.type === 'USAGE'), [data]);
