@@ -144,7 +144,7 @@ const SubscriptionDetails: FC = () => {
 									<div className='flex-1'>
 										<div className='rounded-2xl border border-gray-100 bg-[#FAFAFA] px-8 py-5 flex flex-col gap-1'>
 											<div className='text-sm font-medium text-gray-400 mb-2'>Phase {idx + 1}</div>
-											<div className='flex flex-row justify-between gap-8'>
+											<div className='grid grid-cols-4 gap-8'>
 												<div>
 													<div className='text-xs text-gray-400'>Start</div>
 													<div className='font-normal text-lg text-gray-900'>{formatDateShort(phase.start_date.toString())}</div>
