@@ -37,10 +37,11 @@ const getDefaultCreditGrant = (currency: string, billingPeriod: BILLING_PERIOD, 
 	cadence: BILLING_CADENCE.ONETIME,
 	period_count: 1,
 	plan_id: planId,
-	priority: 0,
-	expire_in_days: 30,
-	metadata: {},
 	subscription_id: subscriptionId,
+	metadata: {},
+	amount: 0,
+	expire_in_days: 0,
+	priority: 0,
 });
 
 const AddSubscriptionPhase = ({
@@ -94,10 +95,13 @@ const AddSubscriptionPhase = ({
 		} else {
 			commitment_amount = formData.commitment_amount;
 		}
-		const credit_grants = formData.credit_grants?.map((grant) => ({
-			...grant,
-			amount: typeof grant.amount === 'string' ? (String(grant.amount).trim() === '' ? undefined : parseFloat(grant.amount)) : grant.amount,
-		}));
+		const credit_grants = formData.credit_grants
+			?.map((grant) => ({
+				...grant,
+				amount:
+					typeof grant.amount === 'string' ? (String(grant.amount).trim() === '' ? undefined : parseFloat(grant.amount)) : grant.amount,
+			}))
+			.filter((grant) => grant.amount !== 0 && grant.expire_in_days !== 0 && grant.priority !== 0);
 		onSave({
 			...formData,
 			commitment_amount,
