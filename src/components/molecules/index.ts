@@ -90,3 +90,5 @@ export { default as TerminateWalletModal } from './TerminateWalletModal';
 export { QueryBuilder, FilterPopover, SortDropdown, FilterMultiSelect } from './QueryBuilder';
 export type { FilterCondition, FilterField, FilterFieldType, FilterOperator, DataType } from '@/types/common/QueryBuilder';
 export { sanitizeFilterConditions, sanitizeSortConditions } from '@/types/formatters/QueryBuilder';
+
+export { CreditGrantTable, CreditGrantModal } from './CreditGrant';

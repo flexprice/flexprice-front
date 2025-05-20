@@ -1,6 +1,8 @@
 import { cn } from '@/lib/utils';
+import { X } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { Button } from '../Button';
 
 interface ModalProps {
 	isOpen: boolean;
@@ -18,6 +20,15 @@ const Modal: FC<ModalProps> = ({ isOpen, onOpenChange, children, className, show
 			className={cn('fixed inset-0 z-50 flex items-center justify-center', showOverlay ? 'bg-black bg-opacity-50' : '')}
 			onClick={() => onOpenChange(false)}>
 			<div className={cn('relative', className)} onClick={(e) => e.stopPropagation()}>
+				<Button
+					variant={'ghost'}
+					className='absolute top-4 right-4 z-[60]'
+					onClick={(e) => {
+						e.stopPropagation();
+						onOpenChange(false);
+					}}>
+					<X className='size-4 cursor-pointer' />
+				</Button>
 				{children}
 			</div>
 		</div>

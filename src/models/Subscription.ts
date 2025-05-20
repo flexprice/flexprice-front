@@ -1,4 +1,6 @@
 import Customer from './Customer';
+import { BILLING_CADENCE, INVOICE_CADENCE } from './Invoice';
+import { BILLING_PERIOD } from '@/constants/constants';
 import { Plan } from './Plan';
 
 export interface LineItem {
@@ -68,10 +70,10 @@ export interface Subscription {
 	readonly cancel_at_period_end: boolean;
 	readonly trial_start: string;
 	readonly trial_end: string;
-	readonly billing_cadence: string;
-	readonly billing_period: string;
+	readonly billing_cadence: BILLING_CADENCE;
+	readonly billing_period: BILLING_PERIOD;
 	readonly billing_period_count: number;
-	readonly invoice_cadence: string;
+	readonly invoice_cadence: INVOICE_CADENCE;
 	readonly version: number;
 	readonly active_pause_id: string;
 	readonly pause_status: string;
@@ -86,6 +88,11 @@ export interface Subscription {
 	readonly billing_cycle: BILLING_CYCLE;
 	readonly line_items: LineItem[];
 	readonly pauses: Pause[];
+
+	// experimental fields
+	credit_grants?: CreditGrant[];
+	commitment_amount?: number;
+	overage_factor?: number;
 }
 
 export interface SubscriptionUsage {
@@ -108,4 +115,44 @@ export interface Charge {
 export enum BILLING_CYCLE {
 	ANNIVERSARY = 'anniversary',
 	CALENDAR = 'calendar',
+}
+
+export enum CREDIT_SCOPE {
+	PLAN = 'PLAN',
+	SUBSCRIPTION = 'SUBSCRIPTION',
+}
+
+export interface CreditGrant {
+	readonly id: string;
+
+	// this is the amount of the credit grant in the currency of the subscription
+	readonly amount: number;
+	readonly cadence: BILLING_CADENCE;
+	readonly currency: string;
+	readonly expire_in_days: number;
+	readonly metadata: Record<string, any>;
+	readonly name: string;
+	readonly period: BILLING_PERIOD;
+	readonly period_count: number;
+	readonly plan_id: string;
+	readonly priority: number;
+	readonly scope: CREDIT_SCOPE;
+	readonly subscription_id: string;
+}
+
+export interface SubscriptionPhaseLineItem {
+	price_id: string;
+	quantity?: number;
+	override_amount?: string;
+}
+
+export interface SubscriptionPhase {
+	billing_cycle?: BILLING_CYCLE;
+	start_date: Date;
+	end_date: Date | null;
+	line_items?: SubscriptionPhaseLineItem[];
+	prorate_charges?: boolean;
+	credit_grants?: CreditGrant[];
+	commitment_amount?: number;
+	overage_factor?: number;
 }

@@ -97,6 +97,21 @@ const SubscriptionDetails: FC = () => {
 					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.billing_cycle || '--'}</p>
 				</div>
 				<Spacer className='!my-4' />
+
+				<div className='w-full flex justify-between items-center'>
+					<p className='text-[#71717A] text-sm'>Commitment Amount</p>
+					<p className='text-[#09090B] text-sm'>
+						{getCurrencySymbol(subscriptionDetails?.currency || '')} {subscriptionDetails?.commitment_amount || '0'}
+					</p>
+				</div>
+				<Spacer className='!my-4' />
+
+				<div className='w-full flex justify-between items-center'>
+					<p className='text-[#71717A] text-sm'>Overage Factor</p>
+					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.overage_factor || '--'}</p>
+				</div>
+				<Spacer className='!my-4' />
+
 				<div className='w-full flex justify-between items-center'>
 					<p className='text-[#71717A] text-sm'>Start date</p>
 					<p className='text-[#09090B] text-sm'>{formatDateShort(subscriptionDetails?.current_period_start ?? '')}</p>
