@@ -124,6 +124,59 @@ const SubscriptionDetails: FC = () => {
 				</div>
 			</Card>
 
+			{/* subscription schedule */}
+			{subscriptionDetails?.schedule?.phases?.length && subscriptionDetails?.schedule?.phases?.length > 0 && (
+				<Card className='card mt-8'>
+					<FormHeader title='Subscription Phases' variant='sub-header' titleClassName='font-semibold' />
+					<div className='flex flex-col gap-4 pl-6'>
+						{subscriptionDetails?.schedule?.phases?.length ? (
+							subscriptionDetails.schedule.phases.map((phase, idx) => (
+								<div key={idx} className='flex items-stretch gap-4 relative'>
+									{/* Timeline Dot & Line */}
+									<div className='flex flex-col items-center mr-2'>
+										<div
+											className={`w-2.5 h-2.5 rounded-full ${idx === subscriptionDetails.schedule.current_phase_index ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
+										{idx < subscriptionDetails.schedule.phases.length - 1 && (
+											<div className='w-0.5 flex-1 bg-gray-200' style={{ minHeight: 40 }}></div>
+										)}
+									</div>
+									{/* Phase Card */}
+									<div className='flex-1'>
+										<div className='rounded-2xl border border-gray-100 bg-[#FAFAFA] px-8 py-5 flex flex-col gap-1'>
+											<div className='text-sm font-medium text-gray-400 mb-2'>Phase {idx + 1}</div>
+											<div className='flex flex-row justify-between gap-8'>
+												<div>
+													<div className='text-xs text-gray-400'>Start</div>
+													<div className='font-normal text-lg text-gray-900'>{formatDateShort(phase.start_date.toString())}</div>
+												</div>
+												<div>
+													<div className='text-xs text-gray-400'>End</div>
+													<div className='font-normal text-lg text-gray-900'>
+														{phase.end_date ? formatDateShort(phase.end_date.toString()) : '--'}
+													</div>
+												</div>
+												<div>
+													<div className='text-xs text-gray-400'>Commitment</div>
+													<div className='font-normal text-lg text-gray-900'>
+														{getCurrencySymbol(subscriptionDetails?.currency || '')} {phase.commitment_amount ?? '--'}
+													</div>
+												</div>
+												<div>
+													<div className='text-xs text-gray-400'>Overage</div>
+													<div className='font-normal text-lg text-gray-900'>{phase.overage_factor ?? '--'}</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							))
+						) : (
+							<span className='text-[#71717A] text-sm'>No phases found.</span>
+						)}
+					</div>
+				</Card>
+			)}
+
 			{(data?.line_items?.length ?? 0) > 0 && (
 				<div className='card !mt-4'>
 					<InvoiceLineItemTable

@@ -72,7 +72,7 @@ const Preview = ({ data, className, phases }: PreviewProps) => {
 	const billingPeriod = useMemo(() => data[0]?.billing_period.toUpperCase() as BILLING_PERIOD, [data]);
 
 	const firstInvoiceDate = useMemo(() => {
-		return startDate ? calculateFirstInvoiceDate(startDate, billingPeriod, billingCycle) : undefined;
+		return startDate ? calculateFirstInvoiceDate(startDate as Date, billingPeriod, billingCycle) : undefined;
 	}, [billingCycle, billingPeriod, startDate]);
 
 	const billingDescription = useMemo(() => {

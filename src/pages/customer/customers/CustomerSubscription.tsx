@@ -503,9 +503,11 @@ const SubscriptionForm = ({
 			{/* Subscription Phases Section */}
 			{state.selectedPlan && (
 				<div className='space-y-3 mt-4 pt-3 border-t border-gray-200'>
-					<div className='flex items-center justify-between mb-2'>
-						<Label label='Subscription Phases' />
-					</div>
+					{state.phases.length > 0 && (
+						<div className='flex items-center justify-between mb-2'>
+							<Label label='Subscription Phases' />
+						</div>
+					)}
 
 					{/* Map through phases and conditionally render edit or preview */}
 					{state.phases.map((phase, index) => {
@@ -807,7 +809,7 @@ const CustomerSubscription: React.FC = () => {
 			start_date: phase.start_date,
 			end_date: phase.end_date,
 			commitment_amount: phase.commitment_amount,
-			overage_factor: phase.overage_factor,
+			overage_factor: phase.overage_factor ?? 1,
 			credit_grants: phase.credit_grants?.map((grant) => ({
 				...grant,
 				id: undefined as any,
@@ -817,7 +819,6 @@ const CustomerSubscription: React.FC = () => {
 			})),
 		}));
 		const firstPhase = sanitizedPhases[0];
-		console.log('firstPhase', firstPhase);
 
 		const payload: CreateCustomerSubscriptionPayload = {
 			billing_cadence: BILLING_CADENCE.RECURRING,
@@ -829,8 +830,8 @@ const CustomerSubscription: React.FC = () => {
 			customer_id: customerId!,
 			invoice_cadence: INVOICE_CADENCE.ARREAR,
 			plan_id: selectedPlan,
-			start_date: firstPhase.start_date.toISOString(),
-			end_date: firstPhase.end_date?.toISOString() ?? null,
+			start_date: (firstPhase.start_date as Date).toISOString(),
+			end_date: firstPhase.end_date ? (firstPhase.end_date as Date).toISOString() : null,
 			lookup_key: '',
 			trial_end: null,
 			trial_start: null,

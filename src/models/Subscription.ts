@@ -93,6 +93,9 @@ export interface Subscription {
 	credit_grants?: CreditGrant[];
 	commitment_amount?: number;
 	overage_factor?: number;
+
+	// experimental fields
+	readonly schedule: Schedule;
 }
 
 export interface SubscriptionUsage {
@@ -126,7 +129,7 @@ export interface CreditGrant {
 	readonly id: string;
 
 	// this is the amount of the credit grant in the currency of the subscription
-	readonly amount: number;
+	readonly amount?: number;
 	readonly cadence: BILLING_CADENCE;
 	readonly currency: string;
 	readonly expire_in_days: number;
@@ -148,11 +151,23 @@ export interface SubscriptionPhaseLineItem {
 
 export interface SubscriptionPhase {
 	billing_cycle?: BILLING_CYCLE;
-	start_date: Date;
-	end_date: Date | null;
+	start_date: Date | string;
+	end_date: Date | null | string;
 	line_items?: SubscriptionPhaseLineItem[];
 	prorate_charges?: boolean;
 	credit_grants?: CreditGrant[];
 	commitment_amount?: number;
 	overage_factor?: number;
+}
+
+export interface Schedule {
+	readonly id: string;
+	readonly subscription_id: string;
+	readonly status: string;
+	readonly current_phase_index: number;
+	readonly end_behavior: string;
+	readonly start_date: string;
+	readonly phases: readonly SubscriptionPhase[];
+	readonly created_at: string;
+	readonly updated_at: string;
 }

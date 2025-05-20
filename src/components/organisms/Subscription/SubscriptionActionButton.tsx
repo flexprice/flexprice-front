@@ -1,6 +1,6 @@
-import { Subscription } from '@/models/Subscription';
+import { BILLING_CYCLE, Subscription, SubscriptionPhase } from '@/models/Subscription';
 import { useMutation } from '@tanstack/react-query';
-import { CirclePause, CirclePlay, X } from 'lucide-react';
+import { CirclePause, CirclePlay, X, Plus } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { DatePicker, Modal, Input, Button, FormHeader, Spacer } from '@/components/atoms';
@@ -8,6 +8,8 @@ import { toast } from 'react-hot-toast';
 import DropdownMenu, { DropdownMenuOption } from '@/components/molecules/DropdownMenu/DropdownMenu';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { addDays, format } from 'date-fns';
+import AddSubscriptionPhase from '@/components/molecules/CreditGrant/AddSubscriptionPhase';
+import { AddSubscriptionPhasePayload } from '@/types/dto/Subscription';
 
 interface Props {
 	subscription: Subscription;
@@ -18,6 +20,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 		isPauseModalOpen: false,
 		isResumeModalOpen: false,
 		isCancelModalOpen: false,
+		isAddPhaseModalOpen: false,
 		pauseStartDate: new Date(),
 		pauseDays: '',
 		pauseReason: '',
@@ -42,6 +45,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			await refetchQueries(['subscriptions']);
 		},
 		onError: (error: ServerError) => {
+			setState((prev) => ({ ...prev, isPauseModalOpen: false }));
 			toast.error(error.error.message || 'Failed to pause subscription');
 		},
 	});
@@ -58,6 +62,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			await refetchQueries(['subscriptions']);
 		},
 		onError: (err: ServerError) => {
+			setState((prev) => ({ ...prev, isResumeModalOpen: false }));
 			toast.error(err.error.message || 'Failed to resume subscription');
 		},
 	});
@@ -71,6 +76,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			await refetchQueries(['subscriptions']);
 		},
 		onError: (err: ServerError) => {
+			setState((prev) => ({ ...prev, isCancelModalOpen: false }));
 			toast.error(err.error.message || 'Failed to cancel subscription');
 		},
 	});
@@ -87,6 +93,12 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 						onSelect: () => setState((prev) => ({ ...prev, isPauseModalOpen: true })),
 						disabled: isPaused || isCancelled,
 					},
+					{
+						label: 'Add Subscription Phase',
+						icon: <Plus className='h-4 w-4' />,
+						onSelect: () => setState((prev) => ({ ...prev, isAddPhaseModalOpen: true })),
+						disabled: isPaused || isCancelled,
+					},
 				]
 			: []),
 		...(isPaused && !isCancelled
@@ -99,17 +111,6 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 					},
 				]
 			: []),
-		// ...(!isCancelled
-		// 	? [
-		// 		{
-		// 			label: 'Cancel Subscription',
-		// 			icon: <X className='h-4 w-4' />,
-		// 			onSelect: () => setState((prev) => ({ ...prev, isCancelModalOpen: true })),
-		// 			disabled: isCancelled,
-		// 			className: 'text-destructive',
-		// 		},
-		// 	]
-		// 	: []),
 		{
 			label: 'Cancel Subscription',
 			icon: <X className='h-4 w-4' />,
@@ -118,6 +119,30 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			className: 'text-destructive',
 		},
 	];
+
+	const { mutate: addSubscriptionPhase } = useMutation({
+		mutationFn: (phaseData: AddSubscriptionPhasePayload) => SubscriptionApi.addSubscriptionPhase(subscription.id, phaseData),
+		onSuccess: async () => {
+			setState((prev) => ({ ...prev, isAddPhaseModalOpen: false }));
+			toast.success('Subscription phase added successfully');
+			refetchQueries(['subscriptionDetails']);
+		},
+		onError: (err: ServerError) => {
+			setState((prev) => ({ ...prev, isAddPhaseModalOpen: false }));
+			toast.error(err.error.message || 'Failed to add subscription phase');
+		},
+	});
+
+	const handleAddPhase = (phaseData: SubscriptionPhase) => {
+		addSubscriptionPhase({
+			billing_cycle: BILLING_CYCLE.ANNIVERSARY,
+			start_date: phaseData.start_date,
+			end_date: phaseData.end_date!,
+			credit_grants: phaseData.credit_grants || [],
+			commitment_amount: phaseData.commitment_amount || 0,
+			overage_factor: phaseData.overage_factor || 1,
+		});
+	};
 
 	return (
 		<>
@@ -231,6 +256,16 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 					</div>
 				</div>
 			</Modal>
+
+			{/* Add Subscription Phase Modal */}
+			<AddSubscriptionPhase
+				planId={subscription.plan?.id || ''}
+				subscriptionId={subscription.id}
+				isOpen={state.isAddPhaseModalOpen}
+				onOpenChange={(open) => setState((prev) => ({ ...prev, isAddPhaseModalOpen: open }))}
+				onSave={handleAddPhase}
+				onCancel={() => setState((prev) => ({ ...prev, isAddPhaseModalOpen: false }))}
+			/>
 		</>
 	);
 };
