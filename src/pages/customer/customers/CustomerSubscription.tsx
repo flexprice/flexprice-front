@@ -18,9 +18,8 @@ import CreditGrantTable from '@/components/molecules/CreditGrant/CreditGrantTabl
 import { invalidateQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { RouteNames } from '@/core/routes/Routes';
 import useEnvironment from '@/hooks/useEnvironment';
-import { BILLING_CYCLE, CREDIT_SCOPE, CreditGrant } from '@/models/Subscription';
+import { BILLING_CYCLE, CREDIT_SCOPE, CreditGrant, SubscriptionPhase } from '@/models/Subscription';
 import { CreateCustomerSubscriptionPayload } from '@/types/dto';
-import { SubscriptionPhase } from '@/types/dto/Customer';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { Pencil } from 'lucide-react';

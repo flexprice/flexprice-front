@@ -2,7 +2,7 @@ import Customer from '@/models/Customer';
 import { CustomerEntitlement } from '@/models/CustomerEntitlement';
 import CustomerUsage from '@/models/CustomerUsage';
 import { PaginationType } from '@/models/Pagination';
-import { Subscription, BILLING_CYCLE, CreditGrant } from '@/models/Subscription';
+import { Subscription, BILLING_CYCLE, CreditGrant, SubscriptionPhase } from '@/models/Subscription';
 import { TypedBackendFilter, TypedBackendSort } from '../formatters/QueryBuilder';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { BILLING_CADENCE } from '@/models/Invoice';
@@ -66,23 +66,6 @@ export interface GetUsageSummaryResponse {
 }
 
 // Subscription
-export interface SubscriptionPhaseLineItem {
-	price_id: string;
-	quantity?: number;
-	override_amount?: string;
-}
-
-export interface SubscriptionPhase {
-	billing_cycle?: BILLING_CYCLE;
-	start_date: Date;
-	end_date: Date | null;
-	line_items?: SubscriptionPhaseLineItem[];
-	credit_grants?: CreditGrant[];
-	prorate_charges?: boolean;
-	commitment_amount?: number;
-	overage_factor?: number;
-}
-
 export interface GetCustomerByFiltersPayload extends PaginationType {
 	filters: TypedBackendFilter[];
 	sort: TypedBackendSort[];

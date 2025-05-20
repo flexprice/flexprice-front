@@ -2,13 +2,12 @@ import { ChargesForBillingPeriodOne } from './PriceTable';
 import { useMemo } from 'react';
 import { formatBillingPeriodForDisplay, getTotalPayableText } from '@/utils/common/helper_functions';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { BILLING_CYCLE } from '@/models/Subscription';
+import { BILLING_CYCLE, SubscriptionPhase } from '@/models/Subscription';
 import formatDate from '@/utils/common/format_date';
 import { calculateAnniversaryBillingAnchor, calculateCalendarBillingAnchor } from '@/utils/helpers/subscription';
 import { cn } from '@/lib/utils';
 import { Calendar, Receipt } from 'lucide-react';
 import TimelinePreview, { PreviewTimelineItem } from './TimelinePreview';
-import { SubscriptionPhase } from '@/types/dto/Customer';
 
 const PERIOD_DURATION: Record<BILLING_PERIOD, string> = {
 	[BILLING_PERIOD.DAILY]: '1 day',

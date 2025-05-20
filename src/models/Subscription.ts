@@ -88,6 +88,11 @@ export interface Subscription {
 	readonly billing_cycle: BILLING_CYCLE;
 	readonly line_items: LineItem[];
 	readonly pauses: Pause[];
+
+	// experimental fields
+	credit_grants?: CreditGrant[];
+	commitment_amount?: number;
+	overage_factor?: number;
 }
 
 export interface SubscriptionUsage {
@@ -133,4 +138,21 @@ export interface CreditGrant {
 	readonly priority: number;
 	readonly scope: CREDIT_SCOPE;
 	readonly subscription_id: string;
+}
+
+export interface SubscriptionPhaseLineItem {
+	price_id: string;
+	quantity?: number;
+	override_amount?: string;
+}
+
+export interface SubscriptionPhase {
+	billing_cycle?: BILLING_CYCLE;
+	start_date: Date;
+	end_date: Date | null;
+	line_items?: SubscriptionPhaseLineItem[];
+	prorate_charges?: boolean;
+	credit_grants?: CreditGrant[];
+	commitment_amount?: number;
+	overage_factor?: number;
 }
