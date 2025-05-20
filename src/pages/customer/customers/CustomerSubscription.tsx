@@ -14,21 +14,29 @@ import { useState, useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ApiDocsContent } from '@/components/molecules';
+import CreditGrantTable from '@/components/molecules/CreditGrant/CreditGrantTable';
 import { invalidateQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { RouteNames } from '@/core/routes/Routes';
 import useEnvironment from '@/hooks/useEnvironment';
-import { BILLING_CYCLE } from '@/models/Subscription';
+import { BILLING_CYCLE, CREDIT_SCOPE, CreditGrant } from '@/models/Subscription';
 import { CreateCustomerSubscriptionPayload } from '@/types/dto';
 import { SubscriptionPhase } from '@/types/dto/Customer';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { Pencil } from 'lucide-react';
 import { Trash2 } from 'lucide-react';
+import { uniqueId } from 'lodash';
 
 type Params = {
 	id: string;
 	subscription_id?: string;
 };
+
+enum SubscriptionPhaseState {
+	EDIT = 'edit',
+	SAVED = 'saved',
+	NEW = 'new',
+}
 
 type SubscriptionFormState = {
 	selectedPlan: string;
@@ -44,7 +52,7 @@ type SubscriptionFormState = {
 	// Subscription Phase
 	phases: SubscriptionPhase[];
 	selectedPhase: number;
-	phaseStates: string[];
+	phaseStates: SubscriptionPhaseState[];
 	isPhaseEditing: boolean;
 	originalPhases: SubscriptionPhase[];
 };
@@ -179,7 +187,7 @@ const SubscriptionForm = ({
 				value: period,
 			})),
 			phases: [newPhase],
-			phaseStates: ['edit'], // Initial phase is in edit state
+			phaseStates: [SubscriptionPhaseState.EDIT], // Initial phase is in edit state
 			selectedPhase: 0, // Select the only phase
 			isPhaseEditing: true, // Set editing mode
 			originalPhases: [newPhase], // Store original state
@@ -218,6 +226,20 @@ const SubscriptionForm = ({
 		};
 	};
 
+	const getEmptyCreditGrant = (): Partial<CreditGrant> => {
+		return {
+			id: uniqueId(),
+			amount: 0,
+			currency: state.currency,
+			period: state.billingPeriod,
+			name: 'Free Credits',
+			scope: CREDIT_SCOPE.SUBSCRIPTION,
+			cadence: BILLING_CADENCE.ONETIME,
+			period_count: 1,
+			plan_id: state.selectedPlan,
+		};
+	};
+
 	// Phase selection - only allow if no phase is currently being edited
 	const handlePhaseChange = (index: number) => {
 		if (state.isPhaseEditing && state.selectedPhase !== index) {
@@ -228,7 +250,7 @@ const SubscriptionForm = ({
 		setState((prev) => {
 			// Update phaseStates to mark the selected phase as in edit mode
 			const newPhaseStates = [...prev.phaseStates];
-			newPhaseStates[index] = 'edit';
+			newPhaseStates[index] = SubscriptionPhaseState.EDIT;
 
 			return {
 				...prev,
@@ -247,7 +269,7 @@ const SubscriptionForm = ({
 
 		setState((prev) => {
 			const newPhaseStates = [...prev.phaseStates];
-			newPhaseStates[currentIndex] = 'saved';
+			newPhaseStates[currentIndex] = SubscriptionPhaseState.SAVED;
 
 			return {
 				...prev,
@@ -261,7 +283,7 @@ const SubscriptionForm = ({
 	const cancelPhaseEditing = () => {
 		setState((prev) => {
 			// If the phase state is 'new', remove it instead of restoring
-			if (prev.phaseStates[prev.selectedPhase] === 'new') {
+			if (prev.phaseStates[prev.selectedPhase] === SubscriptionPhaseState.NEW) {
 				const filteredPhases = prev.phases.filter((_, i) => i !== prev.selectedPhase);
 				const filteredPhaseStates = prev.phaseStates.filter((_, i) => i !== prev.selectedPhase);
 				const newSelectedPhase = Math.max(0, prev.selectedPhase - 1);
@@ -283,7 +305,7 @@ const SubscriptionForm = ({
 			}
 
 			const newPhaseStates = [...prev.phaseStates];
-			newPhaseStates[prev.selectedPhase] = 'saved';
+			newPhaseStates[prev.selectedPhase] = SubscriptionPhaseState.SAVED;
 
 			return {
 				...prev,
@@ -322,11 +344,11 @@ const SubscriptionForm = ({
 
 			// If there's only one phase and it's in edit mode, save it first
 			if (prev.phases.length === 1 && prev.isPhaseEditing) {
-				newPhaseStates[0] = 'saved';
+				newPhaseStates[0] = SubscriptionPhaseState.SAVED;
 			}
 
 			// Add the new phase state
-			newPhaseStates.push('new');
+			newPhaseStates.push(SubscriptionPhaseState.NEW);
 
 			return {
 				...prev,
@@ -503,11 +525,22 @@ const SubscriptionForm = ({
 						if (isEditing) {
 							return (
 								<div key={index} className='space-y-6 rounded-md'>
+									{/* charges */}
 									{state.prices && state.selectedPlan && state.billingPeriod && state.currency && (
 										<div className='mb-2'>
 											<ChargeTable data={state.prices.charges[state.billingPeriod][state.currency]} />
 										</div>
 									)}
+
+									{/* credit grants */}
+									<CreditGrantTable
+										getEmptyCreditGrant={getEmptyCreditGrant}
+										data={phase.credit_grants || []}
+										onChange={(data) => {
+											updatePhase(index, { credit_grants: data });
+										}}
+										disabled={isDisabled}
+									/>
 
 									<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 										<div>
@@ -531,7 +564,7 @@ const SubscriptionForm = ({
 													updatePhase(index, { end_date: date ?? null });
 												}}
 												placeholder='Forever'
-												disabled={isDisabled || index < state.phases.length - 1} // Disable if not the last phase
+												disabled={isDisabled}
 												minDate={phase.start_date ? new Date(phase.start_date as any) : undefined}
 											/>
 										</div>
@@ -736,7 +769,7 @@ const CustomerSubscription: React.FC = () => {
 					prorate_charges: false,
 					phases: [initialPhase],
 					selectedPhase: 0,
-					phaseStates: ['saved'],
+					phaseStates: [SubscriptionPhaseState.SAVED],
 					isPhaseEditing: false,
 					originalPhases: [initialPhase],
 				});

@@ -113,12 +113,14 @@ export enum BILLING_CYCLE {
 }
 
 export enum CREDIT_SCOPE {
-	PLAN = 'plan',
-	SUBSCRIPTION = 'subscription',
+	PLAN = 'PLAN',
+	SUBSCRIPTION = 'SUBSCRIPTION',
 }
 
 export interface CreditGrant {
 	readonly id: string;
+
+	// this is the amount of the credit grant in the currency of the subscription
 	readonly amount: number;
 	readonly cadence: BILLING_CADENCE;
 	readonly currency: string;
