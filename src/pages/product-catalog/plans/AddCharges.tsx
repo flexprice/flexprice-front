@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { AddChargesButton, InternalPrice } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { billlingPeriodOptions } from '@/constants/constants';
 import { currencyOptions } from '@/constants/constants';
-import { RecurringChargesForm } from '@/components/organisms';
+import { RecurringChargesForm } from '@/components/organisms/PlanForm';
 import UsagePricingForm from '@/components/organisms/PlanForm/UsagePricingForm';
 import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';

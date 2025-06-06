@@ -39,7 +39,7 @@ export const refetchQueries = async (queryKeys?: string | string[]) => {
 };
 
 export const invalidateQueries = async (queryKeys: string[]) => {
-	await queryClient.invalidateQueries({ queryKeys, exact: false });
+	await queryClient.invalidateQueries({ queryKey: queryKeys, exact: false });
 };
 
 const ReactQueryProvider = ({ children }: PropsWithChildren) => {

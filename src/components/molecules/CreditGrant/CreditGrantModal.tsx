@@ -1,8 +1,10 @@
 import { Button, Input, Label } from '@/components/atoms';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { CreditGrant } from '@/models/Subscription';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
+import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
+import { BILLING_CADENCE } from '@/models/Invoice';
 interface Props {
 	data?: CreditGrant;
 	isOpen: boolean;
@@ -52,6 +54,21 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 		return true;
 	};
 
+	const billingCadenceOptions: RectangleRadiogroupOption[] = useMemo(() => {
+		return [
+			{
+				label: 'One-time',
+				value: BILLING_CADENCE.ONETIME,
+				description: 'This credit will be applied to the subscription once.',
+			},
+			{
+				label: 'Recurring',
+				value: BILLING_CADENCE.RECURRING,
+				description: 'This credit will be applied to the subscription every billing period.',
+			},
+		];
+	}, []);
+
 	return (
 		<Dialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogContent className='bg-white sm:max-w-[425px]'>
@@ -59,6 +76,22 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 					<DialogTitle>{isEdit ? 'Edit Credit Grant' : 'Add Credit Grant'}</DialogTitle>
 				</DialogHeader>
 				<div className='grid gap-4 py-4'>
+					<div className='space-y-2'>
+						<Label label='Credit Type' />
+						<RectangleRadiogroup
+							options={billingCadenceOptions.map((option) => ({
+								...option,
+								description: undefined,
+							}))}
+							value={formData.cadence}
+							onChange={(value) => {
+								setFormData((prev) => ({ ...prev, cadence: value as BILLING_CADENCE }));
+							}}
+						/>
+						<p className='text-sm text-gray-500'>
+							{billingCadenceOptions.find((option) => option.value === formData.cadence)?.description}
+						</p>
+					</div>
 					<div className='space-y-2'>
 						<Label label='Credit Name' />
 						<Input
