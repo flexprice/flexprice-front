@@ -7,7 +7,7 @@ import Customer from '@/models/Customer';
 import { Plus } from 'lucide-react';
 import { Country, State, City, IState } from 'country-state-city';
 import { z } from 'zod';
-import { invalidateQueries, refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { logger } from '@/utils/common/Logger';
 
 interface Props {
@@ -166,7 +166,6 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 
 		onSuccess: async () => {
 			if (data) {
-				invalidateQueries(['debug-customers', 'debug-subscriptions']);
 				await refetchQueries(['fetchCustomerDetails', formData?.id || '']);
 			} else {
 				await refetchQueries(['fetchCustomers']);

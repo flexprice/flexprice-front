@@ -38,10 +38,6 @@ export const refetchQueries = async (queryKeys?: string | string[]) => {
 	await queryClient.refetchQueries({ queryKey: keys, exact: false });
 };
 
-export const invalidateQueries = async (queryKeys: string[]) => {
-	await queryClient.invalidateQueries({ queryKeys, exact: false });
-};
-
 const ReactQueryProvider = ({ children }: PropsWithChildren) => {
 	const [isLoading, setLoading] = useState(false);
 

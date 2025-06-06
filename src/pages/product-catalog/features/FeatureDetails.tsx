@@ -83,7 +83,7 @@ const FeatureDetails = () => {
 			title: 'Status',
 
 			render: (rowData: ExtendedEntitlement) => {
-				const label = formatChips(rowData.plan.status);
+				const label = formatChips(rowData?.plan?.status || '');
 				return <Chip variant={label === 'Active' ? 'success' : 'default'} label={label} />;
 			},
 		},
