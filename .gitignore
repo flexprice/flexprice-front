@@ -33,3 +33,6 @@ tsconfig.app.tsbuildinfo
 .dev
 # dotenv-store encryption key
 .env.store.key
+
+# build
+vite.config.js

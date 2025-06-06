@@ -38,6 +38,7 @@ export const refetchQueries = async (queryKeys?: string | string[]) => {
 	await queryClient.refetchQueries({ queryKey: keys, exact: false });
 };
 
+
 const ReactQueryProvider = ({ children }: PropsWithChildren) => {
 	const [isLoading, setLoading] = useState(false);
 
