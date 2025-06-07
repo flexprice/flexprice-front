@@ -1,5 +1,6 @@
 import { LineItem as InvoiceLineItem } from '@/models/Invoice';
-import { BILLING_CYCLE, CreditGrant } from '@/models/Subscription';
+import { BILLING_CYCLE } from '@/models/Subscription';
+import { CreditGrant } from '@/models/CreditGrant';
 
 export interface GetSubscriptionDetailsPayload {
 	subscription_id: string;

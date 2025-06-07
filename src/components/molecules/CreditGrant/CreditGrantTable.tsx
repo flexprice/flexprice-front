@@ -1,4 +1,4 @@
-import { CreditGrant } from '@/models/Subscription';
+import { CREDIT_GRANT_EXPIRATION_TYPE, CreditGrant } from '@/models/CreditGrant';
 import React, { useState } from 'react';
 import { AddButton, FormHeader, ActionButton } from '@/components/atoms';
 import FlexpriceTable, { ColumnData } from '../Table';
@@ -11,6 +11,19 @@ interface Props {
 	disabled?: boolean;
 	getEmptyCreditGrant: () => Partial<CreditGrant>;
 }
+
+export const formatExpirationType = (expirationType: CREDIT_GRANT_EXPIRATION_TYPE) => {
+	switch (expirationType) {
+		case CREDIT_GRANT_EXPIRATION_TYPE.DURATION:
+			return 'Days';
+		case CREDIT_GRANT_EXPIRATION_TYPE.BILLING_CYCLE:
+			return 'Subscription period';
+		case CREDIT_GRANT_EXPIRATION_TYPE.NEVER:
+			return 'No expiry';
+		default:
+			return '--';
+	}
+};
 
 const CreditGrantTable: React.FC<Props> = ({ data, onChange, disabled, getEmptyCreditGrant }) => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -43,12 +56,16 @@ const CreditGrantTable: React.FC<Props> = ({ data, onChange, disabled, getEmptyC
 			fieldVariant: 'title',
 		},
 		{
-			title: 'Amount',
-			render: (row) => `${getCurrencySymbol(row.currency)}${row.amount}`,
+			title: 'Credits',
+			render: (row) => `${getCurrencySymbol(row.currency)}${row.credits}`,
 		},
 		{
-			title: 'Expiry',
-			render: (row) => (row.expire_in_days ? `${row.expire_in_days} days` : 'Never'),
+			title: 'Expiry Type',
+			render: (row) => formatExpirationType(row.expiration_type),
+		},
+		{
+			title: 'Expiry Duration',
+			render: (row) => (row.expiration_duration ? `${row.expiration_duration} days` : 'Never'),
 		},
 		{
 			title: 'Priority',

@@ -212,7 +212,7 @@ const CustomerSubscription: React.FC = () => {
 				id: undefined as any,
 				currency: currency.toLowerCase(),
 				subscription_id: tempSubscriptionId,
-				period: grant.period.toUpperCase() as BILLING_PERIOD,
+				period: grant.period,
 			})),
 		}));
 		const firstPhase = sanitizedPhases[0];

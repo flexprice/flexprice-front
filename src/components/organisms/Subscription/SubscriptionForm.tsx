@@ -6,7 +6,14 @@ import { NormalizedPlan } from '@/utils/models/transformed_plan';
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
 import CreditGrantTable from '@/components/molecules/CreditGrant/CreditGrantTable';
-import { BILLING_CYCLE, CREDIT_SCOPE, CreditGrant, SubscriptionPhase } from '@/models/Subscription';
+import { BILLING_CYCLE, SubscriptionPhase } from '@/models/Subscription';
+import {
+	CREDIT_GRANT_EXPIRATION_TYPE,
+	CREDIT_GRANT_PERIOD,
+	CREDIT_GRANT_PERIOD_UNIT,
+	CREDIT_SCOPE,
+	CreditGrant,
+} from '@/models/CreditGrant';
 import { BILLING_CADENCE } from '@/models/Invoice';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { Pencil } from 'lucide-react';
@@ -148,14 +155,16 @@ const SubscriptionForm = ({
 	const getEmptyCreditGrant = (): Partial<CreditGrant> => {
 		return {
 			id: uniqueId(),
-			amount: 0,
+			credits: 0,
 			currency: state.currency,
-			period: state.billingPeriod.toUpperCase() as BILLING_PERIOD,
+			period: CREDIT_GRANT_PERIOD.MONTHLY,
 			name: 'Free Credits',
 			scope: CREDIT_SCOPE.SUBSCRIPTION,
 			cadence: BILLING_CADENCE.ONETIME,
 			period_count: 1,
 			plan_id: state.selectedPlan,
+			expiration_type: CREDIT_GRANT_EXPIRATION_TYPE.NEVER,
+			expiration_duration_unit: CREDIT_GRANT_PERIOD_UNIT.DAYS,
 		};
 	};
 

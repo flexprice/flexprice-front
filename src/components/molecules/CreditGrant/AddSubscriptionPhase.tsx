@@ -1,7 +1,8 @@
-import { SubscriptionPhase, BILLING_CYCLE, CreditGrant, CREDIT_SCOPE } from '@/models/Subscription';
+import { SubscriptionPhase, BILLING_CYCLE } from '@/models/Subscription';
 import { Button, Input, Label, DatePicker, Modal, FormHeader, Spacer } from '@/components/atoms';
 import { useState } from 'react';
 import { BILLING_CADENCE } from '@/models/Invoice';
+import { CREDIT_GRANT_EXPIRATION_TYPE, CREDIT_GRANT_PERIOD, CREDIT_SCOPE, CreditGrant } from '@/models/CreditGrant';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { uniqueId } from 'lodash';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
@@ -31,7 +32,7 @@ interface SubscriptionPhaseFormData {
 const getDefaultCreditGrant = (currency: string, billingPeriod: BILLING_PERIOD, planId: string, subscriptionId: string): CreditGrant => ({
 	id: uniqueId(),
 	currency: currency,
-	period: billingPeriod,
+	period: billingPeriod as unknown as CREDIT_GRANT_PERIOD,
 	name: 'Free Credits',
 	scope: CREDIT_SCOPE.SUBSCRIPTION,
 	cadence: BILLING_CADENCE.ONETIME,
@@ -39,8 +40,9 @@ const getDefaultCreditGrant = (currency: string, billingPeriod: BILLING_PERIOD, 
 	plan_id: planId,
 	subscription_id: subscriptionId,
 	metadata: {},
-	amount: 0,
-	expire_in_days: 0,
+	credits: 0,
+	expiration_duration: 0,
+	expiration_type: CREDIT_GRANT_EXPIRATION_TYPE.NEVER,
 	priority: 0,
 });
 
@@ -98,10 +100,10 @@ const AddSubscriptionPhase = ({
 		const credit_grants = formData.credit_grants
 			?.map((grant) => ({
 				...grant,
-				amount:
-					typeof grant.amount === 'string' ? (String(grant.amount).trim() === '' ? undefined : parseFloat(grant.amount)) : grant.amount,
+				credits:
+					typeof grant.credits === 'string' ? (String(grant.credits).trim() === '' ? undefined : parseFloat(grant.credits)) : grant.credits,
 			}))
-			.filter((grant) => grant.amount !== 0 && grant.expire_in_days !== 0 && grant.priority !== 0);
+			.filter((grant) => grant.credits !== 0 && grant.expiration_duration !== 0 && grant.priority !== 0);
 		onSave({
 			...formData,
 			commitment_amount,
@@ -199,8 +201,8 @@ const AddSubscriptionPhase = ({
 										inputPrefix={getCurrencySymbol(currency)}
 										placeholder='e.g. 500'
 										variant='formatted-number'
-										value={grant.amount !== undefined && grant.amount !== null ? grant.amount.toString() : ''}
-										onChange={(value) => updateCreditGrant({ id: grant.id, amount: value === '' ? undefined : parseFloat(value) })}
+										value={grant.credits !== undefined && grant.credits !== null ? grant.credits.toString() : ''}
+										onChange={(value) => updateCreditGrant({ id: grant.id, credits: value === '' ? undefined : parseFloat(value) })}
 									/>
 								</div>
 								<div className='space-y-2'>
@@ -209,8 +211,10 @@ const AddSubscriptionPhase = ({
 										placeholder='e.g. 30'
 										variant='formatted-number'
 										suffix='days'
-										value={grant.expire_in_days?.toString() ?? ''}
-										onChange={(value) => updateCreditGrant({ id: grant.id, expire_in_days: value === '' ? undefined : parseInt(value) })}
+										value={grant.expiration_duration?.toString() ?? ''}
+										onChange={(value) =>
+											updateCreditGrant({ id: grant.id, expiration_duration: value === '' ? undefined : parseInt(value) })
+										}
 									/>
 								</div>
 								<div className='space-y-2'>

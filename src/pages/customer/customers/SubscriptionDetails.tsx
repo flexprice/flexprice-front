@@ -1,5 +1,6 @@
 import { Card, FormHeader, Page, Spacer } from '@/components/atoms';
 import { InvoiceLineItemTable, SubscriptionPauseWarning } from '@/components/molecules';
+import DetailsCard from '@/components/molecules/DetailsCard/DetailsCard';
 import SubscriptionActionButton from '@/components/organisms/Subscription/SubscriptionActionButton';
 import { getSubscriptionStatus } from '@/components/organisms/Subscription/SubscriptionTable';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,6 +13,8 @@ import { useQuery } from '@tanstack/react-query';
 import { FC, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
+import CreditGrantApi from '@/api/CreditGrantApi';
+import { formatExpirationType } from '@/components/molecules/CreditGrant/CreditGrantTable';
 
 const SubscriptionDetails: FC = () => {
 	const { subscription_id, id: customerId } = useParams();
@@ -35,6 +38,16 @@ const SubscriptionDetails: FC = () => {
 		queryFn: async () => {
 			return await SubscriptionApi.getSubscriptionInvoicesPreview({ subscription_id: subscription_id! });
 		},
+	});
+
+	const { data: creditGrants } = useQuery({
+		queryKey: ['creditGrants', subscription_id],
+		queryFn: async () => {
+			return await CreditGrantApi.getGrantCredit({
+				subscription_ids: [subscription_id!],
+			});
+		},
+		enabled: !!subscription_id,
 	});
 
 	useEffect(() => {
@@ -123,6 +136,50 @@ const SubscriptionDetails: FC = () => {
 					<p className='text-[#09090B] text-sm'>{`${getCurrencySymbol(data?.currency ?? '')}${data?.amount_due} on ${formatDateShort(subscriptionDetails?.current_period_end ?? '')}`}</p>
 				</div>
 			</Card>
+
+			{/* Credit Grants Section */}
+			{creditGrants?.items && creditGrants.items.length > 0 && (
+				<div className='mt-8 space-y-4'>
+					{creditGrants.items.map((grant) => (
+						<DetailsCard
+							key={grant.id}
+							title={grant.name}
+							titleClassName='text-base font-medium'
+							variant='stacked'
+							cardStyle='compact'
+							gridCols={4}
+							data={[
+								{
+									label: 'Credits',
+									valueClassName: 'text-lg font-semibold text-[#09090B]',
+									colSpan: 1,
+								},
+								{
+									label: 'Priority',
+									value: grant.priority,
+									colSpan: 1,
+								},
+								{
+									label: 'Cadence',
+									value: grant.cadence.toLowerCase(),
+									valueClassName: 'capitalize',
+									colSpan: 1,
+								},
+								{
+									label: 'Period',
+									value: `${grant.period_count} ${grant.period.toLowerCase().replace('_', ' ')}`,
+									colSpan: 2,
+								},
+								{
+									label: 'Expiration',
+									value: formatExpirationType(grant.expiration_type),
+									colSpan: 2,
+								},
+							]}
+						/>
+					))}
+				</div>
+			)}
 
 			{/* subscription schedule */}
 			{subscriptionDetails?.schedule?.phases?.length && subscriptionDetails?.schedule?.phases?.length > 0 && (

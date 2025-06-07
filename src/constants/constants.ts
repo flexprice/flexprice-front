@@ -1,4 +1,5 @@
 import { getAllISOCodes } from 'iso-country-currency';
+import { CREDIT_GRANT_PERIOD } from '@/models/CreditGrant';
 
 export enum BILLING_PERIOD {
 	DAILY = 'DAILY',
@@ -58,4 +59,13 @@ export const billlingPeriodOptions = [
 	{ label: 'Yearly', value: BILLING_PERIOD.ANNUAL },
 	{ label: 'Quarterly', value: BILLING_PERIOD.QUARTERLY },
 	{ label: 'Half-Yearly', value: BILLING_PERIOD.HALF_YEARLY },
+];
+
+export const creditGrantPeriodOptions = [
+	// { label: 'Daily', value: 'DAILY' },
+	{ label: 'Weekly', value: CREDIT_GRANT_PERIOD.WEEKLY },
+	{ label: 'Monthly', value: CREDIT_GRANT_PERIOD.MONTHLY },
+	{ label: 'Yearly', value: CREDIT_GRANT_PERIOD.ANNUAL },
+	{ label: 'Quarterly', value: CREDIT_GRANT_PERIOD.QUARTERLY },
+	{ label: 'Half-Yearly', value: CREDIT_GRANT_PERIOD.HALF_YEARLY },
 ];
