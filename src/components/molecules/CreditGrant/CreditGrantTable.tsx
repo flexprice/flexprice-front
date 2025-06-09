@@ -65,7 +65,7 @@ const CreditGrantTable: React.FC<Props> = ({ data, onChange, disabled, getEmptyC
 		},
 		{
 			title: 'Expiry Duration',
-			render: (row) => (row.expiration_duration ? `${row.expiration_duration} days` : 'Never'),
+			render: (row) => (row.expiration_duration ? `${row.expiration_duration} days` : '--'),
 		},
 		{
 			title: 'Priority',

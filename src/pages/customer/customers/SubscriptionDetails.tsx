@@ -8,7 +8,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import CustomerApi from '@/api/CustomerApi';
 import SubscriptionApi from '@/api/SubscriptionApi';
-import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
+import { formatBillingPeriodForPrice, formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { useQuery } from '@tanstack/react-query';
 import { FC, useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -151,6 +151,7 @@ const SubscriptionDetails: FC = () => {
 							data={[
 								{
 									label: 'Credits',
+									value: `${grant.credits}`,
 									valueClassName: 'text-lg font-semibold text-[#09090B]',
 									colSpan: 1,
 								},
@@ -167,7 +168,7 @@ const SubscriptionDetails: FC = () => {
 								},
 								{
 									label: 'Period',
-									value: grant.period ? `${grant.period_count} ${grant.period?.toLowerCase().replace('_', ' ')}` : '--',
+									value: grant.period ? `${grant.period_count} ${formatBillingPeriodForPrice(grant.period)}` : '--',
 									colSpan: 2,
 								},
 								{
