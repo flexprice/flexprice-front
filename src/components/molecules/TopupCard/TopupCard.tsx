@@ -1,11 +1,9 @@
-import { Button, DatePicker, FormHeader, Input, Spacer } from '@/components/atoms';
-import { Gift, Receipt } from 'lucide-react';
+import { Button, DatePicker, Input, Spacer } from '@/components/atoms';
 import { FC, useState, useCallback } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
 import { useMutation } from '@tanstack/react-query';
 import WalletApi from '@/api/WalletApi';
 import toast from 'react-hot-toast';
-import { cn } from '@/lib/utils';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { TransactionReason } from '@/models/Wallet';
@@ -14,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { getCurrencyAmountFromCredits } from '@/utils/helpers/wallet';
 import { TopupWalletPayload } from '@/types/dto';
+import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 // Enum for credits type with more descriptive names
 enum CreditsType {
@@ -24,15 +23,15 @@ enum CreditsType {
 // Centralized credits type options
 const CREDITS_TYPE_OPTIONS: RectangleRadiogroupOption[] = [
 	{
-		label: 'Free Credits',
-		icon: Receipt,
+		label: 'Free',
+		// icon: Receipt,
 		description: 'Grant credits without a charge.',
 		value: CreditsType.FreeCredit,
 		disabled: false,
 	},
 	{
-		label: 'Purchased Credits',
-		icon: Gift,
+		label: 'Purchased',
+		// icon: Gift,
 		description: 'Add credits that require payment.',
 		value: CreditsType.PurchasedCredits,
 		disabled: false,
@@ -53,9 +52,15 @@ interface TopupCardProps {
 	onSuccess?: () => void;
 }
 
-const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversion_rate = 1, onSuccess }) => {
+const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1, onSuccess }) => {
 	// State management with more explicit typing
-	const [topupPayload, setTopupPayload] = useState<TopupPayload>({});
+	const [topupPayload, setTopupPayload] = useState<TopupPayload>({
+		credits_type: CreditsType.FreeCredit,
+		credits_to_add: undefined,
+		generate_invoice: undefined,
+		expiry_date: undefined,
+		priority: undefined,
+	});
 
 	// Determine transaction reason based on credits type and invoice generation
 	const getTransactionReason = useCallback((): TransactionReason => {
@@ -131,11 +136,19 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 				idempotency_key: uuidv4(),
 				transaction_reason: getTransactionReason(),
 				expiry_date_utc: topupPayload.expiry_date_utc,
+				priority: topupPayload.priority,
 			});
 		},
 		onSuccess: async () => {
 			toast.success('Wallet topped up successfully');
 			onSuccess?.();
+			setTopupPayload({
+				credits_type: CreditsType.FreeCredit,
+				credits_to_add: undefined,
+				generate_invoice: undefined,
+				expiry_date: undefined,
+				priority: undefined,
+			});
 			await refetchWalletData();
 		},
 		onError: (error: ServerError) => {
@@ -159,33 +172,44 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 	}, []);
 
 	return (
-		<div className={cn('card space-y-4 lg:w-full', className)}>
-			<FormHeader title='Add Credits' subtitle='Define number of credits to add to the wallet' variant='sub-header' />
-
-			<RectangleRadiogroup
-				title='Select Credit Type'
-				options={CREDITS_TYPE_OPTIONS}
-				value={topupPayload.credits_type}
-				onChange={(value) => {
-					// Reset related fields when changing credits type
-					updateTopupPayload({
-						credits_type: value as CreditsType,
-						credits_to_add: undefined,
-						generate_invoice: undefined,
-						expiry_date: undefined,
-					});
-				}}
-			/>
+		<DialogContent className='bg-white sm:max-w-[600px]'>
+			<DialogHeader>
+				<DialogTitle>Add Credits</DialogTitle>
+			</DialogHeader>
+			<div className='grid gap-4 py-4'>
+				<RectangleRadiogroup
+					title='Credit Type'
+					options={CREDITS_TYPE_OPTIONS.map((option) => ({
+						...option,
+						description: undefined,
+					}))}
+					value={topupPayload.credits_type}
+					onChange={(value) => {
+						// Reset related fields when changing credits type
+						updateTopupPayload({
+							credits_type: value as CreditsType,
+							credits_to_add: undefined,
+							generate_invoice: undefined,
+							expiry_date: undefined,
+						});
+					}}
+				/>
+				<p className='text-sm text-gray-500 -my-2'>
+					{topupPayload.credits_type === CreditsType.PurchasedCredits
+						? 'Purchased credits require payment. Generate invoice to track the purchase.'
+						: 'Free credits are granted without a charge.'}
+				</p>
+			</div>
 
 			{/* Free Credits Input */}
-			{topupPayload.credits_type === CreditsType.FreeCredit && (
+			{topupPayload.credits_type && (
 				<Input
 					variant='formatted-number'
 					onChange={(e) => updateTopupPayload({ credits_to_add: e as unknown as number })}
-					value={topupPayload.credits_to_add}
+					value={topupPayload.credits_to_add ?? ''}
 					suffix='credits'
-					label='Free Credits'
-					placeholder='Enter free credits'
+					label='Credits'
+					placeholder='credits'
 					description={
 						<>
 							{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
@@ -200,44 +224,6 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 				/>
 			)}
 
-			{/* Purchased Credits Input */}
-			{topupPayload.credits_type === CreditsType.PurchasedCredits && (
-				<>
-					<Input
-						variant='formatted-number'
-						onChange={(e) => updateTopupPayload({ credits_to_add: e as unknown as number })}
-						value={topupPayload.credits_to_add}
-						suffix='credits'
-						label='Purchased Credits'
-						placeholder='Enter purchased credits'
-						description={
-							<>
-								{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
-									<span>
-										{getCurrencySymbol(currency!)}
-										{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
-										{` will be credited to the wallet`}
-									</span>
-								)}
-							</>
-						}
-					/>
-
-					<div className='flex items-center space-x-4 font-open-sans'>
-						<Switch
-							id='generate-invoice'
-							checked={topupPayload.generate_invoice || false}
-							onCheckedChange={(value) => {
-								updateTopupPayload({ generate_invoice: value });
-							}}
-						/>
-						<Label htmlFor='generate-invoice'>
-							<p className='font-medium text-sm text-[#18181B] peer-checked:text-black'>Generate Invoice</p>
-						</Label>
-					</div>
-				</>
-			)}
-
 			{topupPayload.credits_type && (
 				<DatePicker
 					minDate={new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 0, 0, 0))}
@@ -248,8 +234,38 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 							expiry_date_utc: value ? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)) : undefined,
 						})
 					}
-					className='w-full'
+					popoverTriggerClassName='w-full'
+					labelClassName='text-foreground'
 				/>
+			)}
+			{topupPayload.credits_type && (
+				<Input
+					label='Priority'
+					className='w-full'
+					placeholder='Enter priority'
+					value={topupPayload.priority}
+					onChange={(e) => {
+						if (e) {
+							updateTopupPayload({ priority: Number(e) });
+						} else {
+							updateTopupPayload({ priority: undefined });
+						}
+					}}
+				/>
+			)}
+			{topupPayload.credits_type === CreditsType.PurchasedCredits && (
+				<div className='flex items-center space-x-4 font-open-sans'>
+					<Switch
+						id='generate-invoice'
+						checked={topupPayload.generate_invoice || false}
+						onCheckedChange={(value) => {
+							updateTopupPayload({ generate_invoice: value });
+						}}
+					/>
+					<Label htmlFor='generate-invoice'>
+						<p className='font-medium text-sm text-[#18181B] peer-checked:text-black'>Generate Invoice</p>
+					</Label>
+				</div>
 			)}
 
 			<Spacer className='!mt-4' />
@@ -259,7 +275,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, className, currency, conversi
 					Add Credits
 				</Button>
 			</div>
-		</div>
+		</DialogContent>
 	);
 };
 

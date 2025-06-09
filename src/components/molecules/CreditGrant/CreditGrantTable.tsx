@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { AddButton, FormHeader, ActionButton } from '@/components/atoms';
 import FlexpriceTable, { ColumnData } from '../Table';
 import CreditGrantModal from './CreditGrantModal';
-import { getCurrencySymbol } from '@/utils/common/helper_functions';
+import { formatBillingPeriodForPrice } from '@/utils/common/helper_functions';
+import { formatExpirationPeriod } from '@/pages/customer/customers/SubscriptionDetails';
 
 interface Props {
 	data: CreditGrant[];
@@ -19,7 +20,7 @@ export const formatExpirationType = (expirationType: CREDIT_GRANT_EXPIRATION_TYP
 		case CREDIT_GRANT_EXPIRATION_TYPE.BILLING_CYCLE:
 			return 'Subscription period';
 		case CREDIT_GRANT_EXPIRATION_TYPE.NEVER:
-			return 'No expiry';
+			return '--';
 		default:
 			return '--';
 	}
@@ -57,19 +58,26 @@ const CreditGrantTable: React.FC<Props> = ({ data, onChange, disabled, getEmptyC
 		},
 		{
 			title: 'Credits',
-			render: (row) => `${getCurrencySymbol(row.currency)}${row.credits}`,
-		},
-		{
-			title: 'Expiry Type',
-			render: (row) => formatExpirationType(row.expiration_type),
-		},
-		{
-			title: 'Expiry Duration',
-			render: (row) => (row.expiration_duration ? `${row.expiration_duration} days` : '--'),
+			render: (row) => `${row.credits}`,
 		},
 		{
 			title: 'Priority',
-			render: (row) => (row.priority ? row.priority : '--'),
+			render: (row) => row.priority?.toString() || '--',
+		},
+		{
+			title: 'Cadence',
+			render: (row) => {
+				const cadence = row.cadence.toLowerCase().replace('_', ' ');
+				return cadence.charAt(0).toUpperCase() + cadence.slice(1);
+			},
+		},
+		{
+			title: 'Period',
+			render: (row) => (row.period ? `${row.period_count} ${formatBillingPeriodForPrice(row.period)}` : '--'),
+		},
+		{
+			title: 'Expiration',
+			render: (row) => formatExpirationPeriod(row),
 		},
 		{
 			fieldVariant: 'interactive',

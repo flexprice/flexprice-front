@@ -18,6 +18,9 @@ interface DatePickerProps {
 	minDate?: Date;
 	maxDate?: Date;
 	className?: string;
+	labelClassName?: string;
+	popoverClassName?: string;
+	popoverTriggerClassName?: string;
 }
 
 const DatePicker = ({
@@ -29,15 +32,18 @@ const DatePicker = ({
 	minDate,
 	maxDate,
 	className,
+	labelClassName,
+	popoverTriggerClassName,
 }: DatePickerProps) => {
 	const [open, setopen] = useState(false);
 	return (
 		<Popover open={open} onOpenChange={setopen}>
-			<PopoverTrigger className='' disabled={disabled}>
-				{title && <div className='w-full text-start text-sm text-muted-foreground mb-1'>{title}</div>}
+			<PopoverTrigger className={popoverTriggerClassName} disabled={disabled}>
+				{title && <div className={cn('w-full text-start text-sm text-muted-foreground mb-1', labelClassName)}>{title}</div>}
 				<Button
 					variant={'outline'}
-					className={cn('min-w-[240px] h-10 justify-start text-left font-normal py-1', !date && 'text-muted-foreground', className)}>
+					className={cn('min-w-[240px] h-10 justify-start text-left font-normal py-1', !date && 'text-muted-foreground', className)}
+					disabled={disabled}>
 					<CalendarIcon className='mr-2 h-4 w-4' />
 					{date ? format(date, 'PPP') : <span>{placeholder}</span>} {/* Use placeholder */}
 				</Button>

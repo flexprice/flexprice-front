@@ -13,6 +13,7 @@ const formatAmount = ({ type, amount, currency, className }: { type: string; amo
 		</span>
 	);
 };
+
 const fomatTransactionTitle = ({ type, reason }: { type: string; reason: string }) => {
 	switch (reason) {
 		case 'INVOICE_PAYMENT':
@@ -59,6 +60,12 @@ const WalletTransactionsTable: FC<Props> = ({ data, currency }) => {
 					return <span>{formatDateShort(rowData.expiry_date)}</span>;
 				}
 				return <span>--</span>;
+			},
+		},
+		{
+			title: 'Priority',
+			render: (rowData) => {
+				return <span>{rowData.priority || '--'}</span>;
 			},
 		},
 		{

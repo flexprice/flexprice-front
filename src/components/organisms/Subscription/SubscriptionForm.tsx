@@ -1,7 +1,8 @@
-import { Select, DatePicker, Button, FormHeader, Label, Toggle, AddButton, Input } from '@/components/atoms';
+ 
+import { Select, DatePicker, FormHeader, Label, Toggle } from '@/components/atoms';
 import ChargeTable from '@/components/organisms/Subscription/PriceTable';
 import { cn } from '@/lib/utils';
-import { getCurrencySymbol, toSentenceCase } from '@/utils/common/helper_functions';
+import { toSentenceCase } from '@/utils/common/helper_functions';
 import { NormalizedPlan } from '@/utils/models/transformed_plan';
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -192,102 +193,102 @@ const SubscriptionForm = ({
 	};
 
 	// Save phase changes
-	const savePhaseChanges = () => {
-		const currentIndex = state.selectedPhase;
+	// const savePhaseChanges = () => {
+	// 	const currentIndex = state.selectedPhase;
 
-		setState((prev) => {
-			const newPhaseStates = [...prev.phaseStates];
-			newPhaseStates[currentIndex] = SubscriptionPhaseState.SAVED;
+	// 	setState((prev) => {
+	// 		const newPhaseStates = [...prev.phaseStates];
+	// 		newPhaseStates[currentIndex] = SubscriptionPhaseState.SAVED;
 
-			return {
-				...prev,
-				isPhaseEditing: false,
-				phaseStates: newPhaseStates,
-			};
-		});
-	};
+	// 		return {
+	// 			...prev,
+	// 			isPhaseEditing: false,
+	// 			phaseStates: newPhaseStates,
+	// 		};
+	// 	});
+	// };
 
 	// Cancel phase editing
-	const cancelPhaseEditing = () => {
-		setState((prev) => {
-			// If the phase state is 'new', remove it instead of restoring
-			if (prev.phaseStates[prev.selectedPhase] === SubscriptionPhaseState.NEW) {
-				const filteredPhases = prev.phases.filter((_, i) => i !== prev.selectedPhase);
-				const filteredPhaseStates = prev.phaseStates.filter((_, i) => i !== prev.selectedPhase);
-				const newSelectedPhase = Math.max(0, prev.selectedPhase - 1);
+	// const cancelPhaseEditing = () => {
+	// 	setState((prev) => {
+	// 		// If the phase state is 'new', remove it instead of restoring
+	// 		if (prev.phaseStates[prev.selectedPhase] === SubscriptionPhaseState.NEW) {
+	// 			const filteredPhases = prev.phases.filter((_, i) => i !== prev.selectedPhase);
+	// 			const filteredPhaseStates = prev.phaseStates.filter((_, i) => i !== prev.selectedPhase);
+	// 			const newSelectedPhase = Math.max(0, prev.selectedPhase - 1);
 
-				return {
-					...prev,
-					phases: filteredPhases,
-					phaseStates: filteredPhaseStates,
-					selectedPhase: newSelectedPhase,
-					isPhaseEditing: false,
-					originalPhases: [...filteredPhases],
-				};
-			}
+	// 			return {
+	// 				...prev,
+	// 				phases: filteredPhases,
+	// 				phaseStates: filteredPhaseStates,
+	// 				selectedPhase: newSelectedPhase,
+	// 				isPhaseEditing: false,
+	// 				originalPhases: [...filteredPhases],
+	// 			};
+	// 		}
 
-			// Restore the original phase data
-			const restoredPhases = [...prev.phases];
-			if (prev.originalPhases[prev.selectedPhase]) {
-				restoredPhases[prev.selectedPhase] = { ...prev.originalPhases[prev.selectedPhase] };
-			}
+	// 		// Restore the original phase data
+	// 		const restoredPhases = [...prev.phases];
+	// 		if (prev.originalPhases[prev.selectedPhase]) {
+	// 			restoredPhases[prev.selectedPhase] = { ...prev.originalPhases[prev.selectedPhase] };
+	// 		}
 
-			const newPhaseStates = [...prev.phaseStates];
-			newPhaseStates[prev.selectedPhase] = SubscriptionPhaseState.SAVED;
+	// 		const newPhaseStates = [...prev.phaseStates];
+	// 		newPhaseStates[prev.selectedPhase] = SubscriptionPhaseState.SAVED;
 
-			return {
-				...prev,
-				phases: restoredPhases,
-				isPhaseEditing: false,
-				phaseStates: newPhaseStates,
-			};
-		});
-	};
+	// 		return {
+	// 			...prev,
+	// 			phases: restoredPhases,
+	// 			isPhaseEditing: false,
+	// 			phaseStates: newPhaseStates,
+	// 		};
+	// 	});
+	// };
 
-	const addPhase = () => {
-		// Don't allow adding a new phase if one is being edited, unless it's the only phase
-		if (state.isPhaseEditing && state.phases.length > 1) {
-			toast.error('Please save or cancel your current changes first');
-			return;
-		}
+	// const addPhase = () => {
+	// 	// Don't allow adding a new phase if one is being edited, unless it's the only phase
+	// 	if (state.isPhaseEditing && state.phases.length > 1) {
+	// 		toast.error('Please save or cancel your current changes first');
+	// 		return;
+	// 	}
 
-		setState((prev) => {
-			// Check if the last phase has an end date
-			const lastPhase = prev.phases[prev.phases.length - 1];
-			if (!lastPhase.end_date) {
-				toast.error('Please set an end date for the last phase before adding a new one');
-				return prev;
-			}
+	// 	setState((prev) => {
+	// 		// Check if the last phase has an end date
+	// 		const lastPhase = prev.phases[prev.phases.length - 1];
+	// 		if (!lastPhase.end_date) {
+	// 			toast.error('Please set an end date for the last phase before adding a new one');
+	// 			return prev;
+	// 		}
 
-			const newPhase = getEmptyPhase();
-			// Set the start date of the new phase to the end date of the last phase
-			if (prev.phases.length > 0) {
-				if (lastPhase.end_date) {
-					newPhase.start_date = new Date(lastPhase.end_date);
-				}
-			}
+	// 		const newPhase = getEmptyPhase();
+	// 		// Set the start date of the new phase to the end date of the last phase
+	// 		if (prev.phases.length > 0) {
+	// 			if (lastPhase.end_date) {
+	// 				newPhase.start_date = new Date(lastPhase.end_date);
+	// 			}
+	// 		}
 
-			const updatedPhases = [...prev.phases, newPhase];
-			const newPhaseStates = [...prev.phaseStates];
+	// 		const updatedPhases = [...prev.phases, newPhase];
+	// 		const newPhaseStates = [...prev.phaseStates];
 
-			// If there's only one phase and it's in edit mode, save it first
-			if (prev.phases.length === 1 && prev.isPhaseEditing) {
-				newPhaseStates[0] = SubscriptionPhaseState.SAVED;
-			}
+	// 		// If there's only one phase and it's in edit mode, save it first
+	// 		if (prev.phases.length === 1 && prev.isPhaseEditing) {
+	// 			newPhaseStates[0] = SubscriptionPhaseState.SAVED;
+	// 		}
 
-			// Add the new phase state
-			newPhaseStates.push(SubscriptionPhaseState.NEW);
+	// 		// Add the new phase state
+	// 		newPhaseStates.push(SubscriptionPhaseState.NEW);
 
-			return {
-				...prev,
-				phases: updatedPhases,
-				phaseStates: newPhaseStates,
-				selectedPhase: updatedPhases.length - 1,
-				isPhaseEditing: true,
-				originalPhases: [...updatedPhases], // Store for cancellation
-			};
-		});
-	};
+	// 		return {
+	// 			...prev,
+	// 			phases: updatedPhases,
+	// 			phaseStates: newPhaseStates,
+	// 			selectedPhase: updatedPhases.length - 1,
+	// 			isPhaseEditing: true,
+	// 			originalPhases: [...updatedPhases], // Store for cancellation
+	// 		};
+	// 	});
+	// };
 
 	const removePhase = (index: number) => {
 		// Don't allow removing a phase if any phase is being edited
@@ -438,11 +439,11 @@ const SubscriptionForm = ({
 			{/* Subscription Phases Section */}
 			{state.selectedPlan && (
 				<div className='space-y-3 mt-4 pt-3 border-t border-gray-200'>
-					{state.phases.length > 0 && (
+					{/* {state.phases.length > 0 && (
 						<div className='flex items-center justify-between mb-2'>
 							<Label label='Subscription Phases' />
 						</div>
-					)}
+					)} */}
 
 					{/* Map through phases and conditionally render edit or preview */}
 					{state.phases.map((phase, index) => {
@@ -520,7 +521,7 @@ const SubscriptionForm = ({
 										/>
 									</div>
 
-									<div className='mt-4 flex items-center gap-2'>
+									{/* <div className='mt-4 flex items-center gap-2'>
 										<span>
 											<Input
 												placeholder='1200'
@@ -548,10 +549,10 @@ const SubscriptionForm = ({
 												}}
 											/>
 										</span>
-									</div>
+									</div> */}
 
 									{/* Save/Cancel Buttons - only show when editing and there's more than one phase */}
-									{!isDisabled && state.phases.length > 1 && (
+									{/* {!isDisabled && state.phases.length > 1 && (
 										<div className='flex items-center justify-end space-x-3 mt-3 pt-3'>
 											<Button variant='outline' onClick={cancelPhaseEditing} className='min-w-[80px] text-sm py-1 px-3'>
 												Cancel
@@ -560,7 +561,7 @@ const SubscriptionForm = ({
 												Save
 											</Button>
 										</div>
-									)}
+									)} */}
 								</div>
 							);
 						}
@@ -595,7 +596,7 @@ const SubscriptionForm = ({
 					})}
 
 					{/* Add Phase Button - always show but disable when editing except if only 1 phase*/}
-					{!isDisabled && (
+					{/* {!isDisabled && (
 						<div className='flex justify-center mt-6'>
 							<AddButton
 								size='sm'
@@ -606,7 +607,7 @@ const SubscriptionForm = ({
 								className='w-full text-sm py-1.5'
 							/>
 						</div>
-					)}
+					)} */}
 				</div>
 			)}
 		</div>

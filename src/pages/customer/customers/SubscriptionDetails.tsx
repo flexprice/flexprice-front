@@ -1,6 +1,5 @@
 import { Card, FormHeader, Page, Spacer } from '@/components/atoms';
-import { InvoiceLineItemTable, SubscriptionPauseWarning } from '@/components/molecules';
-import DetailsCard from '@/components/molecules/DetailsCard/DetailsCard';
+import { ColumnData, InvoiceLineItemTable, SubscriptionPauseWarning } from '@/components/molecules';
 import SubscriptionActionButton from '@/components/organisms/Subscription/SubscriptionActionButton';
 import { getSubscriptionStatus } from '@/components/organisms/Subscription/SubscriptionTable';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,6 +14,57 @@ import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import CreditGrantApi from '@/api/CreditGrantApi';
 import { formatExpirationType } from '@/components/molecules/CreditGrant/CreditGrantTable';
+import { CreditGrant, CREDIT_GRANT_EXPIRATION_TYPE } from '@/models/CreditGrant';
+import FlexpriceTable from '@/components/molecules/Table';
+
+// Enhanced function to format expiration period with duration units
+export const formatExpirationPeriod = (grant: CreditGrant): string => {
+	if (grant.expiration_type === CREDIT_GRANT_EXPIRATION_TYPE.DURATION && grant.expiration_duration && grant.expiration_duration_unit) {
+		const duration = grant.expiration_duration;
+		const unit = grant.expiration_duration_unit.toLowerCase();
+
+		// Convert plural unit names to singular when duration is 1, and handle pluralization
+		let unitName = unit.endsWith('s') ? unit.slice(0, -1) : unit; // Remove 's' from 'days', 'weeks', etc.
+		if (duration !== 1) {
+			unitName += 's'; // Add 's' back for plural
+		}
+
+		return `${duration} ${unitName}`;
+	}
+
+	return formatExpirationType(grant.expiration_type);
+};
+
+const columns: ColumnData<CreditGrant>[] = [
+	{
+		title: 'Name',
+		fieldName: 'name',
+		fieldVariant: 'title',
+	},
+	{
+		title: 'Credits',
+		render: (row) => `${row.credits}`,
+	},
+	{
+		title: 'Priority',
+		render: (row) => row.priority?.toString() || '--',
+	},
+	{
+		title: 'Cadence',
+		render: (row) => {
+			const cadence = row.cadence.toLowerCase().replace('_', ' ');
+			return cadence.charAt(0).toUpperCase() + cadence.slice(1);
+		},
+	},
+	{
+		title: 'Period',
+		render: (row) => (row.period ? `${row.period_count} ${formatBillingPeriodForPrice(row.period)}` : '--'),
+	},
+	{
+		title: 'Expiration',
+		render: (row) => formatExpirationPeriod(row),
+	},
+];
 
 const SubscriptionDetails: FC = () => {
 	const { subscription_id, id: customerId } = useParams();
@@ -139,47 +189,12 @@ const SubscriptionDetails: FC = () => {
 
 			{/* Credit Grants Section */}
 			{creditGrants?.items && creditGrants.items.length > 0 && (
-				<div className='mt-8 space-y-4'>
-					{creditGrants.items.map((grant) => (
-						<DetailsCard
-							key={grant.id}
-							title={grant.name}
-							titleClassName='text-base font-medium'
-							variant='stacked'
-							cardStyle='compact'
-							gridCols={4}
-							data={[
-								{
-									label: 'Credits',
-									value: `${grant.credits}`,
-									valueClassName: 'text-lg font-semibold text-[#09090B]',
-									colSpan: 1,
-								},
-								{
-									label: 'Priority',
-									value: grant.priority,
-									colSpan: 1,
-								},
-								{
-									label: 'Cadence',
-									value: grant.cadence.toLowerCase(),
-									valueClassName: 'capitalize',
-									colSpan: 1,
-								},
-								{
-									label: 'Period',
-									value: grant.period ? `${grant.period_count} ${formatBillingPeriodForPrice(grant.period)}` : '--',
-									colSpan: 2,
-								},
-								{
-									label: 'Expiration',
-									value: formatExpirationType(grant.expiration_type),
-									colSpan: 2,
-								},
-							]}
-						/>
-					))}
-				</div>
+				<Card className='card mt-8'>
+					<FormHeader title='Credit Grants' variant='sub-header' titleClassName='font-semibold' />
+					<div className='mt-4'>
+						<FlexpriceTable data={creditGrants.items} columns={columns} showEmptyRow={false} />
+					</div>
+				</Card>
 			)}
 
 			{/* subscription schedule */}
