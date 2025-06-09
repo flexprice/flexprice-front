@@ -20,7 +20,7 @@ class CreditGrantApi {
 	private static baseUrl = '/creditgrants';
 
 	public static async createCreditGrant(data: Partial<CreditGrant>) {
-		return await AxiosClient.post<CreditGrant, Partial<CreditGrant>>(this.baseUrl, data);
+		return AxiosClient.post<CreditGrant, Partial<CreditGrant>>(this.baseUrl, data);
 	}
 
 	public static async getGrantCredit(data: GetCreditGrantRequest) {
