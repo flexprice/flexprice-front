@@ -30,7 +30,7 @@ const CreateWallet: FC<Props> = ({ customerId, onSuccess = () => {} }) => {
 		currency: '',
 		initial_credits_to_load: 0,
 		conversion_rate: 1,
-		name: 'prepaid-wallet',
+		name: '',
 	});
 
 	const [autoTopup, setautoTopup] = useState(false);

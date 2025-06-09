@@ -69,13 +69,3 @@ export enum InvoiceType {
 	ONE_OFF = 'ONE_OFF',
 	CREDIT = 'CREDIT',
 }
-
-export enum INVOICE_CADENCE {
-	ARREAR = 'ARREAR',
-	ADVANCE = 'ADVANCE',
-}
-
-export enum BILLING_CADENCE {
-	RECURRING = 'RECURRING',
-	ONETIME = 'ONETIME',
-}

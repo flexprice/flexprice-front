@@ -1,4 +1,4 @@
-import { AddButton, Button, Card, Chip, FormHeader, NoDataCard, Select, ShortPagination, Spacer } from '@/components/atoms';
+import { AddButton, Button, Card, Chip, FormHeader, Modal, NoDataCard, Select, ShortPagination, Spacer } from '@/components/atoms';
 import {
 	DropdownMenu,
 	DropdownMenuOption,
@@ -7,7 +7,6 @@ import {
 	ApiDocsContent,
 	TerminateWalletModal,
 } from '@/components/molecules';
-import { Dialog } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import usePagination from '@/hooks/usePagination';
@@ -168,16 +167,16 @@ const WalletTab = () => {
 			<ApiDocsContent tags={['Wallets', 'Topup']} />
 
 			{/* Topup Modal */}
-			<Dialog open={showTopupModal} onOpenChange={() => setShowTopupModal(false)}>
-				<TopupCard
-					onSuccess={() => {
-						setShowTopupModal(false);
-					}}
-					walletId={activeWallet?.id}
-					conversion_rate={activeWallet?.conversion_rate}
-					currency={activeWallet?.currency ?? ''}
-				/>
-			</Dialog>
+			<Modal isOpen={showTopupModal} onOpenChange={() => setShowTopupModal(false)}>
+				<div className='w-[700px] bg-white rounded-xl'>
+					<TopupCard
+						onSuccess={() => setShowTopupModal(false)}
+						walletId={activeWallet?.id}
+						conversion_rate={activeWallet?.conversion_rate}
+						currency={activeWallet?.currency ?? ''}
+					/>
+				</div>
+			</Modal>
 
 			{/* Terminate Wallet Modal */}
 			{activeWallet && (

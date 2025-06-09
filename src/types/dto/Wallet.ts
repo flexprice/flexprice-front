@@ -20,7 +20,6 @@ export interface TopupWalletPayload {
 	credits_to_add: number;
 	walletId: string;
 	description?: string;
-	priority?: number;
 	expiry_date?: number;
 	expiry_date_utc?: Date;
 	metadata?: Record<string, any>;

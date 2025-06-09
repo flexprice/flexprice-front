@@ -1,8 +1,5 @@
 import Customer from './Customer';
-import { BILLING_CADENCE, INVOICE_CADENCE } from './Invoice';
-import { BILLING_PERIOD } from '@/constants/constants';
 import { Plan } from './Plan';
-import { CreditGrant } from './CreditGrant';
 
 export interface LineItem {
 	readonly id: string;
@@ -71,10 +68,10 @@ export interface Subscription {
 	readonly cancel_at_period_end: boolean;
 	readonly trial_start: string;
 	readonly trial_end: string;
-	readonly billing_cadence: BILLING_CADENCE;
-	readonly billing_period: BILLING_PERIOD;
+	readonly billing_cadence: string;
+	readonly billing_period: string;
 	readonly billing_period_count: number;
-	readonly invoice_cadence: INVOICE_CADENCE;
+	readonly invoice_cadence: string;
 	readonly version: number;
 	readonly active_pause_id: string;
 	readonly pause_status: string;
@@ -89,14 +86,6 @@ export interface Subscription {
 	readonly billing_cycle: BILLING_CYCLE;
 	readonly line_items: LineItem[];
 	readonly pauses: Pause[];
-
-	// experimental fields
-	credit_grants?: CreditGrant[];
-	commitment_amount?: number;
-	overage_factor?: number;
-
-	// experimental fields
-	readonly schedule: Schedule;
 }
 
 export interface SubscriptionUsage {
@@ -119,33 +108,4 @@ export interface Charge {
 export enum BILLING_CYCLE {
 	ANNIVERSARY = 'anniversary',
 	CALENDAR = 'calendar',
-}
-
-export interface SubscriptionPhaseLineItem {
-	price_id: string;
-	quantity?: number;
-	override_amount?: string;
-}
-
-export interface SubscriptionPhase {
-	billing_cycle?: BILLING_CYCLE;
-	start_date: Date | string;
-	end_date: Date | null | string;
-	line_items?: SubscriptionPhaseLineItem[];
-	prorate_charges?: boolean;
-	credit_grants?: CreditGrant[];
-	commitment_amount?: number;
-	overage_factor?: number;
-}
-
-export interface Schedule {
-	readonly id: string;
-	readonly subscription_id: string;
-	readonly status: string;
-	readonly current_phase_index: number;
-	readonly end_behavior: string;
-	readonly start_date: string;
-	readonly phases: readonly SubscriptionPhase[];
-	readonly created_at: string;
-	readonly updated_at: string;
 }

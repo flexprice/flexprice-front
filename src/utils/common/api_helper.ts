@@ -1,10 +1,7 @@
 export const generateQueryParams = (baseUrl: string, params: Record<string, any>): string => {
 	const queryParams = Object.keys(params)
-		.filter((key) => key && params[key] !== undefined && params[key] !== null)
-		.map((key) => {
-			const value = Array.isArray(params[key]) ? params[key].join(',') : params[key];
-			return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-		})
+		.filter((key) => key && params[key])
+		.map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
 		.join('&');
 
 	return queryParams ? `${baseUrl}?${queryParams}` : baseUrl;
