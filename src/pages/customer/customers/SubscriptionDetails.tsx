@@ -167,7 +167,7 @@ const SubscriptionDetails: FC = () => {
 								},
 								{
 									label: 'Period',
-									value: `${grant.period_count} ${grant.period.toLowerCase().replace('_', ' ')}`,
+									value: grant.period ? `${grant.period_count} ${grant.period?.toLowerCase().replace('_', ' ')}` : '--',
 									colSpan: 2,
 								},
 								{

@@ -14,7 +14,7 @@ export interface CreditGrant {
 	readonly currency: string;
 	readonly metadata: Record<string, any>;
 	readonly name: string;
-	readonly period: CREDIT_GRANT_PERIOD;
+	readonly period?: CREDIT_GRANT_PERIOD;
 	readonly period_count: number;
 	readonly plan_id: string;
 	readonly priority: number;
