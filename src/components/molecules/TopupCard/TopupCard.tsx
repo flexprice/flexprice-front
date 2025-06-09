@@ -234,7 +234,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 							expiry_date_utc: value ? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)) : undefined,
 						})
 					}
-					popoverTriggerClassName='w-full'
+					className='w-full'
 					labelClassName='text-foreground'
 				/>
 			)}
