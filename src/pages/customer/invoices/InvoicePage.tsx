@@ -1,12 +1,12 @@
-import { Page, Spacer, Loader, ShortPagination } from '@/components/atoms';
+import { Page, Spacer, ShortPagination, Loader } from '@/components/atoms';
 import { InvoiceTable, ApiDocsContent, QueryBuilder } from '@/components/molecules';
-import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
 import usePagination from '@/hooks/usePagination';
 import InvoiceApi from '@/api/InvoiceApi';
 import { EmptyPage } from '@/components/organisms';
 import GUIDES from '@/constants/guides';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import useFilterSorting from '@/hooks/useFilterSorting';
 import { invoiceFilterOptions, invoiceSortOptions, invoiceInitialFilters, invoiceInitialSorts } from '@/configs/entityFilterConfigs';
 
@@ -36,20 +36,42 @@ const InvoicesPage = () => {
 		data: invoiceData,
 		isLoading,
 		isError,
-	} = useQuery({
-		queryKey: ['fetchInvoices', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
-		queryFn: fetchInvoices,
+		probeData,
+	} = useQueryWithEmptyState({
+		main: {
+			queryKey: ['fetchInvoices', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
+			queryFn: fetchInvoices,
+		},
+		probe: {
+			queryKey: ['fetchInvoices', 'probe', page],
+			queryFn: async () => {
+				return await InvoiceApi.listInvoicesByFilter({
+					limit: 1,
+					offset: 0,
+					filters: [],
+					sort: [],
+				});
+			},
+		},
+		shouldProbe: (mainData) => {
+			return mainData?.items.length === 0;
+		},
 	});
 
-	if (isLoading) {
-		return <Loader />;
-	}
+	// Show empty page when no invoices exist at all (check probe data)
+	const showEmptyPage = useMemo(() => {
+		// Type-safe checks with explicit type assertion
+		const probeItems = probeData?.items || [];
+		const invoiceItems = invoiceData?.items || [];
+		return !isLoading && probeItems.length === 0 && invoiceItems.length === 0;
+	}, [isLoading, probeData, invoiceData]);
 
 	if (isError) {
-		toast.error('Error fetching meters');
+		toast.error('Error fetching invoices');
+		return null;
 	}
 
-	if ((invoiceData?.items ?? []).length === 0) {
+	if (showEmptyPage) {
 		return (
 			<EmptyPage
 				emptyStateCard={{
@@ -75,9 +97,17 @@ const InvoicesPage = () => {
 					onSortChange={setSorts}
 					selectedSorts={sorts}
 				/>
-				<InvoiceTable data={invoiceData?.items || []} />
-				<Spacer className='!h-4' />
-				<ShortPagination unit='Invoices' totalItems={invoiceData?.pagination.total ?? 0} />
+				{isLoading ? (
+					<div className='flex justify-center items-center min-h-[200px]'>
+						<Loader />
+					</div>
+				) : (
+					<>
+						<InvoiceTable data={invoiceData?.items || []} />
+						<Spacer className='!h-4' />
+						<ShortPagination unit='Invoices' totalItems={invoiceData?.pagination.total ?? 0} />
+					</>
+				)}
 			</div>
 		</Page>
 	);

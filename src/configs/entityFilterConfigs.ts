@@ -11,6 +11,7 @@ import {
 } from '@/types/common/QueryBuilder';
 import { CustomerField, FeatureField, InvoiceField, PlanField } from '@/types/common/EntityFields';
 import { FEATURE_TYPE } from '@/models/Feature';
+import { PAYMENT_STATUS } from '@/constants';
 
 /**
  * Feature entity filter and sort configurations
@@ -339,9 +340,24 @@ export const invoiceFilterOptions: FilterField[] = [
 		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 		dataType: DataType.ARRAY,
 		options: [
-			{ value: 'unpaid', label: 'Unpaid' },
-			{ value: 'paid', label: 'Paid' },
-			{ value: 'partially_paid', label: 'Partially Paid' },
+			{ value: PAYMENT_STATUS.FAILED, label: 'Failed' },
+			{ value: PAYMENT_STATUS.SUCCEEDED, label: 'Paid' },
+			{ value: PAYMENT_STATUS.PENDING, label: 'Pending' },
+			{ value: PAYMENT_STATUS.PROCESSING, label: 'Processing' },
+			{ value: PAYMENT_STATUS.PARTIALLY_REFUNDED, label: 'Partially Refunded' },
+			{ value: PAYMENT_STATUS.REFUNDED, label: 'Refunded' },
+			{ value: PAYMENT_STATUS.FAILED, label: 'Failed' },
+		],
+	},
+	{
+		field: InvoiceField.STATUS,
+		label: 'Status',
+		fieldType: FilterFieldType.MULTI_SELECT,
+		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
+		dataType: DataType.ARRAY,
+		options: [
+			{ value: BaseEntityStatus.PUBLISHED, label: 'Active' },
+			{ value: BaseEntityStatus.ARCHIVED, label: 'Inactive' },
 		],
 	},
 ];
@@ -370,20 +386,6 @@ export const invoiceSortOptions: SortOption[] = [
 ];
 
 export const invoiceInitialFilters = [
-	{
-		field: InvoiceField.INVOICE_NUMBER,
-		operator: FilterOperator.CONTAINS,
-		valueString: '',
-		dataType: DataType.STRING,
-		id: 'initial-invoice-number',
-	},
-	{
-		field: InvoiceField.INVOICE_STATUS,
-		operator: FilterOperator.IS_ANY_OF,
-		valueArray: ['open'],
-		dataType: DataType.ARRAY,
-		id: 'initial-invoice-status',
-	},
 	{
 		field: InvoiceField.STATUS,
 		operator: FilterOperator.IS_ANY_OF,

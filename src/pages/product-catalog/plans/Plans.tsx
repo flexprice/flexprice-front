@@ -1,13 +1,13 @@
 import { AddButton, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
 import { PlanApi } from '@/api/PlanApi';
 import { PlansTable, ApiDocsContent, PlanDrawer, QueryBuilder } from '@/components/molecules';
 import { Plan } from '@/models/Plan';
 import usePagination from '@/hooks/usePagination';
 import { EmptyPage } from '@/components/organisms';
 import GUIDES from '@/constants/guides';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useFilterSorting from '@/hooks/useFilterSorting';
 import { planFilterOptions, planSortOptions, planInitialFilters, planInitialSorts } from '@/configs/entityFilterConfigs';
 const PricingPlan = () => {
@@ -38,10 +38,27 @@ const PricingPlan = () => {
 		data: plansData,
 		isLoading,
 		isError,
-	} = useQuery({
-		queryKey: ['fetchPlans', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
-		queryFn: fetchPlans,
-		// staleTime: 1000 * 60 * 5,
+		probeData,
+	} = useQueryWithEmptyState({
+		main: {
+			queryKey: ['fetchPlans', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
+			queryFn: fetchPlans,
+			// staleTime: 1000 * 60 * 5,
+		},
+		probe: {
+			queryKey: ['fetchPlans', 'probe', page],
+			queryFn: async () => {
+				return await PlanApi.listPlansByFilter({
+					limit: 1,
+					offset: 0,
+					filters: [],
+					sort: [],
+				});
+			},
+		},
+		shouldProbe: (mainData) => {
+			return mainData?.items.length === 0;
+		},
 	});
 
 	const handleOnAdd = () => {
@@ -49,15 +66,20 @@ const PricingPlan = () => {
 		setPlanDrawerOpen(true);
 	};
 
-	if (isLoading) {
-		return <Loader />;
-	}
+	// Show empty page when no plans exist at all (check probe data)
+	const showEmptyPage = useMemo(() => {
+		// Type-safe checks with explicit type assertion
+		const probeItems = probeData?.items || [];
+		const planItems = plansData?.items || [];
+		return !isLoading && probeItems.length === 0 && planItems.length === 0;
+	}, [isLoading, probeData, plansData]);
 
 	if (isError) {
-		toast.error('Error fetching meters');
+		toast.error('Error fetching plans');
+		return null;
 	}
 
-	if ((plansData?.items ?? []).length === 0) {
+	if (showEmptyPage) {
 		return (
 			<div className='space-y-6'>
 				<PlanDrawer data={activePlan} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlans']} />
@@ -91,13 +113,19 @@ const PricingPlan = () => {
 						onSortChange={setSorts}
 						selectedSorts={sorts}
 					/>
-					<PlansTable
-						data={(plansData?.items || []) as Plan[]}
-						onEdit={(plan) => {
-							setActivePlan(plan);
-							setPlanDrawerOpen(true);
-						}}
-					/>
+					{isLoading ? (
+						<div className='flex justify-center items-center min-h-[200px]'>
+							<Loader />
+						</div>
+					) : (
+						<PlansTable
+							data={(plansData?.items || []) as Plan[]}
+							onEdit={(plan) => {
+								setActivePlan(plan);
+								setPlanDrawerOpen(true);
+							}}
+						/>
+					)}
 					<Spacer className='!h-4' />
 					<ShortPagination unit='Pricing Plans' totalItems={plansData?.pagination.total ?? 0} />
 				</div>

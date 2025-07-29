@@ -57,6 +57,7 @@ const PlansTable: FC<PlansTableProps> = ({ data, onEdit }) => {
 		<FlexpriceTable
 			columns={columns}
 			data={mappedData}
+			showEmptyRow
 			onRowClick={(row) => {
 				navigate(RouteNames.plan + `/${row.id}`);
 			}}
