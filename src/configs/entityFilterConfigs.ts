@@ -346,7 +346,6 @@ export const invoiceFilterOptions: FilterField[] = [
 			{ value: PAYMENT_STATUS.PROCESSING, label: 'Processing' },
 			{ value: PAYMENT_STATUS.PARTIALLY_REFUNDED, label: 'Partially Refunded' },
 			{ value: PAYMENT_STATUS.REFUNDED, label: 'Refunded' },
-			{ value: PAYMENT_STATUS.FAILED, label: 'Failed' },
 		],
 	},
 	{
