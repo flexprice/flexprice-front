@@ -9,82 +9,14 @@ import CustomerApi from '@/api/CustomerApi';
 import { useState, useEffect, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import useFilterSorting from '@/hooks/useFilterSorting';
-import {
-	FilterField,
-	FilterFieldType,
-	DEFAULT_OPERATORS_PER_DATA_TYPE,
-	DataType,
-	FilterOperator,
-	SortOption,
-	SortDirection,
-} from '@/types/common/QueryBuilder';
-import { BaseEntityStatus } from '@/types/common';
 import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
+import { customerFilterOptions, customerSortOptions, customerInitialFilters, customerInitialSorts } from '@/configs/entityFilterConfigs';
 
-const sortingOptions: SortOption[] = [
-	{
-		field: 'name',
-		label: 'Name',
-		direction: SortDirection.ASC,
-	},
-	{
-		field: 'email',
-		label: 'Email',
-		direction: SortDirection.ASC,
-	},
-	{
-		field: 'created_at',
-		label: 'Created At',
-		direction: SortDirection.DESC,
-	},
-	{
-		field: 'updated_at',
-		label: 'Updated At',
-		direction: SortDirection.DESC,
-	},
-];
+// Using centralized sorting options from entityFilterConfigs.ts
+const sortingOptions = customerSortOptions;
 
-const filterOptions: FilterField[] = [
-	{
-		field: 'name',
-		label: 'Name',
-		fieldType: FilterFieldType.INPUT,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.STRING],
-		dataType: DataType.STRING,
-	},
-	{
-		field: 'external_id',
-		label: 'Lookup Key',
-		fieldType: FilterFieldType.INPUT,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.STRING],
-		dataType: DataType.STRING,
-	},
-	{
-		field: 'email',
-		label: 'Email',
-		fieldType: FilterFieldType.INPUT,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.STRING],
-		dataType: DataType.STRING,
-	},
-	{
-		field: 'created_at',
-		label: 'Created At',
-		fieldType: FilterFieldType.DATEPICKER,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.DATE],
-		dataType: DataType.DATE,
-	},
-	{
-		field: 'status',
-		label: 'Status',
-		fieldType: FilterFieldType.MULTI_SELECT,
-		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
-		dataType: DataType.ARRAY,
-		options: [
-			{ value: BaseEntityStatus.PUBLISHED, label: 'Active' },
-			{ value: BaseEntityStatus.ARCHIVED, label: 'Inactive' },
-		],
-	},
-];
+// Using centralized filter options from entityFilterConfigs.ts
+const filterOptions = customerFilterOptions;
 
 const CustomerPage = () => {
 	const { limit, offset, page, reset } = usePagination();
@@ -93,36 +25,8 @@ const CustomerPage = () => {
 	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
 
 	const { filters, sorts, setFilters, setSorts, sanitizedFilters, sanitizedSorts } = useFilterSorting({
-		initialFilters: [
-			{
-				field: 'name',
-				operator: FilterOperator.CONTAINS,
-				valueString: '',
-				dataType: DataType.STRING,
-				id: 'initial-name',
-			},
-			{
-				field: 'external_id',
-				operator: FilterOperator.CONTAINS,
-				valueString: '',
-				dataType: DataType.STRING,
-				id: 'initial-external-id',
-			},
-			{
-				field: 'status',
-				operator: FilterOperator.IS_ANY_OF,
-				valueArray: [BaseEntityStatus.PUBLISHED],
-				dataType: DataType.ARRAY,
-				id: 'initial-status',
-			},
-		],
-		initialSorts: [
-			{
-				field: 'updated_at',
-				label: 'Updated At',
-				direction: SortDirection.DESC,
-			},
-		],
+		initialFilters: customerInitialFilters,
+		initialSorts: customerInitialSorts,
 		debounceTime: 300,
 	});
 
@@ -156,8 +60,8 @@ const CustomerPage = () => {
 				return await CustomerApi.getCustomersByFilters({
 					limit: 1,
 					offset: 0,
-					filters: [],
-					sort: [],
+					filters: [], // No filters for probe query
+					sort: [], // No sorting for probe query
 				});
 			},
 		},

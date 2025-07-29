@@ -4,10 +4,16 @@ import { Pagination } from '@/models/Pagination';
 import { ExpandedPlan } from '@/utils/models/transformed_plan';
 import { generateQueryParams } from '@/utils/common/api_helper';
 import { GetPlanCreditGrantsResponse, SynchronizePlanPricesWithSubscriptionResponse } from '@/types/dto/Plan';
+import { TypedBackendFilter, TypedBackendSort } from '@/types/formatters/QueryBuilder';
 
 export interface GetAllPlansResponse {
 	items: Plan[] | ExpandedPlan[];
 	pagination: Pagination;
+}
+
+export interface GetPlansByFilterPayload extends Pagination {
+	filters: TypedBackendFilter[];
+	sort: TypedBackendSort[];
 }
 
 export class PlanApi {
@@ -79,5 +85,14 @@ export class PlanApi {
 
 	public static async getPlanCreditGrants(id: string) {
 		return await AxiosClient.get<GetPlanCreditGrantsResponse>(`${this.baseUrl}/${id}/creditgrants`);
+	}
+
+	/**
+	 * Get plans filtered and sorted by the provided criteria
+	 * @param payload - Filter, sort, and pagination parameters
+	 * @returns Plans matching the filter criteria
+	 */
+	public static async listPlansByFilter(payload: GetPlansByFilterPayload) {
+		return await AxiosClient.post<GetAllPlansResponse, GetPlansByFilterPayload>(`${this.baseUrl}/search`, payload);
 	}
 }

@@ -3,6 +3,8 @@ import { Invoice } from '@/models/Invoice';
 import { generateQueryParams } from '@/utils/common/api_helper';
 import AuthService from '@/core/auth/AuthService';
 import EnvironmentApi from '@/api/EnvironmentApi';
+import { TypedBackendFilter, TypedBackendSort } from '@/types/formatters/QueryBuilder';
+import { Pagination } from '@/models/Pagination';
 import {
 	GetInvoicesResponse,
 	GetAllInvoicesPayload,
@@ -10,6 +12,14 @@ import {
 	GetInvoicePreviewPayload,
 	CreateOneOffInvoicePayload,
 } from '@/types/dto';
+
+/**
+ * Payload interface for filtering invoices
+ */
+export interface GetInvoicesByFilterPayload extends Pagination {
+	filters: TypedBackendFilter[];
+	sort: TypedBackendSort[];
+}
 
 class InvoiceApi {
 	private static baseurl = '/invoices';
@@ -98,6 +108,15 @@ class InvoiceApi {
 		const presignedUrl = response.presigned_url;
 
 		window.open(presignedUrl, '_blank');
+	}
+
+	/**
+	 * Get invoices filtered and sorted by the provided criteria
+	 * @param payload - Filter, sort, and pagination parameters
+	 * @returns Invoices matching the filter criteria
+	 */
+	public static async listInvoicesByFilter(payload: GetInvoicesByFilterPayload): Promise<GetInvoicesResponse> {
+		return await AxiosClient.post<GetInvoicesResponse, GetInvoicesByFilterPayload>(`${this.baseurl}/search`, payload);
 	}
 }
 

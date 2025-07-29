@@ -2,32 +2,45 @@ import { AddButton, Loader, Page, ShortPagination, Spacer } from '@/components/a
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PlanApi } from '@/api/PlanApi';
-import { PlansTable, ApiDocsContent, PlanDrawer } from '@/components/molecules';
+import { PlansTable, ApiDocsContent, PlanDrawer, QueryBuilder } from '@/components/molecules';
 import { Plan } from '@/models/Plan';
 import usePagination from '@/hooks/usePagination';
 import { EmptyPage } from '@/components/organisms';
 import GUIDES from '@/constants/guides';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import useFilterSorting from '@/hooks/useFilterSorting';
+import { planFilterOptions, planSortOptions, planInitialFilters, planInitialSorts } from '@/configs/entityFilterConfigs';
 const PricingPlan = () => {
-	const { limit, offset, page } = usePagination();
+	const { limit, offset, page, reset } = usePagination();
+
+	const { filters, sorts, setFilters, setSorts, sanitizedFilters, sanitizedSorts } = useFilterSorting({
+		initialFilters: planInitialFilters,
+		initialSorts: planInitialSorts,
+		debounceTime: 500,
+	});
 	const [activePlan, setActivePlan] = useState<Plan | null>(null);
 	const [planDrawerOpen, setPlanDrawerOpen] = useState(false);
 
 	const fetchPlans = async () => {
-		return await PlanApi.getAllPlans({
+		return await PlanApi.listPlansByFilter({
 			limit,
 			offset,
+			filters: sanitizedFilters,
+			sort: sanitizedSorts,
 		});
 	};
+
+	useEffect(() => {
+		reset();
+	}, [sanitizedFilters, sanitizedSorts, reset]);
 
 	const {
 		data: plansData,
 		isLoading,
 		isError,
 	} = useQuery({
-		queryKey: ['fetchPlans', page],
+		queryKey: ['fetchPlans', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
 		queryFn: fetchPlans,
-
 		// staleTime: 1000 * 60 * 5,
 	});
 
@@ -70,6 +83,14 @@ const PricingPlan = () => {
 				<PlanDrawer data={activePlan} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlans']} />
 				<ApiDocsContent tags={['Plans']} />
 				<div className='space-y-6'>
+					<QueryBuilder
+						filterOptions={planFilterOptions}
+						filters={filters}
+						onFilterChange={setFilters}
+						sortOptions={planSortOptions}
+						onSortChange={setSorts}
+						selectedSorts={sorts}
+					/>
 					<PlansTable
 						data={(plansData?.items || []) as Plan[]}
 						onEdit={(plan) => {

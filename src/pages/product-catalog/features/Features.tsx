@@ -8,78 +8,16 @@ import FeatureApi from '@/api/FeatureApi';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo } from 'react';
-import {
-	FilterField,
-	FilterFieldType,
-	DEFAULT_OPERATORS_PER_DATA_TYPE,
-	DataType,
-	FilterOperator,
-	SortOption,
-	SortDirection,
-} from '@/types/common/QueryBuilder';
 import { QueryBuilder } from '@/components/molecules';
-import { BaseEntityStatus } from '@/types/common';
-import { FEATURE_TYPE } from '@/models/Feature';
 import useFilterSorting from '@/hooks/useFilterSorting';
 import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
+import { featureFilterOptions, featureSortOptions, featureInitialFilters, featureInitialSorts } from '@/configs/entityFilterConfigs';
 
-const sortingOptions: SortOption[] = [
-	{
-		field: 'name',
-		label: 'Name',
-		direction: SortDirection.ASC,
-	},
-	{
-		field: 'created_at',
-		label: 'Created At',
-		direction: SortDirection.DESC,
-	},
-	{
-		field: 'updated_at',
-		label: 'Updated At',
-		direction: SortDirection.DESC,
-	},
-];
+// Using centralized sorting options from entityFilterConfigs.ts
+const sortingOptions = featureSortOptions;
 
-const filterOptions: FilterField[] = [
-	{
-		field: 'name',
-		label: 'Name',
-		fieldType: FilterFieldType.INPUT,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.STRING],
-		dataType: DataType.STRING,
-	},
-	{
-		field: 'created_at',
-		label: 'Created At',
-		fieldType: FilterFieldType.DATEPICKER,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.DATE],
-		dataType: DataType.DATE,
-	},
-	{
-		field: 'status',
-		label: 'Status',
-		fieldType: FilterFieldType.MULTI_SELECT,
-		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
-		dataType: DataType.ARRAY,
-		options: [
-			{ value: BaseEntityStatus.PUBLISHED, label: 'Active' },
-			{ value: BaseEntityStatus.ARCHIVED, label: 'Inactive' },
-		],
-	},
-	{
-		field: 'type',
-		label: 'Type',
-		fieldType: FilterFieldType.MULTI_SELECT,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.ARRAY],
-		dataType: DataType.ARRAY,
-		options: [
-			{ value: FEATURE_TYPE.METERED, label: 'Metered' },
-			{ value: FEATURE_TYPE.BOOLEAN, label: 'Boolean' },
-			{ value: FEATURE_TYPE.STATIC, label: 'Static' },
-		],
-	},
-];
+// Using centralized filter options from entityFilterConfigs.ts
+const filterOptions = featureFilterOptions;
 
 const FeaturesPage = () => {
 	const { limit, offset, page, reset } = usePagination();
@@ -87,29 +25,8 @@ const FeaturesPage = () => {
 	// Add debounce to search query
 
 	const { filters, sorts, setFilters, setSorts, sanitizedFilters, sanitizedSorts } = useFilterSorting({
-		initialFilters: [
-			{
-				field: 'name',
-				operator: FilterOperator.CONTAINS,
-				valueString: '',
-				dataType: DataType.STRING,
-				id: 'initial-name',
-			},
-			{
-				field: 'status',
-				operator: FilterOperator.IS_ANY_OF,
-				valueArray: [BaseEntityStatus.PUBLISHED],
-				dataType: DataType.ARRAY,
-				id: 'initial-status',
-			},
-		],
-		initialSorts: [
-			{
-				field: 'updated_at',
-				label: 'Updated At',
-				direction: SortDirection.DESC,
-			},
-		],
+		initialFilters: featureInitialFilters,
+		initialSorts: featureInitialSorts,
 		debounceTime: 500,
 	});
 
