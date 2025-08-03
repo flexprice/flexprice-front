@@ -50,6 +50,13 @@ export interface UpdateWalletRequest {
 	config?: {
 		allowed_price_types: string[];
 	};
+	alert_enabled?: boolean;
+	alert_config?: {
+		threshold: {
+			type: 'amount' | 'percentage';
+			value: string;
+		};
+	};
 }
 
 export interface WalletResponse {
@@ -72,6 +79,13 @@ export interface WalletResponse {
 	conversion_rate: string;
 	created_at: string;
 	updated_at: string;
+	alert_enabled?: boolean;
+	alert_config?: {
+		threshold: {
+			type: 'amount' | 'percentage';
+			value: string;
+		};
+	};
 }
 
 export interface GetCustomerWalletsResponse extends BaseModel {
@@ -91,4 +105,11 @@ export interface GetCustomerWalletsResponse extends BaseModel {
 	name: string;
 	wallet_status: WALLET_STATUS;
 	wallet_type: WALLET_TYPE;
+	alert_enabled?: boolean;
+	alert_config?: {
+		threshold: {
+			type: 'amount' | 'percentage';
+			value: string;
+		};
+	};
 }

@@ -10,6 +10,13 @@ export interface Wallet extends BaseModel {
 	readonly wallet_status: WALLET_STATUS;
 	readonly conversion_rate: number;
 	readonly meter: Meter;
+	readonly alert_enabled?: boolean;
+	readonly alert_config?: {
+		threshold: {
+			type: 'amount' | 'percentage';
+			value: string;
+		};
+	};
 }
 
 export enum WALLET_STATUS {

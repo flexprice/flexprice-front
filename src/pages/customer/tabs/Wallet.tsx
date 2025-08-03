@@ -7,6 +7,7 @@ import {
 	ApiDocsContent,
 	TerminateWalletModal,
 	MetadataModal,
+	WalletAlertDialog,
 } from '@/components/molecules';
 import { Dialog } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,7 +21,7 @@ import toast from 'react-hot-toast';
 import { IoSearch } from 'react-icons/io5';
 import { useParams, useOutletContext } from 'react-router-dom';
 import CreateWallet from '../customers/CreateWallet';
-import { EllipsisVertical, Info, Pencil, SlidersHorizontal, Trash2, Wallet as WalletIcon } from 'lucide-react';
+import { EllipsisVertical, Info, Pencil, SlidersHorizontal, Trash2, Wallet as WalletIcon, Bell } from 'lucide-react';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import useQueryParams from '@/hooks/useQueryParams';
 import { DetailsCard } from '@/components/molecules';
@@ -54,6 +55,7 @@ const WalletTab = () => {
 	const [showTopupModal, setShowTopupModal] = useState(false);
 	const [showTerminateModal, setShowTerminateModal] = useState(false);
 	const [showMetadataModal, setShowMetadataModal] = useState(false);
+	const [showAlertDialog, setShowAlertDialog] = useState(false);
 	const [activeWallet, setActiveWallet] = useState<Wallet | null>();
 	const [metadata, setMetadata] = useState<Record<string, string>>({});
 
@@ -114,6 +116,11 @@ const WalletTab = () => {
 							icon: <Pencil />,
 							label: 'Edit',
 							disabled: true,
+						},
+						{
+							icon: <Bell />,
+							label: 'Alert Settings',
+							onSelect: () => setShowAlertDialog(true),
 						},
 						{
 							icon: <Trash2 />,
@@ -208,6 +215,30 @@ const WalletTab = () => {
 					}
 				}}
 				onClose={() => setShowMetadataModal(false)}
+			/>
+
+			{/* Wallet Alert Dialog */}
+			<WalletAlertDialog
+				open={showAlertDialog}
+				alertEnabled={activeWallet?.alert_enabled || false}
+				alertConfig={activeWallet?.alert_config}
+				currency={activeWallet?.currency}
+				onSave={async (alertEnabled, alertConfig) => {
+					if (!activeWallet?.id) return;
+					try {
+						await WalletApi.updateWallet(activeWallet.id!, {
+							alert_enabled: alertEnabled,
+							alert_config: alertConfig,
+						});
+						setShowAlertDialog(false);
+						refetchQueries(['fetchWallets', customerId!]);
+						toast.success('Alert settings updated successfully');
+					} catch (e) {
+						logger.error('Failed to update alert settings', e);
+						toast.error('Failed to update alert settings');
+					}
+				}}
+				onClose={() => setShowAlertDialog(false)}
 			/>
 
 			{!wallets?.length ? (
