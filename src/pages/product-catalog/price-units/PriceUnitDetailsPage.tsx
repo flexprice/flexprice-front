@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Page from '@/components/atoms/Page';
-import Card from '@/components/atoms/Card';
-import { Button } from '@/components/atoms/Button';
-import Loader from '@/components/atoms/Loader';
-import NoDataCard from '@/components/atoms/NoDataCard';
+import { Page, Button, Loader, NoDataCard, Chip } from '@/components/atoms';
+import { DetailsCard } from '@/components/molecules';
 import PriceUnitApi from '@/api/PriceUnitApi';
 import { PriceUnitResponse } from '@/types/dto/PriceUnit';
-import formatDate from '@/utils/common/format_date';
 import PriceUnitDrawer from './components/PriceUnitDrawer';
+import formatChips from '@/utils/common/format_chips';
+import { ENTITY_STATUS } from '@/models/base';
+import { RouteNames } from '@/core/routes/Routes';
+import { EyeOff, Pencil } from 'lucide-react';
 
 export const PriceUnitDetailsPage: React.FC = () => {
 	const { id } = useParams<{ id: string }>();
@@ -45,7 +45,7 @@ export const PriceUnitDetailsPage: React.FC = () => {
 		if (!id) return;
 		try {
 			await PriceUnitApi.delete(id);
-			navigate('/product-catalog/price-units');
+			navigate(RouteNames.priceUnits);
 		} catch (err) {
 			console.error('Failed to delete price unit:', err);
 		}
@@ -65,67 +65,62 @@ export const PriceUnitDetailsPage: React.FC = () => {
 				<NoDataCard
 					title='Error'
 					subtitle={error || 'Price unit not found'}
-					cta={<Button onClick={() => navigate('/product-catalog/price-units')}>Back to Price Units</Button>}
+					cta={<Button onClick={() => navigate(RouteNames.priceUnits)}>Back</Button>}
 				/>
 			</Page>
 		);
 	}
 
 	return (
-		<Page>
-			<div className='flex justify-between items-center mb-6'>
-				<h1 className='text-2xl font-semibold'>Price Unit Details</h1>
-				<div className='flex space-x-2'>
-					<Button variant='ghost' onClick={() => navigate('/product-catalog/price-units')}>
-						Back
+		<Page
+			heading='Price Unit Details'
+			headingCTA={
+				<>
+					<Button onClick={() => handleEdit()} variant={'outline'}>
+						<Pencil />
+						Edit
 					</Button>
-					<Button onClick={handleEdit}>Edit</Button>
-					<Button variant='ghost' onClick={handleDelete}>
-						Delete
+					<Button onClick={() => handleDelete()} variant={'outline'}>
+						<EyeOff />
+						Archive
 					</Button>
-				</div>
-			</div>
-
-			<Card>
-				<div className='grid grid-cols-2 gap-4 p-6'>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Name</h3>
-						<p className='mt-1 text-sm text-gray-900'>{priceUnit.name}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Code</h3>
-						<p className='mt-1 text-sm text-gray-900'>{priceUnit.code}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Symbol</h3>
-						<p className='mt-1 text-sm text-gray-900'>{priceUnit.symbol}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Base Currency</h3>
-						<p className='mt-1 text-sm text-gray-900'>{priceUnit.base_currency}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Conversion Rate</h3>
-						<p className='mt-1 text-sm text-gray-900'>{priceUnit.conversion_rate.toString()}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Precision</h3>
-						<p className='mt-1 text-sm text-gray-900'>{priceUnit.precision}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Status</h3>
-						<p className='mt-1 text-sm text-gray-900'>{priceUnit.status}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Created At</h3>
-						<p className='mt-1 text-sm text-gray-900'>{formatDate(priceUnit.created_at)}</p>
-					</div>
-					<div>
-						<h3 className='text-sm font-medium text-gray-500'>Updated At</h3>
-						<p className='mt-1 text-sm text-gray-900'>{formatDate(priceUnit.updated_at)}</p>
-					</div>
-				</div>
-			</Card>
+				</>
+			}>
+			<DetailsCard
+				data={[
+					{
+						label: 'Name',
+						value: priceUnit.name,
+					},
+					{
+						label: 'Code',
+						value: priceUnit.code,
+					},
+					{
+						label: 'Symbol',
+						value: priceUnit.symbol,
+					},
+					{
+						label: 'Base Currency',
+						value: priceUnit.base_currency,
+					},
+					{
+						label: 'Conversion Rate',
+						value: priceUnit.conversion_rate.toString(),
+					},
+					{
+						label: 'Precision',
+						value: priceUnit.precision,
+					},
+					{
+						label: 'Status',
+						value: (
+							<Chip variant={priceUnit.status === ENTITY_STATUS.PUBLISHED ? 'success' : 'default'} label={formatChips(priceUnit.status)} />
+						),
+					},
+				]}
+				variant='stacked'
+			/>
 
 			<PriceUnitDrawer open={isDrawerOpen} onOpenChange={handleDrawerClose} data={priceUnit} />
 		</Page>

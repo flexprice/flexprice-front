@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Button, Input, Sheet, Spacer } from '@/components/atoms';
+import { Button, Input, Sheet } from '@/components/atoms';
 import PriceUnitApi from '@/api/PriceUnitApi';
 import { PriceUnitResponse } from '@/types/dto/PriceUnit';
 import { Decimal } from 'decimal.js';
@@ -119,71 +119,66 @@ const PriceUnitDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) => {
 				description={data ? 'Update price unit details.' : 'Enter details to create a new price unit.'}
 				trigger={trigger}>
 				<div className='space-y-4'>
-					<Spacer className='!h-4' />
-					<div className='relative card !p-4'>
-						<span className='absolute -top-4 left-2 text-[#18181B] text-sm bg-white font-medium px-2 py-1'>Price Unit Details</span>
-						<div className='space-y-4'>
-							<Input
-								label='Name'
-								placeholder='Enter Name'
-								value={formData.name || ''}
-								onChange={(e) => handleChange('name', e)}
-								error={errors.name}
-							/>
+					<div className='space-y-4'>
+						<Input
+							label='Name'
+							placeholder='Enter Name'
+							value={formData.name || ''}
+							onChange={(e) => handleChange('name', e)}
+							error={errors.name}
+						/>
 
-							<Input
-								label='Code'
-								placeholder='e.g. USD'
-								value={formData.code || ''}
-								onChange={(e) => handleChange('code', e)}
-								error={errors.code}
-								disabled={isEdit}
-								maxLength={3}
-							/>
+						<Input
+							label='Code'
+							placeholder='e.g. USD'
+							value={formData.code || ''}
+							onChange={(e) => handleChange('code', e)}
+							error={errors.code}
+							disabled={isEdit}
+							maxLength={3}
+						/>
 
-							<Input
-								label='Symbol'
-								placeholder='e.g. $'
-								value={formData.symbol || ''}
-								onChange={(e) => handleChange('symbol', e)}
-								error={errors.symbol}
-								maxLength={10}
-							/>
+						<Input
+							label='Symbol'
+							placeholder='e.g. $'
+							value={formData.symbol || ''}
+							onChange={(e) => handleChange('symbol', e)}
+							error={errors.symbol}
+							maxLength={10}
+						/>
 
-							<Input
-								label='Base Currency'
-								placeholder='e.g. USD'
-								value={formData.base_currency || ''}
-								onChange={(e) => handleChange('base_currency', e)}
-								error={errors.base_currency}
-								disabled={isEdit}
-								maxLength={3}
-							/>
+						<Input
+							label='Base Currency'
+							placeholder='e.g. USD'
+							value={formData.base_currency || ''}
+							onChange={(e) => handleChange('base_currency', e)}
+							error={errors.base_currency}
+							disabled={isEdit}
+							maxLength={3}
+						/>
 
-							<Input
-								label='Conversion Rate'
-								type='number'
-								step='any'
-								placeholder='e.g. 1.0'
-								value={formData.conversion_rate?.toString() || ''}
-								onChange={(e) => handleChange('conversion_rate', e)}
-								error={errors.conversion_rate}
-							/>
+						<Input
+							label='Conversion Rate'
+							type='number'
+							step='any'
+							placeholder='e.g. 1.0'
+							value={formData.conversion_rate?.toString() || ''}
+							onChange={(e) => handleChange('conversion_rate', e)}
+							error={errors.conversion_rate}
+						/>
 
-							<Input
-								label='Precision'
-								type='number'
-								placeholder='e.g. 2'
-								value={formData.precision?.toString() || '2'}
-								onChange={(e) => handleChange('precision', Number(e))}
-								error={errors.precision}
-								min={0}
-								max={8}
-							/>
-						</div>
+						<Input
+							label='Precision'
+							type='number'
+							placeholder='e.g. 2'
+							value={formData.precision?.toString() || '2'}
+							onChange={(e) => handleChange('precision', Number(e))}
+							error={errors.precision}
+							min={0}
+							max={8}
+						/>
 					</div>
 
-					<Spacer className='!h-4' />
 					<Button isLoading={isPending} disabled={isPending || isCtaDisabled} onClick={handleSubmit}>
 						{isPending ? 'Saving...' : data ? 'Update Price Unit' : 'Create Price Unit'}
 					</Button>

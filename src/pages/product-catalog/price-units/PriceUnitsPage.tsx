@@ -1,13 +1,12 @@
-import { AddButton, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { QueryBuilder } from '@/components/molecules';
-import EmptyPage from '@/components/organisms/EmptyPage/EmptyPage';
-import { RouteNames } from '@/core/routes/Routes';
+import { AddButton, Loader, Page, ShortPagination, Spacer } from '@/components/atoms';
+import { QueryBuilder, ApiDocsContent } from '@/components/molecules';
+import { EmptyPage } from '@/components/organisms';
 import GUIDES from '@/constants/guides';
 import usePagination from '@/hooks/usePagination';
 import PriceUnitApi from '@/api/PriceUnitApi';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
+import debounce from 'lodash/debounce';
 import {
 	FilterField,
 	FilterFieldType,
@@ -118,13 +117,25 @@ export const PriceUnitsPage: React.FC = () => {
 		});
 	};
 
+	const debouncedReset = useMemo(
+		() =>
+			debounce(() => {
+				reset();
+			}, 500),
+		[reset],
+	);
+
 	useEffect(() => {
-		reset();
-	}, [sanitizedFilters, sanitizedSorts, reset]);
+		debouncedReset();
+		return () => {
+			debouncedReset.cancel();
+		};
+	}, [sanitizedFilters, sanitizedSorts, debouncedReset]);
 
 	const {
 		isLoading,
 		isError,
+		error,
 		data: priceUnitData,
 		probeData,
 	} = useQueryWithEmptyState({
@@ -158,41 +169,37 @@ export const PriceUnitsPage: React.FC = () => {
 		return !isLoading && probeData?.items.length === 0 && priceUnitData?.items.length === 0;
 	}, [isLoading, probeData, priceUnitData]);
 
-	// Handle error state
 	if (isError) {
-		toast.error('Error fetching price units');
+		const err = error as { error?: { message: string } };
+		toast.error(err?.error?.message || 'Error fetching price units');
 		return null;
 	}
 
-	// Render empty state when no price units and no search query
 	if (showEmptyPage) {
 		return (
-			<EmptyPage
-				heading='Price Units'
-				tags={['Price Units']}
-				tutorials={GUIDES.priceUnits?.tutorials}
-				emptyStateCard={{
-					heading: 'Add your first price unit',
-					description: 'Create your first price unit to define custom pricing units.',
-					buttonLabel: 'Create Price Unit',
-					buttonAction: handleCreateNew,
-				}}
-				onAddClick={handleCreateNew}
-			/>
+			<div className='space-y-6'>
+				<PriceUnitDrawer data={selectedPriceUnit || undefined} open={isDrawerOpen} onOpenChange={setIsDrawerOpen} />
+				<EmptyPage
+					heading='Price Units'
+					tags={['Price Units']}
+					tutorials={GUIDES.priceUnits?.tutorials}
+					emptyStateCard={{
+						heading: 'Add your first price unit',
+						description: 'Create your first price unit to define custom pricing units.',
+						buttonLabel: 'Create Price Unit',
+						buttonAction: handleCreateNew,
+					}}
+					onAddClick={handleCreateNew}
+				/>
+			</div>
 		);
 	}
 
 	return (
-		<Page
-			heading='Price Units'
-			headingCTA={
-				<div className='flex justify-between items-center gap-2'>
-					<Link to={`${RouteNames.priceUnits}/create`}>
-						<AddButton label='Add Price Unit' />
-					</Link>
-				</div>
-			}>
-			<div>
+		<Page heading='Price Units' headingCTA={<AddButton label='Add Price Unit' onClick={handleCreateNew} />}>
+			<PriceUnitDrawer data={selectedPriceUnit || undefined} open={isDrawerOpen} onOpenChange={setIsDrawerOpen} />
+			<ApiDocsContent tags={['Price Units']} />
+			<div className='space-y-6'>
 				<QueryBuilder
 					filterOptions={filterOptions}
 					filters={filters}
@@ -201,17 +208,19 @@ export const PriceUnitsPage: React.FC = () => {
 					onSortChange={setSorts}
 					selectedSorts={sorts}
 				/>
-				<PriceUnitsTable data={priceUnitData?.items || []} />
-				<Spacer className='!h-4' />
-				<ShortPagination unit='Price Units' totalItems={priceUnitData?.pagination.total ?? 0} />
-			</div>
 
-			<PriceUnitDrawer
-				data={selectedPriceUnit || undefined}
-				open={isDrawerOpen}
-				onOpenChange={setIsDrawerOpen}
-				trigger={<AddButton label='Add Price Unit' />}
-			/>
+				{isLoading ? (
+					<div className='flex justify-center items-center min-h-[200px]'>
+						<Loader />
+					</div>
+				) : (
+					<>
+						<PriceUnitsTable data={priceUnitData?.items || []} />
+						<Spacer className='!h-4' />
+						<ShortPagination unit='Price Units' totalItems={priceUnitData?.pagination.total ?? 0} />
+					</>
+				)}
+			</div>
 		</Page>
 	);
 };
