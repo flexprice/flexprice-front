@@ -35,6 +35,10 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 					title: 'Addons',
 					url: RouteNames.addons,
 				},
+				{
+					title: 'Price Units',
+					url: RouteNames.priceUnits,
+				},
 			],
 		},
 		{

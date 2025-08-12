@@ -1,13 +1,13 @@
-import { BaseEntityStatus } from '@/types/common';
+import { ENTITY_STATUS } from '@/models/base';
 
-const formatChips = (data: string): string => {
+const formatChips = (data: ENTITY_STATUS): string => {
 	switch (data) {
-		case BaseEntityStatus.PUBLISHED:
+		case ENTITY_STATUS.PUBLISHED:
 			return 'Active';
-		case BaseEntityStatus.ARCHIVED:
+		case ENTITY_STATUS.ARCHIVED:
 			return 'Inactive';
-		case BaseEntityStatus.DELETED:
-			return 'Inactive';
+		case ENTITY_STATUS.DELETED:
+			return 'Deleted';
 		default:
 			return 'Inactive';
 	}

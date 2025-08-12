@@ -4,8 +4,8 @@ import { Button, Input, Select, SelectOption, Toggle, Dialog } from '@/component
 import TaxApi from '@/api/TaxApi';
 import { TAXRATE_ENTITY_TYPE } from '@/models/Tax';
 import { CreateTaxAssociationRequest, TaxRateResponse } from '@/types/dto/tax';
-import { BaseEntityStatus } from '@/types/common';
 import { currencyOptions } from '@/constants/constants';
+import { ENTITY_STATUS } from '@/models/base';
 
 interface TaxAssociationDialogProps {
 	open: boolean;
@@ -56,7 +56,7 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 	const { data: taxRatesData, isLoading: isLoadingTaxRates } = useQuery({
 		queryKey: ['fetchPublishedTaxRates'],
 		queryFn: async () => {
-			return await TaxApi.listTaxRates({ limit: 1000, status: BaseEntityStatus.PUBLISHED });
+			return await TaxApi.listTaxRates({ limit: 1000, status: ENTITY_STATUS.PUBLISHED });
 		},
 		enabled: open,
 	});

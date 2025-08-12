@@ -1,13 +1,13 @@
 import { AddButton, Page, ShortPagination, Spacer } from '@/components/atoms';
-import { ApiDocsContent, FeatureTable } from '@/components/molecules';
+import { QueryBuilder } from '@/components/molecules';
 import EmptyPage from '@/components/organisms/EmptyPage/EmptyPage';
 import { RouteNames } from '@/core/routes/Routes';
 import GUIDES from '@/constants/guides';
 import usePagination from '@/hooks/usePagination';
-import FeatureApi from '@/api/FeatureApi';
+import PriceUnitApi from '@/api/PriceUnitApi';
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 import {
 	FilterField,
 	FilterFieldType,
@@ -17,11 +17,12 @@ import {
 	SortOption,
 	SortDirection,
 } from '@/types/common/QueryBuilder';
-import { QueryBuilder } from '@/components/molecules';
-import { FEATURE_TYPE } from '@/models/Feature';
+import { ENTITY_STATUS } from '@/models/base';
 import useFilterSorting from '@/hooks/useFilterSorting';
 import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
-import { ENTITY_STATUS } from '@/models/base';
+import { PriceUnitResponse } from '@/types/dto/PriceUnit';
+import PriceUnitsTable from './components/PriceUnitsTable';
+import PriceUnitDrawer from './components/PriceUnitDrawer';
 
 const sortingOptions: SortOption[] = [
 	{
@@ -50,6 +51,13 @@ const filterOptions: FilterField[] = [
 		dataType: DataType.STRING,
 	},
 	{
+		field: 'code',
+		label: 'Code',
+		fieldType: FilterFieldType.INPUT,
+		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.STRING],
+		dataType: DataType.STRING,
+	},
+	{
 		field: 'created_at',
 		label: 'Created At',
 		fieldType: FilterFieldType.DATEPICKER,
@@ -67,24 +75,12 @@ const filterOptions: FilterField[] = [
 			{ value: ENTITY_STATUS.ARCHIVED, label: 'Inactive' },
 		],
 	},
-	{
-		field: 'type',
-		label: 'Type',
-		fieldType: FilterFieldType.MULTI_SELECT,
-		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.ARRAY],
-		dataType: DataType.ARRAY,
-		options: [
-			{ value: FEATURE_TYPE.METERED, label: 'Metered' },
-			{ value: FEATURE_TYPE.BOOLEAN, label: 'Boolean' },
-			{ value: FEATURE_TYPE.STATIC, label: 'Static' },
-		],
-	},
 ];
 
-const FeaturesPage = () => {
+export const PriceUnitsPage: React.FC = () => {
 	const { limit, offset, page, reset } = usePagination();
-
-	// Add debounce to search query
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [selectedPriceUnit, setSelectedPriceUnit] = useState<PriceUnitResponse | null>(null);
 
 	const { filters, sorts, setFilters, setSorts, sanitizedFilters, sanitizedSorts } = useFilterSorting({
 		initialFilters: [
@@ -113,34 +109,33 @@ const FeaturesPage = () => {
 		debounceTime: 500,
 	});
 
-	const fetchFeatures = async () => {
-		return await FeatureApi.getFeaturesByFilter({
+	const fetchPriceUnits = async () => {
+		return await PriceUnitApi.search({
 			limit: limit,
 			offset: offset,
 			filters: sanitizedFilters,
 			sort: sanitizedSorts,
 		});
 	};
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		reset();
-	}, [sanitizedFilters, sanitizedSorts]);
+	}, [sanitizedFilters, sanitizedSorts, reset]);
 
 	const {
 		isLoading,
 		isError,
-		data: featureData,
+		data: priceUnitData,
 		probeData,
 	} = useQueryWithEmptyState({
 		main: {
-			queryKey: ['fetchFeatures', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
-			queryFn: fetchFeatures,
+			queryKey: ['fetchPriceUnits', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
+			queryFn: fetchPriceUnits,
 		},
 		probe: {
-			queryKey: ['fetchFeatures', 'probe', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
+			queryKey: ['fetchPriceUnits', 'probe', page, JSON.stringify(sanitizedFilters), JSON.stringify(sanitizedSorts)],
 			queryFn: async () => {
-				return await FeatureApi.getFeaturesByFilter({
+				return await PriceUnitApi.search({
 					limit: 1,
 					offset: 0,
 					filters: [],
@@ -153,46 +148,50 @@ const FeaturesPage = () => {
 		},
 	});
 
-	// show empty page when no features and no search query
+	const handleCreateNew = () => {
+		setSelectedPriceUnit(null);
+		setIsDrawerOpen(true);
+	};
+
+	// show empty page when no price units and no search query
 	const showEmptyPage = useMemo(() => {
-		return !isLoading && probeData?.items.length === 0 && featureData?.items.length === 0;
-	}, [isLoading, probeData, featureData]);
+		return !isLoading && probeData?.items.length === 0 && priceUnitData?.items.length === 0;
+	}, [isLoading, probeData, priceUnitData]);
 
 	// Handle error state
 	if (isError) {
-		toast.error('Error fetching features');
+		toast.error('Error fetching price units');
 		return null;
 	}
 
-	// Render empty state when no features and no search query
+	// Render empty state when no price units and no search query
 	if (showEmptyPage) {
 		return (
 			<EmptyPage
-				heading='Feature'
-				tags={['Features']}
-				tutorials={GUIDES.features.tutorials}
+				heading='Price Units'
+				tags={['Price Units']}
+				tutorials={GUIDES.priceUnits?.tutorials}
 				emptyStateCard={{
-					heading: 'Add your first feature',
-					description: 'Create your first feature to define what customers pay for.',
-					buttonLabel: 'Create Feature',
-					buttonAction: () => navigate(RouteNames.createFeature),
+					heading: 'Add your first price unit',
+					description: 'Create your first price unit to define custom pricing units.',
+					buttonLabel: 'Create Price Unit',
+					buttonAction: handleCreateNew,
 				}}
-				onAddClick={() => navigate(RouteNames.createFeature)}
+				onAddClick={handleCreateNew}
 			/>
 		);
 	}
 
 	return (
 		<Page
-			heading='Features'
+			heading='Price Units'
 			headingCTA={
 				<div className='flex justify-between items-center gap-2'>
-					<Link to={RouteNames.createFeature}>
-						<AddButton label='Add Feature' />
+					<Link to={`${RouteNames.priceUnits}/create`}>
+						<AddButton label='Add Price Unit' />
 					</Link>
 				</div>
 			}>
-			<ApiDocsContent tags={['Features']} />
 			<div>
 				<QueryBuilder
 					filterOptions={filterOptions}
@@ -202,11 +201,17 @@ const FeaturesPage = () => {
 					onSortChange={setSorts}
 					selectedSorts={sorts}
 				/>
-				<FeatureTable data={featureData?.items || []} />
+				<PriceUnitsTable data={priceUnitData?.items || []} />
 				<Spacer className='!h-4' />
-				<ShortPagination unit='Features' totalItems={featureData?.pagination.total ?? 0} />
+				<ShortPagination unit='Price Units' totalItems={priceUnitData?.pagination.total ?? 0} />
 			</div>
+
+			<PriceUnitDrawer
+				data={selectedPriceUnit || undefined}
+				open={isDrawerOpen}
+				onOpenChange={setIsDrawerOpen}
+				trigger={<AddButton label='Add Price Unit' />}
+			/>
 		</Page>
 	);
 };
-export default FeaturesPage;

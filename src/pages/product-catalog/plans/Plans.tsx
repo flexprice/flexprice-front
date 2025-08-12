@@ -17,8 +17,8 @@ import {
 	SortOption,
 	SortDirection,
 } from '@/types/common/QueryBuilder';
-import { BaseEntityStatus } from '@/types/common';
 import toast from 'react-hot-toast';
+import { ENTITY_STATUS } from '@/models/base';
 
 const sortingOptions: SortOption[] = [
 	{
@@ -60,8 +60,8 @@ const filterOptions: FilterField[] = [
 		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 		dataType: DataType.ARRAY,
 		options: [
-			{ value: BaseEntityStatus.PUBLISHED, label: 'Active' },
-			{ value: BaseEntityStatus.ARCHIVED, label: 'Inactive' },
+			{ value: ENTITY_STATUS.PUBLISHED, label: 'Active' },
+			{ value: ENTITY_STATUS.ARCHIVED, label: 'Inactive' },
 		],
 	},
 	{
@@ -97,7 +97,7 @@ const PlansPage = () => {
 			{
 				field: 'status',
 				operator: FilterOperator.IS_ANY_OF,
-				valueArray: [BaseEntityStatus.PUBLISHED],
+				valueArray: [ENTITY_STATUS.PUBLISHED],
 				dataType: DataType.ARRAY,
 				id: 'initial-status',
 			},

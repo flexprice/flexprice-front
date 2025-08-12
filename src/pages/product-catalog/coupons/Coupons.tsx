@@ -16,11 +16,11 @@ import {
 	SortDirection,
 } from '@/types/common/QueryBuilder';
 import { QueryBuilder } from '@/components/molecules';
-import { BaseEntityStatus } from '@/types/common';
 import { COUPON_TYPE } from '@/types/common/Coupon';
 import useFilterSorting from '@/hooks/useFilterSorting';
 import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
 import { Coupon } from '@/models/Coupon';
+import { ENTITY_STATUS } from '@/models/base';
 
 const sortingOptions: SortOption[] = [
 	{
@@ -62,8 +62,8 @@ const filterOptions: FilterField[] = [
 		operators: [FilterOperator.IS_ANY_OF, FilterOperator.IS_NOT_ANY_OF],
 		dataType: DataType.ARRAY,
 		options: [
-			{ value: BaseEntityStatus.PUBLISHED, label: 'Active' },
-			{ value: BaseEntityStatus.ARCHIVED, label: 'Inactive' },
+			{ value: ENTITY_STATUS.PUBLISHED, label: 'Active' },
+			{ value: ENTITY_STATUS.ARCHIVED, label: 'Inactive' },
 		],
 	},
 	{
@@ -96,7 +96,7 @@ const CouponsPage = () => {
 			{
 				field: 'status',
 				operator: FilterOperator.IS_ANY_OF,
-				valueArray: [BaseEntityStatus.PUBLISHED],
+				valueArray: [ENTITY_STATUS.PUBLISHED],
 				dataType: DataType.ARRAY,
 				id: 'initial-status',
 			},

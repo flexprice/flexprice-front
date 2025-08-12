@@ -1,12 +1,12 @@
-import { BaseEntityStatus } from '../common/BaseEntity';
+import { ENTITY_STATUS } from '@/models/base';
 
-export const formatBaseEntityStatusToDisplay = (status: BaseEntityStatus) => {
+export const formatBaseEntityStatusToDisplay = (status: ENTITY_STATUS) => {
 	switch (status) {
-		case BaseEntityStatus.PUBLISHED:
+		case ENTITY_STATUS.PUBLISHED:
 			return 'Published';
-		case BaseEntityStatus.DELETED:
+		case ENTITY_STATUS.DELETED:
 			return 'Deleted';
-		case BaseEntityStatus.ARCHIVED:
+		case ENTITY_STATUS.ARCHIVED:
 			return 'Archived';
 		default:
 			return status;

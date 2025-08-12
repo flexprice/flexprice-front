@@ -50,6 +50,8 @@ import { TenantMetadataKey } from '@/models/Tenant';
 import TaxPage from '@/pages/customer/taxes/TaxRatesPage';
 import TaxAssociation from '@/pages/customer/tabs/TaxAssociation';
 import TaxrateDetailsPage from '@/pages/customer/taxes/TaxrateDetailsPage';
+import { PriceUnitsPage } from '@/pages/product-catalog/price-units/PriceUnitsPage';
+import { PriceUnitDetailsPage } from '@/pages/product-catalog/price-units/PriceUnitDetailsPage';
 
 export const RouteNames = {
 	home: '/',
@@ -95,6 +97,10 @@ export const RouteNames = {
 	addons: '/product-catalog/addons',
 	addonDetails: '/product-catalog/addons',
 	addonCharges: '/product-catalog/addons/:addonId/add-charges',
+
+	// price unit routes
+	priceUnits: '/product-catalog/price-units',
+	priceUnitDetails: '/product-catalog/price-units',
 
 	// tools routes
 	tools: '/tools',
@@ -206,6 +212,14 @@ export const MainRouter = createBrowserRouter([
 					{
 						path: `${RouteNames.couponDetails}/:id`,
 						element: <CouponDetails />,
+					},
+					{
+						path: RouteNames.priceUnits,
+						element: <PriceUnitsPage />,
+					},
+					{
+						path: `${RouteNames.priceUnitDetails}/:id`,
+						element: <PriceUnitDetailsPage />,
 					},
 				],
 			},

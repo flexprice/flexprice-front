@@ -12,11 +12,22 @@ import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TaxRateResponse } from '@/types/dto/tax';
 import { TAX_RATE_TYPE, TAX_RATE_STATUS, TAX_RATE_SCOPE, TaxRate } from '@/models/Tax';
-import formatChips from '@/utils/common/format_chips';
 import TaxDrawer from '@/components/molecules/TaxDrawer/TaxDrawer';
 
 type Params = {
 	taxrateId: string;
+};
+const formatChips = (data: TAX_RATE_STATUS): string => {
+	switch (data) {
+		case TAX_RATE_STATUS.ACTIVE:
+			return 'Active';
+		case TAX_RATE_STATUS.INACTIVE:
+			return 'Inactive';
+		case TAX_RATE_STATUS.DELETED:
+			return 'Deleted';
+		default:
+			return 'Inactive';
+	}
 };
 
 const getTaxTypeLabel = (type: TAX_RATE_TYPE) => {

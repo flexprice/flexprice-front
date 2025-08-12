@@ -2,6 +2,7 @@ import { FilterCondition } from '@/components/molecules/QueryBuilder';
 import { SortOption } from '@/components/molecules/Table/Toolbar';
 import { Pagination } from '@/models/Pagination';
 import { TAX_RATE_TYPE, TAX_RATE_STATUS, TAX_RATE_SCOPE, TAXRATE_ENTITY_TYPE, TaxRate } from '@/models/Tax';
+import { ENTITY_STATUS } from '@/models/base';
 import { QueryFilter } from './base';
 
 // CreateTaxRateRequest represents the request to create a tax rate
@@ -125,7 +126,7 @@ export interface TaxAssociationResponse {
 	metadata?: Record<string, string>;
 	environment_id: string;
 	tenant_id: string;
-	status: string;
+	status: ENTITY_STATUS;
 	created_at: string;
 	updated_at: string;
 	created_by: string;

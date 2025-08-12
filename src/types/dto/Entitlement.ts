@@ -1,4 +1,3 @@
-import { BaseEntityStatus } from '../common';
 import { Entitlement, ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import { Pagination } from '@/models/Pagination';
 import { Plan } from '@/models/Plan';
@@ -6,6 +5,7 @@ import Addon from '@/models/Addon';
 import Feature from '@/models/Feature';
 import { BILLING_PERIOD } from '@/models/Price';
 import { FEATURE_TYPE } from '@/models/Feature';
+import { ENTITY_STATUS } from '@/models/base';
 
 export interface EntitlementFilters {
 	end_time?: string;
@@ -20,7 +20,7 @@ export interface EntitlementFilters {
 	entity_ids?: string[];
 	sort?: string;
 	start_time?: string;
-	status?: BaseEntityStatus;
+	status?: ENTITY_STATUS;
 }
 
 export interface EntitlementResponse extends Entitlement {

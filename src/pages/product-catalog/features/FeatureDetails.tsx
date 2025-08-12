@@ -20,7 +20,6 @@ import { ApiDocsContent, ColumnData, FlexpriceTable, RedirectCell } from '@/comp
 
 // Models and types
 import { FEATURE_TYPE } from '@/models/Feature';
-import { BaseEntityStatus } from '@/types/common/BaseEntity';
 import { formatMeterUsageResetPeriodToDisplay } from '@/types/formatters/Feature';
 
 // Local utilities
@@ -80,7 +79,7 @@ const FeatureDetails = () => {
 			await EntitlementApi.getAllEntitlements({
 				feature_ids: [featureId!],
 				expand: 'plans,features,prices',
-				status: BaseEntityStatus.PUBLISHED,
+				status: ENTITY_STATUS.PUBLISHED,
 			}),
 		enabled: !!featureId,
 	});
@@ -122,7 +121,7 @@ const FeatureDetails = () => {
 		{
 			title: 'Status',
 			render: (rowData) => {
-				const label = formatChips(rowData?.plan?.status || '');
+				const label = formatChips(rowData?.plan?.status || ENTITY_STATUS.PUBLISHED);
 				return <Chip variant={label === 'Active' ? 'success' : 'default'} label={label} />;
 			},
 		},
@@ -173,9 +172,9 @@ const FeatureDetails = () => {
 	"event_name": "${data?.meter?.event_name || '__MUST_BE_DEFINED__'}",
 	"external_customer_id": "__CUSTOMER_ID__",
 	"properties": {${[...(data?.meter?.filters || [])]
-		.filter((filter) => filter.key && filter.key.trim() !== '')
-		.map((filter) => `\n\t\t\t "${filter.key}" : "${filter.values[0] || 'FILTER_VALUE'}"`)
-		.join(',')}${data?.meter?.aggregation?.field ? `,\n\t\t\t "${data?.meter?.aggregation.field}":"__VALUE__"` : ''}
+			.filter((filter) => filter.key && filter.key.trim() !== '')
+			.map((filter) => `\n\t\t\t "${filter.key}" : "${filter.values[0] || 'FILTER_VALUE'}"`)
+			.join(',')}${data?.meter?.aggregation?.field ? `,\n\t\t\t "${data?.meter?.aggregation.field}":"__VALUE__"` : ''}
 	},
 	"source": "api",
 	"timestamp": "${staticDate}"

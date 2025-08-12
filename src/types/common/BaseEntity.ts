@@ -5,9 +5,3 @@ declare interface BaseEntity {
 	created_by: string;
 	updated_by: string;
 }
-
-export enum BaseEntityStatus {
-	PUBLISHED = 'published',
-	DELETED = 'deleted',
-	ARCHIVED = 'archived',
-}
