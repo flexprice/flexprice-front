@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
-import { InternalPrice } from './SetupChargesSection';
+import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 import { CheckboxRadioGroup, FormHeader, Input, Spacer, Button, Select } from '@/components/atoms';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';

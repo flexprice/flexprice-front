@@ -1,4 +1,4 @@
-import { Button, Loader, Page } from '@/components/atoms';
+import { AddActionButton, Button, Loader, Page } from '@/components/atoms';
 import { Plan } from '@/models/Plan';
 import Addon from '@/models/Addon';
 import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
@@ -9,7 +9,6 @@ import AddonApi from '@/api/AddonApi';
 import { PriceApi } from '@/api/PriceApi';
 import { CreateBulkPriceRequest } from '@/types/dto';
 import toast from 'react-hot-toast';
-import { AddChargesButton, InternalPrice } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
 import { RecurringChargesForm } from '@/components/organisms/PlanForm';
 import UsagePricingForm, { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
@@ -19,9 +18,37 @@ import { RectangleRadiogroup, RectangleRadiogroupOption, RolloutChargesModal, Ro
 import { Dialog } from '@/components/ui/dialog';
 import { Gauge, Repeat } from 'lucide-react';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
-import { BILLING_MODEL, PRICE_TYPE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
+import { BILLING_MODEL, PRICE_TYPE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE, Price } from '@/models/Price';
 import { logger } from '@/utils/common/Logger';
 import SubscriptionApi from '@/api/SubscriptionApi';
+import { IoRepeat } from 'react-icons/io5';
+import { FiDatabase } from 'react-icons/fi';
+
+enum SubscriptionType {
+	FIXED = 'FIXED',
+	USAGE = 'USAGE',
+}
+
+export const subscriptionTypeOptions = [
+	{
+		value: SubscriptionType.FIXED,
+		label: 'Recurring',
+		icon: IoRepeat,
+		description: 'Fixed pricing billed on a set schedule.',
+	},
+	{
+		value: SubscriptionType.USAGE,
+		label: 'Usage Based',
+		icon: FiDatabase,
+		description: 'Charges based on actual consumption.',
+	},
+];
+
+export interface InternalPrice extends Partial<Price> {
+	isEdit?: boolean;
+	isTrialPeriod?: boolean;
+	internal_state?: PriceInternalState;
+}
 
 const CHARGE_OPTIONS: RectangleRadiogroupOption[] = [
 	{
@@ -465,12 +492,12 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 						</div>
 					) : (
 						<div className='flex gap-2' role='group' aria-label='Add charge options'>
-							<AddChargesButton
+							<AddActionButton
 								onClick={() => handleAddNewPrice(PRICE_TYPE.FIXED)}
 								label='Add Recurring Charges'
 								aria-label={`Add recurring charges to ${entityType.toLowerCase()}`}
 							/>
-							<AddChargesButton
+							<AddActionButton
 								onClick={() => handleAddNewPrice(PRICE_TYPE.USAGE)}
 								label='Add Usage Based Charges'
 								aria-label={`Add usage-based charges to ${entityType.toLowerCase()}`}

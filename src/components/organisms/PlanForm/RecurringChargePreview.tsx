@@ -5,7 +5,7 @@ import { toSentenceCase } from '@/utils/common/helper_functions';
 import { Price } from '@/models/Price';
 import { FC } from 'react';
 import { Pencil } from 'lucide-react';
-import { InternalPrice } from './SetupChargesSection';
+import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 
 interface Props {
 	charge: Price | InternalPrice;

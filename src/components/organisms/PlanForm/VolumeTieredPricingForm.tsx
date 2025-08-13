@@ -1,10 +1,9 @@
 import { FC } from 'react';
 import { cn } from '@/lib/utils';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import { Input, Spacer } from '@/components/atoms';
+import { AddActionButton, Input, Spacer } from '@/components/atoms';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { PriceTier } from './UsagePricingForm';
-import { AddChargesButton } from './SetupChargesSection';
 
 interface Props {
 	tieredPrices: PriceTier[];
@@ -176,7 +175,7 @@ const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, cur
 				</table>
 			</div>
 			<div className='flex justify-between items-center mt-4'>
-				<AddChargesButton onClick={addTieredPrice} label='Add Tier' />
+				<AddActionButton onClick={addTieredPrice} label='Add Tier' />
 			</div>
 		</div>
 	);

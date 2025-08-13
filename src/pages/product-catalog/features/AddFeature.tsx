@@ -1,7 +1,7 @@
 import { Button, Card, CodePreview, FormHeader, Input, Page, RadioGroup, Select, SelectOption, Spacer, Textarea } from '@/components/atoms';
 import { ApiDocsContent } from '@/components/molecules';
 import EventFilter, { EventFilterData } from '@/components/molecules/EventFilter';
-import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
+import { AddActionButton } from '@/components/atoms';
 import { RouteNames } from '@/core/routes/Routes';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { cn } from '@/lib/utils';
@@ -359,7 +359,7 @@ const FeatureDetailsSection = ({
 			<Spacer height='16px' />
 
 			{!formState.showDescription ? (
-				<AddChargesButton label='Add feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
+				<AddActionButton label='Add feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
 			) : (
 				<Textarea
 					label='Feature Description'

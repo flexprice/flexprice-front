@@ -16,14 +16,14 @@ export enum BILLING_PERIOD {
 export const getCurrencyOptions = () => {
 	const codes = getAllISOCodes();
 	const map = new Map();
-	const priorityCurrencies = ['USD', 'INR', 'EUR'];
+	const priorityCurrencies = ['usd', 'inr', 'eur'];
 
 	// First add priority currencies
 	priorityCurrencies.forEach((currency) => {
 		const code = codes.find((c) => c.currency === currency);
 		if (code) {
 			map.set(currency, {
-				currency: code.currency,
+				currency: code.currency.toLowerCase(),
 				symbol: code.symbol,
 			});
 		}
@@ -33,7 +33,7 @@ export const getCurrencyOptions = () => {
 	codes.forEach((code) => {
 		if (!priorityCurrencies.includes(code.currency)) {
 			map.set(code.currency, {
-				currency: code.currency,
+				currency: code.currency.toLowerCase(),
 				symbol: code.symbol,
 			});
 		}
@@ -46,8 +46,6 @@ export const currencyOptions = Array.from(
 		getCurrencyOptions().map((currency) => [
 			currency.currency,
 			{
-				// label: `${currency.currency} (${currency.symbol})`,
-				// label: `${currency.currency} (${currency.countryName})`,
 				label: currency.currency,
 				value: currency.currency,
 				symbol: currency.symbol,

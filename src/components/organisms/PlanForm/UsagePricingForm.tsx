@@ -6,12 +6,13 @@ import { Meter } from '@/models/Meter';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
 import VolumeTieredPricingForm from './VolumeTieredPricingForm';
-import { InternalPrice } from './SetupChargesSection';
 import UsageChargePreview from './UsageChargePreview';
 import { toast } from 'react-hot-toast';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_MODEL, TIER_MODE, PRICE_ENTITY_TYPE } from '@/models/Price';
 import { BILLING_PERIOD, PRICE_TYPE } from '@/models/Price';
+import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
+
 interface Props {
 	onAdd: (price: InternalPrice) => void;
 	onUpdate: (price: InternalPrice) => void;

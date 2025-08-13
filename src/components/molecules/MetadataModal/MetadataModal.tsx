@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, Button, Input, Textarea } from '@/components/atoms';
-import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
+import { Dialog, Button, Input, Textarea, AddActionButton } from '@/components/atoms';
 import { Trash2 } from 'lucide-react';
 
 interface MetadataModalProps {
@@ -94,7 +93,7 @@ const MetadataModal: React.FC<MetadataModalProps> = ({ open, data, onChange, onS
 					</div>
 				))}
 				<div>
-					<AddChargesButton onClick={handleAdd} label='Add another item' />
+					<AddActionButton onClick={handleAdd} label='Add another item' />
 				</div>
 				<div className='flex justify-end gap-2 mt-4'>
 					<Button variant='outline' onClick={onClose}>

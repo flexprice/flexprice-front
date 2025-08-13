@@ -1,4 +1,4 @@
-import { Button, Chip, Dialog, Input, Page, Select, SelectOption, Textarea } from '@/components/atoms';
+import { AddActionButton, Button, Chip, Dialog, Input, Page, Select, SelectOption, Textarea } from '@/components/atoms';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import InvoiceApi from '@/api/InvoiceApi';
@@ -11,7 +11,6 @@ import CreditNoteApi from '@/api/CreditNoteApi';
 import { PAYMENT_STATUS, formatCurrency, getCurrencySymbol, toSentenceCase } from '@/constants';
 import toast from 'react-hot-toast';
 import { RouteNames } from '@/core/routes/Routes';
-import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 
 interface LineItemForm {
 	id: string;
@@ -280,7 +279,7 @@ const AddCreditNotePage = () => {
 
 					{/* Memo */}
 					<div className=''>
-						{!showMemo && <AddChargesButton onClick={() => setShowMemo(!showMemo)} label='Add Memo' />}
+						{!showMemo && <AddActionButton onClick={() => setShowMemo(!showMemo)} label='Add Memo' />}
 						{showMemo && (
 							<Textarea
 								label='Memo (optional)'

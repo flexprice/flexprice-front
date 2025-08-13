@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { Button, FormHeader, Input, Loader, Page, Select, Spacer, Divider } from '@/components/atoms';
+import { Button, FormHeader, Input, Loader, Page, Select, Spacer, Divider, AddActionButton } from '@/components/atoms';
 import CustomerApi from '@/api/CustomerApi';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
@@ -11,7 +11,6 @@ import InvoiceApi from '@/api/InvoiceApi';
 import toast from 'react-hot-toast';
 import { RouteNames } from '@/core/routes/Routes';
 import { Trash2 } from 'lucide-react';
-import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { InvoiceType, PAYMENT_STATUS } from '@/constants';
 import { Coupon } from '@/models/Coupon';
 import InvoiceTaxAssociationTable from '@/components/molecules/InvoiceTaxAssociationTable/InvoiceTaxAssociationTable';
@@ -282,7 +281,7 @@ const CreateInvoicePage: FC = () => {
 								</div>
 							))}
 
-							<AddChargesButton onClick={handleAddLineItem} label='Add Line Item' />
+							<AddActionButton onClick={handleAddLineItem} label='Add Line Item' />
 						</div>
 					</div>
 

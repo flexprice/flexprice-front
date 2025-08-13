@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { toSentenceCase } from '@/utils/common/helper_functions';
-import { InternalPrice } from './SetupChargesSection';
+import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 import ChargeValueCell from '@/pages/product-catalog/plans/ChargeValueCell';
 
 interface Props {

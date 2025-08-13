@@ -11,6 +11,7 @@ export interface SelectOption {
 	prefixIcon?: React.ReactNode;
 	description?: string;
 	disabled?: boolean;
+	extras?: Record<string, any>;
 }
 
 interface Props {

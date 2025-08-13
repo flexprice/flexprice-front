@@ -1,6 +1,5 @@
-import { Button, Checkbox, FormHeader, Input, Select, SelectFeature, Sheet, Spacer, Toggle } from '@/components/atoms';
+import { AddActionButton, Button, Checkbox, FormHeader, Input, Select, SelectFeature, Sheet, Spacer, Toggle } from '@/components/atoms';
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
-import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 
 import { BILLING_PERIOD } from '@/constants/constants';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
@@ -448,7 +447,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 				</div>
 
 				<div className='!space-y-4 mt-4'>
-					{!showSelect && !activeFeature && <AddChargesButton onClick={() => setShowSelect(true)} label='Add another feature' />}
+					{!showSelect && !activeFeature && <AddActionButton onClick={() => setShowSelect(true)} label='Add another feature' />}
 					<Button isLoading={isPending} onClick={handleSubmit} disabled={isPending}>
 						Save
 					</Button>
