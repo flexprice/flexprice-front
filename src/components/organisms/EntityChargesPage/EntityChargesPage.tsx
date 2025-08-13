@@ -23,13 +23,6 @@ import { BILLING_MODEL, PRICE_TYPE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE } from '@
 import { logger } from '@/utils/common/Logger';
 import SubscriptionApi from '@/api/SubscriptionApi';
 
-// ===== TYPES & CONSTANTS =====
-
-export enum ENTITY_TYPE {
-	PLAN = 'PLAN',
-	ADDON = 'ADDON',
-}
-
 const CHARGE_OPTIONS: RectangleRadiogroupOption[] = [
 	{
 		label: 'Recurring Charges',
@@ -45,7 +38,6 @@ const CHARGE_OPTIONS: RectangleRadiogroupOption[] = [
 	},
 ];
 
-// ===== HELPER FUNCTIONS =====
 const createEmptyPrice = (type: PRICE_TYPE): InternalPrice => ({
 	amount: '',
 	currency: currencyOptions[0].value,
@@ -151,7 +143,7 @@ const chargesReducer = (state: ChargesState, action: ChargesAction): ChargesStat
 
 // ===== MAIN COMPONENT =====
 interface EntityChargesPageProps {
-	entityType: ENTITY_TYPE;
+	entityType: PRICE_ENTITY_TYPE;
 	entityId: string;
 	entityName?: string;
 	onSuccess?: () => void;
@@ -173,7 +165,7 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 	} = useQuery({
 		queryKey: [entityType.toLowerCase(), entityId],
 		queryFn: async () => {
-			if (entityType === ENTITY_TYPE.PLAN) {
+			if (entityType === PRICE_ENTITY_TYPE.PLAN) {
 				return await PlanApi.getPlanById(entityId);
 			} else {
 				return await AddonApi.GetAddonById(entityId);
@@ -190,7 +182,7 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 				plan_id: entityId,
 				limit: 10,
 			}),
-		enabled: !!entityId && entityType === ENTITY_TYPE.PLAN,
+		enabled: !!entityId && entityType === PRICE_ENTITY_TYPE.PLAN,
 	});
 
 	// ===== MUTATIONS =====
@@ -229,11 +221,11 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 	}, [isPending, isAnyPriceInEditMode, hasAnyCharges]);
 
 	const priceEntityType = useMemo(() => {
-		return entityType === ENTITY_TYPE.PLAN ? PRICE_ENTITY_TYPE.PLAN : PRICE_ENTITY_TYPE.ADDON;
+		return entityType === PRICE_ENTITY_TYPE.PLAN ? PRICE_ENTITY_TYPE.PLAN : PRICE_ENTITY_TYPE.ADDON;
 	}, [entityType]);
 
 	const routeName = useMemo(() => {
-		return entityType === ENTITY_TYPE.PLAN ? RouteNames.plan : RouteNames.addonDetails;
+		return entityType === PRICE_ENTITY_TYPE.PLAN ? RouteNames.plan : RouteNames.addonDetails;
 	}, [entityType]);
 
 	// ===== MEMOIZED CALLBACKS =====
@@ -248,7 +240,7 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 	}, []);
 
 	const handleSave = () => {
-		if (entityType === ENTITY_TYPE.PLAN && existingSubscriptions?.items?.length && existingSubscriptions.items.length > 0) {
+		if (entityType === PRICE_ENTITY_TYPE.PLAN && existingSubscriptions?.items?.length && existingSubscriptions.items.length > 0) {
 			// Show rollout modal for plans with existing subscriptions
 			setShowRolloutModal(true);
 		} else {
@@ -309,7 +301,7 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 				toast.success(`Prices created successfully for ${entityType.toLowerCase()}`);
 
 				// If user selected to sync with existing subscriptions (only for plans)
-				if (entityType === ENTITY_TYPE.PLAN && option === RolloutOption.EXISTING_ALSO) {
+				if (entityType === PRICE_ENTITY_TYPE.PLAN && option === RolloutOption.EXISTING_ALSO) {
 					await syncPlanCharges();
 				}
 
@@ -418,7 +410,7 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 	return (
 		<Page heading={`Add Charges to ${entityName || entityType}`}>
 			{/* Rollout Charges Modal (only for plans) */}
-			{entityType === ENTITY_TYPE.PLAN && (
+			{entityType === PRICE_ENTITY_TYPE.PLAN && (
 				<Dialog open={showRolloutModal} onOpenChange={setShowRolloutModal}>
 					<RolloutChargesModal
 						onCancel={handleRolloutCancel}

@@ -1,10 +1,11 @@
 import { useParams } from 'react-router-dom';
-import EntityChargesPage, { ENTITY_TYPE } from '@/components/organisms/EntityChargesPage';
+import EntityChargesPage from '@/components/organisms/EntityChargesPage';
+import { PRICE_ENTITY_TYPE } from '@/models/Price';
 
 const AddChargesPage = () => {
 	const { planId } = useParams<{ planId: string }>();
 
-	return <EntityChargesPage entityType={ENTITY_TYPE.PLAN} entityId={planId!} entityName='Plan' />;
+	return <EntityChargesPage entityType={PRICE_ENTITY_TYPE.PLAN} entityId={planId!} entityName='Plan' />;
 };
 
 export default AddChargesPage;
