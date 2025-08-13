@@ -29,6 +29,11 @@ export interface PriceTier {
 	unit_amount?: string;
 }
 
+export enum PriceInternalState {
+	EDIT = 'edit',
+	NEW = 'new',
+	SAVED = 'saved',
+}
 interface TieredPrice {
 	from: number;
 	up_to: number | null;
@@ -90,14 +95,14 @@ const UsagePricingForm: FC<Props> = ({
 			}
 			setBillingPeriod(price.billing_period || billlingPeriodOptions[1].value);
 
-			if (price.billing_model === 'FLAT_FEE') {
+			if (price.billing_model === BILLING_MODEL.FLAT_FEE) {
 				setFlatFee(price.amount || '');
-			} else if (price.billing_model === 'PACKAGE') {
+			} else if (price.billing_model === BILLING_MODEL.PACKAGE) {
 				setPackagedFee({
 					price: price.amount || '',
 					unit: (price.transform_quantity as any)?.divide_by?.toString() || '',
 				});
-			} else if (price.billing_model === 'TIERED' && Array.isArray(price.tiers)) {
+			} else if (price.billing_model === BILLING_MODEL.TIERED && Array.isArray(price.tiers)) {
 				setTieredPrices(
 					(price.tiers as unknown as TieredPrice[]).map((tier) => ({
 						from: tier.from,
@@ -311,13 +316,13 @@ const UsagePricingForm: FC<Props> = ({
 				type: PRICE_TYPE.USAGE,
 				meter_id: meterId,
 				meter: activeMeter || price.meter,
-				internal_state: 'saved',
+				internal_state: PriceInternalState.SAVED,
 			};
 			onUpdate(finalPriceWithEdit);
 		} else {
 			onAdd({
 				...finalPrice,
-				internal_state: 'saved',
+				internal_state: PriceInternalState.SAVED,
 			} as InternalPrice);
 		}
 	};

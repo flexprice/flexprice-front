@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 import { AddChargesButton, InternalPrice } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
 import { RecurringChargesForm } from '@/components/organisms/PlanForm';
-import UsagePricingForm from '@/components/organisms/PlanForm/UsagePricingForm';
+import UsagePricingForm, { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
 import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import { RectangleRadiogroup, RectangleRadiogroupOption, RolloutChargesModal, RolloutOption } from '@/components/molecules';
@@ -29,8 +29,6 @@ export enum ENTITY_TYPE {
 	PLAN = 'PLAN',
 	ADDON = 'ADDON',
 }
-
-type PriceState = 'new' | 'edit' | 'saved';
 
 const CHARGE_OPTIONS: RectangleRadiogroupOption[] = [
 	{
@@ -58,10 +56,15 @@ const createEmptyPrice = (type: PRICE_TYPE): InternalPrice => ({
 	invoice_cadence: INVOICE_CADENCE.ARREAR,
 	billing_model: type === PRICE_TYPE.FIXED ? BILLING_MODEL.FLAT_FEE : undefined,
 	billing_cadence: BILLING_CADENCE.RECURRING,
-	internal_state: 'new' as PriceState,
+	internal_state: PriceInternalState.NEW,
 });
 
-const updatePriceInArray = <T extends InternalPrice>(array: T[], index: number, updates: Partial<T>, state: PriceState = 'saved'): T[] => {
+const updatePriceInArray = <T extends InternalPrice>(
+	array: T[],
+	index: number,
+	updates: Partial<T>,
+	state: PriceInternalState = PriceInternalState.SAVED,
+): T[] => {
 	return array.map((item, i) => (i === index ? { ...item, ...updates, internal_state: state } : item));
 };
 
@@ -86,8 +89,11 @@ type ChargesAction =
 	| { type: ChargeActionType.SET_TEMP_ENTITY; payload: Partial<Plan | Addon> }
 	| { type: ChargeActionType.ADD_RECURRING_CHARGE; payload: InternalPrice }
 	| { type: ChargeActionType.ADD_USAGE_CHARGE; payload: InternalPrice }
-	| { type: ChargeActionType.UPDATE_RECURRING_CHARGE; payload: { index: number; charge: Partial<InternalPrice>; state?: PriceState } }
-	| { type: ChargeActionType.UPDATE_USAGE_CHARGE; payload: { index: number; charge: Partial<InternalPrice>; state?: PriceState } }
+	| {
+			type: ChargeActionType.UPDATE_RECURRING_CHARGE;
+			payload: { index: number; charge: Partial<InternalPrice>; state?: PriceInternalState };
+	  }
+	| { type: ChargeActionType.UPDATE_USAGE_CHARGE; payload: { index: number; charge: Partial<InternalPrice>; state?: PriceInternalState } }
 	| { type: ChargeActionType.DELETE_RECURRING_CHARGE; payload: number }
 	| { type: ChargeActionType.DELETE_USAGE_CHARGE; payload: number };
 
@@ -174,8 +180,6 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 			}
 		},
 		enabled: !!entityId,
-		retry: 2,
-		staleTime: 5 * 60 * 1000, // 5 minutes
 	});
 
 	// ===== EXISTING SUBSCRIPTIONS (only for plans) =====
@@ -212,7 +216,7 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 	// ===== MEMOIZED VALUES =====
 	const isAnyPriceInEditMode = useMemo(() => {
 		return [...state.recurringCharges, ...state.usageCharges].some(
-			(price) => price.internal_state === 'edit' || price.internal_state === 'new',
+			(price) => price.internal_state === PriceInternalState.EDIT || price.internal_state === PriceInternalState.NEW,
 		);
 	}, [state.recurringCharges, state.usageCharges]);
 
@@ -338,21 +342,21 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 	const handleRecurringChargeAdd = useCallback((index: number, charge: Partial<InternalPrice>) => {
 		dispatch({
 			type: ChargeActionType.UPDATE_RECURRING_CHARGE,
-			payload: { index, charge, state: 'saved' },
+			payload: { index, charge, state: PriceInternalState.SAVED },
 		});
 	}, []);
 
 	const handleRecurringChargeUpdate = useCallback((index: number, price: Partial<InternalPrice>) => {
 		dispatch({
 			type: ChargeActionType.UPDATE_RECURRING_CHARGE,
-			payload: { index, charge: price, state: 'saved' },
+			payload: { index, charge: price, state: PriceInternalState.SAVED },
 		});
 	}, []);
 
 	const handleRecurringChargeEdit = useCallback((index: number) => {
 		dispatch({
 			type: ChargeActionType.UPDATE_RECURRING_CHARGE,
-			payload: { index, charge: {}, state: 'edit' },
+			payload: { index, charge: {}, state: PriceInternalState.EDIT },
 		});
 	}, []);
 
@@ -364,21 +368,21 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 	const handleUsageChargeAdd = useCallback((index: number, charge: Partial<InternalPrice>) => {
 		dispatch({
 			type: ChargeActionType.UPDATE_USAGE_CHARGE,
-			payload: { index, charge, state: 'saved' },
+			payload: { index, charge, state: PriceInternalState.SAVED },
 		});
 	}, []);
 
 	const handleUsageChargeUpdate = useCallback((index: number, charge: Partial<InternalPrice>) => {
 		dispatch({
 			type: ChargeActionType.UPDATE_USAGE_CHARGE,
-			payload: { index, charge, state: 'saved' },
+			payload: { index, charge, state: PriceInternalState.SAVED },
 		});
 	}, []);
 
 	const handleUsageChargeEdit = useCallback((index: number) => {
 		dispatch({
 			type: ChargeActionType.UPDATE_USAGE_CHARGE,
-			payload: { index, charge: {}, state: 'edit' },
+			payload: { index, charge: {}, state: PriceInternalState.EDIT },
 		});
 	}, []);
 
