@@ -1,11 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { Price } from '@/models/Price';
-import { GetAllPricesResponse, CreatePriceRequest, UpdatePriceRequest, PriceFilter } from '@/types/dto/Price';
+import { GetAllPricesResponse, CreatePriceRequest, UpdatePriceRequest, PriceFilter, CreateBulkPriceRequest } from '@/types/dto/Price';
 import { generateQueryParams } from '@/utils/common/api_helper';
-
-export interface CreateBulkPriceRequest {
-	items: CreatePriceRequest[];
-}
 
 export class PriceApi {
 	private static baseUrl = '/prices';
