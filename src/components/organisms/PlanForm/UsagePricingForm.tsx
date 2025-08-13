@@ -2,7 +2,6 @@ import { Price } from '@/models/Price';
 import { FC, useState, useEffect } from 'react';
 import { Button, CheckboxRadioGroup, Input, Select, SelectOption, Spacer } from '@/components/atoms';
 import SelectMeter from './SelectMeter';
-// import { Pencil, Trash2 } from 'lucide-react';
 import { Meter } from '@/models/Meter';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
@@ -37,11 +36,10 @@ interface TieredPrice {
 	flat_amount: string;
 }
 
-// TODO: Remove disabled once the feature is released
 const billingModels: SelectOption[] = [
-	{ value: 'FLAT_FEE', label: 'Flat Fee' },
-	{ value: 'PACKAGE', label: 'Package' },
-	{ value: 'TIERED', label: 'Volume Tiered' },
+	{ value: BILLING_MODEL.FLAT_FEE, label: 'Flat Fee' },
+	{ value: BILLING_MODEL.PACKAGE, label: 'Package' },
+	{ value: BILLING_MODEL.TIERED, label: 'Volume Tiered' },
 ];
 
 const UsagePricingForm: FC<Props> = ({
@@ -76,7 +74,7 @@ const UsagePricingForm: FC<Props> = ({
 		invoiceCadenceError: '',
 	});
 
-	const [invoiceCadence, setInvoiceCadence] = useState('ARREAR');
+	const [invoiceCadence, setInvoiceCadence] = useState(INVOICE_CADENCE.ARREAR);
 
 	// Load price data when editing
 	useEffect(() => {
@@ -445,25 +443,24 @@ const UsagePricingForm: FC<Props> = ({
 			)}
 
 			<Spacer height='16px' />
-			{/* !TODO: Remove disabled once the feature is released */}
 			<CheckboxRadioGroup
 				title='Billing timing'
 				value={invoiceCadence}
 				checkboxItems={[
 					{
 						label: 'Advance',
-						value: 'ADVANCE',
+						value: INVOICE_CADENCE.ADVANCE,
 						description: 'Charge at the start of each billing cycle.',
 						disabled: true,
 					},
 					{
 						label: 'Arrear',
-						value: 'ARREAR',
+						value: INVOICE_CADENCE.ARREAR,
 						description: 'Charge at the end of the billing cycle.',
 					},
 				]}
 				onChange={(value) => {
-					setInvoiceCadence(value);
+					setInvoiceCadence(value as INVOICE_CADENCE);
 				}}
 				error={inputErrors.invoiceCadenceError}
 			/>
