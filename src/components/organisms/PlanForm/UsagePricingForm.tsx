@@ -1,6 +1,7 @@
 import { Price } from '@/models/Price';
 import { FC, useState, useEffect } from 'react';
 import { Button, CheckboxRadioGroup, Input, Select, SelectOption, Spacer } from '@/components/atoms';
+import { CurrencySelector, CurrencyOption } from '@/components/molecules';
 import SelectMeter from './SelectMeter';
 import { Meter } from '@/models/Meter';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
@@ -9,7 +10,7 @@ import VolumeTieredPricingForm from './VolumeTieredPricingForm';
 import UsageChargePreview from './UsageChargePreview';
 import { toast } from 'react-hot-toast';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
-import { BILLING_MODEL, TIER_MODE, PRICE_ENTITY_TYPE } from '@/models/Price';
+import { BILLING_MODEL, TIER_MODE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
 import { BILLING_PERIOD, PRICE_TYPE } from '@/models/Price';
 import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 
@@ -58,6 +59,7 @@ const UsagePricingForm: FC<Props> = ({
 	entityId,
 }) => {
 	const [currency, setCurrency] = useState(price.currency || currencyOptions[0].value);
+	const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | undefined>();
 	const [billingModel, setBillingModel] = useState(price.billing_model || billingModels[0].value);
 	const [meterId, setMeterId] = useState<string>(price.meter_id || '');
 	const [activeMeter, setActiveMeter] = useState<Meter | null>(price.meter || null);
@@ -269,6 +271,13 @@ const UsagePricingForm: FC<Props> = ({
 			invoice_cadence: invoiceCadence as INVOICE_CADENCE,
 			entity_type: entityType,
 			entity_id: entityId || '',
+			price_unit_type: selectedCurrencyOption?.currencyType === 'custom' ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
+			price_unit_config:
+				selectedCurrencyOption?.currencyType === 'custom' && selectedCurrencyOption?.priceUnitId
+					? {
+							price_unit: selectedCurrencyOption.priceUnitId,
+						}
+					: undefined,
 		};
 
 		let finalPrice: Partial<Price>;
@@ -348,12 +357,14 @@ const UsagePricingForm: FC<Props> = ({
 				value={meterId}
 			/>
 			<Spacer height='8px' />
-			<Select
+			<CurrencySelector
 				value={currency}
-				options={currencyOptions}
 				label='Currency'
-				onChange={setCurrency}
-				placeholder='Currency'
+				onChange={(value, option) => {
+					setCurrency(value);
+					setSelectedCurrencyOption(option);
+				}}
+				placeholder='Select currency'
 				error={errors.currency}
 			/>
 			<Spacer height='8px' />

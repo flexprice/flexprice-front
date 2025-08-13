@@ -75,6 +75,7 @@ const createEmptyPrice = (type: PRICE_TYPE): InternalPrice => ({
 	invoice_cadence: INVOICE_CADENCE.ARREAR,
 	billing_model: type === PRICE_TYPE.FIXED ? BILLING_MODEL.FLAT_FEE : undefined,
 	billing_cadence: BILLING_CADENCE.RECURRING,
+	price_unit_type: PRICE_UNIT_TYPE.FIAT,
 	internal_state: PriceInternalState.NEW,
 });
 
@@ -211,6 +212,25 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 			}),
 		enabled: !!entityId && entityType === PRICE_ENTITY_TYPE.PLAN,
 	});
+
+	// const _ = useQuery({
+	// 	queryKey: ['published-price-units'],
+	// 	queryFn: async () => {
+	// 		return await PriceUnitApi.list({
+	// 			limit: 1000,
+	// 			filters: [
+	// 				{
+	// 					field: 'status',
+	// 					operator: 'in',
+	// 					data_type: 'array',
+	// 					value: {
+	// 						array: [ENTITY_STATUS.PUBLISHED],
+	// 					},
+	// 				},
+	// 			],
+	// 		});
+	// 	},
+	// });
 
 	// ===== MUTATIONS =====
 	const { mutateAsync: createBulkPrices, isPending: isCreatingPrices } = useMutation({

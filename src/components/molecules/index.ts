@@ -129,3 +129,6 @@ export { default as TaxDrawer } from './TaxDrawer/TaxDrawer';
 export { default as TaxAssociationDialog } from './TaxAssociationDialog';
 
 export { default as AppliedTaxesTable } from './AppliedTaxesTable';
+
+export { default as CurrencySelector } from './CurrencySelector';
+export type { CurrencyOption, CurrencySelectorProps } from './CurrencySelector';

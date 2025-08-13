@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { billlingPeriodOptions, currencyOptions } from '@/constants/constants';
+import { billlingPeriodOptions } from '@/constants/constants';
 import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 import { CheckboxRadioGroup, FormHeader, Input, Spacer, Button, Select } from '@/components/atoms';
+import { CurrencySelector, CurrencyOption } from '@/components/molecules';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import RecurringChargePreview from './RecurringChargePreview';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
-import { BILLING_PERIOD, PRICE_ENTITY_TYPE } from '@/models/Price';
+import { BILLING_PERIOD, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
 
 interface Props {
 	price: Partial<InternalPrice>;
@@ -29,6 +30,7 @@ const RecurringChargesForm = ({
 	entityId,
 }: Props) => {
 	const [localPrice, setLocalPrice] = useState<Partial<InternalPrice>>(price);
+	const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | undefined>();
 	const [errors, setErrors] = useState<Partial<Record<keyof InternalPrice, string>>>({});
 
 	const validate = () => {
@@ -63,6 +65,13 @@ const RecurringChargesForm = ({
 			...localPrice,
 			entity_type: entityType,
 			entity_id: entityId || '',
+			price_unit_type: selectedCurrencyOption?.currencyType === 'custom' ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
+			price_unit_config:
+				selectedCurrencyOption?.currencyType === 'custom' && selectedCurrencyOption?.priceUnitId
+					? {
+							price_unit: selectedCurrencyOption.priceUnitId,
+						}
+					: undefined,
 		};
 
 		if (price.internal_state === 'edit') {
@@ -84,11 +93,14 @@ const RecurringChargesForm = ({
 
 	return (
 		<div className='card'>
-			<Select
+			<CurrencySelector
 				value={localPrice.currency}
-				options={currencyOptions}
 				label='Currency'
-				onChange={(value) => setLocalPrice({ ...localPrice, currency: value })}
+				onChange={(value, option) => {
+					setLocalPrice({ ...localPrice, currency: value });
+					setSelectedCurrencyOption(option);
+				}}
+				placeholder='Select currency'
 				error={errors.currency}
 			/>
 			<Spacer height={'8px'} />
