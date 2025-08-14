@@ -61,18 +61,31 @@ const RecurringChargesForm = ({
 	const handleSubmit = () => {
 		if (!validate()) return;
 
+		// Determine the currency to send to backend
+		const backendCurrency =
+			selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM
+				? selectedCurrencyOption.extras?.baseCurrency || localPrice.currency
+				: localPrice.currency;
+
 		const priceWithEntity = {
 			...localPrice,
+			currency: backendCurrency,
 			entity_type: entityType,
 			entity_id: entityId || '',
-			price_unit_type: selectedCurrencyOption?.currencyType === 'custom' ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
+			price_unit_type: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
 			price_unit_config:
-				selectedCurrencyOption?.currencyType === 'custom' && selectedCurrencyOption?.priceUnitId
+				selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM && selectedCurrencyOption?.value
 					? {
-							price_unit: selectedCurrencyOption.priceUnitId,
+							price_unit: selectedCurrencyOption.value!,
+							amount: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? localPrice.amount : undefined,
 						}
 					: undefined,
 		};
+
+		// For custom price units, set amount to 0 since it's in price_unit_config
+		if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+			priceWithEntity.amount = undefined;
+		}
 
 		if (price.internal_state === 'edit') {
 			onUpdate({

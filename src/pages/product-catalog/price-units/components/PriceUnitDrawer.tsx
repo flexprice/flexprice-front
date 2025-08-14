@@ -2,12 +2,13 @@ import { FC, useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Button, Input, Sheet } from '@/components/atoms';
+import { Button, Input, Sheet, Select } from '@/components/atoms';
 import PriceUnitApi from '@/api/PriceUnitApi';
 import { PriceUnitResponse } from '@/types/dto/PriceUnit';
 import { Decimal } from 'decimal.js';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { logger } from '@/utils/common/Logger';
+import { currencyOptions } from '@/constants/constants';
 
 const schema = z.object({
 	name: z.string().min(1, 'Name is required'),
@@ -147,14 +148,14 @@ const PriceUnitDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) => {
 							maxLength={10}
 						/>
 
-						<Input
+						<Select
 							label='Base Currency'
-							placeholder='e.g. USD'
+							placeholder='Select base currency'
 							value={formData.base_currency || ''}
-							onChange={(e) => handleChange('base_currency', e)}
+							options={currencyOptions}
+							onChange={(value) => handleChange('base_currency', value)}
 							error={errors.base_currency}
 							disabled={isEdit}
-							maxLength={3}
 						/>
 
 						<Input

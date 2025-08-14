@@ -12,7 +12,7 @@ export interface CurrencyOption {
 	value: string;
 	label: string;
 	symbol?: string;
-	currencyType: 'fiat' | 'custom';
+	currencyType: PRICE_UNIT_TYPE;
 	priceUnitId?: string;
 	extras?: Record<string, any>;
 }
@@ -63,7 +63,7 @@ const CurrencySelector = ({
 			value: unit.code,
 			label: `${unit.name} (${unit.code})`,
 			symbol: unit.symbol,
-			currencyType: 'custom' as const,
+			currencyType: PRICE_UNIT_TYPE.CUSTOM,
 			priceUnitId: unit.id,
 			extras: {
 				priceUnitId: unit.id,
@@ -80,7 +80,7 @@ const CurrencySelector = ({
 			value: currency.value,
 			label: `${currency.label.toUpperCase()} (${currency.symbol})`,
 			symbol: currency.symbol,
-			currencyType: 'fiat' as const,
+			currencyType: PRICE_UNIT_TYPE.FIAT,
 			extras: {
 				priceUnitType: PRICE_UNIT_TYPE.FIAT,
 			},

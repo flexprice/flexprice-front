@@ -259,10 +259,14 @@ const UsagePricingForm: FC<Props> = ({
 	const handleSubmit = () => {
 		if (!validate()) return;
 
+		// Determine the currency to send to backend
+		const backendCurrency =
+			selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? selectedCurrencyOption.extras?.baseCurrency || currency : currency;
+
 		const basePrice: Partial<Price> = {
 			meter_id: meterId,
 			meter: activeMeter || undefined,
-			currency,
+			currency: backendCurrency,
 			billing_period: billingPeriod,
 			billing_model: billingModel as BILLING_MODEL,
 			type: PRICE_TYPE.USAGE,
@@ -271,9 +275,9 @@ const UsagePricingForm: FC<Props> = ({
 			invoice_cadence: invoiceCadence as INVOICE_CADENCE,
 			entity_type: entityType,
 			entity_id: entityId || '',
-			price_unit_type: selectedCurrencyOption?.currencyType === 'custom' ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
+			price_unit_type: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
 			price_unit_config:
-				selectedCurrencyOption?.currencyType === 'custom' && selectedCurrencyOption?.priceUnitId
+				selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM && selectedCurrencyOption?.priceUnitId
 					? {
 							price_unit: selectedCurrencyOption.priceUnitId,
 						}
@@ -283,18 +287,44 @@ const UsagePricingForm: FC<Props> = ({
 		let finalPrice: Partial<Price>;
 
 		if (billingModel === billingModels[0].value) {
-			finalPrice = {
-				...basePrice,
-				amount: flatFee,
-			};
+			if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+				// For custom price units, put amount in price_unit_config
+				finalPrice = {
+					...basePrice,
+					price_unit_config: {
+						price_unit: selectedCurrencyOption.value!,
+						amount: flatFee,
+					},
+				};
+			} else {
+				finalPrice = {
+					...basePrice,
+					amount: flatFee,
+				};
+			}
 		} else if (billingModel === billingModels[1].value) {
-			finalPrice = {
-				...basePrice,
-				amount: packagedFee.price,
-				transform_quantity: {
-					divide_by: Number(packagedFee.unit),
-				},
-			};
+			if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+				// For custom price units, put amount in price_unit_config
+				finalPrice = {
+					...basePrice,
+					amount: undefined, // Set to undefined since amount is in price_unit_config
+					transform_quantity: {
+						divide_by: Number(packagedFee.unit),
+					},
+					price_unit_config: {
+						price_unit: selectedCurrencyOption.value!,
+						amount: packagedFee.price,
+					},
+				};
+			} else {
+				finalPrice = {
+					...basePrice,
+					amount: packagedFee.price,
+					transform_quantity: {
+						divide_by: Number(packagedFee.unit),
+					},
+				};
+			}
 		} else {
 			const adjustedTiers = tieredPrices.map((tier, index, array) => {
 				if (!tier.up_to && index < array.length - 1) {
@@ -307,16 +337,32 @@ const UsagePricingForm: FC<Props> = ({
 				return tier;
 			});
 
-			finalPrice = {
-				...basePrice,
-				tiers: adjustedTiers.map((tier) => ({
-					from: tier.from,
-					up_to: tier.up_to ?? null,
-					unit_amount: tier.unit_amount || '0',
-					flat_amount: tier.flat_amount || '0',
-				})) as unknown as NonNullable<Price['tiers']>,
-				tier_mode: TIER_MODE.VOLUME,
-			};
+			if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+				// For custom price units, put tiers in price_unit_config
+				finalPrice = {
+					...basePrice,
+					tier_mode: TIER_MODE.VOLUME,
+					price_unit_config: {
+						price_unit: selectedCurrencyOption.value!,
+						price_unit_tiers: adjustedTiers.map((tier) => ({
+							up_to: tier.up_to ?? undefined,
+							unit_amount: tier.unit_amount || '0',
+							flat_amount: tier.flat_amount || '0',
+						})),
+					},
+				};
+			} else {
+				finalPrice = {
+					...basePrice,
+					tiers: adjustedTiers.map((tier) => ({
+						from: tier.from,
+						up_to: tier.up_to ?? null,
+						unit_amount: tier.unit_amount || '0',
+						flat_amount: tier.flat_amount || '0',
+					})) as unknown as NonNullable<Price['tiers']>,
+					tier_mode: TIER_MODE.VOLUME,
+				};
+			}
 		}
 		// If we're editing an existing price, preserve its ID and other important fields
 		if (price.internal_state === 'edit') {
