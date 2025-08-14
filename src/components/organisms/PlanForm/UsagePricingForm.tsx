@@ -271,15 +271,15 @@ const UsagePricingForm: FC<Props> = ({
 			billing_model: billingModel as BILLING_MODEL,
 			type: PRICE_TYPE.USAGE,
 			billing_period_count: 1,
-			billing_cadence: 'RECURRING' as BILLING_CADENCE,
+			billing_cadence: BILLING_CADENCE.RECURRING,
 			invoice_cadence: invoiceCadence as INVOICE_CADENCE,
 			entity_type: entityType,
 			entity_id: entityId || '',
 			price_unit_type: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
 			price_unit_config:
-				selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM && selectedCurrencyOption?.priceUnitId
+				selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM && selectedCurrencyOption?.value
 					? {
-							price_unit: selectedCurrencyOption.priceUnitId,
+							price_unit: selectedCurrencyOption.value!,
 						}
 					: undefined,
 		};
