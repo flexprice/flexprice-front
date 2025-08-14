@@ -3,10 +3,9 @@ import { generateQueryParams } from '@/utils/common/api_helper';
 import { Pagination } from '@/models/Pagination';
 import { TypedBackendSort, TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { CreatePriceUnitRequest, UpdatePriceUnitRequest, PriceUnitResponse } from '@/types/dto/PriceUnit';
+import { QueryFilter, TimeRangeFilter } from '@/types/dto/base';
 
-interface GetPriceUnitsPayload {
-	limit?: number;
-	offset?: number;
+interface GetPriceUnitsPayload extends QueryFilter, TimeRangeFilter {
 	filters?: TypedBackendFilter[];
 	sort?: TypedBackendSort[];
 	environment_id?: string;

@@ -172,9 +172,9 @@ const FeatureDetails = () => {
 	"event_name": "${data?.meter?.event_name || '__MUST_BE_DEFINED__'}",
 	"external_customer_id": "__CUSTOMER_ID__",
 	"properties": {${[...(data?.meter?.filters || [])]
-			.filter((filter) => filter.key && filter.key.trim() !== '')
-			.map((filter) => `\n\t\t\t "${filter.key}" : "${filter.values[0] || 'FILTER_VALUE'}"`)
-			.join(',')}${data?.meter?.aggregation?.field ? `,\n\t\t\t "${data?.meter?.aggregation.field}":"__VALUE__"` : ''}
+		.filter((filter) => filter.key && filter.key.trim() !== '')
+		.map((filter) => `\n\t\t\t "${filter.key}" : "${filter.values[0] || 'FILTER_VALUE'}"`)
+		.join(',')}${data?.meter?.aggregation?.field ? `,\n\t\t\t "${data?.meter?.aggregation.field}":"__VALUE__"` : ''}
 	},
 	"source": "api",
 	"timestamp": "${staticDate}"
