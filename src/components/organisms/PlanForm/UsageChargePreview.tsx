@@ -3,6 +3,8 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 import ChargeValueCell from '@/pages/product-catalog/plans/ChargeValueCell';
+import { PRICE_UNIT_TYPE } from '@/models/Price';
+import { CurrencyOption } from '@/components/molecules';
 
 interface Props {
 	charge: InternalPrice;
@@ -10,22 +12,29 @@ interface Props {
 	onEdit?: (price: InternalPrice) => void;
 	onDelete?: (index: number) => void;
 	disabled?: boolean;
+	currencyOption?: CurrencyOption;
 }
 
-const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit, disabled }) => {
+const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit, disabled, currencyOption }) => {
+	// For custom price units, show the price unit name instead of currency code
+	const currencyText = currencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? currencyOption.value : price.currency;
+
+	console.log('currencyOption', currencyOption);
+	console.log('price', price);
+
 	return (
 		<div className='gap-2 w-full flex justify-between group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground hover:bg-gray-50 transition-colors'>
 			<div>
 				<p className='font-normal text-sm'>{price.meter?.name || 'Usage Based Charge'}</p>
 				<div className='flex gap-2 items-center text-zinc-500 text-xs'>
-					<span>{price.currency}</span>
+					<span>{currencyText}</span>
 					<span>•</span>
 					<span>{toSentenceCase(price.billing_period || '')}</span>
 					{price.billing_model && (
 						<>
 							<span>•</span>
 							{/* <span>{formatBillingModel(price.billing_model)}</span> */}
-							<ChargeValueCell data={{ ...price, currency: price.currency } as any} />
+							<ChargeValueCell data={{ ...price, currency: price.currency || '' } as any} currencyOption={currencyOption} />
 						</>
 					)}
 				</div>

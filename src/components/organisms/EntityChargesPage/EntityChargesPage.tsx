@@ -14,7 +14,7 @@ import { RecurringChargesForm } from '@/components/organisms/PlanForm';
 import UsagePricingForm, { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
 import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import { RectangleRadiogroup, RectangleRadiogroupOption, RolloutChargesModal, RolloutOption } from '@/components/molecules';
+import { CurrencyOption, RectangleRadiogroup, RectangleRadiogroupOption, RolloutChargesModal, RolloutOption } from '@/components/molecules';
 import { Dialog } from '@/components/ui/dialog';
 import { Gauge, Repeat } from 'lucide-react';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
@@ -48,6 +48,7 @@ export interface InternalPrice extends Partial<Price> {
 	isEdit?: boolean;
 	isTrialPeriod?: boolean;
 	internal_state?: PriceInternalState;
+	currencyOption?: CurrencyOption;
 }
 
 const CHARGE_OPTIONS: RectangleRadiogroupOption[] = [

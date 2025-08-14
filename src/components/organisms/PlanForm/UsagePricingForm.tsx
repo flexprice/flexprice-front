@@ -1,4 +1,3 @@
-import { Price } from '@/models/Price';
 import { FC, useState, useEffect } from 'react';
 import { Button, CheckboxRadioGroup, Input, Select, SelectOption, Spacer } from '@/components/atoms';
 import { CurrencySelector, CurrencyOption } from '@/components/molecules';
@@ -74,7 +73,7 @@ const UsagePricingForm: FC<Props> = ({
 		price: '',
 	});
 
-	const [errors, setErrors] = useState<Partial<Record<keyof Price, any>>>({});
+	const [errors, setErrors] = useState<Partial<Record<keyof InternalPrice, any>>>({});
 	const [inputErrors, setInputErrors] = useState({
 		flatModelError: '',
 		packagedModelError: '',
@@ -88,6 +87,7 @@ const UsagePricingForm: FC<Props> = ({
 	useEffect(() => {
 		if (price.internal_state === 'edit') {
 			setCurrency(price.currency || currencyOptions[0].value);
+			setSelectedCurrencyOption(price.currencyOption);
 			setBillingModel(price.billing_model || billingModels[0].value);
 			setMeterId(price.meter_id || '');
 			if (price.meter) {
@@ -263,7 +263,7 @@ const UsagePricingForm: FC<Props> = ({
 		const backendCurrency =
 			selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? selectedCurrencyOption.extras?.baseCurrency || currency : currency;
 
-		const basePrice: Partial<Price> = {
+		const basePrice: Partial<InternalPrice> = {
 			meter_id: meterId,
 			meter: activeMeter || undefined,
 			currency: backendCurrency,
@@ -282,9 +282,10 @@ const UsagePricingForm: FC<Props> = ({
 							price_unit: selectedCurrencyOption.value!,
 						}
 					: undefined,
+			currencyOption: selectedCurrencyOption,
 		};
 
-		let finalPrice: Partial<Price>;
+		let finalPrice: Partial<InternalPrice>;
 
 		if (billingModel === billingModels[0].value) {
 			if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
@@ -359,7 +360,7 @@ const UsagePricingForm: FC<Props> = ({
 						up_to: tier.up_to ?? null,
 						unit_amount: tier.unit_amount || '0',
 						flat_amount: tier.flat_amount || '0',
-					})) as unknown as NonNullable<Price['tiers']>,
+					})) as unknown as NonNullable<InternalPrice['tiers']>,
 					tier_mode: TIER_MODE.VOLUME,
 				};
 			}
@@ -373,12 +374,14 @@ const UsagePricingForm: FC<Props> = ({
 				meter_id: meterId,
 				meter: activeMeter || price.meter,
 				internal_state: PriceInternalState.SAVED,
+				currencyOption: selectedCurrencyOption,
 			};
 			onUpdate(finalPriceWithEdit);
 		} else {
 			onAdd({
 				...finalPrice,
 				internal_state: PriceInternalState.SAVED,
+				currencyOption: selectedCurrencyOption,
 			} as InternalPrice);
 		}
 	};
@@ -386,7 +389,13 @@ const UsagePricingForm: FC<Props> = ({
 	if (price.internal_state === 'saved') {
 		return (
 			<div className='mb-2 space-y-2'>
-				<UsageChargePreview charge={price} index={0} onEdit={onEditClicked} onDelete={onDeleteClicked} />
+				<UsageChargePreview
+					index={0}
+					charge={price}
+					onEdit={onEditClicked}
+					onDelete={onDeleteClicked}
+					currencyOption={selectedCurrencyOption}
+				/>
 			</div>
 		);
 	}
@@ -444,7 +453,7 @@ const UsagePricingForm: FC<Props> = ({
 						error={inputErrors.flatModelError}
 						label='Price'
 						value={flatFee}
-						inputPrefix={getCurrencySymbol(currency)}
+						inputPrefix={selectedCurrencyOption?.symbol || getCurrencySymbol(currency)}
 						onChange={(e) => {
 							// Validate decimal input
 							const decimalRegex = /^\d*\.?\d*$/;
@@ -465,7 +474,7 @@ const UsagePricingForm: FC<Props> = ({
 							label='Price'
 							placeholder='0.00'
 							value={packagedFee.price}
-							inputPrefix={getCurrencySymbol(currency)}
+							inputPrefix={selectedCurrencyOption?.symbol || getCurrencySymbol(currency)}
 							onChange={(e) => {
 								// Validate decimal input
 								const decimalRegex = /^\d*\.?\d*$/;
@@ -500,7 +509,12 @@ const UsagePricingForm: FC<Props> = ({
 
 			{billingModel === billingModels[2].value && (
 				<div className='space-y-2'>
-					<VolumeTieredPricingForm setTieredPrices={setTieredPrices} tieredPrices={tieredPrices} currency={currency} />
+					<VolumeTieredPricingForm
+						setTieredPrices={setTieredPrices}
+						tieredPrices={tieredPrices}
+						currency={currency}
+						currencyOption={selectedCurrencyOption}
+					/>
 					{inputErrors.tieredModelError && <p className='text-red-500 text-sm'>{inputErrors.tieredModelError}</p>}
 				</div>
 			)}

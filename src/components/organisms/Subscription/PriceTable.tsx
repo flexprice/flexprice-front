@@ -1,6 +1,6 @@
 import { FC, useState, useMemo } from 'react';
 import { ColumnData, FlexpriceTable, PriceOverrideDialog, LineItemCoupon } from '@/components/molecules';
-import { Price, BILLING_MODEL } from '@/models/Price';
+import { Price, BILLING_MODEL, PRICE_TYPE } from '@/models/Price';
 import { ChevronDownIcon, ChevronUpIcon, Pencil, EyeOff, RotateCcw, Tag } from 'lucide-react';
 import { FormHeader } from '@/components/atoms';
 import { motion } from 'framer-motion';
@@ -172,7 +172,7 @@ const PriceTable: FC<Props> = ({
 					<div>{price.meter?.name ? `${price.meter.name}` : price.description || 'Charge'}</div>
 				</div>
 			),
-			quantity: price.type === 'FIXED' ? '1' : 'pay as you go',
+			quantity: price.type === PRICE_TYPE.FIXED ? '1' : 'pay as you go',
 			price: (
 				<ChargeValueCell
 					data={{ ...price, currency: price.currency } as any}

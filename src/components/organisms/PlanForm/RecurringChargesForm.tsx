@@ -30,7 +30,7 @@ const RecurringChargesForm = ({
 	entityId,
 }: Props) => {
 	const [localPrice, setLocalPrice] = useState<Partial<InternalPrice>>(price);
-	const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | undefined>();
+	const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | undefined>(price.currencyOption);
 	const [errors, setErrors] = useState<Partial<Record<keyof InternalPrice, string>>>({});
 
 	const validate = () => {
@@ -80,6 +80,7 @@ const RecurringChargesForm = ({
 							amount: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? localPrice.amount : undefined,
 						}
 					: undefined,
+			currencyOption: selectedCurrencyOption,
 		};
 
 		// For custom price units, set amount to 0 since it's in price_unit_config
@@ -132,7 +133,7 @@ const RecurringChargesForm = ({
 				label='Price'
 				placeholder='0'
 				error={errors.amount}
-				inputPrefix={getCurrencySymbol(localPrice.currency || '')}
+				inputPrefix={selectedCurrencyOption?.symbol || getCurrencySymbol(localPrice.currency || '')}
 				suffix={<span className='text-[#64748B]'> {`per ${formatBillingPeriodForPrice(localPrice.billing_period || '')}`}</span>}
 			/>
 			<Spacer height={'16px'} />

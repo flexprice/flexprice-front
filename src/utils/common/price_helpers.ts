@@ -1,40 +1,54 @@
-import { Price } from '@/models/Price';
+import { Price, PRICE_UNIT_TYPE } from '@/models/Price';
 import { BILLING_MODEL, PRICE_TYPE } from '@/models/Price';
 import { getCurrencySymbol } from './helper_functions';
 import { formatAmount } from '@/components/atoms/Input/Input';
 
-export const getPriceTableCharge = (price: Price, normalizedPrice: boolean = true) => {
-	// Handle custom price units where amount might be in price_unit_config
+interface Props {
+	price: Price;
+	symbol?: string;
+}
+
+export const getPriceTableCharge = ({ price, symbol }: Props) => {
+	const isCustomPriceUnit = price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
+	const currencySymbol = isCustomPriceUnit ? symbol : getCurrencySymbol(price.currency);
+
+	// Helper function to get the appropriate amount
 	const getAmount = () => {
-		if (price.amount !== undefined && price.amount !== null) {
-			return price.amount.toString();
+		if (isCustomPriceUnit) {
+			return price.price_unit_config?.amount || '0';
 		}
-		// Check if amount is in price_unit_config for custom price units
-		if (price.price_unit_config?.amount) {
-			return price.price_unit_config.amount.toString();
-		}
-		return '0';
+		return price.amount;
 	};
 
+	// Helper function to get tiered pricing unit amount
+	const getTieredUnitAmount = () => {
+		const customTierAmount = price.price_unit_config?.price_unit_tiers?.[0]?.unit_amount;
+		const regularTierAmount = price.tiers?.[0]?.unit_amount;
+		return customTierAmount || regularTierAmount || '0';
+	};
+
+	// Handle fixed pricing
 	if (price.type === PRICE_TYPE.FIXED) {
-		return `${getCurrencySymbol(price.currency)}${formatAmount(getAmount())}`;
-	} else {
-		if (price.billing_model === BILLING_MODEL.PACKAGE) {
-			return `${getCurrencySymbol(price.currency)}${formatAmount(getAmount())} / ${formatAmount((price.transform_quantity as { divide_by: number }).divide_by.toString())} units`;
-		} else if (price.billing_model === BILLING_MODEL.FLAT_FEE) {
-			return `${getCurrencySymbol(price.currency)}${formatAmount(getAmount())} / unit`;
-		} else if (price.billing_model === BILLING_MODEL.TIERED) {
-			// For tiered pricing with custom price units, check price_unit_config first
-			let unitAmount = '0';
-			if (price.price_unit_config?.price_unit_tiers?.[0]?.unit_amount) {
-				unitAmount = price.price_unit_config.price_unit_tiers[0].unit_amount;
-			} else if (price.tiers?.[0]?.unit_amount) {
-				unitAmount = price.tiers[0].unit_amount;
-			}
-			return `Starts at ${normalizedPrice ? price.currency : getCurrencySymbol(price.currency)}${formatAmount(unitAmount)} / unit`;
-		} else {
-			return `${price.display_amount}`;
+		return `${currencySymbol} ${formatAmount(getAmount())}`;
+	}
+
+	// Handle variable pricing based on billing model
+	switch (price.billing_model) {
+		case BILLING_MODEL.PACKAGE: {
+			const divideBy = (price.transform_quantity as { divide_by: number }).divide_by;
+			return `${currencySymbol} ${formatAmount(getAmount())} / ${formatAmount(divideBy.toString())} units`;
 		}
+
+		case BILLING_MODEL.FLAT_FEE:
+			return `${currencySymbol} ${formatAmount(getAmount())} / unit`;
+
+		case BILLING_MODEL.TIERED: {
+			const unitAmount = getTieredUnitAmount();
+			return `Starts at ${currencySymbol} ${formatAmount(unitAmount)} / unit`;
+		}
+
+		default:
+			return price.display_amount;
 	}
 };
 
