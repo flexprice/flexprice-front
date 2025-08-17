@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { Button, CheckboxRadioGroup, Input, Select, SelectOption, Spacer } from '@/components/atoms';
-import { CurrencySelector, CurrencyOption } from '@/components/molecules';
+import { CurrencySelector } from '@/components/molecules';
 import SelectMeter from './SelectMeter';
 import { Meter } from '@/models/Meter';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
@@ -11,6 +11,8 @@ import { toast } from 'react-hot-toast';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_MODEL, TIER_MODE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
 import { BILLING_PERIOD, PRICE_TYPE } from '@/models/Price';
+import { PriceUnit } from '@/models/PriceUnit';
+import { ENTITY_STATUS } from '@/models/base';
 import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 
 interface Props {
@@ -58,7 +60,7 @@ const UsagePricingForm: FC<Props> = ({
 	entityId,
 }) => {
 	const [currency, setCurrency] = useState(price.currency || currencyOptions[0].value);
-	const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | undefined>();
+	const [selectedPricingUnit, setSelectedPricingUnit] = useState<PriceUnit | undefined>();
 	const [billingModel, setBillingModel] = useState(price.billing_model || billingModels[0].value);
 	const [meterId, setMeterId] = useState<string>(price.meter_id || '');
 	const [activeMeter, setActiveMeter] = useState<Meter | null>(price.meter || null);
@@ -87,7 +89,7 @@ const UsagePricingForm: FC<Props> = ({
 	useEffect(() => {
 		if (price.internal_state === 'edit') {
 			setCurrency(price.currency || currencyOptions[0].value);
-			setSelectedCurrencyOption(price.currencyOption);
+			setSelectedPricingUnit(price.pricing_unit);
 			setBillingModel(price.billing_model || billingModels[0].value);
 			setMeterId(price.meter_id || '');
 			if (price.meter) {
@@ -260,8 +262,7 @@ const UsagePricingForm: FC<Props> = ({
 		if (!validate()) return;
 
 		// Determine the currency to send to backend
-		const backendCurrency =
-			selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? selectedCurrencyOption.extras?.baseCurrency || currency : currency;
+		const backendCurrency = selectedPricingUnit ? selectedPricingUnit.base_currency : currency;
 
 		const basePrice: Partial<InternalPrice> = {
 			meter_id: meterId,
@@ -275,25 +276,24 @@ const UsagePricingForm: FC<Props> = ({
 			invoice_cadence: invoiceCadence as INVOICE_CADENCE,
 			entity_type: entityType,
 			entity_id: entityId || '',
-			price_unit_type: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
-			price_unit_config:
-				selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM && selectedCurrencyOption?.value
-					? {
-							price_unit: selectedCurrencyOption.value!,
-						}
-					: undefined,
-			currencyOption: selectedCurrencyOption,
+			price_unit_type: selectedPricingUnit ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
+			price_unit_config: selectedPricingUnit
+				? {
+						price_unit: selectedPricingUnit.code,
+					}
+				: undefined,
+			pricing_unit: selectedPricingUnit,
 		};
 
 		let finalPrice: Partial<InternalPrice>;
 
 		if (billingModel === billingModels[0].value) {
-			if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+			if (selectedPricingUnit) {
 				// For custom price units, put amount in price_unit_config
 				finalPrice = {
 					...basePrice,
 					price_unit_config: {
-						price_unit: selectedCurrencyOption.value!,
+						price_unit: selectedPricingUnit.code,
 						amount: flatFee,
 					},
 				};
@@ -304,7 +304,7 @@ const UsagePricingForm: FC<Props> = ({
 				};
 			}
 		} else if (billingModel === billingModels[1].value) {
-			if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+			if (selectedPricingUnit) {
 				// For custom price units, put amount in price_unit_config
 				finalPrice = {
 					...basePrice,
@@ -313,7 +313,7 @@ const UsagePricingForm: FC<Props> = ({
 						divide_by: Number(packagedFee.unit),
 					},
 					price_unit_config: {
-						price_unit: selectedCurrencyOption.value!,
+						price_unit: selectedPricingUnit.code,
 						amount: packagedFee.price,
 					},
 				};
@@ -338,13 +338,13 @@ const UsagePricingForm: FC<Props> = ({
 				return tier;
 			});
 
-			if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+			if (selectedPricingUnit) {
 				// For custom price units, put tiers in price_unit_config
 				finalPrice = {
 					...basePrice,
 					tier_mode: TIER_MODE.VOLUME,
 					price_unit_config: {
-						price_unit: selectedCurrencyOption.value!,
+						price_unit: selectedPricingUnit.code,
 						price_unit_tiers: adjustedTiers.map((tier) => ({
 							up_to: tier.up_to ?? undefined,
 							unit_amount: tier.unit_amount || '0',
@@ -374,14 +374,14 @@ const UsagePricingForm: FC<Props> = ({
 				meter_id: meterId,
 				meter: activeMeter || price.meter,
 				internal_state: PriceInternalState.SAVED,
-				currencyOption: selectedCurrencyOption,
+				pricing_unit: selectedPricingUnit,
 			};
 			onUpdate(finalPriceWithEdit);
 		} else {
 			onAdd({
 				...finalPrice,
 				internal_state: PriceInternalState.SAVED,
-				currencyOption: selectedCurrencyOption,
+				pricing_unit: selectedPricingUnit,
 			} as InternalPrice);
 		}
 	};
@@ -389,13 +389,7 @@ const UsagePricingForm: FC<Props> = ({
 	if (price.internal_state === 'saved') {
 		return (
 			<div className='mb-2 space-y-2'>
-				<UsageChargePreview
-					index={0}
-					charge={price}
-					onEdit={onEditClicked}
-					onDelete={onDeleteClicked}
-					currencyOption={selectedCurrencyOption}
-				/>
+				<UsageChargePreview index={0} charge={price} onEdit={onEditClicked} onDelete={onDeleteClicked} pricingUnit={selectedPricingUnit} />
 			</div>
 		);
 	}
@@ -417,7 +411,30 @@ const UsagePricingForm: FC<Props> = ({
 				label='Currency'
 				onChange={(value, option) => {
 					setCurrency(value);
-					setSelectedCurrencyOption(option);
+					// Extract PriceUnit from CurrencyOption if it's a custom currency
+					if (option?.currencyType === PRICE_UNIT_TYPE.CUSTOM && option.extras?.priceUnitId) {
+						// We'll need to fetch the PriceUnit details here
+						// For now, we'll create a basic PriceUnit object
+						const pricingUnit: PriceUnit = {
+							id: option.extras.priceUnitId,
+							name: option.label,
+							code: option.value,
+							symbol: option.symbol || '',
+							base_currency: option.extras.baseCurrency || '',
+							conversion_rate: option.extras.conversionRate || 1,
+							precision: option.extras.precision || 2,
+							environment_id: '',
+							created_at: '',
+							updated_at: '',
+							created_by: '',
+							updated_by: '',
+							tenant_id: '',
+							status: ENTITY_STATUS.PUBLISHED,
+						};
+						setSelectedPricingUnit(pricingUnit);
+					} else {
+						setSelectedPricingUnit(undefined);
+					}
 				}}
 				placeholder='Select currency'
 				error={errors.currency}
@@ -453,7 +470,7 @@ const UsagePricingForm: FC<Props> = ({
 						error={inputErrors.flatModelError}
 						label='Price'
 						value={flatFee}
-						inputPrefix={selectedCurrencyOption?.symbol || getCurrencySymbol(currency)}
+						inputPrefix={selectedPricingUnit?.symbol || getCurrencySymbol(currency)}
 						onChange={(e) => {
 							// Validate decimal input
 							const decimalRegex = /^\d*\.?\d*$/;
@@ -474,7 +491,7 @@ const UsagePricingForm: FC<Props> = ({
 							label='Price'
 							placeholder='0.00'
 							value={packagedFee.price}
-							inputPrefix={selectedCurrencyOption?.symbol || getCurrencySymbol(currency)}
+							inputPrefix={selectedPricingUnit?.symbol || getCurrencySymbol(currency)}
 							onChange={(e) => {
 								// Validate decimal input
 								const decimalRegex = /^\d*\.?\d*$/;
@@ -513,7 +530,7 @@ const UsagePricingForm: FC<Props> = ({
 						setTieredPrices={setTieredPrices}
 						tieredPrices={tieredPrices}
 						currency={currency}
-						currencyOption={selectedCurrencyOption}
+						pricingUnit={selectedPricingUnit}
 					/>
 					{inputErrors.tieredModelError && <p className='text-red-500 text-sm'>{inputErrors.tieredModelError}</p>}
 				</div>

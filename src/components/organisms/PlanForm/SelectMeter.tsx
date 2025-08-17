@@ -35,7 +35,6 @@ const SelectMeter: FC<Props> = ({
 	} = useQuery({
 		queryKey: ['fetchMeters1'],
 		queryFn: fetchMeters,
-		staleTime: 1000 * 60 * 5,
 	});
 
 	if (isLoading) {

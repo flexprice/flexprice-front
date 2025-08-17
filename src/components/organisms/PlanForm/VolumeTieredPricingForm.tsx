@@ -4,13 +4,13 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { AddActionButton, Input, Spacer } from '@/components/atoms';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { PriceTier } from './UsagePricingForm';
-import { CurrencyOption } from '@/components/molecules';
+import { PriceUnit } from '@/models/PriceUnit';
 
 interface Props {
 	tieredPrices: PriceTier[];
 	setTieredPrices: React.Dispatch<React.SetStateAction<PriceTier[]>>;
 	currency?: string;
-	currencyOption?: CurrencyOption;
+	pricingUnit?: PriceUnit;
 }
 
 const formatNumber = (value: string): number | null => {
@@ -29,7 +29,7 @@ const validateDecimal = (value: string): boolean => {
 	return decimalRegex.test(value);
 };
 
-const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, currency, currencyOption }) => {
+const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, currency, pricingUnit }) => {
 	const addTieredPrice = () => {
 		setTieredPrices((prev) => {
 			const lastTier = prev[prev.length - 1];
@@ -149,7 +149,7 @@ const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, cur
 											}
 										}}
 										value={tier.unit_amount?.toString() || ''}
-										inputPrefix={currencyOption?.symbol || (currency ? `${getCurrencySymbol(currency)}` : undefined)}
+										inputPrefix={pricingUnit?.symbol || (currency ? `${getCurrencySymbol(currency)}` : undefined)}
 										placeholder={'0.00'}
 									/>
 								</td>
@@ -162,7 +162,7 @@ const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, cur
 											}
 										}}
 										value={tier.flat_amount?.toString() ?? '0'}
-										inputPrefix={currencyOption?.symbol || (currency ? `${getCurrencySymbol(currency)}` : undefined)}
+										inputPrefix={pricingUnit?.symbol || (currency ? `${getCurrencySymbol(currency)}` : undefined)}
 										placeholder={'0.00'}
 									/>
 								</td>

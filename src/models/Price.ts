@@ -1,6 +1,7 @@
 import { BaseModel } from './base';
 import { BILLING_CADENCE, INVOICE_CADENCE } from './Invoice';
 import { Meter } from './Meter';
+import { PriceUnit } from './PriceUnit';
 
 export interface Price extends BaseModel {
 	readonly amount: string;
@@ -26,6 +27,7 @@ export interface Price extends BaseModel {
 	readonly trial_period: number;
 	readonly metadata: Record<string, string> | null;
 	readonly price_unit_config?: PriceUnitConfig;
+	readonly pricing_unit?: PriceUnit;
 }
 
 export interface Tier {

@@ -2,7 +2,7 @@ import { Trash2 } from 'lucide-react';
 import { formatBillingPeriodForPrice } from '@/utils/common/helper_functions';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { toSentenceCase } from '@/utils/common/helper_functions';
-import { Price, PRICE_UNIT_TYPE } from '@/models/Price';
+import { Price } from '@/models/Price';
 import { FC } from 'react';
 import { Pencil } from 'lucide-react';
 import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
@@ -15,14 +15,12 @@ interface Props {
 }
 
 const RecurringChargePreview: FC<Props> = ({ charge, onEditClicked, onDeleteClicked, disabled }) => {
-	// Get currency option from InternalPrice or use default currency symbol
-	const currencyOption = (charge as InternalPrice).currencyOption;
-	const currencySymbol = currencyOption?.symbol || getCurrencySymbol(charge.currency || '');
+	const pricingUnit = (charge as InternalPrice).pricing_unit;
+	const currencySymbol = pricingUnit?.symbol || getCurrencySymbol(charge.currency || '');
 
-	// For custom price units, show the price unit name instead of currency code
-	const currencyText = currencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? currencyOption.value : charge.currency;
+	const currencyText = pricingUnit ? pricingUnit.code : charge.currency;
 
-	const amount = currencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? charge.price_unit_config?.amount || '0' : charge.amount;
+	const amount = pricingUnit ? charge.price_unit_config?.amount || '0' : charge.amount;
 
 	return (
 		<div className='gap-2 w-full flex justify-between group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground hover:bg-gray-50 transition-colors mb-2'>

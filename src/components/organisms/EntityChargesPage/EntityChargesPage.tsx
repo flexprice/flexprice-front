@@ -14,11 +14,12 @@ import { RecurringChargesForm } from '@/components/organisms/PlanForm';
 import UsagePricingForm, { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
 import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import { CurrencyOption, RectangleRadiogroup, RectangleRadiogroupOption, RolloutChargesModal, RolloutOption } from '@/components/molecules';
+import { RectangleRadiogroup, RectangleRadiogroupOption, RolloutChargesModal, RolloutOption } from '@/components/molecules';
 import { Dialog } from '@/components/ui/dialog';
 import { Gauge, Repeat } from 'lucide-react';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_MODEL, PRICE_TYPE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE, Price } from '@/models/Price';
+import { PriceUnit } from '@/models/PriceUnit';
 import { logger } from '@/utils/common/Logger';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { IoRepeat } from 'react-icons/io5';
@@ -48,7 +49,7 @@ export interface InternalPrice extends Partial<Price> {
 	isEdit?: boolean;
 	isTrialPeriod?: boolean;
 	internal_state?: PriceInternalState;
-	currencyOption?: CurrencyOption;
+	pricing_unit?: PriceUnit;
 }
 
 const CHARGE_OPTIONS: RectangleRadiogroupOption[] = [
@@ -214,25 +215,6 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 		enabled: !!entityId && entityType === PRICE_ENTITY_TYPE.PLAN,
 	});
 
-	// const _ = useQuery({
-	// 	queryKey: ['published-price-units'],
-	// 	queryFn: async () => {
-	// 		return await PriceUnitApi.list({
-	// 			limit: 1000,
-	// 			filters: [
-	// 				{
-	// 					field: 'status',
-	// 					operator: 'in',
-	// 					data_type: 'array',
-	// 					value: {
-	// 						array: [ENTITY_STATUS.PUBLISHED],
-	// 					},
-	// 				},
-	// 			],
-	// 		});
-	// 	},
-	// });
-
 	// ===== MUTATIONS =====
 	const { mutateAsync: createBulkPrices, isPending: isCreatingPrices } = useMutation({
 		mutationFn: async (prices: CreateBulkPriceRequest) => {
@@ -328,11 +310,13 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 				metadata: price.metadata || undefined,
 				tier_mode: price.tier_mode,
 				tiers:
-					price.tiers?.map((tier) => ({
-						up_to: tier.up_to,
-						unit_amount: tier.unit_amount,
-						flat_amount: tier.flat_amount,
-					})) || undefined,
+					price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM
+						? undefined
+						: price.tiers?.map((tier) => ({
+								up_to: tier.up_to,
+								unit_amount: tier.unit_amount,
+								flat_amount: tier.flat_amount,
+							})) || undefined,
 				transform_quantity: price.transform_quantity || undefined,
 				price_unit_config: price.price_unit_config,
 			}));

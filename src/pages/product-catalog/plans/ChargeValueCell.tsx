@@ -6,32 +6,29 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { Coupon } from '@/models/Coupon';
 import formatCouponName from '@/utils/common/format_coupon_name';
-import { CurrencyOption } from '@/components/molecules';
+import { PriceUnit } from '@/models/PriceUnit';
 import { useMemo } from 'react';
 
 interface Props {
 	data: Price;
 	overriddenAmount?: string;
 	appliedCoupon?: Coupon | null;
-	currencyOption?: CurrencyOption;
+	pricingUnit?: PriceUnit;
 }
 
-const ChargeValueCell = ({ data, overriddenAmount, appliedCoupon, currencyOption }: Props) => {
-	// Memoize expensive calculations
+const ChargeValueCell = ({ data, overriddenAmount, appliedCoupon, pricingUnit }: Props) => {
 	const { currencySymbol, price, tiers, isTiered, discountInfo } = useMemo(() => {
-		// Get currency symbol - only calculate once
-		const symbol = data.price_unit_type === PRICE_UNIT_TYPE.CUSTOM ? currencyOption?.symbol : getCurrencySymbol(data.currency || '');
+		const priceUnit = data.price_unit_type === PRICE_UNIT_TYPE.CUSTOM && data.pricing_unit ? data.pricing_unit : pricingUnit;
 
-		// Prepare price data with overridden amount if provided
+		const symbol = priceUnit?.symbol || getCurrencySymbol(data.currency || '');
+
 		const priceWithOverride = overriddenAmount ? { ...data, amount: overriddenAmount } : data;
 
-		// Get price display string
 		const priceString = getPriceTableCharge({
 			price: priceWithOverride as any,
 			symbol,
 		});
 
-		// Get tiers based on price unit type
 		const tierData =
 			data.price_unit_type === PRICE_UNIT_TYPE.CUSTOM
 				? (data.price_unit_config?.price_unit_tiers as unknown as Array<{
@@ -45,10 +42,8 @@ const ChargeValueCell = ({ data, overriddenAmount, appliedCoupon, currencyOption
 						flat_amount: string;
 					}> | null);
 
-		// Check if tiered pricing
 		const hasTiers = data.billing_model === BILLING_MODEL.TIERED && Array.isArray(tierData) && tierData.length > 0;
 
-		// Calculate discount if applicable
 		const discount = !overriddenAmount && appliedCoupon ? calculateDiscountedPrice(data, appliedCoupon) : null;
 
 		return {
@@ -59,9 +54,8 @@ const ChargeValueCell = ({ data, overriddenAmount, appliedCoupon, currencyOption
 			isTiered: hasTiers,
 			discountInfo: discount,
 		};
-	}, [data, overriddenAmount, appliedCoupon, currencyOption?.symbol]);
+	}, [data, overriddenAmount, appliedCoupon, pricingUnit?.symbol]);
 
-	// Memoize the format range function to avoid recreating it on every render
 	const formatRange = useMemo(() => {
 		return (tier: any, index: number, allTiers: any[]) => {
 			const from = index === 0 ? 1 : allTiers[index - 1].up_to + 1;
@@ -72,7 +66,6 @@ const ChargeValueCell = ({ data, overriddenAmount, appliedCoupon, currencyOption
 	return (
 		<div className='flex items-center gap-2'>
 			{discountInfo ? (
-				// Show discounted price with strikethrough original
 				<div className='flex items-center gap-2'>
 					<div className='flex flex-col'>
 						<div className='line-through text-gray-400 text-sm'>
@@ -84,7 +77,6 @@ const ChargeValueCell = ({ data, overriddenAmount, appliedCoupon, currencyOption
 							{formatAmount(discountInfo.discountedAmount.toString())}
 						</div>
 					</div>
-					{/* Coupon info icon */}
 					<TooltipProvider delayDuration={0}>
 						<Tooltip>
 							<TooltipTrigger>
@@ -99,7 +91,6 @@ const ChargeValueCell = ({ data, overriddenAmount, appliedCoupon, currencyOption
 					</TooltipProvider>
 				</div>
 			) : (
-				// Show normal price
 				<div>{price}</div>
 			)}
 			{isTiered && (

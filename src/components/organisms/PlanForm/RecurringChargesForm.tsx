@@ -3,12 +3,14 @@ import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/h
 import { billlingPeriodOptions } from '@/constants/constants';
 import { InternalPrice } from '../EntityChargesPage/EntityChargesPage';
 import { CheckboxRadioGroup, FormHeader, Input, Spacer, Button, Select } from '@/components/atoms';
-import { CurrencySelector, CurrencyOption } from '@/components/molecules';
+import { CurrencySelector } from '@/components/molecules';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import RecurringChargePreview from './RecurringChargePreview';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_PERIOD, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
+import { PriceUnit } from '@/models/PriceUnit';
+import { ENTITY_STATUS } from '@/models/base';
 
 interface Props {
 	price: Partial<InternalPrice>;
@@ -30,7 +32,7 @@ const RecurringChargesForm = ({
 	entityId,
 }: Props) => {
 	const [localPrice, setLocalPrice] = useState<Partial<InternalPrice>>(price);
-	const [selectedCurrencyOption, setSelectedCurrencyOption] = useState<CurrencyOption | undefined>(price.currencyOption);
+	const [selectedPricingUnit, setSelectedPricingUnit] = useState<PriceUnit | undefined>(price.pricing_unit);
 	const [errors, setErrors] = useState<Partial<Record<keyof InternalPrice, string>>>({});
 
 	const validate = () => {
@@ -62,29 +64,25 @@ const RecurringChargesForm = ({
 		if (!validate()) return;
 
 		// Determine the currency to send to backend
-		const backendCurrency =
-			selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM
-				? selectedCurrencyOption.extras?.baseCurrency || localPrice.currency
-				: localPrice.currency;
+		const backendCurrency = selectedPricingUnit ? selectedPricingUnit.base_currency : localPrice.currency;
 
 		const priceWithEntity = {
 			...localPrice,
 			currency: backendCurrency,
 			entity_type: entityType,
 			entity_id: entityId || '',
-			price_unit_type: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
-			price_unit_config:
-				selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM && selectedCurrencyOption?.value
-					? {
-							price_unit: selectedCurrencyOption.value!,
-							amount: selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM ? localPrice.amount : undefined,
-						}
-					: undefined,
-			currencyOption: selectedCurrencyOption,
+			price_unit_type: selectedPricingUnit ? PRICE_UNIT_TYPE.CUSTOM : PRICE_UNIT_TYPE.FIAT,
+			price_unit_config: selectedPricingUnit
+				? {
+						price_unit: selectedPricingUnit.code,
+						amount: selectedPricingUnit ? localPrice.amount : undefined,
+					}
+				: undefined,
+			pricing_unit: selectedPricingUnit,
 		};
 
 		// For custom price units, set amount to 0 since it's in price_unit_config
-		if (selectedCurrencyOption?.currencyType === PRICE_UNIT_TYPE.CUSTOM) {
+		if (selectedPricingUnit) {
 			priceWithEntity.amount = undefined;
 		}
 
@@ -112,7 +110,30 @@ const RecurringChargesForm = ({
 				label='Currency'
 				onChange={(value, option) => {
 					setLocalPrice({ ...localPrice, currency: value });
-					setSelectedCurrencyOption(option);
+					// Extract PriceUnit from CurrencyOption if it's a custom currency
+					if (option?.currencyType === PRICE_UNIT_TYPE.CUSTOM && option.extras?.priceUnitId) {
+						// We'll need to fetch the PriceUnit details here
+						// For now, we'll create a basic PriceUnit object
+						const pricingUnit: PriceUnit = {
+							id: option.extras.priceUnitId,
+							name: option.label,
+							code: option.value,
+							symbol: option.symbol || '',
+							base_currency: option.extras.baseCurrency || '',
+							conversion_rate: option.extras.conversionRate || 1,
+							precision: option.extras.precision || 2,
+							environment_id: '',
+							created_at: '',
+							updated_at: '',
+							created_by: '',
+							updated_by: '',
+							tenant_id: '',
+							status: ENTITY_STATUS.PUBLISHED,
+						};
+						setSelectedPricingUnit(pricingUnit);
+					} else {
+						setSelectedPricingUnit(undefined);
+					}
 				}}
 				placeholder='Select currency'
 				error={errors.currency}
@@ -133,7 +154,7 @@ const RecurringChargesForm = ({
 				label='Price'
 				placeholder='0'
 				error={errors.amount}
-				inputPrefix={selectedCurrencyOption?.symbol || getCurrencySymbol(localPrice.currency || '')}
+				inputPrefix={selectedPricingUnit?.symbol || getCurrencySymbol(localPrice.currency || '')}
 				suffix={<span className='text-[#64748B]'> {`per ${formatBillingPeriodForPrice(localPrice.billing_period || '')}`}</span>}
 			/>
 			<Spacer height={'16px'} />
