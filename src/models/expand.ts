@@ -14,4 +14,5 @@ export enum EXPAND {
 	TAX_APPLIED = 'tax_applied',
 	TAX_RATE = 'tax_rate',
 	TAX_ASSOCIATION = 'tax_association',
+	PRICE_UNIT = 'priceunit',
 }

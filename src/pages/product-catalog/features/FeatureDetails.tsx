@@ -35,6 +35,7 @@ import ChargeValueCell from '@/pages/product-catalog/plans/ChargeValueCell';
 import { PriceApi } from '@/api/PriceApi';
 import { formatBillingPeriodForDisplay, getPriceTypeLabel } from '@/utils/common/helper_functions';
 import { formatInvoiceCadence } from '@/pages/product-catalog/plans/PlanDetailsPage';
+import { EXPAND } from '@/models/expand';
 
 const priceColumns: ColumnData<Price>[] = [
 	{
@@ -78,7 +79,7 @@ const FeatureDetails = () => {
 		queryFn: async () =>
 			await EntitlementApi.getAllEntitlements({
 				feature_ids: [featureId!],
-				expand: 'plans,features,prices',
+				expand: `${EXPAND.PLAN},${EXPAND.FEATURES},${EXPAND.PRICES}`,
 				status: ENTITY_STATUS.PUBLISHED,
 			}),
 		enabled: !!featureId,
@@ -89,6 +90,7 @@ const FeatureDetails = () => {
 		queryFn: async () =>
 			await PriceApi.ListPrices({
 				meter_ids: [data?.meter?.id || ''],
+				expand: `${EXPAND.PRICE_UNIT}`,
 			}),
 		enabled: !!data?.meter?.id,
 	});
