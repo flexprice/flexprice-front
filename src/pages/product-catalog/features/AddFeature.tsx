@@ -464,11 +464,12 @@ const AggregationSection = ({
 
 	const handleMultiplierChange = useCallback(
 		(multiplierStr: string) => {
+			const numValue = parseFloat(multiplierStr);
 			onUpdateMeter((prev) => ({
 				...prev,
 				aggregation: {
 					...prev.aggregation!,
-					multiplier: multiplierStr ? Number(multiplierStr) : undefined,
+					multiplier: isNaN(numValue) ? undefined : numValue,
 				},
 			}));
 		},
