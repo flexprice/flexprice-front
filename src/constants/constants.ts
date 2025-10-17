@@ -1,6 +1,6 @@
 import { getAllISOCodes } from 'iso-country-currency';
 import { CREDIT_GRANT_PERIOD } from '@/models/CreditGrant';
-import { BILLING_MODEL, PRICE_TYPE, PRICE_UNIT_TYPE, TIER_MODE, PRICE_ENTITY_TYPE } from '@/models/Price';
+import { BILLING_MODEL, PRICE_ENTITY_TYPE } from '@/models/Price';
 import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
 import {
@@ -90,21 +90,6 @@ export const billingModelOptions = [
 	{ label: 'Slab Tiered', value: 'SLAB_TIERED' }, // Maps to TIERED with SLAB tier_mode
 ];
 
-export const priceTypeOptions = [
-	{ label: 'Usage', value: PRICE_TYPE.USAGE },
-	{ label: 'Fixed', value: PRICE_TYPE.FIXED },
-];
-
-export const priceUnitTypeOptions = [
-	{ label: 'Fiat', value: PRICE_UNIT_TYPE.FIAT },
-	{ label: 'Custom', value: PRICE_UNIT_TYPE.CUSTOM },
-];
-
-export const tierModeOptions = [
-	{ label: 'Volume', value: TIER_MODE.VOLUME },
-	{ label: 'Slab', value: TIER_MODE.SLAB },
-];
-
 export const billingCadenceOptions = [
 	{ label: 'Recurring', value: BILLING_CADENCE.RECURRING },
 	{ label: 'One Time', value: BILLING_CADENCE.ONETIME },
@@ -120,7 +105,6 @@ export const priceEntityTypeOptions = [
 export const entitlementEntityTypeOptions = [
 	{ label: 'Plan', value: ENTITLEMENT_ENTITY_TYPE.PLAN },
 	{ label: 'Addon', value: ENTITLEMENT_ENTITY_TYPE.ADDON },
-	{ label: 'Feature', value: ENTITLEMENT_ENTITY_TYPE.FEATURE },
 ];
 
 export const invoiceCadenceOptions = [
@@ -171,3 +155,4 @@ export const subscriptionLineItemEntityTypeOptions = [
 	{ label: 'Plan', value: SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE.PLAN },
 	{ label: 'Addon', value: SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE.ADDON },
 ];
+
