@@ -282,7 +282,7 @@ const AddonDetails = () => {
 				)}
 
 				{/* Entitlements Section */}
-				{addonData.entitlements?.length || 0 > 0 ? (
+				{(addonData.entitlements?.length || 0) > 0 ? (
 					<Card variant='notched'>
 						<CardHeader
 							title='Entitlements'
