@@ -1,6 +1,7 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { User } from '@/models';
 import { CreateUserRequest, UpdateTenantPayload } from '@/types/dto';
+import { GetServiceAccountsResponse } from '@/types/dto/UserApi';
 
 export class UserApi {
 	private static baseUrl = '/users';
@@ -13,6 +14,12 @@ export class UserApi {
 	// Fetch user by ID
 	public static async getUserById(userId: string): Promise<User> {
 		return await AxiosClient.get<User>(`${this.baseUrl}/${userId}`);
+	}
+
+	// Fetch service accounts only
+	public static async getServiceAccounts(): Promise<User[]> {
+		const response = await AxiosClient.get<GetServiceAccountsResponse>(`${this.baseUrl}/service-accounts`);
+		return response.service_accounts;
 	}
 
 	// Create a new user

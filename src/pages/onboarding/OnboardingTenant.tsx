@@ -8,7 +8,6 @@ import { toast } from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { CreateSecretKeyResponse } from '@/types/dto';
-import { PermissionType } from '@/components/molecules/SecretKeyDrawer/SecretKeyDrawer';
 import { TenantMetadataKey } from '@/models/Tenant';
 import useUser from '@/hooks/useUser';
 import { useQuery } from '@tanstack/react-query';
@@ -91,7 +90,6 @@ const OnboardingTenant = () => {
 		mutationFn: () =>
 			SecretKeysApi.createSecretKey({
 				name: 'Onboarding Secret Key',
-				permissions: [PermissionType.READ_WRITE],
 				type: 'private_key',
 			}),
 		onSuccess: (data: CreateSecretKeyResponse) => {

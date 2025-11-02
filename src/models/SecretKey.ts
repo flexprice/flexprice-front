@@ -8,6 +8,9 @@ export interface SecretKey extends BaseModel {
 	readonly permissions: string[];
 	readonly provider: string;
 	readonly type: SECRET_KEY_TYPE;
+	readonly user_id?: string;
+	readonly roles?: string[];
+	readonly user_type?: 'user' | 'service_account';
 }
 
 export enum SECRET_KEY_TYPE {

@@ -5,60 +5,12 @@ import { useQuery } from '@tanstack/react-query';
 import { SecretKey } from '@/models/SecretKey';
 import usePagination from '@/hooks/usePagination';
 import { formatDateShort } from '@/utils/common/helper_functions';
-import { Plus, Eye, Pencil, EyeOff, LucideIcon, ShieldCheck, Key, Loader, TrashIcon } from 'lucide-react';
+import { Plus, Loader, TrashIcon, User2, Bot } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { EmptyPage } from '@/components/organisms';
 import GUIDES from '@/constants/guides';
 import ActionButton from '@/components/atoms/ActionButton/ActionButton';
-
-// Utility function to format permissions for display
-export const formatPermissionDisplay = (permissions: readonly string[]): string => {
-	const hasRead = permissions.includes('read');
-	const hasWrite = permissions.includes('write');
-
-	if (hasRead && hasWrite) {
-		return 'full access';
-	} else if (hasRead) {
-		return 'read';
-	} else if (hasWrite) {
-		return 'write';
-	} else {
-		return 'none';
-	}
-};
-
-// Utility function to get permission icon based on permission level
-export const getPermissionIcon = (permissions: readonly string[]): LucideIcon => {
-	const hasRead = permissions.includes('read');
-	const hasWrite = permissions.includes('write');
-
-	if (hasRead && hasWrite) {
-		return ShieldCheck; // Full access icon
-	} else if (hasRead) {
-		return Eye; // Read only icon
-	} else if (hasWrite) {
-		return Pencil; // Write only icon
-	} else {
-		return EyeOff; // No access icon
-	}
-};
-
-// Utility function to get color based on permission level
-export const getPermissionColor = (permissions: readonly string[]): string => {
-	const hasRead = permissions.includes('read');
-	const hasWrite = permissions.includes('write');
-
-	if (hasRead && hasWrite) {
-		return 'text-green-600'; // Full access color
-	} else if (hasRead) {
-		return 'text-blue-600'; // Read only color
-	} else if (hasWrite) {
-		return 'text-amber-600'; // Write only color
-	} else {
-		return 'text-gray-500'; // No access color
-	}
-};
 
 const baseColumns: ColumnData<SecretKey>[] = [
 	{
@@ -74,27 +26,52 @@ const baseColumns: ColumnData<SecretKey>[] = [
 	{
 		title: 'Token',
 		render(rowData: SecretKey) {
+			const prefix = rowData.display_id.slice(0, 6);
+			const suffix = rowData.display_id.slice(-4);
+			const masked = `${prefix}••••${suffix}`;
+
 			return (
 				<div className='flex gap-2 items-center'>
-					<div className='flex items-center px-3 py-1 font-mono text-sm bg-gray-100 rounded-md'>
-						<Key size={14} className='mr-2 text-gray-600' />
-						<span className='text-gray-700'>{rowData.display_id}</span>
-					</div>
+					<code className='px-2 py-1 text-sm bg-gray-100 rounded font-mono'>{masked}</code>
 				</div>
 			);
 		},
 	},
 	{
-		title: 'Permissions',
-		render(rowData) {
-			const permissionText = formatPermissionDisplay(rowData.permissions);
-			const PermissionIcon = getPermissionIcon(rowData.permissions);
-			const colorClass = getPermissionColor(rowData.permissions);
+		title: 'Type',
+		render(rowData: SecretKey) {
+			const isServiceAccount = rowData.user_type === 'service_account';
+			return (
+				<div className='flex gap-2 items-center'>
+					{isServiceAccount ? (
+						<div className='flex items-center gap-1.5 text-purple-600'>
+							<Bot size={16} />
+							<span className='text-sm font-medium'>Service Account</span>
+						</div>
+					) : (
+						<div className='flex items-center gap-1.5 text-blue-600'>
+							<User2 size={16} />
+							<span className='text-sm font-medium'>User Account</span>
+						</div>
+					)}
+				</div>
+			);
+		},
+	},
+	{
+		title: 'Roles',
+		render(rowData: SecretKey) {
+			if (!rowData.roles || rowData.roles.length === 0) {
+				return <span className='text-gray-500 text-sm'>Full Access</span>;
+			}
 
 			return (
-				<div className={`flex gap-2 items-center ${colorClass}`}>
-					<PermissionIcon size={16} />
-					<span className='font-medium capitalize'>{permissionText}</span>
+				<div className='flex flex-wrap gap-1'>
+					{rowData.roles.map((role) => (
+						<span key={role} className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>
+							{role}
+						</span>
+					))}
 				</div>
 			);
 		},
@@ -160,27 +137,17 @@ const DeveloperPage = () => {
 		toast.error('Error fetching secret keys');
 	}
 
-	// if (secretKeys?.items.length === 0) {
-	// 	return (
-	// 		<>
-	// 			<EmptyPage tutorials={GUIDES.secrets.tutorials} heading='Secret Keys' tags={['secrets']} onAddClick={handleAddSecretKey} />
-	// 			<SecretKeyDrawer isOpen={isSecretKeyDrawerOpen} onOpenChange={setIsSecretKeyDrawerOpen} />
-	// 		</>
-	// 	);
-	// }
 	return (
 		<div>
 			<ApiDocsContent tags={['secrets']} />
 			<SecretKeyDrawer isOpen={isSecretKeyDrawerOpen} onOpenChange={setIsSecretKeyDrawerOpen} />
-
-			{/* Per-row actions handled via ActionButton */}
 
 			{secretKeys?.items.length === 0 && (
 				<EmptyPage
 					onAddClick={handleAddSecretKey}
 					emptyStateCard={{
 						heading: 'Generate a secret key',
-						description: 'Generate a secret key to authenticate API requests and secure access..',
+						description: 'Generate a secret key to authenticate API requests and secure access.',
 						buttonLabel: 'Create Secret Key',
 						buttonAction: handleAddSecretKey,
 					}}

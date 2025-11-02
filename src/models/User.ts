@@ -18,4 +18,7 @@ export interface User {
 		updated_at: string;
 	};
 	email: string;
+	name?: string;
+	type?: 'user' | 'service_account';
+	roles?: string[];
 }

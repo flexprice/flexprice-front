@@ -42,6 +42,8 @@ export type {
 
 export type { SignupData, LoginData, LocalUser } from './Auth';
 
+export type { GetServiceAccountsResponse } from './UserApi';
+
 export type {
 	GetAllPricesResponse,
 	CreatePriceRequest,
