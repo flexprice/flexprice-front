@@ -10,6 +10,7 @@ export interface CreateSecretKeyPayload {
 	expires_at?: string;
 	type: string;
 	user_id?: string; // Optional: for service account API keys
+	roles?: string[]; // Optional: for user account API keys with specific roles
 }
 
 export interface CreateSecretKeyResponse {

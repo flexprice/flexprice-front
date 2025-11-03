@@ -3,9 +3,10 @@ import { Input, Sheet, Spacer, Select, Button, Modal, SelectOption } from '@/com
 import { useMutation, useQuery } from '@tanstack/react-query';
 import SecretKeysApi from '@/api/SecretKeysApi';
 import { UserApi } from '@/api/UserApi';
+import RbacApi, { RbacRole } from '@/api/RbacApi';
 import { User } from '@/models';
 import { toast } from 'react-hot-toast';
-import { Copy, AlertTriangle, Eye, EyeOff, Info } from 'lucide-react';
+import { Copy, AlertTriangle, Eye, EyeOff, Info, X } from 'lucide-react';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { logger } from '@/utils/common/Logger';
 
@@ -22,11 +23,21 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 		name: '',
 		accountType: 'user' as AccountType,
 		serviceAccountId: '',
+		selectedRoles: [] as string[],
 		expirationType: 'never',
 	});
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [showApiKey, setShowApiKey] = useState(false);
+	const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+
+	// Fetch available RBAC roles
+	const { data: availableRoles, isLoading: isLoadingRoles } = useQuery<RbacRole[]>({
+		queryKey: ['rbac-roles'],
+		queryFn: () => RbacApi.getAllRoles(),
+		enabled: isOpen,
+		retry: false,
+	});
 
 	// Fetch service accounts when drawer is open
 	const {
@@ -39,6 +50,18 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 		enabled: isOpen && formData.accountType === 'service_account',
 		retry: false, // Don't retry on failure
 	});
+
+	// Convert available roles to select options
+	const roleOptions: SelectOption[] = useMemo(() => {
+		if (!availableRoles || !Array.isArray(availableRoles)) {
+			return [];
+		}
+		return availableRoles.map((role) => ({
+			label: role.name,
+			value: role.id,
+			key_input: [role.description],
+		}));
+	}, [availableRoles]);
 
 	// Convert service accounts to select options
 	const serviceAccountOptions: SelectOption[] = useMemo(() => {
@@ -94,8 +117,34 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 	);
 
 	// Handle form field changes
-	const handleChange = (field: keyof typeof formData, value: string) => {
+	const handleChange = (field: keyof typeof formData, value: string | string[]) => {
 		setFormData((prev) => ({ ...prev, [field]: value }));
+	};
+
+	// Toggle role selection
+	const toggleRole = (roleId: string) => {
+		const currentRoles = formData.selectedRoles;
+		if (currentRoles.includes(roleId)) {
+			handleChange(
+				'selectedRoles',
+				currentRoles.filter((id) => id !== roleId),
+			);
+		} else {
+			handleChange('selectedRoles', [...currentRoles, roleId]);
+		}
+	};
+
+	// Remove a specific role
+	const removeRole = (roleId: string) => {
+		handleChange(
+			'selectedRoles',
+			formData.selectedRoles.filter((id) => id !== roleId),
+		);
+	};
+
+	// Get role name by ID
+	const getRoleName = (roleId: string) => {
+		return roleOptions.find((r) => r.value === roleId)?.label || roleId;
 	};
 
 	// Reset form on open
@@ -105,10 +154,25 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 				name: '',
 				accountType: 'user',
 				serviceAccountId: '',
+				selectedRoles: [],
 				expirationType: 'never',
 			});
+			setIsRoleDropdownOpen(false);
 		}
 	}, [isOpen]);
+
+	// Close role dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = () => {
+			if (isRoleDropdownOpen) {
+				setIsRoleDropdownOpen(false);
+			}
+		};
+		if (isRoleDropdownOpen) {
+			window.addEventListener('click', handleClickOutside);
+		}
+		return () => window.removeEventListener('click', handleClickOutside);
+	}, [isRoleDropdownOpen]);
 
 	// Mutation for creating API key
 	const {
@@ -120,12 +184,22 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 			const expirationFn = getExpirationDate[formData.expirationType as keyof typeof getExpirationDate];
 			const expires_at = typeof expirationFn === 'function' ? expirationFn() : expirationFn;
 
-			return SecretKeysApi.createSecretKey({
+			const payload: any = {
 				name: formData.name,
 				expires_at,
 				type: 'private_key',
-				user_id: formData.accountType === 'service_account' ? formData.serviceAccountId : undefined,
-			});
+			};
+
+			// If service account is selected, add user_id (roles inherited from service account)
+			if (formData.accountType === 'service_account') {
+				payload.user_id = formData.serviceAccountId;
+			}
+			// If user account is selected and roles are specified, add roles
+			else if (formData.accountType === 'user' && formData.selectedRoles.length > 0) {
+				payload.roles = formData.selectedRoles;
+			}
+
+			return SecretKeysApi.createSecretKey(payload);
 		},
 		onSuccess: () => {
 			refetchQueries(['secret-keys']);
@@ -193,6 +267,107 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 						onChange={(value) => handleChange('accountType', value as AccountType)}
 						value={formData.accountType}
 					/>
+
+					{formData.accountType === 'user' && (
+						<>
+							<div className='space-y-2'>
+								<label className='block text-sm font-medium text-gray-700'>
+									Assign Roles <span className='text-gray-500'>(Optional)</span>
+								</label>
+
+								{/* Custom Role Selector */}
+								<div className='relative' onClick={(e) => e.stopPropagation()}>
+									<button
+										type='button'
+										onClick={(e) => {
+											e.stopPropagation();
+											setIsRoleDropdownOpen(!isRoleDropdownOpen);
+										}}
+										disabled={isLoadingRoles}
+										className='flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'>
+										{formData.selectedRoles.length > 0 ? (
+											<div className='flex flex-wrap gap-1 flex-1 min-w-0'>
+												{formData.selectedRoles.map((roleId) => (
+													<span
+														key={roleId}
+														className='inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>
+														{getRoleName(roleId)}
+														<X
+															className='h-3 w-3 cursor-pointer hover:text-blue-600'
+															onClick={(e) => {
+																e.stopPropagation();
+																removeRole(roleId);
+															}}
+														/>
+													</span>
+												))}
+											</div>
+										) : (
+											<span className='text-gray-500'>Select roles (leave empty for full access)</span>
+										)}
+										<svg className='h-4 w-4 text-gray-400 ml-2 shrink-0' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+											<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M19 9l-7 7-7-7' />
+										</svg>
+									</button>
+
+									{/* Dropdown Menu */}
+									{isRoleDropdownOpen && !isLoadingRoles && (
+										<div
+											className='absolute z-[200] w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto'
+											onClick={(e) => e.stopPropagation()}>
+											{roleOptions.length === 0 ? (
+												<div className='px-3 py-2 text-sm text-gray-500'>No roles available</div>
+											) : (
+												<>
+													{roleOptions.map((role) => (
+														<div
+															key={role.value}
+															onClick={(e) => {
+																e.stopPropagation();
+																toggleRole(role.value);
+															}}
+															className='flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer'>
+															<div
+																className={`h-4 w-4 border rounded flex items-center justify-center ${
+																	formData.selectedRoles.includes(role.value) ? 'bg-blue-600 border-blue-600' : 'border-gray-300'
+																}`}>
+																{formData.selectedRoles.includes(role.value) && (
+																	<svg className='h-3 w-3 text-white' fill='currentColor' viewBox='0 0 20 20'>
+																		<path
+																			fillRule='evenodd'
+																			d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+																			clipRule='evenodd'
+																		/>
+																	</svg>
+																)}
+															</div>
+															<span>{role.label}</span>
+														</div>
+													))}
+													<div className='border-t border-gray-200 px-3 py-2'>
+														<button
+															type='button'
+															onClick={(e) => {
+																e.stopPropagation();
+																setIsRoleDropdownOpen(false);
+															}}
+															className='w-full text-sm text-gray-700 hover:text-gray-900'>
+															Close
+														</button>
+													</div>
+												</>
+											)}
+										</div>
+									)}
+								</div>
+
+								<p className='text-xs text-gray-500'>
+									Select specific roles for this API key. If no roles are selected, the key will inherit all permissions from your user
+									account.
+								</p>
+							</div>
+						</>
+					)}
 
 					{formData.accountType === 'service_account' && (
 						<>
