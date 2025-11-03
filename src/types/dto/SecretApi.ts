@@ -9,7 +9,7 @@ export interface CreateSecretKeyPayload {
 	name: string;
 	expires_at?: string;
 	type: string;
-	user_id?: string; // Optional: for service account API keys
+	service_account_id?: string; // For service account API keys
 	roles?: string[]; // Optional: for user account API keys with specific roles
 }
 

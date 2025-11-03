@@ -18,8 +18,18 @@ export class UserApi {
 
 	// Fetch service accounts only
 	public static async getServiceAccounts(): Promise<User[]> {
-		const response = await AxiosClient.get<GetServiceAccountsResponse>(`${this.baseUrl}/service-accounts`);
-		return response.service_accounts;
+		const response = await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/service-accounts/search`, {
+			limit: 100,
+			offset: 0,
+			type: 'service_account',
+			sort: [
+				{
+					field: 'created_at',
+					direction: 'desc',
+				},
+			],
+		});
+		return response.items || [];
 	}
 
 	// Create a new user
