@@ -59,29 +59,61 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 		return availableRoles.map((role) => ({
 			label: role.name,
 			value: role.id,
-			key_input: [role.description],
+			description: role.description,
 		}));
 	}, [availableRoles]);
 
 	// Convert service accounts to select options
 	const serviceAccountOptions: SelectOption[] = useMemo(() => {
 		if (!serviceAccounts || !Array.isArray(serviceAccounts)) {
-			logger.warn('Service accounts not loaded or not an array:', serviceAccounts);
+			console.warn('⚠️ Service accounts not loaded or not an array:', serviceAccounts);
 			return [];
 		}
-		logger.info('Service accounts loaded:', serviceAccounts);
-		return serviceAccounts.map((account, index) => {
-			// Create a meaningful label - fallback chain
-			const label =
-				account.name ||
-				account.email ||
-				(account.roles && account.roles.length > 0 ? `Service Account (${account.roles.join(', ')})` : null) ||
-				`Service Account ${index + 1}`;
+		console.log('✅ Service accounts loaded:', serviceAccounts);
+		console.log('📊 First service account:', serviceAccounts[0]);
+
+		// Sort by created_at (newest first) if available, otherwise keep original order
+		const sortedAccounts = [...serviceAccounts].sort((a, b) => {
+			if (a.tenant?.created_at && b.tenant?.created_at) {
+				return new Date(b.tenant.created_at).getTime() - new Date(a.tenant.created_at).getTime();
+			}
+			return 0;
+		});
+
+		return sortedAccounts.map((account, index) => {
+			console.log(`🔍 Processing account ${index + 1}:`, {
+				name: account.name,
+				email: account.email,
+				roles: account.roles,
+				id: account.id,
+			});
+
+			// Create a meaningful label
+			let label = '';
+
+			// 1. Try name first (if it's a real name, not internal ID)
+			if (account.name && account.name.trim() && !account.name.startsWith('_dup_user_')) {
+				label = account.name;
+			}
+			// 2. Show ALL roles (most common for service accounts)
+			else if (account.roles && account.roles.length > 0) {
+				// Just show the roles, clean and simple
+				label = account.roles.join(', ');
+			}
+			// 3. Try email if it's a real email (not internal ID)
+			else if (account.email && account.email.trim() && !account.email.startsWith('_dup_user_') && account.email.includes('@')) {
+				label = account.email;
+			}
+			// 4. Fallback to generic name
+			else {
+				label = `Service Account ${index + 1}`;
+			}
+
+			console.log(`✨ Final label for account ${index + 1}:`, label);
 
 			return {
 				label: label,
 				value: account.id,
-				key_input: [account.email || account.id],
 			};
 		});
 	}, [serviceAccounts]);
@@ -184,7 +216,7 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 			const expirationFn = getExpirationDate[formData.expirationType as keyof typeof getExpirationDate];
 			const expires_at = typeof expirationFn === 'function' ? expirationFn() : expirationFn;
 
-			const payload: any = {
+			const payload: { name: string; expires_at?: string; type: string; user_id?: string; roles?: string[] } = {
 				name: formData.name,
 				expires_at,
 				type: 'private_key',
