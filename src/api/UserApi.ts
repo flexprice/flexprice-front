@@ -18,7 +18,7 @@ export class UserApi {
 
 	// Fetch service accounts only
 	public static async getServiceAccounts(): Promise<User[]> {
-		const response = await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/service-accounts/search`, {
+		const response = await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/search`, {
 			limit: 100,
 			offset: 0,
 			type: 'service_account',
