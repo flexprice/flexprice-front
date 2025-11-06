@@ -1,11 +1,20 @@
 import { BaseEntityStatus } from '../common';
-import { Entitlement, ENTITLEMENT_ENTITY_TYPE, Pagination, Plan, Addon, Feature, BILLING_PERIOD, FEATURE_TYPE } from '@/models';
+import {
+	Entitlement,
+	ENTITLEMENT_ENTITY_TYPE,
+	ENTITLEMENT_USAGE_RESET_PERIOD,
+	Pagination,
+	Plan,
+	Addon,
+	Feature,
+	FEATURE_TYPE,
+} from '@/models';
 
 export interface EntitlementFilters {
 	end_time?: string;
 	expand?: string;
 	feature_ids?: string[];
-	feature_type?: 'metered' | 'boolean' | 'static';
+	feature_type?: FEATURE_TYPE;
 	is_enabled?: boolean;
 	limit?: number;
 	offset?: number;
@@ -34,7 +43,7 @@ export interface CreateEntitlementRequest {
 	feature_type: FEATURE_TYPE;
 	is_enabled?: boolean;
 	usage_limit?: number | null;
-	usage_reset_period?: BILLING_PERIOD;
+	usage_reset_period?: ENTITLEMENT_USAGE_RESET_PERIOD;
 	is_soft_limit?: boolean;
 	static_value?: string;
 	entity_type: ENTITLEMENT_ENTITY_TYPE;
@@ -47,4 +56,22 @@ export interface CreateBulkEntitlementRequest {
 
 export interface CreateBulkEntitlementResponse {
 	items: EntitlementResponse[];
+}
+
+export interface UpdateEntitlementRequest {
+	plan_id?: string;
+	feature_id?: string;
+	feature_type?: FEATURE_TYPE;
+	is_enabled?: boolean;
+	usage_limit?: number | null;
+	usage_reset_period?: ENTITLEMENT_USAGE_RESET_PERIOD;
+	is_soft_limit?: boolean;
+	static_value?: string;
+	entity_type?: ENTITLEMENT_ENTITY_TYPE;
+	entity_id?: string;
+}
+
+export interface ListEntitlementsResponse {
+	items: EntitlementResponse[];
+	pagination: Pagination;
 }

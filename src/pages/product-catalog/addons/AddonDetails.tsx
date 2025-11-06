@@ -1,13 +1,14 @@
-import { Button, CardHeader, Chip, Loader, Page, Spacer, NoDataCard } from '@/components/atoms';
-import { ApiDocsContent, ColumnData, FlexpriceTable, AddonDrawer } from '@/components/molecules';
+import { ActionButton, Button, CardHeader, Chip, Loader, Page, Spacer, NoDataCard } from '@/components/atoms';
+import { ApiDocsContent, ColumnData, FlexpriceTable, AddonDrawer, AddEntitlementDrawer, RedirectCell } from '@/components/molecules';
 import { DetailsCard } from '@/components/molecules';
 import { RouteNames } from '@/core/routes/Routes';
 import { Price } from '@/models/Price';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import AddonApi from '@/api/AddonApi';
+import EntitlementApi from '@/api/EntitlementApi';
 import { getPriceTypeLabel } from '@/utils/common/helper_functions';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { EyeOff, Plus, Pencil } from 'lucide-react';
+import { EyeOff, Plus, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,6 +17,12 @@ import formatChips from '@/utils/common/format_chips';
 import { ChargeValueCell } from '@/components/molecules';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { ADDON_TYPE } from '@/models/Addon';
+import { FEATURE_TYPE } from '@/models/Feature';
+import { getFeatureTypeChips } from '@/components/molecules/CustomerUsageTable/CustomerUsageTable';
+import { formatAmount } from '@/components/atoms/Input/Input';
+import { ENTITY_STATUS } from '@/models/base';
+import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
+import { EntitlementResponse } from '@/types/dto';
 
 const formatBillingPeriod = (billingPeriod: string) => {
 	switch (billingPeriod.toUpperCase()) {
@@ -84,10 +91,84 @@ const chargeColumns: ColumnData<Price>[] = [
 	},
 ];
 
+const getEntitlementColumns = (_addonId: string): ColumnData<EntitlementResponse>[] => [
+	{
+		title: 'Feature Name',
+		render(row) {
+			return <RedirectCell redirectUrl={`${RouteNames.featureDetails}/${row?.feature?.id}`}>{row?.feature?.name}</RedirectCell>;
+		},
+	},
+	{
+		title: 'Type',
+		render(row) {
+			return getFeatureTypeChips({ type: row?.feature_type || '', showIcon: true, showLabel: true });
+		},
+	},
+	{
+		title: 'Value',
+		render(row) {
+			return getFeatureValue(row);
+		},
+	},
+	{
+		fieldVariant: 'interactive',
+		width: '30px',
+		hideOnEmpty: true,
+		render(row) {
+			return (
+				<ActionButton
+					deleteMutationFn={async () => {
+						return await EntitlementApi.deleteEntitlementById(row?.id);
+					}}
+					archiveIcon={<Trash2 />}
+					archiveText='Delete'
+					id={row?.id}
+					isEditDisabled={true}
+					isArchiveDisabled={row?.status === ENTITY_STATUS.ARCHIVED}
+					refetchQueryKey={'fetchAddon'}
+					entityName={row?.feature?.name}
+				/>
+			);
+		},
+	},
+];
+
+const getFeatureValue = (entitlement: EntitlementResponse) => {
+	const value = entitlement.usage_limit?.toFixed() || '';
+
+	switch (entitlement.feature_type) {
+		case FEATURE_TYPE.STATIC:
+			return entitlement.static_value;
+		case FEATURE_TYPE.METERED: {
+			// Safely access feature properties with fallbacks
+			const unitPlural = entitlement.feature?.unit_plural || 'units';
+			const unitSingular = entitlement.feature?.unit_singular || 'unit';
+
+			return (
+				<span className='flex items-end gap-1'>
+					{formatAmount(value || 'Unlimited')}
+					<span className='text-[#64748B] text-sm font-normal font-sans'>
+						{value
+							? Number(value) > 0
+								? unitPlural
+								: unitSingular
+							: unitPlural}
+					</span>
+				</span>
+			);
+		}
+		case FEATURE_TYPE.BOOLEAN:
+			return entitlement.is_enabled ? 'Yes' : 'No';
+		default:
+			return '--';
+	}
+};
+
 const AddonDetails = () => {
 	const navigate = useNavigate();
 	const { id } = useParams<Params>();
 	const [addonDrawerOpen, setAddonDrawerOpen] = useState(false);
+	const [entitlementDrawerOpen, setEntitlementDrawerOpen] = useState(false);
 
 	const {
 		data: addonData,
@@ -142,7 +223,9 @@ const AddonDetails = () => {
 		{ label: 'Type', value: addonData?.type === ADDON_TYPE.ONETIME ? 'One Time' : 'Multiple' },
 		{
 			label: 'Status',
-			value: <Chip label={formatChips(addonData?.status)} variant={addonData?.status === 'published' ? 'success' : 'default'} />,
+			value: (
+				<Chip label={formatChips(addonData?.status)} variant={addonData?.status === ENTITY_STATUS.PUBLISHED ? 'success' : 'default'} />
+			),
 		},
 		{ label: 'Description', value: addonData?.description || '--' },
 	];
@@ -164,6 +247,15 @@ const AddonDetails = () => {
 				</>
 			}>
 			<AddonDrawer data={addonData} open={addonDrawerOpen} onOpenChange={setAddonDrawerOpen} refetchQueryKeys={['fetchAddon']} />
+			<AddEntitlementDrawer
+				selectedFeatures={addonData.entitlements?.map((v) => v.feature)}
+				entitlements={addonData.entitlements}
+				entityType={ENTITLEMENT_ENTITY_TYPE.ADDON}
+				entityId={addonData.id}
+				isOpen={entitlementDrawerOpen}
+				onOpenChange={(value) => setEntitlementDrawerOpen(value)}
+				refetchQueryKeys={['fetchAddon', 'fetchEntitlements']}
+			/>
 			<ApiDocsContent tags={['Addons']} />
 			<div className='space-y-6'>
 				<DetailsCard variant='stacked' title='Addon Details' data={addonDetails} />
@@ -187,6 +279,31 @@ const AddonDetails = () => {
 						subtitle='No charges added to the addon yet'
 						cta={
 							<Button prefixIcon={<Plus />} onClick={() => navigate(`${RouteNames.addonCharges.replace(':addonId', id!)}`)}>
+								Add
+							</Button>
+						}
+					/>
+				)}
+
+				{/* Entitlements Section */}
+				{(addonData.entitlements?.length || 0) > 0 ? (
+					<Card variant='notched'>
+						<CardHeader
+							title='Entitlements'
+							cta={
+								<Button prefixIcon={<Plus />} onClick={() => setEntitlementDrawerOpen(true)}>
+									Add
+								</Button>
+							}
+						/>
+						<FlexpriceTable showEmptyRow data={addonData.entitlements || []} columns={getEntitlementColumns(addonData.id)} />
+					</Card>
+				) : (
+					<NoDataCard
+						title='Entitlements'
+						subtitle='No entitlements added to the addon yet'
+						cta={
+							<Button prefixIcon={<Plus />} onClick={() => setEntitlementDrawerOpen(true)}>
 								Add
 							</Button>
 						}
