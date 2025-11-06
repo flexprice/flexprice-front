@@ -1,6 +1,6 @@
 import { BaseModel, Metadata } from './base';
 
-export enum CREDIT_SCOPE {
+export enum CREDIT_GRANT_SCOPE {
 	PLAN = 'PLAN',
 	SUBSCRIPTION = 'SUBSCRIPTION',
 }
@@ -15,7 +15,7 @@ export interface CreditGrant extends BaseModel {
 	readonly period_count: number;
 	readonly plan_id: string;
 	readonly priority: number;
-	readonly scope: CREDIT_SCOPE;
+	readonly scope: CREDIT_GRANT_SCOPE;
 	readonly expiration_duration?: number;
 	readonly expiration_type: CREDIT_GRANT_EXPIRATION_TYPE;
 	readonly expiration_duration_unit?: CREDIT_GRANT_PERIOD_UNIT;

@@ -1,5 +1,4 @@
 import {
-	INVOICE_CADENCE,
 	BILLING_CADENCE,
 	LineItem as InvoiceLineItem,
 	BILLING_CYCLE,
@@ -10,7 +9,6 @@ import {
 	PAYMENT_BEHAVIOR,
 	COLLECTION_METHOD,
 	SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE,
-	CreditGrant,
 	Metadata,
 	Subscription,
 	Pagination,
@@ -24,6 +22,7 @@ import { QueryFilter, TimeRangeFilter } from './base';
 import { AddAddonToSubscriptionRequest } from './Addon';
 import { Invoice } from '@/models/Invoice';
 import { Coupon } from '@/models/Coupon';
+import Customer from '@/models/Customer';
 
 // Re-export existing enums for convenience
 export { BILLING_PERIOD } from '@/constants/constants';
@@ -46,6 +45,7 @@ export interface ListSubscriptionsPayload extends QueryFilter, TimeRangeFilter {
 
 import { TaxRateOverride } from './tax';
 import { TypedBackendFilter, TypedBackendSort } from '../formatters/QueryBuilder';
+import { CREDIT_GRANT_SCOPE } from '@/models/CreditGrant';
 
 export interface GetSubscriptionDetailsPayload {
 	subscription_id: string;
@@ -132,57 +132,11 @@ export interface SubscriptionPauseResponse {
 // Since both responses have the same structure, we can reuse the interface
 export type SubscriptionResumeResponse = SubscriptionPauseResponse;
 
-export interface AddSubscriptionPhasePayload {
-	billing_cycle: BILLING_CYCLE;
-	start_date: string | Date;
-	end_date?: string | Date;
-	credit_grants?: CreditGrant[];
-	commitment_amount?: number;
-	overage_factor?: number;
-}
-
 export interface ListSubscriptionsResponse extends QueryFilter, TimeRangeFilter {
 	items: Subscription[];
 	pagination: Pagination;
 	sort: TypedBackendSort[];
 	filters: TypedBackendFilter[];
-}
-
-export interface CreateSubscriptionPayload {
-	customer_id: string;
-	billing_cadence: BILLING_CADENCE;
-	billing_period: BILLING_PERIOD;
-	billing_period_count: number;
-	currency: string;
-	invoice_cadence: INVOICE_CADENCE;
-	plan_id: string;
-	start_date: string;
-	end_date: string | null;
-	lookup_key: string;
-	trial_end: string | null;
-	trial_start: string | null;
-	billing_cycle?: BILLING_CYCLE;
-	phases?: SubscriptionPhase[];
-	credit_grants?: CreditGrant[];
-	commitment_amount?: number;
-	overage_factor?: number;
-	override_line_items?: SubscriptionLineItemOverrideRequest[];
-	subscription_coupons?: string[];
-	addons?: AddAddonToSubscriptionRequest[];
-	coupons?: string[];
-	line_item_coupons?: Record<string, string[]>;
-	tax_rate_overrides?: TaxRateOverride[];
-}
-
-export interface SubscriptionLineItemOverrideRequest {
-	price_id: string;
-	quantity?: number;
-	amount?: number;
-	billing_model?: BILLING_MODEL;
-	tier_mode?: TIER_MODE;
-	tiers?: CreatePriceTier[];
-	transform_quantity?: TransformQuantity;
-	tax_rate_overrides?: TaxRateOverride[];
 }
 
 export interface CancelSubscriptionPayload {
@@ -196,7 +150,7 @@ export interface CancelSubscriptionPayload {
 // =============================================================================
 
 export interface CreateSubscriptionRequest {
-	// Customer identification
+	// Customer identification - prioritized over external_customer_id if both provided
 	customer_id?: string;
 	external_customer_id?: string;
 
@@ -204,41 +158,24 @@ export interface CreateSubscriptionRequest {
 	plan_id: string;
 	currency: string;
 	lookup_key?: string;
-	billing_cadence: BILLING_CADENCE;
-	billing_period: BILLING_PERIOD;
-	billing_period_count?: number;
-	billing_cycle?: BILLING_CYCLE;
-
-	// Dates
 	start_date?: string;
 	end_date?: string;
 	trial_start?: string;
 	trial_end?: string;
-
-	// Payment behavior
-	payment_behavior?: PAYMENT_BEHAVIOR;
-	collection_method?: COLLECTION_METHOD;
-	gateway_payment_method_id?: string;
-
-	// Proration and workflow
-	proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
-	workflow?: string;
-
-	// Customer timezone
-	customer_timezone?: string;
-
-	// Metadata and configuration
+	billing_cadence: BILLING_CADENCE;
+	billing_period: BILLING_PERIOD;
+	billing_period_count?: number;
 	metadata?: Metadata;
 
-	// Credit grants
+	// Billing cycle determines the billing anchor (anniversary vs calendar)
+	billing_cycle?: BILLING_CYCLE;
+
+	// Credit grants to be applied when subscription is created
 	credit_grants?: CreateCreditGrantRequest[];
 
-	// Commitment and overage
+	// Commitment amount and overage factor
 	commitment_amount?: number;
 	overage_factor?: number;
-
-	// Subscription phases
-	phases?: SubscriptionSchedulePhaseInput[];
 
 	// Tax rate overrides
 	tax_rate_overrides?: TaxRateOverride[];
@@ -252,6 +189,20 @@ export interface CreateSubscriptionRequest {
 
 	// Addons
 	addons?: AddAddonToSubscriptionRequest[];
+
+	// Subscription phases
+	phases?: SubscriptionPhaseCreateRequest[];
+
+	// Payment behavior configuration
+	payment_behavior?: PAYMENT_BEHAVIOR;
+	gateway_payment_method_id?: string;
+	collection_method?: COLLECTION_METHOD;
+
+	// Proration behavior
+	proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
+
+	// Customer timezone
+	customer_timezone?: string;
 }
 
 export interface CreateCreditGrantRequest {
@@ -259,32 +210,53 @@ export interface CreateCreditGrantRequest {
 	currency: string;
 	description?: string;
 	expires_at?: string;
-	scope: 'SUBSCRIPTION';
+	scope: CREDIT_GRANT_SCOPE;
 }
 
-export interface SubscriptionSchedulePhaseInput {
+export interface SubscriptionPhaseCreateRequest {
 	start_date: string;
 	end_date?: string;
-	billing_cycle?: BILLING_CYCLE;
-	credit_grants?: CreateCreditGrantRequest[];
-	commitment_amount?: number;
-	overage_factor?: number;
-	line_items?: SubscriptionPhaseLineItemInput[];
+
+	// Coupons represents subscription-level coupons to be applied to this phase
+	coupons?: string[];
+
+	// LineItemCoupons represents line item-level coupons (map of line_item_id to coupon IDs)
+	line_item_coupons?: Record<string, string[]>;
+
+	// OverrideLineItems allows customizing specific prices for this phase
+	// If not provided, phase will use the same line items as the subscription (plan prices)
+	override_line_items?: OverrideLineItemRequest[];
+
+	metadata?: Metadata;
 }
 
-export interface SubscriptionPhaseLineItemInput {
-	price_id: string;
-	quantity?: number;
-	override_amount?: number;
+export interface SubscriptionCouponRequest {
+	coupon_id: string;
+	start_date: string;
+	end_date?: string;
+	line_item_id?: string;
+	subscription_phase_id?: string;
 }
 
 export interface OverrideLineItemRequest {
+	// PriceID references the plan price to override
 	price_id: string;
+
+	// Quantity for this line item (optional)
 	quantity?: number;
+
 	billing_model?: BILLING_MODEL;
+
+	// Amount is the new price amount that overrides the original price (optional)
 	amount?: number;
+
+	// TierMode determines how to calculate the price for a given quantity
 	tier_mode?: TIER_MODE;
+
+	// Tiers determines the pricing tiers for this line item
 	tiers?: CreatePriceTier[];
+
+	// TransformQuantity determines how to transform the quantity for this line item
 	transform_quantity?: TransformQuantity;
 }
 
@@ -320,7 +292,9 @@ export interface ProrationDetail {
 }
 
 export interface SubscriptionResponse extends Subscription {
+	customer: Customer;
 	coupon_associations?: Coupon[];
+	phases?: SubscriptionPhaseResponse[];
 	latest_invoice?: Invoice;
 }
 
@@ -372,16 +346,6 @@ export interface SubscriptionUsageByMetersResponse {
 	is_overage: boolean;
 	overage_factor?: number;
 }
-
-export interface AddSchedulePhaseRequest {
-	billing_cycle?: BILLING_CYCLE;
-	start_date: string;
-	end_date?: string;
-	credit_grants?: CreateCreditGrantRequest[];
-	commitment_amount?: number;
-	overage_factor?: number;
-}
-
 export interface AddAddonRequest {
 	subscription_id: string;
 	addon_id: string;
@@ -482,3 +446,9 @@ export interface SubscriptionFilter extends QueryFilter, TimeRangeFilter {
 	sort?: TypedBackendSort[];
 	filters?: TypedBackendFilter[];
 }
+
+// =============================================================================
+// SUBSCRIPTION PHASE TYPES
+// =============================================================================
+
+export type SubscriptionPhaseResponse = SubscriptionPhase;

@@ -1,10 +1,4 @@
-import {
-	BILLING_CYCLE,
-	Subscription,
-	SubscriptionPhase,
-	SUBSCRIPTION_PRORATION_BEHAVIOR,
-	SUBSCRIPTION_CANCELLATION_TYPE,
-} from '@/models/Subscription';
+import { Subscription, SUBSCRIPTION_PRORATION_BEHAVIOR, SUBSCRIPTION_CANCELLATION_TYPE } from '@/models/Subscription';
 import { useMutation } from '@tanstack/react-query';
 import { CirclePause, CirclePlay, X, Plus, Pencil } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
@@ -16,8 +10,6 @@ import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { addDays, format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { RouteNames } from '@/core/routes/Routes';
-import AddSubscriptionPhase from '@/components/molecules/CreditGrant/AddSubscriptionPhase';
-import { AddSubscriptionPhasePayload } from '@/types/dto/Subscription';
 
 interface Props {
 	subscription: Subscription;
@@ -139,30 +131,6 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 		},
 	];
 
-	const { mutate: addSubscriptionPhase } = useMutation({
-		mutationFn: (phaseData: AddSubscriptionPhasePayload) => SubscriptionApi.addSubscriptionPhase(subscription.id, phaseData),
-		onSuccess: async () => {
-			setState((prev) => ({ ...prev, isAddPhaseModalOpen: false }));
-			toast.success('Subscription phase added successfully');
-			refetchQueries(['subscriptionDetails']);
-		},
-		onError: (err: ServerError) => {
-			setState((prev) => ({ ...prev, isAddPhaseModalOpen: false }));
-			toast.error(err.error.message || 'Failed to add subscription phase');
-		},
-	});
-
-	const handleAddPhase = (phaseData: SubscriptionPhase) => {
-		addSubscriptionPhase({
-			billing_cycle: BILLING_CYCLE.ANNIVERSARY,
-			start_date: phaseData.start_date,
-			end_date: phaseData.end_date!,
-			credit_grants: phaseData.credit_grants || [],
-			commitment_amount: phaseData.commitment_amount || 0,
-			overage_factor: phaseData.overage_factor || 1,
-		});
-	};
-
 	return (
 		<>
 			<DropdownMenu options={menuOptions} />
@@ -275,16 +243,6 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 					</div>
 				</div>
 			</Modal>
-
-			{/* Add Subscription Phase Modal */}
-			<AddSubscriptionPhase
-				planId={subscription.plan?.id || ''}
-				subscriptionId={subscription.id}
-				isOpen={state.isAddPhaseModalOpen}
-				onOpenChange={(open) => setState((prev) => ({ ...prev, isAddPhaseModalOpen: open }))}
-				onSave={handleAddPhase}
-				onCancel={() => setState((prev) => ({ ...prev, isAddPhaseModalOpen: false }))}
-			/>
 		</>
 	);
 };

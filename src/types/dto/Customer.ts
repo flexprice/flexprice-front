@@ -1,13 +1,13 @@
-import { Customer, CustomerEntitlement, CustomerUsage, Pagination, Subscription, Metadata } from '@/models';
+import { Customer, CustomerEntitlement, CustomerUsage, Pagination, Metadata } from '@/models';
 import { TypedBackendFilter, TypedBackendSort } from '../formatters/QueryBuilder';
-
+import { SubscriptionResponse } from './Subscription';
 export interface GetCustomerResponse {
 	items: Customer[];
 	pagination: Pagination;
 }
 
 export interface GetCustomerSubscriptionsResponse {
-	items: Subscription[];
+	items: SubscriptionResponse[];
 	pagination: Pagination;
 }
 

@@ -261,16 +261,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 														{phase.end_date ? formatDateShort(phase.end_date.toString()) : '--'}
 													</div>
 												</div>
-												<div>
-													<div className='text-xs text-gray-400'>Commitment</div>
-													<div className='font-normal text-lg text-gray-900'>
-														{getCurrencySymbol(subscriptionDetails?.currency || '')} {phase.commitment_amount ?? '--'}
-													</div>
-												</div>
-												<div>
-													<div className='text-xs text-gray-400'>Overage</div>
-													<div className='font-normal text-lg text-gray-900'>{phase.overage_factor ?? '--'}</div>
-												</div>
+												{/* Commitment and overage info removed - not available in SubscriptionPhase model */}
 											</div>
 										</div>
 									</div>

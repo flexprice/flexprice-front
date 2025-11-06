@@ -1,5 +1,5 @@
 import { AxiosClient } from '@/core/axios/verbs';
-import { Subscription, SubscriptionPhase, SubscriptionUsage, EXPAND } from '@/models';
+import { SubscriptionUsage, EXPAND } from '@/models';
 import {
 	ListSubscriptionsPayload,
 	ListSubscriptionsResponse,
@@ -9,16 +9,13 @@ import {
 	ResumeSubscriptionPayload,
 	SubscriptionPauseResponse,
 	SubscriptionResumeResponse,
-	AddSubscriptionPhasePayload,
 	CancelSubscriptionPayload,
-	CreateSubscriptionPayload,
 	CreateSubscriptionRequest,
 	CancelSubscriptionRequest,
 	CancelSubscriptionResponse,
 	SubscriptionResponse,
 	GetUsageBySubscriptionRequest,
 	GetUsageBySubscriptionResponse,
-	AddSchedulePhaseRequest,
 	AddAddonRequest,
 	RemoveAddonRequest,
 	AddonAssociationResponse,
@@ -46,9 +43,7 @@ class SubscriptionApi {
 	/**
 	 * Create a new subscription
 	 */
-	public static async createSubscription(
-		payload: CreateSubscriptionPayload | CreateSubscriptionRequest,
-	): Promise<Subscription | SubscriptionResponse> {
+	public static async createSubscription(payload: CreateSubscriptionRequest): Promise<SubscriptionResponse> {
 		return await AxiosClient.post(this.baseUrl, payload);
 	}
 
@@ -76,20 +71,6 @@ class SubscriptionApi {
 		payload: CancelSubscriptionPayload | CancelSubscriptionRequest,
 	): Promise<void | CancelSubscriptionResponse> {
 		return await AxiosClient.post(`${this.baseUrl}/${id}/cancel`, payload);
-	}
-
-	// =============================================================================
-	// SUBSCRIPTION PHASE METHODS
-	// =============================================================================
-
-	/**
-	 * Add a phase to subscription schedule
-	 */
-	public static async addSubscriptionPhase(
-		id: string,
-		payload: AddSubscriptionPhasePayload | AddSchedulePhaseRequest,
-	): Promise<SubscriptionPhase | SubscriptionResponse> {
-		return await AxiosClient.post(`${this.baseUrl}/${id}/phases`, { phase: payload });
 	}
 
 	// =============================================================================
