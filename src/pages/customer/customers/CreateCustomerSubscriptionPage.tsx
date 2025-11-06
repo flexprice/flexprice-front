@@ -381,12 +381,12 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		}
 
 		// Validate phases if any exist
-		phases.forEach((phase, index) => {
-			if (!phase.start_date) {
-				toast.error(`Please select a start date for phase ${index + 1}`);
+		for (let i = 0; i < phases.length; i++) {
+			if (!phases[i].start_date) {
+				toast.error(`Please select a start date for phase ${i + 1}`);
 				return;
 			}
-		});
+		}
 
 		// Check for any unsaved changes
 		if (subscriptionState.isPhaseEditing) {
