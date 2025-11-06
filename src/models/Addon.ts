@@ -5,12 +5,6 @@ export enum ADDON_TYPE {
 	MULTIPLE = 'multiple',
 }
 
-export enum ADDON_STATUS {
-	ACTIVE = 'active',
-	CANCELLED = 'cancelled',
-	PAUSED = 'paused',
-}
-
 interface Addon extends BaseModel {
 	readonly name: string;
 	readonly description: string;
