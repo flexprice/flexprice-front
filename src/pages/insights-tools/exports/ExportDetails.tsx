@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import ForceRunDrawer from '@/components/molecules/ForceRunDrawer/ForceRunDrawer';
 import TaskRunsTable from '@/components/molecules/TaskRunsTable/TaskRunsTable';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui';
+import { formatEntityType } from '@/utils/common/helper_functions';
 
 const ExportDetails = () => {
 	const { connectionId, exportId } = useParams<{ connectionId: string; exportId: string }>();
@@ -105,7 +106,7 @@ const ExportDetails = () => {
 	}
 
 	return (
-		<Page heading={`Export Details - ${exportTask.entity_type} Export`}>
+		<Page heading={`Export Details - ${formatEntityType(exportTask.entity_type)} Export`}>
 			{/* Back button and Action Buttons */}
 			<div className='mb-6 flex items-center justify-between'>
 				<Button variant='outline' onClick={() => navigate(`/tools/exports/s3/${connectionId}/export`)} className='flex items-center gap-2'>
@@ -163,7 +164,7 @@ const ExportDetails = () => {
 								</div>
 								<div>
 									<label className='text-sm font-medium text-gray-900'>Entity Type</label>
-									<p className='text-sm text-gray-600 capitalize mt-1'>{exportTask.entity_type}</p>
+									<p className='text-sm text-gray-600 mt-1'>{formatEntityType(exportTask.entity_type)}</p>
 								</div>
 								<div>
 									<label className='text-sm font-medium text-gray-900'>Interval</label>

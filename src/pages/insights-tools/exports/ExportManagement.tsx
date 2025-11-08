@@ -6,6 +6,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { TaskApi, ConnectionApi } from '@/api';
 import toast from 'react-hot-toast';
 import ExportDrawer from '@/components/molecules/ExportDrawer/ExportDrawer';
+import { formatEntityType } from '@/utils/common/helper_functions';
 
 const ExportManagement = () => {
 	const { connectionId } = useParams<{ connectionId: string }>();
@@ -50,7 +51,7 @@ const ExportManagement = () => {
 	};
 
 	const handleDeleteTask = (id: string, entityType: string) => {
-		if (window.confirm(`Are you sure you want to delete the ${entityType} export task?`)) {
+		if (window.confirm(`Are you sure you want to delete the ${formatEntityType(entityType)} export task?`)) {
 			deleteTask(id);
 		}
 	};
@@ -92,7 +93,7 @@ const ExportManagement = () => {
 									<div className='flex items-center gap-3'>
 										<div className={`w-3 h-3 rounded-full ${task.enabled ? 'bg-green-500' : 'bg-gray-400'}`} />
 										<div>
-											<p className='text-gray-900 font-medium capitalize'>{task.entity_type} Export</p>
+											<p className='text-gray-900 font-medium'>{formatEntityType(task.entity_type)} Export</p>
 											<p className='text-xs text-gray-500'>
 												{task.interval} • {task.job_config.bucket} • {task.job_config.region}
 											</p>

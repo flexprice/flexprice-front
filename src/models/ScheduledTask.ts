@@ -3,6 +3,7 @@ import { BaseModel } from './base';
 export enum SCHEDULED_ENTITY_TYPE {
 	EVENTS = 'events',
 	INVOICE = 'invoice',
+	CREDIT_TOPUPS = 'credit_topups',
 }
 
 export enum SCHEDULED_TASK_INTERVAL {

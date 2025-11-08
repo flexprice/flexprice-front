@@ -100,6 +100,31 @@ export const toSentenceCase = (str: string): string => {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
+/**
+ * Formats entity type names for display (e.g., "credit_topups" -> "Credit Top-ups")
+ * @param entityType - The entity type to format
+ * @returns The formatted entity type name
+ */
+export const formatEntityType = (entityType: string): string => {
+	if (!entityType) return entityType;
+
+	// Handle specific cases
+	switch (entityType.toLowerCase()) {
+		case 'events':
+			return 'Events';
+		case 'invoice':
+			return 'Invoice';
+		case 'credit_topups':
+			return 'Credit Top-ups';
+		default:
+			// Generic formatting: replace underscores with spaces and capitalize each word
+			return entityType
+				.split('_')
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+				.join(' ');
+	}
+};
+
 export const getTotalPayableText = (recurringCharges: Price[], usageCharges: Price[], recurringTotal: number) => {
 	let text = '';
 

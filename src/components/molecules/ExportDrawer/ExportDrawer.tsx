@@ -221,6 +221,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 						options={[
 							{ value: SCHEDULED_ENTITY_TYPE.EVENTS, label: 'Events' },
 							{ value: SCHEDULED_ENTITY_TYPE.INVOICE, label: 'Invoice' },
+							{ value: SCHEDULED_ENTITY_TYPE.CREDIT_TOPUPS, label: 'Credits' },
 						]}
 					/>
 					<p className='text-xs text-gray-500 mt-1'>Select the type of data to export</p>
