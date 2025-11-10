@@ -12,6 +12,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { Button } from '@/components/atoms';
 import EnvironmentCreator from '../EnvironmentCreator/EnvironmentCreator';
+import { ENVIRONMENT_TYPE } from '@/models/Environment';
 
 interface Props {
 	disabled?: boolean;
@@ -42,13 +43,23 @@ const SelectItem = React.forwardRef<
 	</SelectPrimitive.Item>
 ));
 
+const getEnvironmentIcon = (type: ENVIRONMENT_TYPE) => {
+	switch (type) {
+		case ENVIRONMENT_TYPE.PRODUCTION:
+			return <Rocket className='h-4 w-4' />;
+		case ENVIRONMENT_TYPE.DEVELOPMENT:
+			return <Blocks className='h-4 w-4' />;
+		default:
+			return <Server className='h-4 w-4' />;
+	}
+};
+
 const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) => {
 	const { loading, user } = useUser();
 	const { open: sidebarOpen } = useSidebar();
 	const navigate = useNavigate();
 	const { setLoading } = useGlobalLoading();
 
-	// Use the new useEnvironment hook
 	const { environments, activeEnvironment, changeActiveEnvironment, refetchEnvironments } = useEnvironment();
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -61,21 +72,9 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 			</div>
 		);
 
-	// Handle the case where there are no environments
 	if (!environments || environments.length === 0) {
 		return <div className='p-2 text-sm text-muted-foreground'>No environments available</div>;
 	}
-
-	const getEnvironmentIcon = (type: string) => {
-		switch (type.toUpperCase()) {
-			case 'PRODUCTION':
-				return <Rocket className='h-4 w-4' />;
-			case 'SANDBOX':
-				return <Server className='h-4 w-4' />;
-			default:
-				return <Blocks className='h-4 w-4' />;
-		}
-	};
 
 	const options: SelectOption[] =
 		environments.map((env) => ({
@@ -85,11 +84,20 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 			onSelect: () => handleChange(env.id),
 		})) || [];
 
+	const handleEnvironmentChange = async (environmentId: string) => {
+		setLoading(true);
+		try {
+			changeActiveEnvironment(environmentId);
+			navigate(RouteNames.home);
+		} catch (error) {
+			console.error('Failed to change environment:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const handleChange = async (newValue: string) => {
-		setLoading(true); // Start loading state
-		changeActiveEnvironment(newValue);
-		setLoading(false); // End loading state
-		navigate(RouteNames.home);
+		await handleEnvironmentChange(newValue);
 	};
 
 	// If activeEnvironment is null, use the first environment as a fallback
@@ -131,7 +139,10 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 					))}
 					<div className='flex items-center gap-2 m-2 text-muted-foreground'>
 						<Button
-							onClick={() => setIsCreatorOpen(true)}
+							onClick={() => {
+								setIsOpen(false);
+								setIsCreatorOpen(true);
+							}}
 							key='create'
 							value='create'
 							size='sm'
@@ -143,12 +154,14 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 				</SelectContent>
 			</Select>
 
-			{/* Environment Creator Dialog */}
 			<EnvironmentCreator
 				isOpen={isCreatorOpen}
 				onOpenChange={setIsCreatorOpen}
-				onEnvironmentCreated={() => {
-					refetchEnvironments();
+				onEnvironmentCreated={async (environmentId) => {
+					await refetchEnvironments();
+					if (environmentId) {
+						handleEnvironmentChange(environmentId);
+					}
 				}}
 			/>
 		</div>

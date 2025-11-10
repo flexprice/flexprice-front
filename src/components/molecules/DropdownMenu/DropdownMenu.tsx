@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import {
 	DropdownMenu as ShadcnMenu,
@@ -32,6 +33,22 @@ export interface DropdownMenuOption {
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, trigger, isOpen, onOpenChange, dir = 'ltr', className, align = 'end' }) => {
+	// Internal state for uncontrolled mode
+	const [internalOpen, setInternalOpen] = useState(false);
+
+	// Determine if component is controlled or uncontrolled
+	const isControlled = isOpen !== undefined;
+	const isMenuOpen = isControlled ? isOpen : internalOpen;
+
+	// Combined handler for both controlled and uncontrolled modes
+	const handleOpenChange = (open: boolean) => {
+		if (isControlled) {
+			onOpenChange?.(open);
+		} else {
+			setInternalOpen(open);
+		}
+	};
+
 	const handleClick = (e: React.MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -61,7 +78,11 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, trigger, isOpen, o
 			key={option.label}
 			onSelect={(e) => {
 				if (option.onSelect && !option.children?.length) {
+					e.preventDefault();
+					e.stopPropagation();
 					option.onSelect(e);
+					// Always close the menu after onSelect is called
+					handleOpenChange(false);
 				}
 			}}>
 			{option.children && option.children.length > 0 ? (
@@ -91,7 +112,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, trigger, isOpen, o
 
 	return (
 		<div className={cn('', className)} onClick={handleClick} data-interactive='true'>
-			<ShadcnMenu dir={dir} onOpenChange={onOpenChange} open={isOpen}>
+			<ShadcnMenu dir={dir} onOpenChange={handleOpenChange} open={isMenuOpen}>
 				<DropdownMenuTrigger className='w-full focus:outline-none rounded-md'>
 					{trigger || <BsThreeDotsVertical className='text-base text-muted-foreground hover:text-foreground transition-colors' />}
 				</DropdownMenuTrigger>
