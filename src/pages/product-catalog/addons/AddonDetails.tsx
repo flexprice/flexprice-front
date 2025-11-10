@@ -148,11 +148,7 @@ const getFeatureValue = (entitlement: Entitlement) => {
 				<span className='flex items-end gap-1'>
 					{formatAmount(value || 'Unlimited')}
 					<span className='text-[#64748B] text-sm font-normal font-sans'>
-						{value
-							? Number(value) > 0
-								? unitPlural
-								: unitSingular
-							: unitPlural}
+						{value ? (Number(value) > 0 ? unitPlural : unitSingular) : unitPlural}
 					</span>
 				</span>
 			);
