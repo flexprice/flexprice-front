@@ -5,25 +5,9 @@ import { WalletTransaction } from '@/models/WalletTransaction';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { FC } from 'react';
 
-const formatAmount = ({
-	type,
-	amount,
-	currency,
-	className,
-	status,
-}: {
-	type: string;
-	amount: number;
-	currency?: string;
-	className?: string;
-	status?: string;
-}) => {
-	// Check if transaction is pending and apply yellow color
-	const isPending = status?.toLowerCase() === 'pending';
-	const colorClass = isPending ? 'text-[#f5c50b]' : type === 'credit' ? 'text-[#2A9D90]' : 'text-[#18181B]';
-
+const formatAmount = ({ type, amount, currency, className }: { type: string; amount: number; currency?: string; className?: string }) => {
 	return (
-		<span className={cn(colorClass, className)}>
+		<span className={cn(type === 'credit' ? 'text-[#2A9D90] ' : 'text-[#18181B] ', className)}>
 			{type === 'credit' ? '+' : '-'}
 			{amount}
 			{currency ? ` ${getCurrencySymbol(currency)}` : ' credits'}
@@ -94,19 +78,8 @@ const WalletTransactionsTable: FC<Props> = ({ data, currency }) => {
 			render: (rowData) => {
 				return (
 					<span className='flex flex-col justify-center items-end'>
-						{formatAmount({
-							type: rowData.type,
-							amount: rowData.amount,
-							currency,
-							className: 'text-base font-medium',
-							status: rowData.transaction_status,
-						})}
-						{formatAmount({
-							type: rowData.type,
-							amount: rowData.credit_amount,
-							className: 'text-sm',
-							status: rowData.transaction_status,
-						})}
+						{formatAmount({ type: rowData.type, amount: rowData.amount, currency, className: 'text-base font-medium' })}
+						{formatAmount({ type: rowData.type, amount: rowData.credit_amount, className: 'text-sm' })}
 					</span>
 				);
 			},
