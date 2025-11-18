@@ -10,7 +10,6 @@ import GUIDES from '@/constants/guides';
 import TaxTable from '@/components/molecules/TaxTable/TaxTable';
 import TaxDrawer from '@/components/molecules/TaxDrawer/TaxDrawer';
 import { TaxRateResponse } from '@/types/dto/tax';
-import { Calculator } from 'lucide-react';
 import { TaxRate } from '@/models/Tax';
 
 const TaxPage = () => {
@@ -58,7 +57,6 @@ const TaxPage = () => {
 				heading='Tax Rates'
 				tags={['Taxes']}
 				emptyStateCard={{
-					icon: <Calculator className='w-12 h-12 text-gray-400' />,
 					heading: 'Create your first tax rate',
 					description: 'Set up tax rates to automatically calculate taxes on invoices and ensure compliance with local regulations.',
 					buttonLabel: 'Create Tax Rate',

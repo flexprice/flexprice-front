@@ -619,7 +619,7 @@ const SubscriptionForm = ({
 
 			{/* Addons Section */}
 			{state.selectedPlan && (
-				<div className='mt-6 pt-6 border-t border-gray-200'>
+				<div className='space-y-3 mt-8 pt-6 border-t border-gray-200'>
 					<SubscriptionAddonTable
 						getEmptyAddon={getEmptyAddon}
 						data={state.addons || []}
@@ -633,7 +633,7 @@ const SubscriptionForm = ({
 
 			{/* Entitlements Section */}
 			{state.selectedPlan && allEntitlements.length > 0 && (
-				<div className='space-y-4 mt-4 pt-3 border-t border-gray-200'>
+				<div className='space-y-4 mt-8 pt-6 border-t border-gray-200'>
 					<FormHeader className='mb-0' title='Entitlements' variant='sub-header' />
 					<div className='rounded-xl border border-gray-300 space-y-6 mt-2'>
 						<EntitlementOverridesTable

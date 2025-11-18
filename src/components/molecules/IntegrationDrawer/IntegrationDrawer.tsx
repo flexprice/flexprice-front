@@ -72,7 +72,7 @@ const IntegrationDrawer: FC<IntegrationDrawerProps> = ({ isOpen, onOpenChange, p
 			description="Enter connection details. Click save when you're done."
 			trigger={trigger}
 			size='lg'>
-			<div className='space-y-4 mt-4'>
+			<div className='space-y-4 mt-9'>
 				<Input
 					label='Connection Name'
 					placeholder='Enter Name'
@@ -90,7 +90,7 @@ const IntegrationDrawer: FC<IntegrationDrawerProps> = ({ isOpen, onOpenChange, p
 					error={errors.apiKey}
 				/>
 				<p className='text-sm text-muted-foreground -mt-2'>Your API secret key from the provider</p>
-				<Spacer className='!h-4' />
+				<Spacer className='!h-1' />
 				<div className='flex gap-2'>
 					<Button variant='outline' onClick={() => onOpenChange(false)} className='flex-1'>
 						Cancel

@@ -254,7 +254,7 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 			title={connection ? 'Edit Stripe Connection' : 'Connect to Stripe'}
 			description='Configure your Stripe integration with the required credentials.'
 			size='lg'>
-			<div className='space-y-6 mt-4'>
+			<div className='space-y-6 mt-9'>
 				{/* Connection Name */}
 				<Input
 					label='Connection Name'
@@ -376,7 +376,7 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 					</div>
 				</div>
 
-				<Spacer className='!h-4' />
+				<Spacer className='!h-1' />
 
 				<div className='flex gap-2'>
 					<Button variant='outline' onClick={() => onOpenChange(false)} className='flex-1' disabled={isPending}>

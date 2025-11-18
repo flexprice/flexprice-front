@@ -77,19 +77,19 @@ const AuthPage: React.FC = () => {
 			<div className='w-[45%] flex justify-center items-center'>
 				<div className='flex flex-col justify-center max-w-xl w-[55%] mx-auto'>
 					<div className='flex justify-center mb-4'>
-						<img src={'/ic_rounded_flexprice.svg'} alt='Flexprice Logo' className='h-12' />
+						<img src={'/newlogobrowser.png'} alt='Flexprice Logo' className='h-12' />
 					</div>
 
 					{currentTab === AuthTab.SIGNUP && (
 						<>
-							<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>Create an account</h2>
+							<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>Create your account</h2>
 							<p className='text-center text-gray-600 mb-8'>Sign up to start using Flexprice.</p>
 						</>
 					)}
 					{currentTab === AuthTab.LOGIN && (
 						<>
-							<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>Login to your account</h2>
-							<p className='text-center text-gray-600 mb-8'>Login to start using Flexprice.</p>
+							<h2 className='text-3xl font-medium text-center text-gray-800 mb-3'>Login to your account</h2>
+							<p className='text-center text-gray-600 mb-10'>Let's get you back in.</p>
 						</>
 					)}
 					{currentTab === AuthTab.FORGOT_PASSWORD && (

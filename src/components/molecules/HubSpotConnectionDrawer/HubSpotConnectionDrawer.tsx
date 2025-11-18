@@ -274,7 +274,7 @@ const HubSpotConnectionDrawer: FC<HubSpotConnectionDrawerProps> = ({ isOpen, onO
 			title={connection ? 'Edit HubSpot Connection' : 'Connect to HubSpot'}
 			description='Configure your HubSpot integration with the required credentials.'
 			size='lg'>
-			<div className='space-y-6 mt-4'>
+			<div className='space-y-6 mt-9'>
 				{/* Connection Name */}
 				<Input
 					label='Connection Name'
@@ -409,7 +409,7 @@ const HubSpotConnectionDrawer: FC<HubSpotConnectionDrawerProps> = ({ isOpen, onO
 					</div>
 				</div>
 
-				<Spacer className='!h-4' />
+				<Spacer className='!h-1' />
 
 				<div className='flex gap-2'>
 					<Button variant='outline' onClick={() => onOpenChange(false)} className='flex-1' disabled={isPending}>

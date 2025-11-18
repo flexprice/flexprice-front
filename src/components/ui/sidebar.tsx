@@ -571,7 +571,7 @@ const SidebarMenuSubButton = React.forwardRef<
 				'flex min-w-0 -translate-x-px items-center justify-start gap-2 overflow-hidden rounded-[10px] ml-2 px-3 text-[14px] font-normal outline-none transition-colors duration-200',
 				// Interactive states with consistent hover behavior using the same colors as reference UI
 				'hover:bg-[#F4F4F5] hover:text-[#18181B]',
-				'focus-visible:ring-2 focus-visible:ring-[#3C87D2]',
+				'focus-visible:ring-2 focus-visible:ring-blue-600',
 				'active:bg-[#F4F4F5] active:text-[#18181B]',
 				// Disabled states
 				'disabled:pointer-events-none disabled:opacity-50',

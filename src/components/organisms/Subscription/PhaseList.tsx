@@ -169,27 +169,27 @@ const PhaseList: React.FC<PhaseListProps> = ({
 			override_line_items:
 				Object.keys(phaseFormData.priceOverrides).length > 0
 					? Object.entries(phaseFormData.priceOverrides).map(([priceId, override]) => {
-							// Convert SLAB_TIERED to TIERED + SLAB for backend
-							let billingModel = override.billing_model;
-							let tierMode = override.tier_mode;
+						// Convert SLAB_TIERED to TIERED + SLAB for backend
+						let billingModel = override.billing_model;
+						let tierMode = override.tier_mode;
 
-							if (override.billing_model === 'SLAB_TIERED') {
-								billingModel = BILLING_MODEL.TIERED;
-								tierMode = TIER_MODE.SLAB;
-							} else if (override.billing_model === BILLING_MODEL.TIERED) {
-								tierMode = TIER_MODE.VOLUME;
-							}
+						if (override.billing_model === 'SLAB_TIERED') {
+							billingModel = BILLING_MODEL.TIERED;
+							tierMode = TIER_MODE.SLAB;
+						} else if (override.billing_model === BILLING_MODEL.TIERED) {
+							tierMode = TIER_MODE.VOLUME;
+						}
 
-							return {
-								price_id: priceId,
-								...(override.amount !== undefined && { amount: parseFloat(override.amount) }),
-								...(override.quantity !== undefined && { quantity: override.quantity }),
-								...(billingModel !== undefined && { billing_model: billingModel as BILLING_MODEL }),
-								...(tierMode !== undefined && { tier_mode: tierMode }),
-								...(override.tiers !== undefined && { tiers: override.tiers }),
-								...(override.transform_quantity !== undefined && { transform_quantity: override.transform_quantity }),
-							};
-						})
+						return {
+							price_id: priceId,
+							...(override.amount !== undefined && { amount: parseFloat(override.amount) }),
+							...(override.quantity !== undefined && { quantity: override.quantity }),
+							...(billingModel !== undefined && { billing_model: billingModel as BILLING_MODEL }),
+							...(tierMode !== undefined && { tier_mode: tierMode }),
+							...(override.tiers !== undefined && { tiers: override.tiers }),
+							...(override.transform_quantity !== undefined && { transform_quantity: override.transform_quantity }),
+						};
+					})
 					: undefined,
 			metadata: Object.keys(phaseFormData.metadata).length > 0 ? phaseFormData.metadata : undefined,
 		};
@@ -338,6 +338,7 @@ const PhaseList: React.FC<PhaseListProps> = ({
 					const hasNextPhase = index < phases.length - 1;
 					const nextPhase = hasNextPhase ? phases[index + 1] : null;
 					const nextPhaseEndDate = nextPhase?.end_date ? new Date(nextPhase.end_date) : subscriptionEndDate;
+					const previousPhaseEndDate = previousPhase?.end_date ? new Date(previousPhase.end_date) : null;
 
 					// Convert DTO to PhaseFormData
 					const phaseFormData = convertDTOToPhaseForm(phase, allCoupons);
@@ -355,6 +356,7 @@ const PhaseList: React.FC<PhaseListProps> = ({
 							isEditing={true}
 							minStartDate={previousPhaseStartDate}
 							maxEndDate={nextPhaseEndDate}
+							disableStartDate={isAfterFirstPhase && previousPhaseEndDate !== null}
 						/>
 					);
 				}
@@ -403,12 +405,13 @@ const PhaseList: React.FC<PhaseListProps> = ({
 								</button>
 							</div>
 						)}
-					</div>
+					</div >
 				);
 			})}
 
 			{/* New Phase Form */}
-			{isCreating &&
+			{
+				isCreating &&
 				(() => {
 					const isAfterFirstPhase = phases.length > 0;
 					const previousPhase = isAfterFirstPhase ? phases[phases.length - 1] : null;
@@ -435,9 +438,20 @@ const PhaseList: React.FC<PhaseListProps> = ({
 							isEditing={false}
 							minStartDate={previousPhaseStartDate}
 							maxEndDate={subscriptionEndDate}
+							disableStartDate={isAfterFirstPhase && previousPhaseEndDate !== null}
 						/>
 					);
-				})()}
+				})()
+			}
+
+			{/* Empty State */}
+			{phases.length === 0 && !isCreating && (
+				<div className='text-center py-8 text-gray-500 border-2 border-dashed border-gray-200 rounded-lg'>
+					<Calendar className='h-8 w-8 mx-auto mb-2 text-gray-400' />
+					<p className='text-sm'>No phases configured</p>
+					<p className='text-xs'>Add phases to customize subscription behavior over time</p>
+				</div>
+			)}
 
 			{/* Add Phase Button - Stripe Style */}
 			{!disabled && (

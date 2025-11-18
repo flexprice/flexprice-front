@@ -149,7 +149,7 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 			title={connection ? 'Edit S3 Connection' : 'Connect to Amazon S3'}
 			description="Enter your AWS credentials to connect to S3. Click save when you're done."
 			size='lg'>
-			<div className='space-y-4 mt-4'>
+			<div className='space-y-6 mt-9'>
 				<Input
 					label='Connection Name'
 					placeholder='Enter connection name'
@@ -199,8 +199,8 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 					</p>
 				</div>
 
-				<Spacer className='!h-4' />
-				<div className='flex gap-2'>
+				<Spacer className='!h-1' />
+				<div className='flex gap-1'>
 					<Button variant='outline' onClick={() => onOpenChange(false)} className='flex-1'>
 						Cancel
 					</Button>
