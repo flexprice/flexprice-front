@@ -58,7 +58,7 @@ const customerLogos = [
 	'/assets/svg/supervity_logo.svg',
 ];
 
-const ANIMATION_DURATION = 35; // seconds for one full loop
+const ANIMATION_DURATION = 60; // seconds for one full loop
 
 const LandingSection = () => {
 	const scrollRef = useRef<HTMLDivElement>(null);

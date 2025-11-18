@@ -123,11 +123,11 @@ const OnboardingPage = () => {
 						{tutorials.map((tutorial, index) => (
 							<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} key={index}>
 								<Card
-									className='p-6 h-full bg-white rounded-lg border shadow-sm transition-all duration-200 cursor-pointer group border-slate-100 hover:border-blue-100 hover:bg-slate-50 hover:shadow-lg hover:shadow-blue-500/5'
+									className='p-6 h-full bg-white rounded-lg border shadow-sm transition-all duration-200 cursor-pointer group border-slate-100 hover:border-blue-100 hover:bg-slate-50 hover:shadow-lg hover:shadow-blue-600/5'
 									onClick={tutorial.onClick}>
 									<div className='flex gap-4'>
 										<div className='flex-shrink-0 mt-1'>
-											<AlignJustify className='w-5 h-5 transition-colors duration-200 text-slate-400 group-hover:text-blue-500' />
+											<AlignJustify className='w-5 h-5 transition-colors duration-200 text-slate-400 group-hover:text-blue-600' />
 										</div>
 
 										<div className='flex-1 min-w-0'>
@@ -136,7 +136,7 @@ const OnboardingPage = () => {
 											</h3>
 											<p className='text-sm leading-relaxed text-slate-500'>{tutorial.description}</p>
 
-											<div className='flex gap-1 items-center mt-4 transition-all duration-200 text-slate-400 group-hover:text-blue-500'>
+											<div className='flex gap-1 items-center mt-4 transition-all duration-200 text-slate-400 group-hover:text-blue-600'>
 												<span className='text-xs font-medium'>Learn more</span>
 												<ArrowRight className='w-4 h-4 transition-transform duration-200 transform group-hover:translate-x-1' />
 											</div>

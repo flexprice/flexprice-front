@@ -131,7 +131,7 @@ const InvoiceLineItemTable: FC<Props> = ({
 						{/* Subtotal - always show if exists */}
 						{subtotal !== undefined && subtotal !== null && Number(subtotal) !== 0 && (
 							<div className='flex flex-row justify-end items-center py-1'>
-								<div className='w-40 text-right text-base font-medium text-gray-900'>Subtotal</div>
+								<div className='w-40 text-right text-sm font-medium text-gray-900'>Subtotal</div>
 								<div className='flex-1 text-right text-sm text-gray-900 font-medium'>{formatAmount(Number(subtotal), currency ?? '')}</div>
 							</div>
 						)}
@@ -139,14 +139,14 @@ const InvoiceLineItemTable: FC<Props> = ({
 						{/* Discount - only show if provided and > 0 */}
 						{discount !== undefined && discount !== null && Number(discount) > 0 && (
 							<div className='flex flex-row justify-end items-center py-1'>
-								<div className='w-40 text-right text-base font-medium text-gray-900'>Discount</div>
+								<div className='w-40 text-right text-sm font-medium text-gray-900'>Discount</div>
 								<div className='flex-1 text-right text-sm text-gray-900 font-medium'>−{formatAmount(Number(discount), currency ?? '')}</div>
 							</div>
 						)}
 
 						{total_tax !== undefined && total_tax !== null && Number(total_tax) !== 0 && (
 							<div className='flex flex-row justify-end items-center py-1'>
-								<div className='w-40 text-right text-base font-medium text-gray-900'>Tax</div>
+								<div className='w-40 text-right text-sm font-medium text-gray-900'>Tax</div>
 								<div className='flex-1 text-right text-sm text-gray-900 font-medium'>{formatAmount(Number(total_tax), currency ?? '')}</div>
 							</div>
 						)}
@@ -173,7 +173,7 @@ const InvoiceLineItemTable: FC<Props> = ({
 
 						{/* Amount paid - always show, default to 0 if not provided */}
 						<div className='flex flex-row justify-end items-center py-1'>
-							<div className='w-40 text-right text-base font-medium text-gray-900'>Amount paid</div>
+							<div className='w-40 text-right text-sm font-medium text-gray-900'>Amount paid</div>
 							<div className='flex-1 text-right text-sm text-gray-900 font-medium'>
 								{formatAmount(Number(amount_paid ?? 0), currency ?? '')}
 							</div>
@@ -183,8 +183,8 @@ const InvoiceLineItemTable: FC<Props> = ({
 						{((amount_remaining !== undefined && amount_remaining !== null && Number(amount_remaining) > 0) ||
 							(amount_due !== undefined && amount_due !== null && Number(amount_due) > 0)) && (
 							<div className='flex flex-row justify-end items-center py-3 border-t border-gray-200'>
-								<div className='w-40 text-right text-base font-medium text-gray-900'>Remaining balance</div>
-								<div className='flex-1 text-right text-base font-semibold text-gray-900'>
+								<div className='w-40 text-right text-sm font-medium text-gray-900'>Remaining balance</div>
+								<div className='flex-1 text-right text-sm font-semibold text-gray-900'>
 									{formatAmount(Number(amount_remaining ?? amount_due ?? 0), currency ?? '')}
 								</div>
 							</div>

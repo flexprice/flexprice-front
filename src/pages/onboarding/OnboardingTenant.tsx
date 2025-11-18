@@ -22,19 +22,19 @@ const exploreTutorials: TutorialItem[] = [
 	{
 		title: 'Getting Started',
 		description: 'Learn the basics of Flexprice in 5 minutes',
-		icon: <Globe className='w-5 h-5 text-[#3293D9]' />,
+		icon: <Globe className='w-5 h-5 text-blue-600' />,
 		onClick: () => window.open('https://docs.flexprice.io', '_blank', 'noopener,noreferrer'),
 	},
 	{
 		title: 'Define Usage Metering',
 		description: 'Set up billable metrics to track customer usage',
-		icon: <Gauge className='w-5 h-5 text-[#3293D9]' />,
+		icon: <Gauge className='w-5 h-5 text-blue-600' />,
 		onClick: () => window.open('https://docs.flexprice.io/guides/billable-metric/billable-metrics-create', '_blank'),
 	},
 	{
 		title: 'Billing',
 		description: 'Create customers, assign plans, and manage subscriptions',
-		icon: <Users className='w-5 h-5 text-[#3293D9]' />,
+		icon: <Users className='w-5 h-5 text-blue-600' />,
 		onClick: () => window.open('https://docs.flexprice.io/guides/subscription/customers-create-subscription', '_blank'),
 	},
 ];
@@ -196,7 +196,7 @@ const OnboardingTenant = () => {
 								onClick={() => createSecretKey()}
 								disabled={isCreatingSecretKey || isSecretKeyCreated || activeStep !== 1}
 								isLoading={isCreatingSecretKey}
-								className='bg-[#3293D9] flex justify-center gap-2 hover:bg-[#2b7eb8] text-white'>
+								className='bg-blue-600 flex justify-center gap-2 hover:bg-blue-700 text-white'>
 								<Lock className='h-4 w-4' />
 								Add API Key
 							</Button>
@@ -245,7 +245,7 @@ const OnboardingTenant = () => {
 								<div
 									className={cn(
 										'w-3 h-3 rounded-full flex items-center justify-center transition-all duration-200 mt-2',
-										isCompleted ? 'bg-green-700 border-0' : isActive ? 'bg-[#3293D9] border-0' : 'border-2 border-gray-300 bg-white',
+										isCompleted ? 'bg-green-700 border-0' : isActive ? 'bg-blue-600 border-0' : 'border-2 border-gray-300 bg-white',
 										isUpcoming && 'opacity-50',
 									)}>
 									{isCompleted && <Check className='w-2 h-2 text-white' />}
@@ -285,14 +285,14 @@ const OnboardingTenant = () => {
 					{exploreTutorials.map((tutorial, index) => (
 						<Card
 							key={index}
-							className='bg-white rounded-lg p-6 border border-gray-300 hover:border-[#3293D9]/20 transition-all cursor-pointer group'
+							className='bg-white rounded-lg p-6 border border-gray-300 hover:border-blue-600/20 transition-all cursor-pointer group'
 							onClick={tutorial.onClick}>
 							<div className='flex items-start gap-4'>
-								<div className='p-2 rounded-lg bg-[#3293D9]/10 group-hover:bg-[#3293D9]/20 transition-colors'>{tutorial.icon}</div>
+								<div className='p-2 rounded-lg bg-blue-600/10 group-hover:bg-blue-600/20 transition-colors'>{tutorial.icon}</div>
 								<div>
-									<h3 className='font-medium text-gray-900 mb-1 group-hover:text-[#3293D9] transition-colors'>{tutorial.title}</h3>
+									<h3 className='font-medium text-gray-900 mb-1 group-hover:text-blue-600 transition-colors'>{tutorial.title}</h3>
 									<p className='text-sm text-gray-500'>{tutorial.description}</p>
-									<div className='flex items-center gap-1 mt-4 text-slate-400 group-hover:text-blue-500 transition-all duration-200'>
+									<div className='flex items-center gap-1 mt-4 text-slate-400 group-hover:text-blue-600 transition-all duration-200'>
 										<span className='text-xs font-medium'>Learn more</span>
 										<ArrowRight className='w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200' />
 									</div>

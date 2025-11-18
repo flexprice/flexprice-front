@@ -4,7 +4,7 @@ import SidebarNav, { NavItem } from './SidebarMenu';
 import FlexpriceSidebarFooter from './SidebarFooter';
 import { RouteNames } from '@/core/routes/Routes';
 import { EnvironmentSelector } from '@/components/molecules';
-import { Settings, Landmark, Layers2, Gauge, LayoutPanelLeft, CodeXml } from 'lucide-react';
+import { Settings, Landmark, Layers2, LayoutPanelLeft, CodeXml, Puzzle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }) => {
@@ -73,17 +73,22 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 			],
 		},
 		{
-			title: 'Usage Tracking',
-			url: RouteNames.events,
-			icon: Gauge,
+			title: 'Integrations',
+			url: RouteNames.integrations,
+			icon: Puzzle,
+		},
+		{
+			title: 'Tools',
+			url: RouteNames.bulkImports,
+			icon: Settings,
 			items: [
 				{
-					title: 'Events Debugger',
-					url: RouteNames.events,
+					title: 'Imports',
+					url: RouteNames.bulkImports,
 				},
 				{
-					title: 'Query',
-					url: RouteNames.queryPage,
+					title: 'Exports',
+					url: RouteNames.exports,
 				},
 			],
 		},
@@ -104,24 +109,9 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 					title: 'Webhooks',
 					url: RouteNames.webhooks,
 				},
-			],
-		},
-		{
-			title: 'Tools',
-			url: RouteNames.integrations,
-			icon: Settings,
-			items: [
 				{
-					title: 'Integrations',
-					url: RouteNames.integrations,
-				},
-				{
-					title: 'Bulk Imports',
-					url: RouteNames.bulkImports,
-				},
-				{
-					title: 'Exports',
-					url: RouteNames.exports,
+					title: 'Events Debugger',
+					url: RouteNames.events,
 				},
 			],
 		},

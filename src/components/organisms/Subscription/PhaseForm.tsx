@@ -29,6 +29,7 @@ interface PhaseFormProps {
 	isEditing?: boolean;
 	minStartDate?: Date;
 	maxEndDate?: Date;
+	disableStartDate?: boolean;
 }
 
 const PhaseForm: React.FC<PhaseFormProps> = ({
@@ -42,6 +43,7 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 	isEditing = false,
 	minStartDate,
 	maxEndDate,
+	disableStartDate = false,
 }) => {
 	const [formState, setFormState] = useState<PhaseFormData>({
 		start_date: initialData?.start_date || new Date(),
@@ -82,6 +84,18 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 		setFormState((prev) => ({ ...prev, priceOverrides: overriddenPrices }));
 	}, [overriddenPrices]);
 
+	// Sync start_date with minStartDate when disableStartDate is true
+	useEffect(() => {
+		if (disableStartDate && minStartDate) {
+			const minDate = new Date(minStartDate);
+			const currentStartDate = new Date(formState.start_date);
+			if (minDate.toDateString() !== currentStartDate.toDateString()) {
+				setFormState((prev) => ({ ...prev, start_date: minDate }));
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [disableStartDate, minStartDate]);
+
 	const handleSave = () => {
 		onSave({
 			...formState,
@@ -104,14 +118,17 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 						<DatePicker
 							date={formState.start_date}
 							setDate={(date) => {
-								if (date) {
+								if (date && !disableStartDate) {
 									updateFormState({ start_date: date });
 								}
 							}}
-							disabled={disabled}
+							disabled={disabled || disableStartDate}
 							minDate={minStartDate}
 							maxDate={formState.end_date || maxEndDate}
 						/>
+						{disableStartDate && (
+							<p className='text-xs text-gray-500 mt-1'>Start date is automatically set to the previous phase's end date</p>
+						)}
 					</div>
 					<div>
 						<Label label='End Date' />
@@ -162,10 +179,10 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 									...(coupon
 										? { [priceId]: coupon }
 										: (() => {
-												const updated = { ...formState.line_item_coupons };
-												delete updated[priceId];
-												return updated;
-											})()),
+											const updated = { ...formState.line_item_coupons };
+											delete updated[priceId];
+											return updated;
+										})()),
 								},
 							});
 						}}

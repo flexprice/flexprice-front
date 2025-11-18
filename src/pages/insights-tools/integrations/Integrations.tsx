@@ -60,7 +60,7 @@ const Integrations = () => {
 					))}
 				</div>
 			</div>
-			<div className='mt-10'>
+			<div className='mt-16'>
 				<p className='mb-4 font-medium text-xl'>Premium add-ons</p>
 				<div className='grid grid-cols-2 gap-4 '>
 					{availablePremium.map((integration, index) => (
@@ -94,7 +94,7 @@ const IntegrationCard = ({ integration }: { integration: Integration; installed?
 							{integration.premium && <span className='text-[#c58e20]'>Premium</span>}
 						</div>
 						<p className='text-gray-500 text-sm'>{integration.description}</p>
-						<div className='mt-4 flex items-center gap-2 '>
+						<div className='mt-5 flex items-center gap-2 '>
 							{integration.tags.map((tag, idx) => (
 								<span key={idx} className='text-xs bg-[#f4f4f4] text-[#5e5e5e] px-2 py-1 rounded-md mb-1'>
 									{tag}

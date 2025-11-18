@@ -159,7 +159,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 							<FormHeader className='!mb-2' title={user?.tenant.name} variant='sub-header' titleClassName='font-semibold' />
 							<p className={customerInfoClass}>{user?.tenant.name}</p>
 							<p className={customerInfoClass}>{user?.email}</p>
-							<p className={customerInfoClass}>{tenantAddress || '--'}</p>
+							<p className={cn(customerInfoClass, 'max-w-xs')}>{tenantAddress || '--'}</p>
 						</div>
 
 						<div>

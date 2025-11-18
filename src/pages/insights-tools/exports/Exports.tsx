@@ -47,7 +47,7 @@ const Exports = () => {
 			<ApiDocsContent tags={['Exports', 'Data Pipelines', 'Storage']} />
 
 			{/* Overview Section */}
-			<div className='mb-8'>
+			<div className='mb-14'>
 				<FormHeader title='Overview' variant='sub-header' />
 				<div className='card space-y-4'>
 					<p className='text-gray-600'>
@@ -55,25 +55,25 @@ const Exports = () => {
 						exports with flexible scheduling and secure data transfer.
 					</p>
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-						<div className='flex items-center gap-3 p-3 bg-blue-50 rounded-lg'>
-							<Download className='w-6 h-6 text-blue-600' />
+						<div className='flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white'>
+							<Download className='w-6 h-6 text-gray-600' />
 							<div>
-								<h4 className='font-medium text-blue-900'>Automated Exports</h4>
-								<p className='text-sm text-blue-700'>Schedule regular data exports</p>
+								<h4 className='font-medium text-gray-900'>Automated Exports</h4>
+								<p className='text-sm text-gray-500'>Schedule regular data exports</p>
 							</div>
 						</div>
-						<div className='flex items-center gap-3 p-3 bg-blue-50 rounded-lg'>
-							<Database className='w-6 h-6 text-blue-600' />
+						<div className='flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white'>
+							<Database className='w-6 h-6 text-gray-600' />
 							<div>
-								<h4 className='font-medium text-blue-900'>Multiple Formats</h4>
-								<p className='text-sm text-blue-700'>Export in various data formats</p>
+								<h4 className='font-medium text-gray-900'>Multiple Formats</h4>
+								<p className='text-sm text-gray-500'>Export in various data formats</p>
 							</div>
 						</div>
-						<div className='flex items-center gap-3 p-3 bg-blue-50 rounded-lg'>
-							<Cloud className='w-6 h-6 text-blue-600' />
+						<div className='flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white'>
+							<Cloud className='w-6 h-6 text-gray-600' />
 							<div>
-								<h4 className='font-medium text-blue-900'>Secure Storage</h4>
-								<p className='text-sm text-blue-700'>Encrypted data transfer and storage</p>
+								<h4 className='font-medium text-gray-900'>Secure Storage</h4>
+								<p className='text-sm text-gray-500'>Encrypted data transfer and storage</p>
 							</div>
 						</div>
 					</div>
