@@ -1,4 +1,4 @@
-import { Loader, Page, Select, AddButton } from '@/components/atoms';
+import { Loader, Page, Select } from '@/components/atoms';
 import usePagination from '@/hooks/usePagination';
 import { PlanApi } from '@/api/PlanApi';
 import { useQuery } from '@tanstack/react-query';
@@ -9,7 +9,9 @@ import { ExpandedPlan } from '@/types';
 import { GetAllPlansResponse } from '@/api/PlanApi';
 import { PricingCard, type PricingCardProps } from '@/components/molecules';
 import { ApiDocsContent } from '@/components/molecules';
+import { EmptyPage } from '@/components/organisms';
 import { PlanDrawer } from '@/components/molecules';
+import GUIDES from '@/constants/guides';
 import { Price, INVOICE_CADENCE, PRICE_TYPE } from '@/models';
 
 type PriceType = {
@@ -190,18 +192,18 @@ const PricingPage = () => {
 		// Filter available options based on selections
 		const availableCurrencyOptions = selectedBillingPeriod
 			? allCurrencyOptions.filter((currency) =>
-				plans.some((plan) =>
-					plan.prices?.some((price) => price.currency.toUpperCase() === currency.value && price.billing_period === selectedBillingPeriod),
-				),
-			)
+					plans.some((plan) =>
+						plan.prices?.some((price) => price.currency.toUpperCase() === currency.value && price.billing_period === selectedBillingPeriod),
+					),
+				)
 			: allCurrencyOptions;
 
 		const availablePeriodOptions = selectedCurrency
 			? allPeriodOptions.filter((period) =>
-				plans.some((plan) =>
-					plan.prices?.some((price) => price.currency.toUpperCase() === selectedCurrency && price.billing_period === period.value),
-				),
-			)
+					plans.some((plan) =>
+						plan.prices?.some((price) => price.currency.toUpperCase() === selectedCurrency && price.billing_period === period.value),
+					),
+				)
 			: allPeriodOptions;
 
 		// Set default selections if needed
@@ -324,46 +326,18 @@ const PricingPage = () => {
 	if ((plansData?.items ?? []).length === 0) {
 		return (
 			<div className='space-y-6'>
-				<Page
+				<EmptyPage
 					heading='Pricing Widgets'
-					headingCTA={
-						<AddButton
-							onClick={() => {
-								setPlanDrawerOpen(true);
-							}}
-						/>
-					}>
-					<ApiDocsContent tags={['Plans', 'Pricing']} />
-					<div className='flex flex-col items-center mt-6'>
-						{/* 3 Dotted Placeholder Boxes */}
-						<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full mb-16'>
-							{[1, 2, 3].map((index) => (
-								<div key={index} className='w-full rounded-3xl bg-white p-6 min-h-[280px] flex items-center justify-center relative'>
-									<svg className='absolute inset-0 w-full h-full pointer-events-none' style={{ borderRadius: '1.5rem' }}>
-										<rect
-											x='1'
-											y='1'
-											width='calc(100% - 1.5px)'
-											height='calc(100% - 1.5px)'
-											rx='24'
-											ry='24'
-											fill='none'
-											stroke='#e3e3e3'
-											strokeWidth='1.5'
-											strokeDasharray='12 5'
-										/>
-									</svg>
-									<div className='text-gray-400 text-sm'></div>
-								</div>
-							))}
-						</div>
-
-						{/* Empty State Message and Button */}
-						<div className='flex flex-col items-center'>
-							<h2 className='font-regular text-[16px] leading-normal text-gray-600 text-center mb-8'>No Pricing Widget Exists</h2>
-						</div>
-					</div>
-				</Page>
+					onAddClick={() => setPlanDrawerOpen(true)}
+					emptyStateCard={{
+						heading: 'Set Up Your Pricing Widget',
+						description: 'Add a plan to manage customer billing, credits, and usage.',
+						buttonLabel: 'Create Plan',
+						buttonAction: () => setPlanDrawerOpen(true),
+					}}
+					tags={['Plans']}
+					tutorials={GUIDES.plans.tutorials}
+				/>
 				<PlanDrawer open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlansPricingCard']} />
 			</div>
 		);

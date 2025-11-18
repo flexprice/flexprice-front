@@ -15,6 +15,7 @@ import { ServerError } from '@/core/axios/types';
 import { BILLING_CADENCE, SubscriptionPhase, Coupon, TAXRATE_ENTITY_TYPE, EXPAND, BILLING_CYCLE } from '@/models';
 import { InternalCreditGrantRequest, creditGrantToInternal, internalToCreateRequest } from '@/types/dto/CreditGrant';
 import { BILLING_PERIOD } from '@/constants/constants';
+
 import {
 	ExpandedPlan,
 	CreateSubscriptionRequest,
@@ -199,7 +200,9 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 	});
 	const allCouponsData = couponsResponse?.items || [];
 
-	// Helper function to check if price should be shown (start_date <= now or no start_date)
+	const addonIds = useMemo(() => subscriptionState.addons?.map((addon) => addon.addon_id) || [], [subscriptionState.addons]);
+	useAddons(addonIds);
+
 	const isPriceActive = (price: { start_date?: string }) => {
 		if (!price.start_date) return true;
 		const now = new Date();
@@ -207,9 +210,6 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		if (isNaN(startDate.getTime())) return true;
 		return startDate <= now;
 	};
-
-	const addonIds = useMemo(() => subscriptionState.addons?.map((addon) => addon.addon_id) || [], [subscriptionState.addons]);
-	useAddons(addonIds);
 
 	useEffect(() => {
 		if (customerData?.external_id) {
@@ -361,6 +361,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 
 			sanitizedPhases = undefined;
 		}
+
 		const payload: CreateSubscriptionRequest = {
 			billing_cadence: BILLING_CADENCE.RECURRING,
 			billing_period: billingPeriod.toUpperCase() as BILLING_PERIOD,
@@ -427,7 +428,8 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 					</div>
 				)}
 			</div>
-			<div className='flex-[3]'></div>
+
+			<div className='flex-[4]'></div>
 		</div>
 	);
 };
