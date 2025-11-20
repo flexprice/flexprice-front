@@ -6,6 +6,7 @@ import { useState } from 'react';
 import IntegrationDrawer from '@/components/molecules/IntegrationDrawer/IntegrationDrawer';
 import StripeConnectionDrawer from '@/components/molecules/StripeConnectionDrawer';
 import RazorpayConnectionDrawer from '@/components/molecules/RazorpayConnectionDrawer';
+import ChargebeeConnectionDrawer from '@/components/molecules/ChargebeeConnectionDrawer';
 import HubSpotConnectionDrawer from '@/components/molecules/HubSpotConnectionDrawer';
 import { PencilIcon, TrashIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -138,6 +139,16 @@ const IntegrationDetails = () => {
 				/>
 			) : name.toLowerCase() === CONNECTION_PROVIDER_TYPE.RAZORPAY ? (
 				<RazorpayConnectionDrawer
+					isOpen={isDrawerOpen}
+					onOpenChange={(open) => {
+						setIsDrawerOpen(open);
+						if (!open) setEditingConnection(null);
+					}}
+					connection={editingConnection}
+					onSave={handleSaveConnection}
+				/>
+			) : name.toLowerCase() === CONNECTION_PROVIDER_TYPE.CHARGEBEE ? (
+				<ChargebeeConnectionDrawer
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);

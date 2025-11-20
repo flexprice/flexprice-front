@@ -41,6 +41,13 @@ export interface CreateConnectionPayload {
 				provider_type: CONNECTION_PROVIDER_TYPE.HUBSPOT;
 				access_token?: string;
 				client_secret?: string;
+		  }
+		| {
+				provider_type: CONNECTION_PROVIDER_TYPE.CHARGEBEE;
+				api_key?: string;
+				site?: string;
+				webhook_username?: string;
+				webhook_password?: string;
 		  };
 	sync_config?: {
 		plan?: {
