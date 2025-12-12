@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { PropsWithChildren, createContext, useContext, useState, useMemo } from 'react';
+import { PropsWithChildren, createContext, useContext, useState } from 'react';
 
 interface LoadingContextType {
 	isLoading: boolean;
@@ -41,11 +41,8 @@ export const refetchQueries = async (queryKeys?: string | string[]) => {
 const ReactQueryProvider = ({ children }: PropsWithChildren) => {
 	const [isLoading, setLoading] = useState(false);
 
-	// Memoize context value to prevent unnecessary re-renders (Fast-Refresh optimization)
-	const loadingValue = useMemo(() => ({ isLoading, setLoading }), [isLoading]);
-
 	return (
-		<LoadingContext.Provider value={loadingValue}>
+		<LoadingContext.Provider value={{ isLoading, setLoading }}>
 			<QueryClientProvider client={queryClient}>
 				{children}
 				<ReactQueryDevtools buttonPosition='bottom-right' initialIsOpen={false} />

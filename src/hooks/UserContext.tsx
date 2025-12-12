@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { logger } from '@/utils/common/Logger';
 
 interface UserProviderProps {
@@ -29,10 +29,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		}
 	}, []);
 
-	// Memoize context value to prevent unnecessary re-renders (Fast-Refresh optimization)
-	const value = useMemo(() => ({ user, setUser }), [user]);
-
-	return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+	return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 };
 
 export const useUser = () => useContext(UserContext);
