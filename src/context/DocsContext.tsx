@@ -1,4 +1,4 @@
-import { createContext, useContext, FC, ReactNode, useMemo } from 'react';
+import { createContext, useContext, FC, ReactNode } from 'react';
 import { useApiDocsStore, ApiDocsSnippet } from '@/store/useApiDocsStore';
 
 interface DocsContextProps {
@@ -15,14 +15,10 @@ interface DocsProviderProps {
 export const DocsProvider: FC<DocsProviderProps> = ({ children }) => {
 	const { setDocs, clearDocs } = useApiDocsStore();
 
-	// Memoize context value to prevent unnecessary re-renders (Fast-Refresh optimization)
-	const value = useMemo(
-		() => ({
-			setPageDocs: setDocs,
-			clearPageDocs: clearDocs,
-		}),
-		[setDocs, clearDocs],
-	);
+	const value = {
+		setPageDocs: setDocs,
+		clearPageDocs: clearDocs,
+	};
 
 	return <DocsContext.Provider value={value}>{children}</DocsContext.Provider>;
 };
