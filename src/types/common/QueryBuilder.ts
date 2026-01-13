@@ -13,10 +13,10 @@ export enum DataType {
 
 /**
  * FilterOperator enum - Matches backend FilterOperatorType exactly
- * Backend values: "eq", "contains", "gt", "lt", "in", "not_in", "before", "after"
+ * Backend values: "eq", "contains", "not_contains", "gt", "lt", "in", "not_in", "before", "after"
  *
  * NOTE: Only operators that exist in backend are included.
- * Backend TODO operators (not yet implemented): NOT_CONTAINS, STARTS_WITH, ENDS_WITH
+ * Backend TODO operators (not yet implemented): STARTS_WITH, ENDS_WITH
  */
 export enum FilterOperator {
 	// equal
@@ -24,8 +24,8 @@ export enum FilterOperator {
 
 	// string
 	CONTAINS = 'contains',
+	NOT_CONTAINS = 'not_contains',
 	// TODO: Backend has these commented as TODO
-	// NOT_CONTAINS = 'not_contains',
 	// STARTS_WITH = 'starts_with',
 	// ENDS_WITH = 'ends_with',
 
@@ -109,12 +109,12 @@ export interface FilterGroup {
 
 // Allowed operators per field type - only includes backend-supported operators
 export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterFieldType, FilterOperator[]> = {
-	[FilterFieldType.INPUT]: [FilterOperator.EQUAL, FilterOperator.CONTAINS],
+	[FilterFieldType.INPUT]: [FilterOperator.EQUAL, FilterOperator.CONTAINS, FilterOperator.NOT_CONTAINS],
 	[FilterFieldType.SELECT]: [FilterOperator.EQUAL],
 	[FilterFieldType.CHECKBOX]: [FilterOperator.EQUAL],
 	[FilterFieldType.DATEPICKER]: [FilterOperator.BEFORE, FilterOperator.AFTER],
 	[FilterFieldType.RADIO]: [FilterOperator.EQUAL],
-	[FilterFieldType.COMBOBOX]: [FilterOperator.EQUAL, FilterOperator.CONTAINS],
+	[FilterFieldType.COMBOBOX]: [FilterOperator.EQUAL, FilterOperator.CONTAINS, FilterOperator.NOT_CONTAINS],
 	[FilterFieldType.SWITCH]: [FilterOperator.EQUAL],
 	[FilterFieldType.MULTI_SELECT]: [FilterOperator.IN, FilterOperator.NOT_IN],
 	[FilterFieldType.ASYNC_SELECT]: [FilterOperator.EQUAL],
@@ -123,7 +123,7 @@ export const ALLOWED_OPERATORS_PER_TYPE: Record<FilterFieldType, FilterOperator[
 
 // Default operators per data type - matches backend supported operators
 export const DEFAULT_OPERATORS_PER_DATA_TYPE: Record<DataType, FilterOperator[]> = {
-	[DataType.STRING]: [FilterOperator.CONTAINS, FilterOperator.EQUAL],
+	[DataType.STRING]: [FilterOperator.CONTAINS, FilterOperator.NOT_CONTAINS, FilterOperator.EQUAL],
 	[DataType.NUMBER]: [FilterOperator.EQUAL, FilterOperator.GREATER_THAN, FilterOperator.LESS_THAN],
 	[DataType.DATE]: [FilterOperator.BEFORE, FilterOperator.AFTER],
 	[DataType.ARRAY]: [FilterOperator.IN, FilterOperator.NOT_IN],

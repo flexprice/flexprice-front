@@ -58,6 +58,7 @@ export interface FeatureFilter {
 	lookup_key?: string;
 	lookup_keys?: string[];
 	name_contains?: string;
+	name_not_contains?: string;
 	status?: ENTITY_STATUS;
 	start_time?: string;
 	end_time?: string;
@@ -79,6 +80,7 @@ export interface GetFeaturesPayload {
 	order?: string;
 	sort?: string;
 	name_contains?: string;
+	name_not_contains?: string;
 	start_time?: string;
 	status?: ENTITY_STATUS;
 }
