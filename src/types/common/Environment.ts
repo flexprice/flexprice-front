@@ -6,3 +6,4 @@ export enum NodeEnv {
 }
 
 export const NODE_ENV: NodeEnv = import.meta.env.VITE_ENVIRONMENT as NodeEnv;
+export const IS_PROD = NODE_ENV === NodeEnv.PROD;

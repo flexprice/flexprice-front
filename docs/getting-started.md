@@ -55,7 +55,7 @@ cp .env.example .env.local
 
 # Required environment variables
 VITE_API_URL=https://api.flexprice.io/v1
-VITE_APP_ENV=development
+VITE_ENVIRONMENT=development
 ```
 
 4. **Start Development Server**

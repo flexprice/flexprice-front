@@ -1,18 +1,17 @@
-import { NODE_ENV, NodeEnv } from '@/types';
+import { IS_PROD } from '@/types';
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Button } from '@/components/atoms';
 import { InfoIcon, XIcon } from 'lucide-react';
 
-const isProd = NODE_ENV === NodeEnv.PROD;
 const LAST_DISMISSED_VERSION = 'lastDismissedVersion';
 
 export default function useVersionCheck(intervalMs = 5 * 60 * 1000) {
 	const currentVersion = __APP_VERSION__;
 
 	useEffect(() => {
-		if (!isProd) {
-			console.log(`[VersionCheck] Skipped in dev mode mode mode is ${NODE_ENV}`);
+		if (!IS_PROD) {
+			console.log(`[VersionCheck] Skipped in dev mode mode mode is ${IS_PROD ? 'prod' : 'dev'}`);
 			return;
 		}
 

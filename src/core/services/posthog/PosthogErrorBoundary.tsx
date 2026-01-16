@@ -1,6 +1,7 @@
 // src/components/ErrorBoundary.tsx
 import React, { Component, ReactNode } from 'react';
 import posthog from 'posthog-js';
+import { IS_PROD } from '@/types';
 
 interface Props {
 	children: ReactNode;
@@ -51,7 +52,7 @@ class PosthogErrorBoundary extends Component<Props, State> {
 				: undefined,
 			framework: 'React',
 			reactVersion: (React as any).version,
-			env: import.meta.env.VITE_APP_ENVIRONMENT || 'unknown',
+			env: IS_PROD ? 'prod' : 'dev',
 		};
 
 		posthog.capture('$exception', errorPayload);

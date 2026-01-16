@@ -1,4 +1,4 @@
-import { NodeEnv } from '@/types';
+import { IS_PROD } from '@/types';
 import * as Sentry from '@sentry/react';
 import posthog from 'posthog-js';
 
@@ -8,7 +8,7 @@ import posthog from 'posthog-js';
  */
 export class ErrorLoggingService {
 	private static instance: ErrorLoggingService;
-	private isProd = import.meta.env.VITE_APP_ENVIRONMENT === NodeEnv.PROD;
+	private isProd = IS_PROD;
 
 	private constructor() {
 		// Private constructor for singleton pattern

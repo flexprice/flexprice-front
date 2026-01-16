@@ -3,11 +3,13 @@ import React, { ReactNode } from 'react';
 import { PostHogProvider } from 'posthog-js/react';
 import posthog from 'posthog-js';
 import PosthogErrorBoundary from './PosthogErrorBoundary';
+import { IS_PROD } from '@/types';
+
 interface Props {
 	children: ReactNode;
 }
 
-const isProd = import.meta.env.VITE_APP_ENVIRONMENT === 'prod';
+const isProd = IS_PROD;
 
 if (isProd) {
 	posthog.init(import.meta.env.VITE_APP_PUBLIC_POSTHOG_KEY!, {

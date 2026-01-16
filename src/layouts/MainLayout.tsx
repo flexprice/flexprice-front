@@ -7,14 +7,14 @@ import useUser from '@/hooks/useUser';
 import posthog from 'posthog-js';
 import { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
+import { IS_PROD } from '@/types';
 
-const isProd = import.meta.env.VITE_APP_ENVIRONMENT === 'prod';
 const MainLayout: React.FC = () => {
 	const { user } = useUser();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!user || !isProd) return;
+		if (!user || !IS_PROD) return;
 
 		posthog.identify(user.email, {
 			id: user.id,
@@ -40,7 +40,7 @@ const MainLayout: React.FC = () => {
 	}, [user, navigate]);
 
 	useEffect(() => {
-		if (!user && isProd) {
+		if (!user && IS_PROD) {
 			Sentry.setUser(null);
 			posthog.reset();
 		}
