@@ -9,6 +9,7 @@ export { default as CreditGrantApi } from './CreditGrantApi';
 export { default as CreditNoteApi } from './CreditNoteApi';
 export { default as CustomerApi } from './CustomerApi';
 export { default as CustomerPortalApi } from './CustomerPortalApi';
+export { default as DashboardApi } from './DashboardApi';
 export { default as EntityIntegrationMappingApi } from './EntityIntegrationMappingApi';
 export { default as EntitlementApi } from './EntitlementApi';
 export { default as EnvironmentApi } from './EnvironmentApi';

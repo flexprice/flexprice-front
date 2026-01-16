@@ -1,56 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import SubscriptionApi from '@/api/SubscriptionApi';
-import InvoiceApi from '@/api/InvoiceApi';
-import CostSheetApi from '@/api/CostSheetApi';
+import DashboardApi from '@/api/DashboardApi';
 import EnvironmentApi from '@/api/EnvironmentApi';
-import { PAYMENT_STATUS } from '@/constants/payment';
-import { SortDirection, FilterOperator, DataType } from '@/types/common/QueryBuilder';
+import { WindowSize } from '@/models';
+
+// Default values matching backend
+const DEFAULT_WINDOW_SIZE = WindowSize.MONTH;
+const DEFAULT_WINDOW_COUNT = 3;
 
 export const useRecentSubscriptions = () => {
-	const last24Hours = useMemo(() => {
-		const endDate = new Date();
-		const startDate = new Date(endDate.getTime() - 24 * 60 * 60 * 1000);
-		return { start: startDate.toISOString(), end: endDate.toISOString() };
-	}, []);
-
 	const environmentId = EnvironmentApi.getActiveEnvironmentId();
 
 	const {
-		data: recentSubscriptions,
+		data: dashboardData,
 		isLoading: subscriptionsLoading,
 		error: subscriptionsError,
 	} = useQuery({
-		queryKey: ['subscriptions', 'recent', environmentId, last24Hours],
+		queryKey: ['dashboard', 'revenues', environmentId],
 		queryFn: async () => {
-			return await SubscriptionApi.searchSubscriptions({
-				limit: 100,
-				offset: 0,
-				expand: 'plan',
-				filters: [
-					{
-						field: 'created_at',
-						operator: FilterOperator.GREATER_THAN,
-						data_type: DataType.DATE,
-						value: {
-							date: last24Hours.start,
-						},
-					},
-					{
-						field: 'created_at',
-						operator: FilterOperator.LESS_THAN,
-						data_type: DataType.DATE,
-						value: {
-							date: last24Hours.end,
-						},
-					},
-				],
-				sort: [
-					{
-						field: 'created_at',
-						direction: SortDirection.DESC,
-					},
-				],
+			return await DashboardApi.getRevenues({
+				revenue_trend: {
+					window_size: DEFAULT_WINDOW_SIZE,
+					window_count: DEFAULT_WINDOW_COUNT,
+				},
 			});
 		},
 		staleTime: 0, // No caching
@@ -61,25 +33,16 @@ export const useRecentSubscriptions = () => {
 	});
 
 	const subscriptionsByPlan = useMemo(() => {
-		if (!recentSubscriptions?.items) return [];
-		const planMap = new Map<string, { count: number; plan_name: string; plan_id: string }>();
-
-		recentSubscriptions.items.forEach((sub) => {
-			const planId = sub.plan_id || 'Unknown';
-			const planName = sub.plan?.name || sub.plan_id || 'Unknown Plan';
-			const existing = planMap.get(planId);
-			if (existing) {
-				existing.count++;
-			} else {
-				planMap.set(planId, { count: 1, plan_name: planName, plan_id: planId });
-			}
-		});
-
-		return Array.from(planMap.values());
-	}, [recentSubscriptions]);
+		if (!dashboardData?.recent_subscriptions?.plans) return [];
+		return dashboardData.recent_subscriptions.plans.map((sub) => ({
+			count: sub.count,
+			plan_name: sub.plan_name,
+			plan_id: sub.plan_id,
+		}));
+	}, [dashboardData]);
 
 	return {
-		subscriptionsCount: recentSubscriptions?.items?.length || 0,
+		subscriptionsCount: dashboardData?.recent_subscriptions?.total_count || 0,
 		subscriptionsByPlan,
 		isLoading: subscriptionsLoading,
 		error: subscriptionsError,
@@ -87,54 +50,21 @@ export const useRecentSubscriptions = () => {
 };
 
 export const useRevenueData = () => {
-	const monthRanges = useMemo(() => {
-		const ranges = [];
-		const now = new Date();
-
-		for (let i = 2; i >= 0; i--) {
-			const endDate = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
-			const startDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-			ranges.push({
-				start: startDate.toISOString(),
-				end: endDate.toISOString(),
-				label: startDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-			});
-		}
-
-		return ranges.reverse();
-	}, []);
-
 	const environmentId = EnvironmentApi.getActiveEnvironmentId();
 
 	const {
-		data: revenueData,
+		data: dashboardData,
 		isLoading: revenueLoading,
 		error: revenueError,
 	} = useQuery({
-		queryKey: ['revenue', 'monthly', environmentId, monthRanges],
+		queryKey: ['dashboard', 'revenues', environmentId],
 		queryFn: async () => {
-			const results = await Promise.all(
-				monthRanges.map(async (range) => {
-					try {
-						const data = await CostSheetApi.GetCostAnalytics({
-							start_time: range.start,
-							end_time: range.end,
-						});
-						return {
-							month: range.label,
-							revenue: parseFloat(data.total_revenue || '0'),
-							currency: data.currency,
-						};
-					} catch (error) {
-						return {
-							month: range.label,
-							revenue: 0,
-							currency: 'USD',
-						};
-					}
-				}),
-			);
-			return results;
+			return await DashboardApi.getRevenues({
+				revenue_trend: {
+					window_size: DEFAULT_WINDOW_SIZE,
+					window_count: DEFAULT_WINDOW_COUNT,
+				},
+			});
 		},
 		staleTime: 0, // No caching
 		gcTime: 0, // No garbage collection time
@@ -143,8 +73,29 @@ export const useRevenueData = () => {
 		enabled: !!environmentId, // Only run if environment ID exists
 	});
 
+	const revenueData = useMemo(() => {
+		if (!dashboardData?.revenue_trend?.currency_revenue_windows) return [];
+
+		// Flatten currency_revenue_windows into an array with currency info
+		const allRevenueData: Array<{ month: string; revenue: number; currency: string }> = [];
+
+		Object.entries(dashboardData.revenue_trend.currency_revenue_windows).forEach(([currency, currencyData]) => {
+			if (currencyData && currencyData.windows) {
+				currencyData.windows.forEach((window) => {
+					allRevenueData.push({
+						month: window.window_label,
+						revenue: parseFloat(window.total_revenue || '0'),
+						currency: currency.toUpperCase(), // Convert lowercase currency code to uppercase (e.g., "usd" -> "USD")
+					});
+				});
+			}
+		});
+
+		return allRevenueData;
+	}, [dashboardData]);
+
 	return {
-		revenueData: revenueData || [],
+		revenueData,
 		isLoading: revenueLoading,
 		error: revenueError,
 	};
@@ -154,15 +105,17 @@ export const useInvoiceIssues = () => {
 	const environmentId = EnvironmentApi.getActiveEnvironmentId();
 
 	const {
-		data: allInvoices,
-		isLoading: invoicesLoading,
-		error: invoicesError,
+		data: dashboardData,
+		isLoading: invoiceIssuesLoading,
+		error: invoiceErrors,
 	} = useQuery({
-		queryKey: ['invoices', 'all-statuses', environmentId],
+		queryKey: ['dashboard', 'revenues', environmentId],
 		queryFn: async () => {
-			return await InvoiceApi.getAllInvoices({
-				limit: 500, // Increased limit to get more invoices
-				start_time: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString(),
+			return await DashboardApi.getRevenues({
+				revenue_trend: {
+					window_size: DEFAULT_WINDOW_SIZE,
+					window_count: DEFAULT_WINDOW_COUNT,
+				},
 			});
 		},
 		staleTime: 0, // No caching
@@ -172,27 +125,10 @@ export const useInvoiceIssues = () => {
 		enabled: !!environmentId, // Only run if environment ID exists
 	});
 
-	const {
-		data: pastDueSubscriptions,
-		isLoading: pastDueLoading,
-		error: pastDueError,
-	} = useQuery({
-		queryKey: ['subscriptions', 'past-due', environmentId],
-		queryFn: async () => {
-			return await SubscriptionApi.listSubscriptions({
-				limit: 100,
-			});
-		},
-		staleTime: 0, // No caching
-		gcTime: 0, // No garbage collection time
-		refetchOnWindowFocus: true,
-		refetchOnMount: true,
-		enabled: !!environmentId, // Only run if environment ID exists
-	});
-
-	// Categorize invoices by payment status
+	// Transform invoice payment status counts to match component expectations
 	const invoicesByStatus = useMemo(() => {
-		if (!allInvoices?.items) {
+		const invoiceStatus = dashboardData?.invoice_payment_status;
+		if (!invoiceStatus) {
 			return {
 				paid: [],
 				failed: [],
@@ -203,26 +139,28 @@ export const useInvoiceIssues = () => {
 			};
 		}
 
-		const invoices = allInvoices.items;
-		const categorized = {
-			paid: invoices.filter((inv) => inv.payment_status === PAYMENT_STATUS.SUCCEEDED),
-			failed: invoices.filter((inv) => inv.payment_status === PAYMENT_STATUS.FAILED),
-			pending: invoices.filter((inv) => inv.payment_status === PAYMENT_STATUS.PENDING || inv.payment_status === PAYMENT_STATUS.INITIATED),
-			processing: invoices.filter((inv) => inv.payment_status === PAYMENT_STATUS.PROCESSING),
-			refunded: invoices.filter(
-				(inv) => inv.payment_status === PAYMENT_STATUS.REFUNDED || inv.payment_status === PAYMENT_STATUS.PARTIALLY_REFUNDED,
-			),
-			total: invoices.length,
+		// Create arrays with placeholder invoice objects for each count
+		// The component only uses the length, so we create empty objects
+		return {
+			paid: Array(invoiceStatus.paid || 0).fill({}),
+			failed: Array(invoiceStatus.failed || 0).fill({}),
+			pending: Array(invoiceStatus.pending || 0).fill({}),
+			processing: Array(invoiceStatus.processing || 0).fill({}),
+			refunded: Array(invoiceStatus.refunded || 0).fill({}),
+			total:
+				(invoiceStatus.paid || 0) +
+				(invoiceStatus.failed || 0) +
+				(invoiceStatus.pending || 0) +
+				(invoiceStatus.processing || 0) +
+				(invoiceStatus.refunded || 0),
 		};
-
-		return categorized;
-	}, [allInvoices]);
+	}, [dashboardData]);
 
 	return {
 		invoicesByStatus,
-		pastDueSubscriptions: pastDueSubscriptions?.items || [],
-		isLoading: invoicesLoading || pastDueLoading,
-		errors: [invoicesError, pastDueError].filter(Boolean),
+		pastDueSubscriptions: [], // Not provided by new API
+		isLoading: invoiceIssuesLoading,
+		errors: invoiceErrors ? [invoiceErrors] : [],
 		// Legacy support - keeping these for backward compatibility
 		failedPaymentInvoices: invoicesByStatus.failed,
 	};
