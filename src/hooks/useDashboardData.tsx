@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import DashboardApi from '@/api/DashboardApi';
+import DashboardApi, { DashboardRevenuesResponse } from '@/api/DashboardApi';
 import EnvironmentApi from '@/api/EnvironmentApi';
 import { WindowSize } from '@/models';
 
@@ -8,14 +8,18 @@ import { WindowSize } from '@/models';
 const DEFAULT_WINDOW_SIZE = WindowSize.MONTH;
 const DEFAULT_WINDOW_COUNT = 3;
 
-export const useRecentSubscriptions = () => {
+/**
+ * Shared base hook for fetching dashboard revenues data
+ * This hook is used by all dashboard-related hooks to avoid duplicate API calls
+ */
+const useDashboardRevenues = () => {
 	const environmentId = EnvironmentApi.getActiveEnvironmentId();
 
 	const {
 		data: dashboardData,
-		isLoading: subscriptionsLoading,
-		error: subscriptionsError,
-	} = useQuery({
+		isLoading,
+		error,
+	} = useQuery<DashboardRevenuesResponse>({
 		queryKey: ['dashboard', 'revenues', environmentId],
 		queryFn: async () => {
 			return await DashboardApi.getRevenues({
@@ -25,12 +29,14 @@ export const useRecentSubscriptions = () => {
 				},
 			});
 		},
-		staleTime: 0, // No caching
-		gcTime: 0, // No garbage collection time
-		refetchOnWindowFocus: true,
-		refetchOnMount: true,
 		enabled: !!environmentId, // Only run if environment ID exists
 	});
+
+	return { dashboardData, isLoading, error };
+};
+
+export const useRecentSubscriptions = () => {
+	const { dashboardData, isLoading, error } = useDashboardRevenues();
 
 	const subscriptionsByPlan = useMemo(() => {
 		if (!dashboardData?.recent_subscriptions?.plans) return [];
@@ -42,36 +48,15 @@ export const useRecentSubscriptions = () => {
 	}, [dashboardData]);
 
 	return {
-		subscriptionsCount: dashboardData?.recent_subscriptions?.total_count || 0,
+		subscriptionsCount: dashboardData?.recent_subscriptions?.total_count ?? 0,
 		subscriptionsByPlan,
-		isLoading: subscriptionsLoading,
-		error: subscriptionsError,
+		isLoading,
+		error,
 	};
 };
 
 export const useRevenueData = () => {
-	const environmentId = EnvironmentApi.getActiveEnvironmentId();
-
-	const {
-		data: dashboardData,
-		isLoading: revenueLoading,
-		error: revenueError,
-	} = useQuery({
-		queryKey: ['dashboard', 'revenues', environmentId],
-		queryFn: async () => {
-			return await DashboardApi.getRevenues({
-				revenue_trend: {
-					window_size: DEFAULT_WINDOW_SIZE,
-					window_count: DEFAULT_WINDOW_COUNT,
-				},
-			});
-		},
-		staleTime: 0, // No caching
-		gcTime: 0, // No garbage collection time
-		refetchOnWindowFocus: true,
-		refetchOnMount: true,
-		enabled: !!environmentId, // Only run if environment ID exists
-	});
+	const { dashboardData, isLoading, error } = useDashboardRevenues();
 
 	const revenueData = useMemo(() => {
 		if (!dashboardData?.revenue_trend?.currency_revenue_windows) return [];
@@ -80,11 +65,11 @@ export const useRevenueData = () => {
 		const allRevenueData: Array<{ month: string; revenue: number; currency: string }> = [];
 
 		Object.entries(dashboardData.revenue_trend.currency_revenue_windows).forEach(([currency, currencyData]) => {
-			if (currencyData && currencyData.windows) {
+			if (currencyData?.windows) {
 				currencyData.windows.forEach((window) => {
 					allRevenueData.push({
 						month: window.window_label,
-						revenue: parseFloat(window.total_revenue || '0'),
+						revenue: parseFloat(window.total_revenue ?? '0'),
 						currency: currency.toUpperCase(), // Convert lowercase currency code to uppercase (e.g., "usd" -> "USD")
 					});
 				});
@@ -96,34 +81,13 @@ export const useRevenueData = () => {
 
 	return {
 		revenueData,
-		isLoading: revenueLoading,
-		error: revenueError,
+		isLoading,
+		error,
 	};
 };
 
 export const useInvoiceIssues = () => {
-	const environmentId = EnvironmentApi.getActiveEnvironmentId();
-
-	const {
-		data: dashboardData,
-		isLoading: invoiceIssuesLoading,
-		error: invoiceErrors,
-	} = useQuery({
-		queryKey: ['dashboard', 'revenues', environmentId],
-		queryFn: async () => {
-			return await DashboardApi.getRevenues({
-				revenue_trend: {
-					window_size: DEFAULT_WINDOW_SIZE,
-					window_count: DEFAULT_WINDOW_COUNT,
-				},
-			});
-		},
-		staleTime: 0, // No caching
-		gcTime: 0, // No garbage collection time
-		refetchOnWindowFocus: true,
-		refetchOnMount: true,
-		enabled: !!environmentId, // Only run if environment ID exists
-	});
+	const { dashboardData, isLoading, error } = useDashboardRevenues();
 
 	// Transform invoice payment status counts to match component expectations
 	const invoicesByStatus = useMemo(() => {
@@ -141,26 +105,27 @@ export const useInvoiceIssues = () => {
 
 		// Create arrays with placeholder invoice objects for each count
 		// The component only uses the length, so we create empty objects
+		const paid = invoiceStatus.paid ?? 0;
+		const failed = invoiceStatus.failed ?? 0;
+		const pending = invoiceStatus.pending ?? 0;
+		const processing = invoiceStatus.processing ?? 0;
+		const refunded = invoiceStatus.refunded ?? 0;
+
 		return {
-			paid: Array(invoiceStatus.paid || 0).fill({}),
-			failed: Array(invoiceStatus.failed || 0).fill({}),
-			pending: Array(invoiceStatus.pending || 0).fill({}),
-			processing: Array(invoiceStatus.processing || 0).fill({}),
-			refunded: Array(invoiceStatus.refunded || 0).fill({}),
-			total:
-				(invoiceStatus.paid || 0) +
-				(invoiceStatus.failed || 0) +
-				(invoiceStatus.pending || 0) +
-				(invoiceStatus.processing || 0) +
-				(invoiceStatus.refunded || 0),
+			paid: Array(paid).fill({}),
+			failed: Array(failed).fill({}),
+			pending: Array(pending).fill({}),
+			processing: Array(processing).fill({}),
+			refunded: Array(refunded).fill({}),
+			total: paid + failed + pending + processing + refunded,
 		};
 	}, [dashboardData]);
 
 	return {
 		invoicesByStatus,
 		pastDueSubscriptions: [], // Not provided by new API
-		isLoading: invoiceIssuesLoading,
-		errors: invoiceErrors ? [invoiceErrors] : [],
+		isLoading,
+		errors: error ? [error] : [],
 		// Legacy support - keeping these for backward compatibility
 		failedPaymentInvoices: invoicesByStatus.failed,
 	};

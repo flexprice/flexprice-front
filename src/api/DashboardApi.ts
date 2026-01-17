@@ -1,9 +1,13 @@
 import { AxiosClient } from '@/core/axios/verbs';
 import { WindowSize } from '@/models';
 
+// Default values matching backend
+const DEFAULT_WINDOW_SIZE = WindowSize.MONTH;
+const DEFAULT_WINDOW_COUNT = 3;
+
 export interface DashboardRevenuesRequest {
 	revenue_trend?: {
-		window_size?: WindowSize | string;
+		window_size?: WindowSize;
 		window_count?: number;
 	};
 }
@@ -23,7 +27,7 @@ export interface CurrencyRevenueWindows {
 
 export interface RevenueTrendResponse {
 	currency_revenue_windows: CurrencyRevenueWindows;
-	window_size?: string;
+	window_size?: WindowSize;
 	window_count?: number;
 	period_start?: string;
 	period_end?: string;
@@ -70,12 +74,12 @@ class DashboardApi {
 		// Transform nested request format to flat format if needed
 		const requestPayload = payload?.revenue_trend
 			? {
-					window_size: payload.revenue_trend.window_size || 'MONTH',
-					window_count: payload.revenue_trend.window_count || 3,
+					window_size: payload.revenue_trend.window_size ?? DEFAULT_WINDOW_SIZE,
+					window_count: payload.revenue_trend.window_count ?? DEFAULT_WINDOW_COUNT,
 				}
 			: {
-					window_size: 'MONTH',
-					window_count: 3,
+					window_size: DEFAULT_WINDOW_SIZE,
+					window_count: DEFAULT_WINDOW_COUNT,
 				};
 		return await AxiosClient.post<DashboardRevenuesResponse>(`${this.baseUrl}/revenues`, requestPayload);
 	}
