@@ -37,7 +37,7 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 				) : (
 					<>
 						<div className='mb-8'>
-							<p className='text-4xl font-bold text-zinc-900'>{subscriptionsCount}</p>
+							<p className='text-4xl font-medium text-zinc-900'>{subscriptionsCount}</p>
 							<p className={getTypographyClass('body-small', 'text-zinc-600 mt-2')}>New subscriptions</p>
 						</div>
 						{subscriptionsByPlan.length > 0 ? (

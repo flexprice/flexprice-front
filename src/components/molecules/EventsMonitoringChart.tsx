@@ -140,7 +140,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({
 												}}>
 												<div
 													style={{
-														fontWeight: 600,
+														fontWeight: 500,
 														color: '#374151',
 														fontSize: '13px',
 														letterSpacing: '0.025em',
@@ -174,7 +174,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({
 														display: 'inline-block',
 													}}></span>
 												<span style={{ color: '#4b5563', fontSize: '11px' }}>Event Count</span>
-												<span style={{ fontWeight: 600, color: '#111827', marginLeft: 'auto' }}>{data.event_count.toLocaleString()}</span>
+												<span style={{ fontWeight: 500, color: '#111827', marginLeft: 'auto' }}>{data.event_count.toLocaleString()}</span>
 											</div>
 										</div>
 									);

@@ -48,7 +48,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 									<CheckCircle className='w-5 h-5 text-green-600' />
 									<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>Paid</p>
 								</div>
-								<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.paid?.length || 0}</span>
+								<span className='text-2xl font-medium text-zinc-900'>{invoicesByStatus?.paid?.length || 0}</span>
 							</div>
 						</div>
 
@@ -59,7 +59,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 									<Clock className='w-5 h-5 text-yellow-600' />
 									<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>Pending</p>
 								</div>
-								<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.pending?.length || 0}</span>
+								<span className='text-2xl font-medium text-zinc-900'>{invoicesByStatus?.pending?.length || 0}</span>
 							</div>
 						</div>
 
@@ -70,7 +70,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 									<AlertCircle className='w-5 h-5 text-red-600' />
 									<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>Failed</p>
 								</div>
-								<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.failed?.length || 0}</span>
+								<span className='text-2xl font-medium text-zinc-900'>{invoicesByStatus?.failed?.length || 0}</span>
 							</div>
 						</div>
 
@@ -82,7 +82,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 										<RefreshCw className='w-5 h-5 text-blue-600' />
 										<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>Processing</p>
 									</div>
-									<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.processing?.length || 0}</span>
+									<span className='text-2xl font-medium text-zinc-900'>{invoicesByStatus?.processing?.length || 0}</span>
 								</div>
 							</div>
 						)}
