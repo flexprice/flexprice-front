@@ -673,7 +673,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 							</Button>
 						</div>
 						<Button onClick={handleRegularSubmit} isLoading={isCreating && !isDraft} disabled={isCreating}>
-							Add Subscription
+							Add
 						</Button>
 					</div>
 				)}

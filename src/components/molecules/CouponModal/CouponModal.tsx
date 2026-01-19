@@ -89,7 +89,7 @@ const CouponModal: React.FC<Props> = ({ isOpen, onOpenChange, onSave, onCancel, 
 				<Button variant='outline' onClick={handleCancel}>
 					Cancel
 				</Button>
-				<Button onClick={handleSave}>Add Coupon</Button>
+				<Button onClick={handleSave}>Add</Button>
 			</div>
 		</Dialog>
 	);

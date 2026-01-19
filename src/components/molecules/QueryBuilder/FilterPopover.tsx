@@ -134,7 +134,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
 						className={cn(inputProps.className, 'h-9 text-sm')}
 						placeholder={commonProps.placeholder}
-						contentClassName='!z-[110]'
+						contentClassName='!z-[130]'
 					/>
 				),
 				[FilterFieldType.CHECKBOX]: (
@@ -162,7 +162,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						isRadio
 						className={cn(inputProps.className, 'h-9 text-sm')}
 						placeholder={commonProps.placeholder}
-						contentClassName='!z-[110]'
+						contentClassName='!z-[130]'
 					/>
 				),
 				[FilterFieldType.COMBOBOX]: (
@@ -173,7 +173,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						width='100%'
 						triggerClassName={cn(inputProps.className, 'h-9 text-sm')}
 						placeholder={commonProps.placeholder}
-						contentClassName='!z-[110]'
+						contentClassName='!z-[130]'
 					/>
 				),
 				[FilterFieldType.SWITCH]: (
@@ -271,8 +271,8 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 			</PopoverTrigger>
 			<PopoverContent
 				align='start'
-				className={cn('w-screen border-border/70 shadow-lg bg-[#fbfbfb]', POPOVER_PADDING)}
-				style={{ maxWidth: '600px', minWidth: MIN_POPOVER_WIDTH }}>
+				className={cn('max-w-[calc(100vw-400px)] w-fit border-border/70 shadow-lg bg-[#fbfbfb]', POPOVER_PADDING)}
+				style={{ minWidth: MIN_POPOVER_WIDTH }}>
 				<div className='flex flex-col gap-1.5'>
 					{value.length === 0 ? (
 						<div className='flex flex-col gap-2 p-2'>
@@ -325,7 +325,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 														width='100%'
 														triggerClassName='h-9 text-sm overflow-hidden'
 														searchPlaceholder='Search fields...'
-														contentClassName='!z-[110]'
+														contentClassName='!z-[130]'
 													/>
 
 													<Select
@@ -342,7 +342,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 														onChange={(value) => handleFilterUpdate(filter.id, { operator: value as FilterOperator })}
 														placeholder='Select operator'
 														className='h-9 text-sm'
-														contentClassName='!z-[110]'
+														contentClassName='!z-[130]'
 													/>
 
 													<div className='min-w-0'>{renderValueInput(filter)}</div>

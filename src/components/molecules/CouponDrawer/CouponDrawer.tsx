@@ -292,7 +292,7 @@ const CouponDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQue
 				isLoading={isPending}
 				disabled={isPending || !formData.name?.trim() || !formData.type || !formData.cadence}
 				onClick={handleSave}>
-				{isEdit ? 'Save' : 'Create Coupon'}
+				{isEdit ? 'Save' : 'Create'}
 			</Button>
 		</Sheet>
 	);

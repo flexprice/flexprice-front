@@ -156,7 +156,7 @@ const FilterAsyncMultiSelect = <T = any,>({
 					)}
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent align='start' className='w-48 p-0 !z-[110]'>
+			<PopoverContent align='start' className='w-48 p-0 !z-[130]'>
 				<Command shouldFilter={false}>
 					<CommandInput placeholder={searchPlaceholder} value={searchQuery} onValueChange={setSearchQuery} className='h-9' />
 					<CommandList className='max-h-[300px]'>

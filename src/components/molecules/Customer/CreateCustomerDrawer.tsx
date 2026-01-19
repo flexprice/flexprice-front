@@ -374,7 +374,7 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 
 					<Spacer className='!h-4' />
 					<Button isLoading={isPending} disabled={isPending || isCtaDisabled} onClick={handleSubmit}>
-						{isPending ? 'Saving...' : 'Save Customer'}
+						{isPending ? 'Saving...' : 'Save'}
 					</Button>
 				</div>
 			</Sheet>

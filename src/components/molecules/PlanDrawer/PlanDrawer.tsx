@@ -209,7 +209,7 @@ const PlanDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQuery
 
 			<Spacer height={'20px'} />
 			<Button isLoading={isPending} disabled={isPending || !formData.name?.trim() || !formData.lookup_key?.trim()} onClick={handleSave}>
-				{isEdit ? 'Save' : 'Create Plan'}
+				{isEdit ? 'Save' : 'Create'}
 			</Button>
 		</Sheet>
 	);

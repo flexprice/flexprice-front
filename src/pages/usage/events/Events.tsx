@@ -64,23 +64,13 @@ const convertFiltersToEventParams = (filters: TypedBackendFilter[]): Partial<Get
 
 const sortingOptions: SortOption[] = [
 	{
-		field: 'name',
-		label: 'Name',
-		direction: SortDirection.ASC,
-	},
-	{
-		field: 'email',
-		label: 'Email',
-		direction: SortDirection.ASC,
-	},
-	{
-		field: 'created_at',
-		label: 'Created At',
+		field: 'start_time',
+		label: 'Start Time',
 		direction: SortDirection.DESC,
 	},
 	{
-		field: 'updated_at',
-		label: 'Updated At',
+		field: 'end_time',
+		label: 'End Time',
 		direction: SortDirection.DESC,
 	},
 ];
@@ -182,8 +172,8 @@ const EventsPage: React.FC = () => {
 		initialFilters: initialFilters,
 		initialSorts: [
 			{
-				field: 'updated_at',
-				label: 'Updated At',
+				field: 'start_time',
+				label: 'Start Time',
 				direction: SortDirection.DESC,
 			},
 		],
@@ -264,7 +254,7 @@ const EventsPage: React.FC = () => {
 	return (
 		<Page heading='Events'>
 			<ApiDocsContent tags={['Events']} />
-			<div className='bg-white rounded-md flex items-start gap-4'>
+			<div className='bg-white rounded-md flex items-start gap-4 relative'>
 				<QueryBuilder
 					filterOptions={filterOptions}
 					filters={filters}

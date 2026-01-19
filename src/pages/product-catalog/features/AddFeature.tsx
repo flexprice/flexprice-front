@@ -153,6 +153,10 @@ const FEATURE_SCHEMA = z.object({
 // Types
 interface FeatureFormState {
 	showDescription: boolean;
+	showLookupKey: boolean;
+	showUnitName: boolean;
+	showEventFilters: boolean;
+	showBucketSize: boolean;
 }
 
 type FeatureFormData = Omit<CreateFeatureRequest, 'name' | 'type' | 'meter'> & {
@@ -170,6 +174,10 @@ const useFeatureForm = () => {
 	const [errors, setErrors] = useState<FeatureErrors>({});
 	const [formState, setFormState] = useState<FeatureFormState>({
 		showDescription: false,
+		showLookupKey: false,
+		showUnitName: false,
+		showEventFilters: false,
+		showBucketSize: false,
 	});
 
 	const updateFeatureData = useCallback((updates: Partial<FeatureFormData>) => {
@@ -323,13 +331,17 @@ const FeatureDetailsSection = ({
 
 			<Spacer height='16px' />
 
-			<Input
-				label='Lookup Key'
-				placeholder='Enter a unique lookup key (optional)'
-				value={data.lookup_key || ''}
-				error={errors.lookup_key}
-				onChange={(lookup_key) => onUpdateFeature({ lookup_key })}
-			/>
+			{!formState.showLookupKey ? (
+				<AddChargesButton label='Add Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
+			) : (
+				<Input
+					label='Lookup Key'
+					placeholder='Enter a unique lookup key (optional)'
+					value={data.lookup_key || ''}
+					error={errors.lookup_key}
+					onChange={(lookup_key) => onUpdateFeature({ lookup_key })}
+				/>
+			)}
 
 			<Spacer height='16px' />
 
@@ -346,15 +358,21 @@ const FeatureDetailsSection = ({
 			{isMeteredType && (
 				<>
 					<Spacer height='16px' />
-					<FormHeader variant='form-component-title' title='Unit Name' />
-					<div className='gap-4 grid grid-cols-2'>
-						<Input placeholder='singular' value={data.unit_singular || ''} onChange={handleUnitSingularChange} />
-						<Input placeholder='plural' value={data.unit_plural || ''} onChange={(unit_plural) => onUpdateFeature({ unit_plural })} />
-					</div>
-					<FormHeader
-						variant='form-component-title'
-						subtitle='If the unit name changes when the value is plural, please provide the names of the units'
-					/>
+					{!formState.showUnitName ? (
+						<AddChargesButton label='Add unit name' onClick={() => onUpdateFormState({ showUnitName: true })} />
+					) : (
+						<>
+							<FormHeader variant='form-component-title' title='Unit Name' />
+							<div className='gap-4 grid grid-cols-2'>
+								<Input placeholder='singular' value={data.unit_singular || ''} onChange={handleUnitSingularChange} />
+								<Input placeholder='plural' value={data.unit_plural || ''} onChange={(unit_plural) => onUpdateFeature({ unit_plural })} />
+							</div>
+							<FormHeader
+								variant='form-component-title'
+								subtitle='If the unit name changes when the value is plural, please provide the names of the units'
+							/>
+						</>
+					)}
 				</>
 			)}
 
@@ -380,11 +398,15 @@ const FeatureDetailsSection = ({
 const EventDetailsSection = ({
 	meter,
 	meterErrors,
+	formState,
 	onUpdateFeature,
+	onUpdateFormState,
 }: {
 	meter: Partial<CreateMeterRequest> | undefined;
 	meterErrors: MeterErrors;
+	formState: FeatureFormState;
 	onUpdateFeature: (updates: Partial<FeatureFormData>) => void;
+	onUpdateFormState: (updates: Partial<FeatureFormState>) => void;
 }) => {
 	const handleEventNameChange = useCallback(
 		(event_name: string) => {
@@ -423,15 +445,21 @@ const EventDetailsSection = ({
 			/>
 			<Spacer height='20px' />
 
-			<FormHeader
-				title='Event Filters'
-				subtitle='Filter events based on specific properties e.g., region, user type or custom attributes to refine tracking.'
-				variant='form-component-title'
-			/>
+			{!formState.showEventFilters ? (
+				<AddChargesButton label='Add event filters' onClick={() => onUpdateFormState({ showEventFilters: true })} />
+			) : (
+				<>
+					<FormHeader
+						title='Event Filters'
+						subtitle='Filter events based on specific properties e.g., region, user type or custom attributes to refine tracking.'
+						variant='form-component-title'
+					/>
 
-			<div>
-				<EventFilter eventFilters={meter?.filters || []} setEventFilters={handleFiltersChange} error={meterErrors.filters} />
-			</div>
+					<div>
+						<EventFilter eventFilters={meter?.filters || []} setEventFilters={handleFiltersChange} error={meterErrors.filters} />
+					</div>
+				</>
+			)}
 		</Card>
 	);
 };
@@ -440,11 +468,15 @@ const EventDetailsSection = ({
 const AggregationSection = ({
 	meter,
 	meterErrors,
+	formState,
 	onUpdateFeature,
+	onUpdateFormState,
 }: {
 	meter: Partial<CreateMeterRequest> | undefined;
 	meterErrors: MeterErrors;
+	formState: FeatureFormState;
 	onUpdateFeature: (updates: Partial<FeatureFormData>) => void;
+	onUpdateFormState: (updates: Partial<FeatureFormState>) => void;
 }) => {
 	const handleAggregationTypeChange = useCallback(
 		(type: string) => {
@@ -527,8 +559,6 @@ const AggregationSection = ({
 
 	const showFieldInput = meter?.aggregation?.type !== METER_AGGREGATION_TYPE.COUNT;
 	const showMultiplierInput = meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM_WITH_MULTIPLIER;
-	const showWindowSizeInput =
-		meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX || meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM;
 
 	return (
 		<div className='card'>
@@ -567,7 +597,9 @@ const AggregationSection = ({
 					/>
 				)}
 
-				{showWindowSizeInput && (
+				{!formState.showBucketSize ? (
+					<AddChargesButton label='Add bucket size' onClick={() => onUpdateFormState({ showBucketSize: true })} />
+				) : (
 					<Select
 						options={BUCKET_SIZE_OPTIONS}
 						onChange={handleWindowSizeChange}
@@ -733,11 +765,23 @@ const AddFeaturePage = () => {
 
 					{isMeteredType && (
 						<div className='w-full'>
-							<EventDetailsSection meter={data.meter} meterErrors={meterErrors} onUpdateFeature={updateFeatureData} />
+							<EventDetailsSection
+								meter={data.meter}
+								meterErrors={meterErrors}
+								formState={formState}
+								onUpdateFeature={updateFeatureData}
+								onUpdateFormState={updateFormState}
+							/>
 
 							<Spacer height='26px' />
 
-							<AggregationSection meter={data.meter} meterErrors={meterErrors} onUpdateFeature={updateFeatureData} />
+							<AggregationSection
+								meter={data.meter}
+								meterErrors={meterErrors}
+								formState={formState}
+								onUpdateFeature={updateFeatureData}
+								onUpdateFormState={updateFormState}
+							/>
 
 							<Spacer height='26px' />
 						</div>
@@ -745,7 +789,7 @@ const AddFeaturePage = () => {
 
 					<div>
 						<Button isLoading={isPending} disabled={isCtaDisabled} onClick={handleSubmit}>
-							{isPending ? 'Creating Feature...' : 'Save Feature'}
+							{isPending ? 'Creating Feature...' : 'Save'}
 						</Button>
 					</div>
 					<Spacer height='16px' />
