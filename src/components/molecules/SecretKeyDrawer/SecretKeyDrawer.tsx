@@ -315,7 +315,7 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 			</Sheet>
 
 			<Modal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
-				<div className='space-y-4 bg-white card p-5 max-w-md mx-auto'>
+				<div className='space-y-4 bg-white card p-5 max-w-2xl mx-auto'>
 					<h1 className='text-xl font-semibold mb-4'>View API Key</h1>
 
 					<div className='bg-amber-50 border border-amber-200 rounded-md p-3 flex items-start gap-2'>
@@ -325,13 +325,18 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 
 					<div className='mt-4'>
 						<label className='block text-sm font-medium mb-1'>API Key</label>
-						<div className='relative bg-gray-100 rounded-md'>
-							<Input
+						<div className='relative bg-gray-100 rounded-md w-full overflow-x-auto'>
+							<input
+								type='text'
 								value={showApiKey ? data?.api_key || '' : maskApiKey(data?.api_key || '')}
 								readOnly
-								className='pr-16 border-none text-gray-600'
+								className='bg-transparent border-none outline-none text-gray-600 pr-20 pl-3 py-2 text-sm font-mono whitespace-nowrap block'
+								style={{
+									width: 'max-content',
+									minWidth: '100%',
+								}}
 							/>
-							<div className='bg-gray-100 absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1'>
+							<div className='bg-gray-100 absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 z-10'>
 								<button onClick={toggleApiKeyVisibility} className='p-1 text-gray-700 hover:text-gray-700' type='button'>
 									{showApiKey ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
 								</button>

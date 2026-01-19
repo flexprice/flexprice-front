@@ -378,6 +378,14 @@ const FeatureDetails = () => {
 										<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.field || '--'}</span>
 									</div>
 
+									{/* Show Multiplier if present and != 1 */}
+									{data?.meter?.aggregation?.multiplier !== undefined && data?.meter?.aggregation?.multiplier !== 1 && (
+										<div className='grid grid-cols-[200px_1fr] items-center'>
+											<span className='text-gray-500 text-sm'>Multiplier</span>
+											<span className='text-gray-800 text-sm'>{data.meter.aggregation.multiplier}</span>
+										</div>
+									)}
+
 									<div className='grid grid-cols-[200px_1fr] items-center'>
 										<span className='text-gray-500 text-sm'>Unit Name</span>
 										<span className='text-gray-800 text-sm'>{`${data?.unit_singular || 'unit'} / ${data?.unit_plural || 'units'}`}</span>
@@ -386,14 +394,13 @@ const FeatureDetails = () => {
 										<span className='text-gray-500 text-sm'>Usage Reset </span>
 										<span className='text-gray-800 text-sm'>{formatMeterUsageResetPeriodToDisplay(data?.meter?.reset_usage || '--')}</span>
 									</div>
-									{(data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX ||
-										data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM) &&
-										data?.meter?.aggregation?.bucket_size && (
-											<div className='grid grid-cols-[200px_1fr] items-center'>
-												<span className='text-gray-500 text-sm'>Bucket Size</span>
-												<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.bucket_size || '--'}</span>
-											</div>
-										)}
+									{/* Show Bucket Size if present (not just for MAX/SUM) */}
+									{data?.meter?.aggregation?.bucket_size && (
+										<div className='grid grid-cols-[200px_1fr] items-center'>
+											<span className='text-gray-500 text-sm'>Bucket Size</span>
+											<span className='text-gray-800 text-sm'>{data.meter.aggregation.bucket_size}</span>
+										</div>
+									)}
 								</div>
 							</div>
 						</div>
