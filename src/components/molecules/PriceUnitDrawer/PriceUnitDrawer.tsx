@@ -270,7 +270,7 @@ const PriceUnitDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetch
 
 			<Spacer height={'20px'} />
 			<Button isLoading={isPending} disabled={isPending || !isFormValid} onClick={handleSave}>
-				{isEdit ? 'Save' : 'Create Price Unit'}
+				{isEdit ? 'Save' : 'Create'}
 			</Button>
 		</Sheet>
 	);

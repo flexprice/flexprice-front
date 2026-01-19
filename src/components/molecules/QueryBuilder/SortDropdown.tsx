@@ -98,8 +98,8 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 			</PopoverTrigger>
 			<PopoverContent
 				align='start'
-				className={cn('w-screen border-border/70 shadow-lg bg-[#fbfbfb]', 'border-border/40', POPOVER_PADDING)}
-				style={{ width: MIN_POPOVER_WIDTH }}>
+				className={cn('max-w-[calc(100vw-400px)] w-fit border-border/70 shadow-lg bg-[#fbfbfb]', 'border-border/40', POPOVER_PADDING)}
+				style={{ minWidth: MIN_POPOVER_WIDTH }}>
 				<div className='flex flex-col gap-1.5'>
 					{value.length === 0 ? (
 						<div className='flex flex-col gap-2 p-2'>
@@ -150,7 +150,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 													width='100%'
 													triggerClassName='h-9 text-sm'
 													searchPlaceholder='Search fields...'
-													contentClassName='!z-[110]'
+													contentClassName='!z-[130]'
 												/>
 
 												<Select
@@ -168,7 +168,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 													onChange={(value) => handleSortUpdate(index, { direction: value as SortDirection })}
 													className='h-9 text-sm'
 													placeholder='Select direction'
-													contentClassName='z-[110]'
+													contentClassName='!z-[130]'
 												/>
 
 												<div className='flex items-center gap-1 justify-end'>

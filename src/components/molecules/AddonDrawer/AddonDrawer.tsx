@@ -147,7 +147,7 @@ const AddonDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQuer
 			/>
 			<Spacer height={'20px'} />
 			<Button isLoading={isPending} disabled={isPending || !formData.name?.trim() || !formData.lookup_key?.trim()} onClick={handleSave}>
-				{isEdit ? 'Save' : 'Create Addon'}
+				{isEdit ? 'Save' : 'Create'}
 			</Button>
 		</Sheet>
 	);

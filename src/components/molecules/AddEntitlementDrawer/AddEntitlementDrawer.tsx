@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import { Button, Checkbox, FormHeader, Input, Select, SelectFeature, Sheet, Spacer, Toggle } from '@/components/atoms';
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
@@ -454,7 +454,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 
 				<div className='!space-y-4 mt-4'>
 					{!showSelect && !activeFeature && <AddChargesButton onClick={() => setShowSelect(true)} label='Add another feature' />}
-					<Button isLoading={isPending} onClick={handleSubmit} disabled={isPending}>
+					<Button isLoading={isPending} onClick={handleSubmit} disabled={isPending || (!showSelect && !!activeFeature)}>
 						Save
 					</Button>
 				</div>
