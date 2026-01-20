@@ -36,7 +36,7 @@ const FeatureTable: FC<Props> = ({ data, onEdit }) => {
 	const columnData: ColumnData<Feature>[] = [
 		{
 			fieldName: 'name',
-			title: 'Feature Name',
+			title: 'Feature Name EDIT',
 		},
 		{
 			title: 'Type',

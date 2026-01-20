@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { Button, Dialog } from '@/components/atoms';
 import { EyeOff, Pencil } from 'lucide-react';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { ServerError } from '@/core/axios/types';
 
 interface EditActionConfig {
 	enabled?: boolean;
@@ -39,16 +40,6 @@ interface ActionProps {
 	archive?: ArchiveActionConfig;
 	customActions?: CustomAction[];
 	disableToast?: boolean;
-	// Legacy props for backward compatibility
-	row?: unknown;
-	editPath?: string;
-	onEdit?: () => void;
-	isArchiveDisabled?: boolean;
-	isEditDisabled?: boolean;
-	archiveText?: string;
-	editText?: string;
-	archiveIcon?: React.ReactNode;
-	editIcon?: React.ReactNode;
 }
 
 const ActionButton: FC<ActionProps> = ({
@@ -61,34 +52,18 @@ const ActionButton: FC<ActionProps> = ({
 	archive,
 	customActions,
 	disableToast = false,
-	// Legacy props
-	editPath,
-	onEdit,
-	isArchiveDisabled,
-	isEditDisabled,
-	archiveText,
-	editText,
-	archiveIcon,
-	editIcon,
-	row: _row,
 }) => {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 	const navigate = useNavigate();
 
-	// Consolidate props: use new config objects if provided, otherwise fall back to legacy props
+	// Use new config objects directly
 	const editConfig: EditActionConfig = edit || {
-		enabled: !isEditDisabled,
-		path: editPath,
-		onClick: onEdit,
-		text: editText,
-		icon: editIcon,
+		enabled: false,
 	};
 
 	const archiveConfig: ArchiveActionConfig = archive || {
-		enabled: !isArchiveDisabled,
-		text: archiveText,
-		icon: archiveIcon,
+		enabled: true,
 	};
 
 	const archiveActionText = archiveConfig.text || 'Archive';

@@ -458,6 +458,7 @@ const EventDetailsSection = ({
 					<div>
 						<EventFilter eventFilters={meter?.filters || []} setEventFilters={handleFiltersChange} error={meterErrors.filters} />
 					</div>
+					<p className='text-sm text-gray-500 mt-2'>Add values one by one. Press Enter after each value.</p>
 				</>
 			)}
 		</Card>
