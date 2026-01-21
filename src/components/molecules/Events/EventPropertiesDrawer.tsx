@@ -13,6 +13,8 @@ import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate } from 'react-router';
 import SubscriptionApi from '@/api/SubscriptionApi';
+import CustomerApi from '@/api/CustomerApi';
+import FeatureApi from '@/api/FeatureApi';
 import RedirectCell from '@/components/molecules/Table/RedirectCell';
 
 interface Props {
@@ -59,6 +61,8 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 	const [loading, setLoading] = useState(false);
 	const [debugResponse, setDebugResponse] = useState<GetEventDebugResponse | null>(null);
 	const [loadError, setLoadError] = useState<string | null>(null);
+	const [customerNames, setCustomerNames] = useState<Record<string, string>>({});
+	const [featureNames, setFeatureNames] = useState<Record<string, string>>({});
 
 	useEffect(() => {
 		let isMounted = true;
@@ -94,6 +98,52 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 		processedEvents?.[0]?.customer_id ??
 		(displayEvent?.customer_id && displayEvent.customer_id.trim().length > 0 ? displayEvent.customer_id : undefined) ??
 		debugResponse?.debug_tracker?.customer_lookup?.customer?.id;
+
+	// Fetch customer and feature names when processed events are available
+	useEffect(() => {
+		if (!processedEvents.length) return;
+
+		const fetchNames = async () => {
+			const customerIds = [...new Set(processedEvents.map((pe) => pe.customer_id).filter(Boolean))];
+			const featureIds = [...new Set(processedEvents.map((pe) => pe.feature_id).filter(Boolean))];
+
+			const customerPromises = customerIds.map(async (id) => {
+				try {
+					const customer = await CustomerApi.getCustomerById(id);
+					return { id, name: customer.name };
+				} catch {
+					return { id, name: null };
+				}
+			});
+
+			const featurePromises = featureIds.map(async (id) => {
+				try {
+					const feature = await FeatureApi.getFeatureById(id);
+					return { id, name: feature.name };
+				} catch {
+					return { id, name: null };
+				}
+			});
+
+			const [customerResults, featureResults] = await Promise.all([Promise.all(customerPromises), Promise.all(featurePromises)]);
+
+			const customerMap: Record<string, string> = {};
+			const featureMap: Record<string, string> = {};
+
+			customerResults.forEach(({ id, name }) => {
+				if (name) customerMap[id] = name;
+			});
+
+			featureResults.forEach(({ id, name }) => {
+				if (name) featureMap[id] = name;
+			});
+
+			setCustomerNames(customerMap);
+			setFeatureNames(featureMap);
+		};
+
+		fetchNames();
+	}, [processedEvents]);
 
 	const openSubscription = async (subscriptionId: string) => {
 		try {
@@ -183,18 +233,20 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 									{processedAt ? <p className='text-xs text-slate-500 whitespace-nowrap'>{processedAt}</p> : null}
 								</div>
 
-								<dl className='mt-3 grid grid-cols-12 gap-x-3 gap-y-2'>
-									<dt className='col-span-4 text-xs text-slate-500'>Customer</dt>
-									<dd className='col-span-8 text-xs break-all'>
+								<dl className='mt-3 grid grid-cols-12 gap-x-2 gap-y-2'>
+									<dt className='col-span-3 text-xs text-slate-500'>Customer</dt>
+									<dd className='col-span-9 text-xs break-all'>
 										{pe.customer_id ? (
-											<RedirectCell redirectUrl={`${RouteNames.customers}/${pe.customer_id}`}>{pe.customer_id}</RedirectCell>
+											<RedirectCell redirectUrl={`${RouteNames.customers}/${pe.customer_id}`}>
+												{customerNames[pe.customer_id] || pe.customer_id}
+											</RedirectCell>
 										) : (
 											<span className='text-slate-500'>—</span>
 										)}
 									</dd>
 
-									<dt className='col-span-4 text-xs text-slate-500'>Subscription</dt>
-									<dd className='col-span-8 text-xs font-mono break-all'>
+									<dt className='col-span-3 text-xs text-slate-500'>Subscription</dt>
+									<dd className='col-span-9 text-xs font-mono break-all'>
 										{pe.customer_id ? (
 											<RedirectCell redirectUrl={`${RouteNames.customers}/${pe.customer_id}/subscription/${pe.subscription_id}`}>
 												{pe.subscription_id}
@@ -209,22 +261,24 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 										)}
 									</dd>
 
-									<dt className='col-span-4 text-xs text-slate-500'>Feature</dt>
-									<dd className='col-span-8 text-xs font-mono break-all'>
-										<RedirectCell redirectUrl={`${RouteNames.featureDetails}/${pe.feature_id}`}>{pe.feature_id}</RedirectCell>
+									<dt className='col-span-3 text-xs text-slate-500'>Feature</dt>
+									<dd className='col-span-9 text-xs font-mono break-all'>
+										<RedirectCell redirectUrl={`${RouteNames.featureDetails}/${pe.feature_id}`}>
+											{featureNames[pe.feature_id] || pe.feature_id}
+										</RedirectCell>
 									</dd>
 
-									<dt className='col-span-4 text-xs text-slate-500'>Line item</dt>
-									<dd className='col-span-8 text-xs font-mono text-slate-900 break-all'>{pe.sub_line_item_id}</dd>
+									<dt className='col-span-3 text-xs text-slate-500'>Line item</dt>
+									<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>{pe.sub_line_item_id}</dd>
 
-									<dt className='col-span-4 text-xs text-slate-500'>Meter</dt>
-									<dd className='col-span-8 text-xs font-mono text-slate-900 break-all'>{pe.meter_id}</dd>
+									<dt className='col-span-3 text-xs text-slate-500'>Meter</dt>
+									<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>{pe.meter_id}</dd>
 
-									<dt className='col-span-4 text-xs text-slate-500'>Price</dt>
-									<dd className='col-span-8 text-xs font-mono text-slate-900 break-all'>{pe.price_id}</dd>
+									<dt className='col-span-3 text-xs text-slate-500'>Price</dt>
+									<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>{pe.price_id}</dd>
 
-									<dt className='col-span-4 text-xs text-slate-500'>Qty</dt>
-									<dd className='col-span-8 text-xs font-mono text-slate-900 break-all'>{pe.qty_total}</dd>
+									<dt className='col-span-3 text-xs text-slate-500'>Qty</dt>
+									<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>{pe.qty_total}</dd>
 								</dl>
 							</div>
 						);

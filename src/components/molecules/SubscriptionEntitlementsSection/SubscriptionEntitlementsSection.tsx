@@ -1,15 +1,16 @@
 import { FC, useState, useMemo } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { Plus, Trash2 } from 'lucide-react';
-import { Button, Card, CardHeader, Chip, NoDataCard, Dialog } from '@/components/atoms';
+import { Plus, Trash2, Pencil } from 'lucide-react';
+import { Button, Card, CardHeader, Chip, NoDataCard, Dialog, Input, Select, FormHeader, Toggle } from '@/components/atoms';
 import { FlexpriceTable, ColumnData, AddEntitlementDrawer } from '@/components/molecules';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import EntitlementApi from '@/api/EntitlementApi';
 import { FEATURE_TYPE } from '@/models/Feature';
-import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
+import { ENTITLEMENT_ENTITY_TYPE, ENTITLEMENT_USAGE_RESET_PERIOD } from '@/models/Entitlement';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import toast from 'react-hot-toast';
+import { Sheet, Spacer } from '@/components/atoms';
 
 interface SubscriptionEntitlementsSectionProps {
 	subscriptionId: string;
@@ -20,7 +21,21 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 	const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [entitlementToDelete, setEntitlementToDelete] = useState<any | null>(null);
+	const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
+	const [editingEntitlement, setEditingEntitlement] = useState<any | null>(null);
+	const [editFormData, setEditFormData] = useState<any>({});
 	const queryClient = useQueryClient();
+
+	// Constants for usage reset period options
+	const USAGE_RESET_PERIOD_OPTIONS = [
+		{ label: 'Daily', value: ENTITLEMENT_USAGE_RESET_PERIOD.DAILY },
+		{ label: 'Weekly', value: ENTITLEMENT_USAGE_RESET_PERIOD.WEEKLY },
+		{ label: 'Monthly', value: ENTITLEMENT_USAGE_RESET_PERIOD.MONTHLY },
+		{ label: 'Quarterly', value: ENTITLEMENT_USAGE_RESET_PERIOD.QUARTERLY },
+		{ label: 'Half-Yearly', value: ENTITLEMENT_USAGE_RESET_PERIOD.HALF_YEARLY },
+		{ label: 'Yearly', value: ENTITLEMENT_USAGE_RESET_PERIOD.ANNUAL },
+		{ label: 'Never', value: ENTITLEMENT_USAGE_RESET_PERIOD.NEVER },
+	];
 
 	// Fetch subscription entitlements
 	const {
@@ -58,19 +73,34 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		},
 	});
 
+	// Update entitlement mutation
+	const { mutate: updateEntitlement, isPending: isUpdatingEntitlement } = useMutation({
+		mutationFn: async ({ entitlementId, data }: { entitlementId: string; data: any }) => {
+			return await EntitlementApi.updateEntitlement(entitlementId, data);
+		},
+		onSuccess: () => {
+			toast.success('Entitlement updated successfully');
+			queryClient.invalidateQueries({ queryKey: ['subscriptionEntitlements', subscriptionId] });
+			setIsEditDrawerOpen(false);
+			setEditingEntitlement(null);
+			setEditFormData({});
+		},
+		onError: (error: any) => {
+			toast.error(error?.error?.message || 'Failed to update entitlement');
+		},
+	});
+
 	// Transform the subscription entitlements response to match the expected format
 	const entitlements = useMemo(() => {
 		if (!entitlementsData?.features) return [];
 
-		return entitlementsData.features.map((item: any) => {
-			return {
-				feature: item.feature,
-				feature_id: item.feature?.id || '',
-				feature_type: item.feature?.type || '',
-				entitlement: item.entitlement,
-				sources: item.sources || [],
-			};
-		});
+		return entitlementsData.features.map((item: any) => ({
+			feature: item.feature,
+			feature_id: item.feature?.id || '',
+			feature_type: item.feature?.type || '',
+			entitlement: item.entitlement,
+			sources: item.sources || [],
+		}));
 	}, [entitlementsData]);
 
 	const getFeatureTypeChip = (featureType: string) => {
@@ -111,6 +141,22 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		setIsDeleteDialogOpen(true);
 	};
 
+	const handleEdit = (entitlement: any) => {
+		setDropdownOpen(null);
+		setEditingEntitlement(entitlement);
+
+		// Pre-fill form data with current entitlement values
+		const entitlementData = entitlement.entitlement;
+		setEditFormData({
+			is_enabled: entitlementData?.is_enabled ?? false,
+			usage_limit: entitlementData?.usage_limit ?? null,
+			usage_reset_period: entitlementData?.usage_reset_period ?? ENTITLEMENT_USAGE_RESET_PERIOD.NEVER,
+			is_soft_limit: entitlementData?.is_soft_limit ?? false,
+			static_value: entitlementData?.static_value ?? '',
+		});
+		setIsEditDrawerOpen(true);
+	};
+
 	const confirmDelete = () => {
 		if (entitlementToDelete) {
 			// Find the subscription source to get the entitlement_id
@@ -124,6 +170,34 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 	const cancelDelete = () => {
 		setIsDeleteDialogOpen(false);
 		setEntitlementToDelete(null);
+	};
+
+	const handleSaveEdit = () => {
+		if (!editingEntitlement) return;
+
+		// Find the subscription source to get the entitlement_id
+		const subscriptionSource = editingEntitlement.sources?.find((source: any) => source.entity_type?.toLowerCase() === 'subscription');
+		if (subscriptionSource?.entitlement_id) {
+			updateEntitlement({
+				entitlementId: subscriptionSource.entitlement_id,
+				data: editFormData,
+			});
+		} else {
+			toast.error('Unable to find entitlement to update');
+		}
+	};
+
+	const handleEditFormChange = (field: string, value: any) => {
+		setEditFormData((prev: any) => ({
+			...prev,
+			[field]: value,
+		}));
+	};
+
+	const handleCloseEditDrawer = () => {
+		setIsEditDrawerOpen(false);
+		setEditingEntitlement(null);
+		setEditFormData({});
 	};
 
 	const columns: ColumnData<any>[] = [
@@ -141,16 +215,12 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		},
 		{
 			title: '',
-			width: '30px',
+			width: '40px',
 			fieldVariant: 'interactive',
 			hideOnEmpty: true,
 			render: (row: any) => {
-				// Only show actions if there's a subscription source
 				const hasSubscriptionSource = row.sources?.some((source: any) => source.entity_type?.toLowerCase() === 'subscription');
-
-				if (!hasSubscriptionSource) {
-					return null;
-				}
+				if (!hasSubscriptionSource) return null;
 
 				return (
 					<div
@@ -161,11 +231,20 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 						}}>
 						<DropdownMenu open={dropdownOpen === row.feature_id} onOpenChange={(open) => setDropdownOpen(open ? row.feature_id : null)}>
 							<DropdownMenuTrigger asChild>
-								<button className='focus:outline-none'>
+								<button className='focus:outline-none' aria-label='Open actions'>
 									<BsThreeDotsVertical className='text-base text-muted-foreground hover:text-foreground transition-colors' />
 								</button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>
+								<DropdownMenuItem
+									onSelect={(e) => {
+										e.preventDefault();
+										handleEdit(row);
+									}}
+									className='flex gap-2 items-center cursor-pointer'>
+									<Pencil className='h-4 w-4' />
+									<span>Edit</span>
+								</DropdownMenuItem>
 								<DropdownMenuItem
 									onSelect={(e) => {
 										e.preventDefault();
@@ -259,6 +338,79 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 					</div>
 				</div>
 			</Dialog>
+
+			{/* Edit Entitlement Drawer */}
+			<Sheet isOpen={isEditDrawerOpen} onOpenChange={handleCloseEditDrawer}>
+				<div className='space-y-6 p-6'>
+					<FormHeader
+						title='Edit Entitlement'
+						subtitle={`Edit entitlement for ${editingEntitlement?.feature?.name || 'feature'}`}
+						variant='sub-header'
+					/>
+
+					{/* Boolean Feature Type */}
+					{editingEntitlement?.feature_type === FEATURE_TYPE.BOOLEAN && (
+						<Toggle
+							label='Enable Feature'
+							checked={editFormData.is_enabled}
+							onChange={(checked) => handleEditFormChange('is_enabled', checked)}
+						/>
+					)}
+
+					{/* Static Feature Type */}
+					{editingEntitlement?.feature_type === FEATURE_TYPE.STATIC && (
+						<Input
+							label='Static Value'
+							value={editFormData.static_value || ''}
+							onChange={(value) => handleEditFormChange('static_value', value)}
+							placeholder='Enter static value'
+						/>
+					)}
+
+					{/* Metered Feature Type */}
+					{editingEntitlement?.feature_type === FEATURE_TYPE.METERED && (
+						<div className='space-y-4'>
+							<Input
+								label='Usage Limit'
+								value={
+									editFormData.usage_limit !== null && editFormData.usage_limit !== undefined ? editFormData.usage_limit.toString() : ''
+								}
+								onChange={(value) => {
+									const numValue = value === '' ? null : parseFloat(value);
+									handleEditFormChange('usage_limit', numValue === null ? null : isNaN(numValue) ? null : numValue);
+								}}
+								placeholder='Enter usage limit (leave empty for unlimited)'
+							/>
+
+							<Select
+								label='Usage Reset Period'
+								value={editFormData.usage_reset_period || ENTITLEMENT_USAGE_RESET_PERIOD.NEVER}
+								onChange={(value) => handleEditFormChange('usage_reset_period', value)}
+								options={USAGE_RESET_PERIOD_OPTIONS}
+							/>
+
+							{editFormData.usage_limit !== null && editFormData.usage_limit !== undefined && (
+								<Toggle
+									label='Soft Limit'
+									checked={editFormData.is_soft_limit}
+									onChange={(checked) => handleEditFormChange('is_soft_limit', checked)}
+								/>
+							)}
+						</div>
+					)}
+
+					<Spacer className='!h-4' />
+
+					<div className='flex gap-4 justify-end'>
+						<Button variant='outline' onClick={handleCloseEditDrawer} disabled={isUpdatingEntitlement}>
+							Cancel
+						</Button>
+						<Button onClick={handleSaveEdit} disabled={isUpdatingEntitlement}>
+							{isUpdatingEntitlement ? 'Saving...' : 'Save Changes'}
+						</Button>
+					</div>
+				</div>
+			</Sheet>
 		</>
 	);
 };
