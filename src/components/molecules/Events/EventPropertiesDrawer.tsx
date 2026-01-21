@@ -12,6 +12,8 @@ import JsonCodeBlock from './JsonCodeBlock';
 import ProcessedEventsSection from './ProcessedEventsSection';
 import EventTrackerSection from './EventTrackerSection';
 import IdempotencyKeySection from './IdempotencyKeySection';
+import CustomerApi from '@/api/CustomerApi';
+import FeatureApi from '@/api/FeatureApi';
 
 interface Props {
 	isOpen: boolean;
@@ -24,6 +26,8 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 	const [loading, setLoading] = useState(false);
 	const [debugResponse, setDebugResponse] = useState<GetEventDebugResponse | null>(null);
 	const [loadError, setLoadError] = useState<string | null>(null);
+	const [customerNames, setCustomerNames] = useState<Record<string, string>>({});
+	const [featureNames, setFeatureNames] = useState<Record<string, string>>({});
 
 	useEffect(() => {
 		let isMounted = true;
@@ -60,6 +64,52 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 		(displayEvent?.customer_id && displayEvent.customer_id.trim().length > 0 ? displayEvent.customer_id : undefined) ??
 		debugResponse?.debug_tracker?.customer_lookup?.customer?.id;
 
+	// Fetch customer and feature names when processed events are available
+	useEffect(() => {
+		if (!processedEvents.length) return;
+
+		const fetchNames = async () => {
+			const customerIds = [...new Set(processedEvents.map((pe) => pe.customer_id).filter(Boolean))];
+			const featureIds = [...new Set(processedEvents.map((pe) => pe.feature_id).filter(Boolean))];
+
+			const customerPromises = customerIds.map(async (id) => {
+				try {
+					const customer = await CustomerApi.getCustomerById(id);
+					return { id, name: customer.name };
+				} catch {
+					return { id, name: null };
+				}
+			});
+
+			const featurePromises = featureIds.map(async (id) => {
+				try {
+					const feature = await FeatureApi.getFeatureById(id);
+					return { id, name: feature.name };
+				} catch {
+					return { id, name: null };
+				}
+			});
+
+			const [customerResults, featureResults] = await Promise.all([Promise.all(customerPromises), Promise.all(featurePromises)]);
+
+			const customerMap: Record<string, string> = {};
+			const featureMap: Record<string, string> = {};
+
+			customerResults.forEach(({ id, name }) => {
+				if (name) customerMap[id] = name;
+			});
+
+			featureResults.forEach(({ id, name }) => {
+				if (name) featureMap[id] = name;
+			});
+
+			setCustomerNames(customerMap);
+			setFeatureNames(featureMap);
+		};
+
+		fetchNames();
+	}, [processedEvents]);
+
 	const openSubscription = async (subscriptionId: string) => {
 		try {
 			// If we already know the customerId, navigate directly
@@ -88,7 +138,6 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 	};
 
 	const showProcessedOnly = useMemo(() => processedEvents.length > 0, [processedEvents.length]);
-
 	// Important: don't conditionally skip hooks. Only conditionally skip rendering.
 	if (!displayEvent) return null;
 
@@ -115,7 +164,12 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 
 							{/* Processed: show processed events only. Failed: show tracker waterfall. */}
 							{showProcessedOnly ? (
-								<ProcessedEventsSection events={processedEvents} onOpenSubscription={openSubscription} />
+								<ProcessedEventsSection
+									events={processedEvents}
+									onOpenSubscription={openSubscription}
+									customerNames={customerNames}
+									featureNames={featureNames}
+								/>
 							) : debugResponse.debug_tracker ? (
 								<EventTrackerSection debugResponse={debugResponse} displayEventTimestamp={displayEvent?.timestamp} />
 							) : (

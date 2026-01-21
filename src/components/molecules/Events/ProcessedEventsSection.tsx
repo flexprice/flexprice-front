@@ -8,9 +8,11 @@ import { CheckCircle2, Clock } from 'lucide-react';
 interface ProcessedEventsSectionProps {
 	events: EventProcessedEvent[];
 	onOpenSubscription?: (subscriptionId: string) => void;
+	customerNames?: Record<string, string>;
+	featureNames?: Record<string, string>;
 }
 
-const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpenSubscription }) => {
+const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpenSubscription, customerNames, featureNames }) => {
 	return (
 		<div className='space-y-4'>
 			{/* Badge only - no heading */}
@@ -48,9 +50,11 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 							{/* Event Details - Beautiful grid layout */}
 							<div className='grid grid-cols-12 gap-x-8 gap-y-3.5'>
 								<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>Customer</dt>
-								<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>
+								<dd className='col-span-9 text-xs break-all'>
 									{pe.customer_id ? (
-										<RedirectCell redirectUrl={`${RouteNames.customers}/${pe.customer_id}`}>{pe.customer_id}</RedirectCell>
+										<RedirectCell redirectUrl={`${RouteNames.customers}/${pe.customer_id}`}>
+											{customerNames?.[pe.customer_id] || pe.customer_id}
+										</RedirectCell>
 									) : (
 										<span className='text-slate-400'>—</span>
 									)}
@@ -73,8 +77,10 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 								</dd>
 
 								<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>Feature</dt>
-								<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>
-									<RedirectCell redirectUrl={`${RouteNames.featureDetails}/${pe.feature_id}`}>{pe.feature_id}</RedirectCell>
+								<dd className='col-span-9 text-xs break-all'>
+									<RedirectCell redirectUrl={`${RouteNames.featureDetails}/${pe.feature_id}`}>
+										{featureNames?.[pe.feature_id] || pe.feature_id}
+									</RedirectCell>
 								</dd>
 
 								<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>Line item</dt>
