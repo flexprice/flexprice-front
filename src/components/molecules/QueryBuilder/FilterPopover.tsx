@@ -173,7 +173,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						width='100%'
 						triggerClassName={cn(inputProps.className, 'h-9 text-sm')}
 						placeholder={commonProps.placeholder}
-						contentClassName='!z-[130]'
+						contentClassName='!z-[110]'
 					/>
 				),
 				[FilterFieldType.SWITCH]: (
@@ -325,7 +325,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 														width='100%'
 														triggerClassName='h-9 text-sm'
 														searchPlaceholder='Search fields...'
-														contentClassName='!z-[130]'
+														contentClassName='!z-[110]'
 													/>
 
 													<Select
@@ -342,7 +342,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 														onChange={(value) => handleFilterUpdate(filter.id, { operator: value as FilterOperator })}
 														placeholder='Select operator'
 														className='h-9 text-sm'
-														contentClassName='!z-[130]'
+														contentClassName='!z-[110]'
 													/>
 
 													<div className='min-w-0'>{renderValueInput(filter)}</div>
