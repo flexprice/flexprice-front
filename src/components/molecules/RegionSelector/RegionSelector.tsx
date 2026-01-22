@@ -5,6 +5,7 @@ import RegionInfoDialog from './RegionInfoDialog';
 import { Region } from '@/types/enums/Region';
 import { detectCurrentRegion, switchRegion, getDashboardUrls } from '@/utils/region/regionUtils';
 import { IN, US } from 'country-flag-icons/react/3x2';
+import { Info } from 'lucide-react';
 
 const RegionSelector: React.FC = () => {
 	const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
@@ -52,7 +53,7 @@ const RegionSelector: React.FC = () => {
 						type='button'
 						onClick={() => setIsDialogOpen(true)}
 						className='text-sm text-[#0E5AC9] hover:text-[#0E5AC9] hover:underline cursor-pointer'>
-						(what is this?)
+						<Info size={16} className='text-black' />
 					</button>
 				</Tooltip>
 			</div>

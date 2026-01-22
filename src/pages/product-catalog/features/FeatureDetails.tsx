@@ -128,10 +128,14 @@ const FeatureDetails = () => {
 				start_date_lt: new Date().toISOString(),
 			});
 			// Filter prices to only include PLAN or ADDON entity types
+			const now = new Date();
+
 			const filteredPrices = {
 				...prices,
 				items: prices.items.filter(
-					(price) => price.entity_type === PRICE_ENTITY_TYPE.PLAN || price.entity_type === PRICE_ENTITY_TYPE.ADDON,
+					(price) =>
+						(price.entity_type === PRICE_ENTITY_TYPE.PLAN || price.entity_type === PRICE_ENTITY_TYPE.ADDON) &&
+						(!price.end_date || new Date(price.end_date) > now),
 				),
 			};
 			return filteredPrices;
