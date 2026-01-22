@@ -325,7 +325,7 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 
 					<div className='mt-4'>
 						<label className='block text-sm font-medium mb-1'>API Key</label>
-						<div className='relative bg-gray-100 rounded-md w-full overflow-x-auto'>
+						<div className='relative bg-gray-100 rounded-md'>
 							<input
 								type='text'
 								value={showApiKey ? data?.api_key || '' : maskApiKey(data?.api_key || '')}
@@ -336,7 +336,7 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 									minWidth: '100%',
 								}}
 							/>
-							<div className='bg-gray-100 absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 z-10'>
+							<div className='bg-gray-100 absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1'>
 								<button onClick={toggleApiKeyVisibility} className='p-1 text-gray-700 hover:text-gray-700' type='button'>
 									{showApiKey ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
 								</button>

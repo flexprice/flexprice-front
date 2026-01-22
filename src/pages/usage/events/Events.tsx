@@ -254,7 +254,7 @@ const EventsPage: React.FC = () => {
 	return (
 		<Page heading='Events'>
 			<ApiDocsContent tags={['Events']} />
-			<div className='bg-white rounded-md flex items-start gap-4 relative'>
+			<div className='bg-white rounded-md flex items-start gap-4'>
 				<QueryBuilder
 					filterOptions={filterOptions}
 					filters={filters}

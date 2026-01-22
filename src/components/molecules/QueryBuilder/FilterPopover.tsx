@@ -134,7 +134,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
 						className={cn(inputProps.className, 'h-9 text-sm')}
 						placeholder={commonProps.placeholder}
-						contentClassName='!z-[130]'
+						contentClassName='!z-[110]'
 					/>
 				),
 				[FilterFieldType.CHECKBOX]: (
@@ -162,7 +162,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						isRadio
 						className={cn(inputProps.className, 'h-9 text-sm')}
 						placeholder={commonProps.placeholder}
-						contentClassName='!z-[130]'
+						contentClassName='!z-[110]'
 					/>
 				),
 				[FilterFieldType.COMBOBOX]: (
@@ -271,7 +271,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 			</PopoverTrigger>
 			<PopoverContent
 				align='start'
-				className={cn('max-w-[calc(100vw-400px)] w-fit border-border/70 shadow-lg bg-[#fbfbfb]', POPOVER_PADDING)}
+				className={cn('max-w-[70vw] w-fit border-border/70 shadow-lg bg-[#fbfbfb]', POPOVER_PADDING)}
 				style={{ minWidth: MIN_POPOVER_WIDTH }}>
 				<div className='flex flex-col gap-1.5'>
 					{value.length === 0 ? (

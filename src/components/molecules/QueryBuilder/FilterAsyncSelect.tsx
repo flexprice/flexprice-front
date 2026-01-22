@@ -129,7 +129,7 @@ const FilterAsyncSelect = <T = any,>({
 					<ChevronDown className='h-4 w-4 opacity-50 shrink-0' />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent align='start' className='w-48 p-0 !z-[130]'>
+			<PopoverContent align='start' className='w-48 p-0 !z-[110]'>
 				<Command shouldFilter={false}>
 					<CommandInput placeholder={searchPlaceholder} value={searchQuery} onValueChange={setSearchQuery} className='h-9' />
 					<CommandList className='max-h-[300px]'>
