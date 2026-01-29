@@ -41,12 +41,18 @@ export const subscriptionTypeOptions = [
 interface AddChargesButtonProps {
 	onClick: () => void;
 	label: string;
+	className?: string;
 }
 
-export const AddChargesButton = ({ onClick, label }: AddChargesButtonProps) => (
-	<button onClick={onClick} className='p-4 h-7 cursor-pointer flex gap-2 items-center bg-[#F4F4F5] rounded-md'>
-		<CirclePlus size={16} />
-		<p className='text-[#18181B] text-sm font-medium'>{label}</p>
+export const AddChargesButton = ({ onClick, label, className }: AddChargesButtonProps) => (
+	<button
+		onClick={onClick}
+		className={cn(
+			'shrink-0 cursor-pointer flex gap-2 items-center justify-center bg-[#F4F4F5] rounded-md px-4 h-9 min-w-[160px] text-left',
+			className,
+		)}>
+		<CirclePlus size={16} className='shrink-0' />
+		<span className='text-[#18181B] text-sm font-medium truncate'>{label}</span>
 	</button>
 );
 
