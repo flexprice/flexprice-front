@@ -20,7 +20,7 @@ export interface EventFilterData {
 const EventFilter: FC<Props> = ({ eventFilters, setEventFilters, error, disabled, orientation = 'horizontal' }) => {
 	useEffect(() => {
 		if ((!eventFilters || eventFilters.length === 0) && !disabled) {
-			setEventFilters([{ key: '', values: [] }]);
+			setEventFilters([]);
 		}
 	}, [eventFilters, disabled, setEventFilters]);
 
@@ -101,11 +101,9 @@ const EventFilter: FC<Props> = ({ eventFilters, setEventFilters, error, disabled
 
 			{/* Error Message */}
 			{error && <p className='text-sm text-destructive'>{error}</p>}
+			{safeEventFilters.length > 0 && <p className='text-xs text-muted-foreground'>Add values one by one. Press Enter after each value.</p>}
 
 			<div className='space-y-2'>
-				<p className='text-xs text-muted-foreground'>
-					Press Enter in the Value fields to apply your input. Without pressing Enter, values won’t be saved.
-				</p>
 				<Button
 					disabled={disabled}
 					variant='outline'
