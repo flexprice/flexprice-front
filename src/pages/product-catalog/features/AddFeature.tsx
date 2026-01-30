@@ -428,15 +428,11 @@ const FeatureDetailsSection = ({
 const EventDetailsSection = ({
 	meter,
 	meterErrors,
-	formState,
 	onUpdateFeature,
-	onUpdateFormState,
 }: {
 	meter: Partial<CreateMeterRequest> | undefined;
 	meterErrors: MeterErrors;
-	formState: FeatureFormState;
 	onUpdateFeature: (updates: Partial<FeatureFormData>) => void;
-	onUpdateFormState: (updates: Partial<FeatureFormState>) => void;
 }) => {
 	const handleEventNameChange = useCallback(
 		(event_name: string) => {
@@ -798,13 +794,7 @@ const AddFeaturePage = () => {
 
 					{isMeteredType && (
 						<div className='w-full'>
-							<EventDetailsSection
-								meter={data.meter}
-								meterErrors={meterErrors}
-								formState={formState}
-								onUpdateFeature={updateFeatureData}
-								onUpdateFormState={updateFormState}
-							/>
+							<EventDetailsSection meter={data.meter} meterErrors={meterErrors} onUpdateFeature={updateFeatureData} />
 
 							<Spacer height='26px' />
 
