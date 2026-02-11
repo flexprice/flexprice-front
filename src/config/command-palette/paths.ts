@@ -23,6 +23,7 @@ export const commandPalettePaths = {
 	'tools-bulk-imports': '/tools/bulk-imports',
 	'tools-exports': '/tools/exports',
 	'tools-exports-s3': '/tools/exports/s3',
+	'tools-workflows': '/tools/workflows',
 	'usage-tracking-events': '/usage-tracking/events',
 	'usage-tracking-query': '/usage-tracking/query',
 	'developers-api-keys': '/developers/api-keys',

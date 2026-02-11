@@ -36,3 +36,4 @@ export { default as TenantApi } from './TenantApi';
 export { UserApi } from './UserApi';
 export { default as WalletApi } from './WalletApi';
 export { default as WebhookApi } from './WebhookApi';
+export { default as WorkflowsApi } from './WorkflowsApi';

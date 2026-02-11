@@ -127,16 +127,22 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						className={cn(inputProps.className, 'h-9 text-sm')}
 					/>
 				),
-				[FilterFieldType.SELECT]: (
-					<Select
-						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
-						value={filter.valueString}
-						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
-						className={cn(inputProps.className, 'h-9 text-sm')}
-						placeholder={commonProps.placeholder}
-						contentClassName='!z-[110]'
-					/>
-				),
+				[FilterFieldType.SELECT]: (() => {
+					const options = field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || [];
+					const firstValue = options[0]?.value;
+					const value =
+						filter.valueString != null && options.some((o) => o.value === filter.valueString) ? filter.valueString : (firstValue ?? '');
+					return (
+						<Select
+							options={options}
+							value={value}
+							onChange={(v) => handleFilterUpdate(filter.id, { valueString: v })}
+							className={cn(inputProps.className, 'h-9 text-sm')}
+							placeholder={commonProps.placeholder}
+							contentClassName='!z-[110]'
+						/>
+					);
+				})(),
 				[FilterFieldType.CHECKBOX]: (
 					<Toggle
 						checked={filter.valueBoolean || false}
@@ -154,17 +160,23 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 						placeholder='Select date'
 					/>
 				),
-				[FilterFieldType.RADIO]: (
-					<Select
-						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
-						value={filter.valueString}
-						onChange={(value) => handleFilterUpdate(filter.id, { valueString: value })}
-						isRadio
-						className={cn(inputProps.className, 'h-9 text-sm')}
-						placeholder={commonProps.placeholder}
-						contentClassName='!z-[110]'
-					/>
-				),
+				[FilterFieldType.RADIO]: (() => {
+					const options = field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || [];
+					const firstValue = options[0]?.value;
+					const value =
+						filter.valueString != null && options.some((o) => o.value === filter.valueString) ? filter.valueString : (firstValue ?? '');
+					return (
+						<Select
+							options={options}
+							value={value}
+							onChange={(v) => handleFilterUpdate(filter.id, { valueString: v })}
+							isRadio
+							className={cn(inputProps.className, 'h-9 text-sm')}
+							placeholder={commonProps.placeholder}
+							contentClassName='!z-[110]'
+						/>
+					);
+				})(),
 				[FilterFieldType.COMBOBOX]: (
 					<Combobox
 						options={field.options?.map((opt) => ({ value: opt.value, label: opt.label })) || []}
@@ -256,6 +268,62 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 		return sanitizedValue.length;
 	}, [value]);
 
+	const renderFilterRowContent = useCallback(
+		(filter: FilterCondition, field: FilterField, index: number) => (
+			<div
+				className={cn('grid items-center', GRID_GAP, ITEM_PADDING, 'w-full rounded-[4px] hover:bg-accent/40 transition-colors')}
+				style={gridTemplateColumns}>
+				<span className='text-xs text-muted-foreground'>{index > 0 ? 'And' : 'Where'}</span>
+				<Combobox
+					options={fieldOptions}
+					value={filter.field ?? ''}
+					onChange={(val) => handleFieldChange(filter.id, val)}
+					placeholder='Select field'
+					width='100%'
+					triggerClassName='h-9 text-sm overflow-hidden'
+					searchPlaceholder='Search fields...'
+					contentClassName='!z-[110]'
+				/>
+				<Select
+					options={
+						field.operators
+							?.filter((op) => op != null)
+							.map((operator) => ({
+								value: operator,
+								label: String(operator)
+									.toLowerCase()
+									.replace(/_/g, ' ')
+									.replace(/\b\w/g, (c) => c.toUpperCase()),
+							})) ?? []
+					}
+					value={filter.operator ?? ''}
+					onChange={(val) => handleFilterUpdate(filter.id, { operator: val as FilterOperator })}
+					placeholder='Select operator'
+					className='h-9 text-sm'
+					contentClassName='!z-[110]'
+				/>
+				<div className='min-w-0'>{renderValueInput(filter)}</div>
+				<div className='flex items-center gap-1 justify-end'>
+					<Button
+						variant='ghost'
+						size='icon'
+						className='h-7 w-7 shrink-0 hover:bg-destructive/10 hover:text-destructive'
+						onClick={() => handleRemoveFilter(filter.id)}>
+						<Trash2 className='h-3.5 w-3.5' />
+					</Button>
+					{sortable && (
+						<SortableItemHandle asChild>
+							<Button variant='ghost' size='icon' className='h-7 w-7 shrink-0'>
+								<GripVertical className='h-3.5 w-3.5' />
+							</Button>
+						</SortableItemHandle>
+					)}
+				</div>
+			</div>
+		),
+		[fieldOptions, gridTemplateColumns, handleFieldChange, handleFilterUpdate, handleRemoveFilter, renderValueInput, sortable],
+	);
+
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
 			<PopoverTrigger asChild>
@@ -300,87 +368,48 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 								</Button>
 							</div>
 
-							<Sortable value={value} onValueChange={handleReorder} getItemValue={(item) => item.field}>
-								<SortableContent className='flex flex-col gap-1'>
-									{value.map((filter, index) => {
-										const field = fields.find((f) => f.field === filter.field);
-										if (!field) return null;
-
-										return (
-											<SortableItem key={filter.id} value={filter.field}>
-												<div
-													className={cn(
-														'grid items-center',
-														GRID_GAP,
-														ITEM_PADDING,
-														'w-full rounded-[4px] hover:bg-accent/40 transition-colors',
-													)}
-													style={gridTemplateColumns}>
-													<span className='text-xs text-muted-foreground'>{index > 0 ? 'And' : 'Where'}</span>
-													<Combobox
-														options={fieldOptions}
-														value={filter.field}
-														onChange={(value) => handleFieldChange(filter.id, value)}
-														placeholder='Select field'
-														width='100%'
-														triggerClassName='h-9 text-sm overflow-hidden'
-														searchPlaceholder='Search fields...'
-														contentClassName='!z-[110]'
-													/>
-
-													<Select
-														options={field.operators
-															.filter((operator) => operator != null)
-															.map((operator) => ({
-																value: operator,
-																label: operator
-																	.toLowerCase()
-																	.replace(/_/g, ' ')
-																	.replace(/\b\w/g, (char) => char.toUpperCase()),
-															}))}
-														value={filter.operator}
-														onChange={(value) => handleFilterUpdate(filter.id, { operator: value as FilterOperator })}
-														placeholder='Select operator'
-														className='h-9 text-sm'
-														contentClassName='!z-[110]'
-													/>
-
-													<div className='min-w-0'>{renderValueInput(filter)}</div>
-
-													<div className='flex items-center gap-1 justify-end'>
-														<Button
-															variant='ghost'
-															size='icon'
-															className='h-7 w-7 shrink-0 hover:bg-destructive/10 hover:text-destructive'
-															onClick={() => handleRemoveFilter(filter.id)}>
-															<Trash2 className='h-3.5 w-3.5' />
-														</Button>
-
-														{sortable && (
-															<SortableItemHandle asChild>
-																<Button variant='ghost' size='icon' className='h-7 w-7 shrink-0'>
-																	<GripVertical className='h-3.5 w-3.5' />
-																</Button>
-															</SortableItemHandle>
-														)}
-													</div>
-												</div>
-											</SortableItem>
-										);
-									})}
-								</SortableContent>
-								<SortableOverlay>
-									<div className={cn('grid', GRID_GAP, ITEM_PADDING, 'w-full bg-accent/40 rounded-[4px]')} style={gridTemplateColumns}>
-										<div className='h-7 rounded-[4px] border-border/40 bg-background' />
-										<div className='h-7 rounded-[4px] border-border/40 bg-background' />
-										<div className='h-7 rounded-[4px] border-border/40 bg-background' />
-										<div className='flex gap-1 justify-end'>
-											<div className='h-7 w-7 rounded-[4px] border-border/40 bg-background' />
-											<div className='h-7 w-7 rounded-[4px] border-border/40 bg-background' />
+							{/* When sortable is false, render a simple list to avoid dnd-kit/portal issues (e.g. Workflows page) */}
+							{sortable ? (
+								<Sortable
+									value={value}
+									onValueChange={handleReorder}
+									getItemValue={(item) => {
+										const id = item.id?.trim();
+										return id !== undefined && id !== '' ? id : `filter-fallback-${value.indexOf(item)}`;
+									}}>
+									<SortableContent className='flex flex-col gap-1'>
+										{value.map((filter, index) => {
+											const field = fields.find((f) => f.field === filter.field) ?? fields[0];
+											if (!field) return null;
+											const sortableValue = filter.id?.trim() && filter.id.trim() !== '' ? filter.id.trim() : `filter-fallback-${index}`;
+											return (
+												<SortableItem key={filter.id || sortableValue} value={sortableValue}>
+													{renderFilterRowContent(filter, field, index)}
+												</SortableItem>
+											);
+										})}
+									</SortableContent>
+									<SortableOverlay>
+										<div className={cn('grid', GRID_GAP, ITEM_PADDING, 'w-full bg-accent/40 rounded-[4px]')} style={gridTemplateColumns}>
+											<div className='h-7 rounded-[4px] border-border/40 bg-background' />
+											<div className='h-7 rounded-[4px] border-border/40 bg-background' />
+											<div className='h-7 rounded-[4px] border-border/40 bg-background' />
+											<div className='flex gap-1 justify-end'>
+												<div className='h-7 w-7 rounded-[4px] border-border/40 bg-background' />
+												<div className='h-7 w-7 rounded-[4px] border-border/40 bg-background' />
+											</div>
 										</div>
-									</div>
-								</SortableOverlay>
-							</Sortable>
+									</SortableOverlay>
+								</Sortable>
+							) : (
+								<div className='flex flex-col gap-1'>
+									{value.map((filter, index) => {
+										const field = fields.find((f) => f.field === filter.field) ?? fields[0];
+										if (!field) return null;
+										return <div key={filter.id ?? `filter-${index}`}>{renderFilterRowContent(filter, field, index)}</div>;
+									})}
+								</div>
+							)}
 
 							<div className='flex items-center gap-2 pt-1.5 px-2'>
 								<Button size='sm' onClick={handleAddFilter} className='h-9 text-sm px-2.5 flex items-center gap-1'>

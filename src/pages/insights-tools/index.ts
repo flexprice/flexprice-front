@@ -10,3 +10,4 @@ export { default as S3Exports } from './exports/S3Exports';
 export { default as ExportManagement } from './exports/ExportManagement';
 export { default as ExportDetails } from './exports/ExportDetails';
 export { default as TaskRunsPage } from './exports/TaskRunsPage';
+export { default as WorkflowsPage } from './workflows/WorkflowsPage';

@@ -123,6 +123,10 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 					title: 'Exports',
 					url: RouteNames.exports,
 				},
+				{
+					title: 'Workflows',
+					url: RouteNames.workflows,
+				},
 			],
 		},
 		{

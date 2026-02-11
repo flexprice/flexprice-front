@@ -56,6 +56,8 @@ export type {
 	DownloadTaskFileResponse,
 } from './Task';
 
+export type { WorkflowItem, ListWorkflowsParams, ListWorkflowsResponse } from './Workflow';
+
 export type { SignupData, LoginData, LocalUser } from './Auth';
 
 export type { GetServiceAccountsResponse, CreateServiceAccountPayload } from './UserApi';

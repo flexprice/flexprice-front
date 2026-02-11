@@ -12,11 +12,14 @@ const EventsTable: FC<Props> = ({ data }) => {
 	const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+	/** Display id as first 5 chars + "......", full id in tooltip/copy (same as Workflow ID) */
+	const formatIdDisplay = (id: string | undefined) => (!id ? '--' : id.length > 5 ? `${id.slice(0, 5)}......` : id);
+
 	const columns: ColumnData[] = [
 		{
 			title: 'Event Id',
 			render(rowData) {
-				return <TooltipCell tooltipContent={rowData.id} tooltipText={rowData.id} />;
+				return <TooltipCell tooltipContent={formatIdDisplay(rowData.id)} tooltipText={rowData.id ?? ''} />;
 			},
 		},
 		{

@@ -9,6 +9,9 @@ interface ShortPaginationProps {
 	showPages?: boolean;
 	unit?: string;
 	prefix?: PAGINATION_PREFIX;
+	/** When provided, pagination is controlled by parent (single source of truth); otherwise uses internal usePagination */
+	currentPage?: number;
+	onPageChange?: (page: number) => void;
 }
 
 const ShortPagination = ({
@@ -17,19 +20,25 @@ const ShortPagination = ({
 	unit = 'items',
 	showPages = false,
 	prefix,
+	currentPage,
+	onPageChange,
 	// Keep these for backward compatibility
 }: ShortPaginationProps) => {
-	const { page, setPage, limit } = usePagination({
+	const internalPagination = usePagination({
 		initialLimit: pageSize,
 		prefix,
 	});
 
+	// Controlled: use props; uncontrolled: use internal hook
+	const page = currentPage ?? internalPagination.page;
+	const setPage = onPageChange ?? internalPagination.setPage;
+	const limit = internalPagination.limit;
+
 	// Use limit from hook if pageSize not provided, otherwise use pageSize
 	const effectivePageSize = pageSize || limit;
 
-	// Calculate actual total pages from totalItems and effectivePageSize
-	const calculatedTotalPages = Math.ceil(totalItems / effectivePageSize);
-	// Use calculated pages, fall back to provided total pages for backward compatibility
+	// Calculate actual total pages from totalItems and effectivePageSize (avoid div by zero)
+	const calculatedTotalPages = effectivePageSize > 0 && totalItems > 0 ? Math.ceil(totalItems / effectivePageSize) : 0;
 	const totalPages = calculatedTotalPages || 1;
 
 	const handlePageChange = (newPage: number) => {
@@ -37,7 +46,8 @@ const ShortPagination = ({
 		setPage(newPage);
 	};
 
-	if (totalPages <= 1) return null;
+	// Show pagination when there are multiple pages or when we have items (so "Showing 1 to X of Y" is visible)
+	if (totalItems === 0 && totalPages <= 1) return null;
 
 	const startItem = (page - 1) * effectivePageSize + 1;
 	const endItem = Math.min(page * effectivePageSize, totalItems);

@@ -368,6 +368,14 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		keywords: ['s3', 'exports', 'tools'],
 		icon: Settings,
 	},
+	{
+		id: CommandPaletteCommandId.navToolsWorkflows,
+		label: 'Tools → Workflows',
+		group: CommandPaletteGroup.GoTo,
+		path: P['tools-workflows'],
+		keywords: ['workflows', 'temporal', 'tools'],
+		icon: Settings,
+	},
 	// Go to - Developers / Usage
 	{
 		id: CommandPaletteCommandId.navDevelopersEvents,

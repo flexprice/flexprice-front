@@ -77,6 +77,7 @@ import {
 	ExportManagement,
 	ExportDetails,
 	TaskRunsPage,
+	WorkflowsPage,
 	QuickBooksOAuthCallback,
 	// Error pages
 	ErrorPage,
@@ -167,6 +168,7 @@ export const RouteNames = {
 	s3ExportManagement: '/tools/exports/s3/:connectionId/export',
 	s3ExportDetails: '/tools/exports/s3/:connectionId/export/:exportId',
 	s3TaskRuns: '/tools/exports/s3/:connectionId/export/:exportId/runs',
+	workflows: '/tools/workflows',
 
 	// footer
 	onboarding: '/onboarding',
@@ -510,6 +512,10 @@ export const MainRouter = createBrowserRouter([
 					{
 						path: RouteNames.s3TaskRuns,
 						element: <TaskRunsPage />,
+					},
+					{
+						path: RouteNames.workflows,
+						element: <WorkflowsPage />,
 					},
 				],
 			},

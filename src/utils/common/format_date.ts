@@ -78,3 +78,24 @@ export const formatDateTimeWithSecondsAndTimezone = (date: string | Date): strin
 
 	return dateObj.toLocaleString(undefined, options);
 };
+
+/** Date-time with seconds, no timezone (e.g. for tables where GMT/UTC suffix is not needed) */
+export const formatDateTimeWithSeconds = (date: string | Date): string => {
+	const dateObj = typeof date === 'string' ? new Date(date) : date;
+
+	if (isNaN(dateObj.getTime())) {
+		return 'Invalid Date';
+	}
+
+	const options: Intl.DateTimeFormatOptions = {
+		year: 'numeric',
+		month: 'short',
+		day: '2-digit',
+		hour: '2-digit',
+		minute: '2-digit',
+		second: '2-digit',
+		hour12: false,
+	};
+
+	return dateObj.toLocaleString(undefined, options);
+};

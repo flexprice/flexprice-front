@@ -47,6 +47,7 @@ export const CommandPaletteCommandId = {
 	navToolsImports: 'nav-tools-imports',
 	navToolsExports: 'nav-tools-exports',
 	navToolsS3Exports: 'nav-tools-s3-exports',
+	navToolsWorkflows: 'nav-tools-workflows',
 	// Go to - Developers / Usage
 	navDevelopersEvents: 'nav-developers-events',
 	navUsageTrackingQuery: 'nav-usage-tracking-query',
