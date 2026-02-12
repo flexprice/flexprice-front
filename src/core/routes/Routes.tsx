@@ -168,7 +168,7 @@ export const RouteNames = {
 	s3ExportManagement: '/tools/exports/s3/:connectionId/export',
 	s3ExportDetails: '/tools/exports/s3/:connectionId/export/:exportId',
 	s3TaskRuns: '/tools/exports/s3/:connectionId/export/:exportId/runs',
-	workflows: '/tools/workflows',
+	workflows: '/tools/runs',
 
 	// footer
 	onboarding: '/onboarding',

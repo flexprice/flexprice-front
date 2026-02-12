@@ -160,7 +160,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 															label: 'Asc',
 														},
 														{
-															value: 'desc',
+															value: SortDirection.DESC,
 															label: 'Desc',
 														},
 													]}

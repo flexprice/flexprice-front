@@ -18,6 +18,8 @@ export interface WorkflowItem {
 export interface ListWorkflowsParams {
 	page?: number;
 	page_size?: number;
+	/** Filter by workflow ID */
+	workflow_id?: string;
 	/** Filter by workflow type, e.g. PriceSyncWorkflow */
 	workflow_type?: string;
 	/** Filter by task queue, e.g. task, export */

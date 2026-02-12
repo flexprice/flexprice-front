@@ -16,6 +16,7 @@ class WorkflowsApi {
 			page_size: payload.page_size ?? 10,
 		};
 		const filterKeys: (keyof ListWorkflowsParams)[] = [
+			'workflow_id',
 			'workflow_type',
 			'task_queue',
 			'workflow_status',

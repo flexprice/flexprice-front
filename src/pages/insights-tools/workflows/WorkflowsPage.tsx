@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Page, FormHeader, Loader, ShortPagination, Chip } from '@/components/atoms';
 import { ApiDocsContent, QueryBuilder } from '@/components/molecules';
 import TooltipCell from '@/components/molecules/Table/TooltipCell';
@@ -17,7 +17,6 @@ import {
 import type { TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { useQuery } from '@tanstack/react-query';
 import useFilterSorting from '@/hooks/useFilterSorting';
-import usePagination from '@/hooks/usePagination';
 import { RefreshCw } from 'lucide-react';
 
 const PAGE_SIZE = 10;
@@ -118,6 +117,13 @@ const workflowTypeFilterOptions = [
 
 const filterOptions: FilterField[] = [
 	{
+		field: 'workflow_id',
+		label: 'Workflow ID',
+		fieldType: FilterFieldType.INPUT,
+		operators: [FilterOperator.EQUAL],
+		dataType: DataType.STRING,
+	},
+	{
 		field: 'workflow_type',
 		label: 'Workflow type',
 		fieldType: FilterFieldType.SELECT,
@@ -133,9 +139,9 @@ const filterOptions: FilterField[] = [
 		dataType: DataType.STRING,
 		options: [
 			{ value: FILTER_ANY_VALUE, label: 'Any' },
-			{ value: 'RUNNING', label: 'Running' },
-			{ value: 'COMPLETED', label: 'Completed' },
-			{ value: 'FAILED', label: 'Failed' },
+			{ value: 'Running', label: 'Running' },
+			{ value: 'Completed', label: 'Completed' },
+			{ value: 'Failed', label: 'Failed' },
 		],
 	},
 	{
@@ -173,6 +179,9 @@ function convertWorkflowFiltersToParams(filters: TypedBackendFilter[]): Partial<
 		const value = filter.value?.string?.trim();
 		if (!value || value === FILTER_ANY_VALUE) return;
 		switch (filter.field) {
+			case 'workflow_id':
+				params.workflow_id = value;
+				break;
 			case 'workflow_type':
 				// API expects workflow type key (e.g. PriceSyncWorkflow); convert display name if needed
 				params.workflow_type = WORKFLOW_TYPE_DISPLAY_TO_API[value] ?? value;
@@ -192,10 +201,11 @@ function convertWorkflowFiltersToParams(filters: TypedBackendFilter[]): Partial<
 }
 
 const WorkflowsPage = () => {
-	const { page, setPage, reset: resetPage } = usePagination({ initialLimit: PAGE_SIZE });
+	const [page, setPage] = useState(1);
 
 	const initialFilters = useMemo(
 		() => [
+			{ id: 'wf-workflow_id', field: 'workflow_id', operator: FilterOperator.EQUAL, valueString: '', dataType: DataType.STRING },
 			{
 				id: 'wf-workflow_type',
 				field: 'workflow_type',
@@ -246,36 +256,53 @@ const WorkflowsPage = () => {
 	);
 
 	const { data, isLoading, isError } = useQuery({
-		queryKey: ['workflows', apiParams],
-		queryFn: () => WorkflowsApi.listWorkflows(apiParams),
+		queryKey: ['workflows', page, filterParams, sortParams],
+		queryFn: async () => {
+			const result = await WorkflowsApi.listWorkflows(apiParams);
+			return result;
+		},
+		staleTime: 0,
+		refetchOnWindowFocus: false,
 	});
 
 	useEffect(() => {
-		resetPage();
-	}, [sanitizedFilters, sanitizedSorts, resetPage]);
+		setPage(1);
+	}, [sanitizedFilters, sanitizedSorts]);
 
 	const resetFilters = () => {
 		setFilters(initialFilters);
 		setSorts(initialSorts);
-		resetPage();
+		setPage(1);
 	};
 
-	const totalItems =
-		data?.total !== undefined
-			? data.total
-			: (data?.workflows?.length ?? 0) < PAGE_SIZE
-				? (page - 1) * PAGE_SIZE + (data?.workflows?.length ?? 0)
-				: page * PAGE_SIZE + 1;
+	// Calculate total items for pagination
+	// If backend provides total, use it. Otherwise estimate based on current page results
+	const totalItems = useMemo(() => {
+		if (data?.total !== undefined) {
+			return data.total;
+		}
+
+		const currentPageItems = data?.workflows?.length ?? 0;
+
+		// If we got fewer items than page size, we're on the last page
+		if (currentPageItems < PAGE_SIZE) {
+			return (page - 1) * PAGE_SIZE + currentPageItems;
+		}
+
+		// If we got exactly PAGE_SIZE items, assume there might be more pages
+		// Show at least one more page to allow navigation
+		return page * PAGE_SIZE + 1;
+	}, [data?.total, data?.workflows?.length, page]);
 
 	if (isLoading) {
 		return <Loader />;
 	}
 
 	return (
-		<Page heading='Workflows'>
+		<Page heading='Runs'>
 			<ApiDocsContent tags={['Workflows', 'Temporal']} />
 			<div className='space-y-6'>
-				<FormHeader title='Workflows' variant='sub-header' />
+				<FormHeader title='Runs' variant='sub-header' />
 				<div className='bg-white rounded-md flex items-start gap-4'>
 					<QueryBuilder
 						filterOptions={filterOptions}
@@ -292,7 +319,7 @@ const WorkflowsPage = () => {
 				</div>
 				{isError ? (
 					<div className='rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800'>
-						Failed to load workflows. Please try again later.
+						Failed to load runs. Please try again later.
 					</div>
 				) : data?.workflows?.length ? (
 					<div className='rounded-xl border border-gray-200 overflow-hidden'>
@@ -338,10 +365,10 @@ const WorkflowsPage = () => {
 						</table>
 					</div>
 				) : (
-					<div className='rounded-lg border border-gray-200 bg-gray-50 p-8 text-center text-gray-600'>No workflows found.</div>
+					<div className='rounded-lg border border-gray-200 bg-gray-50 p-8 text-center text-gray-600'>No runs found.</div>
 				)}
 				{data?.workflows && data.workflows.length > 0 && (
-					<ShortPagination unit='Workflows' totalItems={totalItems} pageSize={PAGE_SIZE} currentPage={page} onPageChange={setPage} />
+					<ShortPagination unit='Runs' totalItems={totalItems} pageSize={PAGE_SIZE} currentPage={page} onPageChange={setPage} />
 				)}
 			</div>
 		</Page>
