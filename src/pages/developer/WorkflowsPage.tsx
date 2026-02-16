@@ -99,7 +99,6 @@ const initialSorts: SortOption[] = [
 ];
 
 const WorkflowsPage = () => {
-
 	const columns: ColumnData<WorkflowExecutionDTO>[] = useMemo(
 		() => [
 			{
@@ -130,7 +129,9 @@ const WorkflowsPage = () => {
 			},
 			{
 				title: 'End time',
-				render: (row) => <TooltipCell tooltipContent={row.close_time ? formatDate(row.close_time) : '—'} tooltipText={row.close_time || '—'} />,
+				render: (row) => (
+					<TooltipCell tooltipContent={row.close_time ? formatDate(row.close_time) : '—'} tooltipText={row.close_time || '—'} />
+				),
 			},
 			{
 				title: 'Duration',

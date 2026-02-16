@@ -54,7 +54,7 @@ export interface SubscriptionCalculatorContentProps {
 export const SubscriptionCalculatorContent: React.FC<SubscriptionCalculatorContentProps> = ({
 	currency = 'USD',
 	initialAmount = '',
-	initialContractTerms = 'MONTHLY',
+	initialContractTerms = 'ANNUAL',
 	className,
 	planPeriod = 'ANNUAL',
 	onApply,
@@ -159,7 +159,7 @@ const SubscriptionCalculator: React.FC<SubscriptionCalculatorProps> = ({ currenc
 			<SubscriptionCalculatorContent
 				currency={currency}
 				initialAmount={initialAnnualAmount}
-				initialContractTerms='MONTHLY'
+				initialContractTerms='ANNUAL'
 				planPeriod='ANNUAL'
 			/>
 		</div>

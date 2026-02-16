@@ -15,7 +15,7 @@ import { CurrencyPriceUnitSelector } from '@/components/molecules';
 import { CurrencyPriceUnitSelection, isPriceUnitOption } from '@/types/common';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calculator } from 'lucide-react';
-import { SubscriptionCalculatorContent, type ContractTermValue } from '@/components/organisms/EntityChargesPage/SubscriptionCalculator';
+import { SubscriptionCalculatorContent } from '@/components/organisms/EntityChargesPage/SubscriptionCalculator';
 
 interface Props {
 	price: Partial<InternalPrice>;
@@ -269,8 +269,8 @@ const RecurringChargesForm = ({
 								<SubscriptionCalculatorContent
 									currency={localPrice.currency || 'USD'}
 									initialAmount={localPrice.amount ?? ''}
-									initialContractTerms={(localPrice.billing_period || BILLING_PERIOD.MONTHLY) as ContractTermValue}
-									planPeriod={(localPrice.billing_period || BILLING_PERIOD.MONTHLY) as ContractTermValue}
+									initialContractTerms='ANNUAL'
+									planPeriod='ANNUAL'
 									onApply={(displayAmount) => {
 										setLocalPrice((prev) => ({ ...prev, amount: displayAmount }));
 										setCalculatorOpen(false);
