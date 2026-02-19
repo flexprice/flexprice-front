@@ -13,7 +13,9 @@ import SelectGroup from './SelectGroup';
 import { Group } from '@/models/Group';
 import { CurrencyPriceUnitSelector } from '@/components/molecules';
 import { CurrencyPriceUnitSelection, isPriceUnitOption } from '@/types/common';
-
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calculator } from 'lucide-react';
+import { SubscriptionCalculatorContent, type ContractTermValue } from '@/components/organisms/EntityChargesPage/SubscriptionCalculator';
 interface Props {
 	price: Partial<InternalPrice>;
 	onAdd: (price: Partial<InternalPrice>) => void;
@@ -49,6 +51,7 @@ const RecurringChargesForm = ({
 	}));
 	const [startDate, setStartDate] = useState<Date | undefined>(() => (price.start_date ? new Date(price.start_date) : undefined));
 	const [errors, setErrors] = useState<Partial<Record<keyof InternalPrice, string>>>({});
+	const [calculatorOpen, setCalculatorOpen] = useState(false);
 
 	// Sync localPrice and startDate when price prop or entityName changes
 	useEffect(() => {
@@ -246,7 +249,37 @@ const RecurringChargesForm = ({
 				placeholder='0'
 				error={errors.amount}
 				inputPrefix={displayCurrencySymbol}
-				suffix={<span className='text-[#64748B]'> {`per ${formatBillingPeriodForPrice(localPrice.billing_period || '')}`}</span>}
+				suffix={
+					<div className='flex items-center gap-1.5'>
+						<span className='text-[#64748B]'> {`per ${formatBillingPeriodForPrice(localPrice.billing_period || '')}`}</span>
+						<Popover open={calculatorOpen} onOpenChange={setCalculatorOpen}>
+							<PopoverTrigger asChild>
+								<button
+									type='button'
+									aria-label='Open subscription duration calculator'
+									className='inline-flex items-center justify-center rounded p-0.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1'
+									onClick={(e) => {
+										e.stopPropagation();
+										setCalculatorOpen(true);
+									}}>
+									<Calculator className='size-4' />
+								</button>
+							</PopoverTrigger>
+							<PopoverContent className='w-[360px]' align='end' sideOffset={8} onOpenAutoFocus={(e) => e.preventDefault()}>
+								<SubscriptionCalculatorContent
+									currency={localPrice.currency || 'USD'}
+									initialAmount={localPrice.amount ?? ''}
+									initialContractTerms='ANNUAL'
+									planPeriod={(localPrice.billing_period as any) || 'ANNUAL'}
+									onApply={(displayAmount: string, _contractTerms: ContractTermValue) => {
+										setLocalPrice((prev) => ({ ...prev, amount: displayAmount }));
+										setCalculatorOpen(false);
+									}}
+								/>
+							</PopoverContent>
+						</Popover>
+					</div>
+				}
 			/>
 			<Spacer height={'8px'} />
 			<SelectGroup
