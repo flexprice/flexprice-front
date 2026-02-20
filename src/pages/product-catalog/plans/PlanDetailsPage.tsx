@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useNavigate, useParams, useLocation } from 'react-router';
 
 // Third-party libraries
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { EyeOff, EllipsisVertical, Pencil, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
@@ -15,7 +15,7 @@ import type { DropdownMenuOption } from '@/components/molecules';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 
 // API imports
-import { PlanApi } from '@/api';
+import { PlanApi, WorkflowApi } from '@/api';
 
 // Core services and routes
 import { RouteNames } from '@/core/routes/Routes';
@@ -24,11 +24,12 @@ import { RouteNames } from '@/core/routes/Routes';
 import { Plan, ENTITY_STATUS } from '@/models';
 
 // Constants and utilities
+import { getPlanPriceSyncWorkflowFilters } from '@/constants/workflow';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import { ServerError } from '@/core/axios/types';
 import { INVOICE_CADENCE } from '@/models';
-import { usePlanSyncCooldown } from '@/hooks/usePlanSyncCooldown';
-import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
+import { SortDirection } from '@/types/common/QueryBuilder';
+import formatDate from '@/utils/common/format_date';
 
 export const formatInvoiceCadence = (cadence: string): string => {
 	switch (cadence.toUpperCase()) {
@@ -63,6 +64,7 @@ const PlanDetailsPage = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { planId } = useParams<Params>();
+	const queryClient = useQueryClient();
 	const [activeTab, setActiveTab] = useState<TabId>(tabs[0]?.id);
 	const [planDrawerOpen, setPlanDrawerOpen] = useState(false);
 
@@ -77,6 +79,27 @@ const PlanDetailsPage = () => {
 		},
 		enabled: !!planId,
 	});
+
+	const { data: syncWorkflowsData } = useQuery({
+		queryKey: ['planSyncWorkflows', planId],
+		queryFn: async () =>
+			WorkflowApi.search({
+				filters: getPlanPriceSyncWorkflowFilters(planId!),
+				sort: [{ field: 'start_time', direction: SortDirection.DESC }],
+				limit: 10,
+				offset: 0,
+			}),
+		enabled: !!planId,
+		refetchInterval: (query) => {
+			const data = query.state.data as { items?: { status?: string }[] } | undefined;
+			return data?.items?.some((w) => w.status === 'Running') ? 3000 : false;
+		},
+	});
+
+	// Restrict to this plan's runs (backend may or may not support entity_id filter; client-side filter ensures we only consider this plan)
+	const planRuns = useMemo(() => syncWorkflowsData?.items?.filter((w) => w.entity_id === planId) ?? [], [syncWorkflowsData?.items, planId]);
+	const isSyncRunning = planRuns.some((w) => w.status === 'Running');
+	const latestRun = planRuns[0];
 
 	const { mutate: archivePlan } = useMutation({
 		mutationFn: async () => {
@@ -95,7 +118,7 @@ const PlanDetailsPage = () => {
 		mutationFn: () => PlanApi.synchronizePlanPricesWithSubscription(planId!),
 		onSuccess: () => {
 			toast.success('Sync has been started and will take up to 1 hour to complete.');
-			triggerCooldown();
+			void queryClient.invalidateQueries({ queryKey: ['planSyncWorkflows', planId] });
 		},
 		onError: (error: ServerError) => {
 			toast.error(error?.error?.message || 'Error synchronizing plan with subscriptions');
@@ -103,7 +126,6 @@ const PlanDetailsPage = () => {
 	});
 
 	const { updateBreadcrumb, setSegmentLoading } = useBreadcrumbsStore();
-	const { canSync, cooldownEndsAt, triggerCooldown } = usePlanSyncCooldown(planId);
 
 	const dropdownOptions: DropdownMenuOption[] = useMemo(
 		() => [
@@ -157,11 +179,6 @@ const PlanDetailsPage = () => {
 		}
 	};
 
-	const cooldownEndsAtFormatted = useMemo(
-		() => (cooldownEndsAt != null ? formatDateTimeWithSecondsAndTimezone(new Date(cooldownEndsAt)) : ''),
-		[cooldownEndsAt],
-	);
-
 	if (isLoading) {
 		return <Loader />;
 	}
@@ -193,7 +210,7 @@ const PlanDetailsPage = () => {
 								<span className='inline-block'>
 									<Button
 										onClick={() => syncPlan()}
-										disabled={isSyncing || !canSync}
+										disabled={isSyncing || isSyncRunning}
 										isLoading={isSyncing}
 										variant='outline'
 										className='flex gap-2'>
@@ -205,10 +222,17 @@ const PlanDetailsPage = () => {
 							<TooltipContent>
 								{isSyncing ? (
 									<span className='text-sm'>Syncing...</span>
-								) : !canSync && cooldownEndsAtFormatted ? (
+								) : isSyncRunning ? (
 									<div className='text-sm space-y-1 max-w-[280px]'>
-										<p className='font-medium'>Plan sync was triggered recently.</p>
-										<p className='text-muted-foreground'>You can sync again after {cooldownEndsAtFormatted}.</p>
+										<p className='font-medium'>Sync in progress.</p>
+										<p className='text-muted-foreground'>You can check workflow status in Developer → Workflows.</p>
+									</div>
+								) : latestRun ? (
+									<div className='text-sm space-y-1 max-w-[280px]'>
+										<p className='font-medium'>
+											Last sync: {latestRun.status ?? '—'} at {latestRun.start_time ? formatDate(latestRun.start_time) : '—'}
+										</p>
+										<p className='text-muted-foreground'>Synchronize plan prices with existing subscriptions</p>
 									</div>
 								) : (
 									<span className='text-sm'>Synchronize plan prices with existing subscriptions</span>
