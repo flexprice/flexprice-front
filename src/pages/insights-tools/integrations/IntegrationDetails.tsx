@@ -36,6 +36,8 @@ const IntegrationDetails = () => {
 	});
 
 	const connections = connectionsResponse?.connections || [];
+	// Disable "Add a connection" when at least one connection exists (any status: published, draft, etc.)
+	const hasActiveConnection = connections.length > 0;
 
 	// Delete connection mutation
 	const { mutate: deleteConnection, isPending: isDeletingConnection } = useMutation({
@@ -122,7 +124,7 @@ const IntegrationDetails = () => {
 							Coming Soon
 						</Button>
 					) : (
-						<Button onClick={handleAdd} className='flex gap-2 items-center'>
+						<Button onClick={handleAdd} className='flex gap-2 items-center' disabled={hasActiveConnection}>
 							Add a connection
 						</Button>
 					)}
