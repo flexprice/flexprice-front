@@ -1,10 +1,12 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
-import { ApiDocsContent, DuplicatePlanDialog, PlanDrawer } from '@/components/molecules';
+import { AddButton, Button, Dialog, Page, Chip } from '@/components/atoms';
+import { ApiDocsContent, DropdownMenu, DuplicatePlanDialog, PlanDrawer } from '@/components/molecules';
+import type { DropdownMenuOption } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { Plan } from '@/models/Plan';
 import { QueryableDataArea } from '@/components/organisms';
 import GUIDES from '@/constants/guides';
 import { useState, useMemo } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { PlanApi } from '@/api/PlanApi';
 import {
 	FilterField,
@@ -21,6 +23,10 @@ import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
 import formatChips from '@/utils/common/format_chips';
 import formatDate from '@/utils/common/format_date';
+import toast from 'react-hot-toast';
+import { Copy, EllipsisVertical, EyeOff, Pencil } from 'lucide-react';
+import { ServerError } from '@/core/axios/types';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 const sortingOptions: SortOption[] = [
 	{
@@ -112,7 +118,22 @@ const PlansPage = () => {
 	const [planDrawerOpen, setPlanDrawerOpen] = useState(false);
 	const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
 	const [planToDuplicate, setPlanToDuplicate] = useState<Plan | null>(null);
+	const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
+	const [planToArchive, setPlanToArchive] = useState<Plan | null>(null);
 	const navigate = useNavigate();
+
+	const { mutate: archivePlan, isPending: isArchiving } = useMutation({
+		mutationFn: (id: string) => PlanApi.deletePlan(id),
+		onSuccess: async () => {
+			toast.success('Plan archived successfully');
+			setArchiveDialogOpen(false);
+			setPlanToArchive(null);
+			await refetchQueries('fetchPlans');
+		},
+		onError: (error: ServerError) => {
+			toast.error(error?.error?.message || 'Failed to archive plan');
+		},
+	});
 
 	const handleOnAdd = () => {
 		setActivePlan(null);
@@ -128,6 +149,28 @@ const PlansPage = () => {
 		setPlanToDuplicate(plan);
 		setDuplicateDialogOpen(true);
 	};
+
+	const getRowDropdownOptions = (row: Plan): DropdownMenuOption[] => [
+		{
+			label: 'Edit',
+			icon: <Pencil />,
+			onSelect: () => handleEdit(row),
+		},
+		{
+			label: 'Duplicate',
+			icon: <Copy />,
+			onSelect: () => handleDuplicate(row),
+		},
+		{
+			label: 'Archive',
+			icon: <EyeOff />,
+			onSelect: () => {
+				setPlanToArchive(row);
+				setArchiveDialogOpen(true);
+			},
+			disabled: row.status !== ENTITY_STATUS.PUBLISHED,
+		},
+	];
 
 	const columns: ColumnData<Plan>[] = useMemo(
 		() => [
@@ -151,21 +194,13 @@ const PlansPage = () => {
 			{
 				fieldVariant: 'interactive',
 				render: (row) => (
-					<ActionButton
-						id={row.id}
-						deleteMutationFn={(id) => PlanApi.deletePlan(id)}
-						refetchQueryKey='fetchPlans'
-						entityName='Plan'
-						edit={{
-							path: `${RouteNames.plan}/edit-plan?id=${row.id}`,
-							onClick: () => handleEdit(row),
-						}}
-						duplicate={{
-							onClick: () => handleDuplicate(row),
-						}}
-						archive={{
-							enabled: row.status === ENTITY_STATUS.PUBLISHED,
-						}}
+					<DropdownMenu
+						options={getRowDropdownOptions(row)}
+						trigger={
+							<Button variant='ghost' size='icon' className='size-8'>
+								<EllipsisVertical className='size-4' />
+							</Button>
+						}
 					/>
 				),
 			},
@@ -186,6 +221,20 @@ const PlansPage = () => {
 				}}
 				refetchQueryKeys={['fetchPlans']}
 			/>
+			<Dialog
+				isOpen={archiveDialogOpen}
+				onOpenChange={setArchiveDialogOpen}
+				title='Archive plan'
+				description={`Are you sure you want to archive "${planToArchive?.name}"? This plan will no longer be available for new subscriptions.`}>
+				<div className='flex justify-end gap-2'>
+					<Button variant='outline' onClick={() => setArchiveDialogOpen(false)}>
+						Cancel
+					</Button>
+					<Button variant='destructive' onClick={() => planToArchive && archivePlan(planToArchive.id)} disabled={isArchiving}>
+						{isArchiving ? 'Archiving…' : 'Archive'}
+					</Button>
+				</div>
+			</Dialog>
 			<ApiDocsContent tags={['Plans']} />
 			<div className='space-y-6'>
 				<QueryableDataArea<Plan>
