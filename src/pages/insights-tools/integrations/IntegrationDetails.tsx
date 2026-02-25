@@ -123,8 +123,8 @@ const IntegrationDetails = () => {
 						<Button disabled variant='outline' className='flex gap-2 items-center'>
 							Coming Soon
 						</Button>
-					) : (
-						<Button onClick={handleAdd} className='flex gap-2 items-center' disabled={hasActiveConnection}>
+					) : hasActiveConnection ? null : (
+						<Button onClick={handleAdd} className='flex gap-2 items-center'>
 							Add a connection
 						</Button>
 					)}
