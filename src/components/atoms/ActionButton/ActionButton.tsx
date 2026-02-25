@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Button, Dialog } from '@/components/atoms';
-import { EyeOff, Pencil } from 'lucide-react';
+import { Copy, EyeOff, Pencil } from 'lucide-react';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 interface EditActionConfig {
@@ -22,6 +22,13 @@ interface ArchiveActionConfig {
 	icon?: React.ReactNode;
 }
 
+interface DuplicateActionConfig {
+	enabled?: boolean;
+	text?: string;
+	icon?: React.ReactNode;
+	onClick: () => void;
+}
+
 interface CustomAction {
 	text: string;
 	icon?: React.ReactNode;
@@ -36,6 +43,7 @@ interface ActionProps {
 	entityName: string;
 	triggerIcon?: React.ReactNode;
 	edit?: EditActionConfig;
+	duplicate?: DuplicateActionConfig;
 	archive?: ArchiveActionConfig;
 	customActions?: CustomAction[];
 	disableToast?: boolean;
@@ -58,6 +66,7 @@ const ActionButton: FC<ActionProps> = ({
 	entityName,
 	triggerIcon,
 	edit,
+	duplicate,
 	archive,
 	customActions,
 	disableToast = false,
@@ -93,6 +102,7 @@ const ActionButton: FC<ActionProps> = ({
 
 	const archiveActionText = archiveConfig.text || 'Archive';
 	const editActionText = editConfig.text || 'Edit';
+	const duplicateActionText = duplicate?.text || 'Duplicate';
 
 	const { mutate: deleteEntity } = useMutation({
 		mutationFn: deleteMutationFn,
@@ -141,6 +151,18 @@ const ActionButton: FC<ActionProps> = ({
 								className='flex gap-2 items-center w-full cursor-pointer'>
 								{editConfig.icon || <Pencil />}
 								<span>{editActionText}</span>
+							</DropdownMenuItem>
+						)}
+						{duplicate?.enabled !== false && duplicate?.onClick && (
+							<DropdownMenuItem
+								onSelect={(event) => {
+									event.preventDefault();
+									setIsOpen(false);
+									duplicate.onClick();
+								}}
+								className='flex gap-2 items-center w-full cursor-pointer'>
+								{duplicate.icon ?? <Copy />}
+								<span>{duplicateActionText}</span>
 							</DropdownMenuItem>
 						)}
 						{archiveConfig.enabled !== false && (

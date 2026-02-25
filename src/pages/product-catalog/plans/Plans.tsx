@@ -1,5 +1,5 @@
 import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
-import { ApiDocsContent, PlanDrawer } from '@/components/molecules';
+import { ApiDocsContent, DuplicatePlanDialog, PlanDrawer } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { Plan } from '@/models/Plan';
 import { QueryableDataArea } from '@/components/organisms';
@@ -110,6 +110,8 @@ const initialSorts: SortOption[] = [
 const PlansPage = () => {
 	const [activePlan, setActivePlan] = useState<Plan | null>(null);
 	const [planDrawerOpen, setPlanDrawerOpen] = useState(false);
+	const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
+	const [planToDuplicate, setPlanToDuplicate] = useState<Plan | null>(null);
 	const navigate = useNavigate();
 
 	const handleOnAdd = () => {
@@ -120,6 +122,11 @@ const PlansPage = () => {
 	const handleEdit = (plan: Plan) => {
 		setActivePlan(plan);
 		setPlanDrawerOpen(true);
+	};
+
+	const handleDuplicate = (plan: Plan) => {
+		setPlanToDuplicate(plan);
+		setDuplicateDialogOpen(true);
 	};
 
 	const columns: ColumnData<Plan>[] = useMemo(
@@ -153,6 +160,9 @@ const PlansPage = () => {
 							path: `${RouteNames.plan}/edit-plan?id=${row.id}`,
 							onClick: () => handleEdit(row),
 						}}
+						duplicate={{
+							onClick: () => handleDuplicate(row),
+						}}
 						archive={{
 							enabled: row.status === ENTITY_STATUS.PUBLISHED,
 						}}
@@ -166,6 +176,16 @@ const PlansPage = () => {
 	return (
 		<Page heading='Plans' headingCTA={<AddButton onClick={handleOnAdd} />}>
 			<PlanDrawer data={activePlan} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlans']} />
+			<DuplicatePlanDialog
+				planId={planToDuplicate?.id ?? ''}
+				plan={planToDuplicate}
+				open={duplicateDialogOpen}
+				onOpenChange={(open) => {
+					setDuplicateDialogOpen(open);
+					if (!open) setPlanToDuplicate(null);
+				}}
+				refetchQueryKeys={['fetchPlans']}
+			/>
 			<ApiDocsContent tags={['Plans']} />
 			<div className='space-y-6'>
 				<QueryableDataArea<Plan>
