@@ -86,7 +86,7 @@ const PlanDetailsPage = () => {
 			WorkflowApi.search({
 				filters: getPlanPriceSyncWorkflowFilters(planId!),
 				sort: [{ field: 'start_time', direction: SortDirection.DESC }],
-				limit: 10,
+				limit: 1,
 				offset: 0,
 			}),
 		enabled: !!planId,
@@ -94,7 +94,7 @@ const PlanDetailsPage = () => {
 			const data = query.state.data as { items?: { status?: string; entity_id?: string }[] } | undefined;
 			const items = data?.items ?? [];
 			const latest = items[0];
-			return latest?.status === 'Running' ? 3000 : false;
+			return latest?.status === 'Running' ? 60000 : false;
 		},
 	});
 
