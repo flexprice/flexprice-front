@@ -92,7 +92,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 	}));
 
 	const handleChange = async (environmentId: string) => {
-		const restriction = getRestriction(environmentId);
+		const restriction = getRestriction(environmentId, user?.tenant?.id);
 		if (restriction.state === EnvRestrictionState.Suspended) {
 			setIsOpen(false);
 			setIsSuspendedDialogOpen(true);

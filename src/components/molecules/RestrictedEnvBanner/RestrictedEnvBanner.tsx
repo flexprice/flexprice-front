@@ -56,12 +56,15 @@ const RestrictedEnvBanner: React.FC = () => {
 	}
 
 	const restriction = chosen.result;
-	const isGracePeriod = restriction.state === EnvRestrictionState.GracePeriod && restriction.expiresAt;
 	const isProduction = chosen.type === ENVIRONMENT_TYPE.PRODUCTION;
 	const envLabel = isProduction ? 'production account' : 'sandbox';
 
-	if (isGracePeriod) {
-		const days = daysLeft(restriction.expiresAt!);
+	if (restriction.state === EnvRestrictionState.Active) {
+		return null;
+	}
+
+	if (restriction.state === EnvRestrictionState.GracePeriod && restriction.expiresAt) {
+		const days = daysLeft(restriction.expiresAt);
 		return (
 			<>
 				<div
@@ -88,31 +91,34 @@ const RestrictedEnvBanner: React.FC = () => {
 		);
 	}
 
-	// Suspended
-	return (
-		<>
-			<div
-				className='w-full flex items-center justify-center border-b px-4 py-2'
-				style={{
-					background: 'linear-gradient(to right, #FFEEEE, #FFEAEA, #FFEEEE)',
-					borderColor: '#FFDDDD',
-				}}>
-				<span className='text-sm' style={{ color: '#C81B1B' }}>
-					Your {envLabel} is temporarily closed. To continue,{' '}
-					<button
-						type='button'
-						onClick={() => setIsContactDialogOpen(true)}
-						className='inline-flex items-center gap-1 underline hover:opacity-80'
-						style={{ color: '#C81B1B' }}>
-						contact us
-						<ExternalLink className='h-3.5 w-3.5 shrink-0' aria-hidden />
-					</button>
-					.
-				</span>
-			</div>
-			<ContactUsDialog isOpen={isContactDialogOpen} onOpenChange={setIsContactDialogOpen} />
-		</>
-	);
+	if (restriction.state === EnvRestrictionState.Suspended) {
+		return (
+			<>
+				<div
+					className='w-full flex items-center justify-center border-b px-4 py-2'
+					style={{
+						background: 'linear-gradient(to right, #FFEEEE, #FFEAEA, #FFEEEE)',
+						borderColor: '#FFDDDD',
+					}}>
+					<span className='text-sm' style={{ color: '#C81B1B' }}>
+						Your {envLabel} is temporarily closed. To continue,{' '}
+						<button
+							type='button'
+							onClick={() => setIsContactDialogOpen(true)}
+							className='inline-flex items-center gap-1 underline hover:opacity-80'
+							style={{ color: '#C81B1B' }}>
+							contact us
+							<ExternalLink className='h-3.5 w-3.5 shrink-0' aria-hidden />
+						</button>
+						.
+					</span>
+				</div>
+				<ContactUsDialog isOpen={isContactDialogOpen} onOpenChange={setIsContactDialogOpen} />
+			</>
+		);
+	}
+
+	return null;
 };
 
 export default RestrictedEnvBanner;
