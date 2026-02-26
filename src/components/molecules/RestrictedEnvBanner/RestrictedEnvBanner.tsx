@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { useRestrictedEnvs, EnvRestrictionState } from '@/hooks/useRestrictedEnvs';
@@ -10,23 +10,54 @@ function daysLeft(expiresAt: string): number {
 	return Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
 }
 
+type RestrictionEntry = { envId: string; result: { state: EnvRestrictionState; expiresAt?: string } };
+
+/** Pick which restricted env to show in the banner: prefer production, then suspended, then nearest expiry. */
+function pickEnvToShow(
+	entries: RestrictionEntry[],
+	environments: Array<{ id: string; type: ENVIRONMENT_TYPE }> | undefined,
+): (RestrictionEntry & { type: ENVIRONMENT_TYPE | undefined }) | null {
+	if (entries.length === 0) return null;
+	const envIdToType = (id: string) => environments?.find((e) => e.id === id)?.type;
+	const withType = entries.map((e) => ({ ...e, type: envIdToType(e.envId) }));
+	withType.sort((a, b) => {
+		// Prefer production over sandbox
+		const aProd = a.type === ENVIRONMENT_TYPE.PRODUCTION ? 1 : 0;
+		const bProd = b.type === ENVIRONMENT_TYPE.PRODUCTION ? 1 : 0;
+		if (bProd !== aProd) return bProd - aProd;
+		// Then prefer suspended over grace
+		const aSus = a.result.state === EnvRestrictionState.Suspended ? 1 : 0;
+		const bSus = b.result.state === EnvRestrictionState.Suspended ? 1 : 0;
+		if (bSus !== aSus) return bSus - aSus;
+		// Then nearest expiry first
+		const aExp = a.result.expiresAt ? new Date(a.result.expiresAt).getTime() : Infinity;
+		const bExp = b.result.expiresAt ? new Date(b.result.expiresAt).getTime() : Infinity;
+		return aExp - bExp;
+	});
+	return withType[0];
+}
+
 const RestrictedEnvBanner: React.FC = () => {
 	const { user } = useUser();
-	const { activeEnvironment } = useEnvironment();
-	const { getRestriction, isTenantRestricted } = useRestrictedEnvs();
+	const { environments } = useEnvironment();
+	const { isTenantRestricted, getRestrictionResultsForTenant } = useRestrictedEnvs();
 	const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
 
 	const tenantId = user?.tenant?.id ?? '';
-	const envId = activeEnvironment?.id ?? '';
-	const isProduction = activeEnvironment?.type === ENVIRONMENT_TYPE.PRODUCTION;
+	const tenantEntries = useMemo(() => getRestrictionResultsForTenant(tenantId), [tenantId, getRestrictionResultsForTenant]);
+	const chosen = useMemo(() => pickEnvToShow(tenantEntries, environments), [tenantEntries, environments]);
 
 	if (!tenantId || !isTenantRestricted(tenantId)) {
 		return null;
 	}
 
-	const restriction = getRestriction(envId);
-	const isGracePeriod = restriction.state === EnvRestrictionState.GracePeriod && restriction.expiresAt;
+	if (!chosen) {
+		return null;
+	}
 
+	const restriction = chosen.result;
+	const isGracePeriod = restriction.state === EnvRestrictionState.GracePeriod && restriction.expiresAt;
+	const isProduction = chosen.type === ENVIRONMENT_TYPE.PRODUCTION;
 	const envLabel = isProduction ? 'production account' : 'sandbox';
 
 	if (isGracePeriod) {

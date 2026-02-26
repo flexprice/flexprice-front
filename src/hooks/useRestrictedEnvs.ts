@@ -88,6 +88,24 @@ export function isTenantRestricted(tenantId: string): boolean {
 	return tenantId in PARSED_CONFIG;
 }
 
+export interface TenantRestrictionEntry {
+	envId: string;
+	result: EnvRestrictionResult;
+}
+
+/**
+ * Returns restriction result for each env under the tenant (for picking which env to show in the banner).
+ */
+export function getRestrictionResultsForTenant(tenantId: string): TenantRestrictionEntry[] {
+	if (!tenantId) return [];
+	const tenantEnvs = PARSED_CONFIG[tenantId];
+	if (!tenantEnvs || typeof tenantEnvs !== 'object') return [];
+	return Object.keys(tenantEnvs).map((envId) => ({
+		envId,
+		result: getEnvRestriction(envId),
+	}));
+}
+
 /**
  * Resolves restriction state for an environment id (uses flat map from nested config).
  * Pure function: no side effects.
@@ -111,6 +129,8 @@ export interface UseRestrictedEnvsReturn {
 	getRestriction: (envId: string) => EnvRestrictionResult;
 	/** True if the tenant is in the restricted list (show strip regardless of env) */
 	isTenantRestricted: (tenantId: string) => boolean;
+	/** Restriction result per env under the tenant (for banner: show the env that is closed/closing) */
+	getRestrictionResultsForTenant: (tenantId: string) => TenantRestrictionEntry[];
 }
 
 /**
@@ -135,7 +155,16 @@ export function useRestrictedEnvs(): UseRestrictedEnvsReturn {
 		return isTenantRestricted(tenantId);
 	}, []);
 
-	return { restrictedEnvs, getRestriction, isTenantRestricted: isTenantRestrictedCallback };
+	const getRestrictionResultsForTenantCallback = useCallback((tenantId: string) => {
+		return getRestrictionResultsForTenant(tenantId);
+	}, []);
+
+	return {
+		restrictedEnvs,
+		getRestriction,
+		isTenantRestricted: isTenantRestrictedCallback,
+		getRestrictionResultsForTenant: getRestrictionResultsForTenantCallback,
+	};
 }
 
 export default useRestrictedEnvs;
