@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { useRestrictedEnvs, EnvRestrictionState } from '@/hooks/useRestrictedEnvs';
+import useUser from '@/hooks/useUser';
 import { ENVIRONMENT_TYPE } from '@/models/Environment';
 import ContactUsDialog from '../ContactUsDialog/ContactUsDialog';
 
@@ -10,22 +11,26 @@ function daysLeft(expiresAt: string): number {
 }
 
 const RestrictedEnvBanner: React.FC = () => {
+	const { user } = useUser();
 	const { activeEnvironment } = useEnvironment();
-	const { getRestriction } = useRestrictedEnvs();
+	const { getRestriction, isTenantRestricted } = useRestrictedEnvs();
 	const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
 
+	const tenantId = user?.tenant?.id ?? '';
 	const envId = activeEnvironment?.id ?? '';
 	const isProduction = activeEnvironment?.type === ENVIRONMENT_TYPE.PRODUCTION;
-	const restriction = getRestriction(envId);
 
-	if (restriction.state === EnvRestrictionState.Active) {
+	if (!tenantId || !isTenantRestricted(tenantId)) {
 		return null;
 	}
 
+	const restriction = getRestriction(envId);
+	const isGracePeriod = restriction.state === EnvRestrictionState.GracePeriod && restriction.expiresAt;
+
 	const envLabel = isProduction ? 'production account' : 'sandbox';
 
-	if (restriction.state === EnvRestrictionState.GracePeriod && restriction.expiresAt) {
-		const days = daysLeft(restriction.expiresAt);
+	if (isGracePeriod) {
+		const days = daysLeft(restriction.expiresAt!);
 		return (
 			<>
 				<div
