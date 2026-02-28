@@ -165,38 +165,84 @@ export interface ListSubscriptionPausesResponse {
 
 // Subscription Change Types
 export interface PreviewSubscriptionChangeRequest {
-	plan_id?: string;
-	effective_date?: string;
+	target_plan_id?: string;
+	billing_cadence?: string;
+	billing_period?: string;
+	billing_period_count?: number;
+	billing_cycle?: string;
+	change_at?: string;
 	proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
+	metadata?: Record<string, any>;
 	override_line_items?: OverrideLineItemRequest[];
 	entitlement_overrides?: EntitlementOverrideRequest[];
 	line_item_commitments?: LineItemCommitmentsMap;
 	enable_true_up?: boolean;
-	metadata?: Metadata;
 }
 
 export interface PreviewSubscriptionChangeResponse {
 	subscription_id: string;
-	preview: {
-		amount_due: number;
-		proration_amount: number;
-		proration_details: ProrationDetail[];
-		new_line_items: SubscriptionLineItemResponse[];
-		updated_line_items: SubscriptionLineItemResponse[];
-		removed_line_items: SubscriptionLineItemResponse[];
-		effective_date: string;
+	current_plan: {
+		id: string;
+		name: string;
+		lookup_key: string;
 	};
+	target_plan: {
+		id: string;
+		name: string;
+		lookup_key: string;
+	};
+	change_type: string;
+	proration_details: {
+		credit_amount: string;
+		credit_description: string;
+		charge_amount: string;
+		charge_description: string;
+		net_amount: string;
+		proration_date: string;
+		current_period_start: string;
+		current_period_end: string;
+		days_used: number;
+		days_remaining: number;
+		currency: string;
+	};
+	next_invoice_preview: {
+		subtotal: string;
+		tax_amount: string;
+		total: string;
+		currency: string;
+		line_items: {
+			description: string;
+			amount: string;
+			quantity: string;
+			unit_price: string;
+			is_proration: boolean;
+		}[];
+	};
+	effective_date: string;
+	new_billing_cycle: {
+		period_start: string;
+		period_end: string;
+		billing_anchor: string;
+		billing_cadence: string;
+		billing_period: string;
+		billing_period_count: number;
+	};
+	warnings: string[];
 }
 
 export interface ExecuteSubscriptionChangeRequest {
-	plan_id?: string;
-	effective_date?: string;
+	target_plan_id?: string;
+	billing_cadence?: string;
+	billing_period?: string;
+	billing_period_count?: number;
+	billing_cycle?: string;
+	change_at?: string;
 	proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
+	metadata?: Record<string, any>;
 	override_line_items?: OverrideLineItemRequest[];
 	entitlement_overrides?: EntitlementOverrideRequest[];
 	line_item_commitments?: LineItemCommitmentsMap;
 	enable_true_up?: boolean;
-	metadata?: Metadata;
 }
 
 export interface ExecuteSubscriptionChangeResponse {
