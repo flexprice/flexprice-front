@@ -388,6 +388,12 @@ const FeatureDetails = () => {
 										<span className='text-gray-500 text-sm'>Unit Name</span>
 										<span className='text-gray-800 text-sm'>{`${data?.unit_singular || 'unit'} / ${data?.unit_plural || 'units'}`}</span>
 									</div>
+									{data?.reporting_unit && (
+										<div className='grid grid-cols-[200px_1fr] items-center'>
+											<span className='text-gray-500 text-sm'>Display Unit Name</span>
+											<span className='text-gray-800 text-sm'>{`${data.reporting_unit.unit_singular || '--'} / ${data.reporting_unit.unit_plural || '--'}`}</span>
+										</div>
+									)}
 									<div className='grid grid-cols-[200px_1fr] items-center'>
 										<span className='text-gray-500 text-sm'>Usage Reset </span>
 										<span className='text-gray-800 text-sm'>{formatMeterUsageResetPeriodToDisplay(data?.meter?.reset_usage || '--')}</span>

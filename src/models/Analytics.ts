@@ -47,6 +47,9 @@ export interface UsageAnalyticItem {
 	unit_plural?: string;
 	aggregation_type?: METER_AGGREGATION_TYPE;
 	total_usage: number;
+	/** When set (and reporting_unit is not null), display this instead of formatted total_usage + unit */
+	total_usage_display?: string;
+	reporting_unit?: { unit_singular?: string; unit_plural?: string; conversion_rate?: string } | null;
 	total_cost: number;
 	currency?: string;
 	event_count: number;

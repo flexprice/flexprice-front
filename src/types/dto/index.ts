@@ -8,6 +8,7 @@ export type {
 	GetFeaturesResponse,
 	GetFeatureByFilterPayload,
 	UpdateFeaturePayload,
+	ReportingUnit,
 } from './Feature';
 
 export type { GetConnectionsPayload, GetConnectionsResponse, CreateConnectionPayload, UpdateConnectionPayload } from './Connection';

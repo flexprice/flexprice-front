@@ -15,12 +15,24 @@ interface Props {
 	refetchQueryKeys?: string | string[];
 }
 
+const getInitialReportingUnit = (data: Feature | undefined) => {
+	if (data?.reporting_unit) {
+		return {
+			unit_singular: data.reporting_unit.unit_singular ?? '',
+			unit_plural: data.reporting_unit.unit_plural ?? '',
+			conversion_rate: data.reporting_unit.conversion_rate ?? '0.01',
+		};
+	}
+	return { unit_singular: '', unit_plural: '', conversion_rate: '0.01' };
+};
+
 const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQueryKeys }) => {
 	const [formData, setFormData] = useState<UpdateFeatureRequest>({
 		name: data?.name || '',
 		description: data?.description || '',
 		unit_singular: data?.unit_singular || '',
 		unit_plural: data?.unit_plural || '',
+		reporting_unit: getInitialReportingUnit(data),
 	});
 	const [errors, setErrors] = useState<Partial<Record<keyof UpdateFeatureRequest, string>>>({});
 
@@ -45,6 +57,7 @@ const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQu
 				description: data.description || '',
 				unit_singular: data.unit_singular || '',
 				unit_plural: data.unit_plural || '',
+				reporting_unit: getInitialReportingUnit(data),
 			});
 		}
 		setErrors({});
@@ -71,6 +84,14 @@ const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQu
 			description: formData.description?.trim() || undefined,
 			unit_singular: formData.unit_singular?.trim() || undefined,
 			unit_plural: formData.unit_plural?.trim() || undefined,
+			reporting_unit:
+				formData.reporting_unit && (formData.reporting_unit.unit_singular?.trim() || formData.reporting_unit.unit_plural?.trim())
+					? {
+							unit_singular: formData.reporting_unit.unit_singular?.trim() ?? '',
+							unit_plural: formData.reporting_unit.unit_plural?.trim() ?? '',
+							conversion_rate: formData.reporting_unit.conversion_rate?.trim() ?? '0.01',
+						}
+					: undefined,
 		};
 
 		updateFeature(updateDto);
@@ -116,6 +137,54 @@ const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQu
 					value={formData.unit_plural || ''}
 					onChange={(e) => {
 						setFormData({ ...formData, unit_plural: e });
+					}}
+				/>
+
+				<Input
+					label='Display Unit Singular'
+					placeholder='e.g., unit'
+					value={formData.reporting_unit?.unit_singular ?? ''}
+					onChange={(e) => {
+						setFormData({
+							...formData,
+							reporting_unit: {
+								unit_singular: e,
+								unit_plural: e + 's',
+								conversion_rate: formData.reporting_unit?.conversion_rate ?? '0.01',
+							},
+						});
+					}}
+				/>
+
+				<Input
+					label='Display Unit Plural'
+					placeholder='e.g., units'
+					value={formData.reporting_unit?.unit_plural ?? ''}
+					onChange={(e) => {
+						setFormData({
+							...formData,
+							reporting_unit: {
+								unit_singular: formData.reporting_unit?.unit_singular ?? '',
+								unit_plural: e,
+								conversion_rate: formData.reporting_unit?.conversion_rate ?? '0.01',
+							},
+						});
+					}}
+				/>
+
+				<Input
+					label='Display Unit Conversion Factor'
+					placeholder='e.g., 0.0000167'
+					value={formData.reporting_unit?.conversion_rate ?? ''}
+					onChange={(e) => {
+						setFormData({
+							...formData,
+							reporting_unit: {
+								unit_singular: formData.reporting_unit?.unit_singular ?? '',
+								unit_plural: formData.reporting_unit?.unit_plural ?? '',
+								conversion_rate: e,
+							},
+						});
 					}}
 				/>
 

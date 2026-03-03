@@ -29,6 +29,11 @@ export interface Feature extends BaseModel {
 	readonly tenant_id: string;
 	readonly unit_plural: string;
 	readonly unit_singular: string;
+	readonly reporting_unit?: {
+		unit_singular: string;
+		unit_plural: string;
+		conversion_rate?: string;
+	};
 	readonly meter?: Meter;
 	readonly alert_settings?: AlertSettings;
 }

@@ -148,6 +148,13 @@ const FEATURE_SCHEMA = z.object({
 	meter_id: z.string().optional(),
 	unit_singular: z.string().optional(),
 	unit_plural: z.string().optional(),
+	reporting_unit: z
+		.object({
+			unit_singular: z.string(),
+			unit_plural: z.string(),
+			conversion_rate: z.string(),
+		})
+		.optional(),
 });
 
 // Types
@@ -155,6 +162,7 @@ interface FeatureFormState {
 	showDescription: boolean;
 	showLookupKey: boolean;
 	showUnitName: boolean;
+	showReportingUnitName: boolean;
 	showEventFilters: boolean;
 	showBucketSize: boolean;
 	showGroupBy: boolean;
@@ -177,6 +185,7 @@ const useFeatureForm = () => {
 		showDescription: false,
 		showLookupKey: false,
 		showUnitName: false,
+		showReportingUnitName: false,
 		showEventFilters: false,
 		showBucketSize: false,
 		showGroupBy: false,
@@ -319,6 +328,19 @@ const FeatureDetailsSection = ({
 		[onUpdateFeature],
 	);
 
+	const handleReportingUnitSingularChange = useCallback(
+		(unit_singular: string) => {
+			onUpdateFeature({
+				reporting_unit: {
+					unit_singular,
+					unit_plural: unit_singular + 's',
+					conversion_rate: data.reporting_unit?.conversion_rate ?? '',
+				},
+			});
+		},
+		[onUpdateFeature, data.reporting_unit?.conversion_rate],
+	);
+
 	const isMeteredType = data.type === FEATURE_TYPE.METERED;
 
 	return (
@@ -345,20 +367,21 @@ const FeatureDetailsSection = ({
 
 			<Spacer height='16px' />
 
-			{/* Optional fields: vertical order — opening Lookup Key pushes Unit name & Feature description below */}
+			{/* Optional fields: show top row only when nothing is open; otherwise buttons only below expanded sections */}
 			<div className='flex flex-col gap-4'>
-				{/* 1. Lookup Key — button or input */}
-				{!formState.showLookupKey ? (
+				{/* 1. Top row: either all add-buttons (when nothing open) or Lookup Key input only */}
+				{!formState.showLookupKey && !formState.showUnitName && !formState.showReportingUnitName && !formState.showDescription ? (
 					<div className='flex flex-wrap items-center gap-2'>
 						<AddChargesButton label='Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
-						{isMeteredType && !formState.showUnitName ? (
-							<AddChargesButton label='Unit name' onClick={() => onUpdateFormState({ showUnitName: true })} />
-						) : null}
-						{!formState.showDescription ? (
-							<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
-						) : null}
+						{isMeteredType && (
+							<>
+								<AddChargesButton label='Unit Name' onClick={() => onUpdateFormState({ showUnitName: true })} />
+								<AddChargesButton label='Display Unit Name' onClick={() => onUpdateFormState({ showReportingUnitName: true })} />
+							</>
+						)}
+						<AddChargesButton label='Feature Description' onClick={() => onUpdateFormState({ showDescription: true })} />
 					</div>
-				) : (
+				) : formState.showLookupKey ? (
 					<Input
 						label='Lookup Key'
 						placeholder='Enter a unique lookup key (optional)'
@@ -366,50 +389,123 @@ const FeatureDetailsSection = ({
 						error={errors.lookup_key}
 						onChange={(lookup_key) => onUpdateFeature({ lookup_key })}
 					/>
-				)}
+				) : null}
 
-				{/* 2. Unit name (metered) & Feature description — only below when Lookup Key is open */}
-				{formState.showLookupKey && (
+				{/* 2. Nested optional fields — same UI whether Lookup Key was opened first or not */}
+				{(formState.showLookupKey || formState.showUnitName || formState.showReportingUnitName || formState.showDescription) && (
 					<>
 						{isMeteredType && (
 							<>
-								{!formState.showUnitName ? (
+								{!formState.showUnitName && !formState.showReportingUnitName ? (
 									<div className='flex flex-wrap items-center gap-2'>
+										{!formState.showLookupKey && (
+											<AddChargesButton label='Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
+										)}
 										<AddChargesButton label='Unit name' onClick={() => onUpdateFormState({ showUnitName: true })} />
+										<AddChargesButton label='Display Unit Name' onClick={() => onUpdateFormState({ showReportingUnitName: true })} />
 										{!formState.showDescription ? (
 											<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
 										) : null}
 									</div>
 								) : (
 									<>
-										<FormHeader variant='form-component-title' title='Unit Name' />
-										<div className='gap-4 grid grid-cols-2'>
-											<Input placeholder='singular' value={data.unit_singular || ''} onChange={handleUnitSingularChange} />
-											<Input
-												placeholder='plural'
-												value={data.unit_plural || ''}
-												onChange={(unit_plural) => onUpdateFeature({ unit_plural })}
-											/>
-										</div>
-										<FormHeader
-											variant='form-component-title'
-											subtitle='If the unit name changes when the value is plural, please provide the names of the units'
-										/>
-										{!formState.showDescription ? (
+										{formState.showUnitName && (
+											<>
+												<FormHeader variant='form-component-title' title='Unit Name' />
+												<div className='gap-4 grid grid-cols-2'>
+													<Input
+														label='Unit Singular'
+														placeholder='millisecond'
+														value={data.unit_singular || ''}
+														onChange={handleUnitSingularChange}
+													/>
+													<Input
+														label='Unit Plural'
+														placeholder='milliseconds'
+														value={data.unit_plural || ''}
+														onChange={(unit_plural) => onUpdateFeature({ unit_plural })}
+													/>
+												</div>
+												<FormHeader variant='form-component-title' />
+											</>
+										)}
+										{formState.showReportingUnitName && (
+											<>
+												<FormHeader variant='form-component-title' title='Display Unit Name' />
+												<div className='gap-4 grid grid-cols-2'>
+													<Input
+														label='Display Unit Singular'
+														placeholder='minute'
+														value={data.reporting_unit?.unit_singular ?? ''}
+														onChange={handleReportingUnitSingularChange}
+													/>
+													<Input
+														label='Display Unit Plural'
+														placeholder='minutes'
+														value={data.reporting_unit?.unit_plural ?? ''}
+														onChange={(unit_plural) =>
+															onUpdateFeature({
+																reporting_unit: {
+																	unit_singular: data.reporting_unit?.unit_singular ?? '',
+																	unit_plural,
+																	conversion_rate: data.reporting_unit?.conversion_rate ?? '',
+																},
+															})
+														}
+													/>
+													<Input
+														label='Conversion Factor'
+														placeholder='(e.g. 0.0000167)'
+														description='Display Value = Unit Value * Conversion Factor'
+														value={data.reporting_unit?.conversion_rate ?? ''}
+														onChange={(conversion_rate) =>
+															onUpdateFeature({
+																reporting_unit: {
+																	unit_singular: data.reporting_unit?.unit_singular ?? '',
+																	unit_plural: data.reporting_unit?.unit_plural ?? '',
+																	conversion_rate,
+																},
+															})
+														}
+													/>
+												</div>
+												<FormHeader variant='form-component-title' />
+											</>
+										)}
+										{(!formState.showLookupKey ||
+											!formState.showUnitName ||
+											!formState.showReportingUnitName ||
+											!formState.showDescription) && (
 											<div className='flex flex-wrap items-center gap-2'>
-												<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
+												{!formState.showLookupKey && (
+													<AddChargesButton label='Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
+												)}
+												{!formState.showUnitName && (
+													<AddChargesButton label='Unit name' onClick={() => onUpdateFormState({ showUnitName: true })} />
+												)}
+												{!formState.showReportingUnitName && (
+													<AddChargesButton label='Display unit name' onClick={() => onUpdateFormState({ showReportingUnitName: true })} />
+												)}
+												{!formState.showDescription && (
+													<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
+												)}
 											</div>
-										) : null}
+										)}
 									</>
 								)}
 							</>
 						)}
-						{!isMeteredType && !formState.showDescription && (
+						{!isMeteredType && (!formState.showLookupKey || !formState.showDescription) && (
 							<div className='flex flex-wrap items-center gap-2'>
-								<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
+								{!formState.showLookupKey && (
+									<AddChargesButton label='Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
+								)}
+								{!formState.showDescription && (
+									<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
+								)}
 							</div>
 						)}
-						{(!isMeteredType || formState.showUnitName) && formState.showDescription ? (
+						{formState.showDescription && (
 							<Textarea
 								label='Feature Description'
 								placeholder='Enter description'
@@ -418,38 +514,8 @@ const FeatureDetailsSection = ({
 								className='!min-h-32'
 								onChange={(description) => onUpdateFeature({ description })}
 							/>
-						) : null}
+						)}
 					</>
-				)}
-
-				{/* When Lookup Key not open: Unit name (metered) and Feature description in their own rows */}
-				{!formState.showLookupKey && isMeteredType && formState.showUnitName && (
-					<>
-						<FormHeader variant='form-component-title' title='Unit Name' />
-						<div className='gap-4 grid grid-cols-2'>
-							<Input placeholder='singular' value={data.unit_singular || ''} onChange={handleUnitSingularChange} />
-							<Input placeholder='plural' value={data.unit_plural || ''} onChange={(unit_plural) => onUpdateFeature({ unit_plural })} />
-						</div>
-						<FormHeader
-							variant='form-component-title'
-							subtitle='If the unit name changes when the value is plural, please provide the names of the units'
-						/>
-						{!formState.showDescription ? (
-							<div className='flex flex-wrap items-center gap-2'>
-								<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
-							</div>
-						) : null}
-					</>
-				)}
-				{!formState.showLookupKey && formState.showDescription && (
-					<Textarea
-						label='Feature Description'
-						placeholder='Enter description'
-						value={data.description || ''}
-						error={errors.description}
-						className='!min-h-32'
-						onChange={(description) => onUpdateFeature({ description })}
-					/>
 				)}
 			</div>
 		</Card>
@@ -798,6 +864,14 @@ const AddFeaturePage = () => {
 				metadata: featureData.metadata,
 				unit_singular: featureData.unit_singular,
 				unit_plural: featureData.unit_plural,
+				reporting_unit:
+					featureData.reporting_unit && (featureData.reporting_unit.unit_singular || featureData.reporting_unit.unit_plural)
+						? {
+								unit_singular: featureData.reporting_unit.unit_singular ?? '',
+								unit_plural: featureData.reporting_unit.unit_plural ?? '',
+								conversion_rate: featureData.reporting_unit.conversion_rate ?? '',
+							}
+						: undefined,
 			};
 
 			return await FeatureApi.createFeature(sanitizedData);

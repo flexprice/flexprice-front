@@ -503,6 +503,19 @@ const UsageDataTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }) => 
 		{
 			title: renderSortableHeader('total_usage', 'Total Usage'),
 			render: (row: UsageAnalyticItem) => {
+				if (row.total_usage_display !== '' && row.total_usage_display != null && row.reporting_unit != null) {
+					const reportingUnitLabel =
+						row.total_usage === 1
+							? (row.reporting_unit.unit_singular ?? row.reporting_unit.unit_plural ?? '')
+							: (row.reporting_unit.unit_plural ?? row.reporting_unit.unit_singular ?? '');
+					const suffix = reportingUnitLabel ? ` ${reportingUnitLabel}` : '';
+					return (
+						<span>
+							{row.total_usage_display}
+							{suffix}
+						</span>
+					);
+				}
 				const unit = row.unit ? ` ${row.total_usage === 1 ? row.unit : (row.unit_plural ?? row.unit)}` : '';
 				return (
 					<span>

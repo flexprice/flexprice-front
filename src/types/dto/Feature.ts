@@ -6,6 +6,12 @@ import { MeterFilter, CreateMeterRequest } from './Meter';
 // Feature Request Types
 // ============================================
 
+export interface ReportingUnit {
+	unit_singular: string;
+	unit_plural: string;
+	conversion_rate: string;
+}
+
 export interface CreateFeatureRequest {
 	name: string;
 	description?: string;
@@ -16,6 +22,7 @@ export interface CreateFeatureRequest {
 	metadata?: Metadata;
 	unit_singular?: string;
 	unit_plural?: string;
+	reporting_unit?: ReportingUnit;
 	alert_settings?: AlertSettings;
 }
 
@@ -25,6 +32,7 @@ export interface UpdateFeatureRequest {
 	metadata?: Metadata;
 	unit_singular?: string;
 	unit_plural?: string;
+	reporting_unit?: ReportingUnit;
 	filters?: MeterFilter[];
 	alert_settings?: AlertSettings;
 }
