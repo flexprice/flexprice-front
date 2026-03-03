@@ -504,10 +504,11 @@ const UsageDataTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }) => 
 			title: renderSortableHeader('total_usage', 'Total Usage'),
 			render: (row: UsageAnalyticItem) => {
 				if (row.total_usage_display !== '' && row.total_usage_display != null && row.reporting_unit != null) {
-					const reportingUnitLabel =
-						row.total_usage === 1
-							? (row.reporting_unit.unit_singular ?? row.reporting_unit.unit_plural ?? '')
-							: (row.reporting_unit.unit_plural ?? row.reporting_unit.unit_singular ?? '');
+					const displayNum = Number(parseFloat((row.total_usage_display || '0').replace(/,/g, '')));
+					const isSingular = displayNum === 1;
+					const reportingUnitLabel = isSingular
+						? (row.reporting_unit.unit_singular ?? row.reporting_unit.unit_plural ?? '')
+						: (row.reporting_unit.unit_plural ?? row.reporting_unit.unit_singular ?? '');
 					const suffix = reportingUnitLabel ? ` ${reportingUnitLabel}` : '';
 					return (
 						<span>

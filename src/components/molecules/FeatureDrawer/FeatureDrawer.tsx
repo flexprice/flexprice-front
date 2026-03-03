@@ -89,7 +89,7 @@ const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQu
 					? {
 							unit_singular: formData.reporting_unit.unit_singular?.trim() ?? '',
 							unit_plural: formData.reporting_unit.unit_plural?.trim() ?? '',
-							conversion_rate: formData.reporting_unit.conversion_rate?.trim() ?? '0.01',
+							conversion_rate: formData.reporting_unit.conversion_rate?.trim() || '0.01',
 						}
 					: undefined,
 		};
@@ -149,7 +149,7 @@ const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQu
 							...formData,
 							reporting_unit: {
 								unit_singular: e,
-								unit_plural: e + 's',
+								unit_plural: e ? e + 's' : '',
 								conversion_rate: formData.reporting_unit?.conversion_rate ?? '0.01',
 							},
 						});

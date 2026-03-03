@@ -152,7 +152,12 @@ const FEATURE_SCHEMA = z.object({
 		.object({
 			unit_singular: z.string(),
 			unit_plural: z.string(),
-			conversion_rate: z.string(),
+			conversion_rate: z
+				.string()
+				.optional()
+				.refine((s) => s === undefined || s === '' || (!Number.isNaN(Number(s)) && isFinite(Number(s))), {
+					message: 'Conversion rate must be a valid number',
+				}),
 		})
 		.optional(),
 });
@@ -330,6 +335,10 @@ const FeatureDetailsSection = ({
 
 	const handleReportingUnitSingularChange = useCallback(
 		(unit_singular: string) => {
+			if (!unit_singular.trim()) {
+				onUpdateFeature({ reporting_unit: undefined });
+				return;
+			}
 			onUpdateFeature({
 				reporting_unit: {
 					unit_singular,
@@ -855,6 +864,23 @@ const AddFeaturePage = () => {
 						}
 					: undefined;
 
+			const ru = featureData.reporting_unit;
+			const unitSingular = ru?.unit_singular?.trim() ?? '';
+			const unitPlural = ru?.unit_plural?.trim() ?? '';
+			const conversionRateRaw = ru?.conversion_rate?.trim() ?? '';
+			const conversionRateNum = conversionRateRaw === '' ? NaN : Number(conversionRateRaw);
+			const conversionRate =
+				conversionRateRaw !== '' && !Number.isNaN(conversionRateNum) && isFinite(conversionRateNum) ? conversionRateRaw : '0.01';
+
+			const reporting_unit =
+				featureData.type === FEATURE_TYPE.METERED && (unitSingular || unitPlural)
+					? {
+							unit_singular: unitSingular,
+							unit_plural: unitPlural,
+							conversion_rate: conversionRate,
+						}
+					: undefined;
+
 			const sanitizedData: CreateFeatureRequest = {
 				name: featureData.name!,
 				description: featureData.description,
@@ -862,16 +888,9 @@ const AddFeaturePage = () => {
 				type: featureData.type!,
 				meter: meterRequest,
 				metadata: featureData.metadata,
-				unit_singular: featureData.unit_singular,
-				unit_plural: featureData.unit_plural,
-				reporting_unit:
-					featureData.reporting_unit && (featureData.reporting_unit.unit_singular || featureData.reporting_unit.unit_plural)
-						? {
-								unit_singular: featureData.reporting_unit.unit_singular ?? '',
-								unit_plural: featureData.reporting_unit.unit_plural ?? '',
-								conversion_rate: featureData.reporting_unit.conversion_rate ?? '',
-							}
-						: undefined,
+				unit_singular: featureData.unit_singular?.trim() || undefined,
+				unit_plural: featureData.unit_plural?.trim() || undefined,
+				reporting_unit,
 			};
 
 			return await FeatureApi.createFeature(sanitizedData);
