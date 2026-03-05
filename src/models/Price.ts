@@ -1,6 +1,7 @@
 import { BaseModel, Metadata } from './base';
 import { BILLING_CADENCE, INVOICE_CADENCE } from './Invoice';
 import { Meter } from './Meter';
+import { Group } from './Group';
 
 export interface Price extends BaseModel {
 	readonly amount: string;
@@ -37,6 +38,8 @@ export interface Price extends BaseModel {
 	readonly price_unit_config?: PriceUnitConfig;
 	readonly parent_price_id?: string;
 	readonly group_id?: string;
+	/** Expanded from API when price is included with group */
+	readonly group?: Group;
 	readonly min_quantity?: number;
 }
 
