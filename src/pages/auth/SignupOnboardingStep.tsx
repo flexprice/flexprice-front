@@ -102,9 +102,12 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 		}
 		if (!isValidReferral) next.referralSource = 'Please select how you found us';
 		const trimmedOrgUrl = orgUrl.trim();
-		if (trimmedOrgUrl && !isValidUrl(trimmedOrgUrl)) {
+		if (!trimmedOrgUrl) {
+			next.orgUrl = 'Organization website is required';
+		} else if (!isValidUrl(trimmedOrgUrl)) {
 			next.orgUrl = 'Please enter a valid URL';
 		}
+		if (!role.trim()) next.role = 'Role is required';
 		setErrors(next);
 		return Object.keys(next).length === 0;
 	};
@@ -151,28 +154,31 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 						error={errors.orgName}
 					/>
 				</div>
-				<Input
-					label='Organization URL'
-					placeholder='e.g. https://google.com'
-					value={orgUrl}
-					onChange={(v) => {
-						setOrgUrl(v);
-						if (errors.orgUrl) validateOrgUrl(v);
-					}}
-					onBlur={() => validateOrgUrl(orgUrl)}
-					type='text'
-					description='Enter your organization’s website link'
-					error={errors.orgUrl}
-				/>
-
-				<Input
-					label='What role do you perform in your organization?'
-					placeholder='Your role'
-					value={role}
-					onChange={(v) => setRole(v)}
-					required
-					error={errors.role}
-				/>
+				<div className='space-y-1'>
+					<label className='block text-sm font-medium text-zinc break-words text-zinc-950' htmlFor='signup-org-url'>
+						Organization URL <span className='text-destructive'>*</span>
+					</label>
+					<Input
+						id='signup-org-url'
+						placeholder='e.g. https://google.com'
+						value={orgUrl}
+						onChange={(v) => {
+							setOrgUrl(v);
+							if (errors.orgUrl) validateOrgUrl(v);
+						}}
+						onBlur={() => validateOrgUrl(orgUrl)}
+						type='text'
+						description='Enter your organization’s website link'
+						error={errors.orgUrl}
+						required
+					/>
+				</div>
+				<div className='space-y-1'>
+					<label className='block text-sm font-medium text-zinc break-words text-zinc-950' htmlFor='signup-role'>
+						What role do you perform in your organization? <span className='text-destructive'>*</span>
+					</label>
+					<Input id='signup-role' placeholder='Your role' value={role} onChange={(v) => setRole(v)} required error={errors.role} />
+				</div>
 				<Select
 					label="What's your team size?"
 					options={teamSizeOptions}
