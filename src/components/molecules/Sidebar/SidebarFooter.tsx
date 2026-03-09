@@ -1,16 +1,13 @@
 import { useEffect, useCallback } from 'react';
-import { BookOpen, ExternalLink, ChevronsUpDown, LogOut, ListChecks } from 'lucide-react';
-import { RouteNames } from '@/core/routes/Routes';
+import { BookOpen, ExternalLink, ChevronsUpDown, LogOut } from 'lucide-react';
 import { SidebarMenuButton, useSidebar, Popover, PopoverContent, PopoverTrigger, Skeleton } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
-import { useNavigate } from 'react-router';
 import AuthService from '@/core/auth/AuthService';
 import { getCommandPaletteActionEventName, CommandPaletteActionId } from '@/core/actions';
 import useUser from '@/hooks/useUser';
 
 const SidebarFooter = () => {
-	const navigate = useNavigate();
 	const handleLogout = useCallback(async () => {
 		await AuthService.logout();
 	}, []);
@@ -29,13 +26,13 @@ const SidebarFooter = () => {
 	if (loading) return <Skeleton className='w-full h-10' />;
 
 	const dropdownItems = [
-		{
-			label: 'Onboarding',
-			icon: ListChecks,
-			onClick: () => {
-				navigate(RouteNames.onboarding);
-			},
-		},
+		// {
+		// 	label: 'Onboarding',
+		// 	icon: ListChecks,
+		// 	onClick: () => {
+		// 		navigate(RouteNames.onboarding);
+		// 	},
+		// },
 		// {
 		// 	label: 'Billing',
 		// 	icon: CreditCard,

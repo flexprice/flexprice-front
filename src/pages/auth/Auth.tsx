@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router';
 import LoginForm from './LoginForm';
 import flexpriceLogo from '../../../assets/comicon.png';
 import SignupForm from './SignupForm';
+import SignupOnboardingStep from './SignupOnboardingStep';
 import ForgotPasswordForm from './ForgotPasswordForm';
 import ResetPasswordForm from './ResetPasswordForm';
 import AuthService from '@/core/auth/AuthService';
@@ -16,6 +17,8 @@ const AuthPage: React.FC = () => {
 
 	// Get current tab from URL or default to login
 	const [currentTab, setCurrentTab] = useState<AuthTab>(AuthTab.LOGIN);
+	// After signup succeeds, show onboarding step in the same left section before verify-email
+	const [signupSuccessEmail, setSignupSuccessEmail] = useState<string | null>(null);
 
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
@@ -40,6 +43,10 @@ const AuthPage: React.FC = () => {
 		} else {
 			setCurrentTab(AuthTab.LOGIN);
 		}
+		// Reset onboarding step when leaving signup tab
+		if (tab !== AuthTab.SIGNUP) {
+			setSignupSuccessEmail(null);
+		}
 	}, [location]);
 
 	// Change tab and update URL
@@ -51,9 +58,13 @@ const AuthPage: React.FC = () => {
 	const renderForm = () => {
 		switch (currentTab) {
 			case AuthTab.SIGNUP:
+				// After create account succeeds, show onboarding form in the same left section
+				if (signupSuccessEmail) {
+					return <SignupOnboardingStep email={signupSuccessEmail} />;
+				}
 				return (
 					<>
-						<SignupForm switchTab={switchTab} />
+						<SignupForm switchTab={switchTab} onSignupSuccess={setSignupSuccessEmail} />
 					</>
 				);
 
@@ -104,13 +115,18 @@ const AuthPage: React.FC = () => {
 							<img src={flexpriceLogo} alt='Flexprice Logo' className='h-12' />
 						</div>
 
-						{currentTab === AuthTab.SIGNUP && (
+						{currentTab === AuthTab.SIGNUP && !signupSuccessEmail && (
 							<>
 								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>Create your account</h2>
 								<p className='text-center text-gray-600 mb-10'>Sign up to start using Flexprice.</p>
 								<div className='mb-6'>
 									<RegionSelector />
 								</div>
+							</>
+						)}
+						{currentTab === AuthTab.SIGNUP && signupSuccessEmail && (
+							<>
+								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>Welcome to Flexprice</h2>
 							</>
 						)}
 						{currentTab === AuthTab.LOGIN && (

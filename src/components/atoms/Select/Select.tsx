@@ -18,6 +18,8 @@ interface Props {
 	value?: string;
 	defaultOpen?: boolean;
 	placeholder?: string;
+	/** When value equals this, trigger text is shown in muted (grey) style */
+	placeholderValue?: string;
 	label?: string;
 	required?: boolean;
 	description?: string;
@@ -61,6 +63,7 @@ const FlexPriceSelect: React.FC<Props> = ({
 	options,
 	value,
 	placeholder = 'Select an option',
+	placeholderValue,
 	label = '',
 	required = false,
 	description,
@@ -74,6 +77,8 @@ const FlexPriceSelect: React.FC<Props> = ({
 	trigger,
 	contentClassName,
 }) => {
+	const isPlaceholderState = !value || (placeholderValue != null && value === placeholderValue);
+	const displayLabel = value ? options.find((option) => option.value === value)?.label.trim() : placeholder;
 	return (
 		<div className={cn('space-y-1 ', className)}>
 			{/* Label */}
@@ -95,68 +100,64 @@ const FlexPriceSelect: React.FC<Props> = ({
 				value={value}
 				disabled={disabled}>
 				<SelectTrigger className={cn(disabled && 'cursor-not-allowed', className)}>
-					{trigger ? (
-						trigger
-					) : (
-						<span className={cn('truncate', value ? '' : 'text-muted-foreground')}>
-							{value ? options.find((option) => option.value === value)?.label.trim() : placeholder}
-						</span>
-					)}
+					{trigger ? trigger : <span className={cn('truncate', isPlaceholderState ? 'text-muted-foreground' : '')}>{displayLabel}</span>}
 				</SelectTrigger>
 				<SelectContent className={cn('w-[var(--radix-select-trigger-width)]', contentClassName)}>
 					<SelectGroup>
 						{options.length > 0 &&
-							options.map((option) => {
-								if (isRadio) {
-									return (
-										<RadioSelectItem
-											className={cn(option.disabled && 'select-none cursor-not-allowed')}
-											disabled={option.disabled}
-											key={option.value}
-											value={option.value}>
-											<div className='flex items-center space-x-2 w-full'>
-												<div className='flex flex-col mr-2 w-full'>
-													<span className='break-words'>{option.label}</span>
-													{option.description && (
-														<span className='text-sm text-gray-500 break-words whitespace-normal'>{option.description}</span>
-													)}
+							options
+								.filter((option) => placeholderValue == null || option.value !== placeholderValue)
+								.map((option) => {
+									if (isRadio) {
+										return (
+											<RadioSelectItem
+												className={cn(option.disabled && 'select-none cursor-not-allowed')}
+												disabled={option.disabled}
+												key={option.value}
+												value={option.value}>
+												<div className='flex items-center space-x-2 w-full'>
+													<div className='flex flex-col mr-2 w-full'>
+														<span className='break-words'>{option.label}</span>
+														{option.description && (
+															<span className='text-sm text-gray-500 break-words whitespace-normal'>{option.description}</span>
+														)}
+													</div>
 												</div>
-											</div>
-										</RadioSelectItem>
-									);
-								} else {
-									return (
-										<ShadcnSelect
-											className={cn(
-												'w-full',
-												'cursor-pointer',
-												option.disabled && 'select-none cursor-not-allowed',
-												'flex items-center space-x-2 justify-between w-full',
-											)}
-											disabled={option.disabled}
-											key={option.value}
-											value={option.value}>
-											<div
+											</RadioSelectItem>
+										);
+									} else {
+										return (
+											<ShadcnSelect
 												className={cn(
-													'flex w-full items-center space-x-2 justify-between',
-													option.disabled && 'opacity-50 pointer-events-none',
-													option.suffixIcon && 'pr-8',
-													hideSelectedTick && '!pl-0',
-												)}>
-												{option.prefixIcon && option.prefixIcon}
+													'w-full',
+													'cursor-pointer',
+													option.disabled && 'select-none cursor-not-allowed',
+													'flex items-center space-x-2 justify-between w-full',
+												)}
+												disabled={option.disabled}
+												key={option.value}
+												value={option.value}>
+												<div
+													className={cn(
+														'flex w-full items-center space-x-2 justify-between',
+														option.disabled && 'opacity-50 pointer-events-none',
+														option.suffixIcon && 'pr-8',
+														hideSelectedTick && '!pl-0',
+													)}>
+													{option.prefixIcon && option.prefixIcon}
 
-												<div className={cn('flex flex-col w-full', !hideSelectedTick && 'mr-0')}>
-													<span className='break-words'>{option.label}</span>
-													{option.description && (
-														<span className='text-sm text-gray-500 break-words whitespace-normal'>{option.description}</span>
-													)}
+													<div className={cn('flex flex-col w-full', !hideSelectedTick && 'mr-0')}>
+														<span className='break-words'>{option.label}</span>
+														{option.description && (
+															<span className='text-sm text-gray-500 break-words whitespace-normal'>{option.description}</span>
+														)}
+													</div>
+													{option.suffixIcon && <span className='absolute right-2 top-1/2 -translate-y-1/2'>{option.suffixIcon}</span>}
 												</div>
-												{option.suffixIcon && <span className='absolute right-2 top-1/2 -translate-y-1/2'>{option.suffixIcon}</span>}
-											</div>
-										</ShadcnSelect>
-									);
-								}
-							})}
+											</ShadcnSelect>
+										);
+									}
+								})}
 						{options.length === 0 && noOptionsText && (
 							<ShadcnSelect value='no-items' disabled>
 								<div className='flex items-center space-x-2 w-full'>

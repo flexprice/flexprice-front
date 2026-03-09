@@ -14,6 +14,8 @@ import { AuthTab } from './authTabs';
 
 interface SignupFormProps {
 	switchTab: (tab: AuthTab) => void;
+	/** When provided, signup success shows onboarding step on same screen instead of navigating to verify-email */
+	onSignupSuccess?: (email: string) => void;
 }
 
 interface SignupData {
@@ -22,7 +24,7 @@ interface SignupData {
 	confirmPassword: string;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
+const SignupForm: React.FC<SignupFormProps> = ({ switchTab, onSignupSuccess }) => {
 	const navigate = useNavigate();
 
 	const [searchParams] = useSearchParams();
@@ -128,7 +130,11 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				toast.error(error.message || 'Something went wrong');
 				return;
 			}
-			navigate(`/auth/verify-email?email=${encodeURIComponent(signupData.email)}&new=true`);
+			if (onSignupSuccess) {
+				onSignupSuccess(signupData.email);
+			} else {
+				navigate(`${RouteNames.verifyEmail}?email=${encodeURIComponent(signupData.email)}&new=true`);
+			}
 		} else {
 			signup();
 		}
