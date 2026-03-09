@@ -20,6 +20,8 @@ interface Props {
 	placeholder?: string;
 	/** When value equals this, trigger text is shown in muted (grey) style */
 	placeholderValue?: string;
+	/** When true, placeholder option stays in the list so user can select it to clear; default false (placeholder hidden from list) */
+	showPlaceholderInList?: boolean;
 	label?: string;
 	required?: boolean;
 	description?: string;
@@ -64,6 +66,7 @@ const FlexPriceSelect: React.FC<Props> = ({
 	value,
 	placeholder = 'Select an option',
 	placeholderValue,
+	showPlaceholderInList = false,
 	label = '',
 	required = false,
 	description,
@@ -106,7 +109,7 @@ const FlexPriceSelect: React.FC<Props> = ({
 					<SelectGroup>
 						{options.length > 0 &&
 							options
-								.filter((option) => placeholderValue == null || option.value !== placeholderValue)
+								.filter((option) => showPlaceholderInList || placeholderValue == null || option.value !== placeholderValue)
 								.map((option) => {
 									if (isRadio) {
 										return (

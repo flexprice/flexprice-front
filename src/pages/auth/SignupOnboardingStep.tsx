@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import validator from 'validator';
 import { Button, Input, Select, SelectOption } from '@/components/atoms';
 import { RouteNames } from '@/core/routes/Routes';
+import { SIGNUP_ONBOARDING_EMAIL_KEY } from './Auth';
 
 const SIGNUP_ONBOARDING_STORAGE_KEY = 'flexprice_signup_onboarding';
 
@@ -134,6 +135,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 		if (!validate()) return;
 		saveToStorage();
 		onComplete?.();
+		sessionStorage.removeItem(SIGNUP_ONBOARDING_EMAIL_KEY);
 		navigate(`${RouteNames.verifyEmail}?email=${encodeURIComponent(email)}&new=true`, { replace: true });
 	};
 
@@ -185,6 +187,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 					value={teamSize || SELECT_PLACEHOLDER_VALUE}
 					onChange={(v) => setTeamSize(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
 					placeholderValue={SELECT_PLACEHOLDER_VALUE}
+					showPlaceholderInList
 					required={false}
 				/>
 				<Select
@@ -193,6 +196,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 					value={pricingType || SELECT_PLACEHOLDER_VALUE}
 					onChange={(v) => setPricingType(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
 					placeholderValue={SELECT_PLACEHOLDER_VALUE}
+					showPlaceholderInList
 					required={false}
 				/>
 				<Select
@@ -201,6 +205,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 					value={referralSource || SELECT_PLACEHOLDER_VALUE}
 					onChange={(v) => setReferralSource(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
 					placeholderValue={SELECT_PLACEHOLDER_VALUE}
+					showPlaceholderInList
 					required
 					error={errors.referralSource}
 				/>

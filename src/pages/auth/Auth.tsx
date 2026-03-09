@@ -11,6 +11,9 @@ import LandingSection from './LandingSection';
 import RegionSelector from '@/components/molecules/RegionSelector/RegionSelector';
 import { AuthTab } from './authTabs';
 
+/** sessionStorage key for persisting "on onboarding step" email so it survives refresh */
+export const SIGNUP_ONBOARDING_EMAIL_KEY = 'flexprice_signup_onboarding_email';
+
 const AuthPage: React.FC = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -19,6 +22,11 @@ const AuthPage: React.FC = () => {
 	const [currentTab, setCurrentTab] = useState<AuthTab>(AuthTab.LOGIN);
 	// After signup succeeds, show onboarding step in the same left section before verify-email
 	const [signupSuccessEmail, setSignupSuccessEmail] = useState<string | null>(null);
+
+	const handleSignupSuccess = (email: string) => {
+		setSignupSuccessEmail(email);
+		sessionStorage.setItem(SIGNUP_ONBOARDING_EMAIL_KEY, email);
+	};
 
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
@@ -34,18 +42,23 @@ const AuthPage: React.FC = () => {
 		fetchUser();
 	}, [location.search, navigate]);
 
-	// Parse query parameters on component mount and tab changes
+	// Parse query parameters on component mount and tab changes; hydrate onboarding state from sessionStorage on refresh
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
 		const tab = searchParams.get('tab');
 		if (tab === AuthTab.SIGNUP || tab === AuthTab.FORGOT_PASSWORD || tab === AuthTab.RESET_PASSWORD) {
 			setCurrentTab(tab as AuthTab);
+			if (tab === AuthTab.SIGNUP) {
+				const storedEmail = sessionStorage.getItem(SIGNUP_ONBOARDING_EMAIL_KEY);
+				if (storedEmail) setSignupSuccessEmail(storedEmail);
+			} else {
+				setSignupSuccessEmail(null);
+				sessionStorage.removeItem(SIGNUP_ONBOARDING_EMAIL_KEY);
+			}
 		} else {
 			setCurrentTab(AuthTab.LOGIN);
-		}
-		// Reset onboarding step when leaving signup tab
-		if (tab !== AuthTab.SIGNUP) {
 			setSignupSuccessEmail(null);
+			sessionStorage.removeItem(SIGNUP_ONBOARDING_EMAIL_KEY);
 		}
 	}, [location]);
 
@@ -64,7 +77,7 @@ const AuthPage: React.FC = () => {
 				}
 				return (
 					<>
-						<SignupForm switchTab={switchTab} onSignupSuccess={setSignupSuccessEmail} />
+						<SignupForm switchTab={switchTab} onSignupSuccess={handleSignupSuccess} />
 					</>
 				);
 
