@@ -245,11 +245,29 @@ export interface ExecuteSubscriptionChangeRequest {
 	enable_true_up?: boolean;
 }
 
+/** Minimal subscription summary returned by change/execute API */
+export interface ExecuteSubscriptionChangeSubscriptionSummary {
+	id: string;
+	status: string;
+	plan_id: string;
+	current_period_start: string;
+	current_period_end: string;
+	billing_anchor: string;
+	created_at: string;
+}
+
+/** Actual response shape from POST /subscriptions/:id/change/execute */
 export interface ExecuteSubscriptionChangeResponse {
-	subscription: SubscriptionResponse;
+	is_scheduled?: boolean;
+	old_subscription: ExecuteSubscriptionChangeSubscriptionSummary;
+	new_subscription: ExecuteSubscriptionChangeSubscriptionSummary;
+	change_type: string;
+	effective_date: string;
+	// Legacy shape (optional, for backward compatibility if backend varies)
+	subscription?: SubscriptionResponse;
 	proration_invoice?: Invoice;
-	proration_details: ProrationDetail[];
-	message: string;
+	proration_details?: ProrationDetail[];
+	message?: string;
 }
 
 export interface ScheduleUpdateBillingPeriodRequest {

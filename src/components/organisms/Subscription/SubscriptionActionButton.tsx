@@ -4,10 +4,7 @@ import {
 	SUBSCRIPTION_CANCELLATION_TYPE,
 	SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY,
 	SUBSCRIPTION_STATUS,
-	BILLING_CYCLE,
 } from '@/models/Subscription';
-import { BILLING_PERIOD } from '@/constants/constants';
-import { BILLING_CADENCE } from '@/models/Invoice';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { CirclePause, CirclePlay, X, Plus, Pencil, Play, ArrowUpCircle } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
@@ -22,7 +19,7 @@ import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
 import { ServerError } from '@/core/axios/types';
 import { PlanResponse } from '@/types/dto';
-import { PreviewSubscriptionChangeResponse } from '@/types/dto/Subscription';
+import { PreviewSubscriptionChangeResponse, ExecuteSubscriptionChangeResponse } from '@/types/dto/Subscription';
 
 interface ComponentState {
 	isPauseModalOpen: boolean;
@@ -42,10 +39,6 @@ interface ComponentState {
 	selectedPlanId: string;
 	changeProrationBehavior: SUBSCRIPTION_PRORATION_BEHAVIOR;
 	changeAt: string;
-	billingPeriodCount: number;
-	billingCadence: string;
-	billingPeriod: string;
-	billingCycle: string;
 	metadata: Record<string, any>;
 	previewData?: PreviewSubscriptionChangeResponse;
 }
@@ -74,10 +67,6 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 		selectedPlanId: '',
 		changeProrationBehavior: SUBSCRIPTION_PRORATION_BEHAVIOR.NONE,
 		changeAt: '',
-		billingPeriodCount: subscription.billing_period_count,
-		billingCadence: subscription.billing_cadence,
-		billingPeriod: subscription.billing_period,
-		billingCycle: subscription.billing_cycle,
 		metadata: {},
 	});
 
@@ -107,10 +96,10 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 		mutationFn: (data: { subscriptionId: string; planId: string }) =>
 			SubscriptionApi.previewSubscriptionChange(data.subscriptionId, {
 				target_plan_id: data.planId,
-				billing_cadence: state.billingCadence,
-				billing_period: state.billingPeriod,
-				billing_period_count: state.billingPeriodCount,
-				billing_cycle: state.billingCycle,
+				billing_cadence: subscription.billing_cadence,
+				billing_period: subscription.billing_period,
+				billing_period_count: subscription.billing_period_count,
+				billing_cycle: subscription.billing_cycle,
 				change_at: state.changeAt,
 				proration_behavior: state.changeProrationBehavior,
 				metadata: state.metadata,
@@ -133,18 +122,25 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 		mutationFn: (data: { subscriptionId: string; planId: string }) =>
 			SubscriptionApi.executeSubscriptionChange(data.subscriptionId, {
 				target_plan_id: data.planId,
-				billing_cadence: state.billingCadence,
-				billing_period: state.billingPeriod,
-				billing_period_count: state.billingPeriodCount,
-				billing_cycle: state.billingCycle,
+				billing_cadence: subscription.billing_cadence,
+				billing_period: subscription.billing_period,
+				billing_period_count: subscription.billing_period_count,
+				billing_cycle: subscription.billing_cycle,
 				change_at: state.changeAt,
 				proration_behavior: state.changeProrationBehavior,
 				metadata: state.metadata,
 			}),
-		onSuccess: async () => {
+		onSuccess: async (response: ExecuteSubscriptionChangeResponse) => {
 			setState((prev) => ({ ...prev, isChangePlanModalOpen: false, selectedPlanId: '', previewData: undefined }));
 			toast.success('Subscription changed successfully');
-			await refetchQueries(['subscriptionDetails']);
+			// API returns new_subscription when the subscription was replaced (e.g. downgrade creates new sub).
+			// Navigate to the new subscription so we don't refetch the old (cancelled) one and trigger 404 / error boundary.
+			if (response.new_subscription?.id && response.new_subscription.id !== subscription.id) {
+				navigate(`${RouteNames.customers}/${subscription.customer_id}/subscription/${response.new_subscription.id}`);
+				await refetchQueries(['subscriptionDetails', response.new_subscription.id]);
+			} else {
+				await refetchQueries(['subscriptionDetails', subscription.id]);
+			}
 			await refetchQueries(['subscriptions']);
 		},
 		onError: (error: ServerError) => {
@@ -502,7 +498,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 				className='bg-white rounded-lg p-6 w-[640px] max-w-[90vw]'>
 				<div className='space-y-4'>
 					<FormHeader
-						title='Change Subscription Plan'
+						title='Upgrade Subscription Plan'
 						variant='sub-header'
 						subtitle='Select a new plan for this subscription. Preview changes before executing.'
 					/>
@@ -523,78 +519,6 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 							disabled={plansLoading || availablePlans.length === 0}
 						/>
 
-						<div className='grid grid-cols-2 gap-4'>
-							<Select
-								label='Billing Period'
-								value={state.billingPeriod}
-								options={[
-									{ label: 'Monthly', value: BILLING_PERIOD.MONTHLY },
-									{ label: 'Quarterly', value: BILLING_PERIOD.QUARTERLY },
-									{ label: 'Annual', value: BILLING_PERIOD.ANNUAL },
-								]}
-								onChange={(value) =>
-									setState((prev) => ({
-										...prev,
-										billingPeriod: value,
-										previewData: undefined,
-									}))
-								}
-							/>
-
-							<Select
-								label='Period Count'
-								value={state.billingPeriodCount.toString()}
-								options={[
-									{ label: '1', value: '1' },
-									{ label: '2', value: '2' },
-									{ label: '3', value: '3' },
-									{ label: '6', value: '6' },
-									{ label: '12', value: '12' },
-								]}
-								onChange={(value) =>
-									setState((prev) => ({
-										...prev,
-										billingPeriodCount: parseInt(value),
-										previewData: undefined,
-									}))
-								}
-							/>
-						</div>
-
-						<div className='grid grid-cols-2 gap-4'>
-							<Select
-								label='Billing Cadence'
-								value={state.billingCadence}
-								options={[
-									{ label: 'Recurring', value: BILLING_CADENCE.RECURRING },
-									{ label: 'One Time', value: BILLING_CADENCE.ONETIME },
-								]}
-								onChange={(value) =>
-									setState((prev) => ({
-										...prev,
-										billingCadence: value,
-										previewData: undefined,
-									}))
-								}
-							/>
-
-							<Select
-								label='Billing Cycle'
-								value={state.billingCycle}
-								options={[
-									{ label: 'Anniversary', value: BILLING_CYCLE.ANNIVERSARY },
-									{ label: 'Calendar', value: BILLING_CYCLE.CALENDAR },
-								]}
-								onChange={(value) =>
-									setState((prev) => ({
-										...prev,
-										billingCycle: value,
-										previewData: undefined,
-									}))
-								}
-							/>
-						</div>
-
 						<Select
 							label='Proration Behavior'
 							value={state.changeProrationBehavior}
@@ -612,12 +536,13 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 						/>
 
 						<Select
-							label='When to Change'
+							label='Change At'
 							value={state.changeAt}
 							options={[
 								{ label: 'Immediate', value: 'immediate' },
-								{ label: 'Next Billing Cycle', value: 'next_billing_cycle' },
+								{ label: 'End of Period', value: 'end_of_period' },
 							]}
+							placeholder='Select an option'
 							onChange={(value) =>
 								setState((prev) => ({
 									...prev,
@@ -684,7 +609,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 									// First preview, then execute
 									previewChange({ subscriptionId: subscription.id, planId: state.selectedPlanId });
 								}}
-								disabled={!state.selectedPlanId || isPreviewLoading || isExecuteLoading}>
+								disabled={!state.selectedPlanId || !state.changeAt || isPreviewLoading || isExecuteLoading}>
 								{isPreviewLoading ? 'Loading...' : 'Execute Changes'}
 							</Button>
 						</div>
