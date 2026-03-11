@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import validator from 'validator';
 import { Button, Input, Select, SelectOption } from '@/components/atoms';
 import { RouteNames } from '@/core/routes/Routes';
+import OnboardingApi from '@/api/OnboardingApi';
 import { SIGNUP_ONBOARDING_EMAIL_KEY } from './Auth';
 
 const SIGNUP_ONBOARDING_STORAGE_KEY = 'flexprice_signup_onboarding';
@@ -53,6 +55,15 @@ const pricingTypeOptions: SelectOption[] = [
 	{ value: 'Others', label: 'Others' },
 ];
 
+const roleOptions: SelectOption[] = [
+	{ value: SELECT_PLACEHOLDER_VALUE, label: 'Your role' },
+	{ value: 'CEO / CTO / Founder', label: 'CEO / CTO / Founder' },
+	{ value: 'Engineering', label: 'Engineering' },
+	{ value: 'Product Manager', label: 'Product Manager' },
+	{ value: 'Finance', label: 'Finance' },
+	{ value: 'Other', label: 'Other' },
+];
+
 interface SignupOnboardingStepProps {
 	email: string;
 	onComplete?: () => void;
@@ -78,6 +89,25 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 	const isValidTeamSize = teamSize && teamSize !== SELECT_PLACEHOLDER_VALUE;
 	const isValidReferral = referralSource && referralSource !== SELECT_PLACEHOLDER_VALUE;
 	const isValidPricingType = pricingType && pricingType !== SELECT_PLACEHOLDER_VALUE;
+	const isValidRole = role && role !== SELECT_PLACEHOLDER_VALUE;
+
+	const { mutate: recordOnboardingData } = useMutation({
+		mutationFn: () =>
+			OnboardingApi.recordOnboardingData({
+				orgName: orgName.trim() || '',
+				orgUrl: orgUrl.trim() || '',
+				role: isValidRole ? role : '',
+				teamSize: isValidTeamSize ? teamSize : '',
+				referralSource: isValidReferral ? referralSource : '',
+				pricingType: isValidPricingType ? pricingType : '',
+				userEmail: email || '',
+				tenantId: '',
+				timestamp: new Date().toISOString(),
+			}),
+		onError: (error) => {
+			console.error('Failed to record onboarding data:', error);
+		},
+	});
 
 	const validateOrgUrl = (value: string) => {
 		const trimmed = value.trim();
@@ -108,7 +138,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 		} else if (!isValidUrl(trimmedOrgUrl)) {
 			next.orgUrl = 'Please enter a valid URL';
 		}
-		if (!role.trim()) next.role = 'Role is required';
+		if (!isValidRole) next.role = 'Role is required';
 		setErrors(next);
 		return Object.keys(next).length === 0;
 	};
@@ -119,7 +149,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 				email,
 				orgName: orgName.trim() || undefined,
 				orgUrl: orgUrl.trim() || undefined,
-				role: role.trim() || undefined,
+				role: isValidRole ? role : undefined,
 				teamSize: isValidTeamSize ? teamSize : undefined,
 				referralSource: isValidReferral ? referralSource : undefined,
 				pricingType: isValidPricingType ? pricingType : undefined,
@@ -134,6 +164,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 	const goToVerifyEmail = () => {
 		if (!validate()) return;
 		saveToStorage();
+		recordOnboardingData();
 		onComplete?.();
 		sessionStorage.removeItem(SIGNUP_ONBOARDING_EMAIL_KEY);
 		navigate(`${RouteNames.verifyEmail}?email=${encodeURIComponent(email)}&new=true`, { replace: true });
@@ -158,7 +189,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 				</div>
 				<div className='space-y-1'>
 					<label className='block text-sm font-medium text-zinc break-words text-zinc-950' htmlFor='signup-org-url'>
-						Organization URL <span className='text-destructive'>*</span>
+						Website URL <span className='text-destructive'>*</span>
 					</label>
 					<Input
 						id='signup-org-url'
@@ -175,19 +206,21 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 						required
 					/>
 				</div>
-				<div className='space-y-1'>
-					<label className='block text-sm font-medium text-zinc break-words text-zinc-950' htmlFor='signup-role'>
-						What role do you perform in your organization? <span className='text-destructive'>*</span>
-					</label>
-					<Input id='signup-role' placeholder='Your role' value={role} onChange={(v) => setRole(v)} required error={errors.role} />
-				</div>
+				<Select
+					label='What role do you perform in your organization?'
+					options={roleOptions}
+					value={role || SELECT_PLACEHOLDER_VALUE}
+					onChange={(v) => setRole(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
+					placeholderValue={SELECT_PLACEHOLDER_VALUE}
+					required
+					error={errors.role}
+				/>
 				<Select
 					label="What's your team size?"
 					options={teamSizeOptions}
 					value={teamSize || SELECT_PLACEHOLDER_VALUE}
 					onChange={(v) => setTeamSize(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
 					placeholderValue={SELECT_PLACEHOLDER_VALUE}
-					showPlaceholderInList
 					required={false}
 				/>
 				<Select
@@ -196,7 +229,6 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 					value={pricingType || SELECT_PLACEHOLDER_VALUE}
 					onChange={(v) => setPricingType(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
 					placeholderValue={SELECT_PLACEHOLDER_VALUE}
-					showPlaceholderInList
 					required={false}
 				/>
 				<Select
@@ -205,7 +237,6 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 					value={referralSource || SELECT_PLACEHOLDER_VALUE}
 					onChange={(v) => setReferralSource(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
 					placeholderValue={SELECT_PLACEHOLDER_VALUE}
-					showPlaceholderInList
 					required
 					error={errors.referralSource}
 				/>
