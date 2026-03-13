@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 import { Page, AddButton, Card, CardHeader, Loader, Button, Input, ShortPagination, Dialog } from '@/components/atoms';
 import { FlatTabs, FlexpriceTable } from '@/components/molecules';
 import { UserApi } from '@/api/UserApi';
 import { User } from '@/models';
 import toast from 'react-hot-toast';
 import { ColumnData } from '@/components/molecules/Table/Table';
-import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Link2, Lock, Mail } from 'lucide-react';
+import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Link2, Lock, Mail, Building2 } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import usePagination, { PAGINATION_PREFIX } from '@/hooks/usePagination';
@@ -369,6 +370,24 @@ function MembersSection() {
 	);
 }
 
+function OrganizationSection() {
+	const navigate = useNavigate();
+	return (
+		<Card variant='default' className='rounded-xl border-gray-200 shadow-sm bg-white'>
+			<div className='p-6'>
+				<p className='text-sm text-zinc-600 mb-4'>
+					Manage environment-level settings such as invoice format, subscription grace period, customer onboarding workflow, wallet alerts,
+					and customer portal theme.
+				</p>
+				<Button onClick={() => navigate(RouteNames.orgSettings)}>
+					<Building2 className='h-4 w-4 mr-2' />
+					Open Org Settings
+				</Button>
+			</div>
+		</Card>
+	);
+}
+
 const SettingsDashboard = () => {
 	return (
 		<Page heading='Settings' documentTitle='Settings' headingClassName='font-semibold text-2xl text-zinc-900'>
@@ -379,6 +398,11 @@ const SettingsDashboard = () => {
 						value: 'team',
 						label: 'Team',
 						content: <MembersSection />,
+					},
+					{
+						value: 'organization',
+						label: 'Organization',
+						content: <OrganizationSection />,
 					},
 				]}
 				defaultValue='team'

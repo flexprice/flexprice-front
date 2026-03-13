@@ -75,6 +75,7 @@ import {
 	// Settings pages
 	Billing as BillingPage,
 	SettingsDashboard,
+	OrgSettingsPage,
 	// Insights tools pages
 	Integrations,
 	IntegrationDetails,
@@ -179,6 +180,7 @@ export const RouteNames = {
 	// footer
 	onboarding: '/onboarding',
 	settings: '/settings',
+	orgSettings: '/settings/org',
 	customerBilling: '/settings/billing',
 };
 
@@ -556,6 +558,10 @@ export const MainRouter = createBrowserRouter([
 			{
 				path: RouteNames.settings,
 				element: <SettingsDashboard />,
+			},
+			{
+				path: RouteNames.orgSettings,
+				element: <OrgSettingsPage />,
 			},
 			{
 				path: RouteNames.customerBilling,

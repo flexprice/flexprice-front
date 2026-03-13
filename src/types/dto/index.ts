@@ -320,3 +320,34 @@ export type {
 	BatchWorkflowsRequest,
 	BatchWorkflowsResponse,
 } from './Workflow';
+
+export type {
+	InvoiceConfig,
+	SubscriptionConfig,
+	InvoicePdfConfig,
+	CustomerOnboardingConfig,
+	CustomerOnboardingAction,
+	WalletBalanceAlertConfig,
+	WalletAlertLevel,
+	PrepareProcessedEventsConfig,
+	PrepareProcessedEventsAction,
+	CustomAnalyticsConfig,
+	CustomAnalyticsRule,
+	CustomAnalyticsTargetType,
+	CustomerPortalConfigOrg,
+	CustomerPortalSectionConfigOrg,
+	CustomerPortalTabConfigOrg,
+	CustomerPortalThemeOrg,
+} from './OrgSettings';
+
+export {
+	DEFAULT_INVOICE_CONFIG,
+	DEFAULT_SUBSCRIPTION_CONFIG,
+	DEFAULT_INVOICE_PDF_CONFIG,
+	DEFAULT_CUSTOMER_ONBOARDING_CONFIG,
+	DEFAULT_WALLET_BALANCE_ALERT_CONFIG,
+	DEFAULT_PREPARE_PROCESSED_EVENTS_CONFIG,
+	DEFAULT_CUSTOM_ANALYTICS_CONFIG,
+	DEFAULT_CUSTOMER_PORTAL_CONFIG_ORG,
+	INVOICE_FORMAT,
+} from './OrgSettings';
