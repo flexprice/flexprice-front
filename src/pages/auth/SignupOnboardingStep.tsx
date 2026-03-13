@@ -130,7 +130,7 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 			next.orgName = 'Organization name is required';
 		} else if (trimmedOrgName.toLowerCase() === 'flexprice') {
 			next.orgName = "Oops! That's us. Please enter your organization name instead.";
-			toast("Oops! That's us — enter your organization name instead.", { icon: '😅' });
+			toast("That's us - enter your organization name.", { icon: '😅' });
 		}
 		if (!isValidReferral) next.referralSource = 'Please select how you found us';
 		const trimmedOrgUrl = orgUrl.trim();
@@ -258,7 +258,8 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 						error={errors.referralSource}
 					/>
 				</div>
-				<Button onClick={goToDashboard} className='mt-8 w-full h-11 rounded-lg bg-blue-700 hover:bg-blue-800'>
+				<div className='h-4' />
+				<Button onClick={goToDashboard} className='mt-8 w-full h-11 rounded-lg'>
 					Continue
 				</Button>
 			</div>

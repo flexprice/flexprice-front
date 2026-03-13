@@ -4,6 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import { SupabaseClient } from '@supabase/supabase-js';
+import flexpriceLogo from '../../../assets/comicon.png';
 
 const EmailVerification = () => {
 	const navigate = useNavigate();
@@ -49,18 +50,22 @@ const EmailVerification = () => {
 	};
 
 	return (
-		<div className='flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4'>
-			<div className='w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg'>
+		<div
+			className='fixed inset-0 z-50 flex min-h-screen flex-col items-center justify-center p-4'
+			style={{
+				backgroundImage: `url('/assets/onboarding.png')`,
+				backgroundSize: 'cover',
+				backgroundPosition: 'center',
+			}}>
+			<div className='absolute inset-0 bg-white/30' aria-hidden />
+			<div className='relative w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg'>
 				{/* Email Verification Content */}
 				<div className='text-center'>
-					<div className='mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-blue-50'>
-						{/* Logo */}
-						<div className='flex justify-center'>
-							<img src='/ic_rounded_flexprice.svg' alt='Flexprice Logo' className='h-12' />
-						</div>
+					<div className='mb-6 flex justify-center'>
+						<img src={flexpriceLogo} alt='Flexprice' className='h-12' />
 					</div>
 
-					<h2 className='text-2xl font-bold text-gray-900 mb-4'>{isNewSignup ? 'Verify your email address' : 'Email verification'}</h2>
+					<h2 className='text-2xl font-semibold text-zinc-900 mb-4'>{isNewSignup ? 'Verify your email address' : 'Email verification'}</h2>
 
 					<div className='space-y-4'>
 						<p className='text-gray-600'>We've sent a verification email to:</p>
