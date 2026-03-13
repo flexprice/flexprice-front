@@ -20,17 +20,18 @@ const AuthPage: React.FC = () => {
 
 	// Get current tab from URL or default to login
 	const [currentTab, setCurrentTab] = useState<AuthTab>(AuthTab.LOGIN);
-	// After signup succeeds, show onboarding step in the same left section before verify-email
+	// Show onboarding step when user lands with step=onboarding&email= (after email verification)
 	const [signupSuccessEmail, setSignupSuccessEmail] = useState<string | null>(null);
-
-	const handleSignupSuccess = (email: string) => {
-		setSignupSuccessEmail(email);
-		sessionStorage.setItem(SIGNUP_ONBOARDING_EMAIL_KEY, email);
-	};
 
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
 		if (searchParams.get('tab') === AuthTab.RESET_PASSWORD) {
+			return;
+		}
+		// Do not redirect to dashboard when user is on signup onboarding step (post email verification)
+		const tab = searchParams.get('tab');
+		const step = searchParams.get('step');
+		if (tab === AuthTab.SIGNUP && step === 'onboarding') {
 			return;
 		}
 		const fetchUser = async () => {
@@ -42,23 +43,24 @@ const AuthPage: React.FC = () => {
 		fetchUser();
 	}, [location.search, navigate]);
 
-	// Parse query parameters on component mount and tab changes; hydrate onboarding state from sessionStorage on refresh
+	// Parse query parameters on component mount and tab changes; show onboarding when coming from email verification
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
 		const tab = searchParams.get('tab');
+		const step = searchParams.get('step');
+		const email = searchParams.get('email');
 		if (tab === AuthTab.SIGNUP || tab === AuthTab.FORGOT_PASSWORD || tab === AuthTab.RESET_PASSWORD) {
 			setCurrentTab(tab as AuthTab);
-			if (tab === AuthTab.SIGNUP) {
-				const storedEmail = sessionStorage.getItem(SIGNUP_ONBOARDING_EMAIL_KEY);
-				if (storedEmail) setSignupSuccessEmail(storedEmail);
+			if (tab === AuthTab.SIGNUP && step === 'onboarding' && email) {
+				setSignupSuccessEmail(decodeURIComponent(email));
+			} else if (tab === AuthTab.SIGNUP) {
+				setSignupSuccessEmail(null);
 			} else {
 				setSignupSuccessEmail(null);
-				sessionStorage.removeItem(SIGNUP_ONBOARDING_EMAIL_KEY);
 			}
 		} else {
 			setCurrentTab(AuthTab.LOGIN);
 			setSignupSuccessEmail(null);
-			sessionStorage.removeItem(SIGNUP_ONBOARDING_EMAIL_KEY);
 		}
 	}, [location]);
 
@@ -71,13 +73,13 @@ const AuthPage: React.FC = () => {
 	const renderForm = () => {
 		switch (currentTab) {
 			case AuthTab.SIGNUP:
-				// After create account succeeds, show onboarding form in the same left section
+				// After email verification, user is redirected here with step=onboarding&email=; show onboarding form
 				if (signupSuccessEmail) {
 					return <SignupOnboardingStep email={signupSuccessEmail} />;
 				}
 				return (
 					<>
-						<SignupForm switchTab={switchTab} onSignupSuccess={handleSignupSuccess} />
+						<SignupForm switchTab={switchTab} />
 					</>
 				);
 

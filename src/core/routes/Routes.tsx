@@ -66,7 +66,7 @@ import {
 	WorkflowsPage,
 	WorkflowDetailsPage,
 	// Onboarding pages
-	OnboardingTenant,
+	OnboardingPage,
 	// Webhooks pages
 	WebhookDashboard,
 	// Settings pages
@@ -527,7 +527,7 @@ export const MainRouter = createBrowserRouter([
 			},
 			{
 				path: RouteNames.onboarding,
-				element: <OnboardingTenant />,
+				element: <OnboardingPage />,
 			},
 			{
 				path: RouteNames.customerBilling,

@@ -7,6 +7,7 @@ import { Button, Input, Select, SelectOption } from '@/components/atoms';
 import { RouteNames } from '@/core/routes/Routes';
 import OnboardingApi from '@/api/OnboardingApi';
 import { SIGNUP_ONBOARDING_EMAIL_KEY } from './Auth';
+import flexpriceLogo from '../../../assets/comicon.png';
 
 const SIGNUP_ONBOARDING_STORAGE_KEY = 'flexprice_signup_onboarding';
 
@@ -161,92 +162,107 @@ const SignupOnboardingStep: React.FC<SignupOnboardingStepProps> = ({ email, onCo
 		}
 	};
 
-	const goToVerifyEmail = () => {
+	const goToDashboard = () => {
 		if (!validate()) return;
 		saveToStorage();
 		recordOnboardingData();
 		onComplete?.();
 		sessionStorage.removeItem(SIGNUP_ONBOARDING_EMAIL_KEY);
-		navigate(`${RouteNames.verifyEmail}?email=${encodeURIComponent(email)}&new=true`, { replace: true });
+		navigate(RouteNames.homeDashboard, { replace: true });
 	};
 
 	return (
-		<>
-			<p className='text-center text-gray-600 mb-6'>Help us understand your needs better</p>
-			<div className='space-y-4'>
-				<div className='space-y-1'>
-					<label className='block text-sm font-medium text-zinc break-words text-zinc-950' htmlFor='signup-org-name'>
-						Organization name <span className='text-destructive'>*</span>
-					</label>
-					<Input
-						id='signup-org-name'
-						placeholder='Enter your organization name'
-						value={orgName}
-						onChange={(v) => setOrgName(v)}
+		<div
+			className='fixed inset-0 z-50 flex min-h-screen items-center justify-center p-4'
+			style={{
+				backgroundImage: `url('/assets/onboarding.png')`,
+				backgroundSize: 'cover',
+				backgroundPosition: 'center',
+			}}>
+			{/* Light overlay so card stands out */}
+			<div className='absolute inset-0 bg-white/30' aria-hidden />
+			<div className='relative w-full max-w-[480px] rounded-2xl bg-white p-8 shadow-xl'>
+				{/* Logo */}
+				<div className='mb-6 flex justify-center'>
+					<img src={flexpriceLogo} alt='Flexprice' className='h-12' />
+				</div>
+				<h1 className='text-center text-2xl font-semibold text-zinc-900'>Welcome to Flexprice</h1>
+				<p className='mt-2 text-center text-sm text-zinc-500'>Let's create your account, complete this form to get started.</p>
+				<div className='mt-6 space-y-4'>
+					<div className='space-y-1'>
+						<label className='block text-sm font-medium text-zinc-900' htmlFor='signup-org-name'>
+							Organization name <span className='text-destructive'>*</span>
+						</label>
+						<Input
+							id='signup-org-name'
+							placeholder='Enter your organization name'
+							value={orgName}
+							onChange={(v) => setOrgName(v)}
+							required
+							error={errors.orgName}
+							className='rounded-lg border-zinc-200'
+						/>
+					</div>
+					<div className='space-y-1'>
+						<label className='block text-sm font-medium text-zinc-900' htmlFor='signup-org-url'>
+							Website URL <span className='text-destructive'>*</span>
+						</label>
+						<Input
+							id='signup-org-url'
+							placeholder='e.g. https://google.com'
+							value={orgUrl}
+							onChange={(v) => {
+								setOrgUrl(v);
+								if (errors.orgUrl) validateOrgUrl(v);
+							}}
+							onBlur={() => validateOrgUrl(orgUrl)}
+							type='text'
+							description='Enter your organization’s website link'
+							error={errors.orgUrl}
+							required
+							className='rounded-lg border-zinc-200'
+						/>
+					</div>
+					<Select
+						label='What role do you perform in your organization?'
+						options={roleOptions}
+						value={role || SELECT_PLACEHOLDER_VALUE}
+						onChange={(v) => setRole(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
+						placeholderValue={SELECT_PLACEHOLDER_VALUE}
 						required
-						error={errors.orgName}
+						error={errors.role}
+					/>
+					<Select
+						label="What's your team size?"
+						options={teamSizeOptions}
+						value={teamSize || SELECT_PLACEHOLDER_VALUE}
+						onChange={(v) => setTeamSize(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
+						placeholderValue={SELECT_PLACEHOLDER_VALUE}
+						required={false}
+					/>
+					<Select
+						label='What pricing model are you choosing for Flexprice?'
+						options={pricingTypeOptions}
+						value={pricingType || SELECT_PLACEHOLDER_VALUE}
+						onChange={(v) => setPricingType(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
+						placeholderValue={SELECT_PLACEHOLDER_VALUE}
+						required={false}
+					/>
+					<Select
+						label='How did you find us?'
+						options={referralSourceOptions}
+						value={referralSource || SELECT_PLACEHOLDER_VALUE}
+						onChange={(v) => setReferralSource(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
+						placeholderValue={SELECT_PLACEHOLDER_VALUE}
+						required
+						error={errors.referralSource}
 					/>
 				</div>
-				<div className='space-y-1'>
-					<label className='block text-sm font-medium text-zinc break-words text-zinc-950' htmlFor='signup-org-url'>
-						Website URL <span className='text-destructive'>*</span>
-					</label>
-					<Input
-						id='signup-org-url'
-						placeholder='e.g. https://google.com'
-						value={orgUrl}
-						onChange={(v) => {
-							setOrgUrl(v);
-							if (errors.orgUrl) validateOrgUrl(v);
-						}}
-						onBlur={() => validateOrgUrl(orgUrl)}
-						type='text'
-						description='Enter your organization’s website link'
-						error={errors.orgUrl}
-						required
-					/>
-				</div>
-				<Select
-					label='What role do you perform in your organization?'
-					options={roleOptions}
-					value={role || SELECT_PLACEHOLDER_VALUE}
-					onChange={(v) => setRole(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
-					placeholderValue={SELECT_PLACEHOLDER_VALUE}
-					required
-					error={errors.role}
-				/>
-				<Select
-					label="What's your team size?"
-					options={teamSizeOptions}
-					value={teamSize || SELECT_PLACEHOLDER_VALUE}
-					onChange={(v) => setTeamSize(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
-					placeholderValue={SELECT_PLACEHOLDER_VALUE}
-					required={false}
-				/>
-				<Select
-					label='What pricing model are you choosing for Flexprice?'
-					options={pricingTypeOptions}
-					value={pricingType || SELECT_PLACEHOLDER_VALUE}
-					onChange={(v) => setPricingType(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
-					placeholderValue={SELECT_PLACEHOLDER_VALUE}
-					required={false}
-				/>
-				<Select
-					label='How did you find us?'
-					options={referralSourceOptions}
-					value={referralSource || SELECT_PLACEHOLDER_VALUE}
-					onChange={(v) => setReferralSource(v === SELECT_PLACEHOLDER_VALUE ? '' : v)}
-					placeholderValue={SELECT_PLACEHOLDER_VALUE}
-					required
-					error={errors.referralSource}
-				/>
-			</div>
-			<div className='mt-8'>
-				<Button onClick={goToVerifyEmail} className='w-full !mt-6 h-11'>
+				<Button onClick={goToDashboard} className='mt-8 w-full h-11 rounded-lg bg-blue-700 hover:bg-blue-800'>
 					Continue
 				</Button>
 			</div>
-		</>
+		</div>
 	);
 };
 

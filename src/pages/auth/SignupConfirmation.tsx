@@ -25,14 +25,12 @@ const SignupConfirmation = () => {
 			userContext.setUser(user.data.user);
 
 			if (user.data.user?.app_metadata.tenant_id) {
-				navigate('/');
-				return;
+				return { redirectTo: 'dashboard' as const };
 			}
 
 			if (!session) {
 				toast.error('No session found');
-				navigate('/auth');
-				return;
+				return { redirectTo: 'auth' as const };
 			}
 
 			const signupResponse = await AuthApi.Signup({
@@ -40,11 +38,21 @@ const SignupConfirmation = () => {
 				token: session?.access_token || '',
 			});
 			await supabase.auth.refreshSession();
-			return signupResponse;
+			return { signupResponse, email: user.data.user?.email || '', redirectTo: 'onboarding' as const };
 		},
-		onSuccess: async () => {
+		onSuccess: async (data) => {
 			await supabase.auth.refreshSession();
-			navigate('/');
+			if (data?.redirectTo === 'onboarding') {
+				// Send to auth SignupOnboardingStep (not the in-app /onboarding page)
+				const emailParam = data?.email ? `&email=${encodeURIComponent(data.email)}` : '';
+				navigate(`/auth?tab=signup&step=onboarding${emailParam}`, { replace: true });
+			} else if (data?.redirectTo === 'dashboard') {
+				navigate('/');
+			} else if (data?.redirectTo === 'auth') {
+				navigate('/auth');
+			} else {
+				navigate('/');
+			}
 		},
 		onError: async (error: ServerError) => {
 			await supabase.auth.signOut();
