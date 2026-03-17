@@ -1,5 +1,6 @@
-import { Card, CardHeader, Button, Input, Loader, Select, type SelectOption } from '@/components/atoms';
+import { Card, CardHeader, Button, Input, Loader, Select, Textarea, type SelectOption } from '@/components/atoms';
 import { useSettingSection } from '@/hooks/useSettingSection';
+import { useJsonEditor } from '@/hooks/useJsonEditor';
 import { DEFAULT_CUSTOMER_ONBOARDING_CONFIG, type CustomerOnboardingConfig, type CustomerOnboardingAction } from '@/types/dto/OrgSettings';
 import { Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
@@ -168,6 +169,24 @@ export function CustomerOnboardingSection() {
 
 	const [inlineError, setInlineError] = useState<string | null>(null);
 
+	const jsonEditor = useJsonEditor({
+		initialValue: formValue,
+		sendCompleteConfig: true,
+		validate: (value) => {
+			if (value.actions.length === 0) {
+				return 'At least one action is required. First action must be Create customer.';
+			}
+			if (value.actions[0].action !== 'create_customer') {
+				return 'First action must be Create customer.';
+			}
+			return null;
+		},
+		onSave: (data) => {
+			saveMutation.mutate(data as CustomerOnboardingConfig);
+			setFormValue((prev) => ({ ...prev, ...(data as CustomerOnboardingConfig) }));
+		},
+	});
+
 	const validate = (): boolean => {
 		if (formValue.actions.length === 0) {
 			setInlineError('At least one action is required. First action must be Create customer.');
@@ -232,51 +251,91 @@ export function CustomerOnboardingSection() {
 						<Button variant='outline' size='sm' onClick={handleReset} disabled={resetMutation.isPending}>
 							Reset to default
 						</Button>
-						<Button size='sm' onClick={handleSave} disabled={saveMutation.isPending} isLoading={saveMutation.isPending}>
+						<Button variant='outline' size='sm' onClick={jsonEditor.toggleEditor}>
+							{jsonEditor.showJsonEditor ? 'Form View' : 'JSON Editor'}
+						</Button>
+						<Button
+							size='sm'
+							onClick={jsonEditor.showJsonEditor ? jsonEditor.handleJsonSave : handleSave}
+							disabled={saveMutation.isPending}
+							isLoading={saveMutation.isPending}>
 							Save
 						</Button>
 					</div>
 				}
 			/>
 			<div className='border-t border-gray-100 pt-4 px-6 pb-6 space-y-4'>
-				{isError && (
-					<div className='rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700'>
-						Failed to load settings.{' '}
-						<button type='button' onClick={() => refetch()} className='underline font-medium'>
-							Retry
-						</button>
+				{!jsonEditor.showJsonEditor ? (
+					<div className='space-y-4'>
+						{isError && (
+							<div className='rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700'>
+								Failed to load settings.{' '}
+								<button type='button' onClick={() => refetch()} className='underline font-medium'>
+									Retry
+								</button>
+							</div>
+						)}
+						{inlineError && (
+							<div className='rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800' role='alert'>
+								{inlineError}
+							</div>
+						)}
+						<p className='text-sm text-zinc-600'>
+							Workflow type: <strong>customer_onboarding</strong>. First action must be Create customer.
+						</p>
+						<div className='flex items-center justify-between'>
+							<label className='block text-xs font-medium text-zinc-500 uppercase tracking-wide'>Actions</label>
+							<Button type='button' variant='outline' size='sm' onClick={addAction}>
+								<Plus className='h-3.5 w-3.5 mr-1' />
+								Add action
+							</Button>
+						</div>
+						<div className='space-y-3'>
+							{formValue.actions.map((action, index) => (
+								<ActionRow
+									key={index}
+									action={action}
+									onChange={(next) => updateAction(index, next)}
+									onRemove={() => removeAction(index)}
+									canRemove={formValue.actions.length > 1}
+								/>
+							))}
+						</div>
+						{getFieldError(backendDetails, 'actions') && (
+							<p className='text-sm text-red-600' role='alert'>
+								{getFieldError(backendDetails, 'actions')}
+							</p>
+						)}
 					</div>
-				)}
-				{inlineError && (
-					<div className='rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800' role='alert'>
-						{inlineError}
+				) : (
+					<div className='space-y-4'>
+						{isError && (
+							<div className='rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700'>
+								Failed to load settings.{' '}
+								<button type='button' onClick={() => refetch()} className='underline font-medium'>
+									Retry
+								</button>
+							</div>
+						)}
+						<div>
+							<label className='block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1'>
+								JSON Configuration (Developer Mode)
+							</label>
+							<Textarea
+								value={jsonEditor.jsonValue}
+								onChange={jsonEditor.setJsonValue}
+								placeholder='Paste or edit JSON configuration here...'
+								error={jsonEditor.jsonError}
+								description='Edit the customer onboarding configuration directly in JSON format. Only changed values will be saved.'
+								textAreaClassName='min-h-[400px] font-mono text-sm'
+							/>
+							{jsonEditor.jsonError && (
+								<p className='mt-1 text-sm text-red-600' role='alert'>
+									{jsonEditor.jsonError}
+								</p>
+							)}
+						</div>
 					</div>
-				)}
-				<p className='text-sm text-zinc-600'>
-					Workflow type: <strong>customer_onboarding</strong>. First action must be Create customer.
-				</p>
-				<div className='flex items-center justify-between'>
-					<label className='block text-xs font-medium text-zinc-500 uppercase tracking-wide'>Actions</label>
-					<Button type='button' variant='outline' size='sm' onClick={addAction}>
-						<Plus className='h-3.5 w-3.5 mr-1' />
-						Add action
-					</Button>
-				</div>
-				<div className='space-y-3'>
-					{formValue.actions.map((action, index) => (
-						<ActionRow
-							key={index}
-							action={action}
-							onChange={(next) => updateAction(index, next)}
-							onRemove={() => removeAction(index)}
-							canRemove={formValue.actions.length > 1}
-						/>
-					))}
-				</div>
-				{getFieldError(backendDetails, 'actions') && (
-					<p className='text-sm text-red-600' role='alert'>
-						{getFieldError(backendDetails, 'actions')}
-					</p>
 				)}
 			</div>
 		</Card>

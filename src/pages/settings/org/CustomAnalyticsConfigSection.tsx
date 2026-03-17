@@ -1,5 +1,6 @@
-import { Card, CardHeader, Button, Input, Loader, Select, type SelectOption } from '@/components/atoms';
+import { Card, CardHeader, Button, Input, Loader, Select, Textarea, type SelectOption } from '@/components/atoms';
 import { useSettingSection } from '@/hooks/useSettingSection';
+import { useJsonEditor } from '@/hooks/useJsonEditor';
 import {
 	DEFAULT_CUSTOM_ANALYTICS_CONFIG,
 	type CustomAnalyticsConfig,
@@ -26,6 +27,15 @@ export function CustomAnalyticsConfigSection() {
 			key: SETTING_KEY,
 			defaultValue: DEFAULT_CUSTOM_ANALYTICS_CONFIG,
 		});
+
+	const jsonEditor = useJsonEditor({
+		initialValue: formValue,
+		sendCompleteConfig: true,
+		onSave: (data) => {
+			saveMutation.mutate(data as CustomAnalyticsConfig);
+			setFormValue((prev) => ({ ...prev, ...(data as CustomAnalyticsConfig) }));
+		},
+	});
 
 	const handleSave = () => {
 		saveMutation.mutate(formValue);
@@ -77,57 +87,97 @@ export function CustomAnalyticsConfigSection() {
 						<Button variant='outline' size='sm' onClick={handleReset} disabled={resetMutation.isPending}>
 							Reset to default
 						</Button>
-						<Button size='sm' onClick={handleSave} disabled={saveMutation.isPending} isLoading={saveMutation.isPending}>
+						<Button variant='outline' size='sm' onClick={jsonEditor.toggleEditor}>
+							{jsonEditor.showJsonEditor ? 'Form View' : 'JSON Editor'}
+						</Button>
+						<Button
+							size='sm'
+							onClick={jsonEditor.showJsonEditor ? jsonEditor.handleJsonSave : handleSave}
+							disabled={saveMutation.isPending}
+							isLoading={saveMutation.isPending}>
 							Save
 						</Button>
 					</div>
 				}
 			/>
 			<div className='border-t border-gray-100 pt-4 px-6 pb-6 space-y-4'>
-				{isError && (
-					<div className='rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700'>
-						Failed to load settings.{' '}
-						<button type='button' onClick={() => refetch()} className='underline font-medium'>
-							Retry
-						</button>
-					</div>
-				)}
-				<div className='flex items-center justify-between'>
-					<label className='block text-xs font-medium text-zinc-500 uppercase tracking-wide'>Rules</label>
-					<Button type='button' variant='outline' size='sm' onClick={addRule}>
-						<Plus className='h-3.5 w-3.5 mr-1' />
-						Add rule
-					</Button>
-				</div>
-				<div className='space-y-2'>
-					{formValue.rules.length === 0 ? (
-						<p className='text-sm text-zinc-500'>No rules. Add rules to target feature, meter, or event_name.</p>
-					) : (
-						formValue.rules.map((rule, index) => (
-							<div key={rule.id} className='flex flex-wrap items-center gap-2 p-3 rounded-lg border border-gray-100 bg-gray-50/50'>
-								<Select
-									options={TARGET_TYPE_OPTIONS}
-									value={rule.target_type}
-									onChange={(v) => updateRule(index, { target_type: v as CustomAnalyticsTargetType })}
-									className='w-36'
-								/>
-								<Input
-									placeholder='Target ID'
-									value={rule.target_id}
-									onChange={(v) => updateRule(index, { target_id: v })}
-									className='flex-1 min-w-[120px]'
-								/>
-								<Button type='button' variant='outline' size='sm' onClick={() => removeRule(index)} aria-label='Remove rule'>
-									<Trash2 className='h-4 w-4' />
-								</Button>
+				{!jsonEditor.showJsonEditor ? (
+					<div className='space-y-4'>
+						{isError && (
+							<div className='rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700'>
+								Failed to load settings.{' '}
+								<button type='button' onClick={() => refetch()} className='underline font-medium'>
+									Retry
+								</button>
 							</div>
-						))
-					)}
-				</div>
-				{getFieldError(backendDetails, 'rules') && (
-					<p className='text-sm text-red-600' role='alert'>
-						{getFieldError(backendDetails, 'rules')}
-					</p>
+						)}
+						<div className='flex items-center justify-between'>
+							<label className='block text-xs font-medium text-zinc-500 uppercase tracking-wide'>Rules</label>
+							<Button type='button' variant='outline' size='sm' onClick={addRule}>
+								<Plus className='h-3.5 w-3.5 mr-1' />
+								Add rule
+							</Button>
+						</div>
+						<div className='space-y-2'>
+							{formValue.rules.length === 0 ? (
+								<p className='text-sm text-zinc-500'>No rules. Add rules to target feature, meter, or event_name.</p>
+							) : (
+								formValue.rules.map((rule, index) => (
+									<div key={rule.id} className='flex flex-wrap items-center gap-2 p-3 rounded-lg border border-gray-100 bg-gray-50/50'>
+										<Select
+											options={TARGET_TYPE_OPTIONS}
+											value={rule.target_type}
+											onChange={(v) => updateRule(index, { target_type: v as CustomAnalyticsTargetType })}
+											className='w-36'
+										/>
+										<Input
+											placeholder='Target ID'
+											value={rule.target_id}
+											onChange={(v) => updateRule(index, { target_id: v })}
+											className='flex-1 min-w-[120px]'
+										/>
+										<Button type='button' variant='outline' size='sm' onClick={() => removeRule(index)} aria-label='Remove rule'>
+											<Trash2 className='h-4 w-4' />
+										</Button>
+									</div>
+								))
+							)}
+						</div>
+						{getFieldError(backendDetails, 'rules') && (
+							<p className='text-sm text-red-600' role='alert'>
+								{getFieldError(backendDetails, 'rules')}
+							</p>
+						)}
+					</div>
+				) : (
+					<div className='space-y-4'>
+						{isError && (
+							<div className='rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700'>
+								Failed to load settings.{' '}
+								<button type='button' onClick={() => refetch()} className='underline font-medium'>
+									Retry
+								</button>
+							</div>
+						)}
+						<div>
+							<label className='block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1'>
+								JSON Configuration (Developer Mode)
+							</label>
+							<Textarea
+								value={jsonEditor.jsonValue}
+								onChange={jsonEditor.setJsonValue}
+								placeholder='Paste or edit JSON configuration here...'
+								error={jsonEditor.jsonError}
+								description='Edit the custom analytics configuration directly in JSON format. Only changed values will be saved.'
+								textAreaClassName='min-h-[400px] font-mono text-sm'
+							/>
+							{jsonEditor.jsonError && (
+								<p className='mt-1 text-sm text-red-600' role='alert'>
+									{jsonEditor.jsonError}
+								</p>
+							)}
+						</div>
+					</div>
 				)}
 			</div>
 		</Card>
