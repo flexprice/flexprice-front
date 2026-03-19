@@ -38,6 +38,7 @@ interface ComponentState {
 	cancelReason: string;
 	selectedPlanId: string;
 	changeProrationBehavior: SUBSCRIPTION_PRORATION_BEHAVIOR;
+	changeGenerateInvoice: boolean;
 	changeAt: string;
 	metadata: Record<string, any>;
 	previewData?: PreviewSubscriptionChangeResponse;
@@ -66,6 +67,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 		cancelReason: '',
 		selectedPlanId: '',
 		changeProrationBehavior: SUBSCRIPTION_PRORATION_BEHAVIOR.NONE,
+		changeGenerateInvoice: false,
 		changeAt: '',
 		metadata: {},
 	});
@@ -102,6 +104,9 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 				billing_cycle: subscription.billing_cycle,
 				change_at: state.changeAt,
 				proration_behavior: state.changeProrationBehavior,
+				invoice_behavior: state.changeGenerateInvoice
+					? SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY.GENERATE_INVOICE
+					: SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY.SKIP,
 				metadata: state.metadata,
 			}),
 		onSuccess: (previewData) => {
@@ -128,6 +133,9 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 				billing_cycle: subscription.billing_cycle,
 				change_at: state.changeAt,
 				proration_behavior: state.changeProrationBehavior,
+				invoice_behavior: state.changeGenerateInvoice
+					? SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY.GENERATE_INVOICE
+					: SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY.SKIP,
 				metadata: state.metadata,
 			}),
 		onSuccess: async (response: ExecuteSubscriptionChangeResponse) => {
@@ -547,6 +555,20 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 								setState((prev) => ({
 									...prev,
 									changeAt: value,
+									previewData: undefined,
+								}))
+							}
+						/>
+
+						<Toggle
+							title='Invoice behavior'
+							label='Generate invoice'
+							description='Enable to generate an invoice for usage till the change date.'
+							checked={state.changeGenerateInvoice}
+							onChange={(checked) =>
+								setState((prev) => ({
+									...prev,
+									changeGenerateInvoice: checked,
 									previewData: undefined,
 								}))
 							}

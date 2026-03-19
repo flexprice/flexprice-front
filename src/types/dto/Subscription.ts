@@ -177,6 +177,7 @@ export interface PreviewSubscriptionChangeRequest {
 	entitlement_overrides?: EntitlementOverrideRequest[];
 	line_item_commitments?: LineItemCommitmentsMap;
 	enable_true_up?: boolean;
+	invoice_behavior?: SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY;
 }
 
 export interface PreviewSubscriptionChangeResponse {
@@ -243,6 +244,7 @@ export interface ExecuteSubscriptionChangeRequest {
 	entitlement_overrides?: EntitlementOverrideRequest[];
 	line_item_commitments?: LineItemCommitmentsMap;
 	enable_true_up?: boolean;
+	invoice_behavior?: SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY;
 }
 
 /** Minimal subscription summary returned by change/execute API */
