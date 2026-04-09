@@ -31,6 +31,7 @@ const PlanCreditGrantsTab = () => {
 		queryFn: async () => {
 			return await CreditGrantApi.list({
 				plan_ids: [planId!],
+				scope: CREDIT_GRANT_SCOPE.PLAN,
 			});
 		},
 		enabled: !!planId,
