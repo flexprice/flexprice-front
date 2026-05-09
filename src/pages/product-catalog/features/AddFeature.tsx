@@ -1,5 +1,5 @@
 import { Button, Card, CodePreview, FormHeader, Input, Page, Select, SelectOption, Spacer, Textarea } from '@/components/atoms';
-import { ApiDocsContent } from '@/components/molecules';
+import { ApiDocsContent, MetadataModal } from '@/components/molecules';
 import EventFilter, { EventFilterData } from '@/components/molecules/EventFilter';
 import SelectGroup from '@/components/organisms/PlanForm/SelectGroup';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
@@ -175,6 +175,7 @@ interface FeatureFormState {
 	showEventFilters: boolean;
 	showBucketSize: boolean;
 	showGroupBy: boolean;
+	showMetadata: boolean;
 }
 
 type FeatureFormData = Omit<CreateFeatureRequest, 'name' | 'type' | 'meter'> & {
@@ -199,6 +200,7 @@ const useFeatureForm = () => {
 		showEventFilters: false,
 		showBucketSize: false,
 		showGroupBy: false,
+		showMetadata: false,
 	});
 
 	const updateFeatureData = useCallback((updates: Partial<FeatureFormData>) => {
@@ -389,7 +391,8 @@ const FeatureDetailsSection = ({
 				!formState.showGroup &&
 				!formState.showUnitName &&
 				!formState.showReportingUnitName &&
-				!formState.showDescription ? (
+				!formState.showDescription &&
+				!formState.showMetadata ? (
 					<div className='flex flex-wrap items-center gap-2'>
 						<AddChargesButton label='Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
 						{isMeteredType && (
@@ -400,6 +403,7 @@ const FeatureDetailsSection = ({
 						)}
 						<AddChargesButton label='Feature Description' onClick={() => onUpdateFormState({ showDescription: true })} />
 						<AddChargesButton label='Add Group' onClick={() => onUpdateFormState({ showGroup: true })} />
+						<AddChargesButton label='Metadata' onClick={() => onUpdateFormState({ showMetadata: true })} />
 					</div>
 				) : formState.showLookupKey ? (
 					<Input
@@ -431,6 +435,7 @@ const FeatureDetailsSection = ({
 											<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
 										) : null}
 										{!formState.showGroup && <AddChargesButton label='Add Group' onClick={() => onUpdateFormState({ showGroup: true })} />}
+										{!formState.showMetadata && <AddChargesButton label='Metadata' onClick={() => onUpdateFormState({ showMetadata: true })} />}
 									</div>
 								) : (
 									<>
@@ -493,7 +498,8 @@ const FeatureDetailsSection = ({
 											!formState.showGroup ||
 											!formState.showUnitName ||
 											!formState.showReportingUnitName ||
-											!formState.showDescription) && (
+											!formState.showDescription ||
+											!formState.showMetadata) && (
 											<div className='flex flex-wrap items-center gap-2'>
 												{!formState.showLookupKey && (
 													<AddChargesButton label='Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
@@ -510,13 +516,16 @@ const FeatureDetailsSection = ({
 												{!formState.showGroup && (
 													<AddChargesButton label='Add Group' onClick={() => onUpdateFormState({ showGroup: true })} />
 												)}
+												{!formState.showMetadata && (
+													<AddChargesButton label='Metadata' onClick={() => onUpdateFormState({ showMetadata: true })} />
+												)}
 											</div>
 										)}
 									</>
 								)}
 							</>
 						)}
-						{!isMeteredType && (!formState.showLookupKey || !formState.showGroup || !formState.showDescription) && (
+						{!isMeteredType && (!formState.showLookupKey || !formState.showGroup || !formState.showDescription || !formState.showMetadata) && (
 							<div className='flex flex-wrap items-center gap-2'>
 								{!formState.showLookupKey && (
 									<AddChargesButton label='Lookup Key' onClick={() => onUpdateFormState({ showLookupKey: true })} />
@@ -525,6 +534,7 @@ const FeatureDetailsSection = ({
 									<AddChargesButton label='Feature description' onClick={() => onUpdateFormState({ showDescription: true })} />
 								)}
 								{!formState.showGroup && <AddChargesButton label='Add Group' onClick={() => onUpdateFormState({ showGroup: true })} />}
+								{!formState.showMetadata && <AddChargesButton label='Metadata' onClick={() => onUpdateFormState({ showMetadata: true })} />}
 							</div>
 						)}
 						{formState.showGroup && (
@@ -547,9 +557,35 @@ const FeatureDetailsSection = ({
 								onChange={(description) => onUpdateFeature({ description })}
 							/>
 						)}
+					{formState.showMetadata && (
+						<div className='space-y-2'>
+							<label className='text-sm font-medium text-gray-700'>Metadata</label>
+							<div className='border border-gray-200 rounded-md p-3 bg-gray-50'>
+								{data.metadata && Object.keys(data.metadata).length > 0 ? (
+									<div className='space-y-1'>
+										{Object.entries(data.metadata).map(([key, value]) => (
+											<div key={key} className='text-sm'>
+												<span className='font-medium'>{key}:</span> {value}
+											</div>
+										))}
+									</div>
+								) : (
+									<span className='text-sm text-gray-500'>No metadata added</span>
+								)}
+							</div>
+						</div>
+					)}
 					</>
 				)}
 			</div>
+		<MetadataModal
+			open={formState.showMetadata}
+			data={data.metadata || {}}
+			onSave={(newMetadata) => {
+				onUpdateFeature({ metadata: newMetadata });
+			}}
+			onClose={() => onUpdateFormState({ showMetadata: false })}
+		/>
 		</Card>
 	);
 };
