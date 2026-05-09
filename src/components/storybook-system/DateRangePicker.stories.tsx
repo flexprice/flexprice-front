@@ -8,8 +8,8 @@ const meta = {
 	parameters: { layout: 'centered' },
 	tags: ['autodocs'],
 	argTypes: {
-		from: { control: 'date' },
-		to: { control: 'date' },
+		from: { control: 'text', description: 'Start date in YYYY-MM-DD format' },
+		to: { control: 'text', description: 'End date in YYYY-MM-DD format' },
 	},
 	args: {
 		from: '2026-05-01',

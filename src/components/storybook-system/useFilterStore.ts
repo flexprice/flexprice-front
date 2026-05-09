@@ -31,17 +31,26 @@ const readRouteFilters = (route: string): FilterState => {
 const writeRouteFilters = (route: string, filters: FilterState) => {
 	if (typeof window === 'undefined') return;
 
-	window.sessionStorage.setItem(storageKey(route), JSON.stringify(filters));
-	const url = new URL(window.location.href);
-	const fingerprint = shallowFingerprint(filters);
-
-	if (fingerprint.startsWith('0-')) {
-		url.searchParams.delete('ff');
-	} else {
-		url.searchParams.set('ff', fingerprint);
+	try {
+		window.sessionStorage.setItem(storageKey(route), JSON.stringify(filters));
+	} catch {
+		// sessionStorage may be unavailable (private mode, quota exceeded)
 	}
 
-	window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+	try {
+		const url = new URL(window.location.href);
+		const fingerprint = shallowFingerprint(filters);
+
+		if (fingerprint.startsWith('0-')) {
+			url.searchParams.delete('ff');
+		} else {
+			url.searchParams.set('ff', fingerprint);
+		}
+
+		window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+	} catch {
+		// history.replaceState may be restricted in sandboxed environments
+	}
 };
 
 const useRawFilterStore = create<FilterStoreState>((set, get) => ({
@@ -69,10 +78,21 @@ const useRawFilterStore = create<FilterStoreState>((set, get) => ({
 		}));
 	},
 	resetFilters: (route) => {
+		// Remove from sessionStorage and clear the URL fingerprint without re-writing {}
 		if (typeof window !== 'undefined') {
-			window.sessionStorage.removeItem(storageKey(route));
+			try {
+				window.sessionStorage.removeItem(storageKey(route));
+			} catch {
+				// sessionStorage may be unavailable
+			}
+			try {
+				const url = new URL(window.location.href);
+				url.searchParams.delete('ff');
+				window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+			} catch {
+				// history.replaceState may be restricted in sandboxed environments
+			}
 		}
-		writeRouteFilters(route, {});
 		set((state) => ({
 			filtersByRoute: {
 				...state.filtersByRoute,

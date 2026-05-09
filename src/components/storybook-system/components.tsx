@@ -233,7 +233,13 @@ export interface InfoTooltipProps {
 export const InfoTooltip = ({ children, content, delayMs = 250 }: InfoTooltipProps) => {
 	const [visible, setVisible] = React.useState(false);
 	const timeout = React.useRef<number>();
+
+	React.useEffect(() => {
+		return () => window.clearTimeout(timeout.current);
+	}, []);
+
 	const show = () => {
+		window.clearTimeout(timeout.current);
 		timeout.current = window.setTimeout(() => setVisible(true), delayMs);
 	};
 	const hide = () => {

@@ -4,7 +4,6 @@ This repository contains a Storybook component library for FlexPrice UI patterns
 
 ### Hosted Storybook
 
-- Chromatic: https://69ff7cf657502d737ee9b38e-ilucwgrcua.chromatic.com/
 - Vercel: https://flexprice-front-psi.vercel.app/
 - GitHub: https://github.com/vishwateja231/flexprice-front
 
