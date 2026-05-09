@@ -1,64 +1,40 @@
-// import type { Meta, StoryObj } from '@storybook/react';
-// import   Input  from './Input';
+import type { Meta, StoryObj } from '@storybook/react';
+import Input from './Input';
 
-// const meta = {
-//   title: 'Atoms/Input',
-//   component: Input,
-//   parameters: {
-//     layout: 'centered',
-//   },
-//   tags: ['autodocs'],
-// } satisfies Meta<typeof Input>;
+const meta = {
+	title: 'Atoms/Input',
+	component: Input,
+	parameters: {
+		layout: 'centered',
+	},
+	tags: ['autodocs'],
+	argTypes: {
+		label: { control: 'text' },
+		placeholder: { control: 'text' },
+		error: { control: 'text' },
+		disabled: { control: 'boolean' },
+		variant: { control: 'select', options: ['text', 'number', 'formatted-number', 'integer'] },
+	},
+	args: {
+		label: 'Email',
+		placeholder: 'billing@example.com',
+		variant: 'text',
+	},
+} satisfies Meta<typeof Input>;
 
-// export default meta;
-// type Story = StoryObj<typeof meta>;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-// export const Default: Story = {
-//   args: {
-//     placeholder: 'Enter text here',
-//   },
-// };
+export const Default: Story = {};
 
-// export const WithLabel: Story = {
-//   args: {
-//     label: 'Email',
-//     placeholder: 'Enter your email',
-//     type: 'email',
-//   },
-// };
-
-// export const WithError: Story = {
-//   args: {
-//     label: 'Password',
-//     type: 'password',
-//     error: 'Password must be at least 8 characters',
-//     placeholder: 'Enter your password',
-//   },
-// };
-
-// export const Disabled: Story = {
-//   args: {
-//     label: 'Username',
-//     placeholder: 'Enter your username',
-//     disabled: true,
-//   },
-// };
-
-// export const FullWidth: Story = {
-//   args: {
-//     label: 'Full Name',
-//     placeholder: 'Enter your full name',
-//     fullWidth: true,
-//   },
-//   parameters: {
-//     layout: 'padded',
-//   },
-// };
-
-// export const WithValue: Story = {
-//   args: {
-//     label: 'Name',
-//     value: 'John Doe',
-//     placeholder: 'Enter your name',
-//   },
-// };
+export const Variants: Story = {
+	render: () => (
+		<div className='grid w-[360px] gap-4'>
+			<Input label='Email' placeholder='billing@example.com' />
+			<Input label='Usage limit' variant='integer' placeholder='10000' suffix='events' />
+			<Input label='Monthly minimum' variant='formatted-number' inputPrefix='$' value='2500' />
+			<Input label='API key' value='sk_live_...' disabled readOnly />
+			<Input label='Billing email' placeholder='billing@example.com' error='Enter a valid email address' />
+		</div>
+	),
+};

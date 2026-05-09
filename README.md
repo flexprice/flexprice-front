@@ -1,3 +1,58 @@
+## FlexPrice Storybook Component Library
+
+This repository contains a Storybook component library for FlexPrice UI patterns. The work is implemented in a focused Storybook system under `src/components/storybook-system`, while keeping the original FlexPrice frontend codebase intact for context.
+
+### Hosted Storybook
+
+- Chromatic: https://69ff7cf657502d737ee9b38e-ilucwgrcua.chromatic.com/
+- Vercel: https://flexprice-front-psi.vercel.app/
+- GitHub: https://github.com/vishwateja231/flexprice-front
+
+### What Was Built
+
+- 15+ documented Storybook components across atoms, molecules, and organisms
+- Atoms: Button, StatusChip, Input, SelectDropdown, Tooltip, LoadingState
+- Molecules: MetricCard, DataTable, InvoiceStatusBadge, MeterProgress, DateRangePicker, SearchBar
+- Organisms: SidebarNav, PricingTierTable, EmptyState
+- Storybook controls, default stories, variant stories, and interaction tests using `@storybook/test`
+
+### Advanced Challenges
+
+- `useFilterStore` using Zustand with `sessionStorage` persistence per route and a shallow URL fingerprint
+- Virtualized `DataTable` using `@tanstack/react-virtual`, demonstrated with 10,000 mock customer rows
+- `createQueryConfig` utility with `REALTIME`, `DEFAULT`, and `STATIC` TanStack Query cache presets
+
+### Tests
+
+The Storybook system adds Vitest coverage for:
+
+- Utility functions: currency formatting, status mapping, tier price calculation, filter fingerprinting, query config overrides
+- Component render tests: sortable `DataTable` and CTA `EmptyState`
+
+### Run Locally
+
+```bash
+npm install
+npm run storybook
+```
+
+### Verify
+
+```bash
+npx tsc --noEmit
+npm run test -- --run
+npm run build-storybook
+```
+
+### Deployment Notes
+
+For Vercel, deploy the repository with:
+
+- Build command: `npm run build-storybook`
+- Output directory: `storybook-static`
+
+---
+
 <div align="center">
   <img src="./assets/flexprice_logo.png" height="120" alt="Flexprice Logo"/>
   

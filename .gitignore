@@ -23,7 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 yarn.lock
-package-lock.json
 .env
 .vercel
 tsconfig.tsbuildinfo
@@ -36,6 +35,7 @@ tsconfig.app.tsbuildinfo
 
 # build
 vite.config.js
+storybook-static
 
 
 # env files
