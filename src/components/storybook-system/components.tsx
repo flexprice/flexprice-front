@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import {
 	Activity,
@@ -120,7 +120,8 @@ export interface FieldInputProps extends Omit<React.InputHTMLAttributes<HTMLInpu
  */
 export const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
 	({ className, error, id, label, prefix, suffix, ...props }, ref) => {
-		const inputId = id ?? React.useId();
+		const generatedId = React.useId();
+		const inputId = id ?? generatedId;
 
 		return (
 			<label className='flex w-full flex-col gap-1 text-sm font-medium text-[#18181B]' htmlFor={inputId}>
@@ -340,7 +341,8 @@ const normaliseSortableValue = (value: unknown) => {
 	if (typeof value !== 'string') return String(value ?? '').toLowerCase();
 
 	const trimmed = value.trim();
-	const numeric = Number(trimmed.replace(/[$,Γé╣Γé¼┬ú%\s]/g, ''));
+	// Strip currency symbols (₹ \u20B9, € \u20AC, £ \u00A3), commas, percent, whitespace before numeric parse
+	const numeric = Number(trimmed.replace(/[$,\u20B9\u20AC\u00A3%\s]/g, ''));
 	return Number.isFinite(numeric) && /[\d]/.test(trimmed) ? numeric : trimmed.toLowerCase();
 };
 

@@ -38,7 +38,7 @@ export const Variants: Story = {
 			<FieldInput label='Plan name' placeholder='Growth' />
 			<FieldInput label='Seats' type='number' placeholder='25' suffix='seats' />
 			<FieldInput label='Monthly minimum' type='number' prefix='$' placeholder='500' />
-			<FieldInput label='API key' value='sk_live_...' disabled readOnly />
+			<FieldInput label='API key' value='pk_example_xxxxxxxxxxxx' disabled readOnly />
 			<FieldInput label='Billing email' error='Enter a valid billing email' placeholder='billing@example.com' />
 		</div>
 	),

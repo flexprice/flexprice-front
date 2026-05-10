@@ -14,15 +14,28 @@ const columns: DataTableColumn<InvoiceRow>[] = [
 ];
 
 describe('storybook-system components', () => {
-	it('renders a sortable invoice table with status badges', async () => {
+	it('renders a sortable invoice table with status badges and sorts correctly', async () => {
 		const user = userEvent.setup();
 		render(<DataTable columns={columns} rows={invoiceRows} />);
 
 		expect(screen.getByText('Acme AI')).toBeInTheDocument();
 		expect(screen.getByText('Paid')).toBeInTheDocument();
 
+		// Capture customer cell text order before sorting
+		const customersBefore = screen.getAllByRole('button', { name: /customer/i });
+		const rowsBefore = screen.getAllByText(/Acme AI|Orbit Labs|Northstar Cloud|Sandbox Systems/);
+		expect(rowsBefore[0]).toHaveTextContent('Acme AI');
+
+		// Click customer header to sort ascending (A → Z)
+		await user.click(customersBefore[0]);
+		const rowsAfterAsc = screen.getAllByText(/Acme AI|Orbit Labs|Northstar Cloud|Sandbox Systems/);
+		expect(rowsAfterAsc[0]).toHaveTextContent('Acme AI');
+		expect(rowsAfterAsc[2]).toHaveTextContent('Orbit Labs');
+
+		// Click again for descending (Z → A) — first row should now be Sandbox Systems
 		await user.click(screen.getByRole('button', { name: /customer/i }));
-		expect(screen.getByText('Northstar Cloud')).toBeInTheDocument();
+		const rowsAfterDesc = screen.getAllByText(/Acme AI|Orbit Labs|Northstar Cloud|Sandbox Systems/);
+		expect(rowsAfterDesc[0]).toHaveTextContent('Sandbox Systems');
 	});
 
 	it('renders an empty state CTA and handles clicks', async () => {
