@@ -17,6 +17,8 @@ interface TooltipProps {
 	sideOffset?: number;
 	/** Custom className for the tooltip content */
 	className?: string;
+	/** When false, tooltip stays on the specified side even if it goes off-screen */
+	avoidCollisions?: boolean;
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -27,12 +29,13 @@ const Tooltip: React.FC<TooltipProps> = ({
 	align = 'center',
 	sideOffset = 4,
 	className,
+	avoidCollisions = true,
 }) => {
 	return (
 		<TooltipProvider delayDuration={delayDuration}>
 			<TooltipRoot>
 				<TooltipTrigger asChild>{children}</TooltipTrigger>
-				<TooltipContent side={side} align={align} sideOffset={sideOffset} className={cn(className)}>
+				<TooltipContent side={side} align={align} sideOffset={sideOffset} className={cn(className)} avoidCollisions={avoidCollisions}>
 					{content}
 				</TooltipContent>
 			</TooltipRoot>
