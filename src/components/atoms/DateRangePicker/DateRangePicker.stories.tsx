@@ -11,15 +11,8 @@ const meta: Meta<typeof DateRangePicker> = {
 	tags: ['autodocs'],
 	parameters: {
 		layout: 'centered',
-		docs: { story: { height: '460px' } },
+		docs: { story: { height: '380px' } },
 	},
-	decorators: [
-		(Story) => (
-			<div className='bg-white p-6 rounded-lg min-h-[420px]'>
-				<Story />
-			</div>
-		),
-	],
 	argTypes: { disabled: { control: 'boolean' } },
 };
 

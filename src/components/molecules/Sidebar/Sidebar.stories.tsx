@@ -14,28 +14,22 @@ const meta: Meta<typeof AppSidebar> = {
 	parameters: {
 		layout: 'fullscreen',
 	},
-	decorators: [
-		(Story) =>
-			React.createElement(
-				MemoryRouter,
-				{ initialEntries: ['/home'] },
-				React.createElement(SidebarProvider, {}, React.createElement('div', { className: 'flex h-screen' }, React.createElement(Story))),
-			),
-	],
 };
 
 export default meta;
 type Story = StoryObj<typeof AppSidebar>;
 
-export const Default: Story = {};
+const withSidebarLayout = (initialRoute: string) => (Story: React.ComponentType) =>
+	React.createElement(
+		MemoryRouter,
+		{ initialEntries: [initialRoute] },
+		React.createElement(SidebarProvider, {}, React.createElement('div', { className: 'flex h-screen' }, React.createElement(Story))),
+	);
+
+export const Default: Story = {
+	decorators: [withSidebarLayout('/home')],
+};
 
 export const WithActivePath: Story = {
-	decorators: [
-		(Story) =>
-			React.createElement(
-				MemoryRouter,
-				{ initialEntries: ['/billing/invoices'] },
-				React.createElement(SidebarProvider, {}, React.createElement('div', { className: 'flex h-screen' }, React.createElement(Story))),
-			),
-	],
+	decorators: [withSidebarLayout('/billing/invoices')],
 };

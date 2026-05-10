@@ -471,18 +471,18 @@ curl -s https://api.github.com/repos/flexprice/flexprice-front/releases/latest |
 
 ## 📖 Storybook Component Library
 
-This branch (`test`) adds a full **Storybook component library** for the FlexPrice frontend — 69 stories across Atoms, Molecules, and Organisms, plus 39 passing unit tests.
+This branch adds a full **Storybook component library** for the FlexPrice frontend — stories across Atoms, Molecules, and Organisms, plus unit tests.
 
 ### Approach
 
-**Read first, write second.** Every story was written by reading the actual component source — prop names, variant values, and color tokens (`#3293D9`) come directly from the code, not guessed.
+**Read first, write second.** Every story was written by reading the actual component source — prop names, variant values, and color tokens come directly from the code, not guessed.
 
 Three categories of work:
 
 | Category | What was done |
 |---|---|
 | **Stories for existing components** | Button, Chip, Input, Select, Tooltip, Spinner, DateRangePicker, MetricCard, AppSidebar, EmptyPage |
-| **New components built + storied** | DataTable (`@tanstack/react-table` + virtualisation), InvoiceStatusBadge, MeterProgress, SearchBar, MonthRangePicker, PricingTierTable |
+| **New components built + storied** | DataTable (`@tanstack/react-table` + virtualisation), InvoiceStatusBadge, MeterProgress, SearchBar, MonthRangePicker, QueryBuilder/SortDropdown, PricingTierTable |
 | **Utilities + tests** | `createQueryConfig`, `formatNumber`, `getCurrencySymbol`, Button, InvoiceStatusBadge tests |
 
 ### Component List
@@ -507,6 +507,7 @@ Three categories of work:
 | `Molecules/MeterProgress` | `src/components/molecules/MeterProgress/MeterProgress.stories.tsx` |
 | `Molecules/SearchBar` | `src/components/molecules/SearchBar/SearchBar.stories.tsx` |
 | `Molecules/MonthRangePicker` | `src/components/molecules/MonthRangePicker/MonthRangePicker.stories.tsx` |
+| `Molecules/QueryBuilder/SortDropdown` | `src/components/molecules/QueryBuilder/SortDropdown.stories.tsx` |
 
 #### Organisms
 | Story | Path |
@@ -517,11 +518,18 @@ Three categories of work:
 
 ### Key Technical Decisions
 
-- **`@tanstack/react-table` DataTable** — generic `DataTable<T>` with sorting, skeleton loading (preserves table shape), pagination footer, and optional row virtualisation via `@tanstack/react-virtual` for 10 000+ rows
-- **`MonthRangePicker`** — custom component with scrollable year list + 3×4 month grid; solves the "navigate to March last year" problem without clicking through individual months
-- **`createQueryConfig`** (`src/lib/queryConfig.ts`) — structured override for TanStack Query's global `staleTime: 0` with `REALTIME`, `DEFAULT`, and `STATIC` presets
-- **Tooltip `avoidCollisions={false}`** — added prop so `AllSides` story can demonstrate true directional positioning without Radix auto-flipping to top
-- **Storybook router decorator** in `preview.ts` — any story opts in with `parameters: { withRouter: true }`
+#### Storybook Infrastructure
+- **Global CSS variables** — `src/index.css` is imported in `.storybook/preview.ts` alongside `tailwindcss/tailwind.css`. Without this, all components using Tailwind's CSS-variable-backed colours (`bg-popover`, `bg-background`, `border-border`, etc.) render transparent.
+- **`ReactQueryProvider` global decorator** — wraps every story so that `useQuery` calls (used deep in `useUser`, `useEnvironment`, `useGlobalLoading`, `ApiDocsContent`) don't throw "No QueryClient set". Queries that need a live API simply stay in loading/error state without crashing.
+- **Supabase mock when URL is absent** — `src/core/services/supbase/config.ts` now uses the mock client when `VITE_SUPABASE_URL` is empty (Storybook env), preventing `supabaseUrl is required` crashes at module initialisation.
+- **No nested `<Router>`** — Sidebar stories previously stacked a meta-level MemoryRouter on top of a story-level one. Fixed by removing the meta decorator entirely and giving each story (`Default`, `WithActivePath`) its own self-contained `withSidebarLayout(route)` decorator.
+
+#### Components
+- **`DateRangePicker` redesign** — replaced the single wide popover with a compact two-part trigger (`[📅 start date]  [📄 to  end date 📄]`). Each half opens its own independent single-month calendar. Calendar header is a clickable `"Month Year ▼"` that toggles a scrollable year/month picker. "Clear" and "Today" shortcuts at the bottom. No OK button — selection applies immediately on day click.
+- **`@tanstack/react-table` DataTable** — generic `DataTable<T>` with sorting, skeleton loading (preserves table shape), pagination footer, and optional row virtualisation via `@tanstack/react-virtual` for 10 000+ rows.
+- **`MonthRangePicker`** — custom component with scrollable year list + 3×4 month grid; solves the "navigate to March last year" problem without clicking through individual months.
+- **`createQueryConfig`** (`src/lib/queryConfig.ts`) — structured override for TanStack Query's global `staleTime: 0` with `REALTIME`, `DEFAULT`, and `STATIC` presets.
+- **Tooltip `avoidCollisions={false}`** — added prop so `AllSides` story can demonstrate true directional positioning without Radix auto-flipping to top.
 
 ### Running Storybook
 
@@ -529,7 +537,7 @@ Three categories of work:
 npm install
 npm run storybook        # dev server at localhost:6006
 npm run build-storybook  # production build → storybook-static/
-npm test                 # 39 unit tests (vitest)
+npm test                 # unit tests (vitest)
 ```
 
 ---

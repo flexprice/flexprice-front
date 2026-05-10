@@ -24,6 +24,6 @@ const createMockClient = () => {
 const supabaseUrl = isSelfHosted ? '' : import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseKey = isSelfHosted ? '' : import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-const supabase = isSelfHosted ? (createMockClient() as any) : createClient(supabaseUrl, supabaseKey);
+const supabase = isSelfHosted || !supabaseUrl ? (createMockClient() as any) : createClient(supabaseUrl, supabaseKey);
 
 export default supabase;
