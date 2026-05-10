@@ -467,6 +467,73 @@ curl -s https://api.github.com/repos/flexprice/flexprice-front/releases/latest |
 [![GitHub Releases](https://img.shields.io/github/release-date/flexprice/flexprice-front?style=flat-square)](https://github.com/flexprice/flexprice-front/releases)
 [![GitHub All Releases](https://img.shields.io/github/downloads/flexprice/flexprice-front/total?style=flat-square&label=Total%20Downloads)](https://github.com/flexprice/flexprice-front/releases)
 
+---
+
+## 📖 Storybook Component Library
+
+This branch (`test`) adds a full **Storybook component library** for the FlexPrice frontend — 69 stories across Atoms, Molecules, and Organisms, plus 39 passing unit tests.
+
+### Approach
+
+**Read first, write second.** Every story was written by reading the actual component source — prop names, variant values, and color tokens (`#3293D9`) come directly from the code, not guessed.
+
+Three categories of work:
+
+| Category | What was done |
+|---|---|
+| **Stories for existing components** | Button, Chip, Input, Select, Tooltip, Spinner, DateRangePicker, MetricCard, AppSidebar, EmptyPage |
+| **New components built + storied** | DataTable (`@tanstack/react-table` + virtualisation), InvoiceStatusBadge, MeterProgress, SearchBar, MonthRangePicker, PricingTierTable |
+| **Utilities + tests** | `createQueryConfig`, `formatNumber`, `getCurrencySymbol`, Button, InvoiceStatusBadge tests |
+
+### Component List
+
+#### Atoms
+| Story | Path |
+|---|---|
+| `Atoms/Button` | `src/components/atoms/Button/Button.stories.tsx` |
+| `Atoms/Chip` | `src/components/atoms/Chip/Chip.stories.tsx` |
+| `Atoms/Input` | `src/components/atoms/Input/Input.stories.tsx` |
+| `Atoms/Select` | `src/components/atoms/Select/Select.stories.tsx` |
+| `Atoms/Tooltip` | `src/components/atoms/Tooltip/Tooltip.stories.tsx` |
+| `Atoms/Spinner` | `src/components/atoms/Spinner/Spinner.stories.tsx` |
+| `Atoms/DateRangePicker` | `src/components/atoms/DateRangePicker/DateRangePicker.stories.tsx` |
+
+#### Molecules
+| Story | Path |
+|---|---|
+| `Molecules/MetricCard` | `src/components/molecules/MetricCard.stories.tsx` |
+| `Molecules/DataTable` | `src/components/molecules/DataTable/DataTable.stories.tsx` |
+| `Molecules/InvoiceStatusBadge` | `src/components/molecules/InvoiceStatusBadge/InvoiceStatusBadge.stories.tsx` |
+| `Molecules/MeterProgress` | `src/components/molecules/MeterProgress/MeterProgress.stories.tsx` |
+| `Molecules/SearchBar` | `src/components/molecules/SearchBar/SearchBar.stories.tsx` |
+| `Molecules/MonthRangePicker` | `src/components/molecules/MonthRangePicker/MonthRangePicker.stories.tsx` |
+
+#### Organisms
+| Story | Path |
+|---|---|
+| `Organisms/SidebarNav` | `src/components/molecules/Sidebar/Sidebar.stories.tsx` |
+| `Organisms/PricingTierTable` | `src/components/organisms/PricingTierTable/PricingTierTable.stories.tsx` |
+| `Organisms/EmptyState` | `src/components/organisms/EmptyPage/EmptyPage.stories.tsx` |
+
+### Key Technical Decisions
+
+- **`@tanstack/react-table` DataTable** — generic `DataTable<T>` with sorting, skeleton loading (preserves table shape), pagination footer, and optional row virtualisation via `@tanstack/react-virtual` for 10 000+ rows
+- **`MonthRangePicker`** — custom component with scrollable year list + 3×4 month grid; solves the "navigate to March last year" problem without clicking through individual months
+- **`createQueryConfig`** (`src/lib/queryConfig.ts`) — structured override for TanStack Query's global `staleTime: 0` with `REALTIME`, `DEFAULT`, and `STATIC` presets
+- **Tooltip `avoidCollisions={false}`** — added prop so `AllSides` story can demonstrate true directional positioning without Radix auto-flipping to top
+- **Storybook router decorator** in `preview.ts` — any story opts in with `parameters: { withRouter: true }`
+
+### Running Storybook
+
+```bash
+npm install
+npm run storybook        # dev server at localhost:6006
+npm run build-storybook  # production build → storybook-static/
+npm test                 # 39 unit tests (vitest)
+```
+
+---
+
 ## 📄 License
 
 This project is licensed under the [AGPLv3 License](LICENSE) - see the [LICENSE](LICENSE) file for details.
