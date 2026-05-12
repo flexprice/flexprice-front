@@ -11,6 +11,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 import { config, APP_ENV } from '@/config/config';
 import GoogleSignin from './GoogleSignin';
 import { AuthTab } from './authTabs';
+import { useTranslation } from 'react-i18next';
 
 interface SignupFormProps {
 	switchTab: (tab: AuthTab) => void;
@@ -23,6 +24,7 @@ interface SignupData {
 }
 
 const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
+	const { t } = useTranslation('auth');
 	const navigate = useNavigate();
 
 	const [searchParams] = useSearchParams();
@@ -141,8 +143,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 					id='email'
 					name='email'
 					type='email'
-					label='Email'
-					placeholder='Enter your email address'
+					label={t('fields.email')}
+					placeholder={t('fields.emailPlaceholder')}
 					required
 					onChange={(s) => setSignupData({ ...signupData, email: s })}
 					value={signupData.email}
@@ -152,8 +154,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				<Input
 					id='password'
 					name='password'
-					label='Password'
-					placeholder='Enter your password'
+					label={t('fields.password')}
+					placeholder={t('fields.passwordPlaceholder')}
 					required
 					onChange={(s) => setSignupData({ ...signupData, password: s })}
 					value={signupData.password}
@@ -169,8 +171,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				<Input
 					id='confirmPassword'
 					name='confirmPassword'
-					label='Confirm Password'
-					placeholder='Confirm your password'
+					label={t('fields.confirmPassword')}
+					placeholder={t('fields.confirmPasswordPlaceholder')}
 					required
 					onChange={(s) => setSignupData({ ...signupData, confirmPassword: s })}
 					value={signupData.confirmPassword}
@@ -183,7 +185,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 					}
 				/>
 				<Button onClick={handleSignup} className='w-full !mt-6 h-11' isLoading={isSignupPending || isLoading}>
-					Create Account
+					{t('buttons.createAccount')}
 				</Button>
 			</div>
 
@@ -192,7 +194,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				<>
 					<div className='flex items-center justify-center my-6'>
 						<div className='flex-1 h-px bg-gray-200'></div>
-						<span className='mx-4 text-sm text-gray-500'>or</span>
+						<span className='mx-4 text-sm text-gray-500'>{t('divider')}</span>
 						<div className='flex-1 h-px bg-gray-200'></div>
 					</div>
 					<GoogleSignin />
@@ -200,9 +202,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 			)}
 
 			<p className='mt-6 text-center text-sm text-gray-600'>
-				Already have an account?{' '}
+				{t('hasAccount')}{' '}
 				<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium'>
-					Log in
+					{t('links.logIn')}
 				</button>
 			</p>
 		</>
