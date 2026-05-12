@@ -4,6 +4,7 @@ import { TestimonialCard } from '@/components/molecules';
 import { Testimonial } from '@/types';
 import authBg from '../../../assets/toolright.jpg';
 import { config } from '@/config/config';
+import { LandingTheme, useBrand } from '@/config/branding';
 
 const testimonials: Testimonial[] = [
 	{
@@ -81,7 +82,10 @@ const ANIMATION_DURATION = 90; // seconds for one full loop
 
 const LandingSection = () => {
 	const { t } = useTranslation('auth');
+	const brand = useBrand();
 	const bgImage = config.authPage.loginBgImage ?? authBg;
+	const { showTestimonials, landingTheme, showLogoOnLanding } = config.authPage;
+	const isDark = landingTheme === LandingTheme.Dark;
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -104,21 +108,25 @@ const LandingSection = () => {
 		return () => cancelAnimationFrame(animationFrame);
 	}, []);
 
-	const { showTestimonials } = config.authPage;
-
 	// Duplicate testimonials for seamless infinite scroll
 	const cards = testimonials.concat(testimonials);
 
 	return (
 		<section
-			className='w-full min-h-full flex-1 pt-14 pb-12 flex flex-col items-center justify-center'
+			className={`w-full min-h-full flex-1 pt-14 pb-12 flex flex-col ${isDark ? 'items-start justify-start pl-16 pr-8' : 'items-center justify-center'}`}
 			style={{
 				backgroundImage: `url(${bgImage})`,
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
 				backgroundRepeat: 'no-repeat',
 			}}>
-			<h2 className='text-[28px] font-normal text-zinc-950 text-center mb-[44px]'>
+			{showLogoOnLanding && <img src={brand.logo} alt={brand.name} className='mb-12 max-h-10 object-contain' />}
+			<h2
+				className={
+					isDark
+						? 'text-5xl font-bold text-white leading-tight text-start mb-[44px] max-w-xl'
+						: 'text-[28px] font-normal text-zinc-950 text-center mb-[44px]'
+				}>
 				{config.authPage.tagline ?? t('landing.defaultTagline')}
 			</h2>
 			{showTestimonials && (
