@@ -21,7 +21,7 @@ name: White-Label Production Deployment
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   # Bridges DEPLOYMENTS_CONFIG secret into a matrix.
