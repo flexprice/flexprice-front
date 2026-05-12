@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { CHECKOUT_PATH, PADDLE_URL_PARAMS } from './constants';
-import { config } from '@/config';
+
+const PADDLE_TOKEN = import.meta.env.VITE_PADDLE_CLIENT_TOKEN;
 
 /**
  * PaddleProvider — routing guard + demo init only.
@@ -34,7 +35,7 @@ export const PaddleProvider = ({ children }: { children: React.ReactNode }) => {
 		if (window.location.pathname === CHECKOUT_PATH) return;
 
 		// Initialize Paddle for demo/internal pages using the shared env token
-		if (!config.paddle.clientToken || initialized.current) return;
+		if (!PADDLE_TOKEN || initialized.current) return;
 
 		const Paddle = window.Paddle;
 		if (!Paddle) {
@@ -43,9 +44,9 @@ export const PaddleProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 
 		initialized.current = true;
-		Paddle.Environment.set(config.paddle.clientToken.startsWith('test_') ? 'sandbox' : 'production');
+		Paddle.Environment.set(PADDLE_TOKEN.startsWith('test_') ? 'sandbox' : 'production');
 		Paddle.Initialize({
-			token: config.paddle.clientToken,
+			token: PADDLE_TOKEN,
 			checkout: {
 				settings: {
 					displayMode: 'overlay',

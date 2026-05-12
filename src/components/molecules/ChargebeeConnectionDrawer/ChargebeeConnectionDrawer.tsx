@@ -1,4 +1,3 @@
-import { config } from '@/config';
 import { FC, useState, useEffect } from 'react';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
@@ -48,8 +47,9 @@ const ChargebeeConnectionDrawer: FC<ChargebeeConnectionDrawerProps> = ({ isOpen,
 	const [isWebhookEventsExpanded, setIsWebhookEventsExpanded] = useState(false);
 
 	// Generate webhook URL using environment variable
+	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1';
 	const webhookUrl =
-		user?.tenant?.id && activeEnvironment?.id ? `${config.api.baseUrl}/webhooks/chargebee/${user.tenant.id}/${activeEnvironment.id}` : '';
+		user?.tenant?.id && activeEnvironment?.id ? `${apiUrl}/webhooks/chargebee/${user.tenant.id}/${activeEnvironment.id}` : '';
 
 	// Webhook events
 	const getWebhookEvents = (): ChargebeeWebhookEvents[] => {

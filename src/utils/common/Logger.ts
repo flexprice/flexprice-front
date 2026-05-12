@@ -1,4 +1,4 @@
-import { config as appConfig, APP_ENV } from '@/config';
+import { NODE_ENV, NodeEnv } from '@/types';
 
 export enum LogLevel {
 	INFO = 'info',
@@ -8,7 +8,7 @@ export enum LogLevel {
 }
 
 interface LoggerConfig {
-	enabledEnvironments: APP_ENV[];
+	enabledEnvironments: NodeEnv[];
 	showTimestamp?: boolean;
 	showLogLevel?: boolean;
 }
@@ -20,7 +20,7 @@ class Logger {
 
 	private constructor(
 		config: LoggerConfig = {
-			enabledEnvironments: [APP_ENV.Local, APP_ENV.Development, APP_ENV.Production],
+			enabledEnvironments: [NodeEnv.LOCAL, NodeEnv.DEV, NodeEnv.PROD],
 			showTimestamp: true,
 			showLogLevel: true,
 		},
@@ -37,7 +37,7 @@ class Logger {
 	}
 
 	private checkIfEnabled(): boolean {
-		return this.config.enabledEnvironments.includes(appConfig.app.env);
+		return this.config.enabledEnvironments.includes(NODE_ENV);
 	}
 
 	private formatMessage(level: LogLevel, ...args: unknown[]): string {

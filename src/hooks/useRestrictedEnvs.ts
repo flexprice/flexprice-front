@@ -1,5 +1,4 @@
 import { useMemo, useCallback } from 'react';
-import { config } from '@/config';
 
 /** Raw parsed env config: tenant_id -> { environment_id -> ISO date or "suspended" } */
 export type RestrictedEnvsConfig = Record<string, Record<string, string>>;
@@ -25,7 +24,7 @@ interface FlatMapEntry {
 
 function parseRestrictedEnvsConfig(): RestrictedEnvsConfig {
 	try {
-		const raw = config.restrictions.rawEnvs;
+		const raw = import.meta.env.VITE_RESTRICTED_ENVS;
 		if (raw == null || typeof raw !== 'string') return {};
 		const parsed = JSON.parse(raw) as unknown;
 		if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return {};

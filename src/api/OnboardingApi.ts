@@ -1,4 +1,3 @@
-import { config } from '@/config';
 import { AxiosClient } from '@/core/axios/verbs';
 import { FireEventsPayload } from '@/types/dto';
 
@@ -41,7 +40,7 @@ class OnboardingApi {
 	 * POST to Google Apps Script Web App URL
 	 */
 	public static async recordOnboardingData(payload: OnboardingDataRequest): Promise<void> {
-		const webAppUrl = config.integrations.googleSheetsWebAppUrl;
+		const webAppUrl = import.meta.env.VITE_GOOGLE_SHEETS_WEB_APP_URL;
 
 		if (!webAppUrl) {
 			console.warn('VITE_GOOGLE_SHEETS_WEB_APP_URL is not configured. Skipping onboarding data recording.');

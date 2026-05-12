@@ -1,4 +1,3 @@
-import { config } from '@/config';
 import { Outlet, useNavigate } from 'react-router';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Sidebar } from '@/components/molecules/Sidebar';
@@ -10,12 +9,13 @@ import posthog from 'posthog-js';
 import { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 
+const isProd = import.meta.env.VITE_APP_ENVIRONMENT === 'prod';
 const MainLayout: React.FC = () => {
 	const { user } = useUser();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (!user || !config.app.isProd) return;
+		if (!user || !isProd) return;
 
 		posthog.identify(user.email, {
 			id: user.id,
@@ -50,7 +50,7 @@ const MainLayout: React.FC = () => {
 	}, [user, navigate]);
 
 	useEffect(() => {
-		if (!user && config.app.isProd) {
+		if (!user && isProd) {
 			Sentry.setUser(null);
 			posthog.reset();
 		}

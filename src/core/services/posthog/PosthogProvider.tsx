@@ -1,24 +1,26 @@
+// src/PosthogProvider.tsx
 import React, { ReactNode } from 'react';
 import { PostHogProvider } from 'posthog-js/react';
 import posthog from 'posthog-js';
 import PosthogErrorBoundary from './PosthogErrorBoundary';
-import { config } from '@/config';
-
 interface Props {
 	children: ReactNode;
 }
 
-if (config.posthog.enabled) {
-	posthog.init(config.posthog.key, {
-		api_host: config.posthog.host,
+const isProd = import.meta.env.VITE_APP_ENVIRONMENT === 'prod';
+
+if (isProd) {
+	posthog.init(import.meta.env.VITE_APP_PUBLIC_POSTHOG_KEY!, {
+		api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,
 		capture_pageview: true,
 	});
 
+	// Safely start session recording
 	posthog.sessionRecording?.startIfEnabledOrStop();
 }
 
 const PosthogWrapper: React.FC<Props> = ({ children }) => {
-	if (config.posthog.enabled) {
+	if (isProd) {
 		return (
 			<PostHogProvider client={posthog}>
 				<PosthogErrorBoundary>{children}</PosthogErrorBoundary>

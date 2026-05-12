@@ -1,14 +1,15 @@
+// src/SentryProvider.tsx
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import { config } from '@/config';
 
 interface Props {
 	children: React.ReactNode;
 }
+const isProd = import.meta.env.VITE_APP_ENVIRONMENT === 'prod';
 
-if (config.sentry.enabled) {
+if (isProd) {
 	Sentry.init({
-		dsn: config.sentry.dsn,
+		dsn: import.meta.env.VITE_APP_PUBLIC_SENTRY_DSN,
 		integrations: [Sentry.browserTracingIntegration()],
 		tracesSampleRate: 1.0,
 		replaysSessionSampleRate: 0,
