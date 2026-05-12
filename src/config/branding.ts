@@ -11,6 +11,11 @@ export enum Direction {
 	RTL = 'rtl',
 }
 
+export enum LandingTheme {
+	Light = 'light',
+	Dark = 'dark',
+}
+
 export interface BrandConfig {
 	name: string;
 	logo: string;
@@ -24,6 +29,8 @@ export interface AuthPageConfig {
 	loginBgImage: string | null;
 	slackCommunityUrl: string | null;
 	showTestimonials: boolean;
+	landingTheme: LandingTheme;
+	showLogoOnLanding: boolean;
 }
 
 export interface I18nConfig {
@@ -59,6 +66,10 @@ export function parseAuthPageConfig(): AuthPageConfig {
 					? raw.slackCommunityUrl
 					: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
 			showTestimonials: raw.showTestimonials ?? true,
+			landingTheme: (Object.values(LandingTheme) as string[]).includes(raw.landingTheme)
+				? (raw.landingTheme as LandingTheme)
+				: LandingTheme.Light,
+			showLogoOnLanding: raw.showLogoOnLanding ?? false,
 		};
 	} catch {
 		return {
@@ -67,6 +78,8 @@ export function parseAuthPageConfig(): AuthPageConfig {
 			loginBgImage: null,
 			slackCommunityUrl: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
 			showTestimonials: true,
+			landingTheme: LandingTheme.Light,
+			showLogoOnLanding: false,
 		};
 	}
 }
