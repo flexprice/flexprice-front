@@ -1,0 +1,113 @@
+# Generic white-label deployment workflow.
+#
+# To add a new white-label deployment, append a record to the `matrix.deployment`
+# array below — no new workflow file needed.
+#
+# Credential resolution (applies to token, org_id, project_id):
+#   - If you provide a secret name (e.g. VERCEL_TOKEN_TIRDAD) that secret is used.
+#   - Leave the field as "" to fall back to the shared Flexprice secret.
+#
+# Required GitHub secrets (always needed):
+#   VERCEL_TOKEN, VERCEL_ORG_ID, SENTRY_AUTH_TOKEN
+#
+# Per-deployment secrets (only needed when not reusing Flexprice credentials):
+#   VERCEL_TOKEN_<NAME>, VERCEL_ORG_ID_<NAME>, VERCEL_PROJECT_ID_<NAME>
+
+name: White-Label Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy / ${{ matrix.deployment.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false   # one failed deployment must not cancel the others
+      matrix:
+        deployment:
+
+          # ── Flexprice IN ─────────────────────────────────────────────────
+          - name: flexprice-in
+            # Vercel credentials — leave *_secret empty to use shared Flexprice creds
+            vercel_project_id_secret: VERCEL_PROJECT_ID_IN
+            vercel_org_id_secret: ""        # falls back to VERCEL_ORG_ID
+            vercel_token_secret: ""         # falls back to VERCEL_TOKEN
+            # White-label env vars — leave empty to use Vite defaults (Flexprice branding)
+            brand_config: ""
+            auth_config: ""
+            default_locale: ""
+
+          # ── Flexprice US ─────────────────────────────────────────────────
+          - name: flexprice-us
+            vercel_project_id_secret: VERCEL_PROJECT_ID_US
+            vercel_org_id_secret: ""
+            vercel_token_secret: ""
+            brand_config: ""
+            auth_config: ""
+            default_locale: ""
+
+          # ── Add a new white-label deployment ─────────────────────────────
+          # Copy this block, fill in the values, and commit — done.
+          #
+          # - name: acme
+          #   vercel_project_id_secret: VERCEL_PROJECT_ID_ACME   # required
+          #   vercel_org_id_secret: VERCEL_ORG_ID_ACME           # or "" to share
+          #   vercel_token_secret: VERCEL_TOKEN_ACME             # or "" to share
+          #   brand_config: >-
+          #     {"name":"Acme","logo":"https://...","primaryColor":"#FF0000","favicon":"https://..."}
+          #   auth_config: >-
+          #     {"tagline":"Your tagline","supportEmail":"support@acme.com",
+          #      "loginBgImage":"https://...","slackCommunityUrl":null,
+          #      "showTestimonials":false,"landingTheme":"dark",
+          #      "landingContentAlign":"left","showLogoOnLanding":true}
+          #   default_locale: "en"
+
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      # Resolve credentials: use deployment-specific secret when provided,
+      # otherwise fall back to shared Flexprice credentials.
+      - name: Resolve Vercel credentials
+        id: creds
+        env:
+          _TOKEN:      ${{ secrets[matrix.deployment.vercel_token_secret] }}
+          _ORG_ID:     ${{ secrets[matrix.deployment.vercel_org_id_secret] }}
+          _PROJECT_ID: ${{ secrets[matrix.deployment.vercel_project_id_secret] }}
+          _FB_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+          _FB_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          echo "VERCEL_TOKEN=${_TOKEN:-$_FB_TOKEN}"           >> "$GITHUB_ENV"
+          echo "VERCEL_ORG_ID=${_ORG_ID:-$_FB_ORG_ID}"       >> "$GITHUB_ENV"
+          echo "VERCEL_PROJECT_ID=$_PROJECT_ID"               >> "$GITHUB_ENV"
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ env.VERCEL_TOKEN }}
+
+      - name: Install dependencies
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          npm install
+
+      - name: Generate Version Meta
+        run: npm run generate-meta
+
+      - name: Build Project Artifacts
+        env:
+          VITE_BRAND_CONFIG:    ${{ matrix.deployment.brand_config }}
+          VITE_AUTH_CONFIG:     ${{ matrix.deployment.auth_config }}
+          VITE_DEFAULT_LOCALE:  ${{ matrix.deployment.default_locale }}
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          vercel build --prod --token=${{ env.VERCEL_TOKEN }}
+
+      - name: Deploy Project Artifacts
+        run: vercel deploy --prebuilt --prod --token=${{ env.VERCEL_TOKEN }}
