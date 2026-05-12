@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { SectionHeader } from '@/components/atoms';
 import { FC, useEffect } from 'react';
+import { useBrand } from '@/context/BrandContext';
 
 interface Props {
 	children?: React.ReactNode;
@@ -18,18 +19,17 @@ const Page: FC<Props> = ({ children, className, type = 'default', header, headin
 		throw new Error('You cannot pass both heading and header props');
 	}
 
+	const { name } = useBrand();
+
 	useEffect(() => {
-		// Use documentTitle if provided, otherwise try to extract string from heading
 		if (documentTitle) {
-			document.title = `${documentTitle} | Flexprice`;
+			document.title = `${documentTitle} | ${name}`;
 		} else if (heading) {
-			// If heading is a string, use it directly
 			if (typeof heading === 'string') {
-				document.title = `${heading} | Flexprice`;
+				document.title = `${heading} | ${name}`;
 			}
-			// If heading is a ReactNode, don't set title (to avoid "[object Object]")
 		}
-	}, [heading, documentTitle]);
+	}, [heading, documentTitle, name]);
 
 	return (
 		<div className='min-h-screen flex flex-col'>
