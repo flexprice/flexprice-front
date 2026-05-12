@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { TestimonialCard } from '@/components/molecules';
 import { Testimonial } from '@/types';
 import authBg from '../../../assets/toolright.jpg';
+import { config } from '@/config/config';
 
 const testimonials: Testimonial[] = [
 	{
@@ -78,6 +80,8 @@ const customerLogos = [
 const ANIMATION_DURATION = 90; // seconds for one full loop
 
 const LandingSection = () => {
+	const { t } = useTranslation('auth');
+	const bgImage = config.authPage.loginBgImage ?? authBg;
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -107,13 +111,13 @@ const LandingSection = () => {
 		<section
 			className='w-full min-h-full flex-1 pt-14 pb-12 flex flex-col items-center justify-center'
 			style={{
-				backgroundImage: `url(${authBg})`,
+				backgroundImage: `url(${bgImage})`,
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
 				backgroundRepeat: 'no-repeat',
 			}}>
 			<h2 className='text-[28px] font-normal text-zinc-950 text-center mb-[44px]'>
-				Focus on <span className='font-medium'>building</span>, not billing.
+				{config.authPage.tagline ?? t('landing.defaultTagline')}
 			</h2>
 			<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-10'>
 				<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
@@ -139,7 +143,7 @@ const LandingSection = () => {
 				</div>
 			</div>
 			<div className='w-full flex flex-col items-center mt-8'>
-				<div className='text-center font-inter text-black font-medium mb-14 text-lg'>Trusted by</div>
+				<div className='text-center font-inter text-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
 				<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-12 justify-items-center items-center'>
 					{customerLogos.map((logo, idx) => (
 						<div key={idx} className='flex items-center justify-center'>
