@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import EnvironmentApi from '@/api/EnvironmentApi';
 import AuthService from '@/core/auth/AuthService';
+import { config } from '@/config';
 
 interface RuntimeCredentials {
 	sessionToken: string;
@@ -15,10 +16,8 @@ export const clearRuntimeCredentials = () => {
 	runtimeCredentials = null;
 };
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
 const axiosClient: AxiosInstance = axios.create({
-	baseURL: API_URL,
+	baseURL: config.api.baseUrl,
 	timeout: 600000,
 	headers: {
 		'Content-Type': 'application/json',

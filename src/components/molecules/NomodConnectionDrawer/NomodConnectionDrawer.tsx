@@ -1,3 +1,4 @@
+import { config } from '@/config';
 import { FC, useState, useEffect } from 'react';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
@@ -41,8 +42,8 @@ const NomodConnectionDrawer: FC<NomodConnectionDrawerProps> = ({ isOpen, onOpenC
 	const [webhookCopied, setWebhookCopied] = useState(false);
 
 	// Generate webhook URL using environment variable
-	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1';
-	const webhookUrl = user?.tenant?.id && activeEnvironment?.id ? `${apiUrl}/webhooks/nomod/${user.tenant.id}/${activeEnvironment.id}` : '';
+	const webhookUrl =
+		user?.tenant?.id && activeEnvironment?.id ? `${config.api.baseUrl}/webhooks/nomod/${user.tenant.id}/${activeEnvironment.id}` : '';
 
 	// Reset form on open or when editing connection changes
 	useEffect(() => {

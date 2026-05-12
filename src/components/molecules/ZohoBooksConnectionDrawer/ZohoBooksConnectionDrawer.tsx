@@ -1,3 +1,4 @@
+import { config } from '@/config';
 import { FC, useEffect, useState } from 'react';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { useMutation } from '@tanstack/react-query';
@@ -40,9 +41,8 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 	const { user } = useUser();
 	const { activeEnvironment } = useEnvironment();
 
-	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1';
 	const webhookUrl =
-		user?.tenant?.id && activeEnvironment?.id ? `${apiUrl}/webhooks/zoho_books/${user.tenant.id}/${activeEnvironment.id}` : '';
+		user?.tenant?.id && activeEnvironment?.id ? `${config.api.baseUrl}/webhooks/zoho_books/${user.tenant.id}/${activeEnvironment.id}` : '';
 
 	const [formData, setFormData] = useState<ZohoBooksFormData>({
 		name: '',

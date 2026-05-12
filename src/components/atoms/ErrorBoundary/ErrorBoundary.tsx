@@ -6,7 +6,7 @@ import { Button } from '@/components/atoms';
 import { RouteNames } from '@/core/routes/Routes';
 import { Link } from 'react-router';
 import * as Sentry from '@sentry/react';
-import { NODE_ENV, NodeEnv } from '@/types';
+import { config } from '@/config';
 import toast from 'react-hot-toast';
 
 interface ErrorInfo {
@@ -19,7 +19,7 @@ const generateErrorId = () => `err_${Date.now()}_${Math.random().toString(36).su
 // Log error to console in development and to Sentry in production
 const logError = (error: Error, info?: ErrorInfo, metadata?: Record<string, any>) => {
 	const errorId = generateErrorId();
-	const isProd = NODE_ENV === NodeEnv.PROD;
+	const isProd = config.app.isProd;
 
 	if (!isProd) {
 		console.error('[ErrorBoundary]', {
@@ -65,7 +65,7 @@ interface ErrorFallbackProps {
 export const ErrorFallback = ({ error, errorInfo, errorId, resetError }: ErrorFallbackProps) => {
 	const [showDetails, setShowDetails] = useState(false);
 	const [animateIcon, setAnimateIcon] = useState(true);
-	const isDev = NODE_ENV !== NodeEnv.PROD;
+	const isDev = !config.app.isProd;
 
 	const handleRefresh = () => {
 		resetError();

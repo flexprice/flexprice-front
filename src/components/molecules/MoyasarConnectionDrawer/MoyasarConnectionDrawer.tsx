@@ -1,3 +1,4 @@
+import { config } from '@/config';
 import { FC, useState, useEffect } from 'react';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { useUser } from '@/hooks/UserContext';
@@ -35,9 +36,8 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 	const [isWebhookEventsExpanded, setIsWebhookEventsExpanded] = useState(false);
 
 	// Generate webhook URL using environment variable
-	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1';
 	const webhookUrl =
-		user?.tenant?.id && activeEnvironment?.id ? `${apiUrl}/webhooks/moyasar/${user.tenant.id}/${activeEnvironment.id}` : '';
+		user?.tenant?.id && activeEnvironment?.id ? `${config.api.baseUrl}/webhooks/moyasar/${user.tenant.id}/${activeEnvironment.id}` : '';
 
 	// Reset form on open or when editing connection changes
 	useEffect(() => {

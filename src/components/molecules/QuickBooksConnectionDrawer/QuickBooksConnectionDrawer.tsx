@@ -1,3 +1,4 @@
+import { config } from '@/config';
 import { FC, useState, useEffect } from 'react';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
@@ -68,10 +69,9 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 
 	const [redirectUriCopied, setRedirectUriCopied] = useState(false);
 
-	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1';
 	// Generate webhook URL
 	const webhookUrl =
-		user?.tenant?.id && activeEnvironment?.id ? `${apiUrl}/webhooks/quickbooks/${user.tenant.id}/${activeEnvironment.id}` : '';
+		user?.tenant?.id && activeEnvironment?.id ? `${config.api.baseUrl}/webhooks/quickbooks/${user.tenant.id}/${activeEnvironment.id}` : '';
 	// Generate redirect URI
 	const redirectUri = `${window.location.origin}/tools/integrations/oauth/callback`;
 

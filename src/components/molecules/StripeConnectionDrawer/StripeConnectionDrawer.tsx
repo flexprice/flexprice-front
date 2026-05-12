@@ -1,3 +1,4 @@
+import { config } from '@/config';
 import { FC, useState, useEffect } from 'react';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
@@ -53,8 +54,8 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 	const [isWebhookEventsExpanded, setIsWebhookEventsExpanded] = useState(false);
 
 	// Generate webhook URL using environment variable
-	const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/v1';
-	const webhookUrl = user?.tenant?.id && activeEnvironment?.id ? `${apiUrl}/webhooks/stripe/${user.tenant.id}/${activeEnvironment.id}` : '';
+	const webhookUrl =
+		user?.tenant?.id && activeEnvironment?.id ? `${config.api.baseUrl}/webhooks/stripe/${user.tenant.id}/${activeEnvironment.id}` : '';
 
 	// Webhook events mapping based on sync config
 	const getWebhookEvents = (): StripeWebhookEvents[] => {

@@ -8,7 +8,7 @@ import { EyeOff } from 'lucide-react';
 import { EyeIcon } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate, useSearchParams } from 'react-router';
-import { NODE_ENV, NodeEnv } from '@/types';
+import { config, APP_ENV } from '@/config';
 import GoogleSignin from './GoogleSignin';
 import { AuthTab } from './authTabs';
 
@@ -54,7 +54,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 			});
 		},
 		onSuccess: (data) => {
-			if (NODE_ENV != NodeEnv.SELF_HOSTED) {
+			if (config.app.env !== APP_ENV.SelfHosted) {
 				toast.success('Account created successfully! Please check your email to confirm your account.');
 				switchTab(AuthTab.LOGIN);
 			} else {
@@ -113,7 +113,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 		if (!validateForm()) {
 			return;
 		}
-		if (NODE_ENV != NodeEnv.SELF_HOSTED) {
+		if (config.app.env !== APP_ENV.SelfHosted) {
 			setIsLoading(true);
 			const { error } = await supabase.auth.signUp({
 				email: signupData.email,
@@ -188,7 +188,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 			</div>
 
 			{/* Google Sign-in Button - Only show on login and signup tabs */}
-			{NODE_ENV != NodeEnv.SELF_HOSTED && (
+			{config.app.env !== APP_ENV.SelfHosted && (
 				<>
 					<div className='flex items-center justify-center my-6'>
 						<div className='flex-1 h-px bg-gray-200'></div>

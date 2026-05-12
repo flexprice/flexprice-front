@@ -1,10 +1,10 @@
-import { NODE_ENV, NodeEnv } from '@/types';
+import { config, APP_ENV } from '@/config';
 import supabase from '../services/supbase/config';
 import { RouteNames } from '../routes/Routes';
 
 class AuthService {
 	public static async getAcessToken() {
-		if (NODE_ENV != NodeEnv.SELF_HOSTED) {
+		if (config.app.env !== APP_ENV.SelfHosted) {
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
@@ -23,7 +23,7 @@ class AuthService {
 	}
 
 	public static async getUser() {
-		if (NODE_ENV != NodeEnv.SELF_HOSTED) {
+		if (config.app.env !== APP_ENV.SelfHosted) {
 			const { data } = await supabase.auth.getUser();
 			return data.user;
 		} else {
@@ -40,7 +40,7 @@ class AuthService {
 	}
 
 	public static async logout() {
-		if (NODE_ENV != NodeEnv.SELF_HOSTED) {
+		if (config.app.env !== APP_ENV.SelfHosted) {
 			await supabase.auth.signOut();
 		}
 		localStorage.clear();

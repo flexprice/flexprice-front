@@ -1,4 +1,5 @@
 import { includes } from 'lodash';
+import { config } from '@/config';
 import { Region } from '@/types/enums/Region';
 
 export interface DashboardUrls {
@@ -12,8 +13,8 @@ export interface DashboardUrls {
  */
 export const getDashboardUrls = (): DashboardUrls => {
 	return {
-		india: import.meta.env.VITE_DASHBOARD_URL_INDIA,
-		us: import.meta.env.VITE_DASHBOARD_URL_US,
+		india: config.region.indiaUrl || undefined,
+		us: config.region.usUrl || undefined,
 	};
 };
 

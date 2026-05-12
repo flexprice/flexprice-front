@@ -7,7 +7,7 @@ import { Button, Input } from '@/components/atoms';
 import { EyeIcon, EyeOff } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import AuthApi from '@/api/AuthApi';
-import { NODE_ENV, NodeEnv } from '@/types';
+import { config, APP_ENV } from '@/config';
 import { RouteNames } from '@/core/routes/Routes';
 import GoogleSignin from './GoogleSignin';
 import { AuthTab } from './authTabs';
@@ -73,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 
 		setLoading(true);
 
-		if (NODE_ENV != NodeEnv.SELF_HOSTED) {
+		if (config.app.env !== APP_ENV.SelfHosted) {
 			const { error } = await supabase.auth.signInWithPassword({
 				email,
 				password,
@@ -138,7 +138,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 			</form>
 
 			{/* Google Sign-in Button - Only show on login and signup tabs */}
-			{NODE_ENV != NodeEnv.SELF_HOSTED && (
+			{config.app.env !== APP_ENV.SelfHosted && (
 				<>
 					<div className='flex items-center justify-center my-6'>
 						<div className='flex-1 h-px bg-gray-200'></div>

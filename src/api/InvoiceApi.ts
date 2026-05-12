@@ -1,3 +1,4 @@
+import { config } from '@/config';
 import { AxiosClient } from '@/core/axios/verbs';
 import { Invoice } from '@/models';
 import { generateQueryParams } from '@/utils/common/api_helper';
@@ -87,7 +88,7 @@ class InvoiceApi {
 	public static async getInvoicePdf(invoiceId: string, invoiceNo?: string) {
 		const downloadFileName = invoiceNo ? `invoice-${invoiceNo}.pdf` : `invoice-${invoiceId}.pdf`;
 
-		const response = await fetch(`${import.meta.env.VITE_API_URL}${this.baseurl}/${invoiceId}/pdf`, {
+		const response = await fetch(`${config.api.baseUrl}${this.baseurl}/${invoiceId}/pdf`, {
 			headers: {
 				Authorization: `Bearer ${await AuthService.getAcessToken()}`,
 				'X-Environment-ID': EnvironmentApi.getActiveEnvironmentId() || '',

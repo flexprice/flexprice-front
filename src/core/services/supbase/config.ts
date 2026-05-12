@@ -1,8 +1,8 @@
-import { NODE_ENV, NodeEnv } from '@/types';
+import { config, APP_ENV } from '@/config';
 import { createClient } from '@supabase/supabase-js';
 
-const isSelfHosted = NODE_ENV === NodeEnv.SELF_HOSTED;
-// Create a mock client for self-hosted mode
+const isSelfHosted = config.app.env === APP_ENV.SelfHosted;
+
 const createMockClient = () => {
 	return {
 		auth: {
@@ -20,10 +20,9 @@ const createMockClient = () => {
 	};
 };
 
-// Use real Supabase client only if not in self-hosted mode
-const supabaseUrl = isSelfHosted ? '' : import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseKey = isSelfHosted ? '' : import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-
-const supabase = isSelfHosted ? (createMockClient() as any) : createClient(supabaseUrl, supabaseKey);
+const supabase =
+	isSelfHosted || !config.auth.url || !config.auth.anonKey
+		? (createMockClient() as any)
+		: createClient(config.auth.url, config.auth.anonKey);
 
 export default supabase;
