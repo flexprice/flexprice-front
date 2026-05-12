@@ -1,7 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { Direction } from '@/config/branding';
 
-export async function initI18n(locale: string, direction: 'ltr' | 'rtl'): Promise<void> {
+export async function initI18n(locale: string, direction: Direction): Promise<void> {
 	if (i18n.isInitialized) {
 		await i18n.changeLanguage(locale);
 		document.documentElement.lang = locale;

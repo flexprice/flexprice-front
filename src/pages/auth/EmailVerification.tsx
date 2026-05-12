@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
-import { useBrand } from '@/context/BrandContext';
+import { useBrand } from '@/config/branding';
 import { config } from '@/config/config';
 
 const EmailVerification = () => {

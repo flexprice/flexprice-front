@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import { useTranslation } from 'react-i18next';
-import { useBrand } from '@/context/BrandContext';
+import { useBrand } from '@/config/branding';
 
 const ResendVerification = () => {
 	const [email, setEmail] = useState('');

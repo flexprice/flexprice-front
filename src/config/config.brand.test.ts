@@ -1,7 +1,12 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
 
-// Each test resets modules so config.ts re-evaluates import.meta.env fresh
-async function importParsers() {
+// Parsers live in branding.ts; reset modules so import.meta.env re-evaluates fresh
+async function importBranding() {
+	vi.resetModules();
+	return import('./branding');
+}
+
+async function importConfig() {
 	vi.resetModules();
 	return import('./config');
 }
@@ -10,7 +15,7 @@ describe('parseBrandConfig', () => {
 	afterEach(() => vi.unstubAllEnvs());
 
 	it('returns Flexprice defaults when env var is absent', async () => {
-		const { parseBrandConfig } = await importParsers();
+		const { parseBrandConfig } = await importBranding();
 		const result = parseBrandConfig();
 		expect(result.name).toBe('Flexprice');
 		expect(result.logo).toBe('/comicon.png');
@@ -20,7 +25,7 @@ describe('parseBrandConfig', () => {
 
 	it('applies overrides from valid JSON', async () => {
 		vi.stubEnv('VITE_BRAND_CONFIG', JSON.stringify({ name: 'Tirdad', primaryColor: '#0d1b2a' }));
-		const { parseBrandConfig } = await importParsers();
+		const { parseBrandConfig } = await importBranding();
 		const result = parseBrandConfig();
 		expect(result.name).toBe('Tirdad');
 		expect(result.primaryColor).toBe('#0d1b2a');
@@ -29,7 +34,7 @@ describe('parseBrandConfig', () => {
 
 	it('silently falls back to defaults on malformed JSON', async () => {
 		vi.stubEnv('VITE_BRAND_CONFIG', '{bad json}');
-		const { parseBrandConfig } = await importParsers();
+		const { parseBrandConfig } = await importBranding();
 		const result = parseBrandConfig();
 		expect(result.name).toBe('Flexprice');
 	});
@@ -39,7 +44,7 @@ describe('parseAuthPageConfig', () => {
 	afterEach(() => vi.unstubAllEnvs());
 
 	it('returns defaults when env var is absent', async () => {
-		const { parseAuthPageConfig } = await importParsers();
+		const { parseAuthPageConfig } = await importBranding();
 		const result = parseAuthPageConfig();
 		expect(result.supportEmail).toBe('support@flexprice.io');
 		expect(result.tagline).toBeNull();
@@ -49,14 +54,14 @@ describe('parseAuthPageConfig', () => {
 
 	it('sets slackCommunityUrl to null when explicitly nulled', async () => {
 		vi.stubEnv('VITE_AUTH_CONFIG', JSON.stringify({ slackCommunityUrl: null }));
-		const { parseAuthPageConfig } = await importParsers();
+		const { parseAuthPageConfig } = await importBranding();
 		const result = parseAuthPageConfig();
 		expect(result.slackCommunityUrl).toBeNull();
 	});
 
 	it('applies partial overrides while keeping other defaults', async () => {
 		vi.stubEnv('VITE_AUTH_CONFIG', JSON.stringify({ supportEmail: 'support@tirdad.com', tagline: 'Custom tagline' }));
-		const { parseAuthPageConfig } = await importParsers();
+		const { parseAuthPageConfig } = await importBranding();
 		const result = parseAuthPageConfig();
 		expect(result.supportEmail).toBe('support@tirdad.com');
 		expect(result.tagline).toBe('Custom tagline');
@@ -66,7 +71,7 @@ describe('parseAuthPageConfig', () => {
 
 	it('silently falls back to defaults on malformed JSON', async () => {
 		vi.stubEnv('VITE_AUTH_CONFIG', '{bad json}');
-		const { parseAuthPageConfig } = await importParsers();
+		const { parseAuthPageConfig } = await importBranding();
 		const result = parseAuthPageConfig();
 		expect(result.supportEmail).toBe('support@flexprice.io');
 		expect(result.slackCommunityUrl).toBe('https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ');
@@ -77,7 +82,7 @@ describe('parseI18nConfig', () => {
 	afterEach(() => vi.unstubAllEnvs());
 
 	it('defaults to en ltr', async () => {
-		const { parseI18nConfig } = await importParsers();
+		const { parseI18nConfig } = await importBranding();
 		const result = parseI18nConfig();
 		expect(result.locale).toBe('en');
 		expect(result.direction).toBe('ltr');
@@ -85,7 +90,7 @@ describe('parseI18nConfig', () => {
 
 	it('derives rtl from Arabic locale', async () => {
 		vi.stubEnv('VITE_DEFAULT_LOCALE', 'ar');
-		const { parseI18nConfig } = await importParsers();
+		const { parseI18nConfig } = await importBranding();
 		const result = parseI18nConfig();
 		expect(result.locale).toBe('ar');
 		expect(result.direction).toBe('rtl');
@@ -94,7 +99,7 @@ describe('parseI18nConfig', () => {
 	it('derives rtl for all RTL locales', async () => {
 		for (const locale of ['ar', 'he', 'fa', 'ur']) {
 			vi.stubEnv('VITE_DEFAULT_LOCALE', locale);
-			const { parseI18nConfig } = await importParsers();
+			const { parseI18nConfig } = await importBranding();
 			const result = parseI18nConfig();
 			expect(result.direction).toBe('rtl');
 			vi.unstubAllEnvs();
@@ -104,7 +109,7 @@ describe('parseI18nConfig', () => {
 
 describe('config object', () => {
 	it('includes brand, authPage, and i18n keys', async () => {
-		const { config } = await importParsers();
+		const { config } = await importConfig();
 		expect(config.brand).toBeDefined();
 		expect(config.authPage).toBeDefined();
 		expect(config.i18n).toBeDefined();
