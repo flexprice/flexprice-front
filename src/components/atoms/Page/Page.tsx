@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { SectionHeader } from '@/components/atoms';
 import { FC, useEffect } from 'react';
-import { useBrand } from '@/context/BrandContext';
+import { useBrand } from '@/config/branding';
 
 interface Props {
 	children?: React.ReactNode;

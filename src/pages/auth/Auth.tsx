@@ -9,7 +9,7 @@ import AuthService from '@/core/auth/AuthService';
 import LandingSection from './LandingSection';
 import RegionSelector from '@/components/molecules/RegionSelector/RegionSelector';
 import { AuthTab } from './authTabs';
-import { useBrand } from '@/context/BrandContext';
+import { useBrand } from '@/config/branding';
 import { config } from '@/config/config';
 
 const AuthPage: React.FC = () => {
