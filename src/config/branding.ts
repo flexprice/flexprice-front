@@ -23,6 +23,7 @@ export interface AuthPageConfig {
 	supportEmail: string;
 	loginBgImage: string | null;
 	slackCommunityUrl: string | null;
+	showTestimonials: boolean;
 }
 
 export interface I18nConfig {
@@ -57,6 +58,7 @@ export function parseAuthPageConfig(): AuthPageConfig {
 				'slackCommunityUrl' in raw
 					? raw.slackCommunityUrl
 					: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
+			showTestimonials: raw.showTestimonials ?? true,
 		};
 	} catch {
 		return {
@@ -64,6 +66,7 @@ export function parseAuthPageConfig(): AuthPageConfig {
 			supportEmail: 'support@flexprice.io',
 			loginBgImage: null,
 			slackCommunityUrl: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
+			showTestimonials: true,
 		};
 	}
 }
