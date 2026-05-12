@@ -51,6 +51,68 @@ interface RestrictionsConfig {
 	rawEnvs: string;
 }
 
+export interface BrandConfig {
+	name: string;
+	logo: string;
+	primaryColor: string;
+	favicon: string;
+}
+
+export interface AuthPageConfig {
+	tagline: string | null;
+	supportEmail: string;
+	loginBgImage: string | null;
+	slackCommunityUrl: string | null;
+}
+
+export interface I18nConfig {
+	locale: string;
+	direction: 'ltr' | 'rtl';
+}
+
+const RTL_LOCALES = ['ar', 'he', 'fa', 'ur'];
+
+export function parseBrandConfig(): BrandConfig {
+	try {
+		const raw = JSON.parse(import.meta.env.VITE_BRAND_CONFIG ?? '{}');
+		return {
+			name: raw.name ?? 'Flexprice',
+			logo: raw.logo ?? '/comicon.png',
+			primaryColor: raw.primaryColor ?? '#7C3AED',
+			favicon: raw.favicon ?? '/favicon.ico',
+		};
+	} catch {
+		return { name: 'Flexprice', logo: '/comicon.png', primaryColor: '#7C3AED', favicon: '/favicon.ico' };
+	}
+}
+
+export function parseAuthPageConfig(): AuthPageConfig {
+	try {
+		const raw = JSON.parse(import.meta.env.VITE_AUTH_CONFIG ?? '{}');
+		return {
+			tagline: raw.tagline ?? null,
+			supportEmail: raw.supportEmail ?? 'support@flexprice.io',
+			loginBgImage: raw.loginBgImage ?? null,
+			slackCommunityUrl:
+				'slackCommunityUrl' in raw
+					? raw.slackCommunityUrl
+					: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
+		};
+	} catch {
+		return {
+			tagline: null,
+			supportEmail: 'support@flexprice.io',
+			loginBgImage: null,
+			slackCommunityUrl: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
+		};
+	}
+}
+
+export function parseI18nConfig(): I18nConfig {
+	const locale = import.meta.env.VITE_DEFAULT_LOCALE ?? 'en';
+	return { locale, direction: RTL_LOCALES.includes(locale) ? 'rtl' : 'ltr' };
+}
+
 export interface Config {
 	app: AppConfig;
 	api: ApiConfig;
@@ -62,6 +124,9 @@ export interface Config {
 	region: RegionConfig;
 	integrations: IntegrationsConfig;
 	restrictions: RestrictionsConfig;
+	brand: BrandConfig;
+	authPage: AuthPageConfig;
+	i18n: I18nConfig;
 }
 
 function parseAppEnv(): APP_ENV {
@@ -116,4 +181,7 @@ export const config: Config = {
 	restrictions: {
 		rawEnvs: import.meta.env.VITE_RESTRICTED_ENVS ?? '',
 	},
+	brand: parseBrandConfig(),
+	authPage: parseAuthPageConfig(),
+	i18n: parseI18nConfig(),
 };
