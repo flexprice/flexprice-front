@@ -16,6 +16,11 @@ export enum LandingTheme {
 	Dark = 'dark',
 }
 
+export enum LandingContentAlign {
+	Left = 'left',
+	Center = 'center',
+}
+
 export interface BrandConfig {
 	name: string;
 	logo: string;
@@ -30,6 +35,7 @@ export interface AuthPageConfig {
 	slackCommunityUrl: string | null;
 	showTestimonials: boolean;
 	landingTheme: LandingTheme;
+	landingContentAlign: LandingContentAlign;
 	showLogoOnLanding: boolean;
 }
 
@@ -69,6 +75,9 @@ export function parseAuthPageConfig(): AuthPageConfig {
 			landingTheme: (Object.values(LandingTheme) as string[]).includes(raw.landingTheme)
 				? (raw.landingTheme as LandingTheme)
 				: LandingTheme.Light,
+			landingContentAlign: (Object.values(LandingContentAlign) as string[]).includes(raw.landingContentAlign)
+				? (raw.landingContentAlign as LandingContentAlign)
+				: LandingContentAlign.Center,
 			showLogoOnLanding: raw.showLogoOnLanding ?? false,
 		};
 	} catch {
@@ -79,6 +88,7 @@ export function parseAuthPageConfig(): AuthPageConfig {
 			slackCommunityUrl: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
 			showTestimonials: true,
 			landingTheme: LandingTheme.Light,
+			landingContentAlign: LandingContentAlign.Center,
 			showLogoOnLanding: false,
 		};
 	}

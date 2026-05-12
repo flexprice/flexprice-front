@@ -4,7 +4,7 @@ import { TestimonialCard } from '@/components/molecules';
 import { Testimonial } from '@/types';
 import authBg from '../../../assets/toolright.jpg';
 import { config } from '@/config/config';
-import { LandingTheme, useBrand } from '@/config/branding';
+import { LandingContentAlign, LandingTheme, useBrand } from '@/config/branding';
 
 const testimonials: Testimonial[] = [
 	{
@@ -84,8 +84,9 @@ const LandingSection = () => {
 	const { t } = useTranslation('auth');
 	const brand = useBrand();
 	const bgImage = config.authPage.loginBgImage ?? authBg;
-	const { showTestimonials, landingTheme, showLogoOnLanding } = config.authPage;
+	const { showTestimonials, landingTheme, landingContentAlign, showLogoOnLanding } = config.authPage;
 	const isDark = landingTheme === LandingTheme.Dark;
+	const isLeft = landingContentAlign === LandingContentAlign.Left;
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -113,7 +114,7 @@ const LandingSection = () => {
 
 	return (
 		<section
-			className={`w-full min-h-full flex-1 pt-14 pb-12 flex flex-col ${isDark ? 'items-start justify-start pl-16 pr-8' : 'items-center justify-center'}`}
+			className={`w-full min-h-full flex-1 pt-14 pb-12 flex flex-col ${isLeft ? 'items-start justify-center pl-16 pr-8' : 'items-center justify-center'}`}
 			style={{
 				backgroundImage: `url(${bgImage})`,
 				backgroundSize: 'cover',
@@ -124,8 +125,8 @@ const LandingSection = () => {
 			<h2
 				className={
 					isDark
-						? 'text-5xl font-bold text-white leading-tight text-start mb-[44px] max-w-xl'
-						: 'text-[28px] font-normal text-zinc-950 text-center mb-[44px]'
+						? `text-5xl font-bold text-white leading-tight mb-[44px] max-w-xl ${isLeft ? 'text-start' : 'text-center'}`
+						: `text-[28px] font-normal text-zinc-950 mb-[44px] ${isLeft ? 'text-start' : 'text-center'}`
 				}>
 				{config.authPage.tagline ?? t('landing.defaultTagline')}
 			</h2>
