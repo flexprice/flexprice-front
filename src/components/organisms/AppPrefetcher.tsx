@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import useEnvironment from '@/hooks/useEnvironment';
-import { PREFETCH_REGISTRY } from '@/config/prefetchConfig';
+import { PREFETCH_REGISTRY } from '@/config/prefetch';
 import { preloadWebhookDashboard } from '@/pages/webhooks';
 
 const AppPrefetcher = () => {

@@ -4,7 +4,7 @@ import './index.css';
 import { BotMessageSquare } from 'lucide-react';
 import { Button } from '@/components/atoms';
 import { config } from '@/config/config';
-import { INTERCOM_MESSENGER_FLOW, isIntercomMessengerAvailable } from '@/config/intercomMessengerConfig';
+import { INTERCOM_MESSENGER_FLOW, isIntercomMessengerAvailable } from '@/config/intercom';
 import { getCommandPaletteActionEventName, CommandPaletteActionId } from '@/core/actions';
 import useUser from '@/hooks/useUser';
 import { useQuery, useMutation } from '@tanstack/react-query';
