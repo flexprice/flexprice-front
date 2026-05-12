@@ -15,11 +15,11 @@ interface Props {
 }
 
 const Page: FC<Props> = ({ children, className, type = 'default', header, heading, headingClassName, headingCTA, documentTitle }) => {
+	const { name } = useBrand();
+
 	if (heading && header) {
 		throw new Error('You cannot pass both heading and header props');
 	}
-
-	const { name } = useBrand();
 
 	useEffect(() => {
 		if (documentTitle) {
