@@ -32,8 +32,15 @@ jobs:
       matrix: ${{ steps.set.outputs.matrix }}
     steps:
       - id: set
-        # Writes to GITHUB_OUTPUT file — not printed to the log
-        run: echo "matrix=$DEPLOYMENTS_CONFIG" >> "$GITHUB_OUTPUT"
+        # Pretty-printed JSON contains newlines — must use multiline GITHUB_OUTPUT
+        # syntax or only the first line is captured and the rest breaks parsing.
+        run: |
+          delimiter='DEPLOYMENTS_MATRIX_JSON_EOF'
+          {
+            echo "matrix<<${delimiter}"
+            echo "$DEPLOYMENTS_CONFIG"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
         env:
           DEPLOYMENTS_CONFIG: ${{ secrets.DEPLOYMENTS_CONFIG }}
 
