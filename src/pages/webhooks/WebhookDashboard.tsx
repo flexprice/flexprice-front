@@ -7,7 +7,7 @@ import 'svix-react/style.css';
 import { EmptyPage } from '@/components/organisms';
 import { useMemo } from 'react';
 import useEnvironment from '@/hooks/useEnvironment';
-import { PREFETCH_REGISTRY, PrefetchQueryKey } from '@/config/prefetchConfig';
+import { PREFETCH_REGISTRY, PrefetchQueryKey } from '@/config/prefetch';
 
 const WebhookDashboard = () => {
 	const { activeEnvironment } = useEnvironment();

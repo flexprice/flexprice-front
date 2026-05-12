@@ -6,7 +6,7 @@ import { defaultFilter } from 'cmdk';
 import { CommandPaletteDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command-palette';
 
 import { commandPaletteCommands, COMMAND_PALETTE_INITIAL_SUGGESTED_IDS, CommandPaletteGroup } from '@/config/command-palette';
-import { isIntercomMessengerAvailable } from '@/config/intercomMessengerConfig';
+import { isIntercomMessengerAvailable } from '@/config/intercom';
 import {
 	dispatchCommandPaletteAction,
 	getCommandPaletteActionEventName,
