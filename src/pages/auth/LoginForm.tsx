@@ -11,12 +11,14 @@ import { config, APP_ENV } from '@/config/config';
 import { RouteNames } from '@/core/routes/Routes';
 import GoogleSignin from './GoogleSignin';
 import { AuthTab } from './authTabs';
+import { useTranslation } from 'react-i18next';
 
 interface LoginFormProps {
 	switchTab: (tab: AuthTab) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
+	const { t } = useTranslation('auth');
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const userContext = useUser();
@@ -101,8 +103,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 					id='email'
 					name='email'
 					type='email'
-					label='Email'
-					placeholder='Enter your email address'
+					label={t('fields.email')}
+					placeholder={t('fields.emailPlaceholder')}
 					required
 					onChange={(s) => setEmail(s)}
 					value={email}
@@ -111,10 +113,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 				<div>
 					<div className='flex justify-between items-center mb-1'>
 						<label htmlFor='password' className='block text-sm font-medium text-gray-700'>
-							Password
+							{t('fields.password')}
 						</label>
 						<button type='button' onClick={() => switchTab(AuthTab.FORGOT_PASSWORD)} className='text-sm text-grey-600 hover:underline'>
-							Forgot your password?
+							{t('links.forgotPassword')}
 						</button>
 					</div>
 					<Input
@@ -126,14 +128,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 								{showPassword ? <EyeIcon className='w-5 h-5' /> : <EyeOff className='w-5 h-5' />}
 							</span>
 						}
-						placeholder='Enter your password'
+						placeholder={t('fields.passwordPlaceholder')}
 						required
 						onChange={(s) => setPassword(s)}
 						value={password}
 					/>
 				</div>
 				<Button onClick={handleLogin} className='w-full !mt-6 h-11' isLoading={loading}>
-					Login
+					{t('buttons.login')}
 				</Button>
 			</form>
 
@@ -142,7 +144,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 				<>
 					<div className='flex items-center justify-center my-6'>
 						<div className='flex-1 h-px bg-gray-200'></div>
-						<span className='mx-4 text-sm text-gray-500'>or</span>
+						<span className='mx-4 text-sm text-gray-500'>{t('divider')}</span>
 						<div className='flex-1 h-px bg-gray-200'></div>
 					</div>
 					<GoogleSignin />
@@ -150,9 +152,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 			)}
 
 			<p className='mt-6 text-center text-sm text-gray-600'>
-				Don't have an account?{' '}
+				{t('noAccount')}{' '}
 				<button onClick={() => switchTab(AuthTab.SIGNUP)} className='text-grey-600 underline font-medium'>
-					Sign up
+					{t('links.signUp')}
 				</button>
 			</p>
 		</>
