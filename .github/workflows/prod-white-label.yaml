@@ -1,15 +1,15 @@
-# White-label deployment workflow.
+# White-label deployment workflow — completely separate from prod-in/prod-us.
 #
-# The deployment list lives entirely in one GitHub secret: DEPLOYMENTS_CONFIG
-# Add / remove / update tenants by editing that secret — no code change needed.
+# The deployment list lives in one GitHub secret: DEPLOYMENTS_CONFIG
+# Add / remove tenants by editing that secret — no code change needed.
 #
 # DEPLOYMENTS_CONFIG format (JSON array):
 #   [
 #     {
 #       "name": "flexprice-in",
 #       "vercel_project_id": "prj_xxxx",
-#       "vercel_token": "",          <- empty = fall back to shared VERCEL_TOKEN
-#       "vercel_org_id": ""          <- empty = fall back to shared VERCEL_ORG_ID
+#       "vercel_token": "",        <- empty = fall back to shared VERCEL_TOKEN
+#       "vercel_org_id": ""        <- empty = fall back to shared VERCEL_ORG_ID
 #     },
 #     {
 #       "name": "tirdad",
@@ -20,10 +20,7 @@
 #   ]
 #
 # Required GitHub secrets:
-#   DEPLOYMENTS_CONFIG   — JSON array above
-#   VERCEL_TOKEN         — shared fallback token
-#   VERCEL_ORG_ID        — shared fallback org
-#   SENTRY_AUTH_TOKEN
+#   DEPLOYMENTS_CONFIG, VERCEL_TOKEN, VERCEL_ORG_ID, SENTRY_AUTH_TOKEN
 
 name: White-Label Production Deployment
 
@@ -33,14 +30,15 @@ on:
       - main
 
 jobs:
-  # Reads DEPLOYMENTS_CONFIG and exposes it as a matrix for the deploy job.
-  # (secrets context is not available in strategy.matrix, so we bridge via outputs)
+  # Bridges DEPLOYMENTS_CONFIG secret into a matrix.
+  # (strategy.matrix cannot access the secrets context directly)
   setup:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set.outputs.matrix }}
     steps:
       - id: set
+        # Writes to GITHUB_OUTPUT file — not printed to the log
         run: echo "matrix=$DEPLOYMENTS_CONFIG" >> "$GITHUB_OUTPUT"
         env:
           DEPLOYMENTS_CONFIG: ${{ secrets.DEPLOYMENTS_CONFIG }}
@@ -60,20 +58,30 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # Must be first: registers per-deployment credentials as masked so they
+      # never appear in plain text in any subsequent step log or error output.
+      - name: Mask deployment secrets
+        env:
+          _TOKEN: ${{ matrix.deployment.vercel_token }}
+          _ORG:   ${{ matrix.deployment.vercel_org_id }}
+        run: |
+          [ -n "$_TOKEN" ] && echo "::add-mask::$_TOKEN"
+          [ -n "$_ORG"   ] && echo "::add-mask::$_ORG"
+
       - name: Install Vercel CLI
         run: npm install -g vercel
 
       - name: Resolve Vercel credentials
-        run: |
-          echo "VERCEL_TOKEN=${_TOKEN:-$_FB_TOKEN}"     >> "$GITHUB_ENV"
-          echo "VERCEL_ORG_ID=${_ORG:-$_FB_ORG}"       >> "$GITHUB_ENV"
-          echo "VERCEL_PROJECT_ID=$_PROJECT_ID"         >> "$GITHUB_ENV"
         env:
           _TOKEN:      ${{ matrix.deployment.vercel_token }}
           _ORG:        ${{ matrix.deployment.vercel_org_id }}
           _PROJECT_ID: ${{ matrix.deployment.vercel_project_id }}
           _FB_TOKEN:   ${{ secrets.VERCEL_TOKEN }}
           _FB_ORG:     ${{ secrets.VERCEL_ORG_ID }}
+        run: |
+          echo "VERCEL_TOKEN=${_TOKEN:-$_FB_TOKEN}"     >> "$GITHUB_ENV"
+          echo "VERCEL_ORG_ID=${_ORG:-$_FB_ORG}"       >> "$GITHUB_ENV"
+          echo "VERCEL_PROJECT_ID=$_PROJECT_ID"         >> "$GITHUB_ENV"
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ env.VERCEL_TOKEN }}
