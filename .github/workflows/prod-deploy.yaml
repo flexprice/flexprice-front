@@ -11,12 +11,6 @@
 #       "vercel_token": "",        <- empty = fall back to shared VERCEL_TOKEN
 #       "vercel_org_id": ""        <- empty = fall back to shared VERCEL_ORG_ID
 #     },
-#     {
-#       "name": "tirdad",
-#       "vercel_project_id": "prj_yyyy",
-#       "vercel_token": "tok_abc123",
-#       "vercel_org_id": "team_abc123"
-#     }
 #   ]
 #
 # Required GitHub secrets:
@@ -63,7 +57,7 @@ jobs:
       - name: Mask deployment secrets
         env:
           _TOKEN: ${{ matrix.deployment.vercel_token }}
-          _ORG:   ${{ matrix.deployment.vercel_org_id }}
+          _ORG: ${{ matrix.deployment.vercel_org_id }}
         run: |
           [ -n "$_TOKEN" ] && echo "::add-mask::$_TOKEN"
           [ -n "$_ORG"   ] && echo "::add-mask::$_ORG"
@@ -73,11 +67,11 @@ jobs:
 
       - name: Resolve Vercel credentials
         env:
-          _TOKEN:      ${{ matrix.deployment.vercel_token }}
-          _ORG:        ${{ matrix.deployment.vercel_org_id }}
+          _TOKEN: ${{ matrix.deployment.vercel_token }}
+          _ORG: ${{ matrix.deployment.vercel_org_id }}
           _PROJECT_ID: ${{ matrix.deployment.vercel_project_id }}
-          _FB_TOKEN:   ${{ secrets.VERCEL_TOKEN }}
-          _FB_ORG:     ${{ secrets.VERCEL_ORG_ID }}
+          _FB_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          _FB_ORG: ${{ secrets.VERCEL_ORG_ID }}
         run: |
           echo "VERCEL_TOKEN=${_TOKEN:-$_FB_TOKEN}"     >> "$GITHUB_ENV"
           echo "VERCEL_ORG_ID=${_ORG:-$_FB_ORG}"       >> "$GITHUB_ENV"
