@@ -5,12 +5,14 @@ import { EyeIcon, EyeOff, Link2Off } from 'lucide-react';
 import supabase from '@/core/services/supbase/config';
 import { useMutation } from '@tanstack/react-query';
 import { AuthTab } from './authTabs';
+import { useTranslation } from 'react-i18next';
 
 interface ResetPasswordFormProps {
 	switchTab: (tab: AuthTab) => void;
 }
 
 const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
+	const { t } = useTranslation('auth');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
@@ -67,7 +69,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 		return (
 			<div className='flex flex-col items-center justify-center py-10'>
 				<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#092E44]' />
-				<p className='mt-4 text-sm text-gray-500'>Checking your link...</p>
+				<p className='mt-4 text-sm text-gray-500'>{t('resetLink.checking')}</p>
 			</div>
 		);
 	}
@@ -79,16 +81,16 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 					<div className='mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100'>
 						<Link2Off className='h-6 w-6 text-amber-600' aria-hidden />
 					</div>
-					<h3 className='text-base font-medium text-gray-800'>Link expired or already used</h3>
-					<p className='mt-1.5 text-sm text-gray-500'>This password reset link is no longer valid. Request a new one below.</p>
+					<h3 className='text-base font-medium text-gray-800'>{t('resetLink.expiredTitle')}</h3>
+					<p className='mt-1.5 text-sm text-gray-500'>{t('resetLink.expiredDescription')}</p>
 					<Button type='button' onClick={() => switchTab(AuthTab.FORGOT_PASSWORD)} className='mt-5 w-full h-11'>
-						Request new reset link
+						{t('buttons.requestNewResetLink')}
 					</Button>
 				</div>
 				<p className='mt-6 text-center text-sm text-gray-600'>
-					Remember your password?{' '}
+					{t('rememberPassword')}{' '}
 					<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium hover:no-underline'>
-						Back to login
+						{t('links.backToLogin')}
 					</button>
 				</p>
 			</>
@@ -100,13 +102,13 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 			<form className='space-y-4' onSubmit={(e) => e.preventDefault()}>
 				<div>
 					<label htmlFor='new-password' className='block text-sm font-medium text-gray-700 mb-1'>
-						New password
+						{t('fields.newPassword')}
 					</label>
 					<Input
 						id='new-password'
 						name='new-password'
 						type={showPassword ? 'text' : 'password'}
-						placeholder='Enter new password'
+						placeholder={t('fields.newPasswordPlaceholder')}
 						required
 						onChange={(s) => setPassword(s)}
 						value={password}
@@ -123,13 +125,13 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 				</div>
 				<div>
 					<label htmlFor='confirm-password' className='block text-sm font-medium text-gray-700 mb-1'>
-						Confirm password
+						{t('fields.confirmNewPassword')}
 					</label>
 					<Input
 						id='confirm-password'
 						name='confirm-password'
 						type={showConfirmPassword ? 'text' : 'password'}
-						placeholder='Confirm new password'
+						placeholder={t('fields.confirmNewPasswordPlaceholder')}
 						required
 						onChange={(s) => setConfirmPassword(s)}
 						value={confirmPassword}
@@ -145,14 +147,14 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 					/>
 				</div>
 				<Button type='button' onClick={handleSubmit} className='w-full !mt-6 h-11' isLoading={updatePasswordMutation.isPending}>
-					Set new password
+					{t('buttons.setNewPassword')}
 				</Button>
 			</form>
 
 			<p className='mt-6 text-center text-sm text-gray-600'>
-				Remember your password?{' '}
+				{t('rememberPassword')}{' '}
 				<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium hover:no-underline'>
-					Back to login
+					{t('links.backToLogin')}
 				</button>
 			</p>
 		</>
