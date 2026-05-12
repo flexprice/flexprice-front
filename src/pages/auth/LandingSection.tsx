@@ -104,6 +104,8 @@ const LandingSection = () => {
 		return () => cancelAnimationFrame(animationFrame);
 	}, []);
 
+	const { showTestimonials } = config.authPage;
+
 	// Duplicate testimonials for seamless infinite scroll
 	const cards = testimonials.concat(testimonials);
 
@@ -119,44 +121,48 @@ const LandingSection = () => {
 			<h2 className='text-[28px] font-normal text-zinc-950 text-center mb-[44px]'>
 				{config.authPage.tagline ?? t('landing.defaultTagline')}
 			</h2>
-			<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-10'>
-				<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
-					<div className='flex gap-x-7 w-max'>
-						{cards.map((t, idx) => (
-							<TestimonialCard
-								key={idx}
-								testimonial={t}
-								logoHeightClass={
-									t.companyName === 'Clueso'
-										? 'max-h-4'
-										: t.companyName === 'Aftershoot'
-											? 'max-h-7'
-											: t.companyName === 'KRUTRIM'
-												? 'max-h-5'
-												: t.companyName === 'Truffle AI'
-													? 'max-h-4'
-													: 'max-h-6'
-								}
-							/>
-						))}
-					</div>
-				</div>
-			</div>
-			<div className='w-full flex flex-col items-center mt-8'>
-				<div className='text-center font-inter text-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
-				<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-12 justify-items-center items-center'>
-					{customerLogos.map((logo, idx) => (
-						<div key={idx} className='flex items-center justify-center'>
-							<img
-								src={logo}
-								alt='customer logo'
-								className='max-h-10 object-contain  transition-all duration-200'
-								style={{ maxWidth: 140 }}
-							/>
+			{showTestimonials && (
+				<>
+					<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-10'>
+						<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
+							<div className='flex gap-x-7 w-max'>
+								{cards.map((card, idx) => (
+									<TestimonialCard
+										key={idx}
+										testimonial={card}
+										logoHeightClass={
+											card.companyName === 'Clueso'
+												? 'max-h-4'
+												: card.companyName === 'Aftershoot'
+													? 'max-h-7'
+													: card.companyName === 'KRUTRIM'
+														? 'max-h-5'
+														: card.companyName === 'Truffle AI'
+															? 'max-h-4'
+															: 'max-h-6'
+										}
+									/>
+								))}
+							</div>
 						</div>
-					))}
-				</div>
-			</div>
+					</div>
+					<div className='w-full flex flex-col items-center mt-8'>
+						<div className='text-center font-inter text-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
+						<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-12 justify-items-center items-center'>
+							{customerLogos.map((logo, idx) => (
+								<div key={idx} className='flex items-center justify-center'>
+									<img
+										src={logo}
+										alt='customer logo'
+										className='max-h-10 object-contain transition-all duration-200'
+										style={{ maxWidth: 140 }}
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				</>
+			)}
 		</section>
 	);
 };
