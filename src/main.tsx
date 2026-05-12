@@ -12,7 +12,11 @@ import { initI18n } from './i18n/index.ts';
 registerWebMCPTools();
 
 (async () => {
-	await initI18n(config.i18n.locale, config.i18n.direction);
+	try {
+		await initI18n(config.i18n.locale, config.i18n.direction);
+	} catch (err) {
+		console.error('[main] i18n initialization failed, rendering without translations:', err);
+	}
 
 	ReactDOM.createRoot(document.getElementById('root')!).render(
 		<BrandProvider>
