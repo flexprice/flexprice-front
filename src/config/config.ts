@@ -46,6 +46,7 @@ interface IntercomConfig {
 interface RegionConfig {
 	indiaUrl: string;
 	usUrl: string;
+	dataRegionSelectionEnabled: boolean;
 }
 interface IntegrationsConfig {
 	googleSheetsWebAppUrl: string;
@@ -115,6 +116,7 @@ export const config: Config = {
 	region: {
 		indiaUrl: import.meta.env.VITE_DASHBOARD_URL_INDIA ?? '',
 		usUrl: import.meta.env.VITE_DASHBOARD_URL_US ?? '',
+		dataRegionSelectionEnabled: import.meta.env.VITE_DATA_REGION_SELECTION_ENABLED === 'true',
 	},
 	integrations: {
 		googleSheetsWebAppUrl: import.meta.env.VITE_GOOGLE_SHEETS_WEB_APP_URL ?? '',

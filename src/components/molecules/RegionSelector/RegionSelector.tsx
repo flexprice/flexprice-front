@@ -6,8 +6,9 @@ import { Region } from '@/types/enums/Region';
 import { detectCurrentRegion, switchRegion, getDashboardUrls } from '@/utils/region/regionUtils';
 import { IN, US } from 'country-flag-icons/react/3x2';
 import { Info } from 'lucide-react';
+import { config } from '@/config/config';
 
-const RegionSelector: React.FC = () => {
+const RegionSelectorImpl: React.FC = () => {
 	const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [isDisabled, setIsDisabled] = useState(false);
@@ -98,6 +99,13 @@ const RegionSelector: React.FC = () => {
 			<RegionInfoDialog isOpen={isDialogOpen} onOpenChange={setIsDialogOpen} />
 		</div>
 	);
+};
+
+const RegionSelector: React.FC = () => {
+	if (!config.region.dataRegionSelectionEnabled) {
+		return null;
+	}
+	return <RegionSelectorImpl />;
 };
 
 export default RegionSelector;
