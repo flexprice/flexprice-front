@@ -70,7 +70,7 @@ export interface I18nConfig {
 	direction: 'ltr' | 'rtl';
 }
 
-const RTL_LOCALES = ['ar', 'he', 'fa', 'ur'];
+const RTL_LOCALES = ['ar', 'he', 'fa', 'ur'] as const;
 
 export function parseBrandConfig(): BrandConfig {
 	try {
@@ -90,9 +90,9 @@ export function parseAuthPageConfig(): AuthPageConfig {
 	try {
 		const raw = JSON.parse(import.meta.env.VITE_AUTH_CONFIG ?? '{}');
 		return {
-			tagline: raw.tagline ?? null,
+			tagline: 'tagline' in raw ? raw.tagline : null,
 			supportEmail: raw.supportEmail ?? 'support@flexprice.io',
-			loginBgImage: raw.loginBgImage ?? null,
+			loginBgImage: 'loginBgImage' in raw ? raw.loginBgImage : null,
 			slackCommunityUrl:
 				'slackCommunityUrl' in raw
 					? raw.slackCommunityUrl
@@ -110,7 +110,7 @@ export function parseAuthPageConfig(): AuthPageConfig {
 
 export function parseI18nConfig(): I18nConfig {
 	const locale = import.meta.env.VITE_DEFAULT_LOCALE ?? 'en';
-	return { locale, direction: RTL_LOCALES.includes(locale) ? 'rtl' : 'ltr' };
+	return { locale, direction: (RTL_LOCALES as readonly string[]).includes(locale) ? 'rtl' : 'ltr' };
 }
 
 export interface Config {

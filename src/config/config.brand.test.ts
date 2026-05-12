@@ -53,6 +53,24 @@ describe('parseAuthPageConfig', () => {
 		const result = parseAuthPageConfig();
 		expect(result.slackCommunityUrl).toBeNull();
 	});
+
+	it('applies partial overrides while keeping other defaults', async () => {
+		vi.stubEnv('VITE_AUTH_CONFIG', JSON.stringify({ supportEmail: 'support@tirdad.com', tagline: 'Custom tagline' }));
+		const { parseAuthPageConfig } = await importParsers();
+		const result = parseAuthPageConfig();
+		expect(result.supportEmail).toBe('support@tirdad.com');
+		expect(result.tagline).toBe('Custom tagline');
+		expect(result.loginBgImage).toBeNull(); // absent key → null
+		expect(result.slackCommunityUrl).toBe('https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ'); // absent key → default URL
+	});
+
+	it('silently falls back to defaults on malformed JSON', async () => {
+		vi.stubEnv('VITE_AUTH_CONFIG', '{bad json}');
+		const { parseAuthPageConfig } = await importParsers();
+		const result = parseAuthPageConfig();
+		expect(result.supportEmail).toBe('support@flexprice.io');
+		expect(result.slackCommunityUrl).toBe('https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ');
+	});
 });
 
 describe('parseI18nConfig', () => {
@@ -81,5 +99,14 @@ describe('parseI18nConfig', () => {
 			expect(result.direction).toBe('rtl');
 			vi.unstubAllEnvs();
 		}
+	});
+});
+
+describe('config object', () => {
+	it('includes brand, authPage, and i18n keys', async () => {
+		const { config } = await importParsers();
+		expect(config.brand).toBeDefined();
+		expect(config.authPage).toBeDefined();
+		expect(config.i18n).toBeDefined();
 	});
 });
