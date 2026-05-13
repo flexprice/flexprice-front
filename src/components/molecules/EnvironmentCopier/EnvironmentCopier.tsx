@@ -4,7 +4,6 @@ import { Dialog, Input, Select, Button } from '@/components/atoms';
 import { ENVIRONMENT_TYPE, Environment } from '@/models/Environment';
 import { CloneEnvironmentPayload } from '@/types/dto/Environment';
 import EnvironmentApi from '@/api/EnvironmentApi';
-import { ServerError } from '@/core/axios/types';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle2, AlertTriangle, Clock } from 'lucide-react';
 
@@ -83,9 +82,8 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 			queryClient.invalidateQueries({ queryKey: ['environments'] });
 			await onEnvironmentCloned();
 		},
-		onError: (error: ServerError) => {
-			const errorMessage = error?.error?.message || 'Failed to clone environment';
-			toast.error(errorMessage);
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to clone environment');
 		},
 	});
 

@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 
 import EnvironmentApi from '@/api/EnvironmentApi';
 import AuthService from '@/core/auth/AuthService';
 import { config } from '@/config/config';
+import { getApiErrorMessage } from '@/core/axios/types';
 
 interface RuntimeCredentials {
 	sessionToken: string;
@@ -75,9 +76,16 @@ axiosClient.interceptors.response.use(
 					// Handle other errors
 					break;
 			}
-			// Ensure we reject with the error response data if available
+			// Normalize to Error so callers can use err.message (body shape varies)
+			const status = error.response.status;
 			const errorData = error.response.data;
-			return Promise.reject(errorData || error);
+			const statusText =
+				typeof error.response.statusText === 'string' && error.response.statusText.trim() ? error.response.statusText.trim() : '';
+			const fallback = statusText ? `${statusText} (${status})` : `Request failed (${status})`;
+			const msg = getApiErrorMessage(errorData, fallback);
+			const rejection = new Error(msg);
+			(rejection as Error & { cause?: unknown }).cause = errorData ?? error;
+			return Promise.reject(rejection);
 		} else if (error.request) {
 			// Request was made but no response received
 			console.error('No response received:', error.request);

@@ -132,7 +132,7 @@ const AsyncSearchableSelect = <T = any,>({
 		isLoading,
 		isError,
 		error: queryError,
-	} = useQuery<Array<SelectOption & { data: T }>>({
+	} = useQuery<Array<SelectOption & { data: T }>, Error>({
 		queryKey: ['async-searchable-select', debouncedQuery],
 		queryFn: () => searchFn(debouncedQuery),
 		enabled: open,
@@ -318,9 +318,7 @@ const AsyncSearchableSelect = <T = any,>({
 							)}
 							{isError && (
 								<CommandEmpty>
-									<div className='text-sm text-destructive'>
-										{queryError instanceof Error ? queryError.message : 'Error loading options'}
-									</div>
+									<div className='text-sm text-destructive'>{queryError.message || 'Error loading options'}</div>
 								</CommandEmpty>
 							)}
 							{!isLoading && !isError && (

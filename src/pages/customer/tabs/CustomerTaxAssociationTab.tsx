@@ -49,8 +49,8 @@ const CustomerTaxAssociationTab = () => {
 			setDialogOpen(false);
 			refetch();
 		},
-		onError: (error: any) => {
-			toast.error(error.error?.message || 'Failed to create tax association. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create tax association. Please try again.');
 		},
 	});
 

@@ -50,8 +50,8 @@ const IntegrationDetails = () => {
 			toast.success('Connection deleted successfully');
 			refetchConnections();
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || 'Failed to delete connection');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to delete connection');
 		},
 	});
 

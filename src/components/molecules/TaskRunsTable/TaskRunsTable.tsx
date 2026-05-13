@@ -29,8 +29,8 @@ const TaskRunsTable: FC<TaskRunsTableProps> = ({ scheduledTaskId, taskType = 'EX
 			window.open(data.download_url, '_blank', 'noopener,noreferrer');
 			toast.success('Download started');
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to download file');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to download file');
 		},
 	});
 

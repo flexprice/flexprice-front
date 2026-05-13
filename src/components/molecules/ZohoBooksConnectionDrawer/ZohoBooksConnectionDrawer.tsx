@@ -125,8 +125,8 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 			onOpenChange(false);
 			window.location.href = response.oauth_url;
 		},
-		onError: (error: unknown) => {
-			toast.error(error instanceof Error ? error.message : 'Failed to initiate Zoho OAuth');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to initiate Zoho OAuth');
 		},
 	});
 
@@ -152,8 +152,8 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 			if (response) onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: unknown) => {
-			toast.error(error instanceof Error ? error.message : 'Failed to update connection');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update connection');
 		},
 	});
 

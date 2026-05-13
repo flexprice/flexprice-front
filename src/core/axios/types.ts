@@ -1,7 +1,21 @@
-export interface ServerError {
-	success: false;
-	error: { message: string; internal_error: string; details: Record<string, string> };
+/** Nested `error` object on typical failed API JSON bodies */
+export interface FailedApiDetails {
+	message: string;
+	internal_error?: string;
+	details?: Record<string, string>;
 }
+
+/** `{ success: false, error: … }` envelope from the API */
+export interface FailedApiEnvelope {
+	success: false;
+	error: FailedApiDetails;
+}
+
+/** Alias for casts on {@link HttpRejectedError.cause} when branching on nested API fields */
+export type ServerError = FailedApiEnvelope;
+
+/** Normalized rejection from the shared axios client (see interceptor). Prefer `.message`; inspect `.cause` for raw JSON. */
+export type HttpRejectedError = Error & { cause?: unknown };
 
 /** Flat API error body (e.g. validation_error) returned as axios `response.data` */
 export interface FlatApiError {
@@ -10,12 +24,6 @@ export interface FlatApiError {
 	http_status_code?: number;
 }
 
-/**
- * User-facing message from rejected API calls. Handles:
- * - `{ error: { message } }` (ServerError)
- * - `{ message, code, http_status_code }` (flat validation / API errors)
- * - `Error` instances
- */
 function pickMessage(value: unknown): string | undefined {
 	if (typeof value === 'string' && value.trim()) {
 		return value.trim();
@@ -27,6 +35,7 @@ function pickMessage(value: unknown): string | undefined {
 	return undefined;
 }
 
+/** Parses API error bodies; used only by the axios client — callers should read {@link Error.message}. */
 export function getApiErrorMessage(error: unknown, fallback: string): string {
 	if (typeof error === 'string') {
 		const trimmed = error.trim();
@@ -60,12 +69,4 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
 		if (fromTop) return fromTop;
 	}
 	return fallback;
-}
-
-// adds the same shape to the global namespace for legacy code, tests, etc.
-declare global {
-	interface ServerError {
-		success: false;
-		error: { message: string; internal_error: string; details: Record<string, string> };
-	}
 }

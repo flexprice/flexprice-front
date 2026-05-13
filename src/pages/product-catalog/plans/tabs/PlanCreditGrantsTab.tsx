@@ -17,7 +17,6 @@ import {
 	ENTITY_STATUS,
 } from '@/models';
 import { InternalCreditGrantRequest, CreateCreditGrantRequest } from '@/types/dto/CreditGrant';
-import { ServerError } from '@/core/axios/types';
 
 const PlanCreditGrantsTab = () => {
 	const { planId } = useParams<{ planId: string }>();
@@ -52,8 +51,8 @@ const PlanCreditGrantsTab = () => {
 			setCreditGrantModalOpen(false);
 			refetchQueries(['planCreditGrants', planId!]);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to add credit grant');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to add credit grant');
 		},
 	});
 

@@ -7,7 +7,6 @@ import { User } from '@/models';
 import { toast } from 'react-hot-toast';
 import { Copy, AlertTriangle, Eye, EyeOff, Info } from 'lucide-react';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { ServerError } from '@/core/axios/types';
 import { GetServiceAccountsResponse } from '@/types/dto/UserApi';
 
 interface Props {
@@ -162,8 +161,8 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 			setIsModalOpen(true);
 			onOpenChange(false);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to create API key. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create API key. Please try again.');
 		},
 	});
 

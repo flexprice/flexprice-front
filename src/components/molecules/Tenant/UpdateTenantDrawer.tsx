@@ -262,9 +262,9 @@ const UpdateTenantDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) =>
 			toast.success('Tenant details updated successfully');
 			toggleOpen();
 		},
-		onError: (error: ServerError) => {
+		onError: (error: Error) => {
 			logger.error(error);
-			toast.error(error.error.message || 'Failed to update tenant details. Please try again.');
+			toast.error(error.message || 'Failed to update tenant details. Please try again.');
 		},
 	});
 

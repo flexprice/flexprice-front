@@ -9,7 +9,6 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PriceApi } from '@/api/PriceApi';
 import { UpdatePriceRequest } from '@/types/dto';
-import { ServerError } from '@/core/axios/types';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
 
@@ -104,8 +103,8 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 		mutationFn: async ({ priceId, data }: { priceId: string; data: UpdatePriceRequest }) => {
 			return await PriceApi.UpdatePrice(priceId, data);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error?.error?.message || 'Failed to update price');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update price');
 		},
 	});
 

@@ -10,6 +10,7 @@ import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Link2, Lock, Mail } f
 import { RouteNames } from '@/core/routes/Routes';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import usePagination, { PAGINATION_PREFIX } from '@/hooks/usePagination';
+import type { HttpRejectedError } from '@/core/axios/types';
 
 const MEMBERS_QUERY_KEY = ['settings-team-members'];
 const MEMBERS_PAGE_SIZE = 20;
@@ -21,9 +22,12 @@ function getRoleDisplay(_user: User): string {
 }
 
 /** API error shape when add user fails (e.g. user limit reached, duplicate email) */
-function getAddUserErrorMessage(err: any): string {
-	const internal = err?.error?.internal_error ?? '';
-	const msg = err?.error?.message ?? err?.message ?? '';
+function getAddUserErrorMessage(err: Error): string {
+	const c = (err as HttpRejectedError).cause;
+	const raw = c != null ? c : err;
+	const e = raw as { error?: { internal_error?: string; message?: string }; message?: string };
+	const internal = e?.error?.internal_error ?? '';
+	const msg = e?.error?.message ?? e?.message ?? '';
 	if (typeof internal === 'string' && internal.toLowerCase().includes('user limit')) {
 		return 'User limit reached for this organization.';
 	}
@@ -34,7 +38,7 @@ function getAddUserErrorMessage(err: any): string {
 		return 'A user with this email already exists!';
 	}
 	if (typeof msg === 'string' && msg.length) return msg;
-	return 'Failed to add user';
+	return err.message || 'Failed to add user';
 }
 
 function MembersSection() {
@@ -74,7 +78,7 @@ function MembersSection() {
 			setPasswordDialogOpen(true);
 			refetchQueries(MEMBERS_QUERY_KEY);
 		},
-		onError: (err: any) => {
+		onError: (err: Error) => {
 			const message = getAddUserErrorMessage(err);
 			setAddError(message);
 			toast.error(message);

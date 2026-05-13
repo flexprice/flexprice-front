@@ -9,7 +9,6 @@ import OnboardingApi from '@/api/OnboardingApi';
 import { TenantMetadataKey, type Tenant } from '@/models';
 import useUser from '@/hooks/useUser';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { ServerError } from '@/core/axios/types';
 import flexpriceLogo from '../../../assets/comicon.png';
 
 /** URL check without validator dep: optional empty; no spaces; http(s) with host containing a dot (TLD). */
@@ -140,8 +139,8 @@ const OnboardingTenant = () => {
 			toast.success("You're all set!");
 			navigate(RouteNames.homeDashboard, { replace: true });
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error?.message || 'Failed to complete onboarding. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to complete onboarding. Please try again.');
 		},
 	});
 

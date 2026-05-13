@@ -28,7 +28,6 @@ import { DetailsCard } from '@/components/molecules';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { logger } from '@/utils/common/Logger';
-import { ServerError } from '@/core/axios/types';
 import { PremiumFeatureIcon } from '@/components/molecules/PremiumFeature/PremiumFeature';
 
 const formatWalletStatus = (status?: string) => {
@@ -124,9 +123,9 @@ const CustomerWalletTab = () => {
 			await refetchQueries(['fetchWallets', customerId!]);
 			toast.success('Auto top-up settings updated successfully');
 		},
-		onError: (error: ServerError) => {
+		onError: (error: Error) => {
 			logger.error('Failed to update auto top-up settings', error);
-			toast.error(error.error.message || 'Failed to update auto top-up settings');
+			toast.error(error.message || 'Failed to update auto top-up settings');
 		},
 	});
 

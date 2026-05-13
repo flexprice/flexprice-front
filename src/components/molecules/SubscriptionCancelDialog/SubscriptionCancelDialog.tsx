@@ -1,7 +1,6 @@
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { Button, DatePicker, FormHeader, Input, Label, Modal, Select, Toggle } from '@/components/atoms';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { ServerError } from '@/core/axios/types';
 import {
 	SUBSCRIPTION_CANCELLATION_TYPE,
 	SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY,
@@ -64,10 +63,10 @@ const SubscriptionCancelDialog = ({ isOpen, onOpenChange, subscriptionId, refetc
 			toast.success('Subscription cancelled successfully');
 			await Promise.all(refetchQueryKeys.map((key) => refetchQueries(key)));
 		},
-		onError: (error: ServerError) => {
+		onError: (error: Error) => {
 			onOpenChange(false);
 			resetState();
-			toast.error(error.error.message || 'Failed to cancel subscription');
+			toast.error(error.message || 'Failed to cancel subscription');
 		},
 	});
 

@@ -339,9 +339,10 @@ const AddEntitlementDrawer: FC<Props> = ({
 				refetchQueries(['fetchEntitlements', planId || '']);
 			}
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to add entitlements. Please try again.');
-			setErrors({ general: 'Failed to add entitlements. Please try again.' });
+		onError: (error: Error) => {
+			const message = error.message || 'Failed to add entitlements. Please try again.';
+			toast.error(message);
+			setErrors({ general: message });
 		},
 	});
 

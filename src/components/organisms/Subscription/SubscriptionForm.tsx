@@ -1024,10 +1024,10 @@ const SubscriptionForm = ({
 								</div>
 							</AccordionContent>
 						</AccordionItem>
-					</Accordion>
-				</div>
+					</Accordion >
+				</div >
 			)}
-		</div>
+		</div >
 	);
 };
 

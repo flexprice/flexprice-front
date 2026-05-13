@@ -41,8 +41,8 @@ const SubscriptionEditInheritingCustomersSection: FC<SubscriptionEditInheritingC
 			setChildToDetach(null);
 			void refetchQueries(['subscriptionEdit', parentSubscriptionId]);
 		},
-		onError: (error: { error?: { message?: string } }) => {
-			toast.error(error?.error?.message || 'Failed to remove inheritance');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to remove inheritance');
 		},
 	});
 
@@ -84,9 +84,8 @@ const SubscriptionEditInheritingCustomersSection: FC<SubscriptionEditInheritingC
 			setSelectedCustomers([]);
 			void refetchQueries(['subscriptionEdit', parentSubscriptionId]);
 		},
-		onError: (error: unknown) => {
-			const e = error as { error?: { message?: string }; message?: string } | undefined;
-			toast.error(e?.error?.message || e?.message || 'Failed to add inheriting customers');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to add inheriting customers');
 		},
 	});
 

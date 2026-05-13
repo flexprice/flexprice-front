@@ -51,8 +51,8 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 				toast.error('Failed to generate payment setup link');
 			}
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || 'Failed to create setup intent');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create setup intent');
 		},
 	});
 

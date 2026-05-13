@@ -43,8 +43,8 @@ const AddonDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQuer
 			refetchQueries(refetchQueryKeys);
 			navigate(`${RouteNames.addonDetails}/${data.id}`);
 		},
-		onError: (error: any) => {
-			toast.error(error.error?.message || `Failed to ${isEdit ? 'update' : 'create'} addon. Please try again.`);
+		onError: (error: Error) => {
+			toast.error(error.message || `Failed to ${isEdit ? 'update' : 'create'} addon. Please try again.`);
 		},
 	});
 

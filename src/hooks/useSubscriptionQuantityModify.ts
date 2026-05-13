@@ -5,8 +5,6 @@ import SubscriptionApi from '@/api/SubscriptionApi';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import type { ExecuteSubscriptionModifyRequest, SubscriptionModifyResponse } from '@/types/dto/Subscription';
 
-type ApiErrorShape = { error?: { message?: string } };
-
 export interface UseSubscriptionQuantityModifyResult {
 	preview: (payload: ExecuteSubscriptionModifyRequest) => Promise<SubscriptionModifyResponse>;
 	execute: (payload: ExecuteSubscriptionModifyRequest) => Promise<SubscriptionModifyResponse>;
@@ -29,8 +27,8 @@ export function useSubscriptionQuantityModify(subscriptionId: string | undefined
 			}
 			return SubscriptionApi.previewSubscriptionModify(subscriptionId, payload);
 		},
-		onError: (error: ApiErrorShape) => {
-			toast.error(error?.error?.message ?? 'Failed to preview subscription change');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to preview subscription change');
 		},
 	});
 
@@ -53,8 +51,8 @@ export function useSubscriptionQuantityModify(subscriptionId: string | undefined
 			}
 			await refetchQueries(['subscriptions']);
 		},
-		onError: (error: ApiErrorShape) => {
-			toast.error(error?.error?.message ?? 'Failed to apply subscription change');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to apply subscription change');
 		},
 	});
 

@@ -55,8 +55,8 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			setIsDeleteDialogOpen(false);
 			setEntitlementToDelete(null);
 		},
-		onError: (error: any) => {
-			toast.error(error?.error?.message || 'Failed to delete entitlement');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to delete entitlement');
 		},
 	});
 

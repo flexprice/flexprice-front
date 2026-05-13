@@ -78,8 +78,8 @@ const TaxrateDetailsPage = () => {
 			toast.success('Tax rate archived successfully');
 			navigate(RouteNames.taxes);
 		},
-		onError: (error: any) => {
-			toast.error(error.error?.message || 'Failed to archive tax rate');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to archive tax rate');
 		},
 	});
 

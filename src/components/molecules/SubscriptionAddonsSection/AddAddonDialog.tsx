@@ -122,10 +122,8 @@ const AddAddonDialog: React.FC<Props> = ({ isOpen, onOpenChange, subscriptionId,
 			setErrors({});
 			onOpenChange(false);
 		},
-		onError: (error: unknown) => {
-			const message =
-				typeof error === 'object' && error && 'error' in error ? (error as { error?: { message?: string } }).error?.message : undefined;
-			toast.error(message || 'Failed to add addon');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to add addon');
 		},
 	});
 

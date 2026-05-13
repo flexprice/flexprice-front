@@ -75,8 +75,8 @@ const TaxDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQueryK
 			onOpenChange?.(false);
 			refetchQueries(refetchQueryKeys);
 		},
-		onError: (error: any) => {
-			toast.error(error.error?.message || `Failed to ${isEdit ? 'update' : 'create'} tax rate. Please try again.`);
+		onError: (error: Error) => {
+			toast.error(error.message || `Failed to ${isEdit ? 'update' : 'create'} tax rate. Please try again.`);
 		},
 	});
 

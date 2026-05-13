@@ -25,7 +25,6 @@ import formatChips from '@/utils/common/format_chips';
 import formatDate from '@/utils/common/format_date';
 import toast from 'react-hot-toast';
 import { Copy, EllipsisVertical, EyeOff, Pencil, WandSparkles } from 'lucide-react';
-import { ServerError } from '@/core/axios/types';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 
 const sortingOptions: SortOption[] = [
@@ -141,8 +140,8 @@ const PlansPage = () => {
 			setPlanToArchive(null);
 			await refetchQueries('fetchPlans');
 		},
-		onError: (error: ServerError) => {
-			toast.error(error?.error?.message || 'Failed to archive plan');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to archive plan');
 		},
 	});
 

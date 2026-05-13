@@ -311,9 +311,12 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 
 			navigate(`${routeName}/${entityId}`);
 			onSuccess?.();
-		} catch (error: any) {
+		} catch (error: unknown) {
 			logger.error('Error saving charges:', error);
-			const errorMessage = error?.error?.message || error?.message || 'An error occurred while processing charges';
+			const errorMessage =
+				error instanceof Error
+					? error.message || 'An error occurred while processing charges'
+					: 'An error occurred while processing charges';
 			toast.error(errorMessage);
 		}
 	}, [state.recurringCharges, state.usageCharges, priceEntityType, entityId, createBulkPrices, navigate, entityType, routeName, onSuccess]);

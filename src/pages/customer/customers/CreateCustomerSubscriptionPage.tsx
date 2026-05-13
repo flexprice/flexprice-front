@@ -11,7 +11,6 @@ import { AlertTriangle } from 'lucide-react';
 import { AddonApi, CustomerApi, PlanApi, SubscriptionApi, TaxApi, CouponApi } from '@/api';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { RouteNames } from '@/core/routes/Routes';
-import { getApiErrorMessage } from '@/core/axios/types';
 
 import {
 	SubscriptionPhase,
@@ -366,6 +365,13 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 					}
 					return { autoInvoiceThreshold: '' };
 				})(),
+				...(() => {
+					const ait = (subscriptionData.details as { auto_invoice_threshold?: number | null }).auto_invoice_threshold;
+					if (typeof ait === 'number' && Number.isFinite(ait)) {
+						return { autoInvoiceThresholdEnabled: true, autoInvoiceThreshold: String(ait) };
+					}
+					return { autoInvoiceThresholdEnabled: false, autoInvoiceThreshold: '' };
+				})(),
 			}));
 		}
 	}, [subscriptionData, customerId]);
@@ -426,8 +432,8 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 
 			navigate(`${RouteNames.customers}/${customerId}`);
 		},
-		onError: (error: unknown) => {
-			toast.error(getApiErrorMessage(error, 'Error creating subscription'));
+		onError: (error: Error) => {
+			toast.error(error.message || 'Error creating subscription');
 		},
 	});
 
@@ -479,6 +485,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 				return 'Enter a valid auto invoice threshold (0 or greater), or leave empty to omit.';
 			}
 		}
+
 
 		return null;
 	};
@@ -582,13 +589,13 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		const sanitizedAddons =
 			subscriptionState.addons && subscriptionState.addons.length > 0
 				? subscriptionState.addons.map((addon: AddAddonToSubscriptionRequest) => {
-						const commitments = addon.line_item_commitments;
-						const hasCommitments = commitments && Object.keys(commitments).length > 0;
-						return {
-							...addon,
-							line_item_commitments: hasCommitments ? commitments : undefined,
-						};
-					})
+					const commitments = addon.line_item_commitments;
+					const hasCommitments = commitments && Object.keys(commitments).length > 0;
+					return {
+						...addon,
+						line_item_commitments: hasCommitments ? commitments : undefined,
+					};
+				})
 				: undefined;
 
 		const inheritanceExternalIds = inheritanceCustomers.map((c) => c.external_id?.trim()).filter((id): id is string => Boolean(id));
@@ -717,7 +724,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 				subscriptionState.hasModifiedPlanCreditGrants
 					? sanitized.creditGrants.map(internalToCreateRequest)
 					: // Otherwise, only send if there are subscription-level grants
-						sanitized.creditGrants.length > 0
+					sanitized.creditGrants.length > 0
 						? sanitized.creditGrants.map(internalToCreateRequest)
 						: undefined,
 			enable_true_up: subscriptionState.enable_true_up,

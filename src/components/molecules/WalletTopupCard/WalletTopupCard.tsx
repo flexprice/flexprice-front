@@ -169,8 +169,8 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 			});
 			await refetchWalletData();
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to topup wallet');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to topup wallet');
 		},
 	});
 

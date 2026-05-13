@@ -137,8 +137,8 @@ const PaddleConnectionDrawer: FC<PaddleConnectionDrawerProps> = ({ isOpen, onOpe
 			onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: unknown) => {
-			const message = error instanceof Error ? error.message : undefined;
+		onError: (error: Error) => {
+			const message = error.message;
 			toast.error(message || 'Failed to create connection');
 		},
 	});
@@ -157,8 +157,8 @@ const PaddleConnectionDrawer: FC<PaddleConnectionDrawerProps> = ({ isOpen, onOpe
 			onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: unknown) => {
-			const message = error instanceof Error ? error.message : undefined;
+		onError: (error: Error) => {
+			const message = error.message;
 			toast.error(message || 'Failed to update connection');
 		},
 	});

@@ -116,8 +116,8 @@ const CostSheetDetails = () => {
 			toast.success('Cost Sheet archived successfully');
 			navigate(RouteNames.costSheets);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to archive cost sheet');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to archive cost sheet');
 		},
 	});
 

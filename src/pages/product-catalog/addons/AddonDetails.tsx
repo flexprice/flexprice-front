@@ -186,8 +186,8 @@ const AddonDetails = () => {
 			toast.success('Addon archived successfully');
 			navigate(RouteNames.addons);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to archive addon');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to archive addon');
 		},
 	});
 

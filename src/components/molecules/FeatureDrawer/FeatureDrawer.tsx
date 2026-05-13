@@ -48,8 +48,8 @@ const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQu
 			onOpenChange?.(false);
 			refetchQueries(refetchQueryKeys);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to update feature. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update feature. Please try again.');
 		},
 	});
 

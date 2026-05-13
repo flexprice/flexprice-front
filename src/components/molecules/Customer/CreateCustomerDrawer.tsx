@@ -193,9 +193,9 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 			await Promise.all([refetchQueries(['debug-customers']), refetchQueries(['debug-subscriptions'])]);
 			toggleOpen();
 		},
-		onError: (error: ServerError) => {
+		onError: (error: Error) => {
 			logger.error(error);
-			toast.error(error?.error?.message || 'Failed to add customer. Please try again.');
+			toast.error(error.message || 'Failed to add customer. Please try again.');
 		},
 	});
 

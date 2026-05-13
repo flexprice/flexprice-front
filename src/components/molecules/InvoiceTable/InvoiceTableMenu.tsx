@@ -31,8 +31,8 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 			refetchQueries(['fetchInvoices']);
 			refetchQueries(['invoice', data.customer_id]);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Unable to trigger communication');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Unable to trigger communication');
 		},
 	});
 
@@ -43,8 +43,8 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 		onSuccess: () => {
 			toast.success('Invoice downloaded');
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Unable to download invoice');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Unable to download invoice');
 		},
 	});
 
@@ -58,8 +58,8 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 			refetchQueries(['fetchInvoices']);
 			refetchQueries(['invoice', data.customer_id]);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Unable to recalculate invoice');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Unable to recalculate invoice');
 		},
 	});
 

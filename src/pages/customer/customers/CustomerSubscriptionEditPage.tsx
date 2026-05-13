@@ -142,8 +142,8 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 			toast.success('Line item updated successfully');
 			invalidateSubscriptionEdit();
 		},
-		onError: (error: { error?: { message?: string } }) => {
-			toast.error(error?.error?.message || 'Failed to update line item');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update line item');
 		},
 	});
 
@@ -159,8 +159,8 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 			toast.success('Line item terminated successfully');
 			invalidateSubscriptionEdit();
 		},
-		onError: (error: { error?: { message?: string } }) => {
-			toast.error(error?.error?.message || 'Failed to terminate line item');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to terminate line item');
 		},
 	});
 
@@ -173,8 +173,8 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 			invalidateSubscriptionEdit();
 			setIsAddChargeDialogOpen(false);
 		},
-		onError: (error: { error?: { message?: string } }) => {
-			toast.error(error?.error?.message || 'Failed to add charge');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to add charge');
 		},
 	});
 
@@ -188,8 +188,8 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 			refetchQueries(['subscriptions']);
 			setUpdateSubscriptionDrawerOpen(false);
 		},
-		onError: (error: { error?: { message?: string } }) => {
-			toast.error(error?.error?.message || 'Failed to update subscription');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update subscription');
 		},
 	});
 
@@ -202,8 +202,8 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 			invalidateSubscriptionEdit();
 			setIsAddCreditGrantModalOpen(false);
 		},
-		onError: (error: { error?: { message?: string } }) => {
-			toast.error(error?.error?.message || 'Failed to create credit grant');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create credit grant');
 		},
 	});
 
@@ -217,8 +217,8 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 			invalidateSubscriptionEdit();
 			setCreditGrantToCancel(null);
 		},
-		onError: (error: { error?: { message?: string } }) => {
-			toast.error(error?.error?.message || 'Failed to delete credit grant');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to delete credit grant');
 		},
 	});
 

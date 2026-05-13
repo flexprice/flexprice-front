@@ -39,9 +39,8 @@ const EnvironmentEditor: React.FC<Props> = ({ isOpen, onOpenChange, environment,
 				await onEnvironmentUpdated();
 			}
 		},
-		onError: (error: ServerError) => {
-			const errorMessage = error?.error?.message || 'Failed to update environment';
-			toast.error(errorMessage);
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update environment');
 		},
 	});
 

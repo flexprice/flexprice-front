@@ -46,9 +46,9 @@ const SignupConfirmation = () => {
 			await supabase.auth.refreshSession();
 			navigate('/');
 		},
-		onError: async (error: ServerError) => {
+		onError: async (error: Error) => {
 			await supabase.auth.signOut();
-			toast.error(error.error.message || 'Failed to signup');
+			toast.error(error.message || 'Failed to signup');
 			navigate('/auth');
 		},
 	});

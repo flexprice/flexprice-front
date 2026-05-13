@@ -11,7 +11,6 @@ import { CreateWalletPayload } from '@/types';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui';
 import CurrencyPriceUnitSelector from '@/components/molecules/CurrencyPriceUnitSelector/CurrencyPriceUnitSelector';
 import { CurrencyPriceUnitSelection, isPriceUnitOption } from '@/types/common/PriceUnitSelector';
-import { ServerError } from '@/core/axios/types';
 import { CirclePlus } from 'lucide-react';
 import { useMinCreditExpiryDate, toDateOnlyUtc } from '@/hooks/useMinCreditExpiryDate';
 
@@ -132,8 +131,8 @@ const CreateCustomerWalletModal: FC<Props> = ({ customerId, onSuccess = () => {}
 
 			return await WalletApi.createWallet(payload);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'An error occurred while creating wallet');
+		onError: (error: Error) => {
+			toast.error(error.message || 'An error occurred while creating wallet');
 		},
 		onSuccess: async (data: Wallet) => {
 			toast.success('Wallet created successfully');

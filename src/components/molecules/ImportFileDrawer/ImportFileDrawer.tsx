@@ -178,8 +178,8 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 			setUploadedFile(undefined);
 			await refetchQueries('importTasks');
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Something went wrong. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Something went wrong. Please try again.');
 		},
 	});
 

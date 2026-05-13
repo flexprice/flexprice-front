@@ -113,8 +113,8 @@ const AddCreditNotePage = () => {
 			queryClient.invalidateQueries({ queryKey: ['creditNotes'] });
 			navigate(`${RouteNames.creditNotes}/${data.id}`);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to create credit note');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create credit note');
 		},
 	});
 

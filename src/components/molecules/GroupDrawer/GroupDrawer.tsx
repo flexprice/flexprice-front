@@ -28,27 +28,25 @@ const GroupDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQuer
 
 	const [errors, setErrors] = useState<Partial<Record<keyof CreateGroupRequest, string>>>({});
 
-	const { mutate: updateGroup, isPending } = useMutation<
-		GroupResponse,
-		ServerError,
-		(CreateGroupRequest | UpdateGroupRequest) & { id?: string }
-	>({
-		mutationFn: (vars) => {
-			const { id, ...rest } = vars;
-			if (isEdit && id) {
-				return GroupApi.updateGroup(id, rest as UpdateGroupRequest);
-			}
-			return GroupApi.createGroup(rest as CreateGroupRequest);
+	const { mutate: updateGroup, isPending } = useMutation<GroupResponse, Error, (CreateGroupRequest | UpdateGroupRequest) & { id?: string }>(
+		{
+			mutationFn: (vars) => {
+				const { id, ...rest } = vars;
+				if (isEdit && id) {
+					return GroupApi.updateGroup(id, rest as UpdateGroupRequest);
+				}
+				return GroupApi.createGroup(rest as CreateGroupRequest);
+			},
+			onSuccess: () => {
+				toast.success(isEdit ? 'Group updated successfully' : 'Group created successfully');
+				onOpenChange?.(false);
+				refetchQueries(refetchQueryKeys);
+			},
+			onError: (error: Error) => {
+				toast.error(error.message || `Failed to ${isEdit ? 'update' : 'create'} group. Please try again.`);
+			},
 		},
-		onSuccess: () => {
-			toast.success(isEdit ? 'Group updated successfully' : 'Group created successfully');
-			onOpenChange?.(false);
-			refetchQueries(refetchQueryKeys);
-		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || `Failed to ${isEdit ? 'update' : 'create'} group. Please try again.`);
-		},
-	});
+	);
 
 	useEffect(() => {
 		if (data) {

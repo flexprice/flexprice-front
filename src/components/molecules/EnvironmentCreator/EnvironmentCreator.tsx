@@ -55,11 +55,8 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 			// Call callback with the created environment ID (await if it's async)
 			await onEnvironmentCreated(result?.id);
 		},
-		onError: (error: ServerError) => {
-			// Extract descriptive error message from backend response
-			// Backend returns: { success: false, error: { message: "...", internal_error: "..." } }
-			const errorMessage = error?.error?.message || 'Failed to create environment';
-			toast.error(errorMessage);
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create environment');
 		},
 	});
 

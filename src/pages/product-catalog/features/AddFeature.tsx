@@ -925,9 +925,8 @@ const AddFeaturePage = () => {
 			navigate(RouteNames.features);
 			toast.success('Feature created successfully');
 		},
-		onError: (error: ServerError) => {
-			const errorMessage = error.error?.message || 'An error occurred while creating feature. Please try again.';
-			toast.error(errorMessage);
+		onError: (error: Error) => {
+			toast.error(error.message || 'An error occurred while creating feature. Please try again.');
 		},
 	});
 

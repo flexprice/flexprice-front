@@ -222,8 +222,8 @@ const HubSpotConnectionDrawer: FC<HubSpotConnectionDrawerProps> = ({ isOpen, onO
 			onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: unknown) => {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to create connection';
+		onError: (error: Error) => {
+			const errorMessage = error.message || 'Failed to create connection';
 			toast.error(errorMessage);
 		},
 	});
@@ -270,8 +270,8 @@ const HubSpotConnectionDrawer: FC<HubSpotConnectionDrawerProps> = ({ isOpen, onO
 			}
 			onOpenChange(false);
 		},
-		onError: (error: unknown) => {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to update connection';
+		onError: (error: Error) => {
+			const errorMessage = error.message || 'Failed to update connection';
 			toast.error(errorMessage);
 		},
 	});

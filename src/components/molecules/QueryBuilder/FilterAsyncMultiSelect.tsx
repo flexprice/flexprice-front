@@ -56,7 +56,7 @@ const FilterAsyncMultiSelect = <T = any,>({
 		isLoading,
 		isError,
 		error,
-	} = useQuery<Array<SelectOption & { data: T }>>({
+	} = useQuery<Array<SelectOption & { data: T }>, Error>({
 		queryKey: ['filter-async-multi-select', debouncedQuery],
 		queryFn: () => searchFn(debouncedQuery),
 		enabled: isOpen, // Only fetch when popover is open
@@ -174,9 +174,7 @@ const FilterAsyncMultiSelect = <T = any,>({
 						)}
 						{!isLoading && isError && (
 							<div className='flex flex-col items-center justify-center py-8 px-4'>
-								<div className='text-sm text-destructive text-center mb-1'>
-									{error instanceof Error ? error.message : 'Error loading options'}
-								</div>
+								<div className='text-sm text-destructive text-center mb-1'>{error.message || 'Error loading options'}</div>
 								<div className='text-xs text-muted-foreground text-center'>Please try again</div>
 							</div>
 						)}

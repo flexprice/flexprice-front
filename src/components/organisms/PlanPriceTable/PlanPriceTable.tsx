@@ -23,7 +23,6 @@ import { ChargeValueCell } from '@/components/molecules';
 import { formatInvoiceCadence } from '@/pages';
 import { Dialog } from '@/components/ui';
 import { DeletePriceRequest } from '@/types/dto';
-import { ServerError } from '@/core/axios/types';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import useFilterSorting from '@/hooks/useFilterSorting';
 import { FilterField, FilterFieldType, FilterOperator, DataType, SortDirection, FilterCondition } from '@/types/common/QueryBuilder';
@@ -247,8 +246,8 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 		mutationFn: async ({ priceId, data }: { priceId: string; data?: DeletePriceRequest }) => {
 			return await PriceApi.DeletePrice(priceId, data);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error?.error?.message || 'Error deleting price');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Error deleting price');
 		},
 	});
 

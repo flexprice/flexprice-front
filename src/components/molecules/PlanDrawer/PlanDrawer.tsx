@@ -33,7 +33,7 @@ const PlanDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQuery
 
 	const { mutate: updatePlan, isPending } = useMutation<
 		PlanResponse | CreatePlanResponse,
-		ServerError,
+		Error,
 		CreatePlanRequest | (UpdatePlanRequest & { id: string })
 	>({
 		mutationFn: (vars) => {
@@ -50,8 +50,8 @@ const PlanDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQuery
 			void queryClient.invalidateQueries({ queryKey: [SIDEBAR_PRICING_PROMO_QUERY_KEY], exact: false });
 			navigate(`${RouteNames.plan}/${data.id}`);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || `Failed to ${isEdit ? 'update' : 'create'} plan. Please try again.`);
+		onError: (error: Error) => {
+			toast.error(error.message || `Failed to ${isEdit ? 'update' : 'create'} plan. Please try again.`);
 		},
 	});
 

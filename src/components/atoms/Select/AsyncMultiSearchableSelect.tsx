@@ -132,7 +132,7 @@ const AsyncMultiSearchableSelect = <T = unknown,>({
 		isLoading,
 		isError,
 		error: queryError,
-	} = useQuery<Array<SelectOption & { data: T }>>({
+	} = useQuery<Array<SelectOption & { data: T }>, Error>({
 		queryKey: ['async-multi-searchable-select', debouncedQuery, fetchOnEmptyQuery],
 		queryFn: () => searchFn(debouncedQuery),
 		enabled: shouldFetch,
@@ -294,9 +294,7 @@ const AsyncMultiSearchableSelect = <T = unknown,>({
 							)}
 							{isError && shouldFetch && (
 								<CommandEmpty>
-									<div className='text-sm text-destructive'>
-										{queryError instanceof Error ? queryError.message : 'Error loading options'}
-									</div>
+									<div className='text-sm text-destructive'>{queryError.message || 'Error loading options'}</div>
 								</CommandEmpty>
 							)}
 							{!showLoading && !isError && (

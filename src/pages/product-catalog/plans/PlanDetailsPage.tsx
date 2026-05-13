@@ -26,7 +26,6 @@ import { Plan, ENTITY_STATUS } from '@/models';
 // Constants and utilities
 import { getPlanPriceSyncWorkflowFilters } from '@/constants/workflow';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import { ServerError } from '@/core/axios/types';
 import { INVOICE_CADENCE } from '@/models';
 import { DataType, FilterOperator, SortDirection } from '@/types/common/QueryBuilder';
 
@@ -120,8 +119,8 @@ const PlanDetailsPage = () => {
 			toast.success('Plan archived successfully');
 			navigate(RouteNames.plan);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to archive plan');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to archive plan');
 		},
 	});
 
@@ -131,8 +130,8 @@ const PlanDetailsPage = () => {
 			toast.success('Sync has been started and will take up to 1 hour to complete.');
 			void queryClient.invalidateQueries({ queryKey: ['planSyncWorkflows', planId] });
 		},
-		onError: (error: ServerError) => {
-			toast.error(error?.error?.message || 'Error synchronizing plan with subscriptions');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Error synchronizing plan with subscriptions');
 		},
 	});
 

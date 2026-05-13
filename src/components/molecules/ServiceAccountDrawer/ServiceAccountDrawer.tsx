@@ -6,7 +6,6 @@ import RbacApi, { RbacRole } from '@/api/RbacApi';
 import { toast } from 'react-hot-toast';
 import { AlertTriangle, Info } from 'lucide-react';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { ServerError } from '@/core/axios/types';
 
 interface Props {
 	isOpen: boolean;
@@ -76,8 +75,8 @@ const ServiceAccountDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 			toast.success('Service account created successfully!');
 			onOpenChange(false);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to create service account. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create service account. Please try again.');
 		},
 	});
 

@@ -50,8 +50,8 @@ const CouponDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQue
 			refetchQueries(refetchQueryKeys);
 			navigate(`${RouteNames.coupons}/${data.id}`);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || `Failed to ${isEdit ? 'update' : 'create'} coupon. Please try again.`);
+		onError: (error: Error) => {
+			toast.error(error.message || `Failed to ${isEdit ? 'update' : 'create'} coupon. Please try again.`);
 		},
 	});
 

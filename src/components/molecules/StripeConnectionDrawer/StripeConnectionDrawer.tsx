@@ -186,8 +186,8 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 			onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || 'Failed to create connection');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create connection');
 		},
 	});
 
@@ -218,8 +218,8 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 			onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: any) => {
-			toast.error(error?.message || 'Failed to update connection');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update connection');
 		},
 	});
 

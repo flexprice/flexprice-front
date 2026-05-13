@@ -1,7 +1,6 @@
 import { Button, Dialog, Input, Spacer, Textarea } from '@/components/atoms';
 import { PlanApi } from '@/api/PlanApi';
 import { RouteNames } from '@/core/routes/Routes';
-import { ServerError } from '@/core/axios/types';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { ClonePlanRequest, PlanResponse } from '@/types/dto';
 import { Plan } from '@/models/Plan';
@@ -84,8 +83,8 @@ const DuplicatePlanDialog: FC<DuplicatePlanDialogProps> = ({
 			refetchQueries(refetchQueryKeys);
 			navigate(`${RouteNames.plan}/${data.id}`);
 		},
-		onError: (error: ServerError) => {
-			const message = error?.error?.message || 'Failed to duplicate plan. Please try again.';
+		onError: (error: Error) => {
+			const message = error.message || 'Failed to duplicate plan. Please try again.';
 			toast.error(message);
 			if (message.toLowerCase().includes('name') || message.toLowerCase().includes('lookup')) {
 				setErrors((prev) => ({ ...prev, name: message, lookup_key: message }));

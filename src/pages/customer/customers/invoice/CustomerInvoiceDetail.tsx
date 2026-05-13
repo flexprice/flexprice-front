@@ -69,8 +69,8 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 		onSuccess: () => {
 			toast.success('Invoice downloaded');
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error?.message || 'Unable to download invoice');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Unable to download invoice');
 		},
 	});
 

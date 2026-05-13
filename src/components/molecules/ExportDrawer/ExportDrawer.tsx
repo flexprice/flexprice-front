@@ -12,7 +12,7 @@ import {
 import { CreateScheduledTaskPayload } from '@/types/dto';
 import toast from 'react-hot-toast';
 import { ChevronDown, ChevronRight, Info, Plus, Trash2 } from 'lucide-react';
-import { getApiErrorMessage } from '@/core/axios/types';
+import type { HttpRejectedError } from '@/core/axios/types';
 
 interface ExportDrawerProps {
 	isOpen: boolean;
@@ -275,11 +275,12 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 			onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: any) => {
-			const apiMessage = getApiErrorMessage(error?.response?.data ?? error, 'Failed to create export task');
+		onError: (error: Error) => {
+			const apiMessage = error.message || 'Failed to create export task';
 			toast.error(apiMessage);
 
-			const code = error?.response?.data?.code;
+			const raw = (error as HttpRejectedError).cause;
+			const code = raw && typeof raw === 'object' && raw !== null && 'code' in raw ? (raw as { code?: string }).code : undefined;
 			if (code === 'validation_error' && typeof apiMessage === 'string' && apiMessage.toLowerCase().includes('export metadata field')) {
 				setErrors((prev) => ({ ...prev, export_metadata_fields: apiMessage }));
 				setIsMetadataExpanded(true);
@@ -327,11 +328,12 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 			onSave(response);
 			onOpenChange(false);
 		},
-		onError: (error: any) => {
-			const apiMessage = getApiErrorMessage(error?.response?.data ?? error, 'Failed to update export task');
+		onError: (error: Error) => {
+			const apiMessage = error.message || 'Failed to update export task';
 			toast.error(apiMessage);
 
-			const code = error?.response?.data?.code;
+			const raw = (error as HttpRejectedError).cause;
+			const code = raw && typeof raw === 'object' && raw !== null && 'code' in raw ? (raw as { code?: string }).code : undefined;
 			if (code === 'validation_error' && typeof apiMessage === 'string' && apiMessage.toLowerCase().includes('export metadata field')) {
 				setErrors((prev) => ({ ...prev, export_metadata_fields: apiMessage }));
 				setIsMetadataExpanded(true);

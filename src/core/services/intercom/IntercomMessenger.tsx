@@ -59,7 +59,7 @@ const IntercomMessengerImpl = () => {
 			await refetchQueries(['user', 'tenant']);
 			toast.success(INTERCOM_MESSENGER_FLOW.toastSuccessMarkOnboarded);
 		},
-		onError: (error: unknown) => {
+		onError: (error: Error) => {
 			console.error('Failed to mark user as onboarded:', error);
 			toast.error(INTERCOM_MESSENGER_FLOW.toastErrorMarkOnboarded);
 		},

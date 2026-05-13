@@ -191,7 +191,7 @@ const QueryPage: React.FC = () => {
 		onSuccess: (data) => {
 			setUsageData(data);
 		},
-		onError: (error: any) => toast.error(error?.error?.message || 'Error fetching usage data'),
+		onError: (error: Error) => toast.error(error.message || 'Error fetching usage data'),
 	});
 
 	const resetFilters = () => {

@@ -167,8 +167,8 @@ const FeatureDetails = () => {
 			refetchQueries(['fetchFeatureDetails', featureId]);
 			toast.success('Feature archived successfully');
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to archive feature');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to archive feature');
 		},
 	});
 

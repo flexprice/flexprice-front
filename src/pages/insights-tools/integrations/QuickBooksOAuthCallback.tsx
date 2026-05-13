@@ -122,9 +122,9 @@ const QuickBooksOAuthCallback = () => {
 			toast.success(`${providerName} connected successfully!`);
 			navigate(providerRoute);
 		},
-		onError: (error: unknown) => {
+		onError: (error: Error) => {
 			cleanupSession();
-			const errorMessage = error instanceof Error ? error.message : 'Failed to complete OAuth';
+			const errorMessage = error.message || 'Failed to complete OAuth';
 			setError(errorMessage);
 			toast.error(errorMessage);
 			setTimeout(() => {

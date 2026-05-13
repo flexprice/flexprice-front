@@ -202,8 +202,8 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 			}
 			onOpenChange(false);
 		},
-		onError: (error: unknown) => {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to update connection';
+		onError: (error: Error) => {
+			const errorMessage = error.message || 'Failed to update connection';
 			toast.error(errorMessage);
 		},
 	});
@@ -269,8 +269,8 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 			// Redirect to QuickBooks OAuth page
 			window.location.href = response.oauth_url;
 		},
-		onError: (error: unknown) => {
-			const errorMessage = error instanceof Error ? error.message : 'Failed to initiate OAuth';
+		onError: (error: Error) => {
+			const errorMessage = error.message || 'Failed to initiate OAuth';
 			toast.error(errorMessage);
 		},
 	});

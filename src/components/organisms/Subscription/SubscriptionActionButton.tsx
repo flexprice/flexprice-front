@@ -16,7 +16,6 @@ import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { isInheritedSubscription } from '@/utils/subscription/isInheritedSubscription';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
-import { ServerError } from '@/core/axios/types';
 
 interface Props {
 	subscription: Subscription;
@@ -76,9 +75,9 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 	// 		await refetchQueries(['subscriptionDetails']);
 	// 		await refetchQueries(['subscriptions']);
 	// 	},
-	// 	onError: (error: ServerError) => {
+	// 	onError: (error: Error) => {
 	// 		setState((prev) => ({ ...prev, isPauseModalOpen: false }));
-	// 		toast.error(error.error.message || 'Failed to pause subscription');
+	// 		toast.error(error.message || 'Failed to pause subscription');
 	// 	},
 	// });
 
@@ -93,9 +92,9 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 	// 		await refetchQueries(['subscriptionDetails']);
 	// 		await refetchQueries(['subscriptions']);
 	// 	},
-	// 	onError: (err: ServerError) => {
+	// 	onError: (err: Error) => {
 	// 		setState((prev) => ({ ...prev, isResumeModalOpen: false }));
-	// 		toast.error(err.error.message || 'Failed to resume subscription');
+	// 		toast.error(err.message || 'Failed to resume subscription');
 	// 	},
 	// });
 
@@ -119,9 +118,9 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			await refetchQueries(['subscriptionDetails']);
 			await refetchQueries(['subscriptions']);
 		},
-		onError: (err: ServerError) => {
+		onError: (err: Error) => {
 			resetCancelState();
-			toast.error(err.error.message || 'Failed to cancel subscription');
+			toast.error(err.message || 'Failed to cancel subscription');
 		},
 	});
 
@@ -137,8 +136,8 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			await refetchQueries(['subscriptions']);
 			await refetchQueries(['subscriptionInvoices']);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to activate subscription');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to activate subscription');
 		},
 	});
 

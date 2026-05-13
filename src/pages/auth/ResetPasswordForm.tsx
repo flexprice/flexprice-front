@@ -44,12 +44,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 			await supabase.auth.signOut();
 			switchTab(AuthTab.LOGIN);
 		},
-		onError: (error: unknown) => {
-			const message =
-				error && typeof error === 'object' && 'message' in error
-					? String((error as Error).message)
-					: 'Failed to update password. Please try again.';
-			toast.error(message);
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update password. Please try again.');
 		},
 	});
 

@@ -10,7 +10,6 @@ import { RecordPaymentPayload } from '@/types/dto/Payment';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { LoaderCircleIcon } from 'lucide-react';
-import { ServerError } from '@/core/axios/types';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 
 interface Props {
@@ -241,8 +240,8 @@ const RecordPaymentTopup: FC<Props> = ({
 
 			onSuccess?.(payment);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error?.error?.message || 'Failed to record payment. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to record payment. Please try again.');
 		},
 	});
 

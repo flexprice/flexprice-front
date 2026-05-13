@@ -40,8 +40,8 @@ const GoogleSignin = () => {
 			}
 		},
 
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Authentication failed');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Authentication failed');
 		},
 	});
 

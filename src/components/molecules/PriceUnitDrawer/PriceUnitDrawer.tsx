@@ -33,7 +33,7 @@ const PriceUnitDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetch
 
 	const { mutate: updatePriceUnit, isPending } = useMutation<
 		PriceUnitResponse | CreatePriceUnitResponse,
-		ServerError,
+		Error,
 		CreatePriceUnitRequest | (UpdatePriceUnitRequest & { id: string })
 	>({
 		mutationFn: (vars) => {
@@ -48,8 +48,8 @@ const PriceUnitDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetch
 			onOpenChange?.(false);
 			refetchQueries(refetchQueryKeys);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || `Failed to ${isEdit ? 'update' : 'create'} price unit. Please try again.`);
+		onError: (error: Error) => {
+			toast.error(error.message || `Failed to ${isEdit ? 'update' : 'create'} price unit. Please try again.`);
 		},
 	});
 

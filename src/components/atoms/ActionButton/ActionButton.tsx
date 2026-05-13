@@ -102,9 +102,9 @@ const ActionButton: FC<ActionProps> = ({
 			}
 			await refetchQueries(refetchQueryKey);
 		},
-		onError: (err: ServerError) => {
+		onError: (err: Error) => {
 			if (!disableToast) {
-				toast.error(err?.error?.message || `Failed to ${archiveActionText.toLowerCase()} ${entityName}. Please try again.`);
+				toast.error(err.message || `Failed to ${archiveActionText.toLowerCase()} ${entityName}. Please try again.`);
 			}
 		},
 	});

@@ -62,8 +62,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 			localStorage.setItem('token', JSON.stringify(tokenData));
 			navigate(RouteNames.home);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Something went wrong. Please try again.');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Something went wrong. Please try again.');
 		},
 	});
 

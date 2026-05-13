@@ -4,6 +4,7 @@ import { Sheet } from '@/components/atoms';
 import { Event } from '@/models/Event';
 import toast from 'react-hot-toast';
 import EventsApi from '@/api/EventsApi';
+import { GetEventDebugResponse } from '@/types/dto';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate } from 'react-router';
@@ -28,7 +29,7 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 		data: debugResponse,
 		isLoading: loading,
 		error: loadError,
-	} = useQuery({
+	} = useQuery<GetEventDebugResponse, Error>({
 		queryKey: ['eventDebug', event?.id],
 		queryFn: () => EventsApi.getEventDebug(event!.id),
 		enabled: isOpen && !!event?.id,
@@ -127,7 +128,7 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 					) : loadError ? (
 						<div className='rounded-lg border border-red-200 bg-red-50 px-4 py-3'>
 							<p className='text-sm font-medium text-red-700'>Failed to load event debug details</p>
-							<p className='text-xs text-red-600 mt-1'>{loadError instanceof Error ? loadError.message : String(loadError)}</p>
+							<p className='text-xs text-red-600 mt-1'>{loadError.message || String(loadError)}</p>
 						</div>
 					) : debugResponse ? (
 						<div className='space-y-6'>

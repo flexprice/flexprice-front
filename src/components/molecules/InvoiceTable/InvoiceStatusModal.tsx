@@ -7,7 +7,6 @@ import { FC, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { Trash2 } from 'lucide-react';
-import { ServerError } from '@/core/axios/types';
 import { PAYMENT_STATUS } from '@/constants';
 
 /** Payment statuses that allow voiding an invoice (matches backend allowedPaymentStatuses) */
@@ -93,8 +92,8 @@ const InvoiceStatusModal: FC<InvoiceStatusProps> = ({ isOpen, onOpenChange, invo
 			await refetchQueries(['fetchInvoice']);
 			await refetchQueries(['invoice']);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error?.error.message || 'Failed to update invoice status');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to update invoice status');
 		},
 	});
 

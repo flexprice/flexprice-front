@@ -161,8 +161,8 @@ const CreateInvoicePage: FC = () => {
 			toast.success('Invoice created successfully');
 			navigate(`${RouteNames.customers}/${customerId}/invoice/${data.id}`);
 		},
-		onError: (error: ServerError) => {
-			toast.error(error.error.message || 'Failed to create invoice');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to create invoice');
 		},
 	});
 

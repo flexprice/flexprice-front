@@ -241,10 +241,8 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 			setEffectiveEndDate(undefined);
 			setCancelProrationBehavior('');
 		},
-		onError: (error: unknown) => {
-			const message =
-				typeof error === 'object' && error && 'error' in error ? (error as { error?: { message?: string } }).error?.message : undefined;
-			toast.error(message || 'Failed to cancel addon');
+		onError: (error: Error) => {
+			toast.error(error.message || 'Failed to cancel addon');
 		},
 	});
 
