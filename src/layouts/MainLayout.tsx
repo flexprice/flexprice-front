@@ -2,7 +2,7 @@ import { config } from '@/config/config';
 import { Outlet, useNavigate } from 'react-router';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Sidebar } from '@/components/molecules/Sidebar';
-import { BreadCrumbs, DebugMenu, FundingStrip, RestrictedEnvBanner } from '@/components/molecules';
+import { BreadCrumbs, CookieConsentBanner, DebugMenu, FundingStrip, RestrictedEnvBanner } from '@/components/molecules';
 import { CommandPalette } from '@/components/organisms';
 import AppPrefetcher from '@/components/organisms/AppPrefetcher';
 import useUser from '@/hooks/useUser';
@@ -38,15 +38,6 @@ const MainLayout: React.FC = () => {
 			tenant_id: user.tenant?.id,
 			tenant_name: user.tenant?.name,
 		});
-
-		if (window.Reo) {
-			window.Reo.identify({
-				username: user.email,
-				type: 'email',
-				firstname: user.name || '',
-				company: user.tenant?.name || '',
-			});
-		}
 	}, [user, navigate]);
 
 	useEffect(() => {
@@ -71,6 +62,7 @@ const MainLayout: React.FC = () => {
 				<main className='flex-1 px-4 relative overflow-y-auto '>
 					<Outlet />
 					<DebugMenu />
+					<CookieConsentBanner />
 				</main>
 			</SidebarInset>
 		</SidebarProvider>
