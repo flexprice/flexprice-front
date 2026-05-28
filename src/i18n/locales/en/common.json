@@ -715,5 +715,9 @@
 		"integrations": "Integrations",
 		"pricingWidget": "Pricing Widget",
 		"settings": "Settings"
+	},
+	"fundingStrip": {
+		"announcement": "Flexprice Raises $1.5M SEED Round",
+		"knowMore": "KNOW MORE"
 	}
 }
