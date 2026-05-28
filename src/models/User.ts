@@ -1,3 +1,5 @@
+import { Metadata } from './base';
+
 export interface User {
 	id: string;
 	tenant: {
@@ -21,5 +23,5 @@ export interface User {
 	name?: string;
 	type?: 'user' | 'service_account';
 	roles?: string[];
-	metadata?: { [key: string]: string };
+	metadata?: Metadata;
 }
