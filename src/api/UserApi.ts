@@ -6,6 +6,7 @@ import {
 	CreateTenantUserRequest,
 	CreateTenantUserResponse,
 	GetServiceAccountsResponse,
+	UpdateUserRequest,
 } from '@/types/dto/UserApi';
 import { DataType } from '@/types/common/QueryBuilder';
 import { FilterOperator } from '@/types/common/QueryBuilder';
@@ -112,5 +113,9 @@ export class UserApi {
 
 	public static async me(): Promise<User> {
 		return await AxiosClient.get<User>(`${this.baseUrl}/me`);
+	}
+
+	public static async updateMe({ metadata }: UpdateUserRequest): Promise<User> {
+		return await AxiosClient.put<User, UpdateUserRequest>(`${this.baseUrl}/me`, { metadata });
 	}
 }
