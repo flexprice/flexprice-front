@@ -21,7 +21,7 @@ const CookieConsentBanner: React.FC<CookieConsentBannerProps> = ({ privacyPolicy
 		<div
 			role='region'
 			aria-label={t('cookieConsent.title')}
-			className='fixed bottom-6 right-6 z-50 w-80 rounded-2xl border border-gray-200 bg-white p-5 shadow-lg'>
+			className='fixed bottom-6 right-6 z-[110] w-80 rounded-2xl border border-gray-200 bg-white p-5 shadow-lg'>
 			<h2 className='mb-2 text-sm font-semibold text-gray-900'>{t('cookieConsent.title')}</h2>
 			<p className='mb-4 text-xs text-gray-600'>{t('cookieConsent.description')}</p>
 			<div className='flex gap-2'>
