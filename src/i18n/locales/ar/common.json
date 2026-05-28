@@ -719,5 +719,13 @@
 	"queryableDataArea": {
 		"errorFetching": "خطأ في جلب البيانات",
 		"defaultPromoImageUrl": "https://mintlify.s3.us-west-1.amazonaws.com/flexprice/UsageBaseMetering(1).jpg"
+	},
+	"cookieConsent": {
+		"title": "نستخدم ملفات تعريف الارتباط",
+		"description": "نستخدم ملفات تعريف الارتباط التحليلية لفهم كيفية استخدامك لمنتجنا وتحسين تجربتك. يمكنك قبول أو رفض ملفات تعريف الارتباط غير الضرورية أدناه.",
+		"acceptAll": "قبول الكل",
+		"rejectAll": "رفض الكل",
+		"privacyPolicy": "سياسة الخصوصية",
+		"termsAndConditions": "الشروط والأحكام"
 	}
 }
