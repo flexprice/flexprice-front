@@ -185,3 +185,4 @@ export { default as ApiDocs, ApiDocsContent } from './ApiDocs';
 
 // Debug & Development
 export { default as DebugMenu } from './DebugMenu';
+export { default as CookieConsentBanner } from './CookieConsentBanner';

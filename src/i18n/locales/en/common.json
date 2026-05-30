@@ -715,5 +715,17 @@
 		"integrations": "Integrations",
 		"pricingWidget": "Pricing Widget",
 		"settings": "Settings"
+	},
+	"fundingStrip": {
+		"announcement": "Flexprice Raises $1.5M SEED Round",
+		"knowMore": "KNOW MORE"
+	},
+	"cookieConsent": {
+		"title": "We use cookies",
+		"description": "We use analytics cookies to understand how you use our product and improve your experience. You can accept or reject non-essential cookies below.",
+		"acceptAll": "Accept all",
+		"rejectAll": "Reject all",
+		"privacyPolicy": "Privacy Policy",
+		"termsAndConditions": "Terms and Conditions"
 	}
 }

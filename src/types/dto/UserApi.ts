@@ -1,4 +1,9 @@
+import { Metadata } from '@/models/base';
 import { User } from '@/models';
+
+export interface UpdateUserRequest {
+	metadata: Metadata;
+}
 
 export interface GetServiceAccountsResponse {
 	items: User[];

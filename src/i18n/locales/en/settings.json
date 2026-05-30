@@ -657,9 +657,7 @@
 					"sections": {
 						"overview": {
 							"title": "Overview",
-							"paragraphs": [
-								"The Flexprice Stripe app enables invoicing, tax collection, and payment via Stripe."
-							]
+							"paragraphs": ["The Flexprice Stripe app enables invoicing, tax collection, and payment via Stripe."]
 						},
 						"stripeInvoicing": {
 							"title": "Stripe Invoicing",
@@ -753,9 +751,7 @@
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
-							"paragraphs": [
-								"Push invoices from Flexprice to HubSpot to keep your CRM up to date with billing information."
-							]
+							"paragraphs": ["Push invoices from Flexprice to HubSpot to keep your CRM up to date with billing information."]
 						},
 						"customerSync": {
 							"title": "Customer Sync",
@@ -765,15 +761,11 @@
 						},
 						"paymentsSync": {
 							"title": "Payments Sync",
-							"paragraphs": [
-								"Keep payment records synchronized between both platforms for accurate financial reporting."
-							]
+							"paragraphs": ["Keep payment records synchronized between both platforms for accurate financial reporting."]
 						},
 						"revenueReporting": {
 							"title": "Revenue Calculations on HubSpot",
-							"paragraphs": [
-								"Leverage HubSpot's reporting capabilities with accurate revenue data synced from Flexprice."
-							]
+							"paragraphs": ["Leverage HubSpot's reporting capabilities with accurate revenue data synced from Flexprice."]
 						}
 					}
 				},
@@ -797,9 +789,7 @@
 						},
 						"createInvoice": {
 							"title": "Create Invoice in Zoho Books",
-							"paragraphs": [
-								"Generate Zoho Books invoices seamlessly from Flexprice usage data or billing triggers, reducing manual work."
-							]
+							"paragraphs": ["Generate Zoho Books invoices seamlessly from Flexprice usage data or billing triggers, reducing manual work."]
 						},
 						"transformInvoice": {
 							"title": "Transform Flexprice Invoice to Zoho Books Invoice",
@@ -938,6 +928,22 @@
 				"whop": {
 					"name": "Whop",
 					"description": "Sync invoices to Whop with automatic payment status updates.",
+					"companyIdRequired": "Company ID is required",
+					"connectionNamePlaceholder": "Name your Whop connection",
+					"connectionNameHint": "A friendly name for this connection.",
+					"apiKeyLabel": "API Key",
+					"apiKeyPlaceholder": "apik_...",
+					"apiKeyHint": "Bearer token from your Whop developer dashboard.",
+					"companyIdLabel": "Company ID",
+					"companyIdPlaceholder": "biz_...",
+					"companyIdHint": "Your Whop company identifier (biz_...).",
+					"productIdLabel": "Product ID (optional)",
+					"productIdPlaceholder": "prod_... — leave blank to auto-create",
+					"productIdHint": "Whop product used for invoices. Leave blank to have Flexprice create one automatically.",
+					"pushInvoicesHint": "Push Flexprice invoices to Whop as send_invoice payments",
+					"webhookIntroPrefix": "Register this URL in your Whop dashboard under Webhooks. Flexprice will listen for",
+					"webhookEventName": "invoice.paid",
+					"webhookIntroSuffix": "events to automatically mark invoices as paid.",
 					"sections": {
 						"overview": {
 							"title": "Overview",
@@ -980,6 +986,7 @@
 			"viewLatestData": "View latest data",
 			"searchCustomersPlaceholder": "Search customers...",
 			"colCustomer": "Customer",
+			"colCurrency": "Currency",
 			"noSearchMatches": "No customers match your search.",
 			"loadingEllipsis": "...",
 			"filterThisMonth": "This month",

@@ -139,11 +139,10 @@ const Revenue = () => {
 	}, [availableCurrencies, selectedCurrency]);
 
 	// Filter items to the selected currency on the frontend.
-	const allItems = data?.items ?? [];
-	const items = useMemo(
-		() => (selectedCurrency === '' ? allItems : allItems.filter((row) => (row.currency || '').toLowerCase() === selectedCurrency)),
-		[allItems, selectedCurrency],
-	);
+	const items = useMemo(() => {
+		const allItems = data?.items ?? [];
+		return selectedCurrency === '' ? allItems : allItems.filter((row) => (row.currency || '').toLowerCase() === selectedCurrency);
+	}, [data?.items, selectedCurrency]);
 
 	const filteredItems = search.trim()
 		? items.filter((row) => (row.customer_name || row.external_customer_id || '').toLowerCase().includes(search.trim().toLowerCase()))
@@ -214,9 +213,25 @@ const Revenue = () => {
 							isLoading ? (
 								<div className='rounded-xl border border-gray-200 bg-white overflow-hidden'>
 									<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-										<MetricTile title={t('insightsTools.revenue.metricNetRevenue')} value='' loading loadingLabel={t('insightsTools.revenue.loadingEllipsis')} />
-										<MetricTile title={t('insightsTools.revenue.metricContractRevenue')} value='' loading loadingLabel={t('insightsTools.revenue.loadingEllipsis')} />
-										<MetricTile title={t('insightsTools.revenue.metricUsageRevenue')} value='' loading loadingLabel={t('insightsTools.revenue.loadingEllipsis')} isLast />
+										<MetricTile
+											title={t('insightsTools.revenue.metricNetRevenue')}
+											value=''
+											loading
+											loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+										/>
+										<MetricTile
+											title={t('insightsTools.revenue.metricContractRevenue')}
+											value=''
+											loading
+											loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+										/>
+										<MetricTile
+											title={t('insightsTools.revenue.metricUsageRevenue')}
+											value=''
+											loading
+											loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+											isLast
+										/>
 									</div>
 								</div>
 							) : (
@@ -228,9 +243,25 @@ const Revenue = () => {
 												<p className='text-xs font-medium text-gray-400 uppercase tracking-wide px-1 mb-1'>{cur}</p>
 												<div className='rounded-xl border border-gray-200 bg-white overflow-hidden'>
 													<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
-														<MetricTile title={t('insightsTools.revenue.metricNetRevenue')} value={formatCurrency(toNumberOrNull(sum.total_revenue), cur, naLabel)} loading={false} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} />
-														<MetricTile title={t('insightsTools.revenue.metricContractRevenue')} value={formatCurrency(toNumberOrNull(sum.total_fixed_revenue), cur, naLabel)} loading={false} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} />
-														<MetricTile title={t('insightsTools.revenue.metricUsageRevenue')} value={formatCurrency(toNumberOrNull(sum.total_usage_revenue), cur, naLabel)} loading={false} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} isLast />
+														<MetricTile
+															title={t('insightsTools.revenue.metricNetRevenue')}
+															value={formatCurrency(toNumberOrNull(sum.total_revenue), cur, naLabel)}
+															loading={false}
+															loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+														/>
+														<MetricTile
+															title={t('insightsTools.revenue.metricContractRevenue')}
+															value={formatCurrency(toNumberOrNull(sum.total_fixed_revenue), cur, naLabel)}
+															loading={false}
+															loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+														/>
+														<MetricTile
+															title={t('insightsTools.revenue.metricUsageRevenue')}
+															value={formatCurrency(toNumberOrNull(sum.total_usage_revenue), cur, naLabel)}
+															loading={false}
+															loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+															isLast
+														/>
 													</div>
 												</div>
 											</div>
@@ -241,11 +272,42 @@ const Revenue = () => {
 							// Single currency selected — show summary tiles for that currency.
 							<div className='rounded-xl border border-gray-200 bg-white overflow-hidden'>
 								<div className={`grid grid-cols-1 sm:grid-cols-2 ${showVoiceColumns ? 'lg:grid-cols-5' : 'lg:grid-cols-3'}`}>
-									<MetricTile title={t('insightsTools.revenue.metricNetRevenue')} value={formatCurrency(normalizedSummary.netRevenue, normalizedSummary.currency, naLabel)} loading={isLoading} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} />
-									<MetricTile title={t('insightsTools.revenue.metricContractRevenue')} value={formatCurrency(normalizedSummary.fixedContractRevenue, normalizedSummary.currency, naLabel)} loading={isLoading} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} />
-									<MetricTile title={t('insightsTools.revenue.metricUsageRevenue')} value={formatCurrency(normalizedSummary.usageRevenue, normalizedSummary.currency, naLabel)} loading={isLoading} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} isLast={!showVoiceColumns} />
-									{showVoiceColumns && <MetricTile title={t('insightsTools.revenue.metricVoiceMinutes')} value={formatInteger(normalizedSummary.totalMinutes, naLabel)} loading={isLoading} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} />}
-									{showVoiceColumns && <MetricTile title={t('insightsTools.revenue.metricCostPerMinute')} value={formatDecimal(normalizedSummary.cpm, naLabel)} loading={isLoading} loadingLabel={t('insightsTools.revenue.loadingEllipsis')} isLast />}
+									<MetricTile
+										title={t('insightsTools.revenue.metricNetRevenue')}
+										value={formatCurrency(normalizedSummary.netRevenue, normalizedSummary.currency, naLabel)}
+										loading={isLoading}
+										loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+									/>
+									<MetricTile
+										title={t('insightsTools.revenue.metricContractRevenue')}
+										value={formatCurrency(normalizedSummary.fixedContractRevenue, normalizedSummary.currency, naLabel)}
+										loading={isLoading}
+										loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+									/>
+									<MetricTile
+										title={t('insightsTools.revenue.metricUsageRevenue')}
+										value={formatCurrency(normalizedSummary.usageRevenue, normalizedSummary.currency, naLabel)}
+										loading={isLoading}
+										loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+										isLast={!showVoiceColumns}
+									/>
+									{showVoiceColumns && (
+										<MetricTile
+											title={t('insightsTools.revenue.metricVoiceMinutes')}
+											value={formatInteger(normalizedSummary.totalMinutes, naLabel)}
+											loading={isLoading}
+											loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+										/>
+									)}
+									{showVoiceColumns && (
+										<MetricTile
+											title={t('insightsTools.revenue.metricCostPerMinute')}
+											value={formatDecimal(normalizedSummary.cpm, naLabel)}
+											loading={isLoading}
+											loadingLabel={t('insightsTools.revenue.loadingEllipsis')}
+											isLast
+										/>
+									)}
 								</div>
 							</div>
 						)}
@@ -319,7 +381,7 @@ const Revenue = () => {
 										{t('insightsTools.revenue.colCustomer')}
 									</TableHead>
 									{selectedCurrency === '' && (
-										<TableHead className='font-semibold text-gray-700 text-[13px]'>Currency</TableHead>
+										<TableHead className='font-semibold text-gray-700 text-[13px]'>{t('insightsTools.revenue.colCurrency')}</TableHead>
 									)}
 									<TableHead className='font-semibold text-gray-700 text-[13px]'>{t('insightsTools.revenue.metricNetRevenue')}</TableHead>
 									<TableHead className='font-semibold text-gray-700 text-[13px]'>
@@ -388,7 +450,9 @@ const Revenue = () => {
 								})}
 								{pagedItems.length === 0 && (
 									<TableRow className='bg-white'>
-										<TableCell colSpan={showVoiceColumns ? 6 : selectedCurrency === '' ? 5 : 4} className='pl-4 py-4 font-normal text-gray-500 text-[13px]'>
+										<TableCell
+											colSpan={showVoiceColumns ? 6 : selectedCurrency === '' ? 5 : 4}
+											className='pl-4 py-4 font-normal text-gray-500 text-[13px]'>
 											{search.trim() ? t('insightsTools.revenue.noSearchMatches') : i18n.t('labels.na', { ns: 'common' })}
 										</TableCell>
 									</TableRow>

@@ -132,7 +132,7 @@ export const integrationCatalogSpecs: IntegrationCatalogSpec[] = [
 		id: 'whop',
 		logo: '/assets/svg/whop_favicon_orange.png',
 		websiteUrl: 'https://whop.com',
-		tagKeys: ['invoices', 'payments',],
+		tagKeys: ['invoices', 'payments'],
 		type: 'available',
 		sectionKeys: ['overview', 'invoiceSync', 'webhooks'],
 	},
