@@ -214,6 +214,10 @@
 	},
 	"subscriptions": {
 		"title": "Subscriptions",
+		"createDialog": {
+			"title": "Create Subscription",
+			"selectCustomer": "Select Customer"
+		},
 		"listPage": {
 			"sortLabels": {
 				"createdAt": "Created At",
