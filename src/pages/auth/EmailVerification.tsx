@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate, useLocation, Navigate } from 'react-router';
 import { Button } from '@/components/atoms';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -6,13 +6,15 @@ import supabase from '@/core/services/supbase/config';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
-import { config } from '@/config/config';
+import { config, AUTH_PROVIDER } from '@/config/config';
+import { RouteNames } from '@/core/routes/Routes';
 
 const EmailVerification = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { t } = useTranslation('auth');
 	const { logo, name } = useBrand();
+	const isFlexpriceAuth = config.auth.provider === AUTH_PROVIDER.Flexprice;
 
 	const searchParams = new URLSearchParams(location.search);
 	const email = searchParams.get('email') || '';
@@ -47,6 +49,10 @@ const EmailVerification = () => {
 	const handleGoToLogin = () => {
 		navigate('/auth');
 	};
+
+	if (isFlexpriceAuth) {
+		return <Navigate to={RouteNames.auth} replace />;
+	}
 
 	return (
 		<div

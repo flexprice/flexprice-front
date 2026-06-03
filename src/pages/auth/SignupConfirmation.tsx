@@ -4,13 +4,16 @@ import AuthApi from '@/api/AuthApi';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router';
+import { useNavigate, Navigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { config, AUTH_PROVIDER } from '@/config/config';
+import { RouteNames } from '@/core/routes/Routes';
 
 const SignupConfirmation = () => {
 	const userContext = useUser();
 	const navigate = useNavigate();
 	const { t } = useTranslation('auth');
+	const isFlexpriceAuth = config.auth.provider === AUTH_PROVIDER.Flexprice;
 
 	const { mutate, isPending } = useMutation({
 		mutationFn: async () => {
@@ -60,8 +63,15 @@ const SignupConfirmation = () => {
 	};
 
 	useEffect(() => {
+		if (isFlexpriceAuth) {
+			return;
+		}
 		handleSubmit();
-	}, []);
+	}, [isFlexpriceAuth]);
+
+	if (isFlexpriceAuth) {
+		return <Navigate to={RouteNames.home} replace />;
+	}
 
 	return (
 		<div>
