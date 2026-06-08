@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router';
+import { useNavigate, useLocation, Navigate } from 'react-router';
 import Button from '@/components/atoms/Button/Button';
 import Input from '@/components/atoms/Input/Input';
 import { useMutation } from '@tanstack/react-query';
@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
+import { config, AUTH_PROVIDER } from '@/config/config';
+import { RouteNames } from '@/core/routes/Routes';
 
 const ResendVerification = () => {
 	const [email, setEmail] = useState('');
@@ -14,10 +16,9 @@ const ResendVerification = () => {
 	const location = useLocation();
 	const { t } = useTranslation('auth');
 	const { logo, name } = useBrand();
-
+	const isFlexpriceAuth = config.auth.provider === AUTH_PROVIDER.Flexprice;
 	const isNewSignup = location.search.includes('new=true');
 	const userEmail = new URLSearchParams(location.search).get('email') || '';
-
 	const [resendSuccess, setResendSuccess] = useState(false);
 
 	const { mutate: resendVerification, isPending } = useMutation({
@@ -47,6 +48,10 @@ const ResendVerification = () => {
 	const handleGoToLogin = () => {
 		navigate('/auth');
 	};
+
+	if (isFlexpriceAuth) {
+		return <Navigate to={RouteNames.auth} replace />;
+	}
 
 	if (isNewSignup || resendSuccess) {
 		return (

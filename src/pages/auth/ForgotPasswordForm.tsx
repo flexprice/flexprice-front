@@ -5,6 +5,7 @@ import supabase from '@/core/services/supbase/config';
 import { useMutation } from '@tanstack/react-query';
 import { AuthTab } from './authTabs';
 import { useTranslation } from 'react-i18next';
+import { config, AUTH_PROVIDER } from '@/config/config';
 
 interface ForgotPasswordFormProps {
 	switchTab: (tab: AuthTab) => void;
@@ -13,8 +14,8 @@ interface ForgotPasswordFormProps {
 const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ switchTab }) => {
 	const { t } = useTranslation('auth');
 	const [email, setEmail] = useState('');
+	const isFlexpriceAuth = config.auth.provider === AUTH_PROVIDER.Flexprice;
 
-	// Use React Query for forgot password mutation
 	const forgotPasswordMutation = useMutation({
 		mutationFn: async (emailToReset: string): Promise<any> => {
 			const redirectTo = `${window.location.origin}/auth?tab=${AuthTab.RESET_PASSWORD}`;
@@ -44,6 +45,22 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ switchTab }) =>
 
 		forgotPasswordMutation.mutate(email);
 	};
+
+	if (isFlexpriceAuth) {
+		return (
+			<>
+				<div className='rounded-xl border border-gray-200/80 bg-gray-50/50 p-6 text-center shadow-sm'>
+					<p className='text-sm text-gray-600'>{t('flexpriceAuth.passwordResetUnavailable')}</p>
+				</div>
+				<p className='mt-6 text-center text-sm text-gray-600'>
+					{t('rememberPassword')}{' '}
+					<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium'>
+						{t('links.backToLogin')}
+					</button>
+				</p>
+			</>
+		);
+	}
 
 	return (
 		<>

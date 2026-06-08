@@ -6,6 +6,7 @@ import supabase from '@/core/services/supbase/config';
 import { useMutation } from '@tanstack/react-query';
 import { AuthTab } from './authTabs';
 import { useTranslation } from 'react-i18next';
+import { config, AUTH_PROVIDER } from '@/config/config';
 
 interface ResetPasswordFormProps {
 	switchTab: (tab: AuthTab) => void;
@@ -19,8 +20,14 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [sessionReady, setSessionReady] = useState(false);
 	const [hasSession, setHasSession] = useState(false);
+	const isFlexpriceAuth = config.auth.provider === AUTH_PROVIDER.Flexprice;
 
 	useEffect(() => {
+		if (isFlexpriceAuth) {
+			setSessionReady(true);
+			return;
+		}
+
 		const checkSession = async () => {
 			const {
 				data: { session },
@@ -32,7 +39,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 			setSessionReady(true);
 		};
 		checkSession();
-	}, []);
+	}, [isFlexpriceAuth]);
 
 	const updatePasswordMutation = useMutation({
 		mutationFn: async (newPassword: string): Promise<void> => {
@@ -60,6 +67,22 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 		}
 		updatePasswordMutation.mutate(password);
 	};
+
+	if (isFlexpriceAuth) {
+		return (
+			<>
+				<div className='rounded-xl border border-gray-200/80 bg-gray-50/50 p-6 text-center shadow-sm'>
+					<p className='text-sm text-gray-600'>{t('flexpriceAuth.passwordResetUnavailable')}</p>
+				</div>
+				<p className='mt-6 text-center text-sm text-gray-600'>
+					{t('rememberPassword')}{' '}
+					<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium hover:no-underline'>
+						{t('links.backToLogin')}
+					</button>
+				</p>
+			</>
+		);
+	}
 
 	if (!sessionReady) {
 		return (
