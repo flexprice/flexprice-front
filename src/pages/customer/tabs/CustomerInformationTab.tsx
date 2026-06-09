@@ -1,4 +1,4 @@
-import { Spacer, Button, Divider, Card, CardHeader } from '@/components/atoms';
+import { Spacer, Button, Card, CardHeader } from '@/components/atoms';
 import CustomerApi from '@/api/CustomerApi';
 import ConnectionApi from '@/api/ConnectionApi';
 import SubscriptionApi from '@/api/SubscriptionApi';
@@ -198,8 +198,8 @@ const CustomerInformationTab = () => {
 
 	if (isLoading) {
 		return (
-			<div className='py-6 px-4 rounded-xl border border-gray-300'>
-				<p className='text-gray-600'>{t('overview.loadingCustomerDetails')}</p>
+			<div className='py-6 px-4 rounded-xl border border-border'>
+				<p className='text-muted-foreground'>{t('overview.loadingCustomerDetails')}</p>
 			</div>
 		);
 	}
@@ -238,28 +238,29 @@ const CustomerInformationTab = () => {
 						</div>
 					</div>
 					<Spacer className='!h-4' />
-					<DetailsCard variant='stacked' data={billingDetails} childrenAtTop cardStyle='borderless' />
+					<div className='space-y-6'>
+						<DetailsCard variant='stacked' data={billingDetails} childrenAtTop cardStyle='borderless' />
 
-					{/* Metadata Section Below Address Details */}
-					<Divider className='my-4' />
-					<div className='mt-8'>
-						<div className='flex justify-between items-center mb-2'>
-							<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('tabPanels.common.metadata')}</h3>
-							{!isArchived && (
-								<Button variant='outline' size='icon' onClick={() => setShowMetadataModal(true)}>
-									<Pencil className='size-5' />
-								</Button>
-							)}
+						{/* Metadata Section Below Address Details */}
+						<div className='mt-2'>
+							<div className='flex justify-between items-center mb-2'>
+								<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('tabPanels.common.metadata')}</h3>
+								{!isArchived && (
+									<Button variant='outline' size='icon' onClick={() => setShowMetadataModal(true)}>
+										<Pencil className='size-5' />
+									</Button>
+								)}
+							</div>
+							<DetailsCard
+								variant='stacked'
+								data={
+									metadata && Object.keys(metadata).length > 0
+										? Object.entries(metadata).map(([key, value]) => ({ label: key, value }))
+										: [{ label: 'No metadata available.', value: '' }]
+								}
+								cardStyle='borderless'
+							/>
 						</div>
-						<DetailsCard
-							variant='stacked'
-							data={
-								metadata && Object.keys(metadata).length > 0
-									? Object.entries(metadata).map(([key, value]) => ({ label: key, value }))
-									: [{ label: 'No metadata available.', value: '' }]
-							}
-							cardStyle='borderless'
-						/>
 					</div>
 
 					{/* Metadata Modal for Editing */}

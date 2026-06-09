@@ -7,6 +7,7 @@ export { Sidebar } from './Sidebar';
 export { default as BreadCrumbs } from './BreadCrumbs';
 export { default as RestrictedEnvBanner } from './RestrictedEnvBanner';
 export { default as FundingStrip } from './FundingStrip';
+export { default as ThemeToggle } from './ThemeToggle';
 export { default as ContactUsDialog } from './ContactUsDialog';
 export { default as Pagination } from './Pagination';
 

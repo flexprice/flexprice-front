@@ -23,17 +23,17 @@ const DeliveryStatsBar: FC<{ endpointId: string }> = ({ endpointId }) => {
 		<div className='flex flex-col gap-2'>
 			<h4 className='text-sm font-medium'>{t('webhooks.endpoints.detail.deliveryStats')}</h4>
 			{loading ? (
-				<div className='h-3 w-full rounded-full bg-gray-100 animate-pulse' />
+				<div className='h-3 w-full rounded-full bg-muted animate-pulse' />
 			) : total === 0 ? (
-				<p className='text-sm text-gray-400'>{t('webhooks.endpoints.detail.noDeliveries')}</p>
+				<p className='text-sm text-muted-foreground'>{t('webhooks.endpoints.detail.noDeliveries')}</p>
 			) : (
 				<>
-					<div className='flex h-3 w-full overflow-hidden rounded-full bg-gray-100'>
+					<div className='flex h-3 w-full overflow-hidden rounded-full bg-muted'>
 						{success > 0 && <div className='h-full bg-green-500' style={{ width: `${(success / total) * 100}%` }} />}
 						{fail > 0 && <div className='h-full bg-red-500' style={{ width: `${(fail / total) * 100}%` }} />}
 						{pending > 0 && <div className='h-full bg-amber-400' style={{ width: `${(pending / total) * 100}%` }} />}
 					</div>
-					<div className='flex gap-4 text-xs text-gray-500'>
+					<div className='flex gap-4 text-xs text-muted-foreground'>
 						{success > 0 && (
 							<span className='flex items-center gap-1'>
 								<span className='w-2 h-2 rounded-full bg-green-500' />
@@ -90,7 +90,7 @@ const EndpointOverviewTab: FC<Props> = ({ endpoint, onUpdated }) => {
 				<div className='flex items-center justify-between mb-2'>
 					<h4 className='text-sm font-medium'>{t('webhooks.endpoints.detail.description')}</h4>
 					{!isEditing && (
-						<button className='text-sm text-gray-600 hover:text-gray-900' onClick={() => setIsEditing(true)}>
+						<button className='text-sm text-muted-foreground hover:text-foreground' onClick={() => setIsEditing(true)}>
 							{t('common:actions.edit')}
 						</button>
 					)}
@@ -115,7 +115,7 @@ const EndpointOverviewTab: FC<Props> = ({ endpoint, onUpdated }) => {
 						</div>
 					</div>
 				) : (
-					<p className='text-sm text-gray-500'>{endpoint.description || t('webhooks.endpoints.detail.noDescription')}</p>
+					<p className='text-sm text-muted-foreground'>{endpoint.description || t('webhooks.endpoints.detail.noDescription')}</p>
 				)}
 			</Card>
 

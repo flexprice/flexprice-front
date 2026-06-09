@@ -42,47 +42,47 @@ const InvoicesTable = ({ invoices, currencySymbol, onOpenDownloadFormat, downloa
 					<tr
 						className='border-b'
 						style={{
-							backgroundColor: 'var(--portal-surface, #f9fafb)',
-							borderColor: 'var(--portal-border, #E9E9E9)',
+							backgroundColor: 'var(--portal-surface)',
+							borderColor: 'var(--portal-border)',
 						}}>
 						<th
 							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-start'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
+							style={{ color: 'var(--portal-text-secondary)' }}>
 							{t('invoices.columnDate')}
 						</th>
 						<th
 							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-start'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
+							style={{ color: 'var(--portal-text-secondary)' }}>
 							{t('invoices.columnInvoiceNumber')}
 						</th>
 						<th
 							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-start'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
+							style={{ color: 'var(--portal-text-secondary)' }}>
 							{t('invoices.columnStatus')}
 						</th>
 						<th
 							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-end'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
+							style={{ color: 'var(--portal-text-secondary)' }}>
 							{t('invoices.columnAmount')}
 						</th>
 						<th
 							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-center'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
+							style={{ color: 'var(--portal-text-secondary)' }}>
 							{t('invoices.columnDownload')}
 						</th>
 					</tr>
 				</thead>
-				<tbody className='divide-y' style={{ borderColor: 'var(--portal-border, #E9E9E9)' }}>
+				<tbody className='divide-y' style={{ borderColor: 'var(--portal-border)' }}>
 					{invoices.map((invoice) => (
-						<tr key={invoice.id} className='transition-colors' style={{ backgroundColor: 'var(--portal-surface, white)' }}>
-							<td className='px-4 py-3 text-sm' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
+						<tr key={invoice.id} className='transition-colors' style={{ backgroundColor: 'var(--portal-surface)' }}>
+							<td className='px-4 py-3 text-sm' style={{ color: 'var(--portal-text-secondary)' }}>
 								{invoice.finalized_at ? formatDateShort(invoice.finalized_at) : formatDateShort(invoice.created_at)}
 							</td>
-							<td className='px-4 py-3 text-sm font-medium' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
+							<td className='px-4 py-3 text-sm font-medium' style={{ color: 'var(--portal-text-primary)' }}>
 								{invoice.invoice_number || t('invoices.numberPrefix', { id: invoice.id.slice(0, 8) })}
 							</td>
 							<td className='px-4 py-3'>{getStatusChip(invoice)}</td>
-							<td className='px-4 py-3 text-sm text-end font-medium' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
+							<td className='px-4 py-3 text-sm text-end font-medium' style={{ color: 'var(--portal-text-primary)' }}>
 								{currencySymbol}
 								{formatAmount(String(invoice.total ?? 0))}
 							</td>
@@ -160,13 +160,11 @@ const InvoicesWidget = () => {
 	if (isLoading) {
 		return (
 			<div className='space-y-6'>
-				<div className='h-10 bg-zinc-100 animate-pulse rounded-md'></div>
-				<Card
-					className='rounded-xl p-4'
-					style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+				<div className='h-10 bg-muted animate-pulse rounded-md'></div>
+				<Card className='rounded-xl p-4' style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
 					<div className='animate-pulse space-y-3'>
 						{[1, 2, 3, 4].map((i) => (
-							<div key={i} className='h-12 bg-zinc-100 rounded'></div>
+							<div key={i} className='h-12 bg-muted rounded'></div>
 						))}
 					</div>
 				</Card>
@@ -179,9 +177,7 @@ const InvoicesWidget = () => {
 
 	if (invoices.length === 0) {
 		return (
-			<Card
-				className='rounded-xl p-6'
-				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+			<Card className='rounded-xl p-6' style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
 				<EmptyState title={t('invoices.emptyTitle')} description={t('invoices.emptyDescription')} />
 			</Card>
 		);
@@ -222,10 +218,7 @@ const InvoicesWidget = () => {
 				}}
 			/>
 			<div className='relative'>
-				<Search
-					className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4'
-					style={{ color: 'var(--portal-text-secondary, #a1a1aa)' }}
-				/>
+				<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4' style={{ color: 'var(--portal-text-secondary)' }} />
 				<input
 					type='text'
 					placeholder={t('invoices.searchPlaceholder')}
@@ -233,16 +226,16 @@ const InvoicesWidget = () => {
 					onChange={(e) => setSearchQuery(e.target.value)}
 					className='w-full ps-10 pe-4 py-2.5 text-sm rounded-lg outline-none focus:ring-1 transition-colors'
 					style={{
-						backgroundColor: 'var(--portal-surface, white)',
-						border: '1px solid var(--portal-border, #E9E9E9)',
-						color: 'var(--portal-text-primary, #09090b)',
+						backgroundColor: 'var(--portal-surface)',
+						border: '1px solid var(--portal-border)',
+						color: 'var(--portal-text-primary)',
 					}}
 				/>
 			</div>
 
 			<Card
 				className='rounded-xl overflow-hidden'
-				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+				style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
 				<InvoicesTable
 					invoices={filteredInvoices}
 					currencySymbol={currencySymbol}

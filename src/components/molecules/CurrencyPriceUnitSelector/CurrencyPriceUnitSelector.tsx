@@ -84,7 +84,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 	return (
 		<div className={cn('space-y-1', className)}>
 			{resolvedLabel && (
-				<label className={cn('block text-sm font-medium text-zinc break-words', disabled ? 'text-zinc-500' : 'text-zinc-950')}>
+				<label className={cn('block text-sm font-medium text-zinc break-words', disabled ? 'text-muted-foreground' : 'text-foreground')}>
 					{resolvedLabel}
 				</label>
 			)}

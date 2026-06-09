@@ -5,6 +5,7 @@ import { Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
+import { useThemeStore } from '@/store/useThemeStore';
 
 const CodeHighlighter = Highlight as unknown as FC<HighlightProps>;
 
@@ -17,11 +18,14 @@ interface Props {
 
 const CodePreview: FC<Props> = ({ code, language, className: styles, title }) => {
 	const { t } = useTranslation('common');
+	const isDark = useThemeStore((s) => s.theme) === 'dark';
+	const codeTheme = isDark ? themes.nightOwl : themes.nightOwlLight;
+
 	return (
 		<>
-			<div className={cn('bg-[#FAFAFA] border rounded-[6px]')} dir='ltr'>
+			<div className={cn('bg-muted border border-border rounded-[6px]')} dir='ltr'>
 				<div className='flex justify-between py-2 px-6 items-center w-full'>
-					<p className='font-semibold text-lg'>{title}</p>
+					<p className='font-semibold text-lg text-foreground'>{title}</p>
 					<Button
 						onClick={() => {
 							navigator.clipboard.writeText(code);
@@ -30,21 +34,11 @@ const CodePreview: FC<Props> = ({ code, language, className: styles, title }) =>
 						className='text-muted-foreground cursor-pointer size-10'
 						variant={'ghost'}
 						dir='ltr'>
-						<Copy className='text-[#52525B]' />
+						<Copy className='text-muted-foreground' />
 					</Button>
 				</div>
-				<div className='p-3 bg-[#F4F4F5]' dir='ltr'>
-					<CodeHighlighter
-						theme={{
-							...themes.nightOwlLight,
-							plain: {
-								...themes.nightOwlLight.plain,
-								color: '#18181B',
-								backgroundColor: '#F4F4F5',
-							},
-						}}
-						code={code}
-						language={language ?? 'javascript'}>
+				<div className='p-3 bg-muted' dir='ltr'>
+					<CodeHighlighter theme={codeTheme} code={code} language={language ?? 'javascript'}>
 						{({ className, style, tokens, getLineProps, getTokenProps }) => (
 							<pre
 								dir='ltr'

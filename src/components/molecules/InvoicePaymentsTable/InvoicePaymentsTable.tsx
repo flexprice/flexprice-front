@@ -162,7 +162,7 @@ const InvoicePaymentsTable: FC<Props> = ({ data }) => {
 				render: (payment) => (
 					<div className='flex items-center gap-2'>
 						{getPaymentMethodIcon(payment.payment_method_type)}
-						<span className='text-sm text-gray-700'>{getPaymentMethodLabel(payment.payment_method_type)}</span>
+						<span className='text-sm text-foreground'>{getPaymentMethodLabel(payment.payment_method_type)}</span>
 					</div>
 				),
 			},

@@ -120,7 +120,7 @@ const SubscriptionTaxAssociationTable: FC<Props> = ({ data, onChange, disabled }
 						disabled={disabled}
 					/>
 				</div>
-				<div className='rounded-[6px] border border-gray-300'>
+				<div className='rounded-[6px] border border-border'>
 					<FlexpriceTable data={data} columns={columns} showEmptyRow />
 				</div>
 			</div>

@@ -84,7 +84,7 @@ const InvoicePaymentStatusModal: FC<Props> = ({ isOpen, onOpenChange, invoice })
 
 	return (
 		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-			<div className='card bg-white max-w-lg'>
+			<div className='card bg-card max-w-lg'>
 				<FormHeader
 					title={t('invoices.details.updatePaymentStatus')}
 					variant='sub-header'

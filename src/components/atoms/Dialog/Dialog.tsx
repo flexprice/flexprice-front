@@ -63,7 +63,7 @@ const Dialog: FC<Props> = ({
 	return (
 		<ShadcnDialog open={isOpen} onOpenChange={onOpenChange}>
 			<DialogContent
-				className={cn('bg-white rounded-[10px] max-h-[80vh] overflow-y-auto', className)}
+				className={cn('bg-background rounded-[10px] max-h-[80vh] overflow-y-auto', className)}
 				showCloseButton={showCloseButton}
 				data-interactive={interactiveContent ? 'true' : undefined}
 				onClick={interactiveContent ? (e: React.MouseEvent) => e.stopPropagation() : undefined}>

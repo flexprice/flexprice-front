@@ -20,7 +20,8 @@
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
     "lint": "eslint src vite.config.ts vitest.config.ts .storybook",
-    "build:ui": "vite build --config vite.flexprice-ui.config.ts"
+    "build:ui": "vite build --config vite.flexprice-ui.config.ts",
+    "lint:theme": "node scripts/check-theme-tokens.mjs"
   },
   "dependencies": {
     "@csvbox/react": "^1.1.11",

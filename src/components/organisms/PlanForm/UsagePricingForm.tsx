@@ -563,7 +563,7 @@ const UsagePricingForm: FC<Props> = ({
 								setFlatFee(e);
 							}
 						}}
-						suffix={<span className='text-[#64748B]'>{`/ unit / ${formatBillingPeriodForPrice(billingPeriod)}`}</span>}
+						suffix={<span className='text-muted-foreground'>{`/ unit / ${formatBillingPeriodForPrice(billingPeriod)}`}</span>}
 					/>
 				</div>
 			)}
@@ -586,7 +586,7 @@ const UsagePricingForm: FC<Props> = ({
 							}}
 						/>
 						<div className='h-[50px] items-center flex gap-2'>
-							<p className='text-[#18181B] font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
+							<p className='text-foreground font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
 						</div>
 						<Input
 							value={packagedFee.unit}
@@ -670,7 +670,7 @@ const UsagePricingForm: FC<Props> = ({
 
 			<Spacer height={'16px'} />
 			<div className='flex justify-end'>
-				<Button onClick={handleCancel} variant='secondary' className='me-4 text-zinc-900' disabled={isSaving}>
+				<Button onClick={handleCancel} variant='secondary' className='me-4 text-foreground' disabled={isSaving}>
 					{price.internal_state === PriceInternalState.EDIT ? t('common:actions.delete') : t('common:actions.cancel')}
 				</Button>
 				<Button onClick={handleSubmit} variant='default' className='me-4 font-normal' isLoading={isSaving} disabled={isSaving}>

@@ -89,7 +89,7 @@ const MetricCardsWidget = ({ analyticsParams, config }: MetricCardsWidgetProps) 
 					<div
 						key={i}
 						className='rounded-md p-[25px] space-y-3'
-						style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E5E7EB)' }}>
+						style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
 						<Skeleton className='h-4 w-24' />
 						<Skeleton className='h-7 w-32' />
 					</div>
@@ -182,7 +182,7 @@ const PortalMetricWrapper = ({ hasTheme, children }: { hasTheme: boolean; childr
 			}}>
 			{/* Override MetricCard internals via CSS cascade */}
 			<style>{`
-				.portal-metric-inner .bg-white { background-color: transparent !important; }
+				.portal-metric-inner .bg-card { background-color: transparent !important; }
 				.portal-metric-inner .border { border-color: transparent !important; }
 				.portal-metric-inner p:first-child { color: var(--portal-text-secondary) !important; }
 				.portal-metric-inner p:last-child { color: var(--portal-text-primary) !important; }

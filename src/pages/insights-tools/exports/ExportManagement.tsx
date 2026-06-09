@@ -97,10 +97,10 @@ const ExportManagement = () => {
 									<div className='flex items-center gap-3'>
 										<div className={`w-3 h-3 rounded-full ${task.enabled ? 'bg-green-500' : 'bg-gray-400'}`} />
 										<div>
-											<p className='text-gray-900 font-medium'>
+											<p className='text-foreground font-medium'>
 												{t('insightsTools.exports.entityExportSuffix', { entity: formatEntityType(task.entity_type) })}
 											</p>
-											<p className='text-xs text-gray-500'>
+											<p className='text-xs text-muted-foreground'>
 												{task.interval} • {task.job_config.bucket} • {task.job_config.region}
 											</p>
 										</div>
@@ -126,15 +126,15 @@ const ExportManagement = () => {
 				</div>
 			) : (
 				<div className='card text-center !py-12'>
-					<div className='text-gray-500 mb-4'>
-						<h3 className='text-lg font-medium text-gray-900 mb-2'>{t('insightsTools.exports.noExportTasks')}</h3>
-						<p className='text-gray-500 mb-4 max-w-[500px] mx-auto'>{t('insightsTools.exports.noExportTasksHint')}</p>
+					<div className='text-muted-foreground mb-4'>
+						<h3 className='text-lg font-medium text-foreground mb-2'>{t('insightsTools.exports.noExportTasks')}</h3>
+						<p className='text-muted-foreground mb-4 max-w-[500px] mx-auto'>{t('insightsTools.exports.noExportTasksHint')}</p>
 						<Button
 							variant='outline'
 							onClick={() => {
 								setIsDrawerOpen(true);
 							}}
-							className='!p-5 !bg-[#fbfbfb] !border-[#CFCFCF] flex items-center gap-2 mx-auto'>
+							className='!p-5 !bg-card !border-border flex items-center gap-2 mx-auto'>
 							<Plus className='w-4 h-4' />
 							{t('insightsTools.exports.addExportTask')}
 						</Button>

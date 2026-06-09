@@ -108,15 +108,15 @@ export const SubscriptionCalculatorContent: React.FC<SubscriptionCalculatorConte
 					contentClassName='z-[200]'
 				/>
 				{amountNum != null && amountNum > 0 && (
-					<div className='rounded-md border border-gray-200 bg-gray-50/80 p-4 space-y-2'>
+					<div className='rounded-md border border-border bg-muted/80 p-4 space-y-2'>
 						{displayValue != null && (
 							<p className='text-sm'>
-								<span className='font-medium text-gray-900'>{t('entityChargesPage.subscriptionCalculator.displayAmount')}</span>{' '}
-								<span className='font-semibold text-gray-900'>
+								<span className='font-medium text-foreground'>{t('entityChargesPage.subscriptionCalculator.displayAmount')}</span>{' '}
+								<span className='font-semibold text-foreground'>
 									{currencySymbol}
 									{displayValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 								</span>
-								<span className='text-gray-600'>{planPeriodSuffix}</span>
+								<span className='text-muted-foreground'>{planPeriodSuffix}</span>
 							</p>
 						)}
 					</div>

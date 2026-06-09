@@ -57,13 +57,13 @@ const WalletAlertSettingsSection = () => {
 	const alertsTitle = t('alerts.walletAlerts.title');
 
 	return (
-		<Card variant='default' noPadding className='rounded-xl border-gray-200 bg-white shadow-sm'>
+		<Card variant='default' noPadding className='rounded-xl border-border bg-card shadow-sm'>
 			<div className='px-6 pt-6'>
 				<SettingsCardHeader
 					title={alertsTitle}
 					infoDescription={t('alerts.walletAlerts.description')}
 					infoAriaLabel={t('info.ariaLabel', { field: alertsTitle })}
-					titleClassName='text-lg font-medium text-zinc-800'
+					titleClassName='text-lg font-medium text-foreground'
 					className='mb-2'
 					cta={
 						<Switch

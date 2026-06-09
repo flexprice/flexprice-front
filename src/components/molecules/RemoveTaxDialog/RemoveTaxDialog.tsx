@@ -50,13 +50,13 @@ const RemoveTaxDialog: FC<Props> = ({ subscriptionId, association, open, onOpenC
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className='w-full max-w-md bg-white'>
+			<DialogContent className='w-full max-w-md bg-card'>
 				<DialogHeader>
 					<DialogTitle>{t('subscriptions.removeTaxDialog.title')}</DialogTitle>
 				</DialogHeader>
 
 				<div className='py-2'>
-					<p className='text-sm text-zinc-700'>
+					<p className='text-sm text-foreground'>
 						<Trans
 							ns='billing'
 							i18nKey='subscriptions.removeTaxDialog.confirmMessage'

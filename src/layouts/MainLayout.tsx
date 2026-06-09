@@ -41,13 +41,13 @@ const MainLayout: React.FC = () => {
 	}, [user]);
 
 	return (
-		<SidebarProvider className='flex h-screen bg-gray-100 relative'>
+		<SidebarProvider className='flex h-screen bg-muted relative'>
 			<AppPrefetcher />
 			<CommandPalette />
 			{/* Sidebar */}
 			<Sidebar />
 			{/* Right Layout */}
-			<SidebarInset className='flex flex-col flex-1 bg-white h-screen relative'>
+			<SidebarInset className='flex flex-col flex-1 bg-background h-screen relative'>
 				<FundingStrip />
 				<BreadCrumbs />
 				<RestrictedEnvBanner />

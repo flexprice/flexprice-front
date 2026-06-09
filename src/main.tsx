@@ -10,6 +10,7 @@ import { initBranding } from './config/branding.ts';
 import { initI18n } from './i18n/index.ts';
 import { DirectionProvider } from '@radix-ui/react-direction';
 import { useLocaleStore } from './store/useLocaleStore.ts';
+import { initTheme } from './store/useThemeStore.ts';
 import React from 'react';
 
 // svix's browser bundle references the bare `process` identifier (not `typeof process`) inside
@@ -20,6 +21,7 @@ if (typeof process === 'undefined') {
 }
 
 registerWebMCPTools();
+initTheme();
 
 // Reads direction from Zustand store — subscribes so Radix primitives re-render on locale change
 function DirectionWrapper({ children }: { children: React.ReactNode }) {

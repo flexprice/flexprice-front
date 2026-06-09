@@ -266,11 +266,11 @@ const CustomerUsageEventsTab = () => {
 	if (customerLoading) {
 		return (
 			<div className='space-y-6'>
-				<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
+				<Card className='bg-card border border-border rounded-xl p-6'>
 					<div className='animate-pulse space-y-4'>
-						<div className='h-10 bg-zinc-100 rounded' />
-						<div className='h-12 bg-zinc-100 rounded' />
-						<div className='h-12 bg-zinc-100 rounded' />
+						<div className='h-10 bg-muted rounded' />
+						<div className='h-12 bg-muted rounded' />
+						<div className='h-12 bg-muted rounded' />
 					</div>
 				</Card>
 			</div>
@@ -279,7 +279,7 @@ const CustomerUsageEventsTab = () => {
 
 	if (!customer?.external_id) {
 		return (
-			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
+			<Card className='bg-card border border-border rounded-xl p-6'>
 				<EmptyState title={t('tabPanels.usageEvents.loadErrorTitle')} description={t('tabPanels.usageEvents.loadErrorDescription')} />
 			</Card>
 		);
@@ -287,7 +287,7 @@ const CustomerUsageEventsTab = () => {
 
 	return (
 		<>
-			<div className='bg-white rounded-md flex items-start gap-4'>
+			<div className='bg-card rounded-md flex items-start gap-4'>
 				<QueryBuilder
 					filterOptions={filterOptions}
 					filters={filters}
@@ -300,7 +300,7 @@ const CustomerUsageEventsTab = () => {
 					<RefreshCw />
 				</Button>
 			</div>
-			<div className='bg-white rounded-md '>
+			<div className='bg-card rounded-md '>
 				<EventsTable data={events} />
 				<div ref={lastElementRef} />
 				{loading && (
@@ -311,7 +311,7 @@ const CustomerUsageEventsTab = () => {
 					</div>
 				)}
 				{!hasMore && events.length === 0 && (
-					<p className=' text-[#64748B] text-xs font-normal font-sans mt-4'>{t('tabPanels.usageEvents.noEventsFound')}</p>
+					<p className=' text-muted-foreground text-xs font-normal font-sans mt-4'>{t('tabPanels.usageEvents.noEventsFound')}</p>
 				)}
 			</div>
 		</>

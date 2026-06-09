@@ -63,7 +63,7 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 					? 'text-amber-600'
 					: status === 'error'
 						? 'text-red-600'
-						: 'text-slate-500';
+						: 'text-muted-foreground';
 
 	const formatTimestamp = (ts?: string) => {
 		if (!ts) return null;
@@ -93,11 +93,11 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 	return (
 		<div className='grid grid-cols-[24px_1fr] gap-x-4'>
 			<div className='relative z-10 flex justify-center pt-0.5'>
-				<div className='bg-white rounded-full p-0.5'>{renderStepIcon()}</div>
+				<div className='bg-card rounded-full p-0.5'>{renderStepIcon()}</div>
 			</div>
 			<div className='min-w-0'>
 				<p className='text-sm font-medium text-foreground'>{title}</p>
-				{formattedTimestamp && <p className='text-xs text-slate-500 mt-1'>{formattedTimestamp}</p>}
+				{formattedTimestamp && <p className='text-xs text-muted-foreground mt-1'>{formattedTimestamp}</p>}
 				{statusText && <p className={cn('text-xs mt-1', statusColorClass)}>{statusText}</p>}
 			</div>
 		</div>

@@ -572,14 +572,14 @@ const SidebarMenuSubButton = React.forwardRef<
 				// Base styles with proper vertical centering and consistent sizing
 				'flex min-w-0 -translate-x-px items-center justify-start gap-2 overflow-hidden rounded-[6px] ms-2 px-3 text-[14px] font-normal outline-none transition-colors duration-200',
 				// Interactive states with consistent hover behavior using the same colors as reference UI
-				'hover:bg-[#F4F4F5] hover:text-[#18181B]',
+				'hover:bg-muted hover:text-foreground',
 				'focus-visible:ring-2 focus-visible:ring-blue-600',
-				'active:bg-[#F4F4F5] active:text-[#18181B]',
+				'active:bg-muted active:text-foreground',
 				// Disabled states
 				'disabled:pointer-events-none disabled:opacity-50',
 				'aria-disabled:pointer-events-none aria-disabled:opacity-50',
 				// Active state matching the reference UI
-				'data-[active=true]:bg-[#EDEDED] data-[active=true]:text-[#18181B]',
+				'data-[active=true]:bg-accent data-[active=true]:text-foreground',
 				// Content styling
 				'[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
 				// Size variants with proper heights
@@ -590,7 +590,7 @@ const SidebarMenuSubButton = React.forwardRef<
 				// Cursor pointer for better UX
 				'cursor-pointer',
 				// Ensure proper text color
-				'text-[#18181B]',
+				'text-foreground',
 				className,
 			)}
 			{...props}

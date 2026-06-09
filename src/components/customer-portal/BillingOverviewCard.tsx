@@ -31,15 +31,15 @@ const BillingOverviewCard = ({ invoices, currency = 'USD' }: BillingOverviewCard
 	const currencySymbol = getCurrencySymbol(currency);
 
 	return (
-		<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
-			<h3 className='text-base font-medium text-zinc-950 mb-6'>{t('billingOverview.title')}</h3>
+		<Card className='bg-card border border-border rounded-xl p-6'>
+			<h3 className='text-base font-medium text-foreground mb-6'>{t('billingOverview.title')}</h3>
 			<div className='grid grid-cols-2 gap-6'>
 				{/* Total Invoiced */}
 				<div>
 					<div className='flex items-center gap-1.5 mb-2'>
-						<span className='text-sm text-zinc-500'>{t('billingOverview.totalInvoiced')}</span>
+						<span className='text-sm text-muted-foreground'>{t('billingOverview.totalInvoiced')}</span>
 					</div>
-					<p className='text-2xl font-semibold text-zinc-950'>
+					<p className='text-2xl font-semibold text-foreground'>
 						{currencySymbol}
 						{formatAmount(String(totalInvoiced))}
 					</p>
@@ -48,11 +48,11 @@ const BillingOverviewCard = ({ invoices, currency = 'USD' }: BillingOverviewCard
 				{/* Total Overdue */}
 				<div>
 					<div className='flex items-center gap-1.5 mb-2'>
-						<span className='text-sm text-zinc-500'>{t('billingOverview.totalOverdue')}</span>
+						<span className='text-sm text-muted-foreground'>{t('billingOverview.totalOverdue')}</span>
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-3.5 w-3.5 text-zinc-400' />
+									<Info className='h-3.5 w-3.5 text-muted-foreground' />
 								</TooltipTrigger>
 								<TooltipContent>
 									<p>{t('billingOverview.overdueTooltip')}</p>
@@ -60,7 +60,7 @@ const BillingOverviewCard = ({ invoices, currency = 'USD' }: BillingOverviewCard
 							</Tooltip>
 						</TooltipProvider>
 					</div>
-					<p className={`text-2xl font-semibold ${totalOverdue > 0 ? 'text-red-600' : 'text-zinc-950'}`}>
+					<p className={`text-2xl font-semibold ${totalOverdue > 0 ? 'text-red-600' : 'text-foreground'}`}>
 						{currencySymbol}
 						{formatAmount(String(totalOverdue))}
 					</p>

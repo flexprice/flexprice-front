@@ -14,14 +14,14 @@ interface TimePeriodSelectorProps {
 const TimePeriodSelector = ({ selectedPeriod, onPeriodChange }: TimePeriodSelectorProps) => {
 	const { t } = useTranslation('customer-portal');
 	return (
-		<div className='flex items-center gap-1 bg-zinc-50 rounded-lg p-1'>
+		<div className='flex items-center gap-1 bg-muted rounded-lg p-1'>
 			{TIME_PERIODS.map((period) => (
 				<button
 					key={period}
 					onClick={() => onPeriodChange(period)}
 					className={cn(
 						'px-3 py-1.5 text-sm font-medium rounded-md transition-colors',
-						selectedPeriod === period ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700',
+						selectedPeriod === period ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground',
 					)}>
 					{t(`timePeriod.${period}`)}
 				</button>

@@ -300,7 +300,7 @@ const PropertyFilterPopover: React.FC<Props> = ({
 			</PopoverTrigger>
 			<PopoverContent
 				align='start'
-				className={cn('w-screen border-border/70 shadow-lg bg-[#fbfbfb]', POPOVER_PADDING)}
+				className={cn('w-screen border-border/70 shadow-lg bg-card', POPOVER_PADDING)}
 				style={{ maxWidth: '600px', minWidth: MIN_POPOVER_WIDTH }}>
 				<div className='flex flex-col gap-1.5'>
 					{value.length === 0 ? (

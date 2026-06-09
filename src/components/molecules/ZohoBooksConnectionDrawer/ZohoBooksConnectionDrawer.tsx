@@ -253,13 +253,13 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 						<Trans
 							ns='settings'
 							i18nKey='connection.zohoBooks.webhookBodyHtml'
-							components={{ header: <code className='text-xs bg-white/80 px-1 rounded' /> }}
+							components={{ header: <code className='text-xs bg-card/80 px-1 rounded' /> }}
 						/>
 					</p>
 					<div className='mb-4'>
 						<label className='block text-sm font-medium text-blue-800 mb-2'>{t('connection.webhook.url')}</label>
-						<div className='flex items-center gap-2 p-2 bg-white border border-blue-200 rounded-md'>
-							<code className='flex-1 text-xs text-gray-800 font-mono break-all'>
+						<div className='flex items-center gap-2 p-2 bg-card border border-blue-200 rounded-md'>
+							<code className='flex-1 text-xs text-foreground font-mono break-all'>
 								{webhookUrl || t('connection.zohoBooks.selectTenantForUrl')}
 							</code>
 							<Button
@@ -289,8 +289,8 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 				<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
 					<h3 className='text-sm font-medium text-blue-800 mb-2'>{t('connection.zohoBooks.oauthRedirectTitle')}</h3>
 					<p className='text-xs text-blue-700 mb-2'>{t('connection.zohoBooks.oauthRedirectBody')}</p>
-					<div className='flex items-center gap-2 p-2 bg-white border border-blue-200 rounded-md mt-2'>
-						<code className='flex-1 text-xs text-gray-800 font-mono break-all'>{redirectUri}</code>
+					<div className='flex items-center gap-2 p-2 bg-card border border-blue-200 rounded-md mt-2'>
+						<code className='flex-1 text-xs text-foreground font-mono break-all'>{redirectUri}</code>
 						<Button size='xs' variant='outline' onClick={handleCopyRedirectUri} className='flex items-center gap-1'>
 							{redirectUriCopied ? <CheckCircle className='w-3 h-3' /> : <Copy className='w-3 h-3' />}
 							{redirectUriCopied ? tc('actions.copied') : tc('actions.copy')}
@@ -299,8 +299,8 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 				</div>
 
 				{connection && (
-					<div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
-						<p className='text-xs text-gray-500'>{t('connection.zohoBooks.credentialsHidden')}</p>
+					<div className='p-4 bg-muted border border-border rounded-lg'>
+						<p className='text-xs text-muted-foreground'>{t('connection.zohoBooks.credentialsHidden')}</p>
 					</div>
 				)}
 

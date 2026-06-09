@@ -204,10 +204,10 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 				title: t('subscriptionAddon.columnCommitment'),
 				render: (row) => {
 					if (row.price.type !== PRICE_TYPE.USAGE) {
-						return <span className='text-sm text-gray-400'>{t('subscriptionAddon.notAvailable')}</span>;
+						return <span className='text-sm text-muted-foreground'>{t('subscriptionAddon.notAvailable')}</span>;
 					}
 					const config = commitmentMap[row.price.id];
-					return config ? <span className='text-sm text-gray-600'>{formatCommitmentSummary(config)}</span> : <span>—</span>;
+					return config ? <span className='text-sm text-muted-foreground'>{formatCommitmentSummary(config)}</span> : <span>—</span>;
 				},
 			},
 			{
@@ -274,8 +274,8 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 					<div className='space-y-2'>
 						<div className='flex items-center justify-between'>
 							<div>
-								<p className='text-sm font-medium text-gray-700'>{t('subscriptionAddon.addonChargesHeading')}</p>
-								<p className='text-xs text-gray-500'>
+								<p className='text-sm font-medium text-foreground'>{t('subscriptionAddon.addonChargesHeading')}</p>
+								<p className='text-xs text-muted-foreground'>
 									{t('subscriptionAddon.filteredByPeriodAndCurrency', {
 										period: billingPeriod ? toSentenceCase(billingPeriod.replace('_', ' ')) : t('subscriptionAddon.billingPeriodFallback'),
 										currency: currency ? currency.toUpperCase() : t('subscriptionAddon.currencyFallback'),
@@ -284,15 +284,15 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 							</div>
 						</div>
 						{selectedAddonPrices.length > 0 ? (
-							<div className='rounded-xl border border-gray-200'>
+							<div className='rounded-xl border border-border'>
 								<FlexpriceTable columns={addonChargeColumns} data={selectedAddonPrices.map((p) => ({ price: p }))} />
 							</div>
 						) : (
-							<div className='rounded-xl border border-gray-200 p-4'>
-								<p className='text-sm text-gray-600'>{t('subscriptionAddon.noChargesForPeriod')}</p>
+							<div className='rounded-xl border border-border p-4'>
+								<p className='text-sm text-muted-foreground'>{t('subscriptionAddon.noChargesForPeriod')}</p>
 							</div>
 						)}
-						<p className='text-xs text-gray-500'>{t('subscriptionAddon.commitmentUsageOnlyHint')}</p>
+						<p className='text-xs text-muted-foreground'>{t('subscriptionAddon.commitmentUsageOnlyHint')}</p>
 					</div>
 				)}
 

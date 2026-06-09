@@ -95,7 +95,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 		}
 	}, [data]);
 
-	const customerInfoClass = 'text-sm text-[#71717A] mb-[2px]';
+	const customerInfoClass = 'text-sm text-muted-foreground mb-[2px]';
 	const invoiceref = useRef<HTMLDivElement>(null);
 
 	const customerAddress =
@@ -173,7 +173,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 						}
 					}}
 				/>
-				<div ref={invoiceref} className=' rounded-xl border border-gray-300 p-6'>
+				<div ref={invoiceref} className=' rounded-xl border border-border p-6'>
 					<div className='p-4'>
 						<div className='w-full flex justify-between items-center'>
 							<p className={cn(getTypographyClass('section-title'), 'text-xl mb-0')}>{t('createInvoice.invoiceDetails')}</p>
@@ -186,13 +186,13 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 							</div>
 						</div>
 						<Spacer className='!my-10' />
-						<div className='w-full grid grid-cols-4 gap-4 text-[#09090B] text-sm font-medium'>
+						<div className='w-full grid grid-cols-4 gap-4 text-foreground text-sm font-medium'>
 							<p>{t('creditNotes.detailPage.invoiceNumber')}</p>
 							<p>{t('invoices.detailLabels.dateOfIssue')}</p>
 							<p>{t('invoices.detailLabels.dateDue')}</p>
 							<p>{t('invoices.detailLabels.paymentStatus')}</p>
 						</div>
-						<div className='w-full grid grid-cols-4 gap-4 text-[#71717A] text-sm'>
+						<div className='w-full grid grid-cols-4 gap-4 text-muted-foreground text-sm'>
 							<p>{data?.invoice_number}</p>
 							<p>{formatDate(data?.issue_date ?? data?.created_at ?? '')}</p>
 							<p>{data?.due_date ? formatDate(data?.due_date ?? '') : na}</p>
@@ -203,7 +203,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 						<Divider />
 					</div>
 
-					<div className={cn('grid p-4 border-b border-gray-200', hasSubscriptionCustomer ? 'grid-cols-3' : 'grid-cols-2')}>
+					<div className={cn('grid p-4 border-b border-border', hasSubscriptionCustomer ? 'grid-cols-3' : 'grid-cols-2')}>
 						<div className='text-left'>
 							<FormHeader className='!mb-2' title={user?.tenant.name} variant='sub-header' titleClassName='font-semibold' />
 							<p className={customerInfoClass}>{user?.tenant.name}</p>
@@ -295,18 +295,18 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 					<div className='p-4'>
 						<table className='w-full table-fixed'>
 							<thead>
-								<tr className='border-b border-gray-200'>
-									<th className='text-left py-3 px-4 text-sm font-large text-[#09090B] w-1/3'>{t('common:form.key')}</th>
-									<th className='text-left py-3 px-4 text-sm font-large text-[#09090B] w-2/3'>{t('common:form.value')}</th>
+								<tr className='border-b border-border'>
+									<th className='text-left py-3 px-4 text-sm font-large text-foreground w-1/3'>{t('common:form.key')}</th>
+									<th className='text-left py-3 px-4 text-sm font-large text-foreground w-2/3'>{t('common:form.value')}</th>
 								</tr>
 							</thead>
 							<tbody>
 								{Object.entries(metadata).map(([key, value], index) => (
-									<tr key={index} className='border-b border-gray-100 last:border-b-0'>
-										<td className='py-3 px-4 text-sm font-medium text-[#09090B] break-words align-top' title={key}>
+									<tr key={index} className='border-b border-border last:border-b-0'>
+										<td className='py-3 px-4 text-sm font-medium text-foreground break-words align-top' title={key}>
 											{key}
 										</td>
-										<td className='py-3 px-4 text-sm text-[#71717A] break-words align-top' title={value}>
+										<td className='py-3 px-4 text-sm text-muted-foreground break-words align-top' title={value}>
 											{value || na}
 										</td>
 									</tr>

@@ -365,7 +365,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 			<div className='space-y-4 mt-4'>
 				{/* Entity Type */}
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>{t('exportDrawer.entityType')}</label>
+					<label className='block text-sm font-medium text-foreground mb-2'>{t('exportDrawer.entityType')}</label>
 					<Select
 						value={formData.entity_type}
 						onChange={(value) => handleChange('entity_type', value as SCHEDULED_ENTITY_TYPE)}
@@ -378,12 +378,12 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 							{ value: SCHEDULED_ENTITY_TYPE.USAGE_ANALYTICS, label: t('exportDrawer.entityTypes.usageAnalytics') },
 						]}
 					/>
-					<p className='text-xs text-gray-500 mt-1'>{t('exportDrawer.entityTypeHint')}</p>
+					<p className='text-xs text-muted-foreground mt-1'>{t('exportDrawer.entityTypeHint')}</p>
 				</div>
 
 				{/* Interval */}
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>{t('exportDrawer.interval.label')}</label>
+					<label className='block text-sm font-medium text-foreground mb-2'>{t('exportDrawer.interval.label')}</label>
 					<Select
 						value={formData.interval}
 						onChange={(value) => handleChange('interval', value as SCHEDULED_TASK_INTERVAL)}
@@ -393,7 +393,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 							{ value: SCHEDULED_TASK_INTERVAL.DAILY, label: t('exportDrawer.interval.daily') },
 						]}
 					/>
-					<p className='text-xs text-gray-500 mt-1'>{t('exportDrawer.interval.hint')}</p>
+					<p className='text-xs text-muted-foreground mt-1'>{t('exportDrawer.interval.hint')}</p>
 				</div>
 
 				{/* S3 Configuration - Only show for customer-owned S3 */}
@@ -433,7 +433,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 
 				{/* Compression */}
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>{t('exportDrawer.compression.label')}</label>
+					<label className='block text-sm font-medium text-foreground mb-2'>{t('exportDrawer.compression.label')}</label>
 					<Select
 						value={formData.compression}
 						onChange={(value) => handleChange('compression', value)}
@@ -442,23 +442,23 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 							{ value: 'gzip', label: t('exportDrawer.compression.gzip') },
 						]}
 					/>
-					<p className='text-xs text-gray-500 mt-1'>{t('exportDrawer.compression.hint')}</p>
+					<p className='text-xs text-muted-foreground mt-1'>{t('exportDrawer.compression.hint')}</p>
 				</div>
 
 				{/* Encryption */}
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>{t('exportDrawer.encryption.label')}</label>
+					<label className='block text-sm font-medium text-foreground mb-2'>{t('exportDrawer.encryption.label')}</label>
 					<Select
 						value={formData.encryption}
 						onChange={(value) => handleChange('encryption', value)}
 						options={[{ value: 'AES256', label: t('exportDrawer.encryption.aes256') }]}
 					/>
-					<p className='text-xs text-gray-500 mt-1'>{t('exportDrawer.encryption.hint')}</p>
+					<p className='text-xs text-muted-foreground mt-1'>{t('exportDrawer.encryption.hint')}</p>
 				</div>
 
 				{/* Additional metadata fields (credit usage & usage analytics exports) */}
 				{scheduledEntityTypeSupportsExportMetadataFields(formData.entity_type) && (
-					<div className='rounded-md border border-gray-200 bg-gray-50'>
+					<div className='rounded-md border border-border bg-muted'>
 						<button
 							type='button'
 							onClick={() => {
@@ -468,14 +468,14 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 									addMetadataField();
 								}
 							}}
-							className='w-full flex items-center px-3 py-2.5 text-start hover:bg-gray-100 rounded-md transition-colors gap-2'>
-							<div className='text-gray-500 shrink-0'>
+							className='w-full flex items-center px-3 py-2.5 text-start hover:bg-muted rounded-md transition-colors gap-2'>
+							<div className='text-muted-foreground shrink-0'>
 								{isMetadataExpanded ? <ChevronDown className='h-4 w-4' /> : <ChevronRight className='h-4 w-4' />}
 							</div>
 							<div className='min-w-0'>
-								<div className='text-sm font-medium text-gray-900 inline-flex items-center gap-1.5'>
+								<div className='text-sm font-medium text-foreground inline-flex items-center gap-1.5'>
 									{t('exportDrawer.metadata.title')}
-									<span className='text-xs font-normal text-gray-500'>{t('exportDrawer.metadata.optional')}</span>
+									<span className='text-xs font-normal text-muted-foreground'>{t('exportDrawer.metadata.optional')}</span>
 									<Tooltip
 										delayDuration={0}
 										side='right'
@@ -485,7 +485,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 										</span>
 									</Tooltip>
 								</div>
-								<div className='text-xs text-gray-500'>
+								<div className='text-xs text-muted-foreground'>
 									{formData.export_metadata_fields.length > 0
 										? formData.export_metadata_fields.length > 1
 											? t('exportDrawer.metadata.summaryPlural', { count: formData.export_metadata_fields.length })
@@ -499,8 +499,8 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 							<div className='px-3 pb-3 space-y-1.5'>
 								{formData.export_metadata_fields.length > 0 && (
 									<div className='grid grid-cols-[120px_1fr_32px] gap-x-2'>
-										<span className='text-xs font-medium text-gray-500'>{t('exportDrawer.metadata.entityTypeCol')}</span>
-										<span className='text-xs font-medium text-gray-500'>{t('exportDrawer.metadata.fieldKeyCol')}</span>
+										<span className='text-xs font-medium text-muted-foreground'>{t('exportDrawer.metadata.entityTypeCol')}</span>
+										<span className='text-xs font-medium text-muted-foreground'>{t('exportDrawer.metadata.fieldKeyCol')}</span>
 										<span />
 									</div>
 								)}
@@ -527,7 +527,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 												<button
 													type='button'
 													onClick={() => removeMetadataField(index)}
-													className='self-center p-1 text-gray-400 hover:text-red-500 transition-colors rounded'>
+													className='self-center p-1 text-muted-foreground hover:text-red-500 transition-colors rounded'>
 													<Trash2 className='h-4 w-4' />
 												</button>
 											</div>
@@ -544,7 +544,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 													<button
 														type='button'
 														onClick={() => toggleColumnName(index)}
-														className='text-xs text-gray-400 hover:text-blue-600 transition-colors'>
+														className='text-xs text-muted-foreground hover:text-blue-600 transition-colors'>
 														{t('exportDrawer.metadata.setColumnName')}
 													</button>
 												</div>
@@ -593,9 +593,9 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 						id='enabled'
 						checked={formData.enabled}
 						onChange={(e) => handleChange('enabled', e.target.checked)}
-						className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
+						className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-border rounded'
 					/>
-					<label htmlFor='enabled' className='text-sm font-medium text-gray-700'>
+					<label htmlFor='enabled' className='text-sm font-medium text-foreground'>
 						{t('exportDrawer.enabled')}
 					</label>
 				</div>

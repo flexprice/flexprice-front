@@ -207,16 +207,16 @@ const TabsConnectionDrawer: FC<TabsConnectionDrawerProps> = ({ isOpen, onOpenCha
 				)}
 
 				{/* Sync Configuration Section */}
-				<div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
-					<h3 className='text-sm font-medium text-gray-800 mb-3'>{t('connection.sync.title')}</h3>
-					<p className='text-xs text-gray-600 mb-4'>{t('connection.sync.description', { partner: TABS_PROVIDER })}</p>
+				<div className='p-4 bg-muted border border-border rounded-lg'>
+					<h3 className='text-sm font-medium text-foreground mb-3'>{t('connection.sync.title')}</h3>
+					<p className='text-xs text-muted-foreground mb-4'>{t('connection.sync.description', { partner: TABS_PROVIDER })}</p>
 
 					<div className='space-y-4'>
 						{/* Invoices */}
-						<div className='flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg'>
+						<div className='flex items-center justify-between p-3 bg-card border border-border rounded-lg'>
 							<div>
-								<label className='text-sm font-medium text-gray-700'>{t('connection.labels.invoices')}</label>
-								<p className='text-xs text-gray-500'>{t('connection.sync.pushTo', { partner: TABS_PROVIDER })}</p>
+								<label className='text-sm font-medium text-foreground'>{t('connection.labels.invoices')}</label>
+								<p className='text-xs text-muted-foreground'>{t('connection.sync.pushTo', { partner: TABS_PROVIDER })}</p>
 							</div>
 							<Switch checked={formData.sync_config.invoice} onCheckedChange={handleSyncConfigChange} />
 						</div>

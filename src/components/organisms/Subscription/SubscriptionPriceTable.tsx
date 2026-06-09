@@ -430,7 +430,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 				<FormHeader title={t('organisms.subscriptionPriceTable.charges')} variant='sub-header' />
 				{onAddCharge && <AddButton onClick={onAddCharge} disabled={disabled} className='w-fit'></AddButton>}
 			</div>
-			<div className='rounded-[6px] border border-gray-300'>
+			<div className='rounded-[6px] border border-border'>
 				<div style={{ overflow: 'hidden' }}>
 					<FlexpriceTable columns={chargesTableColumns} data={displayedData} />
 				</div>
@@ -439,7 +439,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 				<div className='flex justify-center mt-3'>
 					<button
 						onClick={() => setShowAllRows((prev) => !prev)}
-						className='flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors py-2 px-3 rounded-[6px] hover:bg-gray-50'>
+						className='flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors py-2 px-3 rounded-[6px] hover:bg-muted'>
 						{showAllRows ? (
 							<>
 								<span>{t('organisms.subscriptionPriceTable.showLess')}</span>

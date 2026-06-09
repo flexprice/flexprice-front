@@ -94,8 +94,8 @@ const PolicyBlock: FC<{ label: string; info: string; infoAriaLabel: string; json
 	const clipboardText = useMemo(() => JSON.stringify(copyJson ?? json, null, 2), [copyJson, json]);
 
 	return (
-		<Collapsible open={open} onOpenChange={setOpen} className='rounded-lg border border-gray-200 overflow-hidden'>
-			<div className='flex items-center justify-between bg-gray-50 px-4 py-2'>
+		<Collapsible open={open} onOpenChange={setOpen} className='rounded-lg border border-border overflow-hidden'>
+			<div className='flex items-center justify-between bg-muted px-4 py-2'>
 				<div className='flex items-center gap-1'>
 					<CollapsibleTrigger asChild>
 						<button type='button' className='flex items-center gap-2 text-sm font-medium text-foreground'>
@@ -145,7 +145,7 @@ const VariableCopyRow: FC<{ name: string; value: string; copyToast: string; info
 					<p className='text-xs font-medium text-foreground font-fira-code'>{name}</p>
 					{info && <InfoIcon description={info} ariaLabel={infoAriaLabel ?? name} />}
 				</div>
-				<p className='text-sm tracking-widest text-gray-400 select-none' aria-hidden>
+				<p className='text-sm tracking-widest text-muted-foreground select-none' aria-hidden>
 					{MASKED_VALUE}
 				</p>
 			</div>
@@ -305,7 +305,7 @@ const AwsMarketplaceConnectionDrawer: FC<AwsMarketplaceConnectionDrawerProps> = 
 						<div className='space-y-3'>
 							<div>
 								<p className='text-sm font-medium text-foreground'>{t('connection.awsMarketplace.step1Title')}</p>
-								<p className='text-xs text-gray-500 mt-1'>{t('connection.awsMarketplace.step1Hint')}</p>
+								<p className='text-xs text-muted-foreground mt-1'>{t('connection.awsMarketplace.step1Hint')}</p>
 							</div>
 
 							<PolicyBlock
@@ -328,8 +328,8 @@ const AwsMarketplaceConnectionDrawer: FC<AwsMarketplaceConnectionDrawerProps> = 
 							{/* Variables — copy the real values without revealing them on screen */}
 							<div>
 								<p className='text-sm font-medium text-foreground'>{t('connection.awsMarketplace.variablesTitle')}</p>
-								<p className='text-xs text-gray-500 mt-1 mb-2'>{t('connection.awsMarketplace.variablesHint')}</p>
-								<div className='rounded-lg border border-gray-200 divide-y divide-gray-200'>
+								<p className='text-xs text-muted-foreground mt-1 mb-2'>{t('connection.awsMarketplace.variablesHint')}</p>
+								<div className='rounded-lg border border-border divide-y divide-border'>
 									<VariableCopyRow
 										name='FLEXPRICE_AWS_ACCOUNT_ID'
 										value={flexpriceAwsAccountId}

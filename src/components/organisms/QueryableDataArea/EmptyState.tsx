@@ -22,15 +22,15 @@ const EmptyState = ({ config }: EmptyStateProps) => {
 	// Default empty state
 	return (
 		<div className='space-y-6'>
-			<div className='bg-[#fafafa] border border-[#E9E9E9] rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto'>
-				{config.heading && <div className='font-medium text-[20px] leading-normal text-gray-700 mb-4 text-center'>{config.heading}</div>}
+			<div className='bg-card border border-border rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto shadow-sm'>
+				{config.heading && <div className='font-medium text-[20px] leading-normal text-foreground mb-4 text-center'>{config.heading}</div>}
 				{config.description && (
-					<div className='font-normal bg-[#F9F9F9] text-[16px] leading-normal text-gray-400 mb-8 text-center max-w-[350px]'>
+					<div className='font-normal bg-muted text-[16px] leading-normal text-muted-foreground mb-8 text-center max-w-[350px]'>
 						{config.description}
 					</div>
 				)}
 				{config.buttonAction && config.buttonLabel && (
-					<Button variant='outline' onClick={config.buttonAction} className='!p-5 !bg-[#fbfbfb] !border-[#CFCFCF]'>
+					<Button variant='outline' onClick={config.buttonAction} className='!p-5 !bg-card !border-border'>
 						{config.buttonLabel}
 					</Button>
 				)}

@@ -81,9 +81,9 @@ const UsageAnalyticsTab = () => {
 	return (
 		<div className='space-y-6'>
 			{/* Usage Chart */}
-			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
+			<Card className='bg-card border border-border rounded-xl p-6'>
 				<div className='flex items-center justify-between mb-4'>
-					<h3 className='text-base font-medium text-zinc-950'>{t('usage.title')}</h3>
+					<h3 className='text-base font-medium text-foreground'>{t('usage.title')}</h3>
 					<TimePeriodSelector selectedPeriod={selectedPeriod} onPeriodChange={setSelectedPeriod} />
 				</div>
 				{usageLoading ? (
@@ -103,9 +103,9 @@ const UsageAnalyticsTab = () => {
 			</Card>
 
 			{/* Usage Breakdown Table */}
-			<Card className='bg-white border border-[#E9E9E9] rounded-xl overflow-hidden'>
+			<Card className='bg-card border border-border rounded-xl overflow-hidden'>
 				<div className='p-6'>
-					<h3 className='text-base font-medium text-zinc-950'>{t('usage.breakdownTitle')}</h3>
+					<h3 className='text-base font-medium text-foreground'>{t('usage.breakdownTitle')}</h3>
 				</div>
 				{usageLoading ? (
 					<div className='space-y-4 p-6'>
@@ -235,7 +235,7 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 				type='button'
 				className={cn(
 					'group -ms-1 inline-flex h-7 items-center gap-1 rounded-md px-1.5 text-start transition-colors',
-					isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
+					isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
 				)}
 				onClick={() => {
 					if (sortField !== field) {
@@ -247,11 +247,11 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 				}}>
 				<span className='leading-none'>{label}</span>
 				{sortDirection === 'asc' && isActive ? (
-					<ChevronUp className='h-3.5 w-3.5 shrink-0 text-gray-900' />
+					<ChevronUp className='h-3.5 w-3.5 shrink-0 text-foreground' />
 				) : isActive ? (
-					<ChevronDown className='h-3.5 w-3.5 shrink-0 text-gray-900' />
+					<ChevronDown className='h-3.5 w-3.5 shrink-0 text-foreground' />
 				) : (
-					<ChevronsUpDown className='h-3.5 w-3.5 shrink-0 text-gray-400 group-hover:text-gray-500' />
+					<ChevronsUpDown className='h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-muted-foreground' />
 				)}
 			</button>
 		);
@@ -264,7 +264,7 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 					<button
 						type='button'
 						onClick={toggleExpandAll}
-						className='inline-flex items-center justify-center text-gray-600 hover:text-gray-900'
+						className='inline-flex items-center justify-center text-muted-foreground hover:text-foreground'
 						aria-label={allExpanded ? t('usageBreakdown.collapseAllAria') : t('usageBreakdown.expandAllAria')}>
 						<img src={allExpanded ? COLLAPSE_ALL_SVG : EXPAND_ALL_SVG} alt='' className='h-4 w-4' />
 					</button>
@@ -272,13 +272,13 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 			)}
 			<div>
 				<Table>
-					<TableHeader className='h-10 border-b border-gray-200'>
-						<TableRow className='border-b border-gray-200'>
-							<TableHead className='pl-0 font-semibold text-gray-700 text-[13px]'>{t('usageBreakdown.feature')}</TableHead>
-							<TableHead className='font-semibold text-gray-700 text-[13px]'>
+					<TableHeader className='h-10 border-b border-border'>
+						<TableRow className='border-b border-border'>
+							<TableHead className='pl-0 font-semibold text-foreground text-[13px]'>{t('usageBreakdown.feature')}</TableHead>
+							<TableHead className='font-semibold text-foreground text-[13px]'>
 								{renderSortableHeader(SORT_TOTAL_USAGE, t('usageBreakdown.totalUsage'))}
 							</TableHead>
-							<TableHead className='font-semibold text-gray-700 text-[13px]'>
+							<TableHead className='font-semibold text-foreground text-[13px]'>
 								{renderSortableHeader(SORT_TOTAL_COST, t('usageBreakdown.totalCost'))}
 							</TableHead>
 						</TableRow>
@@ -301,20 +301,20 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 											}
 										}}
 										className={cn(
-											'h-10 align-middle border-b border-gray-200 bg-white cursor-pointer hover:bg-gray-50/50',
+											'h-10 align-middle border-b border-border bg-card cursor-pointer hover:bg-muted/50',
 											bucket.items.length === 0 && 'border-b-0',
 											bucket.items.length === 0 && 'cursor-default',
 										)}>
 										<TableCell className='pl-0 py-2.5 align-middle'>
 											<div className='inline-flex items-center gap-2 text-start'>
-												<span className='font-semibold text-gray-900 text-[13px]'>{bucket.groupName}</span>
+												<span className='font-semibold text-foreground text-[13px]'>{bucket.groupName}</span>
 												{bucket.items.length > 0 ? (
 													<img src={isExpanded ? CHEVRON_UP_SVG : CHEVRON_DOWN_SVG} alt='' className='h-4 w-4 shrink-0' aria-hidden />
 												) : null}
 											</div>
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-gray-700 text-[13px]'>{t('usageBreakdown.cellEmDash')}</TableCell>
-										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-foreground text-[13px]'>{t('usageBreakdown.cellEmDash')}</TableCell>
+										<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
 											{firstCurrency ? (
 												<>
 													{getCurrencySymbol(firstCurrency)}
@@ -329,12 +329,14 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 										bucket.items.map((row, childIndex) => (
 											<TableRow
 												key={`${bucket.groupKey}:${row.feature_id ?? row.price_id ?? row.meter_id ?? childIndex}`}
-												className='h-10 align-middle border-b border-gray-200 bg-white hover:bg-gray-50/50'>
-												<TableCell className='py-2.5 pl-0 font-normal text-gray-700 text-[13px] align-middle'>
+												className='h-10 align-middle border-b border-border bg-card hover:bg-muted/50'>
+												<TableCell className='py-2.5 pl-0 font-normal text-foreground text-[13px] align-middle'>
 													<span>{row.name || row.feature?.name || row.event_name || t('usageBreakdown.unknownRow')}</span>
 												</TableCell>
-												<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsagePortal(row)}</TableCell>
-												<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalCostPortal(row)}</TableCell>
+												<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+													{renderTotalUsagePortal(row)}
+												</TableCell>
+												<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderTotalCostPortal(row)}</TableCell>
 											</TableRow>
 										))}
 								</React.Fragment>
@@ -343,17 +345,17 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 						{ungroupedItems.map((row, index) => (
 							<TableRow
 								key={`ungrouped:${row.feature_id ?? row.price_id ?? row.meter_id ?? index}`}
-								className='h-10 align-middle border-b border-gray-200 bg-white hover:bg-gray-50/50'>
-								<TableCell className='pl-0 py-2.5 font-normal text-gray-700 text-[13px]'>
+								className='h-10 align-middle border-b border-border bg-card hover:bg-muted/50'>
+								<TableCell className='pl-0 py-2.5 font-normal text-foreground text-[13px]'>
 									<span>{row.name || row.feature?.name || row.event_name || t('usageBreakdown.unknownRow')}</span>
 								</TableCell>
-								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsagePortal(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalCostPortal(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderTotalUsagePortal(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderTotalCostPortal(row)}</TableCell>
 							</TableRow>
 						))}
 						{items.length === 0 && (
-							<TableRow className='bg-white'>
-								<TableCell colSpan={3} className='pl-0 py-4 font-normal text-gray-500 text-[13px]'>
+							<TableRow className='bg-card'>
+								<TableCell colSpan={3} className='pl-0 py-4 font-normal text-muted-foreground text-[13px]'>
 									{t('usageBreakdown.cellEmpty')}
 								</TableCell>
 							</TableRow>

@@ -48,14 +48,14 @@ const CustomWorkflowCard = ({
 	const displayName = value.label.trim() || t('customerOnboarding.workflow.customWorkflows.untitled');
 
 	return (
-		<Collapsible open={open} onOpenChange={setOpen} className='rounded-lg border border-gray-200 overflow-hidden'>
-			<div className='flex items-center justify-between gap-3 bg-gray-50 px-4 py-3'>
+		<Collapsible open={open} onOpenChange={setOpen} className='rounded-lg border border-border overflow-hidden'>
+			<div className='flex items-center justify-between gap-3 bg-muted px-4 py-3'>
 				<CollapsibleTrigger asChild>
 					<button type='button' className='flex min-w-0 flex-1 items-center gap-2 text-start' disabled={disabled}>
-						<ChevronDown className={cn('size-4 shrink-0 text-zinc-500 transition-transform', open && 'rotate-180')} />
+						<ChevronDown className={cn('size-4 shrink-0 text-muted-foreground transition-transform', open && 'rotate-180')} />
 						<div className='min-w-0'>
-							<p className='truncate text-sm font-medium text-zinc-900'>{displayName}</p>
-							<p className='truncate text-xs text-zinc-500'>{summary}</p>
+							<p className='truncate text-sm font-medium text-foreground'>{displayName}</p>
+							<p className='truncate text-xs text-muted-foreground'>{summary}</p>
 						</div>
 					</button>
 				</CollapsibleTrigger>
@@ -63,7 +63,7 @@ const CustomWorkflowCard = ({
 					type='button'
 					variant='ghost'
 					size='sm'
-					className='h-8 shrink-0 px-2 text-zinc-500 hover:text-red-600'
+					className='h-8 shrink-0 px-2 text-muted-foreground hover:text-red-600'
 					onClick={onRemove}
 					disabled={disabled}
 					aria-label={t('customerOnboarding.workflow.customWorkflows.remove')}>
@@ -71,7 +71,7 @@ const CustomWorkflowCard = ({
 				</Button>
 			</div>
 			<CollapsibleContent>
-				<div className='space-y-4 border-t border-gray-200 px-4 pb-4 pt-4'>
+				<div className='space-y-4 border-t border-border px-4 pb-4 pt-4'>
 					<FieldWithInfo
 						label={nameField}
 						description={t('customerOnboarding.workflow.customWorkflows.nameHint')}

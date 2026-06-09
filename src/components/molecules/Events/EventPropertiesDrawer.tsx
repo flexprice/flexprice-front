@@ -144,7 +144,7 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 							) : debugResponse.debug_tracker ? (
 								<EventTrackerSection debugResponse={debugResponse} displayEventTimestamp={displayEvent?.timestamp} />
 							) : (
-								<p className='text-sm text-slate-500'>{t('events.debugger.noTrackerData')}</p>
+								<p className='text-sm text-muted-foreground'>{t('events.debugger.noTrackerData')}</p>
 							)}
 						</div>
 					) : null}

@@ -205,14 +205,14 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				<>
 					<div className='flex items-center justify-center my-6'>
 						<div className='flex-1 h-px bg-gray-200'></div>
-						<span className='mx-4 text-sm text-gray-500'>{t('divider')}</span>
+						<span className='mx-4 text-sm text-muted-foreground'>{t('divider')}</span>
 						<div className='flex-1 h-px bg-gray-200'></div>
 					</div>
 					<GoogleSignin />
 				</>
 			)}
 
-			<p className='mt-6 text-center text-sm text-gray-600'>
+			<p className='mt-6 text-center text-sm text-muted-foreground'>
 				{t('hasAccount')}{' '}
 				<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium'>
 					{t('links.logIn')}

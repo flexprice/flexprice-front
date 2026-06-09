@@ -71,20 +71,20 @@ const SubscribedEventsEditor: FC<{ endpointId: string; filterTypes: string[] | n
 	return (
 		<div>
 			<div className='flex items-center justify-between'>
-				<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.subscribedEvents')}</h4>
-				<button className='text-sm text-gray-600 hover:text-gray-900' onClick={() => setIsEditing(true)}>
+				<h4 className='text-sm font-medium text-muted-foreground'>{t('webhooks.endpoints.detail.subscribedEvents')}</h4>
+				<button className='text-sm text-muted-foreground hover:text-foreground' onClick={() => setIsEditing(true)}>
 					{t('common:actions.edit')}
 				</button>
 			</div>
 			<div className='flex flex-col gap-1 mt-1.5 max-h-56 overflow-y-auto'>
 				{filterTypes?.length ? (
 					filterTypes.map((name) => (
-						<span key={name} className='text-sm font-mono text-xs text-gray-700'>
+						<span key={name} className='text-sm font-mono text-xs text-foreground'>
 							{name}
 						</span>
 					))
 				) : (
-					<span className='text-sm text-gray-400'>{t('webhooks.endpoints.detail.allEvents')}</span>
+					<span className='text-sm text-muted-foreground'>{t('webhooks.endpoints.detail.allEvents')}</span>
 				)}
 			</div>
 		</div>
@@ -102,10 +102,10 @@ const SigningSecret: FC<{ endpointId: string }> = ({ endpointId }) => {
 
 	return (
 		<div>
-			<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.signingSecret')}</h4>
+			<h4 className='text-sm font-medium text-muted-foreground'>{t('webhooks.endpoints.detail.signingSecret')}</h4>
 			<div className='flex items-center gap-1.5 mt-1.5'>
 				<span
-					className='min-w-0 flex-1 truncate font-mono text-xs bg-gray-50 border border-border rounded px-2 py-1.5'
+					className='min-w-0 flex-1 truncate font-mono text-xs bg-muted border border-border rounded px-2 py-1.5'
 					title={displayValue}>
 					{displayValue}
 				</span>
@@ -205,12 +205,12 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<div className='flex items-center gap-1.5 text-sm text-gray-500'>
-				<button className='hover:text-gray-900' onClick={onBack}>
+			<div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
+				<button className='hover:text-foreground' onClick={onBack}>
 					{t('webhooks.endpoints.heading')}
 				</button>
 				<ChevronRight className='w-3.5 h-3.5' />
-				<span className='text-gray-900 font-medium truncate'>{data.id}</span>
+				<span className='text-foreground font-medium truncate'>{data.id}</span>
 			</div>
 
 			<div className='flex items-center justify-between gap-4 pb-5 border-b border-border'>
@@ -244,7 +244,7 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 						<TabsTrigger
 							key={tab.value}
 							value={tab.value}
-							className='text-sm font-medium text-gray-500 px-3 py-2 rounded-none border-b-2 border-transparent data-[state=active]:text-gray-900 data-[state=active]:border-gray-900 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0'>
+							className='text-sm font-medium text-muted-foreground px-3 py-2 rounded-none border-b-2 border-transparent data-[state=active]:text-foreground data-[state=active]:border-foreground bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0'>
 							{tab.label}
 						</TabsTrigger>
 					))}
@@ -265,11 +265,11 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 
 					<div className='flex flex-col gap-5'>
 						<div>
-							<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.createdAt')}</h4>
+							<h4 className='text-sm font-medium text-muted-foreground'>{t('webhooks.endpoints.detail.createdAt')}</h4>
 							<p className='text-sm mt-1'>{formatDate(data.createdAt)}</p>
 						</div>
 						<div>
-							<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.updatedAt')}</h4>
+							<h4 className='text-sm font-medium text-muted-foreground'>{t('webhooks.endpoints.detail.updatedAt')}</h4>
 							<p className='text-sm mt-1'>{formatDate(data.updatedAt)}</p>
 						</div>
 						<div className='border-t border-border pt-5 flex flex-col gap-5'>

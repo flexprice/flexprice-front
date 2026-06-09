@@ -54,10 +54,10 @@ const RecurringChargePreview: FC<Props> = ({ charge, onEditClicked, onDeleteClic
 	const isFlatFee = !charge.billing_model || charge.billing_model === BILLING_MODEL.FLAT_FEE;
 
 	return (
-		<div className='gap-2 w-full flex justify-between group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground hover:bg-gray-50 transition-colors mb-2'>
+		<div className='gap-2 w-full flex justify-between group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground hover:bg-muted transition-colors mb-2'>
 			<div>
 				<p className='font-normal text-sm'>{charge.display_name || t('plans.organisms.chargeLabels.fixedCharge')}</p>
-				<div className='flex gap-2 items-center text-zinc-500 text-xs'>
+				<div className='flex gap-2 items-center text-muted-foreground text-xs'>
 					<span>{displayCurrency}</span>
 					<span>•</span>
 					<span>{toSentenceCase(charge.billing_period || '')}</span>
@@ -74,12 +74,12 @@ const RecurringChargePreview: FC<Props> = ({ charge, onEditClicked, onDeleteClic
 			</div>
 
 			{!disabled && (
-				<span className='text-[#18181B] flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity'>
-					<button onClick={() => onEditClicked?.()} className='p-1 hover:bg-gray-100 rounded-md'>
+				<span className='text-foreground flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity'>
+					<button onClick={() => onEditClicked?.()} className='p-1 hover:bg-muted rounded-md'>
 						<Pencil size={16} />
 					</button>
-					<div className='border-r h-[16px] border-[#E4E4E7]' />
-					<button onClick={onDeleteClicked} className='p-1 hover:bg-gray-100 rounded-md text-red-500'>
+					<div className='border-r h-[16px] border-border' />
+					<button onClick={onDeleteClicked} className='p-1 hover:bg-muted rounded-md text-red-500'>
 						<Trash2 size={16} />
 					</button>
 				</span>

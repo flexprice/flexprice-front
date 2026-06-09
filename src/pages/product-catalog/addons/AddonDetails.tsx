@@ -113,7 +113,7 @@ const getFeatureValue = (entitlement: Entitlement, unlimited: string, unitLabel:
 			return (
 				<span className='flex items-end gap-1'>
 					{formatAmount(value || unlimited)}
-					<span className='text-[#64748B] text-sm font-normal font-sans'>
+					<span className='text-muted-foreground text-sm font-normal font-sans'>
 						{value ? (Number(value) > 0 ? unitPlural : unitSingular) : unitPlural}
 					</span>
 				</span>
@@ -344,7 +344,7 @@ const AddonDetails = () => {
 					<Card variant='notched'>
 						<CardHeader title={t('catalog:addons.details.metadata')} />
 						<div className='p-4'>
-							<pre className='text-sm bg-gray-50 p-3 rounded overflow-auto'>{JSON.stringify(addonData.metadata, null, 2)}</pre>
+							<pre className='text-sm bg-muted p-3 rounded overflow-auto'>{JSON.stringify(addonData.metadata, null, 2)}</pre>
 						</div>
 					</Card>
 				)}

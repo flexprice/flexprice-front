@@ -49,7 +49,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ switchTab }) =>
 		<>
 			<form className='space-y-4' onSubmit={(e) => e.preventDefault()}>
 				<div>
-					<label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
+					<label htmlFor='email' className='block text-sm font-medium text-foreground mb-1'>
 						{t('fields.email')}
 					</label>
 					<Input
@@ -67,7 +67,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ switchTab }) =>
 				</Button>
 			</form>
 
-			<p className='mt-6 text-center text-sm text-gray-600'>
+			<p className='mt-6 text-center text-sm text-muted-foreground'>
 				{t('rememberPassword')}{' '}
 				<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium'>
 					{t('links.backToLogin')}

@@ -330,7 +330,7 @@ const PhaseList: React.FC<PhaseListProps> = ({
 		<div className='space-y-6'>
 			{phases.length > 0 && (
 				<div className='flex items-center justify-between mb-4'>
-					<h3 className='text-base font-semibold text-gray-900'>{t('organisms.phaseList.title')}</h3>
+					<h3 className='text-base font-semibold text-foreground'>{t('organisms.phaseList.title')}</h3>
 				</div>
 			)}
 
@@ -371,14 +371,14 @@ const PhaseList: React.FC<PhaseListProps> = ({
 				return (
 					<div
 						key={index}
-						className='group flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 transition-colors'>
+						className='group flex items-center justify-between p-4 border border-border rounded-lg bg-card hover:bg-muted transition-colors'>
 						<div className='flex items-center space-x-3'>
-							<Calendar className='h-5 w-5 text-gray-400' />
+							<Calendar className='h-5 w-5 text-muted-foreground' />
 							<div>
-								<div className='text-sm font-medium text-gray-900'>
+								<div className='text-sm font-medium text-foreground'>
 									{startDate} → {endDate}
 								</div>
-								<div className='text-xs text-gray-500 mt-1'>
+								<div className='text-xs text-muted-foreground mt-1'>
 									{t('organisms.phaseList.phaseIndex', { index: index + 1 })}
 									{phase.coupons && phase.coupons.length > 0 && (
 										<span className='ms-2 text-blue-600'>
@@ -406,11 +406,11 @@ const PhaseList: React.FC<PhaseListProps> = ({
 							<div className='flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity'>
 								<button
 									onClick={() => handleEditPhase(index)}
-									className='p-2 hover:bg-gray-100 rounded-md transition-colors'
+									className='p-2 hover:bg-muted rounded-md transition-colors'
 									title={t('organisms.phaseList.editPhase')}>
-									<Pencil size={16} className='text-gray-600' />
+									<Pencil size={16} className='text-muted-foreground' />
 								</button>
-								<div className='border-r h-4 border-gray-300' />
+								<div className='border-r h-4 border-border' />
 								<button
 									onClick={() => handleDeletePhase(index)}
 									className='p-2 hover:bg-red-50 rounded-md transition-colors'

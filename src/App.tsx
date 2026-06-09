@@ -18,6 +18,7 @@ const App = () => {
 						<RouterProvider router={MainRouter} />
 					</DocsProvider>
 
+					{/* Toast Notifications */}
 					<AppToaster />
 					<div id='modal-root'></div>
 				</PaddleProvider>

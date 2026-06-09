@@ -90,17 +90,17 @@ const InvoiceConfigurationSection = () => {
 	};
 
 	return (
-		<Card variant='default' className='rounded-xl border border-gray-200 bg-white shadow-sm'>
-			<CardHeader title={t('billing.invoiceConfiguration.title')} titleClassName='text-lg font-medium text-zinc-800' />
+		<Card variant='default' className='rounded-xl border border-border bg-card shadow-sm'>
+			<CardHeader title={t('billing.invoiceConfiguration.title')} titleClassName='text-lg font-medium text-foreground' />
 			{isLoading ? (
 				<Loader />
 			) : (
 				<>
-					<div className='mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4'>
-						<p className='text-xs font-medium uppercase tracking-wide text-zinc-400'>{t('billing.invoiceConfiguration.previewLabel')}</p>
+					<div className='mb-6 rounded-lg border border-border bg-muted p-4'>
+						<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{t('billing.invoiceConfiguration.previewLabel')}</p>
 						<div className='mt-3 flex items-center justify-between gap-1'>
-							<span className='font-mono text-xl font-medium text-gray-800'>{preview}</span>
-							<span className='text-sm font-medium text-zinc-600'>{t('billing.invoiceConfiguration.nextInvoiceNumber')}</span>
+							<span className='font-mono text-xl font-medium text-foreground'>{preview}</span>
+							<span className='text-sm font-medium text-muted-foreground'>{t('billing.invoiceConfiguration.nextInvoiceNumber')}</span>
 						</div>
 					</div>
 

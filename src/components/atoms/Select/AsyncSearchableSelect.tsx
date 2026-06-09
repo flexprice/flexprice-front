@@ -220,14 +220,16 @@ const AsyncSearchableSelect = <T = any,>({
 				)}>
 				{/* Radio Icon */}
 				<span className='absolute left-2 top-[10px] flex h-4 w-4 justify-center'>
-					{isSelected ? <Circle className='size-2 text-black fill-current' /> : null}
-					<Circle className='size-4 text-gray-400 absolute' />
+					{isSelected ? <Circle className='size-2 text-foreground fill-current' /> : null}
+					<Circle className='size-4 text-muted-foreground absolute' />
 				</span>
 
 				<div className='flex items-center space-x-2 w-full'>
 					<div className='flex flex-col me-2 w-full'>
 						<span className='break-words'>{option.label}</span>
-						{option.description && <span className='text-sm text-gray-500 break-words whitespace-normal'>{option.description}</span>}
+						{option.description && (
+							<span className='text-sm text-muted-foreground break-words whitespace-normal'>{option.description}</span>
+						)}
 					</div>
 				</div>
 			</CommandItem>
@@ -257,7 +259,9 @@ const AsyncSearchableSelect = <T = any,>({
 
 					<div className={cn('flex flex-col w-full', !hideSelectedTick && 'mr-0')}>
 						<span className='break-words'>{option.label}</span>
-						{option.description && <span className='text-sm text-gray-500 break-words whitespace-normal'>{option.description}</span>}
+						{option.description && (
+							<span className='text-sm text-muted-foreground break-words whitespace-normal'>{option.description}</span>
+						)}
 					</div>
 
 					<div className='flex items-center gap-2'>
@@ -276,7 +280,7 @@ const AsyncSearchableSelect = <T = any,>({
 		<div className={cn('space-y-1')}>
 			{/* Label */}
 			{label && (
-				<label className={cn(' block text-sm font-medium text-zinc break-words', disabled ? 'text-zinc-500' : 'text-zinc-950')}>
+				<label className={cn(' block text-sm font-medium text-zinc break-words', disabled ? 'text-muted-foreground' : 'text-foreground')}>
 					{label}
 				</label>
 			)}

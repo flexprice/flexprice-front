@@ -317,7 +317,7 @@ const formatLineItemDateTooltip = (lineItem: LineItem, t: TFunction): React.Reac
 			if (!isNaN(startDate.getTime())) {
 				dateItems.push(
 					<div key='start' className='flex items-center gap-2'>
-						<span className='text-xs font-medium text-gray-500'>{t('labels.start')}</span>
+						<span className='text-xs font-medium text-muted-foreground'>{t('labels.start')}</span>
 						<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(startDate)}</span>
 					</div>,
 				);
@@ -333,7 +333,7 @@ const formatLineItemDateTooltip = (lineItem: LineItem, t: TFunction): React.Reac
 			if (!isNaN(endDate.getTime())) {
 				dateItems.push(
 					<div key='end' className='flex items-center gap-2'>
-						<span className='text-xs font-medium text-gray-500'>{t('labels.end')}</span>
+						<span className='text-xs font-medium text-muted-foreground'>{t('labels.end')}</span>
 						<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(endDate)}</span>
 					</div>,
 				);
@@ -489,7 +489,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 									content={displayName}
 									delayDuration={0}
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[320px]'>
 									<span className='block min-w-0 truncate'>{displayName}</span>
 								</Tooltip>
 							)}
@@ -498,7 +498,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 									content={formatCommitmentTooltip(commitmentInfo!, t)}
 									delayDuration={0}
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[320px]'>
 									<button
 										type='button'
 										data-interactive='true'
@@ -516,7 +516,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 						{
 							title: 'Phase',
 							render: (row: LineItemWithStatus) => (
-								<span className='text-sm text-gray-700'>
+								<span className='text-sm text-foreground'>
 									{(row.subscription_phase_id && phaseLabelsById[row.subscription_phase_id]) ?? '—'}
 								</span>
 							),
@@ -549,7 +549,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 							content={rowData.tooltipContent}
 							delayDuration={0}
 							sideOffset={5}
-							className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+							className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[320px]'>
 							<span>
 								<Chip label={rowData.statusLabel} variant={rowData.statusVariant} />
 							</span>

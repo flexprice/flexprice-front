@@ -46,8 +46,8 @@ const SubscriptionWithOverrides: FC<Props> = ({ prices, onCreateSubscription, cl
 			{/* Header with override summary */}
 			<div className='flex items-center justify-between'>
 				<div>
-					<h3 className='text-lg font-semibold text-gray-900'>{t('organisms.subscriptionWithOverrides.chargesTitle')}</h3>
-					{overridesSummary && <p className='text-sm text-gray-600 mt-1'>{overridesSummary}</p>}
+					<h3 className='text-lg font-semibold text-foreground'>{t('organisms.subscriptionWithOverrides.chargesTitle')}</h3>
+					{overridesSummary && <p className='text-sm text-muted-foreground mt-1'>{overridesSummary}</p>}
 				</div>
 				{hasAnyOverrides() && (
 					<div className='flex items-center gap-2'>

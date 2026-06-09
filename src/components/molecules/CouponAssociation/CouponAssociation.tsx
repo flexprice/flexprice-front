@@ -52,7 +52,7 @@ const CouponAssociation: FC<Props> = ({ data, onChange, currency, disabled }) =>
 			render: (row) => (
 				<div>
 					<div className='text-sm font-medium'>{row.name}</div>
-					<div className='text-xs text-gray-500'>{formatCouponName(row)}</div>
+					<div className='text-xs text-muted-foreground'>{formatCouponName(row)}</div>
 				</div>
 			),
 		},
@@ -83,7 +83,7 @@ const CouponAssociation: FC<Props> = ({ data, onChange, currency, disabled }) =>
 				<AddButton onClick={() => setIsOpen(true)} disabled={disabled} />
 			</div>
 
-			<div className='rounded-xl border border-gray-300 space-y-6 mt-2'>
+			<div className='rounded-xl border border-border space-y-6 mt-2'>
 				<FlexpriceTable data={data} columns={columns} showEmptyRow />
 			</div>
 

@@ -98,21 +98,21 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 		<>
 			{/* Main Save Card Dialog */}
 			<Dialog open={isOpen} onOpenChange={onOpenChange}>
-				<DialogContent className='bg-white sm:max-w-[500px]'>
+				<DialogContent className='bg-card sm:max-w-[500px]'>
 					<DialogHeader>
-						<DialogTitle className='text-lg font-semibold text-[#18181B] flex items-center gap-2'>
+						<DialogTitle className='text-lg font-semibold text-foreground flex items-center gap-2'>
 							<CreditCard className='size-5' />
 							{t('saveCardModal.title')}
 						</DialogTitle>
 					</DialogHeader>
 
 					<div className='space-y-6 py-4'>
-						<div className='text-sm text-gray-600'>{t('saveCardModal.intro')}</div>
+						<div className='text-sm text-muted-foreground'>{t('saveCardModal.intro')}</div>
 
-						<div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+						<div className='flex items-center justify-between p-4 bg-muted rounded-lg'>
 							<div className='flex-1'>
-								<h4 className='font-medium text-sm text-gray-900'>{t('saveCardModal.defaultMethodTitle')}</h4>
-								<p className='text-xs text-gray-500'>{t('saveCardModal.defaultMethodHint')}</p>
+								<h4 className='font-medium text-sm text-foreground'>{t('saveCardModal.defaultMethodTitle')}</h4>
+								<p className='text-xs text-muted-foreground'>{t('saveCardModal.defaultMethodHint')}</p>
 							</div>
 							<Switch checked={setAsDefault} onCheckedChange={setSetAsDefault} />
 						</div>
@@ -132,9 +132,9 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 
 			{/* Setup URL Success Dialog */}
 			<Dialog open={setupUrlPopup.isOpen} onOpenChange={handleCloseUrlPopup}>
-				<DialogContent className='bg-white sm:max-w-[500px]'>
+				<DialogContent className='bg-card sm:max-w-[500px]'>
 					<DialogHeader>
-						<DialogTitle className='text-lg font-semibold text-[#18181B]'>{t('saveCardModal.successTitle')}</DialogTitle>
+						<DialogTitle className='text-lg font-semibold text-foreground'>{t('saveCardModal.successTitle')}</DialogTitle>
 					</DialogHeader>
 
 					<div className='space-y-4 py-4'>

@@ -9,6 +9,7 @@ import { formatCompactNumber } from '@/utils';
 import { GetMonitoringDataResponse, EventCountPoint } from '@/types/dto';
 import { getTypographyClass } from '@/lib/typography';
 import { useTranslation } from 'react-i18next';
+import { chartTheme } from '@/lib/chartTheme';
 
 const normalizeMonitoringData = (response: GetMonitoringDataResponse) => {
 	if (!response.points || response.points.length === 0) {
@@ -59,12 +60,12 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 						<stop offset='95%' stopColor='rgba(99, 102, 241, 0.1)' stopOpacity={0.1} />
 					</linearGradient>
 				</defs>
-				<CartesianGrid vertical={false} stroke='rgba(243, 244, 246, 0.8)' strokeDasharray='3 3' />
+				<CartesianGrid vertical={false} stroke={chartTheme.gridStroke} strokeDasharray='3 3' />
 				<XAxis
 					dataKey='timestamp'
 					tickLine={false}
-					axisLine={{ stroke: 'rgba(229, 231, 235, 0.8)' }}
-					tick={{ fill: '#9ca3af', fontSize: 11 }}
+					axisLine={{ stroke: chartTheme.axisLineStroke }}
+					tick={{ fill: chartTheme.tickFill, fontSize: 11 }}
 					tickFormatter={(value) => {
 						const date = new Date(value);
 						return date.toLocaleDateString(dateLocale, {
@@ -79,7 +80,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 				<YAxis
 					tickLine={false}
 					axisLine={false}
-					tick={{ fill: '#9ca3af', fontSize: 11 }}
+					tick={{ fill: chartTheme.tickFill, fontSize: 11 }}
 					width={50}
 					tickCount={6}
 					dx={-5}
@@ -98,8 +99,8 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 							return (
 								<div
 									style={{
-										backgroundColor: 'rgba(255, 255, 255, 0.98)',
-										border: 'none',
+										backgroundColor: chartTheme.tooltipBg,
+										border: `1px solid ${chartTheme.tooltipBorder}`,
 										borderRadius: '6px',
 										boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
 										padding: '12px 16px',
@@ -108,14 +109,14 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 									}}>
 									<div
 										style={{
-											borderBottom: '1px solid #f3f4f6',
+											borderBottom: `1px solid ${chartTheme.tooltipBorder}`,
 											paddingBottom: '8px',
 											marginBottom: '10px',
 										}}>
 										<div
 											style={{
 												fontWeight: 600,
-												color: '#374151',
+												color: chartTheme.tooltipTitle,
 												fontSize: '13px',
 												letterSpacing: '0.025em',
 											}}>
@@ -127,7 +128,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 										</div>
 										<div
 											style={{
-												color: '#6b7280',
+												color: chartTheme.tooltipSubtitle,
 												fontSize: '11px',
 												marginTop: '2px',
 											}}>
@@ -147,8 +148,8 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 												backgroundColor: 'rgba(99, 102, 241, 0.8)',
 												display: 'inline-block',
 											}}></span>
-										<span style={{ color: '#4b5563', fontSize: '11px' }}>{eventCountLabel}</span>
-										<span style={{ fontWeight: 600, color: '#111827', marginLeft: 'auto' }}>
+										<span style={{ color: chartTheme.tooltipLabel, fontSize: '11px' }}>{eventCountLabel}</span>
+										<span style={{ fontWeight: 600, color: chartTheme.tooltipValue, marginLeft: 'auto' }}>
 											{formatCompactNumber(pointData.event_count)}
 										</span>
 									</div>
@@ -162,13 +163,13 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 					dataKey='event_count'
 					stroke={hasData ? 'rgba(99, 102, 241, 0.8)' : 'rgba(156, 163, 175, 0.3)'}
 					strokeWidth={2}
-					fill={hasData ? 'url(#eventCountGradient)' : 'rgba(243, 244, 246, 0.2)'}
+					fill={hasData ? 'url(#eventCountGradient)' : chartTheme.emptyFill}
 					dot={false}
 					activeDot={
 						hasData
 							? {
 									r: 4,
-									stroke: '#fff',
+									stroke: chartTheme.activeDotStroke,
 									strokeWidth: 2,
 									fill: 'rgba(99, 102, 241, 0.8)',
 								}
@@ -206,12 +207,14 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 									{renderChart(displayData, { showTooltip: false })}
 								</ResponsiveContainer>
 							</div>
-							<div className='absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30'>
+							<div className='absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-card/30'>
 								<div className='text-center max-w-sm px-4'>
-									<h3 className={getTypographyClass('section-title', 'font-semibold text-zinc-900')}>
+									<h3 className={getTypographyClass('section-title', 'font-semibold text-foreground')}>
 										{t('events.monitoring.emptyRangeTitle')}
 									</h3>
-									<p className={getTypographyClass('body-default', 'text-zinc-600 mt-2')}>{t('events.monitoring.emptyRangeDescription')}</p>
+									<p className={getTypographyClass('body-default', 'text-muted-foreground mt-2')}>
+										{t('events.monitoring.emptyRangeDescription')}
+									</p>
 									{onViewLatestData && (
 										<Button onClick={onViewLatestData} className='mt-4'>
 											{t('events.monitoring.viewLatestData')}

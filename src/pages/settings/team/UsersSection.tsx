@@ -245,17 +245,17 @@ function UsersSection() {
 					return <Chip label={t('members.joinedPending')} variant='warning' />;
 				}
 				const joinedDate = getMemberJoinedDate(row);
-				return <span className='text-sm text-zinc-600'>{joinedDate ? formatDateShort(joinedDate) : '—'}</span>;
+				return <span className='text-sm text-muted-foreground'>{joinedDate ? formatDateShort(joinedDate) : '—'}</span>;
 			},
 		},
 	];
 
 	return (
 		<>
-			<Card variant='default' className='rounded-xl border border-gray-200 bg-white shadow-sm'>
+			<Card variant='default' className='rounded-xl border border-border bg-card shadow-sm'>
 				<CardHeader
 					title={t('members.cardTitle')}
-					titleClassName='text-lg font-semibold text-zinc-900'
+					titleClassName='text-lg font-semibold text-foreground'
 					cta={
 						<div className='flex items-center gap-2'>
 							<OptionFilterPopover
@@ -277,7 +277,7 @@ function UsersSection() {
 					</div>
 				)}
 				{!isLoading && !isError && (
-					<div className='-mx-6 border-t border-gray-100 px-6 pt-2'>
+					<div className='-mx-6 border-t border-border px-6 pt-2'>
 						<FlexpriceTable columns={columns} data={paginatedMembers} showEmptyRow />
 						{showPagination ? (
 							<ShortPaginationControls
@@ -288,8 +288,8 @@ function UsersSection() {
 								pageSize={pageSize}
 							/>
 						) : (
-							<div className='border-t border-gray-100 py-4'>
-								<span className='text-sm text-zinc-500'>{t('members.usersCount', { count: filteredMembers.length })}</span>
+							<div className='border-t border-border py-4'>
+								<span className='text-sm text-muted-foreground'>{t('members.usersCount', { count: filteredMembers.length })}</span>
 							</div>
 						)}
 					</div>
@@ -304,9 +304,9 @@ function UsersSection() {
 				}}
 				title={t('members.addMember.title')}
 				description={t('members.addMember.description')}
-				titleClassName='text-lg font-semibold text-zinc-900'
-				descriptionClassName='text-sm text-zinc-500'
-				className='rounded-xl border border-gray-100 shadow-lg sm:max-w-[425px]'>
+				titleClassName='text-lg font-semibold text-foreground'
+				descriptionClassName='text-sm text-muted-foreground'
+				className='rounded-xl border border-border shadow-lg sm:max-w-[425px]'>
 				<div className='mt-3 space-y-3'>
 					{addError && (
 						<div className='flex w-full items-center gap-2.5 rounded-md border border-red-200 bg-red-50 px-3 py-2' role='alert'>
@@ -315,11 +315,11 @@ function UsersSection() {
 						</div>
 					)}
 					<div>
-						<label htmlFor='member-email' className='mb-1 block text-xs font-medium uppercase tracking-wide text-zinc-500'>
+						<label htmlFor='member-email' className='mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 							{t('members.addMember.emailLabel')}
 						</label>
-						<div className='mb-4 flex items-center gap-2 rounded-md border border-gray-200 bg-white'>
-							<Mail className='ml-3 h-4 w-4 flex-shrink-0 text-zinc-400' />
+						<div className='mb-4 flex items-center gap-2 rounded-md border border-border bg-card'>
+							<Mail className='ml-3 h-4 w-4 flex-shrink-0 text-muted-foreground' />
 							<Input
 								id='member-email'
 								type='email'
@@ -350,14 +350,14 @@ function UsersSection() {
 				onOpenChange={(open) => (open ? setPasswordDialogOpen(true) : handleClosePasswordDialog())}
 				title={t('members.credentials.title')}
 				description={t('members.credentials.description')}
-				className='w-full max-w-[480px] rounded-xl border border-gray-100 shadow-lg'>
+				className='w-full max-w-[480px] rounded-xl border border-border shadow-lg'>
 				<div className='mt-3 space-y-4'>
 					{addedUserEmail && (
 						<div>
-							<span className='text-xs font-medium uppercase tracking-wide text-zinc-500'>{t('members.addMember.emailLabel')}</span>
-							<div className='mt-1 flex min-h-[40px] items-center gap-2 rounded-md border border-gray-200 bg-zinc-50 px-3 py-2'>
-								<Mail className='h-4 w-4 flex-shrink-0 text-zinc-400' />
-								<span className='min-w-0 flex-1 truncate text-sm text-zinc-900'>{addedUserEmail}</span>
+							<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{t('members.addMember.emailLabel')}</span>
+							<div className='mt-1 flex min-h-[40px] items-center gap-2 rounded-md border border-border bg-muted px-3 py-2'>
+								<Mail className='h-4 w-4 flex-shrink-0 text-muted-foreground' />
+								<span className='min-w-0 flex-1 truncate text-sm text-foreground'>{addedUserEmail}</span>
 								<button
 									type='button'
 									onClick={async () => {
@@ -368,7 +368,7 @@ function UsersSection() {
 											toast.error(t('members.errors.copyFailed'));
 										}
 									}}
-									className='rounded p-1.5 text-zinc-500 hover:text-zinc-700'
+									className='rounded p-1.5 text-muted-foreground hover:text-foreground'
 									title={t('members.credentials.copyEmail')}
 									aria-label={t('members.credentials.copyEmail')}>
 									<Copy className='h-4 w-4' />
@@ -378,21 +378,21 @@ function UsersSection() {
 					)}
 
 					<div>
-						<span className='text-xs font-medium uppercase tracking-wide text-zinc-500'>{t('members.credentials.password')}</span>
-						<div className='relative mt-1 flex min-h-[40px] items-center rounded-md border border-gray-200 bg-zinc-50 px-3 py-2'>
-							<Lock className='h-4 w-4 flex-shrink-0 text-zinc-400' />
+						<span className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>{t('members.credentials.password')}</span>
+						<div className='relative mt-1 flex min-h-[40px] items-center rounded-md border border-border bg-muted px-3 py-2'>
+							<Lock className='h-4 w-4 flex-shrink-0 text-muted-foreground' />
 							<Input
 								id='temp-password'
 								readOnly
 								type={showPassword ? 'text' : 'password'}
 								value={oneTimePassword ?? ''}
-								className='min-h-[24px] flex-1 border-0 bg-transparent py-0 pl-2 pr-24 font-mono text-sm text-zinc-900 focus-visible:ring-0'
+								className='min-h-[24px] flex-1 border-0 bg-transparent py-0 pl-2 pr-24 font-mono text-sm text-foreground focus-visible:ring-0'
 							/>
 							<div className='absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-0.5'>
 								<button
 									type='button'
 									onClick={() => setShowPassword((prev) => !prev)}
-									className='rounded p-1.5 text-zinc-500 hover:text-zinc-700'
+									className='rounded p-1.5 text-muted-foreground hover:text-foreground'
 									title={showPassword ? t('members.credentials.hidePassword') : t('members.credentials.showPassword')}
 									aria-label={showPassword ? t('members.credentials.hidePassword') : t('members.credentials.showPassword')}>
 									{showPassword ? <EyeOff className='h-4 w-4' /> : <Eye className='h-4 w-4' />}
@@ -400,7 +400,7 @@ function UsersSection() {
 								<button
 									type='button'
 									onClick={handleCopyPassword}
-									className='rounded p-1.5 text-zinc-500 hover:text-zinc-700'
+									className='rounded p-1.5 text-muted-foreground hover:text-foreground'
 									title={t('members.credentials.copyPassword')}
 									aria-label={t('members.credentials.copyPassword')}>
 									<Copy className='h-4 w-4' />
@@ -410,18 +410,18 @@ function UsersSection() {
 					</div>
 
 					{loginUrl && (
-						<div className='border-t border-gray-100 pt-4'>
-							<p className='mb-2 text-xs text-zinc-500'>{t('members.credentials.oneClickHint')}</p>
-							<div className='flex items-center gap-2 rounded-md border border-gray-200 bg-zinc-50 px-3 py-2'>
-								<Link2 className='h-4 w-4 flex-shrink-0 text-zinc-400' />
-								<span className='min-w-0 flex-1 truncate text-sm text-zinc-600' title={loginUrl}>
+						<div className='border-t border-border pt-4'>
+							<p className='mb-2 text-xs text-muted-foreground'>{t('members.credentials.oneClickHint')}</p>
+							<div className='flex items-center gap-2 rounded-md border border-border bg-muted px-3 py-2'>
+								<Link2 className='h-4 w-4 flex-shrink-0 text-muted-foreground' />
+								<span className='min-w-0 flex-1 truncate text-sm text-muted-foreground' title={loginUrl}>
 									{loginUrl.length > 44 ? `${loginUrl.slice(0, 44)}…` : loginUrl}
 								</span>
 							</div>
 						</div>
 					)}
 
-					<div className='flex flex-wrap items-center gap-2 border-t border-gray-100 pt-4'>
+					<div className='flex flex-wrap items-center gap-2 border-t border-border pt-4'>
 						<Button onClick={handleCopyLoginLink} className='shrink-0'>
 							<Link2 className='mr-1.5 h-3.5 w-3.5' />
 							{t('members.credentials.copyLoginLink')}
@@ -436,7 +436,7 @@ function UsersSection() {
 						</Button>
 					</div>
 
-					<div className='flex flex-col gap-1.5 text-xs text-zinc-500'>
+					<div className='flex flex-col gap-1.5 text-xs text-muted-foreground'>
 						<div className='flex items-center gap-2'>
 							<AlertTriangle className='h-3.5 w-3.5 flex-shrink-0 text-amber-500' />
 							<span>{t('members.credentials.passwordResetNote')}</span>

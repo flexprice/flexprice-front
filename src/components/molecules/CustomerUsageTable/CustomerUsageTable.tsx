@@ -56,7 +56,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 								: usageRow.total_limit
 									? formatAmount(usageRow.total_limit?.toString())
 									: t('usageTable.unlimitedLabel')}
-							<span className='text-[#64748B] text-sm font-normal font-sans'>{t('usageTable.units')}</span>
+							<span className='text-muted-foreground text-sm font-normal font-sans'>{t('usageTable.units')}</span>
 						</span>
 					);
 				case FEATURE_TYPE.BOOLEAN:
@@ -119,7 +119,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					const displayContent = (
 						<span>
 							{entityName}
-							{additionalCount > 0 && <span className='text-[#64748B] text-sm ms-1'>+{additionalCount}</span>}
+							{additionalCount > 0 && <span className='text-muted-foreground text-sm ms-1'>+{additionalCount}</span>}
 						</span>
 					);
 

@@ -239,18 +239,18 @@ const PlansPage = () => {
 
 	const emptyStateCustom = useMemo(
 		() => (
-			<div className='mx-auto flex h-[360px] w-full flex-col items-center justify-center rounded-[6px] border border-[#E9E9E9] bg-[#fafafa] px-4'>
-				<div className='mb-4 text-center text-[20px] font-medium leading-normal text-gray-700'>
+			<div className='mx-auto flex h-[360px] w-full flex-col items-center justify-center rounded-[6px] border border-border bg-muted px-4'>
+				<div className='mb-4 text-center text-[20px] font-medium leading-normal text-foreground'>
 					{t('plans.listPage.emptyStateCustom.heading')}
 				</div>
-				<div className='mb-8 max-w-[350px] bg-[#F9F9F9] text-center text-[16px] font-normal leading-normal text-gray-400'>
+				<div className='mb-8 max-w-[350px] bg-muted text-center text-[16px] font-normal leading-normal text-muted-foreground'>
 					{t('plans.listPage.emptyStateCustom.description')}
 				</div>
 				<Button
 					variant='outline'
-					prefixIcon={<WandSparkles className='text-black' />}
+					prefixIcon={<WandSparkles className='text-foreground' />}
 					onClick={() => navigate(RouteNames.pricingSetup, { state: { from: 'plans' } })}
-					className='!border-indigo-200 !bg-white !p-5 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700'>
+					className='!border-indigo-200 !bg-card !p-5 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700'>
 					<span className='analyzing-prompt-shimmer text-sm font-medium'>{t('plans.listPage.createWithAi')}</span>
 				</Button>
 			</div>

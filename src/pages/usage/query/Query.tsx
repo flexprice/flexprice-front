@@ -224,7 +224,7 @@ const QueryPage: React.FC = () => {
 	return (
 		<Page heading={t('usage.query.pageTitle')}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Events} />
-			<div className='bg-white rounded-md flex items-start gap-4'>
+			<div className='bg-card rounded-md flex items-start gap-4'>
 				<QueryBuilder
 					filterOptions={filterOptions}
 					filters={filters}
@@ -282,8 +282,8 @@ const QueryPage: React.FC = () => {
 								}
 								margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
 								<CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
-								<XAxis dataKey='date' tickLine={false} axisLine={false} tickMargin={10} className='text-gray-500' />
-								<YAxis tickLine={false} axisLine={false} className='text-gray-500' />
+								<XAxis dataKey='date' tickLine={false} axisLine={false} tickMargin={10} className='text-muted-foreground' />
+								<YAxis tickLine={false} axisLine={false} className='text-muted-foreground' />
 
 								{(formattedData?.length ?? 0) > 0 ? (
 									<>

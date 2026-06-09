@@ -80,15 +80,15 @@ const SignupConfirmation = () => {
 			<div className='flex flex-col items-center justify-center min-h-screen p-4'>
 				{isPending && (
 					<div className='text-center'>
-						<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4'></div>
+						<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-foreground mx-auto mb-4'></div>
 						<h2 className='text-xl font-semibold'>{t('signupConfirmation.completingHeading')}</h2>
-						<p className='text-gray-600 mt-2'>{t('signupConfirmation.completingDescription')}</p>
+						<p className='text-muted-foreground mt-2'>{t('signupConfirmation.completingDescription')}</p>
 					</div>
 				)}
 				{!isPending && (
 					<div className='text-center'>
 						<h2 className='text-xl font-semibold'>{t('signupConfirmation.processingHeading')}</h2>
-						<p className='text-gray-600 mt-2'>{t('signupConfirmation.processingDescription')}</p>
+						<p className='text-muted-foreground mt-2'>{t('signupConfirmation.processingDescription')}</p>
 					</div>
 				)}
 			</div>

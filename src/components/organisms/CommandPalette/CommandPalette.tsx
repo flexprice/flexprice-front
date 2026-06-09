@@ -153,7 +153,7 @@ const CommandPalette = () => {
 										onSelect={() => handleSelect(command)}
 										className='my-1 mx-2 p-2 !rounded-xl'>
 										{Icon && <Icon className='!size-[11px] shrink-0 text-muted-foreground mx-2' />}
-										<span className='!text-[13px] text-black/70 !font-normal'>{command.label}</span>
+										<span className='!text-[13px] text-foreground/70 !font-normal'>{command.label}</span>
 									</CommandItem>
 								);
 							})}

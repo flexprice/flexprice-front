@@ -3,40 +3,25 @@ import { FC, ReactNode } from 'react';
 
 type ChipVariant = 'default' | 'success' | 'warning' | 'failed' | 'info';
 
-interface ChipColorScheme {
-	textColor: string;
-	bgColor: string;
-	borderColor: string;
-}
-
 interface ChipProps {
-	/** The main content of the chip */
 	label?: ReactNode;
-	/** Visual style variant of the chip */
 	variant?: ChipVariant;
-	/** Custom text color (overrides variant) */
 	textColor?: string;
-	/** Custom background color (overrides variant) */
 	bgColor?: string;
-	/** Click handler for the chip */
 	onClick?: () => void;
-	/** Icon to display before the label */
 	icon?: ReactNode;
-	/** Additional content to display after the label */
 	childrenAfter?: ReactNode;
-	/** Additional CSS classes */
 	className?: string;
-	/** Whether the chip is disabled */
 	disabled?: boolean;
 	borderColor?: string;
 }
 
-const CHIP_COLORS: Record<ChipVariant, ChipColorScheme> = {
-	success: { bgColor: '#ECFBE4', textColor: '#377E6A', borderColor: '#d1e9ca' },
-	default: { bgColor: '#F0F2F5', textColor: '#57646E', borderColor: '#F0F2F5' },
-	failed: { bgColor: '#FEE2E2', textColor: '#DC2626', borderColor: '#FEE2E2' },
-	info: { bgColor: '#EFF8FF', textColor: '#2F6FE2', borderColor: '#EFF8FF' },
-	warning: { bgColor: '#FFF7ED', textColor: '#C2410C', borderColor: '#FFF7ED' },
+const CHIP_VARIANT_CLASSES: Record<ChipVariant, string> = {
+	success: 'bg-success-muted text-success-muted-foreground border-success-muted-foreground/20',
+	default: 'bg-muted text-muted-foreground border-border',
+	failed: 'bg-destructive/10 text-destructive border-destructive/20',
+	info: 'bg-info-muted text-info-muted-foreground border-info-muted-foreground/20',
+	warning: 'bg-warning-muted text-warning-muted-foreground border-warning-muted-foreground/20',
 };
 
 const Chip: FC<ChipProps> = ({
@@ -51,7 +36,7 @@ const Chip: FC<ChipProps> = ({
 	disabled = false,
 	borderColor,
 }) => {
-	const { bgColor: defaultBgColor, textColor: defaultTextColor, borderColor: defaultBorderColor } = CHIP_COLORS[variant];
+	const hasCustomColors = Boolean(textColor || bgColor || borderColor);
 
 	return (
 		<span
@@ -65,17 +50,21 @@ const Chip: FC<ChipProps> = ({
 				}
 			}}
 			className={cn(
-				'inline-flex items-center justify-center px-2 py-0.5 rounded-[8px] select-none font-normal transition-all',
+				'inline-flex items-center justify-center px-2 py-0.5 rounded-[8px] select-none font-normal transition-all border',
+				!hasCustomColors && CHIP_VARIANT_CLASSES[variant],
 				onClick && !disabled && 'cursor-pointer hover:opacity-90 active:scale-95',
 				disabled && 'opacity-50 cursor-not-allowed',
-
 				className,
 			)}
-			style={{
-				backgroundColor: bgColor ?? defaultBgColor,
-				color: textColor ?? defaultTextColor,
-				border: `1px solid ${borderColor ?? defaultBorderColor}`,
-			}}
+			style={
+				hasCustomColors
+					? {
+							backgroundColor: bgColor,
+							color: textColor,
+							borderColor: borderColor ?? bgColor,
+						}
+					: undefined
+			}
 			aria-disabled={disabled}>
 			{icon && <span className='flex items-center text-[16px] leading-none'>{icon}</span>}
 			{label && <span className={cn('leading-none text-[14px]', icon ? 'ms-1.5' : '', childrenAfter ? 'me-1.5' : '')}>{label}</span>}

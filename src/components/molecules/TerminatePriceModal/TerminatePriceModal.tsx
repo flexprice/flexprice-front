@@ -45,7 +45,7 @@ const TerminatePriceModal: FC<TerminatePriceModalProps> = ({ planId: _planId, pr
 	};
 
 	return (
-		<DialogContent className='bg-white sm:max-w-[600px]'>
+		<DialogContent className='bg-card sm:max-w-[600px]'>
 			<DialogHeader>
 				<DialogTitle>{t('termination.price.title')}</DialogTitle>
 			</DialogHeader>
@@ -59,7 +59,7 @@ const TerminatePriceModal: FC<TerminatePriceModalProps> = ({ planId: _planId, pr
 						setDate={setEndDate}
 						className='w-full'
 					/>
-					<p className='text-xs text-gray-500'>{t('termination.price.hint')}</p>
+					<p className='text-xs text-muted-foreground'>{t('termination.price.hint')}</p>
 					{terminationMessage && (
 						<div className='mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg'>
 							<p className='text-sm text-blue-800'>{terminationMessage}</p>

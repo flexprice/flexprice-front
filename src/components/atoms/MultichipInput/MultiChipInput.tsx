@@ -55,11 +55,11 @@ const MultichipField = React.forwardRef<HTMLInputElement, InputProps>(
 						{chips.map((chip, index) => (
 							<span
 								key={index}
-								className='bg-[#F1F5F9] flex items-center justify-between text-background text-xs  cursor-pointer gap-2 rounded-md px-2 py-0 '>
+								className='bg-muted flex items-center justify-between text-background text-xs  cursor-pointer gap-2 rounded-md px-2 py-0 '>
 								{chip}
 								{!disabled && (
 									<button
-										className=' text-[#52525B] font-medium'
+										className=' text-muted-foreground font-medium'
 										onClick={() => {
 											const updatedChips = chips.filter((_, i) => i !== index);
 											setchips(updatedChips);

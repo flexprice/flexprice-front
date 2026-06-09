@@ -21,12 +21,12 @@ const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit,
 		price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM ? price.price_unit_config?.price_unit || price.currency : price.currency;
 
 	return (
-		<div className='gap-2 w-full flex justify-between group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground hover:bg-gray-50 transition-colors'>
+		<div className='gap-2 w-full flex justify-between group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground hover:bg-muted transition-colors'>
 			<div>
 				<p className='font-normal text-sm'>
 					{price.display_name || price.meter?.name || t('plans.organisms.chargeLabels.usageBasedCharge')}
 				</p>
-				<div className='flex gap-2 items-center text-zinc-500 text-xs'>
+				<div className='flex gap-2 items-center text-muted-foreground text-xs'>
 					<span>{displayCurrency}</span>
 					<span>•</span>
 					<span>{toSentenceCase(price.billing_period || '')}</span>
@@ -39,17 +39,17 @@ const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit,
 				</div>
 			</div>
 			{!disabled && (
-				<span className='text-[#18181B] flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity'>
+				<span className='text-foreground flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity'>
 					<button
 						onClick={() => {
 							const newPrice = { ...price, isEdit: true };
 							onEdit?.(newPrice);
 						}}
-						className='p-1 hover:bg-gray-100 rounded-md'>
+						className='p-1 hover:bg-muted rounded-md'>
 						<Pencil size={16} />
 					</button>
-					<div className='border-r h-[16px] border-[#E4E4E7]' />
-					<button onClick={() => onDelete?.(index)} className='p-1 hover:bg-gray-100 rounded-md text-red-500'>
+					<div className='border-r h-[16px] border-border' />
+					<button onClick={() => onDelete?.(index)} className='p-1 hover:bg-muted rounded-md text-red-500'>
 						<Trash2 size={16} />
 					</button>
 				</span>

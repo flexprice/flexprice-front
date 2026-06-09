@@ -96,10 +96,10 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 	};
 
 	return (
-		<div className='space-y-6 p-6 border border-gray-200 rounded-lg bg-white shadow-sm'>
+		<div className='space-y-6 p-6 border border-border rounded-lg bg-card shadow-sm'>
 			{/* Phase Dates */}
 			<div>
-				<h4 className='text-sm font-semibold text-gray-900 mb-4'>{t('organisms.phaseForm.phaseDuration')}</h4>
+				<h4 className='text-sm font-semibold text-foreground mb-4'>{t('organisms.phaseForm.phaseDuration')}</h4>
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<div>
 						<Label label={t('organisms.phaseForm.startDateRequired')} />
@@ -132,7 +132,7 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 			</div>
 
 			{/* Phase-level Coupons */}
-			<div className='pt-6 border-t border-gray-200'>
+			<div className='pt-6 border-t border-border'>
 				<SubscriptionDiscountTable
 					coupon={formState.coupons.length > 0 ? formState.coupons[0] : null}
 					onChange={(coupon) => {
@@ -148,7 +148,7 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 
 			{/* Price Table with Line Item Coupons */}
 			{prices.length > 0 && (
-				<div className='pt-6 border-t border-gray-200'>
+				<div className='pt-6 border-t border-border'>
 					<SubscriptionPriceTable
 						data={prices}
 						billingPeriod={billingPeriod}
@@ -178,7 +178,7 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 			)}
 
 			{/* Action Buttons */}
-			<div className='flex justify-end gap-3 pt-6 border-t border-gray-200'>
+			<div className='flex justify-end gap-3 pt-6 border-t border-border'>
 				<Button variant='outline' onClick={onCancel} disabled={disabled}>
 					{t('common:actions.cancel')}
 				</Button>

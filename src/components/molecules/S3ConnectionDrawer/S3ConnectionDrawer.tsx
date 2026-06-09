@@ -181,12 +181,12 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 				{!connection && (
 					<>
 						{/* Flexprice Managed Switch */}
-						<div className='flex items-center justify-between p-4 border rounded-lg bg-gray-50'>
+						<div className='flex items-center justify-between p-4 border rounded-lg bg-muted'>
 							<div className='flex-1'>
-								<label htmlFor='flexprice-managed' className='text-sm font-medium text-gray-900 cursor-pointer'>
+								<label htmlFor='flexprice-managed' className='text-sm font-medium text-foreground cursor-pointer'>
 									{t('connection.s3.flexpriceManaged')}
 								</label>
-								<p className='text-xs text-gray-500 mt-1'>{t('connection.s3.flexpriceManagedHint')}</p>
+								<p className='text-xs text-muted-foreground mt-1'>{t('connection.s3.flexpriceManagedHint')}</p>
 							</div>
 							<Switch
 								id='flexprice-managed'

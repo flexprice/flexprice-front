@@ -49,7 +49,29 @@ export default {
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
-					foreground: '#64748B',
+					foreground: 'hsl(var(--muted-foreground))',
+				},
+				brand: {
+					DEFAULT: 'hsl(var(--brand))',
+					foreground: 'hsl(var(--brand-foreground))',
+				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))',
+					muted: 'hsl(var(--success-muted))',
+					'muted-foreground': 'hsl(var(--success-muted-foreground))',
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))',
+					muted: 'hsl(var(--warning-muted))',
+					'muted-foreground': 'hsl(var(--warning-muted-foreground))',
+				},
+				info: {
+					DEFAULT: 'hsl(var(--info))',
+					foreground: 'hsl(var(--info-foreground))',
+					muted: 'hsl(var(--info-muted))',
+					'muted-foreground': 'hsl(var(--info-muted-foreground))',
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
@@ -78,7 +100,7 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))',
-					'text-accent-foreground': '#18181B',
+					'text-accent-foreground': 'hsl(var(--sidebar-text-accent-foreground))',
 				},
 			},
 			keyframes: {

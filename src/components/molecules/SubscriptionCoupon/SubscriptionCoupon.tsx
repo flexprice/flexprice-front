@@ -110,7 +110,7 @@ const SubscriptionCoupon: React.FC<Props> = ({ currency, selectedCoupon, onChang
 			</div>
 
 			{selectedCoupon ? (
-				<div className='rounded-lg border border-gray-200 bg-blue-50 p-4'>
+				<div className='rounded-lg border border-border bg-blue-50 p-4'>
 					<div className='flex items-center justify-between'>
 						<div className='flex-1'>
 							<div className='text-sm font-medium text-blue-900'>{selectedCoupon.name}</div>
@@ -130,7 +130,7 @@ const SubscriptionCoupon: React.FC<Props> = ({ currency, selectedCoupon, onChang
 					</div>
 				</div>
 			) : (
-				<div className='rounded-xl border border-gray-300 p-4 text-center text-gray-500'>{t('subscriptions.coupon.emptyState')}</div>
+				<div className='rounded-xl border border-border p-4 text-center text-muted-foreground'>{t('subscriptions.coupon.emptyState')}</div>
 			)}
 
 			<CouponModal

@@ -41,10 +41,10 @@ const RectangleRadiogroup: FC<Props> = ({ onChange, options, value, description,
 								}}
 								className={cn(
 									'relative p-3 py-6 border-2 w-full flex flex-col justify-center items-center rounded-xl',
-									option.value === value ? 'border-[#0F172A]' : 'border-[#E2E8F0]',
-									option.disabled && !option.premium ? 'cursor-default text-zinc-500 ' : 'cursor-pointer',
+									option.value === value ? 'border-foreground' : 'border-border',
+									option.disabled && !option.premium ? 'cursor-default text-muted-foreground ' : 'cursor-pointer',
 								)}>
-								{option.icon && <option.icon size={24} className={cn(option.disabled ? '  ' : 'text-[#020617]')} />}
+								{option.icon && <option.icon size={24} className={cn(option.disabled ? '  ' : 'text-foreground')} />}
 								{option.comingSoon && (
 									<div className='absolute top-2 right-2'>
 										<ComingSoonTag />
@@ -55,14 +55,14 @@ const RectangleRadiogroup: FC<Props> = ({ onChange, options, value, description,
 										<PremiumFeatureTag />
 									</div>
 								)}
-								<p className={cn(option.disabled ? '' : 'text-[#18181B] font-medium')}>{option.label}</p>
-								{option.description && <p className='text-sm text-[#64748B] font-sans '>{option.description}</p>}
+								<p className={cn(option.disabled ? '' : 'text-foreground font-medium')}>{option.label}</p>
+								{option.description && <p className='text-sm text-muted-foreground font-sans '>{option.description}</p>}
 							</button>
 						</PremiumFeature>
 					);
 				})}
 			</div>
-			{description && <p className='text-sm text-[#64748B] font-sans '>{description}</p>}
+			{description && <p className='text-sm text-muted-foreground font-sans '>{description}</p>}
 		</div>
 	);
 };

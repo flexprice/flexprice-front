@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 
 const FILTER_OPTION_CLASS =
-	'w-full rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-200';
+	'w-full rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-200';
 
 export interface OptionFilterGroup<T extends string = string> {
 	id: string;
@@ -39,14 +39,14 @@ const OptionFilterPopover = ({ ariaLabel, groups, activeFilterCount = 0, align =
 				<div className='space-y-4'>
 					{groups.map((group) => (
 						<div key={group.id}>
-							<p className='mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500'>{group.label}</p>
+							<p className='mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>{group.label}</p>
 							<div className='space-y-1'>
 								{group.options.map((option) => (
 									<button
 										key={option.value}
 										type='button'
 										aria-pressed={group.value === option.value}
-										className={cn(FILTER_OPTION_CLASS, group.value === option.value && 'bg-zinc-100 font-medium text-zinc-900')}
+										className={cn(FILTER_OPTION_CLASS, group.value === option.value && 'bg-muted font-medium text-foreground')}
 										onClick={() => group.onChange(option.value)}>
 										{option.label}
 									</button>

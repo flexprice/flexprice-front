@@ -47,9 +47,9 @@ interface Props {
 
 const Tag: FC<{ tag: NonNullable<Detail['tag']> }> = ({ tag }) => {
 	const variantClasses = {
-		default: 'bg-primary-100 text-primary-700',
-		subtle: 'bg-gray-100 text-gray-600',
-		outline: 'border border-gray-300 text-gray-600',
+		default: 'bg-info-muted text-info-muted-foreground',
+		subtle: 'bg-muted text-muted-foreground',
+		outline: 'border border-border text-muted-foreground',
 	};
 
 	return (
@@ -73,9 +73,9 @@ const DetailsCard: FC<Props> = ({
 	const { t } = useTranslation('common');
 	const na = t('labels.na');
 	const cardClasses = {
-		default: 'card bg-white border rounded-lg p-6',
-		borderless: 'bg-white',
-		compact: 'card bg-white border rounded-lg p-4',
+		default: 'card bg-card border border-border rounded-lg p-6 shadow-sm',
+		borderless: 'bg-card border border-border rounded-lg p-6 shadow-sm',
+		compact: 'card bg-card border border-border rounded-lg p-4 shadow-sm',
 	};
 
 	const gridColsClass = {
@@ -102,7 +102,7 @@ const DetailsCard: FC<Props> = ({
 		<div className={cn(cardClasses[cardStyle], className)}>
 			{children && childrenAtTop && <div className='w-full'>{children}</div>}
 
-			{title && <p className={cn('text-xl font-medium mb-5', titleClassName)}>{title}</p>}
+			{title && <p className={cn('text-xl font-semibold text-foreground mb-5', titleClassName)}>{title}</p>}
 
 			<div className={cn('grid gap-y-4 gap-x-4', gridColsClass[gridCols])}>
 				{data.map((detail, index) => {
@@ -115,7 +115,7 @@ const DetailsCard: FC<Props> = ({
 					}
 
 					if (detail.variant === 'divider') {
-						return <div key={index} className={cn('col-span-full h-[1px] bg-gray-200 my-6', detail.className)} />;
+						return <div key={index} className={cn('col-span-full h-px bg-border my-6', detail.className)} />;
 					}
 
 					const labelClasses = getDetailLabelTypographyClass(detail.labelStyle);
@@ -124,7 +124,7 @@ const DetailsCard: FC<Props> = ({
 					if (variant === 'stacked') {
 						return (
 							<div key={index} className={cn('flex flex-col space-y-0', colSpanClass, detail.className)}>
-								<div className={cn(getValueClasses(detail), 'text-[#09090B] text-sm font-medium')}>{detail.label}</div>
+								<div className={cn(getValueClasses(detail), 'text-foreground text-sm font-medium')}>{detail.label}</div>
 								<div className={cn(labelClasses, 'text-muted-foreground text-sm')}>
 									<span>{detail.value || na}</span>
 									{detail.tag && <Tag tag={detail.tag} />}

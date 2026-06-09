@@ -213,14 +213,14 @@ const CreateInvoicePage: FC = () => {
 	return (
 		<Page heading={t('createInvoice.pageTitle')}>
 			<div className='space-y-6'>
-				<div className='rounded-xl border border-gray-300 p-6'>
+				<div className='rounded-xl border border-border p-6'>
 					<div className='p-4'>
 						<FormHeader title={t('createInvoice.invoiceDetails')} variant='sub-header' titleClassName='font-semibold' />
 						<Spacer className='!my-6' />
 						<div className='w-full grid grid-cols-3 gap-4'>
-							<p className='text-[#71717A] text-sm'>{t('createInvoice.issueDate')}</p>
+							<p className='text-muted-foreground text-sm'>{t('createInvoice.issueDate')}</p>
 							<p></p>
-							<p className='text-[#71717A] text-sm'>{t('createInvoice.currency')}</p>
+							<p className='text-muted-foreground text-sm'>{t('createInvoice.currency')}</p>
 						</div>
 						<div className='w-full grid grid-cols-3 gap-4'>
 							<DateTimePicker
@@ -239,16 +239,16 @@ const CreateInvoicePage: FC = () => {
 					<div className='grid grid-cols-2 p-4 gap-8'>
 						<div className='text-left'>
 							<FormHeader className='!mb-2' title={user?.tenant.name} variant='sub-header' titleClassName='font-semibold' />
-							<p className='text-sm text-[#71717A] mb-[2px]'>{user?.tenant.name}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{user?.email}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{tenantAddress}</p>
+							<p className='text-sm text-muted-foreground mb-[2px]'>{user?.tenant.name}</p>
+							<p className='text-sm text-muted-foreground mb-[2px]'>{user?.email}</p>
+							<p className='text-sm text-muted-foreground mb-[2px]'>{tenantAddress}</p>
 						</div>
 
 						<div>
 							<FormHeader className='!mb-2' title={t('createInvoice.billTo')} variant='sub-header' titleClassName='font-semibold' />
-							<p className='text-sm text-[#71717A] mb-[2px]'>{customer?.name || t('common:labels.na')}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{customer?.email || t('common:labels.na')}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{customerAddress}</p>
+							<p className='text-sm text-muted-foreground mb-[2px]'>{customer?.name || t('common:labels.na')}</p>
+							<p className='text-sm text-muted-foreground mb-[2px]'>{customer?.email || t('common:labels.na')}</p>
+							<p className='text-sm text-muted-foreground mb-[2px]'>{customerAddress}</p>
 						</div>
 					</div>
 
@@ -328,7 +328,7 @@ const CreateInvoicePage: FC = () => {
 					</div>
 
 					<div className='flex justify-end mt-8'>
-						<div className='text-sm text-gray-800 space-y-4 w-1/3 px-2'>
+						<div className='text-sm text-foreground space-y-4 w-1/3 px-2'>
 							<div className='flex justify-between'>
 								<span>{t('invoices.details.lineItemsTable.subtotal')}</span>
 								<span>{`${getCurrencySymbol(currency)}${calculateSubtotal().toFixed(2)}`}</span>

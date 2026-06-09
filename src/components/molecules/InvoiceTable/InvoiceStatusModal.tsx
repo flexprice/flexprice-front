@@ -136,7 +136,7 @@ const InvoiceStatusModal: FC<InvoiceStatusProps> = ({ isOpen, onOpenChange, invo
 
 	return (
 		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-			<div className='card bg-white max-w-lg'>
+			<div className='card bg-card max-w-lg'>
 				<FormHeader
 					title={t('invoices.details.updateInvoiceStatus')}
 					variant='sub-header'
@@ -154,7 +154,7 @@ const InvoiceStatusModal: FC<InvoiceStatusProps> = ({ isOpen, onOpenChange, invo
 					<>
 						<Spacer className='!my-6' />
 						<div className='border-t pt-6'>
-							<h3 className='text-lg font-medium text-gray-900 mb-4'>{t('invoices.details.addMetadataOptional')}</h3>
+							<h3 className='text-lg font-medium text-foreground mb-4'>{t('invoices.details.addMetadataOptional')}</h3>
 							<div className='flex flex-col gap-4'>
 								{voidMetadata.map((item, idx) => (
 									<div key={idx} className='flex gap-2 items-center'>

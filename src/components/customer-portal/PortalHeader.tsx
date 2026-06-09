@@ -25,7 +25,7 @@ const PortalHeader = ({ customer, tenantName }: PortalHeaderProps) => {
 		<div
 			style={{
 				backgroundColor: hasTheme ? 'var(--portal-surface)' : 'white',
-				borderBottom: `1px solid ${hasTheme ? 'var(--portal-border)' : '#E9E9E9'}`,
+				borderBottom: `1px solid ${'var(--portal-border)'}`,
 			}}>
 			<div className='max-w-6xl mx-auto px-4 sm:px-6 py-6'>
 				<div className='flex items-center justify-between'>

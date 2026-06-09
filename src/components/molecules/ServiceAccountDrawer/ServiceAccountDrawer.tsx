@@ -160,15 +160,15 @@ const ServiceAccountDrawer: FC<Props> = ({ isOpen, onOpenChange, data }) => {
 					</div>
 				) : (
 					<div className='flex flex-col gap-2'>
-						<label className='block text-sm font-medium text-gray-700'>
+						<label className='block text-sm font-medium text-foreground'>
 							{t('developers:labels.roleRequiredHint')} <span className='text-red-500'>*</span>
 						</label>
-						<p className='text-sm text-gray-500'>{t('developers:serviceAccountDrawer.rolesHint')}</p>
-						<div className='border rounded-md p-4 flex flex-col gap-3 bg-white'>
+						<p className='text-sm text-muted-foreground'>{t('developers:serviceAccountDrawer.rolesHint')}</p>
+						<div className='border rounded-md p-4 flex flex-col gap-3 bg-card'>
 							{isLoadingRoles ? (
-								<p className='text-sm text-gray-500'>{t('developers:serviceAccountDrawer.loadingRoles')}</p>
+								<p className='text-sm text-muted-foreground'>{t('developers:serviceAccountDrawer.loadingRoles')}</p>
 							) : roleOptions.length === 0 ? (
-								<p className='text-sm text-gray-500'>{t('developers:serviceAccountDrawer.noRolesAvailable')}</p>
+								<p className='text-sm text-muted-foreground'>{t('developers:serviceAccountDrawer.noRolesAvailable')}</p>
 							) : (
 								roleOptions.map((role) => {
 									const isDisabled = isSuperAdminSelected && role.value !== 'super_admin';
@@ -194,7 +194,7 @@ const ServiceAccountDrawer: FC<Props> = ({ isOpen, onOpenChange, data }) => {
 
 				{selectedRoles.length > 0 && (
 					<div className='flex flex-col gap-1.5'>
-						<label className='block text-sm font-medium text-gray-700'>{t('developers:labels.selectedRoles')}</label>
+						<label className='block text-sm font-medium text-foreground'>{t('developers:labels.selectedRoles')}</label>
 						<div className='flex flex-wrap gap-1'>
 							{selectedRoles.map((role) => (
 								<span key={role} className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>

@@ -154,8 +154,8 @@ const QuickBooksOAuthCallback = () => {
 			<Page>
 				<div className='flex flex-col items-center justify-center min-h-[400px]'>
 					<div className='text-red-600 text-lg font-semibold mb-2'>{t('insightsTools.oauthCallback.authorizationFailed')}</div>
-					<div className='text-gray-600 mb-4'>{error}</div>
-					<div className='text-sm text-gray-500'>{t('insightsTools.oauthCallback.redirectingToIntegrations')}</div>
+					<div className='text-muted-foreground mb-4'>{error}</div>
+					<div className='text-sm text-muted-foreground'>{t('insightsTools.oauthCallback.redirectingToIntegrations')}</div>
 				</div>
 			</Page>
 		);
@@ -165,8 +165,10 @@ const QuickBooksOAuthCallback = () => {
 		<Page>
 			<div className='flex flex-col items-center justify-center min-h-[400px]'>
 				<Loader />
-				<div className='mt-4 text-gray-600'>{t('insightsTools.oauthCallback.completingAuthorization', { provider: providerName })}</div>
-				<div className='mt-2 text-sm text-gray-500'>{t('insightsTools.oauthCallback.exchangingTokens')}</div>
+				<div className='mt-4 text-muted-foreground'>
+					{t('insightsTools.oauthCallback.completingAuthorization', { provider: providerName })}
+				</div>
+				<div className='mt-2 text-sm text-muted-foreground'>{t('insightsTools.oauthCallback.exchangingTokens')}</div>
 			</div>
 		</Page>
 	);

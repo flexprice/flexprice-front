@@ -82,7 +82,7 @@ const SubscriptionCancelDialog = ({ isOpen, onOpenChange, subscriptionId, curren
 					resetState();
 				}
 			}}
-			className='card bg-white w-[620px] max-w-[90vw]'>
+			className='card bg-card w-[620px] max-w-[90vw]'>
 			<div className='space-y-5'>
 				<FormHeader
 					title={t('subscriptions.cancelSubscription')}

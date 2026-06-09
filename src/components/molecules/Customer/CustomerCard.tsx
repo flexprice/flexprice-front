@@ -45,7 +45,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({ customerId, subscriptionDat
 	if (isLoading) {
 		return (
 			<div className='flex items-center justify-center'>
-				<div className='py-6 px-4 rounded-xl border border-gray-300'>
+				<div className='py-6 px-4 rounded-xl border border-border'>
 					<div className='h-6 w-32 bg-gray-200 rounded animate-pulse mb-4'></div>
 					<div className='flex items-start space-x-3'>
 						<div className='w-10 h-10 bg-gray-200 rounded-full animate-pulse'></div>
@@ -63,24 +63,24 @@ const CustomerCard: React.FC<CustomerCardProps> = ({ customerId, subscriptionDat
 	// Customer Details
 	return (
 		<div className='items-center justify-center'>
-			<div className='card bg-white'>
+			<div className='card bg-card'>
 				<FormHeader title={t('overview.cardTitle')} variant='sub-header' />
 				<div className='flex items-center space-x-4'>
 					<div className='w-full space-y-4'>
 						{details.map((detail, index) => (
 							<div key={index} className='grid grid-cols-2 gap-4'>
-								<div className='text-sm font-light text-gray-600'>{detail.label}</div>
-								<div className='text-sm font-normal text-gray-800 text-end'>{detail.value || emptyDisplay}</div>
+								<div className='text-sm font-light text-muted-foreground'>{detail.label}</div>
+								<div className='text-sm font-normal text-foreground text-end'>{detail.value || emptyDisplay}</div>
 							</div>
 						))}
 						<div className='grid grid-cols-2 gap-4'>
 							{subscriptionData && (
 								<>
-									<div className='text-sm font-light text-gray-600'>{t('overview.labels.subscriptionAmount')}</div>
-									<div className='text-sm font-normal text-gray-800 text-end'>{subscriptionData.display_amount || emptyDisplay}</div>
+									<div className='text-sm font-light text-muted-foreground'>{t('overview.labels.subscriptionAmount')}</div>
+									<div className='text-sm font-normal text-foreground text-end'>{subscriptionData.display_amount || emptyDisplay}</div>
 
-									<div className='text-sm font-light text-gray-600'>{t('overview.labels.subscriptionStartDate')}</div>
-									<div className='text-sm font-normal text-gray-800 text-end'>
+									<div className='text-sm font-light text-muted-foreground'>{t('overview.labels.subscriptionStartDate')}</div>
+									<div className='text-sm font-normal text-foreground text-end'>
 										{formatDate(subscriptionData.start_time.toString()) || emptyDisplay}
 									</div>
 								</>

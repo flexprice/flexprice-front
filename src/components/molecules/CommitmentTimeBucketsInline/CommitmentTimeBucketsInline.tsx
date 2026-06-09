@@ -15,14 +15,14 @@ const CommitmentTimeBucketsInline: FC<Props> = ({ buckets, currency, minutesEnab
 	const { t } = useTranslation('billing');
 
 	if (!buckets?.length) {
-		return <span className='text-sm text-gray-400'>—</span>;
+		return <span className='text-sm text-muted-foreground'>—</span>;
 	}
 
 	const currencySymbol = getCurrencySymbol(currency ?? 'usd');
 
 	if (compact) {
 		return (
-			<span className='text-sm text-gray-600'>
+			<span className='text-sm text-muted-foreground'>
 				{t('commitmentConfig.timeBuckets.bucketCount', {
 					count: buckets.length,
 					defaultValue: '{{count}} time bucket(s)',
@@ -34,10 +34,10 @@ const CommitmentTimeBucketsInline: FC<Props> = ({ buckets, currency, minutesEnab
 	return (
 		<ul className='space-y-1.5'>
 			{buckets.map((bucket, index) => (
-				<li key={bucket.id ?? index} className='text-sm text-gray-700 leading-snug'>
+				<li key={bucket.id ?? index} className='text-sm text-foreground leading-snug'>
 					{formatCommitmentTimeBucketLabel(bucket, currencySymbol, minutesEnabled)}
 					{bucket.true_up_enabled ? (
-						<span className='ms-1 text-xs text-gray-500'>({t('commitmentConfig.enableTrueUp', { defaultValue: 'True up' })})</span>
+						<span className='ms-1 text-xs text-muted-foreground'>({t('commitmentConfig.enableTrueUp', { defaultValue: 'True up' })})</span>
 					) : null}
 				</li>
 			))}

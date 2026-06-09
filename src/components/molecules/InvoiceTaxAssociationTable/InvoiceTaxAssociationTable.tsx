@@ -118,7 +118,7 @@ const InvoiceTaxAssociationTable: FC<Props> = ({ data, onChange, disabled, defau
 						disabled={disabled}
 					/>
 				</div>
-				<div className='rounded-[6px] border border-gray-300 space-y-6 mt-2'>
+				<div className='rounded-[6px] border border-border space-y-6 mt-2'>
 					<FlexpriceTable data={data} columns={columns} showEmptyRow />
 				</div>
 			</div>

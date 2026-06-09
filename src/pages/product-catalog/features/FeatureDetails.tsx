@@ -416,8 +416,8 @@ const FeatureDetails = () => {
 								<CardHeader title={t('catalog:features.details.eventDetails')} className='!p-0 !mb-2' />
 								<div>
 									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.eventName')}</span>
-										<span className='text-gray-800 text-sm'>{data?.meter?.event_name}</span>
+										<span className='text-muted-foreground text-sm'>{t('catalog:features.details.eventName')}</span>
+										<span className='text-foreground text-sm'>{data?.meter?.event_name}</span>
 									</div>
 								</div>
 
@@ -426,12 +426,12 @@ const FeatureDetails = () => {
 								{data?.meter?.filters && data.meter.filters.length > 0 && (
 									<>
 										<div className='space-y-4'>
-											<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.eventFilters')}</span>
+											<span className='text-muted-foreground text-sm font-medium block'>{t('catalog:features.details.eventFilters')}</span>
 											<div className='space-y-3'>
 												{data?.meter?.filters?.map((filter) => {
 													return (
 														<div className='grid grid-cols-[200px_1fr] items-start'>
-															<span className='text-gray-800 text-sm'>{filter.key}</span>
+															<span className='text-foreground text-sm'>{filter.key}</span>
 															<div className='flex gap-1.5 flex-wrap'>
 																{filter.values.map((value) => {
 																	return <Chip className='text-xs py-0.5' variant='default' label={value} />;
@@ -447,44 +447,44 @@ const FeatureDetails = () => {
 								)}
 
 								<div className='space-y-4'>
-									<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.aggregationDetails')}</span>
+									<span className='text-muted-foreground text-sm font-medium block'>{t('catalog:features.details.aggregationDetails')}</span>
 									<div className='space-y-3'>
 										{/* <div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>Aggregation</span>
-										<span className='text-gray-800 text-sm'>{toSentenceCase(data?.meter?.aggregation.type || '--')}</span>
+										<span className='text-muted-foreground text-sm'>Aggregation</span>
+										<span className='text-foreground text-sm'>{toSentenceCase(data?.meter?.aggregation.type || '--')}</span>
 									</div> */}
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>{t('catalog:features.details.type')}</span>
-											<span className='text-gray-800 text-sm'>
+											<span className='text-muted-foreground text-sm'>{t('catalog:features.details.type')}</span>
+											<span className='text-foreground text-sm'>
 												{formatAggregationType(data?.meter?.aggregation.type || t('common:labels.na'))}
 											</span>
 										</div>
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>
+											<span className='text-muted-foreground text-sm'>
 												{t(
 													data?.meter?.aggregation?.expression
 														? 'catalog:features.details.customExpression'
 														: 'catalog:features.details.value',
 												)}
 											</span>
-											<span className='text-gray-800 text-sm'>
+											<span className='text-foreground text-sm'>
 												{data?.meter?.aggregation?.expression || data?.meter?.aggregation?.field || t('common:labels.na')}
 											</span>
 										</div>
 
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>{t('catalog:features.details.unitName')}</span>
-											<span className='text-gray-800 text-sm'>{`${data?.unit_singular || t('catalog:features.form.unitDefault')} / ${data?.unit_plural || t('catalog:features.form.unitsDefault')}`}</span>
+											<span className='text-muted-foreground text-sm'>{t('catalog:features.details.unitName')}</span>
+											<span className='text-foreground text-sm'>{`${data?.unit_singular || t('catalog:features.form.unitDefault')} / ${data?.unit_plural || t('catalog:features.form.unitsDefault')}`}</span>
 										</div>
 										{data?.reporting_unit && (
 											<div className='grid grid-cols-[200px_1fr] items-center'>
-												<span className='text-gray-500 text-sm'>{t('catalog:features.details.displayUnitName')}</span>
-												<span className='text-gray-800 text-sm'>{`${data.reporting_unit.unit_singular || t('common:labels.na')} / ${data.reporting_unit.unit_plural || t('common:labels.na')}`}</span>
+												<span className='text-muted-foreground text-sm'>{t('catalog:features.details.displayUnitName')}</span>
+												<span className='text-foreground text-sm'>{`${data.reporting_unit.unit_singular || t('common:labels.na')} / ${data.reporting_unit.unit_plural || t('common:labels.na')}`}</span>
 											</div>
 										)}
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>{t('catalog:features.details.usageReset')}</span>
-											<span className='text-gray-800 text-sm'>
+											<span className='text-muted-foreground text-sm'>{t('catalog:features.details.usageReset')}</span>
+											<span className='text-foreground text-sm'>
 												{formatMeterUsageResetPeriodToDisplay(data?.meter?.reset_usage || t('common:labels.na'))}
 											</span>
 										</div>
@@ -492,14 +492,14 @@ const FeatureDetails = () => {
 											data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM) &&
 											data?.meter?.aggregation?.bucket_size && (
 												<div className='grid grid-cols-[200px_1fr] items-center'>
-													<span className='text-gray-500 text-sm'>{t('catalog:features.details.bucketSize')}</span>
-													<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.bucket_size || t('common:labels.na')}</span>
+													<span className='text-muted-foreground text-sm'>{t('catalog:features.details.bucketSize')}</span>
+													<span className='text-foreground text-sm'>{data?.meter?.aggregation.bucket_size || t('common:labels.na')}</span>
 												</div>
 											)}
 										{data?.meter?.aggregation?.group_by && (
 											<div className='grid grid-cols-[200px_1fr] items-center'>
-												<span className='text-gray-500 text-sm'>{t('catalog:features.details.groupBy')}</span>
-												<span className='text-gray-800 text-sm'>{data.meter.aggregation.group_by}</span>
+												<span className='text-muted-foreground text-sm'>{t('catalog:features.details.groupBy')}</span>
+												<span className='text-foreground text-sm'>{data.meter.aggregation.group_by}</span>
 											</div>
 										)}
 									</div>

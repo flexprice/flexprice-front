@@ -305,8 +305,8 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 					<div className='mb-4'>
 						<label className='text-sm font-medium text-blue-800 mb-2 block'>{t('connection.webhook.url')}</label>
 						<p className='text-xs text-blue-700 mb-3'>{t('connection.moyasar.webhookIntro')}</p>
-						<div className='flex items-center gap-2 p-2 bg-white border border-blue-200 rounded-md'>
-							<code className='flex-1 text-xs text-gray-800 font-mono break-all'>{webhookUrl}</code>
+						<div className='flex items-center gap-2 p-2 bg-card border border-blue-200 rounded-md'>
+							<code className='flex-1 text-xs text-foreground font-mono break-all'>{webhookUrl}</code>
 							<Button size='xs' variant='outline' onClick={handleCopyWebhookUrl} className='flex items-center gap-1'>
 								{webhookCopied ? <CheckCircle className='w-3 h-3' /> : <Copy className='w-3 h-3' />}
 								{webhookCopied ? t('connection.webhook.copied') : t('connection.webhook.copy')}
@@ -325,7 +325,7 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 						</button>
 
 						{isWebhookEventsExpanded && (
-							<div className='mt-2 p-3 bg-white border border-blue-200 rounded-md'>
+							<div className='mt-2 p-3 bg-card border border-blue-200 rounded-md'>
 								<p className='text-xs text-blue-700 mb-3'>{t('connection.moyasar.webhookEventsIntro')}</p>
 								<div className='space-y-1'>
 									{[t('connection.moyasar.webhookEventPaymentPaid'), t('connection.moyasar.webhookEventPaymentFailed')].map((event) => (

@@ -50,16 +50,16 @@ const ResendVerification = () => {
 
 	if (isNewSignup || resendSuccess) {
 		return (
-			<div className='flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4'>
-				<div className='w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg'>
+			<div className='flex min-h-screen flex-col items-center justify-center bg-muted p-4'>
+				<div className='w-full max-w-md space-y-8 rounded-lg bg-card p-8 shadow-lg'>
 					<div className='text-center'>
 						<div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-50'>
 							<img src='/assets/svg/query.svg' alt={t('images.emailIconAlt')} className='h-10 w-10' />
 						</div>
-						<h2 className='mt-6 text-2xl font-bold text-gray-900'>{t('resend.checkEmailHeading')}</h2>
-						<p className='mt-2 text-gray-600'>{t('resend.checkEmailDescription', { brandName: name })}</p>
-						<p className='mt-1 font-medium text-gray-800'>{resendSuccess ? email : userEmail}</p>
-						<p className='mt-4 text-sm text-gray-600'>{t('resend.checkEmailClickLink')}</p>
+						<h2 className='mt-6 text-2xl font-bold text-foreground'>{t('resend.checkEmailHeading')}</h2>
+						<p className='mt-2 text-muted-foreground'>{t('resend.checkEmailDescription', { brandName: name })}</p>
+						<p className='mt-1 font-medium text-foreground'>{resendSuccess ? email : userEmail}</p>
+						<p className='mt-4 text-sm text-muted-foreground'>{t('resend.checkEmailClickLink')}</p>
 					</div>
 
 					<div className='mt-6 space-y-4'>
@@ -68,7 +68,7 @@ const ResendVerification = () => {
 						</Button>
 
 						<div className='text-center'>
-							<p className='text-sm text-gray-500'>
+							<p className='text-sm text-muted-foreground'>
 								{t('resend.didntReceive')}{' '}
 								<button onClick={() => setResendSuccess(false)} className='font-medium text-blue-600 hover:text-blue-500'>
 									{t('links.tryAgain')}
@@ -82,14 +82,14 @@ const ResendVerification = () => {
 	}
 
 	return (
-		<div className='flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4'>
-			<div className='w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-lg'>
+		<div className='flex min-h-screen flex-col items-center justify-center bg-muted p-4'>
+			<div className='w-full max-w-md space-y-8 rounded-lg bg-card p-8 shadow-lg'>
 				<div className='text-center'>
 					<div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-50'>
 						<img src={logo} alt={`${name} Logo`} className='h-10 w-10' />
 					</div>
-					<h2 className='mt-6 text-2xl font-bold text-gray-900'>{t('resend.resendHeading')}</h2>
-					<p className='mt-2 text-gray-600'>{t('resend.resendDescription')}</p>
+					<h2 className='mt-6 text-2xl font-bold text-foreground'>{t('resend.resendHeading')}</h2>
+					<p className='mt-2 text-muted-foreground'>{t('resend.resendDescription')}</p>
 				</div>
 
 				<div className='mt-6 space-y-4'>
@@ -109,7 +109,7 @@ const ResendVerification = () => {
 					</Button>
 
 					<div className='text-center'>
-						<p className='mt-4 text-sm text-gray-600'>
+						<p className='mt-4 text-sm text-muted-foreground'>
 							{t('rememberPassword')}{' '}
 							<button onClick={handleGoToLogin} className='font-medium text-blue-600 hover:text-blue-500'>
 								{t('links.backToLogin')}

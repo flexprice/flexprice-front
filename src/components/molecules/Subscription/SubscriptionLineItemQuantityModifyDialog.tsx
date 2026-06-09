@@ -142,12 +142,12 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 			title={step === 'form' ? t('subscriptions.changeQuantity') : t('subscriptions.reviewChanges')}
 			description={
 				step === 'form' ? (
-					<span className='text-sm text-gray-600'>
+					<span className='text-sm text-muted-foreground'>
 						<Trans
 							ns='billing'
 							i18nKey='subscriptions.quantityModify.updatingDescription'
 							values={{ name: lineItem.display_name }}
-							components={{ highlight: <span className='font-medium text-gray-900' /> }}
+							components={{ highlight: <span className='font-medium text-foreground' /> }}
 						/>
 					</span>
 				) : undefined
@@ -208,7 +208,7 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 								currency: lineItem.currency || 'USD',
 							}}
 						/>
-						<div className='flex justify-end gap-3 border-t border-gray-100 pt-4'>
+						<div className='flex justify-end gap-3 border-t border-border pt-4'>
 							<Button variant='outline' onClick={handleBack} disabled={busy}>
 								{t('common:actions.back')}
 							</Button>

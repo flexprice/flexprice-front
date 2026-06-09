@@ -72,28 +72,28 @@ const InvoicesTab = () => {
 			<div className='space-y-6'>
 				{/* Summary Cards Skeleton */}
 				<div className='grid grid-cols-2 gap-4'>
-					<Card className='bg-white border border-[#E9E9E9] rounded-xl p-4'>
+					<Card className='bg-card border border-border rounded-xl p-4'>
 						<div className='animate-pulse'>
-							<div className='h-4 bg-zinc-100 rounded w-1/2 mb-2'></div>
-							<div className='h-6 bg-zinc-100 rounded w-3/4'></div>
+							<div className='h-4 bg-muted rounded w-1/2 mb-2'></div>
+							<div className='h-6 bg-muted rounded w-3/4'></div>
 						</div>
 					</Card>
-					<Card className='bg-white border border-[#E9E9E9] rounded-xl p-4'>
+					<Card className='bg-card border border-border rounded-xl p-4'>
 						<div className='animate-pulse'>
-							<div className='h-4 bg-zinc-100 rounded w-1/2 mb-2'></div>
-							<div className='h-6 bg-zinc-100 rounded w-3/4'></div>
+							<div className='h-4 bg-muted rounded w-1/2 mb-2'></div>
+							<div className='h-6 bg-muted rounded w-3/4'></div>
 						</div>
 					</Card>
 				</div>
 				{/* Search Skeleton */}
-				<div className='h-10 bg-zinc-100 animate-pulse rounded-md'></div>
+				<div className='h-10 bg-muted animate-pulse rounded-md'></div>
 				{/* Table Skeleton */}
-				<Card className='bg-white border border-[#E9E9E9] rounded-xl p-4'>
+				<Card className='bg-card border border-border rounded-xl p-4'>
 					<div className='animate-pulse space-y-3'>
-						<div className='h-10 bg-zinc-100 rounded'></div>
-						<div className='h-12 bg-zinc-100 rounded'></div>
-						<div className='h-12 bg-zinc-100 rounded'></div>
-						<div className='h-12 bg-zinc-100 rounded'></div>
+						<div className='h-10 bg-muted rounded'></div>
+						<div className='h-12 bg-muted rounded'></div>
+						<div className='h-12 bg-muted rounded'></div>
+						<div className='h-12 bg-muted rounded'></div>
 					</div>
 				</Card>
 			</div>
@@ -139,7 +139,7 @@ const InvoicesTab = () => {
 
 	if (invoices.length === 0) {
 		return (
-			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
+			<Card className='bg-card border border-border rounded-xl p-6'>
 				<EmptyState title={t('invoices.emptyTitle')} description={t('invoices.emptyDescription')} />
 			</Card>
 		);
@@ -181,20 +181,20 @@ const InvoicesTab = () => {
 			/>
 			{/* Summary Cards */}
 			{/* <div className='grid grid-cols-2 gap-4'>
-				<Card className='bg-white border border-[#E9E9E9] rounded-xl p-4'>
-					<span className='text-sm text-zinc-500'>Total invoiced</span>
-					<p className='text-xl font-semibold text-zinc-950 mt-1'>
+				<Card className='bg-card border border-border rounded-xl p-4'>
+					<span className='text-sm text-muted-foreground'>Total invoiced</span>
+					<p className='text-xl font-semibold text-foreground mt-1'>
 						{currencySymbol}
 						{formatAmount(String(totalInvoiced))}
 					</p>
 				</Card>
-				<Card className='bg-white border border-[#E9E9E9] rounded-xl p-4'>
+				<Card className='bg-card border border-border rounded-xl p-4'>
 					<div className='flex items-center gap-1.5'>
-						<span className='text-sm text-zinc-500'>Total overdue</span>
+						<span className='text-sm text-muted-foreground'>Total overdue</span>
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-3.5 w-3.5 text-zinc-400' />
+									<Info className='h-3.5 w-3.5 text-muted-foreground' />
 								</TooltipTrigger>
 								<TooltipContent>
 									<p>Unpaid invoices past due date</p>
@@ -202,7 +202,7 @@ const InvoicesTab = () => {
 							</Tooltip>
 						</TooltipProvider>
 					</div>
-					<p className={`text-xl font-semibold mt-1 ${totalOverdue > 0 ? 'text-red-600' : 'text-zinc-950'}`}>
+					<p className={`text-xl font-semibold mt-1 ${totalOverdue > 0 ? 'text-red-600' : 'text-foreground'}`}>
 						{currencySymbol}
 						{formatAmount(String(totalOverdue))}
 					</p>
@@ -211,49 +211,49 @@ const InvoicesTab = () => {
 
 			{/* Search */}
 			<div className='relative'>
-				<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-zinc-400' />
+				<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
 				<Input
 					placeholder={t('invoices.searchPlaceholder')}
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
-					className='ps-10 bg-white border-[#E9E9E9]'
+					className='ps-10 bg-card border-border'
 				/>
 			</div>
 
 			{/* Invoices Table */}
-			<Card className='bg-white border border-[#E9E9E9] rounded-xl overflow-hidden'>
+			<Card className='bg-card border border-border rounded-xl overflow-hidden'>
 				<div className='overflow-x-auto'>
 					<table className='w-full'>
 						<thead>
-							<tr className='border-b border-[#E9E9E9] bg-zinc-50'>
-								<th className='text-start px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider'>
+							<tr className='border-b border-border bg-muted'>
+								<th className='text-start px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider'>
 									{t('invoices.columnDate')}
 								</th>
-								<th className='text-start px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider'>
+								<th className='text-start px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider'>
 									{t('invoices.columnInvoiceNumber')}
 								</th>
-								<th className='text-start px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider'>
+								<th className='text-start px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider'>
 									{t('invoices.columnStatus')}
 								</th>
-								<th className='text-end px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider'>
+								<th className='text-end px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider'>
 									{t('invoices.columnAmount')}
 								</th>
-								<th className='text-center px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider'>
+								<th className='text-center px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider'>
 									{t('invoices.columnDownload')}
 								</th>
 							</tr>
 						</thead>
-						<tbody className='divide-y divide-[#E9E9E9]'>
+						<tbody className='divide-y divide-[var(--portal-border)]'>
 							{filteredInvoices.map((invoice) => (
-								<tr key={invoice.id} className='hover:bg-zinc-50 transition-colors'>
-									<td className='px-4 py-3 text-sm text-zinc-700'>
+								<tr key={invoice.id} className='hover:bg-muted transition-colors'>
+									<td className='px-4 py-3 text-sm text-foreground'>
 										{invoice.finalized_at ? formatDateShort(invoice.finalized_at) : formatDateShort(invoice.created_at)}
 									</td>
-									<td className='px-4 py-3 text-sm text-zinc-900 font-medium'>
+									<td className='px-4 py-3 text-sm text-foreground font-medium'>
 										{invoice.invoice_number || t('invoices.numberPrefix', { id: invoice.id.slice(0, 8) })}
 									</td>
 									<td className='px-4 py-3'>{getStatusChip(invoice)}</td>
-									<td className='px-4 py-3 text-sm text-zinc-900 text-end font-medium'>
+									<td className='px-4 py-3 text-sm text-foreground text-end font-medium'>
 										{currencySymbol}
 										{formatAmount(String(invoice.total ?? 0))}
 									</td>
@@ -262,7 +262,7 @@ const InvoicesTab = () => {
 											<button
 												onClick={() => openInvoiceDownload(invoice)}
 												disabled={busyDownloadInvoiceId !== null}
-												className='p-2 hover:bg-zinc-100 rounded-md transition-colors text-zinc-500 hover:text-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed'>
+												className='p-2 hover:bg-muted rounded-md transition-colors text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed'>
 												{busyDownloadInvoiceId === invoice.id ? (
 													<Loader2 className='h-4 w-4 animate-spin' />
 												) : (

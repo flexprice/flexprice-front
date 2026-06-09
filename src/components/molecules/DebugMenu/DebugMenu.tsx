@@ -147,7 +147,7 @@ const DebugMenu = () => {
 					<TooltipTrigger asChild>
 						<Button
 							variant='outline'
-							className={`fixed bottom-6 ${anchorClass} size-10 z-[100] shadow-sm hover:shadow-md transition-all bg-white`}
+							className={`fixed bottom-6 ${anchorClass} size-10 z-[100] shadow-sm hover:shadow-md transition-all bg-card`}
 							onClick={() => setIsOpen(!isOpen)}>
 							{isStreaming ? (
 								<div className='relative'>
@@ -181,7 +181,7 @@ const DebugMenu = () => {
 							damping: 25,
 							duration: 0.3,
 						}}
-						className={`fixed bottom-6 ${anchorClass} w-[300px] bg-white/95 dark:bg-gray-900/95 rounded-lg shadow-lg z-[100] border border-gray-200/50 dark:border-gray-800/50 backdrop-blur-sm`}
+						className={`fixed bottom-6 ${anchorClass} w-[300px] bg-card/95/95 rounded-lg shadow-lg z-[100] border border-border/50/50 backdrop-blur-sm`}
 						drag
 						dragConstraints={{
 							top: -400,

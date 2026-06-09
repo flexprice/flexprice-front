@@ -130,7 +130,7 @@ const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, cur
 		<div className='w-full min-w-0 space-y-4'>
 			<div className={cn('w-full min-w-0', tieredPrices.length > 0 ? '' : 'hidden')}>
 				<div className='w-full min-w-0 overflow-x-auto'>
-					<table className='w-full min-w-0 table-fixed border-collapse border border-gray-200'>
+					<table className='w-full min-w-0 table-fixed border-collapse border border-border'>
 						<colgroup>
 							<col className='w-[18%]' />
 							<col className='w-[18%]' />
@@ -139,20 +139,20 @@ const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, cur
 							<col className='w-10' />
 						</colgroup>
 						<thead>
-							<tr className='border-b bg-gray-100 text-start'>
-								<th className='bg-white px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+							<tr className='border-b bg-muted text-start'>
+								<th className='bg-card px-2 py-2 text-left text-xs font-normal whitespace-normal text-muted-foreground'>
 									{t('plans.organisms.volumeTier.from')} {t('plans.organisms.volumeTier.fromSuffix')}
 								</th>
-								<th className='bg-white px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+								<th className='bg-card px-2 py-2 text-left text-xs font-normal whitespace-normal text-muted-foreground'>
 									{t('plans.organisms.volumeTier.upTo')} {t('plans.organisms.volumeTier.upToSuffix')}
 								</th>
-								<th className='bg-white px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+								<th className='bg-card px-2 py-2 text-left text-xs font-normal whitespace-normal text-muted-foreground'>
 									{t('plans.organisms.volumeTier.perUnitPrice')}
 								</th>
-								<th className='bg-white px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+								<th className='bg-card px-2 py-2 text-left text-xs font-normal whitespace-normal text-muted-foreground'>
 									{t('plans.organisms.volumeTier.flatFee')}
 								</th>
-								<th className='bg-white px-1 py-2' />
+								<th className='bg-card px-1 py-2' />
 							</tr>
 						</thead>
 						<tbody>

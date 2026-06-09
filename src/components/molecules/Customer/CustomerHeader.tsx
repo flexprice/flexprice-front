@@ -23,7 +23,7 @@ const CustomerHeader: React.FC<CustomerHeaderProps> = ({ customerId }) => {
 	if (isLoading) {
 		return (
 			<div className='items-center justify-center'>
-				<div className='py-6 px-4 rounded-xl border border-gray-300'>
+				<div className='py-6 px-4 rounded-xl border border-border'>
 					<div className='h-6 w-32 bg-gray-200 rounded animate-pulse mb-2'></div>
 					<div className='flex place-items-start space-x-3'>
 						<div className='w-10 h-10 bg-gray-200 rounded-full animate-pulse'></div>
@@ -49,7 +49,7 @@ const CustomerHeader: React.FC<CustomerHeaderProps> = ({ customerId }) => {
 				</span>
 				<div className='flex flex-col'>
 					<div className='flex items-center gap-2'>
-						<div className='text-xl font-normal text-gray-800'>{customer?.name}</div>
+						<div className='text-xl font-normal text-foreground'>{customer?.name}</div>
 						{customer?.id && <CopyIdButton id={customer.id} entityType={t('list.entityName')} />}
 					</div>
 				</div>

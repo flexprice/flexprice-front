@@ -392,7 +392,7 @@ const RecurringChargesForm = ({
 					inputPrefix={displayCurrencySymbol}
 					suffix={
 						<div className='flex items-center gap-1.5'>
-							<span className='text-[#64748B]'>
+							<span className='text-muted-foreground'>
 								{t('catalog:plans.organisms.recurringForm.perBilling', {
 									period: formatBillingPeriodForPrice(localPrice.billing_period || ''),
 								})}
@@ -402,7 +402,7 @@ const RecurringChargesForm = ({
 									<button
 										type='button'
 										aria-label={t('catalog:plans.organisms.recurringForm.calculatorAria')}
-										className='inline-flex items-center justify-center rounded p-0.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1'
+										className='inline-flex items-center justify-center rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1'
 										onClick={(e) => {
 											e.stopPropagation();
 											setCalculatorOpen(true);
@@ -445,7 +445,7 @@ const RecurringChargesForm = ({
 							}}
 						/>
 						<div className='h-[50px] items-center flex gap-2'>
-							<p className='text-[#18181B] font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
+							<p className='text-foreground font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
 						</div>
 						<Input
 							value={packagedFee.unit}
@@ -551,11 +551,11 @@ const RecurringChargesForm = ({
 						}}
 					/>
 					<Label htmlFor='airplane-mode'>
-						<p className='font-medium text-sm text-[#18181B] peer-checked:text-black'>
+						<p className='font-medium text-sm text-foreground peer-checked:text-foreground'>
 							{t('catalog:plans.organisms.recurringForm.trialToggleTitle')}
 						</p>
 						<Spacer height={'4px'} />
-						<p className='text-sm font-normal text-[#71717A] peer-checked:text-gray-700'>
+						<p className='text-sm font-normal text-muted-foreground peer-checked:text-foreground'>
 							{t('catalog:plans.organisms.recurringForm.trialToggleHint')}
 						</p>
 					</Label>
@@ -578,7 +578,7 @@ const RecurringChargesForm = ({
 			)}
 			<Spacer height={'16px'} />
 			<div className='flex justify-end'>
-				<Button onClick={onDeleteClicked} variant='secondary' className='me-4 text-zinc-900' disabled={isSaving}>
+				<Button onClick={onDeleteClicked} variant='secondary' className='me-4 text-foreground' disabled={isSaving}>
 					{price.internal_state === PriceInternalState.EDIT ? t('common:actions.delete') : t('common:actions.cancel')}
 				</Button>
 				<Button onClick={handleSubmit} variant='default' className='me-4 font-normal' isLoading={isSaving} disabled={isSaving}>

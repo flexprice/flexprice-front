@@ -38,7 +38,7 @@ const CommitmentTypeSelect: FC<Props> = ({ value, onChange, disabled, size = 'de
 	return (
 		<div className={cn('space-y-1.5', className)}>
 			{showLabel && (
-				<label className={cn('font-medium text-gray-600', isCompact ? 'text-xs' : 'text-sm text-gray-700')}>
+				<label className={cn('font-medium text-muted-foreground', isCompact ? 'text-xs' : 'text-sm text-foreground')}>
 					{label ?? t('commitmentConfig.commitmentType')}
 				</label>
 			)}
@@ -54,11 +54,11 @@ const CommitmentTypeSelect: FC<Props> = ({ value, onChange, disabled, size = 'de
 							isCompact ? 'px-3 py-2' : 'px-4 py-3',
 							value === option.value
 								? 'border-primary bg-primary/5 text-primary'
-								: 'border-gray-200 bg-white text-gray-700 hover:border-gray-300',
+								: 'border-border bg-card text-foreground hover:border-border',
 							!isCompact && value === option.value && 'font-medium',
 						)}>
 						<div className={cn('font-medium', isCompact ? 'text-xs' : 'text-sm')}>{option.label}</div>
-						<div className={cn('text-gray-500', isCompact ? 'mt-0.5 text-[11px]' : 'mt-0.5 text-xs')}>{option.description}</div>
+						<div className={cn('text-muted-foreground', isCompact ? 'mt-0.5 text-[11px]' : 'mt-0.5 text-xs')}>{option.description}</div>
 					</button>
 				))}
 			</div>

@@ -130,7 +130,7 @@ const LineItemCoupon: React.FC<Props> = ({
 	return (
 		<div className={cn('space-y-2', className)}>
 			{selectedCoupon && (
-				<div className='rounded-lg border border-gray-200 bg-blue-50 p-2'>
+				<div className='rounded-lg border border-border bg-blue-50 p-2'>
 					<div className='flex items-center justify-between'>
 						<div className='flex-1'>
 							<div className='text-xs font-medium text-blue-900'>{selectedCoupon.name}</div>
