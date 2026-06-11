@@ -34,7 +34,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 	return (
 		<div className='bg-white border border-[#E5E7EB] p-[25px] flex flex-col gap-3 rounded-md'>
 			<p className='text-[14px] leading-[21px] text-[#4B5563] font-normal'>{title}</p>
-			<p className='text-[24px] leading-[28px] font-medium text-[#111827] flex items-center'>
+			<p className='text-[24px] leading-[28px] font-medium text-[#111827] flex items-center whitespace-nowrap'>
 				{renderValue()}
 				{showChangeIndicator && (
 					<span className={`inline-block ${arrowColor} ms-3`}>{isNegative ? <TrendingDown size={18} /> : <TrendingUp size={18} />}</span>
