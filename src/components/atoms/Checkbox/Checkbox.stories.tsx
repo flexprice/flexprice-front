@@ -45,5 +45,6 @@ export const Disabled: Story = {
 		label: 'Disabled option',
 		description: 'This option is unavailable.',
 		checked: true,
+		disabled: true,
 	},
 };
