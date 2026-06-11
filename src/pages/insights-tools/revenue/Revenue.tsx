@@ -211,7 +211,7 @@ const Revenue = () => {
 					<div className={showGlobalEmpty ? 'blur-[3px] select-none pointer-events-none' : ''}>
 						{selectedCurrency === '' ? (
 							// No currency selected yet (or no data) — show per-currency summaries from the "summaries" map.
-							(isLoading || showGlobalEmpty) ? (
+							isLoading || showGlobalEmpty ? (
 								<div className='rounded-xl border border-gray-200 bg-white overflow-hidden'>
 									<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
 										<MetricTile
@@ -327,28 +327,28 @@ const Revenue = () => {
 					)}
 				</div>
 
-					{showGraph && (isLoading || graphCharts.length > 0) && (
-						<div className='pt-2'>
-							<div className={`grid grid-cols-1 gap-4 ${graphCharts.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'}`}>
-								{isLoading
-									? [0, 1].map((i) => (
-											<Card key={i} className='shadow-sm border border-gray-200'>
-												<CardHeader className='pb-2'>
-													<Skeleton className='h-4 w-32' />
-												</CardHeader>
-												<CardContent>
-													<Skeleton className='h-56 w-full' />
-												</CardContent>
-											</Card>
-										))
-									: graphCharts.map((chart) => (
-											<RevenueBarChart key={chart.key} title={chart.title} data={graph![chart.key]!} type={chart.type} />
-										))}
-							</div>
+				{showGraph && (isLoading || graphCharts.length > 0) && (
+					<div className='pt-2'>
+						<div className={`grid grid-cols-1 gap-4 ${graphCharts.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'}`}>
+							{isLoading
+								? [0, 1].map((i) => (
+										<Card key={i} className='shadow-sm border border-gray-200'>
+											<CardHeader className='pb-2'>
+												<Skeleton className='h-4 w-32' />
+											</CardHeader>
+											<CardContent>
+												<Skeleton className='h-56 w-full' />
+											</CardContent>
+										</Card>
+									))
+								: graphCharts.map((chart) => (
+										<RevenueBarChart key={chart.key} title={chart.title} data={graph![chart.key]!} type={chart.type} />
+									))}
 						</div>
-					)}
+					</div>
+				)}
 
-					<div className='pt-8'>
+				<div className='pt-8'>
 					<div className='rounded-md border border-gray-200 bg-white overflow-hidden shadow-sm'>
 						<div className='flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-white'>
 							<div className='relative flex items-center w-64'>
@@ -487,7 +487,7 @@ const Revenue = () => {
 							</div>
 						</div>
 					)}
-					</div>
+				</div>
 			</div>
 		</Page>
 	);

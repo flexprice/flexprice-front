@@ -1,64 +1,66 @@
-// import type { Meta, StoryObj } from '@storybook/react';
-// import   Input  from './Input';
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import Input from './Input';
 
-// const meta = {
-//   title: 'Atoms/Input',
-//   component: Input,
-//   parameters: {
-//     layout: 'centered',
-//   },
-//   tags: ['autodocs'],
-// } satisfies Meta<typeof Input>;
+const meta: Meta<typeof Input> = {
+	title: 'Atoms/Input',
+	component: Input,
+	parameters: {
+		layout: 'centered',
+	},
+	tags: ['autodocs'],
+};
 
-// export default meta;
-// type Story = StoryObj<typeof meta>;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-// export const Default: Story = {
-//   args: {
-//     placeholder: 'Enter text here',
-//   },
-// };
+const ControlledInput = (args: Story['args']) => {
+	const [value, setValue] = useState(String(args?.value ?? ''));
 
-// export const WithLabel: Story = {
-//   args: {
-//     label: 'Email',
-//     placeholder: 'Enter your email',
-//     type: 'email',
-//   },
-// };
+	return <Input {...args} value={value} onChange={setValue} />;
+};
 
-// export const WithError: Story = {
-//   args: {
-//     label: 'Password',
-//     type: 'password',
-//     error: 'Password must be at least 8 characters',
-//     placeholder: 'Enter your password',
-//   },
-// };
+export const Default: Story = {
+	render: (args) => <ControlledInput {...args} />,
+	args: {
+		placeholder: 'Enter text here',
+	},
+};
 
-// export const Disabled: Story = {
-//   args: {
-//     label: 'Username',
-//     placeholder: 'Enter your username',
-//     disabled: true,
-//   },
-// };
+export const WithLabel: Story = {
+	render: (args) => <ControlledInput {...args} />,
+	args: {
+		label: 'Email',
+		placeholder: 'Enter your email',
+		type: 'email',
+	},
+};
 
-// export const FullWidth: Story = {
-//   args: {
-//     label: 'Full Name',
-//     placeholder: 'Enter your full name',
-//     fullWidth: true,
-//   },
-//   parameters: {
-//     layout: 'padded',
-//   },
-// };
+export const WithError: Story = {
+	render: (args) => <ControlledInput {...args} />,
+	args: {
+		label: 'Password',
+		type: 'password',
+		error: 'Password must be at least 8 characters',
+		placeholder: 'Enter your password',
+	},
+};
 
-// export const WithValue: Story = {
-//   args: {
-//     label: 'Name',
-//     value: 'John Doe',
-//     placeholder: 'Enter your name',
-//   },
-// };
+export const Disabled: Story = {
+	render: (args) => <ControlledInput {...args} />,
+	args: {
+		label: 'Username',
+		placeholder: 'Enter your username',
+		disabled: true,
+	},
+};
+
+export const FormattedNumber: Story = {
+	render: (args) => <ControlledInput {...args} />,
+	args: {
+		label: 'Amount',
+		placeholder: 'Enter amount',
+		variant: 'formatted-number',
+		value: '1234567.89',
+	},
+};
