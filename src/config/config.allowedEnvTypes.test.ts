@@ -31,7 +31,7 @@ describe('parseAllowedEnvTypes', () => {
 	});
 
 	it('silently drops unknown values', () => {
-		expect(parseAllowedEnvTypes('development,sandbox,unknown')).toEqual([ENVIRONMENT_TYPE.DEVELOPMENT]);
+		expect(parseAllowedEnvTypes('development,bogus,invalid')).toEqual([ENVIRONMENT_TYPE.DEVELOPMENT]);
 	});
 
 	it('returns [] when all values are unknown', () => {

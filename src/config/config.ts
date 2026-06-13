@@ -149,7 +149,7 @@ export function parseAllowedEnvTypes(raw?: string): ENVIRONMENT_TYPE[] {
 	return raw
 		.split(',')
 		.map((s) => s.trim())
-		.filter((s) => valid.has(s as ENVIRONMENT_TYPE)) as ENVIRONMENT_TYPE[];
+		.filter((s): s is ENVIRONMENT_TYPE => valid.has(s as ENVIRONMENT_TYPE));
 }
 
 export const config: Config = {
