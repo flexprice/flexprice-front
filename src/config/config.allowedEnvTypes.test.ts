@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseAllowedEnvTypes } from './config';
+import { parseAllowedEnvTypes, isSandboxDeployment } from './config';
 import { ENVIRONMENT_TYPE } from '@/models/Environment';
 
 describe('parseAllowedEnvTypes', () => {
@@ -40,5 +40,23 @@ describe('parseAllowedEnvTypes', () => {
 
 	it('returns [] when JSON is not an array', () => {
 		expect(parseAllowedEnvTypes('"development"')).toEqual([]);
+	});
+});
+
+describe('isSandboxDeployment', () => {
+	it('returns false for empty array', () => {
+		expect(isSandboxDeployment([])).toBe(false);
+	});
+
+	it('returns true when only development', () => {
+		expect(isSandboxDeployment([ENVIRONMENT_TYPE.DEVELOPMENT])).toBe(true);
+	});
+
+	it('returns false when both types present', () => {
+		expect(isSandboxDeployment([ENVIRONMENT_TYPE.DEVELOPMENT, ENVIRONMENT_TYPE.PRODUCTION])).toBe(false);
+	});
+
+	it('returns false when only production', () => {
+		expect(isSandboxDeployment([ENVIRONMENT_TYPE.PRODUCTION])).toBe(false);
 	});
 });

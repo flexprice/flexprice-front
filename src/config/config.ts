@@ -68,6 +68,8 @@ interface IntegrationsConfig {
 interface RestrictionsConfig {
 	rawEnvs: string;
 	allowedEnvTypes: ENVIRONMENT_TYPE[]; // [] means "show all"
+	isSandboxMode: boolean; // true only when allowedEnvTypes === ["development"]
+	productionUrl: string; // from VITE_PRODUCTION_URL; '' when unset
 }
 
 /** Primary defaults to **Geist** (Google Fonts in `src/index.css`). Override via `VITE_FONT_CONFIG`. */
@@ -155,6 +157,12 @@ export function parseAllowedEnvTypes(raw?: string): ENVIRONMENT_TYPE[] {
 	}
 }
 
+export function isSandboxDeployment(allowedEnvTypes: ENVIRONMENT_TYPE[]): boolean {
+	return allowedEnvTypes.length > 0 && allowedEnvTypes.every((t) => t === ENVIRONMENT_TYPE.DEVELOPMENT);
+}
+
+const allowedEnvTypes = parseAllowedEnvTypes(import.meta.env.VITE_ALLOWED_ENV_TYPES);
+
 export const config: Config = {
 	app: {
 		env: appEnv,
@@ -196,7 +204,9 @@ export const config: Config = {
 	},
 	restrictions: {
 		rawEnvs: import.meta.env.VITE_RESTRICTED_ENVS ?? '',
-		allowedEnvTypes: parseAllowedEnvTypes(import.meta.env.VITE_ALLOWED_ENV_TYPES),
+		allowedEnvTypes,
+		isSandboxMode: isSandboxDeployment(allowedEnvTypes),
+		productionUrl: import.meta.env.VITE_PRODUCTION_URL ?? '',
 	},
 	brand: brandConfig,
 	authPage: authPageConfig,
