@@ -11,6 +11,7 @@ import {
 	Locale,
 } from './branding';
 import { RegionsConfig } from './authTemplates';
+import { ENVIRONMENT_TYPE } from '@/models/Environment';
 
 export type { BrandConfig, AuthPageConfig, I18nConfig };
 
@@ -66,6 +67,7 @@ interface IntegrationsConfig {
 }
 interface RestrictionsConfig {
 	rawEnvs: string;
+	allowedEnvTypes: ENVIRONMENT_TYPE[]; // [] means "show all"
 }
 
 /** Primary defaults to **Geist** (Google Fonts in `src/index.css`). Override via `VITE_FONT_CONFIG`. */
@@ -141,6 +143,15 @@ function parseAppEnv(): APP_ENV {
 
 const appEnv = parseAppEnv();
 
+export function parseAllowedEnvTypes(raw?: string): ENVIRONMENT_TYPE[] {
+	if (!raw?.trim()) return [];
+	const valid = new Set(Object.values(ENVIRONMENT_TYPE));
+	return raw
+		.split(',')
+		.map((s) => s.trim())
+		.filter((s) => valid.has(s as ENVIRONMENT_TYPE)) as ENVIRONMENT_TYPE[];
+}
+
 export const config: Config = {
 	app: {
 		env: appEnv,
@@ -182,6 +193,7 @@ export const config: Config = {
 	},
 	restrictions: {
 		rawEnvs: import.meta.env.VITE_RESTRICTED_ENVS ?? '',
+		allowedEnvTypes: parseAllowedEnvTypes(import.meta.env.VITE_ALLOWED_ENV_TYPES),
 	},
 	brand: brandConfig,
 	authPage: authPageConfig,
