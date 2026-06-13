@@ -8,6 +8,7 @@ import EnvironmentApi from '@/api/EnvironmentApi';
 import toast from 'react-hot-toast';
 import { Mail, CalendarDays, AlertTriangle } from 'lucide-react';
 import { SANDBOX_AUTO_CANCELLATION_DAYS } from '@/constants/constants';
+import { config } from '@/config/config';
 
 interface Props {
 	isOpen: boolean;
@@ -20,6 +21,7 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 	const [name, setName] = useState('');
 	const [type, setType] = useState<ENVIRONMENT_TYPE>(ENVIRONMENT_TYPE.DEVELOPMENT);
 	const queryClient = useQueryClient();
+	const { isSandboxMode, allowedEnvTypes } = config.restrictions;
 
 	useEffect(() => {
 		if (isOpen) {
@@ -28,8 +30,8 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 		}
 	}, [isOpen, t]);
 
-	const environmentTypeOptions = useMemo(
-		() => [
+	const environmentTypeOptions = useMemo(() => {
+		const allOptions = [
 			{
 				value: ENVIRONMENT_TYPE.DEVELOPMENT,
 				label: t('environment.types.sandbox'),
@@ -40,9 +42,10 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 				label: t('environment.types.production'),
 				description: t('environment.types.productionDescription'),
 			},
-		],
-		[t],
-	);
+		];
+		if (!isSandboxMode || allowedEnvTypes.length === 0) return allOptions;
+		return allOptions.filter((opt) => allowedEnvTypes.includes(opt.value as ENVIRONMENT_TYPE));
+	}, [isSandboxMode, allowedEnvTypes, t]);
 
 	const { mutate: createEnvironment, isPending } = useMutation({
 		mutationFn: async (payload: CreateEnvironmentPayload) => {
@@ -110,14 +113,16 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 					disabled={isPending || isProduction}
 				/>
 
-				<Select
-					label={t('environment.creator.typeLabel')}
-					placeholder={t('environment.creator.typePlaceholder')}
-					options={environmentTypeOptions}
-					value={type}
-					onChange={(value) => setType(value as ENVIRONMENT_TYPE)}
-					disabled={isPending}
-				/>
+				{environmentTypeOptions.length > 1 && (
+					<Select
+						label={t('environment.creator.typeLabel')}
+						placeholder={t('environment.creator.typePlaceholder')}
+						options={environmentTypeOptions}
+						value={type}
+						onChange={(value) => setType(value as ENVIRONMENT_TYPE)}
+						disabled={isPending}
+					/>
+				)}
 
 				{/* Sandbox Note */}
 				{isSandbox && (
