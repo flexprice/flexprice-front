@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Environment, { ENVIRONMENT_TYPE } from '@/models/Environment';
 import EnvironmentApi from '@/api/EnvironmentApi';
+import { config } from '@/config/config';
 
 export const ACTIVE_ENVIRONMENT_ID_KEY = 'active_environment_id';
 
@@ -26,7 +27,9 @@ export const useEnvironment = (pollingInterval: number = 1000): UseEnvironment =
 		queryKey: ['environments'],
 		queryFn: async () => {
 			const res = await EnvironmentApi.getAllEnvironments();
-			return res.environments;
+			const allowed = config.restrictions.allowedEnvTypes;
+			if (allowed.length === 0) return res.environments;
+			return res.environments.filter((env) => allowed.includes(env.type));
 		},
 		staleTime: 5 * 60 * 1000, // 5 minutes
 	});
