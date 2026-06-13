@@ -145,11 +145,14 @@ const appEnv = parseAppEnv();
 
 export function parseAllowedEnvTypes(raw?: string): ENVIRONMENT_TYPE[] {
 	if (!raw?.trim()) return [];
-	const valid = new Set(Object.values(ENVIRONMENT_TYPE));
-	return raw
-		.split(',')
-		.map((s) => s.trim())
-		.filter((s): s is ENVIRONMENT_TYPE => valid.has(s as ENVIRONMENT_TYPE));
+	try {
+		const parsed = JSON.parse(raw) as unknown;
+		if (!Array.isArray(parsed)) return [];
+		const valid = new Set(Object.values(ENVIRONMENT_TYPE));
+		return parsed.filter((s): s is ENVIRONMENT_TYPE => typeof s === 'string' && valid.has(s as ENVIRONMENT_TYPE));
+	} catch {
+		return [];
+	}
 }
 
 export const config: Config = {

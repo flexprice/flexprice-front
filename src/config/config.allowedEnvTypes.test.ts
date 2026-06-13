@@ -16,25 +16,29 @@ describe('parseAllowedEnvTypes', () => {
 	});
 
 	it('parses a single valid type', () => {
-		expect(parseAllowedEnvTypes('development')).toEqual([ENVIRONMENT_TYPE.DEVELOPMENT]);
+		expect(parseAllowedEnvTypes('["development"]')).toEqual([ENVIRONMENT_TYPE.DEVELOPMENT]);
 	});
 
 	it('parses two valid types', () => {
-		const result = parseAllowedEnvTypes('development,production');
+		const result = parseAllowedEnvTypes('["development","production"]');
 		expect(result).toContain(ENVIRONMENT_TYPE.DEVELOPMENT);
 		expect(result).toContain(ENVIRONMENT_TYPE.PRODUCTION);
 		expect(result).toHaveLength(2);
 	});
 
-	it('trims whitespace around values', () => {
-		expect(parseAllowedEnvTypes(' development , production ')).toHaveLength(2);
-	});
-
 	it('silently drops unknown values', () => {
-		expect(parseAllowedEnvTypes('development,bogus,invalid')).toEqual([ENVIRONMENT_TYPE.DEVELOPMENT]);
+		expect(parseAllowedEnvTypes('["development","bogus","invalid"]')).toEqual([ENVIRONMENT_TYPE.DEVELOPMENT]);
 	});
 
 	it('returns [] when all values are unknown', () => {
-		expect(parseAllowedEnvTypes('sandbox,bogus')).toEqual([]);
+		expect(parseAllowedEnvTypes('["sandbox","bogus"]')).toEqual([]);
+	});
+
+	it('returns [] for invalid JSON', () => {
+		expect(parseAllowedEnvTypes('development,production')).toEqual([]);
+	});
+
+	it('returns [] when JSON is not an array', () => {
+		expect(parseAllowedEnvTypes('"development"')).toEqual([]);
 	});
 });
