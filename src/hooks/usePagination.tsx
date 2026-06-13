@@ -14,6 +14,8 @@ export enum PAGINATION_PREFIX {
 	SETTINGS_MEMBERS = 'settings_members',
 	CUSTOMER_SUBSCRIPTIONS = 'customer_subscriptions',
 	SUBSCRIPTION_LINE_ITEMS = 'subscription_line_items',
+	SUBSCRIPTION_DETAIL_LINE_ITEMS = 'subscription_detail_line_items',
+	SUBSCRIPTION_ADDONS = 'subscription_addons',
 	TASK_RUNS = 'task_runs',
 }
 

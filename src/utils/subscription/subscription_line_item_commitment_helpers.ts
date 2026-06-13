@@ -1,3 +1,4 @@
+import { PriceApi } from '@/api/PriceApi';
 import { removeFormatting } from '@/components/atoms/Input/Input';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { INVOICE_CADENCE } from '@/models/Invoice';
@@ -6,7 +7,7 @@ import { PRICE_TYPE, PRICE_UNIT_TYPE, BILLING_MODEL, type Price } from '@/models
 import type { LineItem } from '@/models/Subscription';
 import type { CommitmentTimeBucket, CommitmentTimeBucketPrice } from '@/types/dto/CommitmentTimeBucket';
 import type { CreateSubscriptionLineItemRequest, UpdateSubscriptionLineItemRequest } from '@/types/dto/Subscription';
-import { CommitmentType } from '@/types/dto/LineItemCommitmentConfig';
+import { CommitmentType, type LineItemCommitmentConfig } from '@/types/dto/LineItemCommitmentConfig';
 import { normalizeCommitmentTimeBuckets, getCommitmentTimeBucketConstraints } from '@/utils/common/commitment_helpers';
 import {
 	buildBucketPriceFromDraft,
@@ -81,9 +82,98 @@ export function lineItemHasWindowCommitment(lineItem: LineItem): boolean {
 	return !!lineItem.commitment_windowed || (lineItem.commitment_time_buckets?.length ?? 0) > 0;
 }
 
+function lineItemHasTopLevelCommitment(lineItem: LineItem): boolean {
+	return (
+		!!lineItem.commitment_amount ||
+		!!lineItem.commitment_quantity ||
+		!!lineItem.commitment_type ||
+		(lineItem.commitment_overage_factor != null &&
+			lineItem.commitment_overage_factor !== '' &&
+			lineItem.commitment_overage_factor !== '1') ||
+		lineItem.commitment_true_up_enabled === true
+	);
+}
+
+function lineItemHasCommitment(lineItem: LineItem): boolean {
+	return lineItemHasWindowCommitment(lineItem) || lineItemHasTopLevelCommitment(lineItem);
+}
+
+/** Batch-fetch prices referenced by commitment bucket `price_id`s. */
+export async function fetchCommitmentPricesByIds(priceIds: string[]): Promise<Record<string, Price>> {
+	if (priceIds.length === 0) return {};
+
+	const response = await PriceApi.ListPrices({ price_ids: priceIds });
+	const pricesById: Record<string, Price> = {};
+	for (const price of response.items ?? []) {
+		pricesById[price.id] = price;
+	}
+	return pricesById;
+}
+
+function parseCommitmentAmount(value?: string): number | undefined {
+	if (!value?.trim()) return undefined;
+	const parsed = parseFloat(value);
+	return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function parseCommitmentQuantity(value?: string): number | undefined {
+	if (!value?.trim()) return undefined;
+	const parsed = parseInt(value, 10);
+	return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function resolveTopLevelCommitmentType(lineItem: LineItem, buckets: CommitmentTimeBucket[]): CommitmentType {
+	if (lineItem.commitment_type) return normalizeCommitmentType(lineItem.commitment_type);
+	if (buckets[0]?.commitment_type) return normalizeCommitmentType(buckets[0].commitment_type);
+	return CommitmentType.AMOUNT;
+}
+
+/** Map persisted line item commitment fields to config shape for read-only display. */
+export function lineItemCommitmentConfigFromLineItem(
+	lineItem: LineItem,
+	hydratedBuckets?: CommitmentTimeBucket[],
+): LineItemCommitmentConfig | null {
+	const buckets = hydratedBuckets ?? lineItem.commitment_time_buckets ?? [];
+	if (!lineItemHasCommitment(lineItem)) return null;
+
+	const commitmentType = resolveTopLevelCommitmentType(lineItem, buckets);
+	const firstBucket = buckets[0];
+
+	let commitment_amount = parseCommitmentAmount(lineItem.commitment_amount);
+	let commitment_quantity = parseCommitmentQuantity(lineItem.commitment_quantity);
+
+	if (commitmentType === CommitmentType.AMOUNT) {
+		if (commitment_amount == null) {
+			commitment_amount = parseCommitmentAmount(lineItem.commitment_quantity) ?? parseCommitmentAmount(firstBucket?.commitment_value);
+		}
+	} else if (commitment_quantity == null) {
+		commitment_quantity = parseCommitmentQuantity(lineItem.commitment_quantity) ?? parseCommitmentQuantity(firstBucket?.commitment_value);
+	}
+
+	return {
+		commitment_type: commitmentType,
+		...(commitment_amount != null ? { commitment_amount } : {}),
+		...(commitment_quantity != null ? { commitment_quantity } : {}),
+		overage_factor: lineItem.commitment_overage_factor
+			? parseFloat(lineItem.commitment_overage_factor)
+			: firstBucket?.overage_factor
+				? parseFloat(firstBucket.overage_factor)
+				: undefined,
+		enable_true_up: lineItem.commitment_true_up_enabled ?? firstBucket?.true_up_enabled,
+		is_window_commitment: lineItemHasWindowCommitment(lineItem),
+		commitment_duration: lineItem.commitment_duration as LineItemCommitmentConfig['commitment_duration'],
+		commitment_time_buckets: buckets,
+	};
+}
+
 /** Collect unique bucket price IDs that need fetching when inline price is omitted. */
-export function collectCommitmentBucketPriceIds(buckets: CommitmentTimeBucket[]): string[] {
-	return [...new Set(buckets.filter((bucket) => !bucket.price && bucket.price_id).map((bucket) => bucket.price_id!))];
+export function collectCommitmentBucketPriceIds(buckets: CommitmentTimeBucket[], excludePriceIds: string[] = []): string[] {
+	const excluded = new Set(excludePriceIds.filter(Boolean));
+	return [
+		...new Set(
+			buckets.filter((bucket) => !bucket.price && bucket.price_id && !excluded.has(bucket.price_id)).map((bucket) => bucket.price_id!),
+		),
+	];
 }
 
 /** Map a persisted price record to inline bucket price shape for display/edit hydration. */

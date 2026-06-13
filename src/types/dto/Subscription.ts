@@ -665,11 +665,13 @@ export interface SubscriptionLineItemResponse {
 	// Addon association link
 	addon_association_id?: string;
 	// Commitment fields
+	commitment_amount?: string;
 	commitment_quantity?: string;
 	commitment_type?: string;
 	commitment_overage_factor?: string;
 	commitment_true_up_enabled?: boolean;
 	commitment_windowed?: boolean;
+	commitment_duration?: string;
 	commitment_time_buckets?: CommitmentTimeBucket[];
 }
 

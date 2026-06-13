@@ -8,19 +8,11 @@ import { LineItem, SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE } from '@/models/Subscript
 import { FC, useState, useCallback, useMemo } from 'react';
 import { Trash2, Pencil, Info, Eye } from 'lucide-react';
 import { ENTITY_STATUS } from '@/models/base';
-import { formatBillingPeriodForDisplay, getCurrencySymbol, getPriceTypeLabel } from '@/utils/common/helper_functions';
-import { PRICE_ENTITY_TYPE, PRICE_STATUS } from '@/models/Price';
+import { formatBillingPeriodForDisplay, getCurrencySymbol } from '@/utils/common/helper_functions';
+import { PRICE_ENTITY_TYPE, PRICE_STATUS, PRICE_TYPE } from '@/models/Price';
+import { INVOICE_CADENCE } from '@/models/Invoice';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import LineItemWindowCommitmentViewDialog from '@/components/molecules/Subscription/LineItemWindowCommitmentViewDialog';
-import {
-	attachCommitmentBucketPrices,
-	getMinutesEnabledForMeter,
-	lineItemHasWindowCommitment,
-	formatCommitmentTimeBucketLabel,
-} from '@/utils/subscription/subscription_line_item_commitment_helpers';
-import { hydrateCommitmentTimeBucketsForDisplay } from '@/utils/common/commitment_time_bucket_draft';
-import { useCommitmentTimeBucketPrices } from '@/hooks/useCommitmentTimeBucketPrices';
-import type { Price } from '@/models/Price';
 
 interface Props {
 	data: LineItem[];
@@ -37,8 +29,6 @@ interface Props {
 	showNoDataCard?: boolean;
 	/** Subtitle when `showNoDataCard` renders (e.g. filtered empty vs no rows). */
 	noDataSubtitle?: string;
-	/** Show per-line-item window commitment buckets (details + edit pages). */
-	showCommitmentColumn?: boolean;
 }
 
 interface LineItemWithStatus extends LineItem {
@@ -48,12 +38,25 @@ interface LineItemWithStatus extends LineItem {
 	tooltipContent: React.ReactNode;
 }
 
-interface ViewCommitmentDropdownProps {
+interface LineItemActionsMenuProps {
 	row: LineItem;
-	onView: (lineItem: LineItem) => void;
+	readOnly: boolean;
+	isEditDisabled: boolean;
+	isTerminateDisabled: boolean;
+	onViewCommitment: (lineItem: LineItem) => void;
+	onEdit: (lineItem: LineItem) => void;
+	onTerminate: (lineItem: LineItem) => void;
 }
 
-const ViewCommitmentDropdown: FC<ViewCommitmentDropdownProps> = ({ row, onView }) => {
+const LineItemActionsMenu: FC<LineItemActionsMenuProps> = ({
+	row,
+	readOnly,
+	isEditDisabled,
+	isTerminateDisabled,
+	onViewCommitment,
+	onEdit,
+	onTerminate,
+}) => {
 	const { t } = useTranslation('billing');
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -75,81 +78,33 @@ const ViewCommitmentDropdown: FC<ViewCommitmentDropdownProps> = ({ row, onView }
 						onSelect: (e: Event) => {
 							e.preventDefault();
 							setIsOpen(false);
-							onView(row);
+							onViewCommitment(row);
 						},
 					},
-				]}
-			/>
-		</div>
-	);
-};
-
-interface LineItemDropdownProps {
-	row: LineItem;
-	isEditDisabled: boolean;
-	isTerminateDisabled: boolean;
-	onEdit: (lineItem: LineItem) => void;
-	onTerminate: (lineItem: LineItem) => void;
-	onViewCommitment?: (lineItem: LineItem) => void;
-}
-
-const LineItemDropdown: FC<LineItemDropdownProps> = ({
-	row,
-	isEditDisabled,
-	isTerminateDisabled,
-	onEdit,
-	onTerminate,
-	onViewCommitment,
-}) => {
-	const { t } = useTranslation('billing');
-	const [isOpen, setIsOpen] = useState(false);
-	const showViewCommitment = !!onViewCommitment && lineItemHasWindowCommitment(row);
-
-	const handleClick = (e: React.MouseEvent) => {
-		e.preventDefault();
-		e.stopPropagation();
-		setIsOpen(!isOpen);
-	};
-
-	return (
-		<div data-interactive='true' onClick={handleClick}>
-			<DropdownMenu
-				isOpen={isOpen}
-				onOpenChange={setIsOpen}
-				options={[
-					...(showViewCommitment
-						? [
+					...(readOnly
+						? []
+						: [
 								{
-									label: t('commitmentConfig.viewCommitment', { defaultValue: 'View commitment' }),
-									icon: <Eye />,
+									label: 'Edit',
+									icon: <Pencil />,
 									onSelect: (e: Event) => {
 										e.preventDefault();
 										setIsOpen(false);
-										onViewCommitment?.(row);
+										onEdit(row);
 									},
+									disabled: isEditDisabled,
 								},
-							]
-						: []),
-					{
-						label: 'Edit',
-						icon: <Pencil />,
-						onSelect: (e: Event) => {
-							e.preventDefault();
-							setIsOpen(false);
-							onEdit(row);
-						},
-						disabled: isEditDisabled,
-					},
-					{
-						label: 'Terminate',
-						icon: <Trash2 />,
-						onSelect: (e: Event) => {
-							e.preventDefault();
-							setIsOpen(false);
-							onTerminate(row);
-						},
-						disabled: isTerminateDisabled,
-					},
+								{
+									label: 'Terminate',
+									icon: <Trash2 />,
+									onSelect: (e: Event) => {
+										e.preventDefault();
+										setIsOpen(false);
+										onTerminate(row);
+									},
+									disabled: isTerminateDisabled,
+								},
+							]),
 				]}
 			/>
 		</div>
@@ -268,6 +223,52 @@ const shouldShowCommitmentIcon = (lineItem: LineItem, commitmentInfo?: Subscript
 	return commitmentInfo?.enable_true_up === true && lineItem.price_type?.toUpperCase() === 'USAGE';
 };
 
+interface PriceTypeChipsCellProps {
+	priceType?: string;
+	invoiceCadence?: INVOICE_CADENCE | string;
+	t: TFunction;
+}
+
+const PriceTypeChipsCell: FC<PriceTypeChipsCellProps> = ({ priceType, invoiceCadence, t }) => {
+	const normalizedType = priceType?.toUpperCase();
+	const isFixedCharge = normalizedType === PRICE_TYPE.FIXED;
+	const isUsageCharge = normalizedType === PRICE_TYPE.USAGE;
+
+	if (isFixedCharge) {
+		const isAdvance = invoiceCadence === INVOICE_CADENCE.ADVANCE;
+		const billingTimingKey = isAdvance ? 'advance' : 'arrear';
+		return (
+			<div className='flex gap-2'>
+				<Tooltip content={t('catalog:plans.organisms.planPriceTable.chargeTypeTooltips.fixedRecurring')} delayDuration={0} sideOffset={5}>
+					<span>
+						<Chip label={t('catalog:plans.organisms.planPriceTable.recurring')} variant='default' />
+					</span>
+				</Tooltip>
+				<Tooltip
+					content={t(`catalog:plans.organisms.planPriceTable.chargeTypeTooltips.${billingTimingKey}`)}
+					delayDuration={0}
+					sideOffset={5}>
+					<span>
+						<Chip label={t(`catalog:plans.organisms.planPriceTable.${billingTimingKey}`)} variant={isAdvance ? 'success' : 'warning'} />
+					</span>
+				</Tooltip>
+			</div>
+		);
+	}
+
+	if (isUsageCharge) {
+		return (
+			<Tooltip content={t('catalog:plans.organisms.planPriceTable.chargeTypeTooltips.usageBased')} delayDuration={0} sideOffset={5}>
+				<span>
+					<Chip label={t('catalog:plans.organisms.planPriceTable.usageBased')} variant='info' />
+				</span>
+			</Tooltip>
+		);
+	}
+
+	return <span>{t('catalog:plans.organisms.planPriceTable.notAvailable')}</span>;
+};
+
 const formatCommitmentTooltip = (info: SubscriptionCommitmentInfo, t: TFunction): React.ReactNode => {
 	const rows: React.ReactNode[] = [];
 
@@ -307,56 +308,6 @@ const formatCommitmentTooltip = (info: SubscriptionCommitmentInfo, t: TFunction)
 	return <div className='flex flex-col gap-2'>{rows}</div>;
 };
 
-interface CommitmentColumnCellProps {
-	row: LineItemWithStatus;
-	pricesById: Record<string, Price>;
-}
-
-const CommitmentColumnCell: FC<CommitmentColumnCellProps> = ({ row, pricesById }) => {
-	const { t } = useTranslation('billing');
-	if (!lineItemHasWindowCommitment(row)) {
-		return <span className='text-sm text-gray-400'>—</span>;
-	}
-
-	const buckets = hydrateCommitmentTimeBucketsForDisplay(attachCommitmentBucketPrices(row.commitment_time_buckets ?? [], pricesById));
-	const minutesEnabled = getMinutesEnabledForMeter(row.price?.meter);
-	const currencySymbol = getCurrencySymbol(row.currency ?? 'usd');
-
-	if (buckets.length === 0) {
-		return <span className='text-sm text-gray-400'>—</span>;
-	}
-
-	const labels = buckets.map((bucket) => formatCommitmentTimeBucketLabel(bucket, currencySymbol, minutesEnabled));
-	const primaryLabel = labels[0];
-
-	if (labels.length === 1) {
-		return <span className='text-sm text-gray-600 leading-snug'>{primaryLabel}</span>;
-	}
-
-	return (
-		<Tooltip
-			content={
-				<ul className='space-y-1.5'>
-					{labels.map((label, index) => (
-						<li key={index} className='text-sm leading-snug'>
-							{label}
-						</li>
-					))}
-				</ul>
-			}
-			delayDuration={0}
-			sideOffset={5}
-			className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-lg max-w-[420px]'>
-			<span className='text-sm text-gray-600 leading-snug'>
-				{primaryLabel}
-				<span className='ms-1 text-xs text-gray-500'>
-					+{labels.length - 1} {t('commitmentConfig.timeBuckets.moreBuckets')}
-				</span>
-			</span>
-		</Tooltip>
-	);
-};
-
 const SubscriptionLineItemTable: FC<Props> = ({
 	data,
 	onEdit,
@@ -368,9 +319,8 @@ const SubscriptionLineItemTable: FC<Props> = ({
 	phaseLabelsById,
 	showNoDataCard = true,
 	noDataSubtitle,
-	showCommitmentColumn = false,
 }) => {
-	const { t } = useTranslation('common');
+	const { t } = useTranslation(['common', 'catalog']);
 	const [showTerminateModal, setShowTerminateModal] = useState(false);
 	const [selectedLineItem, setSelectedLineItem] = useState<LineItem | null>(null);
 	const [viewCommitmentLineItem, setViewCommitmentLineItem] = useState<LineItem | null>(null);
@@ -434,12 +384,6 @@ const SubscriptionLineItemTable: FC<Props> = ({
 		return types.size > 1;
 	}, [data]);
 
-	const allCommitmentBuckets = useMemo(
-		() => (showCommitmentColumn ? (data ?? []).flatMap((item) => item.commitment_time_buckets ?? []) : []),
-		[data, showCommitmentColumn],
-	);
-	const { pricesById } = useCommitmentTimeBucketPrices(allCommitmentBuckets);
-
 	const columns: ColumnData<LineItemWithStatus>[] = useMemo(
 		() => [
 			{
@@ -478,7 +422,9 @@ const SubscriptionLineItemTable: FC<Props> = ({
 				: []),
 			{
 				title: 'Price Type',
-				render: (row) => <span>{getPriceTypeLabel(row.price_type)}</span>,
+				render: (row) => (
+					<PriceTypeChipsCell priceType={row.price_type ?? row.price?.type} invoiceCadence={row.price?.invoice_cadence} t={t} />
+				),
 			},
 			{
 				title: 'Billing Period',
@@ -510,14 +456,6 @@ const SubscriptionLineItemTable: FC<Props> = ({
 					);
 				},
 			},
-			...(showCommitmentColumn
-				? [
-						{
-							title: 'Commitment',
-							render: (row: LineItemWithStatus) => <CommitmentColumnCell row={row} pricesById={pricesById} />,
-						},
-					]
-				: []),
 			{
 				title: 'Charge',
 				render: (row) => {
@@ -532,55 +470,31 @@ const SubscriptionLineItemTable: FC<Props> = ({
 					);
 				},
 			},
-			...(readOnly
-				? [
-						{
-							fieldVariant: 'interactive' as const,
-							width: '48px',
-							hideOnEmpty: true,
-							render: (row: LineItemWithStatus) => {
-								if (!lineItemHasWindowCommitment(row)) return null;
-								return <ViewCommitmentDropdown row={row} onView={setViewCommitmentLineItem} />;
-							},
-						},
-					]
-				: [
-						{
-							fieldVariant: 'interactive' as const,
-							width: '48px',
-							hideOnEmpty: true,
-							render: (row: LineItemWithStatus) => {
-								const isArchived = row.status === ENTITY_STATUS.ARCHIVED;
-								const defaultEndDate = '0001-01-01T00:00:00Z';
-								const hasEndDate = !!(row.end_date && row.end_date.trim() !== '' && row.end_date !== defaultEndDate);
-								const isTerminateDisabled = isArchived || hasEndDate;
-								const isEditDisabled = isArchived || hasEndDate;
+			{
+				fieldVariant: 'interactive' as const,
+				width: '48px',
+				render: (row: LineItemWithStatus) => {
+					const isArchived = row.status === ENTITY_STATUS.ARCHIVED;
+					const defaultEndDate = '0001-01-01T00:00:00Z';
+					const hasEndDate = !!(row.end_date && row.end_date.trim() !== '' && row.end_date !== defaultEndDate);
+					const isTerminateDisabled = isArchived || hasEndDate;
+					const isEditDisabled = isArchived || hasEndDate;
 
-								return (
-									<LineItemDropdown
-										row={row}
-										isEditDisabled={isEditDisabled}
-										isTerminateDisabled={isTerminateDisabled}
-										onEdit={handleEditClick}
-										onTerminate={handleTerminateClick}
-										onViewCommitment={setViewCommitmentLineItem}
-									/>
-								);
-							},
-						},
-					]),
+					return (
+						<LineItemActionsMenu
+							row={row}
+							readOnly={readOnly}
+							isEditDisabled={isEditDisabled}
+							isTerminateDisabled={isTerminateDisabled}
+							onViewCommitment={setViewCommitmentLineItem}
+							onEdit={handleEditClick}
+							onTerminate={handleTerminateClick}
+						/>
+					);
+				},
+			},
 		],
-		[
-			hasMultipleEntityTypes,
-			commitmentInfo,
-			handleEditClick,
-			handleTerminateClick,
-			readOnly,
-			phaseLabelsById,
-			showCommitmentColumn,
-			pricesById,
-			t,
-		],
+		[hasMultipleEntityTypes, commitmentInfo, handleEditClick, handleTerminateClick, readOnly, phaseLabelsById, t],
 	);
 
 	if (isLoading) {

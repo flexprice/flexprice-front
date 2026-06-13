@@ -56,7 +56,7 @@ const SubscriptionEditChargesSection: FC<SubscriptionEditChargesSectionProps> = 
 	});
 
 	const { limit, offset, page, reset } = usePagination({
-		initialLimit: 10,
+		initialLimit: 5,
 		prefix: LINE_ITEMS_PAGINATION_PREFIX,
 	});
 
@@ -140,7 +140,6 @@ const SubscriptionEditChargesSection: FC<SubscriptionEditChargesSectionProps> = 
 				readOnly={readOnly}
 				phaseLabelsById={phaseLabelsById}
 				showNoDataCard={false}
-				showCommitmentColumn
 			/>
 			<Spacer className='!h-2' />
 			<ShortPagination totalItems={totalLineItems} pageSize={limit} unit='charges' prefix={LINE_ITEMS_PAGINATION_PREFIX} />

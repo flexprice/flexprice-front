@@ -156,8 +156,14 @@ class SubscriptionApi {
 	/**
 	 * Get active addons for a subscription
 	 */
-	public static async getActiveAddons(subscriptionId: string): Promise<ListAddonAssociationsResponse> {
-		return await AxiosClient.get<ListAddonAssociationsResponse>(`${this.baseUrl}/${subscriptionId}/addons/associations`);
+	public static async getActiveAddons(
+		subscriptionId: string,
+		params?: { limit?: number; offset?: number },
+	): Promise<ListAddonAssociationsResponse> {
+		const url = params
+			? generateQueryParams(`${this.baseUrl}/${subscriptionId}/addons/associations`, params)
+			: `${this.baseUrl}/${subscriptionId}/addons/associations`;
+		return await AxiosClient.get<ListAddonAssociationsResponse>(url);
 	}
 
 	/**

@@ -438,6 +438,60 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				<Spacer className='!my-4' />
 			</Card>
 
+			{/* Upcoming Invoices: show card with header immediately; preview API can be slow so we show a dedicated loader */}
+			{subscriptionDetails?.subscription_status !== SUBSCRIPTION_STATUS.CANCELLED &&
+				subscriptionDetails?.subscription_status !== SUBSCRIPTION_STATUS.TRIALING && (
+					<div className='card mt-8'>
+						{isPreviewLoading ? (
+							<>
+								<FormHeader
+									variant='sub-header'
+									titleClassName='font-semibold text-gray-900'
+									subtitleClassName='text-sm text-gray-500 !mb-0 !mt-1'
+									title={t('subscriptionDetail.upcomingInvoicesTitle')}
+									subtitle={t('subscriptionDetail.upcomingInvoicesSubtitle', {
+										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
+									})}
+								/>
+								<Spacer className='!my-4' />
+								<Skeleton className='h-64 w-full' />
+								<Spacer className='!my-4' />
+								<div className='flex justify-end'>
+									<Skeleton className='h-8 w-48' />
+								</div>
+							</>
+						) : (data?.line_items?.length ?? 0) > 0 ? (
+							<SubscriptionPreviewLineItemTable
+								discount={data?.total_discount}
+								subtotal={data?.subtotal}
+								invoiceType={data?.invoice_type as INVOICE_TYPE}
+								refetch={refetch}
+								currency={data?.currency}
+								amount_due={data?.amount_due}
+								tax={data?.total_tax}
+								title={t('subscriptionDetail.upcomingInvoicesTitle')}
+								subtitle={t('subscriptionDetail.upcomingInvoicesSubtitle', {
+									date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
+								})}
+								data={data?.line_items ?? []}
+								showZeroCharges={showZeroCharges}
+								onShowZeroChargesChange={setShowZeroCharges}
+							/>
+						) : (
+							<>
+								<FormHeader
+									variant='sub-header'
+									titleClassName='font-semibold text-gray-900'
+									title={t('subscriptionDetail.upcomingInvoicesTitle')}
+									subtitle={t('subscriptionDetail.upcomingInvoicesEmpty', {
+										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
+									})}
+								/>
+							</>
+						)}
+					</div>
+				)}
+
 			{subscription_id && subscriptionDetails?.customer_id && subscriptionDetails?.current_period_start && (
 				<Card className='card mt-8'>
 					<FormHeader title={t('common:labels.charges')} variant='sub-header' titleClassName='font-semibold' />
@@ -541,60 +595,6 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 					</div>
 				</Card>
 			)}
-
-			{/* Upcoming Invoices: show card with header immediately; preview API can be slow so we show a dedicated loader */}
-			{subscriptionDetails?.subscription_status !== SUBSCRIPTION_STATUS.CANCELLED &&
-				subscriptionDetails?.subscription_status !== SUBSCRIPTION_STATUS.TRIALING && (
-					<div className='card !mt-4'>
-						{isPreviewLoading ? (
-							<>
-								<FormHeader
-									variant='sub-header'
-									titleClassName='font-semibold text-gray-900'
-									subtitleClassName='text-sm text-gray-500 !mb-0 !mt-1'
-									title={t('subscriptionDetail.upcomingInvoicesTitle')}
-									subtitle={t('subscriptionDetail.upcomingInvoicesSubtitle', {
-										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
-									})}
-								/>
-								<Spacer className='!my-4' />
-								<Skeleton className='h-64 w-full' />
-								<Spacer className='!my-4' />
-								<div className='flex justify-end'>
-									<Skeleton className='h-8 w-48' />
-								</div>
-							</>
-						) : (data?.line_items?.length ?? 0) > 0 ? (
-							<SubscriptionPreviewLineItemTable
-								discount={data?.total_discount}
-								subtotal={data?.subtotal}
-								invoiceType={data?.invoice_type as INVOICE_TYPE}
-								refetch={refetch}
-								currency={data?.currency}
-								amount_due={data?.amount_due}
-								tax={data?.total_tax}
-								title={t('subscriptionDetail.upcomingInvoicesTitle')}
-								subtitle={t('subscriptionDetail.upcomingInvoicesSubtitle', {
-									date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
-								})}
-								data={data?.line_items ?? []}
-								showZeroCharges={showZeroCharges}
-								onShowZeroChargesChange={setShowZeroCharges}
-							/>
-						) : (
-							<>
-								<FormHeader
-									variant='sub-header'
-									titleClassName='font-semibold text-gray-900'
-									title={t('subscriptionDetail.upcomingInvoicesTitle')}
-									subtitle={t('subscriptionDetail.upcomingInvoicesEmpty', {
-										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
-									})}
-								/>
-							</>
-						)}
-					</div>
-				)}
 
 			<UpcomingCreditGrantApplicationsTable data={upcomingCreditGrantApplications?.items ?? []} customerId={customerId} />
 		</div>

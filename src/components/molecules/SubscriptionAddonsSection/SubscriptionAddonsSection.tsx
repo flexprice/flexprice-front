@@ -3,7 +3,20 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Trash2 } from 'lucide-react';
-import { Button, Card, CardHeader, Chip, DatePicker, Dialog, AddButton, Select, Tooltip, NoDataCard } from '@/components/atoms';
+import {
+	Button,
+	Card,
+	CardHeader,
+	Chip,
+	DatePicker,
+	Dialog,
+	AddButton,
+	Select,
+	Tooltip,
+	NoDataCard,
+	ShortPagination,
+	Spacer,
+} from '@/components/atoms';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -27,6 +40,9 @@ import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
 import { lineItemHasWindowCommitment } from '@/utils/subscription/subscription_line_item_commitment_helpers';
 import { subscriptionLineItemListItemToLineItem } from '@/utils/subscription/subscriptionLineItemListItemToLineItem';
+import usePagination, { PAGINATION_PREFIX } from '@/hooks/usePagination';
+
+const ADDONS_PAGINATION_PREFIX = PAGINATION_PREFIX.SUBSCRIPTION_ADDONS;
 
 interface SubscriptionAddonsSectionProps {
 	subscriptionId: string;
@@ -170,6 +186,10 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 	const [cancelProrationBehavior, setCancelProrationBehavior] = useState<ADDON_PRORATION_BEHAVIOR | ''>('');
 	const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 	const queryClient = useQueryClient();
+	const { limit, offset, page } = usePagination({
+		initialLimit: 10,
+		prefix: ADDONS_PAGINATION_PREFIX,
+	});
 
 	const subscriptionContextResolved =
 		subscriptionBillingPeriod != null &&
@@ -198,22 +218,17 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 		isLoading,
 		isError,
 	} = useQuery({
-		queryKey: ['subscriptionActiveAddons', subscriptionId],
+		queryKey: ['subscriptionActiveAddons', subscriptionId, page, limit],
 		queryFn: async () => {
-			return await SubscriptionApi.getActiveAddons(subscriptionId);
+			return await SubscriptionApi.getActiveAddons(subscriptionId, { limit, offset });
 		},
 		enabled: !!subscriptionId,
 		retry: false,
 		refetchOnWindowFocus: false,
 	});
 
-	// Normalize response to always be an array for rendering
-	const addonAssociations = useMemo<AddonAssociationResponse[]>(() => {
-		if (!addonAssociationsResponse) return [];
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const response = addonAssociationsResponse as any;
-		return response.items ?? response ?? [];
-	}, [addonAssociationsResponse]);
+	const addonAssociations = addonAssociationsResponse?.items ?? [];
+	const totalAddons = addonAssociationsResponse?.pagination?.total ?? 0;
 
 	const { data: addonLineItemsResponse } = useQuery({
 		queryKey: ['subscriptionAddonLineItems', subscriptionId, subscriptionCustomerId, subscriptionCurrentPeriodStart],
@@ -266,10 +281,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 		});
 	}, [addonAssociations, t]);
 
-	const addonNameToCancel = useMemo(() => {
-		if (!addonToCancel) return 'this addon';
-		return addonAssociations.find((a) => a.id === addonToCancel.id)?.addon?.name || 'this addon';
-	}, [addonToCancel, addonAssociations]);
+	const addonNameToCancel = addonToCancel?.addon?.name || 'this addon';
 
 	// Cancel addon mutation
 	const { mutate: cancelAddon, isPending: isCancellingAddon } = useMutation({
@@ -410,6 +422,73 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 
 	const addButton = readOnly ? undefined : <AddButton onClick={() => setIsAddDialogOpen(true)} />;
 
+	const addAddonDialog = !readOnly ? (
+		<AddAddonDialog
+			isOpen={isAddDialogOpen}
+			onOpenChange={setIsAddDialogOpen}
+			subscriptionId={subscriptionId}
+			billingPeriod={subscriptionDetails?.billing_period}
+			currency={subscriptionDetails?.currency}
+			currentPeriodEndIso={subscriptionDetails?.current_period_end}
+		/>
+	) : null;
+
+	const cancelAddonDialog = (
+		<Dialog
+			title={`Cancel "${addonNameToCancel}"?`}
+			description={t('labels.cancelAddonDescription')}
+			titleClassName='text-lg font-normal text-gray-800'
+			isOpen={isCancelDialogOpen}
+			onOpenChange={(open) => {
+				setIsCancelDialogOpen(open);
+				if (!open) {
+					closeCancelDialog();
+				}
+			}}
+			showCloseButton={false}>
+			<div className='space-y-5'>
+				<div className='space-y-3'>
+					<div className='gap-3'>
+						<DatePicker
+							label={t('labels.effectiveEndDate')}
+							placeholder={t('labels.endDate')}
+							date={effectiveEndDate}
+							setDate={setEffectiveEndDate}
+							className='w-full'
+							minDate={subscriptionDetails?.current_period_start ? new Date(subscriptionDetails.current_period_start) : undefined}
+							maxDate={subscriptionDetails?.current_period_end ? new Date(subscriptionDetails.current_period_end) : undefined}
+							popoverTriggerClassName='w-full'
+						/>
+						<Select
+							label={t('labels.proration')}
+							placeholder={t('labels.default')}
+							options={[
+								{
+									label: 'Create prorations',
+									value: ADDON_PRORATION_BEHAVIOR.CREATE_PRORATIONS,
+									description: 'Creates proration credits/charges.',
+								},
+								{ label: 'None', value: ADDON_PRORATION_BEHAVIOR.NONE, description: 'No proration adjustments.' },
+							]}
+							value={cancelProrationBehavior}
+							onChange={(v) => setCancelProrationBehavior(v as ADDON_PRORATION_BEHAVIOR)}
+						/>
+					</div>
+					<p className='text-xs text-gray-500'>{t('labels.leaveEmptyToCancelAtPeriodEnd')}</p>
+				</div>
+
+				<div className='flex justify-end gap-3'>
+					<Button variant='outline' onClick={closeCancelDialog} disabled={isCancellingAddon}>
+						{t('actions.keep')}
+					</Button>
+					<Button variant='destructive' onClick={confirmCancel} disabled={isCancellingAddon}>
+						{isCancellingAddon ? t('status.cancelling') : t('actions.cancel')}
+					</Button>
+				</div>
+			</div>
+		</Dialog>
+	);
+
 	if (isLoading) {
 		return (
 			<Card variant='notched'>
@@ -425,82 +504,26 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 		return null;
 	}
 
+	if (!isLoading && totalAddons === 0) {
+		return (
+			<>
+				<NoDataCard title={t('labels.addons')} subtitle={t('labels.noAddonsAddedYet')} cta={addButton} />
+				{addAddonDialog}
+			</>
+		);
+	}
+
 	return (
 		<>
-			{processedAddonAssociations.length > 0 ? (
-				<Card variant='notched'>
-					<CardHeader title={t('labels.addons')} cta={addButton} />
-					<FlexpriceTable showEmptyRow data={processedAddonAssociations} columns={columns} variant='no-bordered' />
-				</Card>
-			) : (
-				<NoDataCard title={t('labels.addons')} subtitle={t('labels.noAddonsAddedYet')} cta={addButton} />
-			)}
+			<Card variant='notched'>
+				<CardHeader title={t('labels.addons')} cta={addButton} />
+				<FlexpriceTable showEmptyRow data={processedAddonAssociations} columns={columns} variant='no-bordered' />
+				<Spacer className='!h-2' />
+				<ShortPagination totalItems={totalAddons} pageSize={limit} unit='addons' prefix={ADDONS_PAGINATION_PREFIX} />
+			</Card>
 
-			{!readOnly && (
-				<AddAddonDialog
-					isOpen={isAddDialogOpen}
-					onOpenChange={setIsAddDialogOpen}
-					subscriptionId={subscriptionId}
-					billingPeriod={subscriptionDetails?.billing_period}
-					currency={subscriptionDetails?.currency}
-					currentPeriodEndIso={subscriptionDetails?.current_period_end}
-				/>
-			)}
-
-			{/* Cancel Addon Dialog */}
-			<Dialog
-				title={`Cancel "${addonNameToCancel}"?`}
-				description={t('labels.cancelAddonDescription')}
-				titleClassName='text-lg font-normal text-gray-800'
-				isOpen={isCancelDialogOpen}
-				onOpenChange={(open) => {
-					setIsCancelDialogOpen(open);
-					if (!open) {
-						closeCancelDialog();
-					}
-				}}
-				showCloseButton={false}>
-				<div className='space-y-5'>
-					<div className='space-y-3'>
-						<div className='gap-3'>
-							<DatePicker
-								label={t('labels.effectiveEndDate')}
-								placeholder={t('labels.endDate')}
-								date={effectiveEndDate}
-								setDate={setEffectiveEndDate}
-								className='w-full'
-								minDate={subscriptionDetails?.current_period_start ? new Date(subscriptionDetails.current_period_start) : undefined}
-								maxDate={subscriptionDetails?.current_period_end ? new Date(subscriptionDetails.current_period_end) : undefined}
-								popoverTriggerClassName='w-full'
-							/>
-							<Select
-								label={t('labels.proration')}
-								placeholder={t('labels.default')}
-								options={[
-									{
-										label: 'Create prorations',
-										value: ADDON_PRORATION_BEHAVIOR.CREATE_PRORATIONS,
-										description: 'Creates proration credits/charges.',
-									},
-									{ label: 'None', value: ADDON_PRORATION_BEHAVIOR.NONE, description: 'No proration adjustments.' },
-								]}
-								value={cancelProrationBehavior}
-								onChange={(v) => setCancelProrationBehavior(v as ADDON_PRORATION_BEHAVIOR)}
-							/>
-						</div>
-						<p className='text-xs text-gray-500'>{t('labels.leaveEmptyToCancelAtPeriodEnd')}</p>
-					</div>
-
-					<div className='flex justify-end gap-3'>
-						<Button variant='outline' onClick={closeCancelDialog} disabled={isCancellingAddon}>
-							{t('actions.keep')}
-						</Button>
-						<Button variant='destructive' onClick={confirmCancel} disabled={isCancellingAddon}>
-							{isCancellingAddon ? t('status.cancelling') : t('actions.cancel')}
-						</Button>
-					</div>
-				</div>
-			</Dialog>
+			{addAddonDialog}
+			{cancelAddonDialog}
 		</>
 	);
 };

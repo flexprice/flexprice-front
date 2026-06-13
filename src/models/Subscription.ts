@@ -41,11 +41,13 @@ export interface LineItem extends BaseModel {
 	/** ID of the source entity (plan_id, addon_id, or subscription_id) */
 	readonly entity_id?: string;
 	// Commitment fields
+	readonly commitment_amount?: string;
 	readonly commitment_quantity?: string;
 	readonly commitment_type?: string;
 	readonly commitment_overage_factor?: string;
 	readonly commitment_true_up_enabled?: boolean;
 	readonly commitment_windowed?: boolean;
+	readonly commitment_duration?: string;
 	readonly commitment_time_buckets?: CommitmentTimeBucket[];
 }
 

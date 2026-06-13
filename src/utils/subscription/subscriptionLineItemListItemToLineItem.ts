@@ -43,11 +43,13 @@ export function subscriptionLineItemListItemToLineItem(item: SubscriptionLineIte
 		subscription_phase_id: extra.subscription_phase_id,
 		entity_type: item.entity_type,
 		entity_id: item.entity_id,
+		commitment_amount: item.commitment_amount,
 		commitment_quantity: item.commitment_quantity,
 		commitment_type: item.commitment_type,
 		commitment_overage_factor: item.commitment_overage_factor,
 		commitment_true_up_enabled: item.commitment_true_up_enabled,
 		commitment_windowed: item.commitment_windowed,
+		commitment_duration: item.commitment_duration,
 		commitment_time_buckets: item.commitment_time_buckets,
 	} as LineItem;
 }
