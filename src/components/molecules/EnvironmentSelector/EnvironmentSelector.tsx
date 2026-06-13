@@ -152,7 +152,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 			{isSandboxMode && sidebarOpen && (
 				<div className='mt-2 flex items-center gap-1.5 px-1'>
 					<span className='h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0' />
-					<span className='text-[11px] font-semibold uppercase tracking-widest text-amber-700'>Sandbox</span>
+					<span className='text-[11px] font-semibold uppercase tracking-widest text-amber-700'>{t('environment.types.sandbox')}</span>
 				</div>
 			)}
 
@@ -234,10 +234,9 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 					{isSandboxMode && productionUrl && (
 						<a
 							href={productionUrl}
-							className='flex items-center justify-center gap-1.5 mx-2 mb-2 text-xs text-muted-foreground hover:text-foreground transition-colors py-1.5 border-t border-border pt-2'
-						>
+							className='flex items-center justify-center gap-1.5 mx-2 mb-2 text-xs text-muted-foreground hover:text-foreground transition-colors py-1.5 border-t border-border pt-2'>
 							<ExternalLink className='h-3 w-3' />
-							Go to Production
+							{t('environment.selector.goToProduction')}
 						</a>
 					)}
 				</SelectContent>
