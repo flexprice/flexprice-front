@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef, useState, useEffect, useLayoutEffect } from 'react';
+import { memo, useCallback, useMemo, useRef, useState, useEffect, useLayoutEffect, type ReactNode } from 'react';
 import { QueryBuilder } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import usePagination from '@/hooks/usePagination';
@@ -10,6 +10,7 @@ import LoadingState from './LoadingState';
 import ErrorState from './ErrorState';
 import EmptyState from './EmptyState';
 import TableArea from './TableArea';
+import { MetadataToggleQuickFilter, type MetadataToggleQuickFilterConfig } from './metadataToggleQuickFilter';
 
 /**
  * Configuration for filtering and sorting functionality.
@@ -30,6 +31,10 @@ export interface QueryConfig {
 	 * Key for filter/sort persistence (URL + session storage). Default: dataConfig.queryKey. Omit or set to undefined to use default.
 	 */
 	filterPersistenceKey?: string;
+	/** Optional metadata toggle quick filters (e.g. parent/child via `metadata.org_type`). */
+	metadataToggleQuickFilter?: MetadataToggleQuickFilterConfig;
+	/** Optional content rendered to the right of filter + sort in the query builder toolbar. */
+	queryBuilderPrepend?: ReactNode | ((ctx: { filters: FilterCondition[]; setFilters: (filters: FilterCondition[]) => void }) => ReactNode);
 }
 
 /**
@@ -151,7 +156,9 @@ const QueryBuilderWrapper = memo<{
 	sorts: SortOption[];
 	onFilterChange: (filters: FilterCondition[]) => void;
 	onSortChange: (sorts: SortOption[]) => void;
-}>(({ filterOptions, sortOptions, filters, sorts, onFilterChange, onSortChange }) => {
+	prepend?: ReactNode;
+	reservedMetadataKeys?: string[];
+}>(({ filterOptions, sortOptions, filters, sorts, onFilterChange, onSortChange, prepend, reservedMetadataKeys }) => {
 	return (
 		<QueryBuilder
 			filterOptions={filterOptions}
@@ -160,6 +167,8 @@ const QueryBuilderWrapper = memo<{
 			sortOptions={sortOptions}
 			onSortChange={onSortChange}
 			selectedSorts={sorts}
+			prepend={prepend}
+			reservedMetadataKeys={reservedMetadataKeys}
 		/>
 	);
 });
@@ -290,7 +299,7 @@ const QueryableDataArea = <T = any,>({
 
 	// Create fetch function with all params
 	const fetchData = useCallback(async () => {
-		return await dataConfig.fetchFn({
+		return dataConfig.fetchFn({
 			limit,
 			offset,
 			filters: sanitizedFilters,
@@ -389,6 +398,33 @@ const QueryableDataArea = <T = any,>({
 		return true;
 	}, [isInitialMount, shouldShowEmptyState]);
 
+	const reservedMetadataKeys = useMemo(
+		() => (queryConfig.metadataToggleQuickFilter ? [queryConfig.metadataToggleQuickFilter.metadataKey ?? 'org_type'] : undefined),
+		[queryConfig.metadataToggleQuickFilter],
+	);
+
+	const queryBuilderPrependContent = (() => {
+		const parts: ReactNode[] = [];
+
+		if (queryConfig.metadataToggleQuickFilter) {
+			parts.push(
+				<MetadataToggleQuickFilter
+					key='metadata-toggle-quick-filter'
+					config={queryConfig.metadataToggleQuickFilter}
+					filters={filters}
+					setFilters={setFilters}
+				/>,
+			);
+		}
+
+		const prepend = queryConfig.queryBuilderPrepend;
+		if (prepend) {
+			parts.push(typeof prepend === 'function' ? prepend({ filters, setFilters }) : prepend);
+		}
+
+		return parts.length > 0 ? <div className='flex flex-wrap items-center gap-2'>{parts}</div> : undefined;
+	})();
+
 	return (
 		<div>
 			{/* Stable QueryBuilder - only show when we know data state (not during initial loading) */}
@@ -400,6 +436,8 @@ const QueryableDataArea = <T = any,>({
 					sorts={sorts}
 					onFilterChange={setFilters}
 					onSortChange={setSorts}
+					prepend={queryBuilderPrependContent}
+					reservedMetadataKeys={reservedMetadataKeys}
 				/>
 			)}
 

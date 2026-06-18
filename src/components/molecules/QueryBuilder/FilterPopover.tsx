@@ -16,6 +16,13 @@ import { sanitizeFilterConditions } from '@/types/formatters/QueryBuilder';
 import FilterMultiSelect from './FilterMultiSelect';
 import FilterAsyncSelect from './FilterAsyncSelect';
 import FilterAsyncMultiSelect from './FilterAsyncMultiSelect';
+import {
+	parseMetadataPairs,
+	removeMetadataPairAt,
+	splitMetadataPairsForEditor,
+	mergeReservedAndEditableMetadataPairs,
+	updateMetadataPairAt,
+} from '@/utils/queryBuilder/metadataPairs';
 import { getOperatorDisplayLabel } from './operatorLabels';
 
 interface Props {
@@ -24,6 +31,8 @@ interface Props {
 	onChange: (filters: FilterCondition[]) => void;
 	className?: string;
 	sortable?: boolean;
+	/** Metadata keys managed elsewhere (e.g. quick filters); hidden from the metadata editor. */
+	reservedMetadataKeys?: string[];
 }
 
 const MIN_POPOVER_WIDTH = 400;
@@ -33,30 +42,6 @@ const MIN_VALUE_WIDTH = 160;
 const POPOVER_PADDING = 'px-4 py-3';
 const GRID_GAP = 'gap-1.5';
 const ITEM_PADDING = 'py-1.5 px-2';
-
-interface MetadataPair {
-	key: string;
-	value: string;
-}
-
-const parseMetadataPairs = (valueString: string | undefined): MetadataPair[] => {
-	if (valueString == null || valueString.trim() === '') return [{ key: '', value: '' }];
-	try {
-		const parsed = JSON.parse(valueString);
-		if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-	} catch {
-		// ignore
-	}
-	return [{ key: '', value: '' }];
-};
-
-const updateMetadataPairAt = (pairs: MetadataPair[], index: number, field: keyof MetadataPair, val: string): MetadataPair[] =>
-	pairs.map((p, i) => (i === index ? { ...p, [field]: val } : p));
-
-const removeMetadataPairAt = (pairs: MetadataPair[], index: number): MetadataPair[] => {
-	const next = pairs.filter((_, i) => i !== index);
-	return next.length > 0 ? next : [{ key: '', value: '' }];
-};
 
 const getDefaultValueByFieldType = (field: FilterField) => {
 	switch (field.fieldType) {
@@ -90,9 +75,10 @@ const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => (
 	...getDefaultValueByFieldType(field),
 });
 
-const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, className, sortable = false }) => {
+const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, className, sortable = false, reservedMetadataKeys = [] }) => {
 	const { t } = useTranslation('common');
 	const [isOpen, setIsOpen] = useState(false);
+	const reservedMetadataKeySet = useMemo(() => new Set(reservedMetadataKeys), [reservedMetadataKeys]);
 
 	const handleAddFilter = useCallback(() => {
 		const firstField = fields[0];
@@ -348,8 +334,15 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 										const isMetadata = field.fieldType === FilterFieldType.METADATA;
 
 										if (isMetadata) {
-											const metaPairs = parseMetadataPairs(filter.valueString);
-											const setMetaPairs = (next: MetadataPair[]) => handleFilterUpdate(filter.id, { valueString: JSON.stringify(next) });
+											const { editablePairs } = splitMetadataPairsForEditor(filter.valueString, reservedMetadataKeySet);
+											const setMetaPairs = (nextEditable: typeof editablePairs) => {
+												const { reservedPairs: currentReserved } = splitMetadataPairsForEditor(filter.valueString, reservedMetadataKeySet);
+												const merged = mergeReservedAndEditableMetadataPairs(currentReserved, nextEditable);
+												handleFilterUpdate(filter.id, {
+													valueString: merged.length > 0 ? JSON.stringify(merged) : '',
+												});
+											};
+											const metaPairs = editablePairs;
 											const first = metaPairs[0] ?? { key: '', value: '' };
 											return (
 												<SortableItem key={filter.id} value={filter.id}>

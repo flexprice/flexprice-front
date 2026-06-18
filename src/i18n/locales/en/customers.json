@@ -22,6 +22,9 @@
 			"status": "Status",
 			"metadata": "Metadata"
 		},
+		"orgTypeParent": "Parent",
+		"orgTypeChild": "Child",
+		"orgTypeAll": "All",
 		"sort": {
 			"name": "Name",
 			"email": "Email",

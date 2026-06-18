@@ -22,6 +22,9 @@
 			"status": "الحالة",
 			"metadata": "البيانات الوصفية"
 		},
+		"orgTypeParent": "الأصل",
+		"orgTypeChild": "الفرع",
+		"orgTypeAll": "الكل",
 		"sort": {
 			"name": "الاسم",
 			"email": "البريد الإلكتروني",

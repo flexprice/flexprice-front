@@ -1,6 +1,7 @@
 import { FilterField, FilterCondition, SortOption, SortDirection } from '@/types/common/QueryBuilder';
 import { useState, useCallback, useMemo, useEffect, type ReactNode } from 'react';
 import { debounce } from 'lodash';
+import { cn } from '@/lib/utils';
 import { FilterPopover, SortDropdown } from '@/components/molecules';
 
 interface Props {
@@ -28,6 +29,10 @@ interface Props {
 	/** Called when "Reset filters" is clicked in the popover (optional; property filters are cleared automatically when propertyFiltersConfig is provided). */
 	onFilterPopoverReset?: () => void;
 
+	/** Toolbar content rendered to the right of filter + sort controls (e.g. quick filters). */
+	prepend?: ReactNode;
+	/** Metadata keys managed outside the filter popover (e.g. quick filters). */
+	reservedMetadataKeys?: string[];
 	/** Trailing toolbar content (e.g. count label, CTAs); rendered flush right on wide layouts. */
 	children?: ReactNode;
 }
@@ -40,6 +45,8 @@ const QueryBuilder = ({
 	onSortChange = () => {},
 	selectedSorts = [],
 	debounceTime = 500,
+	prepend,
+	reservedMetadataKeys,
 	children,
 }: Props) => {
 	const [filter, setFilter] = useState<FilterCondition[]>(filters);
@@ -123,15 +130,21 @@ const QueryBuilder = ({
 	}, [localSorts]);
 
 	const hasTrailing = children != null && children !== false;
+	const hasPrepend = prepend != null && prepend !== false;
 
 	return (
 		<div className={hasTrailing ? 'flex flex-wrap items-center justify-between gap-3 mb-5' : 'flex flex-wrap items-center gap-3 mb-5'}>
-			<div className='flex flex-wrap items-center gap-3 min-w-0'>
-				{fields.length > 0 && <FilterPopover fields={fields} value={filter} onChange={handleFilterChange} />}
+			<div className={cn('flex flex-wrap items-center gap-3 min-w-0', hasPrepend && 'flex-1 justify-between')}>
+				<div className='flex flex-wrap items-center gap-3'>
+					{fields.length > 0 && (
+						<FilterPopover fields={fields} value={filter} onChange={handleFilterChange} reservedMetadataKeys={reservedMetadataKeys} />
+					)}
 
-				{sortOptions.length > 0 && selectedSorts && (
-					<SortDropdown options={sortOptions} value={sortDropdownValue} onChange={handleSortChange} />
-				)}
+					{sortOptions.length > 0 && selectedSorts && (
+						<SortDropdown options={sortOptions} value={sortDropdownValue} onChange={handleSortChange} />
+					)}
+				</div>
+				{prepend}
 			</div>
 
 			{hasTrailing ? <div className='flex flex-wrap items-center gap-3 shrink-0'>{children}</div> : null}

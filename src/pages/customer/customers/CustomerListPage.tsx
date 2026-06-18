@@ -1,7 +1,7 @@
 import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
 import { CreateCustomerDrawer, ApiDocsContent } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
-import { QueryableDataArea } from '@/components/organisms';
+import { QueryableDataArea, createOrgTypeMetadataToggleQuickFilter } from '@/components/organisms';
 import { buildGuides } from '@/constants/guides';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import Customer from '@/models/Customer';
@@ -24,6 +24,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import formatDate from '@/utils/common/format_date';
 import { ExternalLink } from 'lucide-react';
 import { useCustomerPortalUrl } from '@/hooks/useCustomerPortalUrl';
+import useCustomerOrgTypeFilterEnabled from '@/hooks/useCustomerOrgTypeFilterEnabled';
 import { useTranslation } from 'react-i18next';
 
 const ActionButtonWithPortal: FC<{ customer: Customer; onEdit: (customer: Customer) => void }> = ({ customer, onEdit }) => {
@@ -61,6 +62,7 @@ const CustomerListPage = () => {
 	const [activeCustomer, setactiveCustomer] = useState<Customer>();
 	const [customerDrawerOpen, setcustomerDrawerOpen] = useState(false);
 	const navigate = useNavigate();
+	const showOrgTypeFilter = useCustomerOrgTypeFilterEnabled();
 
 	const handleCreateCustomer = useCallback(() => {
 		setactiveCustomer(undefined);
@@ -214,6 +216,18 @@ const CustomerListPage = () => {
 		[handleEdit, t],
 	);
 
+	const metadataToggleQuickFilter = useMemo(
+		() =>
+			showOrgTypeFilter
+				? createOrgTypeMetadataToggleQuickFilter({
+						parent: t('list.orgTypeParent'),
+						child: t('list.orgTypeChild'),
+						all: t('list.orgTypeAll'),
+					})
+				: undefined,
+		[t, showOrgTypeFilter],
+	);
+
 	return (
 		<Page
 			heading={t('list.title')}
@@ -241,6 +255,7 @@ const CustomerListPage = () => {
 					initialFilters,
 					initialSorts,
 					debounceTime: 300,
+					metadataToggleQuickFilter,
 				}}
 				dataConfig={{
 					queryKey: 'fetchCustomers',
