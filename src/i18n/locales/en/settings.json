@@ -1110,6 +1110,7 @@
 			"unknownTenant": "Unknown",
 			"addEnvironment": "Add Environment",
 			"copyEnvironment": "Copy Environment",
+			"goToProduction": "Go to Production",
 			"renameAria": "Rename {{name}}",
 			"suspendedTitle": "Environment suspended",
 			"suspendedDescription": "This environment is temporarily closed. Contact us to continue."

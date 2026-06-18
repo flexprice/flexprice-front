@@ -1039,6 +1039,7 @@
 			"unknownTenant": "مستأجر غير معروف",
 			"addEnvironment": "إضافة بيئة",
 			"copyEnvironment": "نسخ البيئة",
+			"goToProduction": "الانتقال إلى الإنتاج",
 			"renameAria": "إعادة تسمية البيئة {{name}}",
 			"suspendedTitle": "تم تعليق البيئة",
 			"suspendedDescription": "هذه البيئة معلقة حاليًا. يرجى التواصل مع الدعم."
