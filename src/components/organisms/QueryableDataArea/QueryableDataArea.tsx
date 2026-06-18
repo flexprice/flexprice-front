@@ -11,6 +11,7 @@ import ErrorState from './ErrorState';
 import EmptyState from './EmptyState';
 import TableArea from './TableArea';
 import { MetadataToggleQuickFilter, type MetadataToggleQuickFilterConfig } from './metadataToggleQuickFilter';
+import { getActiveMetadataValue } from '@/utils/queryBuilder/metadataToggleFilters';
 
 /**
  * Configuration for filtering and sorting functionality.
@@ -398,10 +399,14 @@ const QueryableDataArea = <T = any,>({
 		return true;
 	}, [isInitialMount, shouldShowEmptyState]);
 
-	const reservedMetadataKeys = useMemo(
-		() => (queryConfig.metadataToggleQuickFilter ? [queryConfig.metadataToggleQuickFilter.metadataKey ?? 'org_type'] : undefined),
-		[queryConfig.metadataToggleQuickFilter],
-	);
+	const reservedMetadataKeys = useMemo(() => {
+		const config = queryConfig.metadataToggleQuickFilter;
+		if (!config) return undefined;
+		const metadataKey = config.metadataKey ?? 'org_type';
+		const allowedValues = new Set(config.options.map((option) => option.value));
+		const activeValue = getActiveMetadataValue(filters, metadataKey, allowedValues);
+		return activeValue ? [metadataKey] : undefined;
+	}, [queryConfig.metadataToggleQuickFilter, filters]);
 
 	const queryBuilderPrependContent = (() => {
 		const parts: ReactNode[] = [];

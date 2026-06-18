@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { DataType, FilterCondition, FilterOperator } from '@/types/common/QueryBuilder';
 import { METADATA_TYPED_FILTER_FIELD } from '@/types/formatters/QueryBuilder';
 import { parseTenantAllowlist } from '@/config/customerOrgTypeFilter';
-import { mergeMetadataPairsFromFilters } from '@/utils/queryBuilder/metadataPairs';
+import { mergeMetadataPairsFromFilters, mergeReservedAndEditableMetadataPairs } from '@/utils/queryBuilder/metadataPairs';
 import { getActiveMetadataValue, updateMetadataToggleFilters } from '@/utils/queryBuilder/metadataToggleFilters';
 
 const orgTypeConfig = {
@@ -111,6 +111,15 @@ describe('mergeMetadataPairsFromFilters', () => {
 		expect(pairs).toEqual([
 			{ key: 'org_type', value: 'child' },
 			{ key: 'tier', value: 'gold' },
+		]);
+	});
+});
+
+describe('mergeReservedAndEditableMetadataPairs', () => {
+	it('keeps in-progress editable rows while typing', () => {
+		expect(mergeReservedAndEditableMetadataPairs([{ key: 'org_type', value: 'parent' }], [{ key: 'tier', value: '' }])).toEqual([
+			{ key: 'org_type', value: 'parent' },
+			{ key: 'tier', value: '' },
 		]);
 	});
 });

@@ -334,7 +334,7 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 										const isMetadata = field.fieldType === FilterFieldType.METADATA;
 
 										if (isMetadata) {
-											const { editablePairs } = splitMetadataPairsForEditor(filter.valueString, reservedMetadataKeySet);
+											const { reservedPairs, editablePairs } = splitMetadataPairsForEditor(filter.valueString, reservedMetadataKeySet);
 											const setMetaPairs = (nextEditable: typeof editablePairs) => {
 												const { reservedPairs: currentReserved } = splitMetadataPairsForEditor(filter.valueString, reservedMetadataKeySet);
 												const merged = mergeReservedAndEditableMetadataPairs(currentReserved, nextEditable);
@@ -344,6 +344,9 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 											};
 											const metaPairs = editablePairs;
 											const first = metaPairs[0] ?? { key: '', value: '' };
+											const mainRowReserved =
+												reservedPairs.length > 0 && !first.key.trim() && !first.value.trim() ? reservedPairs[0] : undefined;
+											const extraReservedPairs = mainRowReserved ? reservedPairs.slice(1) : reservedPairs;
 											return (
 												<SortableItem key={filter.id} value={filter.id}>
 													<div className='flex flex-col gap-1'>
@@ -370,16 +373,20 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 																contentClassName='!z-[110]'
 															/>
 															<Input
-																value={first.key}
+																value={mainRowReserved?.key ?? first.key}
 																onChange={(e) => setMetaPairs(updateMetadataPairAt(metaPairs, 0, 'key', e.target.value))}
 																placeholder={t('queryBuilder.metadataKey')}
 																className='h-9 text-sm min-w-0'
+																readOnly={Boolean(mainRowReserved)}
+																disabled={Boolean(mainRowReserved)}
 															/>
 															<Input
-																value={first.value}
+																value={mainRowReserved?.value ?? first.value}
 																onChange={(e) => setMetaPairs(updateMetadataPairAt(metaPairs, 0, 'value', e.target.value))}
 																placeholder={t('queryBuilder.metadataValue')}
 																className='h-9 text-sm min-w-0'
+																readOnly={Boolean(mainRowReserved)}
+																disabled={Boolean(mainRowReserved)}
 															/>
 															<div className='flex items-center gap-1 justify-end'>
 																<Button
@@ -398,6 +405,30 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 																)}
 															</div>
 														</div>
+														{extraReservedPairs.map((pair, reservedIdx) => (
+															<div
+																key={`${filter.id}-reserved-${reservedIdx}`}
+																className={cn('grid items-center', GRID_GAP, ITEM_PADDING, 'w-full rounded bg-muted/40')}
+																style={gridTemplateColumns}>
+																<div className='h-9 min-w-0' aria-hidden />
+																<div className='h-9 min-w-0' aria-hidden />
+																<Input
+																	value={pair.key}
+																	readOnly
+																	disabled
+																	className='h-9 text-sm min-w-0 bg-muted/60'
+																	aria-label={t('queryBuilder.metadataKey')}
+																/>
+																<Input
+																	value={pair.value}
+																	readOnly
+																	disabled
+																	className='h-9 text-sm min-w-0 bg-muted/60'
+																	aria-label={t('queryBuilder.metadataValue')}
+																/>
+																<div className='h-9 min-w-0' aria-hidden />
+															</div>
+														))}
 														{metaPairs.slice(1).map((pair, pairIdx) => {
 															const i = pairIdx + 1;
 															return (

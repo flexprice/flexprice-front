@@ -71,7 +71,8 @@ export const splitMetadataPairsForEditor = (
 	};
 };
 
+/** Preserve in-progress rows (key or value partially filled) so metadata inputs remain editable. */
 export const mergeReservedAndEditableMetadataPairs = (reservedPairs: MetadataPair[], editablePairs: MetadataPair[]): MetadataPair[] => {
-	const merged = [...reservedPairs, ...editablePairs.filter((pair) => pair.key.trim() !== '' && pair.value.trim() !== '')];
-	return merged;
+	const editable = editablePairs.filter((pair) => pair.key.trim() !== '' || pair.value.trim() !== '');
+	return [...reservedPairs, ...editable];
 };
