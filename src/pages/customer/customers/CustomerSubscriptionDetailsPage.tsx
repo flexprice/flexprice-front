@@ -1,5 +1,5 @@
-import { Card, FormHeader, Page, Spacer, Chip } from '@/components/atoms';
-import { SubscriptionAddonsSection, UpcomingCreditGrantApplicationsTable } from '@/components/molecules';
+import { Button, Card, Divider, FormHeader, Page, Spacer, Chip } from '@/components/atoms';
+import { DetailsCard, MetadataModal, SubscriptionAddonsSection, UpcomingCreditGrantApplicationsTable } from '@/components/molecules';
 import SubscriptionDetailChargesSection from '@/components/molecules/Subscription/SubscriptionDetailChargesSection';
 import FlexpriceTable, { ColumnData, RedirectCell } from '@/components/molecules/Table';
 import { SubscriptionPreviewLineItemTable } from '@/components/molecules/InvoiceLineItemTable';
@@ -7,6 +7,9 @@ import SubscriptionActionButton from '@/components/organisms/Subscription/Subscr
 import { getSubscriptionStatus } from '@/components/organisms/Subscription/SubscriptionTable';
 import { Skeleton } from '@/components/ui';
 import { RouteNames } from '@/core/routes/Routes';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { getTypographyClass } from '@/lib/typography';
+import { logger } from '@/utils/common/Logger';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import { CustomerApi, SubscriptionApi, TaxApi } from '@/api';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
@@ -27,8 +30,14 @@ import { SubscriptionResponse } from '@/types/dto/Subscription';
 import { generateExpandQueryParams } from '@/utils/common/api_helper';
 import formatDate from '@/utils/common/format_date';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Pencil } from 'lucide-react';
 import { formatSubscriptionTypeDisplayLabel } from '@/utils/subscription/formatSubscriptionTypeDisplay';
+
+// Subscription.metadata is typed loosely upstream; this filter keeps only string→string pairs for the editor.
+const filterStringMetadata = (meta: Record<string, unknown> | undefined): Record<string, string> => {
+	if (!meta) return {};
+	return Object.fromEntries(Object.entries(meta).filter(([_, v]) => typeof v === 'string') as [string, string][]);
+};
 
 const DATE_NO_YEAR_FORMAT: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 
@@ -126,6 +135,16 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 	});
 
 	const [showZeroCharges, setShowZeroCharges] = useState(false);
+	const [showMetadataModal, setShowMetadataModal] = useState(false);
+	const [metadata, setMetadata] = useState<Record<string, string>>(filterStringMetadata(subscriptionDetails?.metadata));
+
+	useEffect(() => {
+		setMetadata(filterStringMetadata(subscriptionDetails?.metadata));
+	}, [subscriptionDetails?.metadata]);
+
+	const isMetadataEditable =
+		!!subscriptionDetails &&
+		subscriptionDetails.subscription_status !== SUBSCRIPTION_STATUS.CANCELLED;
 
 	const {
 		data,
@@ -438,6 +457,27 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 					<p className='text-[#09090B] text-sm'>{formatDateShort(subscriptionDetails?.start_date ?? '')}</p>
 				</div>
 				<Spacer className='!my-4' />
+
+				<Divider className='my-4' />
+				<div className='mt-4'>
+					<div className='flex justify-between items-center mb-2'>
+						<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('tabPanels.common.metadata')}</h3>
+						{isMetadataEditable && (
+							<Button variant='outline' size='icon' onClick={() => setShowMetadataModal(true)} aria-label={t('actions.edit')}>
+								<Pencil className='size-5' />
+							</Button>
+						)}
+					</div>
+					<DetailsCard
+						variant='stacked'
+						data={
+							metadata && Object.keys(metadata).length > 0
+								? Object.entries(metadata).map(([key, value]) => ({ label: key, value }))
+								: [{ label: 'No metadata available.', value: '' }]
+						}
+						cardStyle='borderless'
+					/>
+				</div>
 			</Card>
 
 			{/* subscription schedule */}
@@ -595,6 +635,25 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 					<TaxAssociationTable data={subscriptionTaxAssociations.items} refetchQueryKey='subscriptionTaxAssociations' />
 				</div>
 			)}
+
+			<MetadataModal
+				open={showMetadataModal}
+				data={metadata}
+				onSave={async (newMetadata) => {
+					if (!subscription_id) return;
+					try {
+						const updated = await SubscriptionApi.updateSubscription(subscription_id, { metadata: newMetadata });
+						setMetadata(filterStringMetadata(updated.metadata));
+						setShowMetadataModal(false);
+						toast.success(t('subscriptionDetail.metadataSaved', { defaultValue: 'Metadata saved' }));
+						refetchQueries(['subscriptionDetails', subscription_id]);
+					} catch (e) {
+						logger.error('Failed to update subscription metadata', e);
+						toast.error(t('subscriptionDetail.metadataSaveFailed', { defaultValue: 'Failed to save metadata' }));
+					}
+				}}
+				onClose={() => setShowMetadataModal(false)}
+			/>
 		</div>
 	);
 };
