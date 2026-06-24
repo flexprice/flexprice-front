@@ -757,6 +757,13 @@
 			"usageReset": "Usage Reset ",
 			"bucketSize": "Bucket Size",
 			"groupBy": "Group by"
+		},
+		"duplicate": {
+			"title": "Duplicate Feature",
+			"description": "Create a copy of this feature.",
+			"duplicate": "Duplicate",
+			"nameHelp": "Use a different name from the original feature.",
+			"descriptionHelp": "Optional description for the duplicated feature."
 		}
 	},
 	"entityChargesPage": {

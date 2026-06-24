@@ -108,3 +108,11 @@ export interface GetFeatureByFilterPayload extends Pagination {
 export interface UpdateFeaturePayload extends Partial<Feature> {
 	filters?: MeterFilter[];
 }
+
+// Clone Feature
+export interface CloneFeatureRequest {
+	name: string;
+	lookup_key: string;
+	description?: string;
+	metadata?: Record<string, string>;
+}
