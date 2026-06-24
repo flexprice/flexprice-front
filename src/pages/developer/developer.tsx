@@ -6,7 +6,7 @@ import { SecretKey } from '@/models/SecretKey';
 import usePagination from '@/hooks/usePagination';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import { Plus, Loader, TrashIcon, User2, Bot, LucideIcon, Eye, ShieldCheck, EyeOff, PencilIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { EmptyPage } from '@/components/organisms';
 import { buildGuides } from '@/constants/guides';
@@ -88,6 +88,12 @@ const DeveloperPage = () => {
 		queryKey: ['secret-keys', page, limit, offset],
 		queryFn: () => SecretKeysApi.getAllSecretKeys({ limit, offset }),
 	});
+
+	useEffect(() => {
+		if (isError) {
+			toast.error(t('apiKeys.toastFetchError'));
+		}
+	}, [isError, t]);
 
 	const handleAddSecretKey = () => {
 		setIsSecretKeyDrawerOpen(true);
@@ -207,10 +213,6 @@ const DeveloperPage = () => {
 
 	if (isLoading) {
 		return <Loader />;
-	}
-
-	if (isError) {
-		toast.error(t('apiKeys.toastFetchError'));
 	}
 
 	return (

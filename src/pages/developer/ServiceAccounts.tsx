@@ -6,7 +6,7 @@ import { User } from '@/models';
 import usePagination from '@/hooks/usePagination';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import { Plus, Loader, Bot } from 'lucide-react';
-import { useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 // import { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { EmptyPage } from '@/components/organisms';
@@ -28,6 +28,12 @@ const ServiceAccountsPage = () => {
 		queryKey: ['service-accounts', page],
 		queryFn: async () => UserApi.getServiceAccounts({ limit, offset }),
 	});
+
+	useEffect(() => {
+		if (isServiceAccountsError) {
+			toast.error(t('serviceAccounts.toastFetchError'));
+		}
+	}, [isServiceAccountsError, t]);
 
 	const handleAdd = () => {
 		setSelectedAccount(null);
@@ -119,10 +125,6 @@ const ServiceAccountsPage = () => {
 
 	if (isLoadingServiceAccounts) {
 		return <Loader />;
-	}
-
-	if (isServiceAccountsError) {
-		toast.error(t('serviceAccounts.toastFetchError'));
 	}
 
 	return (
