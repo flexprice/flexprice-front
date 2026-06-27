@@ -125,7 +125,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 			if (redirectStatus === 'paid' || redirectStatus === 'captured') {
 				setState(MoyasarState.Success);
 			} else if (redirectStatus === 'failed' || redirectStatus === 'canceled') {
-				setErrorMsg('Card authentication failed. Please try again.');
+				setErrorMsg(t('moyasarAutopay.authFailed'));
 				setState(MoyasarState.Failed);
 			} else {
 				// initiated / in_progress — webhook will reconcile
@@ -136,13 +136,13 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 
 		if (!window.Moyasar) {
 			setState(MoyasarState.Failed);
-			setErrorMsg('Moyasar.js failed to load. Please refresh.');
+			setErrorMsg(t('moyasarAutopay.sdkLoadFailed'));
 			return;
 		}
 
 		// Transition to Form so React renders the container div before Effect 2 runs.
 		setState(MoyasarState.Form);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [rawToken, isResultMode]);
 
 	// Effect 2: mount Moyasar.js into the container div once it's in the DOM.
@@ -170,7 +170,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		});
 
 		setFormReady(true);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [state]);
 
 	if (state === MoyasarState.Loading) return <LoadingSpinner message={t('moyasarAutopay.loadingSetup')} />;
@@ -184,8 +184,8 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		return (
 			<ResultCard
 				icon={<CheckCircle className='h-9 w-9 text-green-500' />}
-				title='Card saved successfully'
-				description='Your card has been saved and autopay is now active. Future invoices will be charged automatically.'
+				title={t('moyasarAutopay.successTitle')}
+				description={t('moyasarAutopay.successDesc')}
 			/>
 		);
 	}
@@ -194,8 +194,8 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		return (
 			<ResultCard
 				icon={<Clock className='h-9 w-9 text-zinc-500' />}
-				title='Card setup in progress'
-				description='Your card is being verified. This usually completes within a few minutes. You can safely close this page.'
+				title={t('moyasarAutopay.processingTitle')}
+				description={t('moyasarAutopay.processingDesc')}
 			/>
 		);
 	}
@@ -204,11 +204,11 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		return (
 			<ResultCard
 				icon={<AlertCircle className='h-9 w-9 text-red-500' />}
-				title='Card setup failed'
-				description={errorMsg || 'Something went wrong. Please try again.'}
+				title={t('moyasarAutopay.failedTitle')}
+				description={errorMsg || t('moyasarAutopay.failedDesc')}
 				action={
 					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[140px]'>
-						Try again
+						{t('moyasarAutopay.tryAgain')}
 					</Button>
 				}
 			/>
@@ -244,14 +244,26 @@ const PaddleCheckout = () => {
 		const txnId = searchParams.get(PADDLE_URL_PARAMS.TXN);
 		const rawToken = searchParams.get(PADDLE_URL_PARAMS.TOKEN);
 
-		if (!txnId || !rawToken) { setState('invalid'); return; }
+		if (!txnId || !rawToken) {
+			setState('invalid');
+			return;
+		}
 
 		const payload = decodeCheckoutToken(rawToken);
-		if (!payload) { setState('invalid'); return; }
-		if (isTokenExpired(payload)) { setState('expired'); return; }
+		if (!payload) {
+			setState('invalid');
+			return;
+		}
+		if (isTokenExpired(payload)) {
+			setState('expired');
+			return;
+		}
 
 		const Paddle = window.Paddle;
-		if (!Paddle) { setState('invalid'); return; }
+		if (!Paddle) {
+			setState('invalid');
+			return;
+		}
 
 		removePaddleParamsFromUrl();
 
@@ -301,9 +313,7 @@ const PaddleCheckout = () => {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
-					<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>
-						{t('checkoutPage.paymentLinkExpiredDescription')}
-					</p>
+					<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>{t('checkoutPage.paymentLinkExpiredDescription')}</p>
 				</CardContent>
 			</PageWrap>
 		);
@@ -321,9 +331,7 @@ const PaddleCheckout = () => {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
-					<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>
-						{t('checkoutPage.invalidPaymentLinkDescription')}
-					</p>
+					<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>{t('checkoutPage.invalidPaymentLinkDescription')}</p>
 					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[140px]'>
 						<RefreshCw className='w-4 h-4 mr-2' />
 						{t('checkoutPage.refreshPage')}

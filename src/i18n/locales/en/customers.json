@@ -299,6 +299,7 @@
 		},
 		"information": {
 			"saveCardOnStripe": "Save Card on Stripe",
+			"setupAutopayMoyasar": "Set up Moyasar autopay",
 			"sharePortalLinkTitle": "Share Customer Portal Link",
 			"childCustomersTitle": "Child customers"
 		},
@@ -550,5 +551,24 @@
 			"creditGrantDeleteFailed": "Failed to delete credit grant",
 			"loadError": "Error loading subscription data"
 		}
+	},
+	"moyasarAutopay": {
+		"title": "Save Card on Moyasar",
+		"intro": "This will open a secure payment page where the customer can save their card details on Moyasar for automatic invoice payments.",
+		"setupCard": "Set up autopay",
+		"toastInitFailed": "Failed to start autopay setup",
+		"loadingSetup": "Loading payment setup...",
+		"formTitle": "Save your card",
+		"formDesc": "Enter your card details below to enable automatic payments for future invoices.",
+		"formLoadFailed": "Failed to load payment form. Please try again.",
+		"successTitle": "Card saved successfully",
+		"successDesc": "Your card has been saved and autopay is now active. Future invoices will be charged automatically.",
+		"processingTitle": "Card setup in progress",
+		"processingDesc": "Your card is being verified. This usually completes within a few minutes. You can safely close this page.",
+		"failedTitle": "Card setup failed",
+		"failedDesc": "Something went wrong. Please try again.",
+		"authFailed": "Card authentication failed. Please try again.",
+		"sdkLoadFailed": "Moyasar.js failed to load. Please refresh.",
+		"tryAgain": "Try again"
 	}
 }

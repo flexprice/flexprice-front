@@ -34,7 +34,9 @@
 		"view": "عرض",
 		"link": "ربط",
 		"sync": "مزامنة",
-		"linking": "جارٍ الربط…"
+		"linking": "جارٍ الربط…",
+		"unlink": "إلغاء الربط",
+		"unlinking": "جارٍ إلغاء الربط…"
 	},
 	"status": {
 		"active": "نشط",
@@ -454,6 +456,8 @@
 		"copyFailedRetry": "تعذّر النسخ إلى الحافظة. يرجى المحاولة مرة أخرى.",
 		"integrationSyncTriggered": "تم بدء مزامنة التكامل بنجاح",
 		"integrationLinked": "تم ربط التكامل بنجاح",
+		"integrationUnlinked": "تم إلغاء ربط التكامل بنجاح",
+		"integrationUnlinkFailed": "تعذّر إلغاء ربط التكامل",
 		"providerEntityIdRequired": "معرّف كيان المزوّد مطلوب",
 		"setupLinkCreated": "تم إنشاء رابط الإعداد بنجاح!",
 		"setupLinkFailed": "تعذّر إنشاء رابط إعداد الدفع",
@@ -593,7 +597,15 @@
 		"integration": "التكامل",
 		"actions": "إجراءات التكامل",
 		"syncPush": "الدفع إلى التكامل",
-		"syncPull": "السحب من التكامل"
+		"syncPull": "السحب من التكامل",
+		"setupAutopayMoyasar": "إعداد الدفع التلقائي عبر Moyasar",
+		"autopaySetupFailed": "تعذّر بدء إعداد الدفع التلقائي",
+		"unlinkConfirmTitle": "إلغاء ربط التكامل",
+		"unlinkConfirmDescription": "سيؤدي هذا إلى إزالة الربط بين هذا الكيان و{{provider}}. يمكنك إعادة الربط لاحقاً.",
+		"entityIdColumn": {
+			"customer": "معرّف عميل التكامل",
+			"invoice": "معرّف فاتورة التكامل"
+		}
 	},
 	"tableColumns": {
 		"name": "الاسم",

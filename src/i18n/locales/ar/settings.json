@@ -322,6 +322,7 @@
 			"webhookUsernameRequired": "اسم مستخدم Webhook مطلوب",
 			"webhookPasswordRequired": "كلمة مرور Webhook مطلوبة",
 			"secretKeyRequired": "Secret Key مطلوب",
+			"publishableKeyRequired": "Publishable Key مطلوب",
 			"webhookSecretRequired": "Webhook Secret مطلوب",
 			"keyIdRequired": "معرّف المفتاح مطلوب",
 			"clientSideTokenRequired": "الرمز من جانب العميل مطلوب",
@@ -509,9 +510,13 @@
 			"secretKey": "Secret Key",
 			"secretKeyPlaceholder": "sk_...",
 			"secretKeyHint": "Secret Key الخاص بـ Moyasar من قسم API Keys",
+			"publishableKey": "Publishable Key",
+			"publishableKeyPlaceholder": "pk_...",
+			"publishableKeyHint": "Publishable Key الخاص بـ Moyasar، مطلوب لإعداد الدفع التلقائي للعملاء",
 			"webhookIntro": "اضبط عنوان Webhook هذا في لوحة Moyasar لتلقّي إشعارات الأحداث:",
 			"webhookEventsIntro": "اشترك في هذه الأحداث في لوحة Moyasar:",
-			"webhookEventPaymentPaid": "payment_paid"
+			"webhookEventPaymentPaid": "payment_paid",
+			"webhookEventPaymentFailed": "payment_failed"
 		},
 		"razorpay": {
 			"description": "اضبط تكامل Razorpay ببيانات الاعتماد المطلوبة.",

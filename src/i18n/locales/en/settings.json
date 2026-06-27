@@ -322,6 +322,7 @@
 			"webhookUsernameRequired": "Webhook username is required",
 			"webhookPasswordRequired": "Webhook password is required",
 			"secretKeyRequired": "Secret key is required",
+			"publishableKeyRequired": "Publishable key is required",
 			"webhookSecretRequired": "Webhook secret is required",
 			"keyIdRequired": "Key ID is required",
 			"clientSideTokenRequired": "Client-side token is required",
@@ -509,9 +510,13 @@
 			"secretKey": "Secret Key",
 			"secretKeyPlaceholder": "sk_...",
 			"secretKeyHint": "Your Moyasar secret key from the API keys section",
+			"publishableKey": "Publishable Key",
+			"publishableKeyPlaceholder": "pk_...",
+			"publishableKeyHint": "Your Moyasar publishable key, required for customer autopay card setup",
 			"webhookIntro": "Set up this webhook URL in your Moyasar dashboard to receive event notifications:",
 			"webhookEventsIntro": "Subscribe to these events in your Moyasar dashboard:",
-			"webhookEventPaymentPaid": "payment_paid"
+			"webhookEventPaymentPaid": "payment_paid",
+			"webhookEventPaymentFailed": "payment_failed"
 		},
 		"razorpay": {
 			"description": "Configure your Razorpay integration with the required credentials.",

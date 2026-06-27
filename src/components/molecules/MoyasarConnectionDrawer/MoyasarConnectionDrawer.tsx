@@ -9,12 +9,23 @@ import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { Connection } from '@/models/Connection';
+
+interface MoyasarEncryptedSecretData {
+	publishable_key?: string;
+	secret_key?: string;
+	webhook_secret?: string;
+}
+
+interface MoyasarConnection extends Connection {
+	encrypted_secret_data?: MoyasarEncryptedSecretData;
+}
 
 interface MoyasarConnectionDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	connection?: any; // for editing
-	onSave: (connection: any) => void;
+	connection?: MoyasarConnection;
+	onSave: (connection: Connection) => void;
 }
 
 interface MoyasarFormData {
@@ -87,7 +98,7 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 				newErrors.secret_key = t('connection.validation.secretKeyRequired');
 			}
 			if (!formData.publishable_key.trim()) {
-				newErrors.publishable_key = t('connection.validation.publishableKeyRequired', 'Publishable key is required');
+				newErrors.publishable_key = t('connection.validation.publishableKeyRequired');
 			}
 		}
 
@@ -128,11 +139,11 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 
 	const { mutate: updateConnection, isPending: isUpdating } = useMutation({
 		mutationFn: async () => {
-			const payload: any = {
+			const payload = {
 				name: formData.name,
 			};
 
-			return await ConnectionApi.Update(connection.id, payload);
+			return await ConnectionApi.Update(connection!.id, payload);
 		},
 		onSuccess: (response) => {
 			toast.success(t('connection.toast.updated', { provider: MOYASAR_PROVIDER }));
@@ -263,10 +274,7 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 							<div className='mt-2 p-3 bg-white border border-blue-200 rounded-md'>
 								<p className='text-xs text-blue-700 mb-3'>{t('connection.moyasar.webhookEventsIntro')}</p>
 								<div className='space-y-1'>
-									{[
-										t('connection.moyasar.webhookEventPaymentPaid'),
-										t('connection.moyasar.webhookEventPaymentFailed')
-									].map((event) => (
+									{[t('connection.moyasar.webhookEventPaymentPaid'), t('connection.moyasar.webhookEventPaymentFailed')].map((event) => (
 										<div key={event} className='flex items-center gap-2 text-xs text-blue-700'>
 											<div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
 											<code className='font-mono'>{event}</code>
