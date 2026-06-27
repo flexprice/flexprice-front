@@ -21,6 +21,8 @@ import formatChips from '@/utils/common/format_chips';
 import { ChargeValueCell } from '@/components/molecules';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
+import { FeatureApi } from '@/api';
+import { Feature } from '@/models';
 
 const formatBillingPeriod = (billingPeriod: string) => {
 	switch (billingPeriod.toUpperCase()) {
@@ -58,7 +60,7 @@ type Params = {
 	id: string;
 };
 
-const getChargeColumns = (naLabel: string): ColumnData<Price>[] => [
+const getChargeColumns = (naLabel: string, features: Feature[]): ColumnData<Price>[] => [
 	{
 		title: 'Charge Type',
 		render: (row) => {
@@ -68,7 +70,13 @@ const getChargeColumns = (naLabel: string): ColumnData<Price>[] => [
 	{
 		title: 'Feature',
 		render(rowData) {
-			return <span>{rowData.meter?.name ?? naLabel}</span>;
+			if (!rowData.meter_id) {
+				return <span>{naLabel}</span>;
+			}
+
+			const feature = features?.find((f) => f.meter_id === rowData.meter_id);
+
+			return <span>{feature?.name ?? naLabel}</span>;
 		},
 	},
 	{
@@ -128,6 +136,15 @@ const CostSheetDetails = () => {
 		prefix: PAGINATION_PREFIX.COST_SHEET_CHARGES,
 	});
 
+	const { data: featureResponse } = useQuery({
+		queryKey: ['features'],
+		queryFn: () =>
+			FeatureApi.listFeatures({
+				status: ENTITY_STATUS.PUBLISHED,
+				limit: 100,
+			}),
+	});
+
 	const { data: pricesResponse, isLoading: pricesLoading } = useQuery({
 		queryKey: ['costSheetCharges', id, limit, offset],
 		queryFn: () =>
@@ -158,7 +175,7 @@ const CostSheetDetails = () => {
 		}
 	}, [costSheetData, updateBreadcrumb]);
 
-	const chargeColumns = useMemo(() => getChargeColumns(t('common:labels.na')), [t]);
+	const chargeColumns = useMemo(() => getChargeColumns(t('common:labels.na'), featureResponse?.items ?? []), [t, featureResponse]);
 
 	if (isLoading) {
 		return <Loader />;
