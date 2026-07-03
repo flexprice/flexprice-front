@@ -140,7 +140,11 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 
 	if (selectedMessageId) {
 		return (
-			<MessageDetail messageId={selectedMessageId} backLabel={t('webhooks.endpoints.heading')} onBack={() => setSelectedMessageId(null)} />
+			<MessageDetail
+				messageId={selectedMessageId}
+				backLabel={endpoint.data?.url ?? t('webhooks.endpoints.detail.backToEndpoint')}
+				onBack={() => setSelectedMessageId(null)}
+			/>
 		);
 	}
 

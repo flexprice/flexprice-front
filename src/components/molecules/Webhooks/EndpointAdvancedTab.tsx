@@ -31,6 +31,7 @@ const EndpointThrottling: FC<Props> = ({ endpoint, onUpdated }) => {
 				description: endpoint.description,
 				filterTypes: endpoint.filterTypes,
 				rateLimit: parsed,
+				disabled: endpoint.disabled,
 			});
 			toast.success(t('webhooks.endpoints.detail.throttleSaved'));
 			onUpdated();
@@ -112,7 +113,10 @@ const CustomHeaders: FC<{ endpointId: string }> = ({ endpointId }) => {
 
 	const handleAdd = () => {
 		if (!newKey) return;
-		const nextRows = [...rows, { key: newKey, value: newValue }];
+		const existing = rows.find((row) => row.key === newKey);
+		const nextRows = existing
+			? rows.map((row) => (row.key === newKey ? { key: newKey, value: newValue } : row))
+			: [...rows, { key: newKey, value: newValue }];
 		setNewKey('');
 		setNewValue('');
 		persist(nextRows);

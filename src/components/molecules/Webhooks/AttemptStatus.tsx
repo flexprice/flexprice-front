@@ -42,7 +42,9 @@ export const AttemptStatusChip: FC<{ status: MessageStatus }> = ({ status }) => 
 	const { t } = useTranslation('developers');
 	if (status === MessageStatus.Success) return <Chip variant='success' label={t('webhooks.endpoints.attempts.status.succeeded')} />;
 	if (status === MessageStatus.Fail) return <Chip variant='failed' label={t('webhooks.endpoints.attempts.status.failed')} />;
-	return <Chip variant='warning' label={t('webhooks.endpoints.attempts.status.pending')} />;
+	if (status === MessageStatus.Sending) return <Chip variant='info' label={t('webhooks.endpoints.attempts.status.sending')} />;
+	if (status === MessageStatus.Pending) return <Chip variant='warning' label={t('webhooks.endpoints.attempts.status.pending')} />;
+	return <Chip variant='default' label={t('webhooks.endpoints.attempts.status.pending')} />;
 };
 
 export const AttemptReplayAction: FC<{ attempt: MessageAttemptOut; onReplayed: () => void }> = ({ attempt, onReplayed }) => {

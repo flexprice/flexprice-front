@@ -201,6 +201,7 @@
 				"addFailed": "Failed to add endpoint"
 			},
 			"detail": {
+				"backToEndpoint": "Endpoint detail",
 				"tabs": {
 					"overview": "Overview",
 					"testing": "Testing",
@@ -263,12 +264,14 @@
 				"status": {
 					"succeeded": "Succeeded",
 					"failed": "Failed",
+					"sending": "Sending",
 					"pending": "Pending"
 				},
 				"empty": {
 					"title": "No messages yet",
 					"subtitle": "This endpoint has not received any messages yet."
 				},
+				"loadFailed": "Failed to load message attempts.",
 				"replaySuccess": "Message queued for redelivery",
 				"replayFailed": "Failed to replay message"
 			}
