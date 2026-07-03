@@ -7,6 +7,7 @@
     "dev": "vite --port 3000",
     "generate-meta": "node scripts/generate-meta.js",
     "build": "tsc -b && vite build",
+    "deploy:ui": "bash scripts/deploy-ui.sh",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "format": "prettier --write src",
