@@ -457,6 +457,8 @@ export interface UpdateSubscriptionRequest {
 	cancel_at_period_end?: boolean;
 	/** Set to another subscription ID to link as child; "" or null to clear; omit to leave unchanged */
 	parent_subscription_id?: string | null;
+	/** Free-form key-value bag. Omit to leave existing untouched; send {} to clear all keys. */
+	metadata?: Record<string, string>;
 }
 
 export interface CancelSubscriptionRequest {
