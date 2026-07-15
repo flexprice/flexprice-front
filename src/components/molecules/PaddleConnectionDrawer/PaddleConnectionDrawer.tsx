@@ -9,6 +9,7 @@ import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { mergeConnectionMetadata } from '@/utils/common/connection_metadata_helpers';
 
 interface PaddleConnection {
 	id: string;
@@ -18,9 +19,7 @@ interface PaddleConnection {
 		webhook_secret?: string;
 		client_side_token?: string;
 	};
-	metadata?: {
-		redirect_url?: string;
-	};
+	metadata?: Record<string, string>;
 }
 
 interface PaddleConnectionDrawerProps {
@@ -119,6 +118,7 @@ const PaddleConnectionDrawer: FC<PaddleConnectionDrawerProps> = ({ isOpen, onOpe
 
 	const { mutate: createConnection, isPending: isCreating } = useMutation({
 		mutationFn: async () => {
+			const metadata = mergeConnectionMetadata(undefined, { redirect_url: formData.redirect_url });
 			const payload = {
 				name: formData.name,
 				provider_type: CONNECTION_PROVIDER_TYPE.PADDLE,
@@ -127,9 +127,7 @@ const PaddleConnectionDrawer: FC<PaddleConnectionDrawerProps> = ({ isOpen, onOpe
 					webhook_secret: formData.webhook_secret,
 					client_side_token: formData.client_side_token,
 				},
-				...(formData.redirect_url.trim() && {
-					metadata: { redirect_url: formData.redirect_url.trim() },
-				}),
+				...(Object.keys(metadata).length > 0 && { metadata }),
 				sync_config: {
 					invoice: { inbound: false, outbound: true },
 				},
@@ -149,10 +147,13 @@ const PaddleConnectionDrawer: FC<PaddleConnectionDrawerProps> = ({ isOpen, onOpe
 
 	const { mutate: updateConnection, isPending: isUpdating } = useMutation({
 		mutationFn: async () => {
-			const trimmedRedirectUrl = formData.redirect_url.trim();
+			// The API replaces metadata wholesale, so re-read it and send the full merged map.
+			// Reading here rather than trusting the prop keeps the window for a lost concurrent
+			// write down to this request instead of however long the drawer has been open.
+			const existingConnection = await ConnectionApi.Get(connection!.id);
 			const payload = {
 				name: formData.name,
-				metadata: trimmedRedirectUrl ? { redirect_url: trimmedRedirectUrl } : ({} as Record<string, string>),
+				metadata: mergeConnectionMetadata(existingConnection.metadata, { redirect_url: formData.redirect_url }),
 			};
 			return await ConnectionApi.Update(connection!.id, payload);
 		},

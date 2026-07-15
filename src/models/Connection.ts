@@ -6,6 +6,7 @@ export interface Connection extends BaseModel {
 	readonly environment_id: string;
 	readonly tenant_id: string;
 	readonly connection_status: CONNECTION_STATUS;
+	readonly metadata?: Record<string, string>;
 }
 
 export enum CONNECTION_PROVIDER_TYPE {

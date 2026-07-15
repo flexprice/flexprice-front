@@ -10,6 +10,8 @@ import toast from 'react-hot-toast';
 import { Copy, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { CONNECTION_PROVIDER_TYPE } from '@/models';
 import { Connection } from '@/models/Connection';
+import { UpdateConnectionPayload } from '@/types/dto';
+import { mergeConnectionMetadata } from '@/utils/common/connection_metadata_helpers';
 
 interface MoyasarEncryptedSecretData {
 	publishable_key?: string;
@@ -17,6 +19,7 @@ interface MoyasarEncryptedSecretData {
 	webhook_secret?: string;
 }
 
+// `metadata` is inherited from Connection.
 interface MoyasarConnection extends Connection {
 	encrypted_secret_data?: MoyasarEncryptedSecretData;
 }
@@ -33,9 +36,12 @@ interface MoyasarFormData {
 	publishable_key: string;
 	secret_key: string;
 	webhook_secret: string;
+	success_url: string;
+	cancel_url: string;
 }
 
 const MOYASAR_PROVIDER = 'Moyasar';
+const URL_PATTERN = /^https?:\/\/.+/;
 
 const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onOpenChange, connection, onSave }) => {
 	const { t } = useTranslation('settings');
@@ -47,6 +53,8 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 		publishable_key: '',
 		secret_key: '',
 		webhook_secret: '',
+		success_url: '',
+		cancel_url: '',
 	});
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	const [webhookCopied, setWebhookCopied] = useState(false);
@@ -61,11 +69,14 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 		if (isOpen) {
 			if (connection) {
 				const encryptedData = connection.encrypted_secret_data || {};
+				const metadata = connection.metadata || {};
 				setFormData({
 					name: connection.name || '',
 					publishable_key: encryptedData.publishable_key || '',
 					secret_key: encryptedData.secret_key || '',
 					webhook_secret: encryptedData.webhook_secret || '',
+					success_url: metadata.success_url || '',
+					cancel_url: metadata.cancel_url || '',
 				});
 			} else {
 				setFormData({
@@ -73,6 +84,8 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 					publishable_key: '',
 					secret_key: '',
 					webhook_secret: '',
+					success_url: '',
+					cancel_url: '',
 				});
 			}
 			setErrors({});
@@ -102,12 +115,24 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 			}
 		}
 
+		// Redirect URLs are optional; Moyasar simply skips the redirect when unset.
+		if (formData.success_url.trim() && !URL_PATTERN.test(formData.success_url.trim())) {
+			newErrors.success_url = t('connection.validation.redirectUrlInvalid');
+		}
+		if (formData.cancel_url.trim() && !URL_PATTERN.test(formData.cancel_url.trim())) {
+			newErrors.cancel_url = t('connection.validation.redirectUrlInvalid');
+		}
+
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
 
 	const { mutate: createConnection, isPending: isCreating } = useMutation({
 		mutationFn: async () => {
+			const metadata = mergeConnectionMetadata(undefined, {
+				success_url: formData.success_url,
+				cancel_url: formData.cancel_url,
+			});
 			const payload = {
 				name: formData.name,
 				provider_type: CONNECTION_PROVIDER_TYPE.MOYASAR,
@@ -117,6 +142,7 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 					secret_key: formData.secret_key,
 					webhook_secret: formData.webhook_secret,
 				},
+				...(Object.keys(metadata).length > 0 && { metadata }),
 				sync_config: {
 					invoice: {
 						inbound: false,
@@ -139,8 +165,16 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 
 	const { mutate: updateConnection, isPending: isUpdating } = useMutation({
 		mutationFn: async () => {
-			const payload = {
+			// The API replaces metadata wholesale, so re-read it and send the full merged map.
+			// Reading here rather than trusting the prop keeps the window for a lost concurrent
+			// write down to this request instead of however long the drawer has been open.
+			const existingConnection = await ConnectionApi.Get(connection!.id);
+			const payload: Pick<UpdateConnectionPayload, 'name' | 'metadata'> = {
 				name: formData.name,
+				metadata: mergeConnectionMetadata(existingConnection.metadata, {
+					success_url: formData.success_url,
+					cancel_url: formData.cancel_url,
+				}),
 			};
 
 			return await ConnectionApi.Update(connection!.id, payload);
@@ -227,6 +261,27 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 						description={t('connection.moyasar.publishableKeyHint')}
 					/>
 				)}
+
+				{/* Redirect URLs — optional; Moyasar skips the redirect when unset */}
+				<Input
+					id='moyasar-success-url'
+					label={t('connection.moyasar.successUrl')}
+					placeholder={t('connection.moyasar.successUrlPlaceholder')}
+					value={formData.success_url}
+					onChange={(value) => handleChange('success_url', value)}
+					error={errors.success_url}
+					description={t('connection.moyasar.successUrlHint')}
+				/>
+
+				<Input
+					id='moyasar-cancel-url'
+					label={t('connection.moyasar.cancelUrl')}
+					placeholder={t('connection.moyasar.cancelUrlPlaceholder')}
+					value={formData.cancel_url}
+					onChange={(value) => handleChange('cancel_url', value)}
+					error={errors.cancel_url}
+					description={t('connection.moyasar.cancelUrlHint')}
+				/>
 
 				{/* Webhook Section */}
 				<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
