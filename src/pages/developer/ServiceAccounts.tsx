@@ -1,17 +1,18 @@
-import { Button, Page, ShortPagination, SectionHeader, ActionButton, CopyIdButton } from '@/components/atoms';
+import { Button, Page, ShortPagination, SectionHeader, CopyIdButton } from '@/components/atoms';
 import { ColumnData, FlexpriceTable, ApiDocsContent } from '@/components/molecules';
 import { UserApi } from '@/api/UserApi';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '@/models';
 import usePagination from '@/hooks/usePagination';
 import { formatDateShort } from '@/utils/common/helper_functions';
-import { Plus, Loader, Bot, Trash2 } from 'lucide-react';
+import { Plus, Loader, Bot } from 'lucide-react';
 import { useMemo, useState, useCallback } from 'react';
-// import { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { EmptyPage } from '@/components/organisms';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import ServiceAccountDrawer from '@/components/molecules/ServiceAccountDrawer/ServiceAccountDrawer';
+import ServiceAccountDeleteDialog from '@/components/molecules/ServiceAccountDeleteDialog';
+import ServiceAccountRowActions from '@/components/molecules/ServiceAccountRowActions';
 import { useTranslation } from 'react-i18next';
 
 const ServiceAccountsPage = () => {
@@ -19,6 +20,7 @@ const ServiceAccountsPage = () => {
 	const { page, limit, offset } = usePagination();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [selectedAccount, setSelectedAccount] = useState<User | null>(null);
+	const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
 
 	const {
 		data: serviceAccountsResponse,
@@ -37,6 +39,10 @@ const ServiceAccountsPage = () => {
 	const handleEdit = useCallback((account: User) => {
 		setSelectedAccount(account);
 		setIsDrawerOpen(true);
+	}, []);
+
+	const handleDelete = useCallback((account: User) => {
+		setDeleteTarget(account);
 	}, []);
 
 	const serviceAccountColumns: ColumnData<User>[] = useMemo(
@@ -95,29 +101,10 @@ const ServiceAccountsPage = () => {
 			},
 			{
 				fieldVariant: 'interactive',
-				render: (row: User) => (
-					<ActionButton
-						id={row.id}
-						copyId={{ entityType: 'Service Account' }}
-						entityName={row.name || row.id}
-						deleteMutationFn={async () => UserApi.deleteUser(row.id)}
-						refetchQueryKey='service-accounts'
-						edit={{
-							enabled: true,
-							onClick: () => handleEdit(row),
-						}}
-						// edit={{ enabled: false }}
-						archive={{
-							enabled: true,
-							text: t('common:actions.delete'),
-							icon: <Trash2 className='h-4 w-4' />,
-						}}
-					/>
-				),
+				render: (row: User) => <ServiceAccountRowActions account={row} onEdit={handleEdit} onDelete={handleDelete} />,
 			},
 		],
-		// [t],
-		[t, handleEdit],
+		[t, handleEdit, handleDelete],
 	);
 
 	if (isLoadingServiceAccounts) {
@@ -132,6 +119,7 @@ const ServiceAccountsPage = () => {
 		<div>
 			<ApiDocsContent tags={API_DOCS_TAGS.Users} />
 			<ServiceAccountDrawer isOpen={isDrawerOpen} onOpenChange={setIsDrawerOpen} data={selectedAccount} />
+			<ServiceAccountDeleteDialog isOpen={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)} account={deleteTarget} />
 
 			{serviceAccountsResponse?.items.length === 0 && (
 				<EmptyPage
