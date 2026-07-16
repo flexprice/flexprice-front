@@ -94,6 +94,7 @@
 			"expired": "Expired",
 			"loading": "Loading connected API keys…",
 			"previewFailed": "Failed to load service account details. Please try again.",
+			"deleteFailed": "Failed to delete service account. Please try again.",
 			"deleteSuccess": "Service account deleted successfully",
 			"confirmDelete": "Delete"
 		}

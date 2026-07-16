@@ -38,7 +38,7 @@ const ServiceAccountRowActions: FC<Props> = ({ account, onEdit, onDelete }) => {
 							void copyToClipboard(account.id, t('copyId.toastWithType', { type: 'Service Account' }));
 						}}
 						className='flex gap-2 items-center w-full cursor-pointer'>
-						<Copy />
+						<Copy className='h-4 w-4' />
 						<span>{t('copyId.genericLabel')}</span>
 					</DropdownMenuItem>
 					<DropdownMenuItem
@@ -48,7 +48,7 @@ const ServiceAccountRowActions: FC<Props> = ({ account, onEdit, onDelete }) => {
 							onEdit(account);
 						}}
 						className='flex gap-2 items-center w-full cursor-pointer'>
-						<Pencil />
+						<Pencil className='h-4 w-4' />
 						<span>{t('actions.edit')}</span>
 					</DropdownMenuItem>
 					<DropdownMenuItem

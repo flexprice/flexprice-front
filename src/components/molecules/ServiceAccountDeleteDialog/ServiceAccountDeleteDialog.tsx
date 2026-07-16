@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isPast } from 'date-fns';
 import { AlertTriangle } from 'lucide-react';
@@ -42,14 +42,6 @@ const ServiceAccountDeleteDialog: FC<Props> = ({ isOpen, onOpenChange, account }
 		retry: false,
 	});
 
-	useEffect(() => {
-		if (isPreviewError) {
-			const message = previewError instanceof Error ? previewError.message : '';
-			toast.error(message || t('developers:serviceAccounts.deleteDialog.previewFailed'));
-			onOpenChange(false);
-		}
-	}, [isPreviewError, previewError, onOpenChange, t]);
-
 	const { mutate: deleteAccount, isPending: isDeleting } = useMutation({
 		mutationFn: () => UserApi.deleteUser(accountId!),
 		onSuccess: async () => {
@@ -59,12 +51,16 @@ const ServiceAccountDeleteDialog: FC<Props> = ({ isOpen, onOpenChange, account }
 			onOpenChange(false);
 		},
 		onError: (error: Error) => {
-			toast.error(error.message || t('developers:serviceAccounts.deleteDialog.previewFailed'));
+			toast.error(error.message || t('developers:serviceAccounts.deleteDialog.deleteFailed'));
 		},
 	});
 
 	const apiKeys = previewUser?.api_keys ?? [];
 	const hasApiKeys = apiKeys.length > 0;
+	const previewErrorMessage =
+		previewError instanceof Error && previewError.message
+			? previewError.message
+			: t('developers:serviceAccounts.deleteDialog.previewFailed');
 
 	const handleConfirm = () => {
 		if (!accountId || isLoadingPreview || isPreviewError) return;
@@ -78,10 +74,21 @@ const ServiceAccountDeleteDialog: FC<Props> = ({ isOpen, onOpenChange, account }
 			onOpenChange={onOpenChange}
 			showCloseButton={false}
 			className='max-w-lg'>
-			{isLoadingPreview ? (
+			{isLoadingPreview || isPreviewError ? (
 				<div className='flex flex-col items-center justify-center gap-3 py-8'>
-					<Loader />
-					<p className='text-sm text-gray-500'>{t('developers:serviceAccounts.deleteDialog.loading')}</p>
+					{isLoadingPreview ? (
+						<>
+							<Loader />
+							<p className='text-sm text-gray-500'>{t('developers:serviceAccounts.deleteDialog.loading')}</p>
+						</>
+					) : (
+						<>
+							<p className='text-sm text-red-600'>{previewErrorMessage}</p>
+							<Button variant='outline' onClick={() => onOpenChange(false)} className='mt-2'>
+								{t('common:actions.cancel')}
+							</Button>
+						</>
+					)}
 				</div>
 			) : (
 				<div className='flex flex-col gap-4'>
