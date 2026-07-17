@@ -52,6 +52,8 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 	const priceLike = { meter_id: meterId ?? '', meter: meter ?? undefined } as Price;
 	const showWindow = !!meterId && supportsWindowCommitment(priceLike);
 	const showBuckets = showWindow && value.windowCommitment && supportsCommitmentTimeBuckets(priceLike);
+	const hasWindowCommitmentData = value.windowCommitment || value.timeBuckets.length > 0;
+	const showMeterNotSupported = !showWindow && hasWindowCommitmentData;
 	const currencySymbol = getCurrencySymbol(currency ?? 'usd');
 	const resolvedBucketDefaults = bucketDefaults ?? (sourcePrice ? bucketDefaultsFromPrice(sourcePrice) : undefined);
 
@@ -151,11 +153,13 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 			) : isLoading ? (
 				<Notice>{t('commitmentConfig.addCharge.loadingMeter', { defaultValue: 'Loading meter details…' })}</Notice>
 			) : !showWindow ? (
-				<Notice>
-					{t('commitmentConfig.addCharge.meterNotSupported', {
-						defaultValue: 'This meter does not support window commitment. Configure a bucket size on the meter first.',
-					})}
-				</Notice>
+				showMeterNotSupported ? (
+					<Notice>
+						{t('commitmentConfig.addCharge.meterNotSupported', {
+							defaultValue: 'This meter does not support window commitment. Configure a bucket size on the meter first.',
+						})}
+					</Notice>
+				) : null
 			) : (
 				<>
 					<div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>

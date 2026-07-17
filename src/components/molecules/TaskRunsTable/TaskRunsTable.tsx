@@ -199,6 +199,7 @@ const TaskRunsTable: FC<TaskRunsTableProps> = ({ scheduledTaskId, taskType = 'EX
 					return (
 						<ActionButton
 							id={row.id}
+							copyId={{ entityType: 'Task Run' }}
 							deleteMutationFn={async () => {}}
 							refetchQueryKey='task-runs'
 							entityName={t('taskRunsTable.entityTask')}

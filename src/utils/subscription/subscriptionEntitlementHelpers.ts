@@ -1,5 +1,6 @@
 import { EntitlementResponse } from '@/types/dto/Entitlement';
 import { SubscriptionEntitlementFeature, SubscriptionEntitlementSource } from '@/types/dto/Subscription';
+import { JsonObject } from '@/types/common';
 
 export interface EnrichedSubscriptionEntitlement {
 	feature: SubscriptionEntitlementFeature['feature'];
@@ -99,6 +100,7 @@ export interface SubscriptionEntitlementOverrideValues {
 	usage_limit?: number | null;
 	static_value?: string;
 	is_enabled?: boolean;
+	config_value?: JsonObject;
 }
 
 /** Read effective static value from aggregated subscription entitlement payload. */
@@ -107,4 +109,16 @@ export const getEffectiveStaticValue = (entitlement?: { static_values?: string[]
 		return entitlement.static_values[0];
 	}
 	return entitlement?.static_value;
+};
+
+/**
+ * Read the effective config value for a CONFIG entitlement.
+ * Prefers the subscription-scoped source (override) over the plan source.
+ */
+export const getEffectiveConfigValue = (sources?: SubscriptionEntitlementSource[]): JsonObject | null => {
+	if (!sources?.length) return null;
+	const subSource = sources.find((s) => s.entity_type === 'subscription');
+	if (subSource?.config_value) return subSource.config_value;
+	const planSource = sources.find((s) => s.entity_type === 'plan');
+	return planSource?.config_value ?? null;
 };

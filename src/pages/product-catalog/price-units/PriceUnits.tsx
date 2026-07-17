@@ -197,6 +197,7 @@ const PriceUnitsPage = () => {
 					return (
 						<ActionButton
 							id={row?.id}
+							copyId={{ entityType: 'Price Unit' }}
 							deleteMutationFn={async () => {
 								return await PriceUnitApi.DeletePriceUnit(row?.id);
 							}}

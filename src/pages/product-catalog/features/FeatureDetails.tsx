@@ -15,7 +15,7 @@ import { formatEntityStatus } from '@/utils/common/format_chips';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 
 // Components
-import { Button, Card, CardHeader, Chip, CopyIdButton, Divider, Loader, NoDataCard, Page, Spacer } from '@/components/atoms';
+import { Button, Card, CardHeader, Chip, CopyIdButton, Divider, Loader, NoDataCard, Page, Sheet, Spacer } from '@/components/atoms';
 import {
 	ApiDocsContent,
 	ColumnData,
@@ -25,8 +25,10 @@ import {
 	DropdownMenuOption,
 	FeatureDrawer,
 } from '@/components/molecules';
+import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { FilterOperator, DataType } from '@/types/common/QueryBuilder';
+import { JsonObject } from '@/types/common';
 import { FeatureAlertDialog } from '@/components/molecules/FeatureAlertDialog';
 
 // Models and types
@@ -34,7 +36,7 @@ import { FEATURE_TYPE } from '@/models/Feature';
 import { formatMeterUsageResetPeriodToDisplay } from '@/types/formatters/Feature';
 
 // Local utilities
-import { formatLocalizedNumber } from '@/utils/common/helper_functions';
+import { formatAmount } from '@/components/atoms/Input/Input';
 import { ApiDocsSnippet } from '@/store/useApiDocsStore';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { ENTITY_STATUS } from '@/models/base';
@@ -44,34 +46,30 @@ import { ENTITLEMENT_ENTITY_TYPE, PRICE_ENTITY_TYPE } from '@/models';
 import { PriceApi } from '@/api/PriceApi';
 import { formatBillingPeriodForDisplay, formatInvoiceCadence } from '@/utils/common/helper_functions';
 import { ChargeValueCell } from '@/components/molecules';
-import type { TFunction } from 'i18next';
 import { AlertSettings } from '@/models/Feature';
 import { generateExpandQueryParams } from '@/utils/common/api_helper';
 import { EXPAND } from '@/models/expand';
 import { GetPriceResponse } from '@/types/dto/Price';
 import { useTranslation } from 'react-i18next';
-import { config } from '@/config/config';
+import type { TFunction } from 'i18next';
 
-const AGGREGATION_TYPE_I18N_KEY: Record<METER_AGGREGATION_TYPE, string> = {
-	[METER_AGGREGATION_TYPE.SUM]: 'sum',
-	[METER_AGGREGATION_TYPE.COUNT]: 'count',
-	[METER_AGGREGATION_TYPE.COUNT_UNIQUE]: 'countUnique',
-	[METER_AGGREGATION_TYPE.LATEST]: 'latest',
-	[METER_AGGREGATION_TYPE.SUM_WITH_MULTIPLIER]: 'sumWithMultiplier',
-	[METER_AGGREGATION_TYPE.MAX]: 'max',
-	[METER_AGGREGATION_TYPE.WEIGHTED_SUM]: 'weightedSum',
-	[METER_AGGREGATION_TYPE.AVG]: 'avg',
+export const formatAggregationType = (data: string): string => {
+	const aggregationTypeMap: Record<string, string> = {
+		[METER_AGGREGATION_TYPE.SUM]: 'Sum',
+		[METER_AGGREGATION_TYPE.COUNT]: 'Count',
+		[METER_AGGREGATION_TYPE.COUNT_UNIQUE]: 'Count Unique',
+		[METER_AGGREGATION_TYPE.LATEST]: 'Latest',
+		[METER_AGGREGATION_TYPE.SUM_WITH_MULTIPLIER]: 'Sum with Multiplier',
+		[METER_AGGREGATION_TYPE.MAX]: 'Max',
+		[METER_AGGREGATION_TYPE.WEIGHTED_SUM]: 'Weighted Sum',
+		[METER_AGGREGATION_TYPE.AVG]: 'Average',
+	};
+	return aggregationTypeMap[data] || data;
 };
 
-export const formatAggregationType = (data: string, t: TFunction<'catalog'>): string => {
-	const segment = AGGREGATION_TYPE_I18N_KEY[data as METER_AGGREGATION_TYPE];
-	if (segment) return t(`features.details.aggregationTypes.${segment}`);
-	return data;
-};
-
-const getPriceColumns = (t: TFunction<'catalog'>): ColumnData<GetPriceResponse>[] => [
+const getPriceColumns = (t: TFunction): ColumnData<GetPriceResponse>[] => [
 	{
-		title: t('features.details.columns.planAddon'),
+		title: t('catalog:features.details.columns.planAddon'),
 		render: (row: GetPriceResponse) => {
 			return (
 				<RedirectCell
@@ -84,19 +82,19 @@ const getPriceColumns = (t: TFunction<'catalog'>): ColumnData<GetPriceResponse>[
 		},
 	},
 	{
-		title: t('features.details.columns.billingTiming'),
+		title: t('catalog:features.details.columns.billingTiming'),
 		render(rowData) {
 			return <span>{formatInvoiceCadence(rowData.invoice_cadence as string, t)}</span>;
 		},
 	},
 	{
-		title: t('features.details.columns.billingPeriod'),
+		title: t('catalog:features.details.columns.billingPeriod'),
 		render(rowData) {
 			return <span>{formatBillingPeriodForDisplay(rowData.billing_period as string, t)}</span>;
 		},
 	},
 	{
-		title: t('features.details.columns.value'),
+		title: t('catalog:features.details.columns.value'),
 		render(rowData) {
 			return <ChargeValueCell data={rowData} />;
 		},
@@ -105,10 +103,15 @@ const getPriceColumns = (t: TFunction<'catalog'>): ColumnData<GetPriceResponse>[
 
 const FeatureDetails = () => {
 	const { id: featureId } = useParams() as { id: string };
-	const { t } = useTranslation(['catalog', 'common', 'billing']);
+	const { t } = useTranslation(['catalog', 'common']);
 	const { updateBreadcrumb } = useBreadcrumbsStore();
 	const [showAlertDialog, setShowAlertDialog] = useState(false);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [configSheet, setConfigSheet] = useState<{ open: boolean; name: string; value: JsonObject | null }>({
+		open: false,
+		name: '',
+		value: null,
+	});
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['fetchFeatureDetails', featureId],
@@ -182,7 +185,7 @@ const FeatureDetails = () => {
 	useEffect(() => {
 		updateBreadcrumb(1, t('common:sidebar.nav.features'), RouteNames.features);
 		if (data?.name) {
-			updateBreadcrumb(2, data.name, `${RouteNames.featureDetails}/${featureId}`);
+			updateBreadcrumb(2, data?.name, RouteNames.featureDetails + featureId);
 		}
 	}, [data, featureId, updateBreadcrumb, t]);
 
@@ -231,7 +234,6 @@ const FeatureDetails = () => {
 			},
 			{
 				title: t('catalog:features.details.columns.value'),
-				align: 'right',
 				render: (rowData) => {
 					if (rowData.feature_type === FEATURE_TYPE.BOOLEAN) {
 						return rowData.is_enabled ? t('common:labels.yes') : t('common:labels.no');
@@ -240,18 +242,41 @@ const FeatureDetails = () => {
 						return rowData.static_value || '0';
 					}
 					if (rowData.feature_type === FEATURE_TYPE.METERED) {
-						const usageLimit = rowData.usage_limit
-							? formatLocalizedNumber(rowData.usage_limit, { maximumFractionDigits: 0 })
-							: t('common:labels.unlimited');
+						const usageLimit = rowData.usage_limit ? formatAmount(rowData.usage_limit.toString()) : t('common:labels.unlimited');
 						const unit =
 							rowData.usage_limit === null || rowData.usage_limit > 1
 								? rowData.feature?.unit_plural || t('catalog:features.form.unitsDefault')
 								: rowData.feature?.unit_singular || t('catalog:features.form.unitDefault');
 						return (
-							<span className='text-right'>
+							<span className='flex items-end gap-1'>
 								{usageLimit}
-								<span className='text-muted-foreground text-sm font-sans ml-2'>{unit}</span>
+								<span className='text-muted-foreground text-sm font-sans'>{unit}</span>
 							</span>
+						);
+					}
+					if (rowData.feature_type === FEATURE_TYPE.CONFIG) {
+						const cv = rowData.config_value;
+						const compact = cv && Object.keys(cv).length > 0 ? JSON.stringify(cv) : null;
+						return (
+							<button
+								type='button'
+								onClick={() =>
+									setConfigSheet({
+										open: true,
+										name: rowData.plan?.name ?? rowData.addon?.name ?? t('catalog:features.listPage.typeChips.config'),
+										value: cv ?? null,
+									})
+								}
+								className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-xs'
+								style={{
+									display: '-webkit-box',
+									WebkitLineClamp: 2,
+									WebkitBoxOrient: 'vertical',
+									overflow: 'hidden',
+									wordBreak: 'break-all',
+								}}>
+								{compact ?? t('common:labels.na')}
+							</button>
 						);
 					}
 					return <span className='text-muted-foreground'>{t('common:labels.na')}</span>;
@@ -272,7 +297,7 @@ const FeatureDetails = () => {
 	}, []);
 
 	const curlCommand = `curl --request POST \\
---url ${config.api.baseUrl.replace(/\/$/, '')}/events \\
+--url https://api.cloud.flexprice.io/v1/events \\
 --header 'Content-Type: application/json' \\
 --header 'x-api-key: <your_api_key>' \\
 --data '{
@@ -305,178 +330,194 @@ const FeatureDetails = () => {
 	}
 
 	return (
-		<Page
-			headingCTA={
-				<div className='flex gap-1'>
-					<Button
-						isLoading={isArchiving}
-						disabled={isArchiving || data?.status !== ENTITY_STATUS.PUBLISHED}
-						variant={'outline'}
-						size={'lg'}
-						onClick={() => archiveFeature()}
-						className='flex gap-1 px-3'>
-						<EyeOff className='w-4 h-4' />
-						{isArchiving ? t('catalog:plans.archive.archiving') : t('common:actions.archive')}
-					</Button>
-					<DropdownMenu
-						options={dropdownOptions}
-						trigger={<Button variant={'outline'} prefixIcon={<EllipsisVertical />} size={'icon'} className='h-10 w-10 p-0'></Button>}
-					/>
+		<>
+			{/* Config value side sheet */}
+			<Sheet isOpen={configSheet.open} onOpenChange={(open) => setConfigSheet((s) => ({ ...s, open }))} title={configSheet.name} size='2xl'>
+				<div className='px-6 py-6'>
+					<JsonCodeBlock value={configSheet.value ?? {}} title={t('catalog:plans.entitlementsTab.configSheet.title')} />
 				</div>
-			}
-			documentTitle={data?.name}
-			heading={
-				<div className='flex items-center gap-2'>
-					{data?.name}
-					{data?.id && <CopyIdButton id={data.id} entityType='Feature' />}
-				</div>
-			}>
-			<ApiDocsContent tags={API_DOCS_TAGS.Features} snippets={data?.type === FEATURE_TYPE.METERED ? snippets : undefined} />
-
-			{/* Feature Alert Dialog */}
-			<FeatureAlertDialog
-				open={showAlertDialog}
-				alertSettings={data?.alert_settings}
-				onSave={async (alertSettings: AlertSettings) => {
-					if (!featureId) return;
-					try {
-						await FeatureApi.updateFeature(featureId, {
-							alert_settings: alertSettings,
-						});
-						setShowAlertDialog(false);
-						refetchQueries(['fetchFeatureDetails', featureId]);
-						toast.success(t('common:toast.alertSettingsUpdated'));
-					} catch (e: any) {
-						const errorMessage = e?.response?.data?.error?.message || e?.message || 'Failed to update alert settings';
-						toast.error(errorMessage);
-					}
-				}}
-				onClose={() => setShowAlertDialog(false)}
-			/>
-
-			<Spacer className='!h-4' />
-			<div className='space-y-6'>
-				{data?.type === FEATURE_TYPE.METERED && (
-					<div>
-						{linkedPrices?.items?.length && linkedPrices?.items?.length > 0 ? (
-							<Card variant='notched'>
-								<CardHeader title={t('catalog:features.details.charges')} />
-								<FlexpriceTable showEmptyRow columns={getPriceColumns(t)} data={linkedPrices?.items ?? []} variant='no-bordered' />
-							</Card>
-						) : (
-							<NoDataCard title={t('catalog:features.details.charges')} subtitle={t('catalog:features.details.noChargesLinked')} />
-						)}
+			</Sheet>
+			<Page
+				headingCTA={
+					<div className='flex gap-1'>
+						<Button
+							isLoading={isArchiving}
+							disabled={isArchiving || data?.status !== ENTITY_STATUS.PUBLISHED}
+							variant={'outline'}
+							size={'lg'}
+							onClick={() => archiveFeature()}
+							className='flex gap-1 px-3'>
+							<EyeOff className='w-4 h-4' />
+							{isArchiving ? t('catalog:plans.archive.archiving') : t('common:actions.archive')}
+						</Button>
+						<DropdownMenu
+							options={dropdownOptions}
+							trigger={<Button variant={'outline'} prefixIcon={<EllipsisVertical />} size={'icon'} className='h-10 w-10 p-0'></Button>}
+						/>
 					</div>
-				)}
+				}
+				documentTitle={data?.name}
+				heading={
+					<div className='flex items-center gap-2'>
+						{data?.name}
+						{data?.id && <CopyIdButton id={data.id} entityType='Feature' />}
+					</div>
+				}>
+				<ApiDocsContent tags={API_DOCS_TAGS.Features} snippets={data?.type === FEATURE_TYPE.METERED ? snippets : undefined} />
 
-				{planOrAddonEntitlements.length > 0 ? (
-					<Card variant='notched'>
-						<CardHeader title={t('catalog:features.details.entitlements')} />
-						<FlexpriceTable showEmptyRow columns={columns} data={planOrAddonEntitlements} variant='no-bordered' />
-					</Card>
-				) : (
-					<NoDataCard title={t('catalog:features.details.entitlements')} subtitle={t('catalog:features.details.noEntitlementsLinked')} />
-				)}
+				{/* Feature Alert Dialog */}
+				<FeatureAlertDialog
+					open={showAlertDialog}
+					alertSettings={data?.alert_settings}
+					onSave={async (alertSettings: AlertSettings) => {
+						if (!featureId) return;
+						try {
+							await FeatureApi.updateFeature(featureId, {
+								alert_settings: alertSettings,
+							});
+							setShowAlertDialog(false);
+							refetchQueries(['fetchFeatureDetails', featureId]);
+							toast.success(t('common:toast.alertSettingsUpdated'));
+						} catch (e: any) {
+							const errorMessage = e?.response?.data?.error?.message || e?.message || 'Failed to update alert settings';
+							toast.error(errorMessage);
+						}
+					}}
+					onClose={() => setShowAlertDialog(false)}
+				/>
 
-				{data?.type === FEATURE_TYPE.METERED && (
-					<Card variant='notched'>
-						<div className='!space-y-6'>
-							<CardHeader title={t('catalog:features.details.eventDetails')} className='!p-0 !mb-2' />
-							<div>
-								<div className='grid grid-cols-[200px_1fr] items-center'>
-									<span className='text-gray-500 text-sm'>{t('catalog:features.details.eventName')}</span>
-									<span className='text-gray-800 text-sm'>{data?.meter?.event_name}</span>
-								</div>
-							</div>
-
-							<Divider />
-
-							{data?.meter?.filters && data.meter.filters.length > 0 && (
-								<>
-									<div className='space-y-4'>
-										<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.eventFilters')}</span>
-										<div className='space-y-3'>
-											{data?.meter?.filters?.map((filter) => {
-												return (
-													<div className='grid grid-cols-[200px_1fr] items-start'>
-														<span className='text-gray-800 text-sm'>{filter.key}</span>
-														<div className='flex gap-1.5 flex-wrap'>
-															{filter.values.map((value) => {
-																return <Chip className='text-xs py-0.5' variant='default' label={value} />;
-															})}
-														</div>
-													</div>
-												);
-											})}
-										</div>
-									</div>
-									<Divider />
-								</>
+				<Spacer className='!h-4' />
+				<div className='space-y-6'>
+					{data?.type === FEATURE_TYPE.METERED && (
+						<div>
+							{linkedPrices?.items?.length && linkedPrices?.items?.length > 0 ? (
+								<Card variant='notched'>
+									<CardHeader title={t('catalog:features.details.charges')} />
+									<FlexpriceTable showEmptyRow columns={getPriceColumns(t)} data={linkedPrices?.items ?? []} variant='no-bordered' />
+								</Card>
+							) : (
+								<NoDataCard title={t('catalog:features.details.charges')} subtitle={t('catalog:features.details.noChargesLinked')} />
 							)}
+						</div>
+					)}
 
-							<div className='space-y-4'>
-								<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.aggregationDetails')}</span>
-								<div className='space-y-3'>
-									{/* <div className='grid grid-cols-[200px_1fr] items-center'>
+					{planOrAddonEntitlements.length > 0 ? (
+						<Card variant='notched'>
+							<CardHeader title={t('catalog:features.details.entitlements')} />
+							<FlexpriceTable showEmptyRow columns={columns} data={planOrAddonEntitlements} variant='no-bordered' />
+						</Card>
+					) : (
+						<NoDataCard title={t('catalog:features.details.entitlements')} subtitle={t('catalog:features.details.noEntitlementsLinked')} />
+					)}
+
+					{data?.type === FEATURE_TYPE.METERED && (
+						<Card variant='notched'>
+							<div className='!space-y-6'>
+								<CardHeader title={t('catalog:features.details.eventDetails')} className='!p-0 !mb-2' />
+								<div>
+									<div className='grid grid-cols-[200px_1fr] items-center'>
+										<span className='text-gray-500 text-sm'>{t('catalog:features.details.eventName')}</span>
+										<span className='text-gray-800 text-sm'>{data?.meter?.event_name}</span>
+									</div>
+								</div>
+
+								<Divider />
+
+								{data?.meter?.filters && data.meter.filters.length > 0 && (
+									<>
+										<div className='space-y-4'>
+											<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.eventFilters')}</span>
+											<div className='space-y-3'>
+												{data?.meter?.filters?.map((filter) => {
+													return (
+														<div className='grid grid-cols-[200px_1fr] items-start'>
+															<span className='text-gray-800 text-sm'>{filter.key}</span>
+															<div className='flex gap-1.5 flex-wrap'>
+																{filter.values.map((value) => {
+																	return <Chip className='text-xs py-0.5' variant='default' label={value} />;
+																})}
+															</div>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+										<Divider />
+									</>
+								)}
+
+								<div className='space-y-4'>
+									<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.aggregationDetails')}</span>
+									<div className='space-y-3'>
+										{/* <div className='grid grid-cols-[200px_1fr] items-center'>
 										<span className='text-gray-500 text-sm'>Aggregation</span>
 										<span className='text-gray-800 text-sm'>{toSentenceCase(data?.meter?.aggregation.type || '--')}</span>
 									</div> */}
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.type')}</span>
-										<span className='text-gray-800 text-sm'>
-											{data?.meter?.aggregation.type ? formatAggregationType(data.meter.aggregation.type, t) : t('common:labels.na')}
-										</span>
-									</div>
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.value')}</span>
-										<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.field || t('common:labels.na')}</span>
-									</div>
-
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.unitName')}</span>
-										<span className='text-gray-800 text-sm'>{`${data?.unit_singular || t('catalog:features.form.unitDefault')} / ${data?.unit_plural || t('catalog:features.form.unitsDefault')}`}</span>
-									</div>
-									{data?.reporting_unit && (
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>{t('catalog:features.details.displayUnitName')}</span>
-											<span className='text-gray-800 text-sm'>{`${data.reporting_unit.unit_singular || t('common:labels.na')} / ${data.reporting_unit.unit_plural || t('common:labels.na')}`}</span>
+											<span className='text-gray-500 text-sm'>{t('catalog:features.details.type')}</span>
+											<span className='text-gray-800 text-sm'>
+												{formatAggregationType(data?.meter?.aggregation.type || t('common:labels.na'))}
+											</span>
 										</div>
-									)}
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.usageReset')}</span>
-										<span className='text-gray-800 text-sm'>
-											{formatMeterUsageResetPeriodToDisplay(data?.meter?.reset_usage || t('common:labels.na'), t)}
-										</span>
-									</div>
-									{(data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX ||
-										data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM) &&
-										data?.meter?.aggregation?.bucket_size && (
+										<div className='grid grid-cols-[200px_1fr] items-center'>
+											<span className='text-gray-500 text-sm'>
+												{t(
+													data?.meter?.aggregation?.expression
+														? 'catalog:features.details.customExpression'
+														: 'catalog:features.details.value',
+												)}
+											</span>
+											<span className='text-gray-800 text-sm'>
+												{data?.meter?.aggregation?.expression || data?.meter?.aggregation?.field || t('common:labels.na')}
+											</span>
+										</div>
+
+										<div className='grid grid-cols-[200px_1fr] items-center'>
+											<span className='text-gray-500 text-sm'>{t('catalog:features.details.unitName')}</span>
+											<span className='text-gray-800 text-sm'>{`${data?.unit_singular || t('catalog:features.form.unitDefault')} / ${data?.unit_plural || t('catalog:features.form.unitsDefault')}`}</span>
+										</div>
+										{data?.reporting_unit && (
 											<div className='grid grid-cols-[200px_1fr] items-center'>
-												<span className='text-gray-500 text-sm'>{t('catalog:features.details.bucketSize')}</span>
-												<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.bucket_size || t('common:labels.na')}</span>
+												<span className='text-gray-500 text-sm'>{t('catalog:features.details.displayUnitName')}</span>
+												<span className='text-gray-800 text-sm'>{`${data.reporting_unit.unit_singular || t('common:labels.na')} / ${data.reporting_unit.unit_plural || t('common:labels.na')}`}</span>
 											</div>
 										)}
-									{data?.meter?.aggregation?.group_by && (
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>{t('catalog:features.details.groupBy')}</span>
-											<span className='text-gray-800 text-sm'>{data.meter.aggregation.group_by}</span>
+											<span className='text-gray-500 text-sm'>{t('catalog:features.details.usageReset')}</span>
+											<span className='text-gray-800 text-sm'>
+												{formatMeterUsageResetPeriodToDisplay(data?.meter?.reset_usage || t('common:labels.na'))}
+											</span>
 										</div>
-									)}
+										{(data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX ||
+											data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM) &&
+											data?.meter?.aggregation?.bucket_size && (
+												<div className='grid grid-cols-[200px_1fr] items-center'>
+													<span className='text-gray-500 text-sm'>{t('catalog:features.details.bucketSize')}</span>
+													<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.bucket_size || t('common:labels.na')}</span>
+												</div>
+											)}
+										{data?.meter?.aggregation?.group_by && (
+											<div className='grid grid-cols-[200px_1fr] items-center'>
+												<span className='text-gray-500 text-sm'>{t('catalog:features.details.groupBy')}</span>
+												<span className='text-gray-800 text-sm'>{data.meter.aggregation.group_by}</span>
+											</div>
+										)}
+									</div>
 								</div>
 							</div>
-						</div>
-					</Card>
+						</Card>
+					)}
+				</div>
+				{data && (
+					<FeatureDrawer
+						data={data}
+						open={isDrawerOpen}
+						onOpenChange={setIsDrawerOpen}
+						refetchQueryKeys={['fetchFeatureDetails', featureId]}
+					/>
 				)}
-			</div>
-			{data && (
-				<FeatureDrawer
-					data={data}
-					open={isDrawerOpen}
-					onOpenChange={setIsDrawerOpen}
-					refetchQueryKeys={['fetchFeatureDetails', featureId]}
-				/>
-			)}
-		</Page>
+			</Page>
+		</>
 	);
 };
 

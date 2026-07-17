@@ -1,14 +1,17 @@
 import { FC, useState, useMemo } from 'react';
-import { Chip } from '@/components/atoms';
+import { Chip, Sheet } from '@/components/atoms';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
+import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import { FEATURE_TYPE } from '@/models';
-import { Pencil, Info } from 'lucide-react';
+import { Pencil, Info, Copy } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { EntitlementOverrideRequest } from '@/types/dto/Subscription';
+import { JsonObject } from '@/types/common';
 import EditEntitlementDrawer from './EditEntitlementDrawer';
 import { useTranslation } from 'react-i18next';
+import { copyToClipboard } from '@/utils/common/helper_functions';
 
 interface EntitlementOverridesTableProps {
 	entitlements: any[];
@@ -19,9 +22,15 @@ interface EntitlementOverridesTableProps {
 
 const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitlements, overrides, onOverrideChange, onOverrideReset }) => {
 	const { t } = useTranslation('catalog');
+	const { t: tc } = useTranslation('common');
 	const [selectedEntitlement, setSelectedEntitlement] = useState<any | null>(null);
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+	const [configSheet, setConfigSheet] = useState<{ open: boolean; name: string; value: JsonObject | null }>({
+		open: false,
+		name: '',
+		value: null,
+	});
 
 	// Merge entitlements with their overrides
 	const enrichedEntitlements = useMemo(() => {
@@ -34,6 +43,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 				displayUsageLimit: override && 'usage_limit' in override ? override.usage_limit : ent.usage_limit,
 				displayStaticValue: override?.static_value ?? ent.static_value,
 				displayIsEnabled: override?.is_enabled ?? ent.is_enabled,
+				displayConfigValue: override?.config_value ?? ent.config_value,
 				hasOverride: !!override,
 			};
 		});
@@ -75,6 +85,8 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 				return <Chip label={t('entitlements.overridesTable.featureTypeBoolean')} variant='success' />;
 			case 'static':
 				return <Chip label={t('entitlements.overridesTable.featureTypeStatic')} variant='warning' />;
+			case 'config':
+				return <Chip label={tc('labels.config')} variant='default' />;
 			default:
 				return <Chip label={featureType} variant='info' />;
 		}
@@ -185,6 +197,38 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 					)}
 				</div>
 			);
+		} else if (featureType === FEATURE_TYPE.CONFIG) {
+			const cv = entitlement.displayConfigValue as JsonObject | null | undefined;
+			const compact = cv && Object.keys(cv).length > 0 ? JSON.stringify(cv) : null;
+			if (!compact) return <span className='text-muted-foreground'>{t('entitlements.overridesTable.valuePlaceholder')}</span>;
+			return (
+				<div className='flex items-center gap-2'>
+					<button
+						type='button'
+						className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-md'
+						style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-all' }}
+						onClick={() => setConfigSheet({ open: true, name: entitlement.feature?.name ?? '', value: cv ?? null })}>
+						{compact}
+					</button>
+					{hasOverride && (
+						<TooltipProvider delayDuration={0}>
+							<Tooltip>
+								<TooltipTrigger>
+									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+								</TooltipTrigger>
+								<TooltipContent
+									sideOffset={5}
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									<div className='space-y-2'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>{t('entitlements.overridesTable.tooltipConfig')}</div>
+									</div>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+					)}
+				</div>
+			);
 		}
 		return t('entitlements.overridesTable.valuePlaceholder');
 	};
@@ -192,14 +236,17 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 	const columns: ColumnData<any>[] = [
 		{
 			title: t('entitlements.overridesTable.columnFeatureName'),
+			width: '160px',
 			render: (row: any) => <span>{row.feature?.name || t('entitlements.overridesTable.unknownFeature')}</span>,
 		},
 		{
 			title: t('entitlements.overridesTable.columnEntityType'),
+			width: '100px',
 			render: (row: any) => <span className='capitalize'>{row.entity_type?.toLowerCase()}</span>,
 		},
 		{
 			title: t('entitlements.overridesTable.columnFeatureType'),
+			width: '130px',
 			render: (row: any) => getFeatureTypeChip(row.feature_type),
 		},
 		{
@@ -231,6 +278,15 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>
+								<DropdownMenuItem
+									onSelect={(e) => {
+										e.preventDefault();
+										void copyToClipboard(row.id, tc('copyId.toastWithType', { type: 'Entitlement' }));
+									}}
+									className='flex gap-2 items-center cursor-pointer'>
+									<Copy className='h-4 w-4' />
+									<span>{tc('copyId.genericLabel')}</span>
+								</DropdownMenuItem>
 								<DropdownMenuItem
 									onSelect={(e) => {
 										e.preventDefault();
@@ -266,6 +322,9 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 				onSave={handleSaveOverride}
 				onReset={handleResetOverride}
 			/>
+			<Sheet isOpen={configSheet.open} onOpenChange={(open) => setConfigSheet((s) => ({ ...s, open }))} title={configSheet.name} size='md'>
+				<div className='p-6'>{configSheet.value && <JsonCodeBlock value={configSheet.value} />}</div>
+			</Sheet>
 		</>
 	);
 };

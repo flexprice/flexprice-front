@@ -431,12 +431,52 @@
 			"inheritedReadOnlyTooltip": "تحاكي الاشتراكات الموروثة الاشتراك الأصل؛ حدّث الاشتراك الأصل بدلاً من ذلك.",
 			"updateTooltip": "تحديث الاشتراك",
 			"inheritedReadOnlyTitle": "الاشتراكات الموروثة للقراءة فقط؛ عدّل الاشتراك الأصل.",
-			"updateTitle": "تحديث الاشتراك"
+			"updateTitle": "تحديث الاشتراك",
+			"timezone": "المنطقة الزمنية"
 		},
 		"coupon": {
 			"change": "تغيير",
 			"remove": "إزالة",
 			"emptyState": "لا توجد قسيمة اشتراك مطبَّقة"
+		},
+		"tax": {
+			"remove": "إزالة"
+		},
+		"modifyDialog": {
+			"previewHeading": "معاينة",
+			"noBillingImpact": "لا تأثير على الفوترة",
+			"invoicesAffected": "الفواتير المتأثرة",
+			"lineItemsAffected": "بنود السطر المتأثرة"
+		},
+		"applyCouponDialog": {
+			"title": "تطبيق الكوبون",
+			"couponCodeLabel": "رمز الكوبون",
+			"couponCodePlaceholder": "مثال: SUMMER20",
+			"applyToLabel": "تطبيق على",
+			"subscriptionLevel": "مستوى الاشتراك",
+			"lineItemLevel": "مستوى بند السطر",
+			"lineItemLabel": "بند السطر",
+			"selectLineItemPlaceholder": "اختر بند سطر",
+			"startDateOptional": "تاريخ البدء (اختياري)",
+			"pickStartDate": "اختر تاريخ البدء",
+			"endDateOptional": "تاريخ الانتهاء (اختياري)",
+			"pickEndDate": "اختر تاريخ الانتهاء"
+		},
+		"removeCouponDialog": {
+			"title": "إزالة الكوبون",
+			"confirmMessage": "إزالة <bold>{{name}}</bold> من هذا الاشتراك؟",
+			"confirmMessageWithCode": "إزالة <bold>{{name}}</bold> ({{code}}) من هذا الاشتراك؟"
+		},
+		"removeTaxDialog": {
+			"title": "إزالة الضريبة",
+			"confirmMessage": "إزالة الضريبة <bold>{{name}}</bold> من هذا الاشتراك؟"
+		},
+		"applyTaxDialog": {
+			"title": "تطبيق الضريبة",
+			"taxRateLabel": "معدل الضريبة",
+			"selectTaxRatePlaceholder": "اختر معدل ضريبة",
+			"effectiveDateOptional": "تاريخ السريان (اختياري)",
+			"pickDate": "اختر تاريخاً"
 		}
 	},
 	"payments": {
@@ -674,8 +714,37 @@
 			"removeBucket": "إزالة النافذة الزمنية",
 			"errors": {
 				"sameTime": "لا يمكن أن يتطابق وقتا البداية والنهاية",
-				"incomplete": "يرجى تحديد وقتي البداية والنهاية لجميع النوافذ الزمنية"
-			}
+				"incomplete": "يرجى تحديد وقتي البداية والنهاية لجميع النوافذ الزمنية",
+				"incompleteCommitment": "يرجى إكمال حقول الالتزام لجميع الفترات"
+			},
+			"bucketCount": "{{count}} فترة/فترات زمنية",
+			"moreBuckets": "المزيد",
+			"descriptionShort": "نوافذ UTC. البداية شاملة، النهاية غير شاملة.",
+			"emptyShort": "لا توجد فترات وقت بعد.",
+			"bucketLabel": "فترة {{index}}",
+			"commitmentValue": "الالتزام",
+			"commitmentQuantity": "الكمية",
+			"commitmentValuePlaceholder": "القيمة",
+			"bucketAmount": "السعر",
+			"bucketAmountPlaceholder": "المبلغ",
+			"billingModel": "نموذج الفوترة",
+			"billingModelPlaceholder": "اختر نموذج الفوترة",
+			"unitsPerPackage": "الوحدات لكل حزمة",
+			"pricingFlat": "ثابت",
+			"pricingSlab": "شرائح",
+			"volumeTiers": "شرائح الحجم",
+			"slabTiers": "شرائح التسعير",
+			"upTo": "حتى",
+			"unitAmount": "مبلغ الوحدة",
+			"lookupKey": "مفتاح البحث",
+			"overageFactor": "التجاوز",
+			"trueUpEnabled": "التسوية",
+			"bucketAmountHint": "سعر الوحدة المطبق خلال هذه النافذة الزمنية",
+			"bucketAmountVolumeTieredHint": "يُحدَّد التسعير في شرائح الحجم أدناه",
+			"bucketAmountSlabTieredHint": "يُحدَّد التسعير في شرائح التسعير أدناه",
+			"bucketAmountTieredHint": "يُحدَّد التسعير في شرائح التسعير أدناه",
+			"billingModelHint": "كيفية فوترة الاستخدام في هذه النافذة",
+			"unitsPerPackageHint": "عدد الوحدات المضمنة في كل حزمة"
 		},
 		"existingNotice": "لهذا السعر إعدادات التزام بالفعل. ستؤدّي تغييراتك إلى تحديثها.",
 		"cancel": "إلغاء",
@@ -697,7 +766,16 @@
 			"amountNonNegative": "يجب ألا يكون مبلغ الالتزام سالباً",
 			"quantityNonNegative": "يجب ألا تكون كمية الالتزام سالبة",
 			"hourRange": "يجب أن تكون الساعة بين 0 و23",
-			"minuteRange": "يجب أن تكون الدقيقة بين 0 و59"
+			"minuteRange": "يجب أن تكون الدقيقة بين 0 و59",
+			"minuteStep": "يجب أن تكون الدقيقة من مضاعفات {{step}}",
+			"hourStep": "يجب أن تكون الساعة من مضاعفات {{step}}"
+		},
+		"lineItemTitle": "التزام النافذة الزمنية",
+		"viewCommitment": "عرض الالتزام",
+		"addCharge": {
+			"selectMeterForBuckets": "اختر ميزة مُقاسة لتهيئة فترات التزام بالنافذة.",
+			"loadingMeter": "جارٍ تحميل تفاصيل العداد…",
+			"meterNotSupported": "هذا العداد لا يدعم التزام النافذة. قم أولاً بتهيئة حجم الدلو على العداد."
 		}
 	},
 	"termination": {
@@ -878,7 +956,21 @@
 			"infoDescription": "التنبيه عند بلوغ الرصيد مستوى المعلومات",
 			"cancel": "إلغاء",
 			"saving": "جارٍ الحفظ…",
-			"saveChanges": "حفظ التغييرات"
+			"saveChanges": "حفظ التغييرات",
+			"statusBadgeLabel": "الرصيد {{condition}} {{threshold}}",
+			"validation": {
+				"atLeastOneThreshold": "يرجى تكوين مستوى عتبة واحد على الأقل عند تفعيل التنبيهات",
+				"invalidCriticalThreshold": "يرجى إدخال قيمة عتبة حرجة صالحة",
+				"invalidWarningThreshold": "يرجى إدخال قيمة عتبة تحذير صالحة",
+				"invalidInfoThreshold": "يرجى إدخال قيمة عتبة معلومات صالحة",
+				"criticalRequiredForWarning": "عتبة حرجة مطلوبة عند تعيين عتبة تحذير",
+				"warningMustBeLessThanCritical": "لتنبيهات \"أكبر من\"، يجب أن تكون عتبة التحذير أقل من العتبة الحرجة",
+				"warningMustBeGreaterThanCritical": "لتنبيهات \"أقل من\"، يجب أن تكون عتبة التحذير أكبر من العتبة الحرجة",
+				"infoMustBeLessThanWarning": "لتنبيهات \"أكبر من\"، يجب أن تكون عتبة المعلومات أقل من عتبة التحذير",
+				"infoMustBeGreaterThanWarning": "لتنبيهات \"أقل من\"، يجب أن تكون عتبة المعلومات أكبر من عتبة التحذير",
+				"infoMustBeLessThanCritical": "لتنبيهات \"أكبر من\"، يجب أن تكون عتبة المعلومات أقل من العتبة الحرجة",
+				"infoMustBeGreaterThanCritical": "لتنبيهات \"أقل من\"، يجب أن تكون عتبة المعلومات أكبر من العتبة الحرجة"
+			}
 		},
 		"autoTopup": {
 			"dialogTitle": "إعدادات الشحن التلقائي",
@@ -933,5 +1025,49 @@
 		"copied": "تم النسخ!",
 		"copyLink": "نسخ الرابط",
 		"close": "إغلاق"
+	},
+	"spendAlerts": {
+		"remove": "إزالة",
+		"add": "إضافة",
+		"thresholdValueLabel": "قيمة العتبة{{currencySuffix}}",
+		"amountPlaceholder": "0.00",
+		"conditionLabel": "الشرط",
+		"conditionAbove": "أعلى من",
+		"subscriptionDialogTitle": "إعدادات تنبيه الاشتراك",
+		"lineItemDialogTitle": "إعدادات تنبيه بند السطر",
+		"enableTitle": "تفعيل التنبيهات",
+		"subscriptionEnableLabel": "مراقبة إجمالي إنفاق الاشتراك مقارنة بالعتبات المضبوطة",
+		"lineItemEnableLabel": "مراقبة إنفاق بند السطر هذا مقارنة بالعتبات المضبوطة",
+		"enableDescription": "استلام إشعار عند تجاوز الإنفاق للعتبات المضبوطة خلال فترة الفوترة الحالية",
+		"criticalTitle": "عتبة حرجة",
+		"criticalDescription": "تنبيه عند وصول الإنفاق لمستوى حرج",
+		"warningTitle": "عتبة تحذير",
+		"warningDescription": "تنبيه عند وصول الإنفاق لمستوى تحذير",
+		"infoTitle": "عتبة معلومات",
+		"infoDescription": "تنبيه عند وصول الإنفاق لمستوى معلومات",
+		"cancel": "إلغاء",
+		"saving": "جارٍ الحفظ...",
+		"saveChanges": "حفظ التغييرات",
+		"saveSuccess": "تم حفظ إعدادات التنبيه بنجاح",
+		"saveError": "فشل حفظ إعدادات التنبيه"
+	},
+	"tableColumns": {
+		"displayName": "اسم العرض",
+		"phase": "المرحلة",
+		"priceType": "نوع السعر",
+		"billingPeriod": "فترة الفوترة",
+		"quantity": "الكمية",
+		"source": "المصدر",
+		"status": "الحالة",
+		"charge": "الرسوم"
+	},
+	"actions": {
+		"edit": "تعديل"
+	},
+	"tableMenu": {
+		"terminate": "إنهاء",
+		"alertSettings": "إعدادات التنبيهات",
+		"applyCoupon": "تطبيق قسيمة",
+		"removeCoupon": "إزالة القسيمة"
 	}
 }

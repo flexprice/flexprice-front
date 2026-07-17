@@ -71,6 +71,7 @@ const SubscriptionTaxAssociationTable: FC<Props> = ({ data, onChange, disabled }
 			render: (row) => (
 				<ActionButton
 					id={row.tax_rate_code}
+					copyId={{ entityType: 'Tax Rate' }}
 					deleteMutationFn={() => handleDelete(row.tax_rate_code)}
 					refetchQueryKey='subscription_tax_overrides'
 					entityName={`Tax Override ${row.tax_rate_code}`}

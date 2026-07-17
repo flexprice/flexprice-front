@@ -158,6 +158,7 @@ const CostSheetsPage = () => {
 					return (
 						<ActionButton
 							id={row?.id}
+							copyId={{ entityType: 'Cost Sheet' }}
 							deleteMutationFn={async () => {
 								return await CostSheetApi.DeleteCostSheet(row?.id);
 							}}

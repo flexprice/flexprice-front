@@ -30,6 +30,7 @@ import SubscriptionCancelDialog from '@/components/molecules/SubscriptionCancelD
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { isInheritedSubscription } from '@/utils/subscription/isInheritedSubscription';
+import { ENTITY_STATUS } from '@/models';
 
 const BILLING_CADENCE_I18N_KEYS: Record<BILLING_CADENCE, 'recurring' | 'onetime'> = {
 	[BILLING_CADENCE.RECURRING]: 'recurring',
@@ -225,6 +226,7 @@ const SubscriptionsPage = () => {
 					return (
 						<ActionButton
 							id={row.id}
+							copyId={{ entityType: 'Subscription' }}
 							deleteMutationFn={async () => Promise.resolve()}
 							refetchQueryKey='fetchSubscriptions'
 							isArchiveDisabled={true}
@@ -269,6 +271,7 @@ const SubscriptionsPage = () => {
 							SubscriptionApi.searchSubscriptions({
 								...params,
 								expand: generateExpandQueryParams([EXPAND.CUSTOMER]),
+								status: ENTITY_STATUS.PUBLISHED,
 							}),
 						probeFetchFn: async (params) =>
 							SubscriptionApi.searchSubscriptions({
@@ -277,6 +280,7 @@ const SubscriptionsPage = () => {
 								offset: 0,
 								filters: [],
 								sort: [],
+								status: ENTITY_STATUS.PUBLISHED,
 							}),
 					}}
 					tableConfig={{

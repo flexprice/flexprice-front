@@ -1,5 +1,5 @@
 import { AddButton, Button, Dialog, Page, Chip } from '@/components/atoms';
-import { ApiDocsContent, DropdownMenu, DuplicatePlanDialog, PlanDrawer } from '@/components/molecules';
+import { ApiDocsContent, DropdownMenu, DuplicatePlanDialog, PlanDrawer, getCopyIdOption } from '@/components/molecules';
 import type { DropdownMenuOption } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { Plan } from '@/models/Plan';
@@ -55,6 +55,7 @@ const initialFilters: FilterCondition[] = [
 const PlansPage = () => {
 	const { t, i18n } = useTranslation(['catalog', 'common']);
 	const { t: tGuide } = useTranslation('guides');
+	const { t: tc } = useTranslation('common');
 	const guides = useMemo(() => buildGuides(tGuide), [tGuide]);
 	const [activePlan, setActivePlan] = useState<Plan | null>(null);
 	const [planDrawerOpen, setPlanDrawerOpen] = useState(false);
@@ -175,6 +176,7 @@ const PlansPage = () => {
 
 	const getRowDropdownOptions = useCallback(
 		(row: Plan): DropdownMenuOption[] => [
+			getCopyIdOption(row.id, tc, { entityType: 'Plan' }),
 			{
 				label: t('catalog:plans.listPage.rowActions.edit'),
 				icon: <Pencil />,
@@ -195,7 +197,7 @@ const PlansPage = () => {
 				disabled: row.status !== ENTITY_STATUS.PUBLISHED,
 			},
 		],
-		[t, handleEdit, handleDuplicate],
+		[t, tc, handleEdit, handleDuplicate],
 	);
 
 	const columns: ColumnData<Plan>[] = useMemo(

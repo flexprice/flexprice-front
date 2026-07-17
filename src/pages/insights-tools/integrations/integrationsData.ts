@@ -136,4 +136,19 @@ export const integrationCatalogSpecs: IntegrationCatalogSpec[] = [
 		type: 'available',
 		sectionKeys: ['overview', 'invoiceSync', 'webhooks'],
 	},
+	{
+		id: 'tabs',
+		logo: '/assets/logo/tabs.png',
+		tagKeys: ['payments', 'invoices'],
+		type: 'available',
+		sectionKeys: ['overview', 'invoiceSync'],
+	},
+	{
+		id: 'aws_marketplace',
+		logo: '/assets/logo/Marketplace-AWS.png',
+		docsUrl: 'https://docs.flexprice.io/integrations/aws-marketplace/',
+		tagKeys: ['marketplace', 'usageMetering'],
+		type: 'available',
+		sectionKeys: ['overview', 'setup', 'usageReporting'],
+	},
 ];

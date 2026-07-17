@@ -2,7 +2,7 @@ import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Spacer, Divider, Chip } from '@/components/atoms';
 import { Pencil } from 'lucide-react';
-import { MetadataModal, DetailsCard, PlanDrawer } from '@/components/molecules';
+import { MetadataModal, DetailsCard, PlanDrawer, IntegrationMappingCard } from '@/components/molecules';
 import { ENTITY_STATUS, Plan } from '@/models';
 import formatDate from '@/utils/common/format_date';
 import { formatEntityStatus } from '@/utils/common/format_chips';
@@ -147,6 +147,13 @@ const PlanInformationTab = () => {
 						onSave={handleSaveMetadata}
 						onClose={() => setShowMetadataModal(false)}
 					/>
+
+					{/* third-party integration mappings (e.g. AWS Marketplace product_code) */}
+					{planId && (
+						<div className='mt-8'>
+							<IntegrationMappingCard entityType='plan' entityId={planId} />
+						</div>
+					)}
 				</div>
 			)}
 		</div>

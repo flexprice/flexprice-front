@@ -12,6 +12,9 @@ export interface MeterFilter {
 export interface MeterAggregation {
 	type: METER_AGGREGATION_TYPE;
 	field?: string;
+	// CEL expression evaluated per event to compute the quantity. Mutually
+	// exclusive with `field`; only allowed for SUM, AVG, MAX, LATEST.
+	expression?: string;
 	multiplier?: number;
 	bucket_size?: BUCKET_SIZE;
 	group_by?: string;

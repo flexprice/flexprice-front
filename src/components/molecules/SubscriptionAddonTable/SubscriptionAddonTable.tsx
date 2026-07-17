@@ -166,6 +166,7 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 					return (
 						<ActionButton
 							id={row.addon_id}
+							copyId={{ entityType: 'Addon' }}
 							deleteMutationFn={() => handleDelete(row.internal_id)}
 							refetchQueryKey='addons'
 							entityName={addonDetails?.name || row.addon_id}

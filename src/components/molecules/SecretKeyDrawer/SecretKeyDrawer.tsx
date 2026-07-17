@@ -37,7 +37,7 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 		isError: isServiceAccountsError,
 	} = useQuery<GetServiceAccountsResponse>({
 		queryKey: ['service-accounts'],
-		queryFn: async () => await UserApi.getServiceAccounts(),
+		queryFn: async () => await UserApi.getServiceAccounts({ limit: 100, offset: 0 }),
 		enabled: isOpen && formData.accountType === 'service_account',
 	});
 

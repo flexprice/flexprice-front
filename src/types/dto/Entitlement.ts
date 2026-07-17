@@ -8,6 +8,7 @@ import {
 	Feature,
 	FEATURE_TYPE,
 } from '@/models';
+import { JsonObject } from '@/types/common';
 import { QueryFilter, TimeRangeFilter } from './base';
 import { TypedBackendFilter, TypedBackendSort } from '@/types/formatters/QueryBuilder';
 
@@ -60,6 +61,7 @@ export interface CreateEntitlementRequest {
 	usage_reset_period?: ENTITLEMENT_USAGE_RESET_PERIOD;
 	is_soft_limit?: boolean;
 	static_value?: string;
+	config_value?: JsonObject;
 	entity_type: ENTITLEMENT_ENTITY_TYPE;
 	entity_id: string;
 	/** When overriding a plan/addon entitlement, links to the parent entitlement to replace (not stack). */
@@ -77,6 +79,7 @@ export interface UpdateEntitlementRequest {
 	usage_reset_period?: ENTITLEMENT_USAGE_RESET_PERIOD;
 	is_soft_limit?: boolean;
 	static_value?: string;
+	config_value?: JsonObject;
 	entity_type?: ENTITLEMENT_ENTITY_TYPE;
 	entity_id?: string;
 }

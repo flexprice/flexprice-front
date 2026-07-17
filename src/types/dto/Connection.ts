@@ -88,6 +88,10 @@ export interface CreateConnectionPayload {
 				client_side_token?: string;
 		  }
 		| {
+				role_arn?: string;
+				external_id?: string;
+		  }
+		| {
 				api_key?: string;
 				webhook_secret?: string;
 		  };

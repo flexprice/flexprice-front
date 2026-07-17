@@ -79,6 +79,7 @@ const SubscriptionTable: FC<Props> = ({ data, onEdit }) => {
 					return (
 						<ActionButton
 							id={row.id}
+							copyId={{ entityType: 'Subscription' }}
 							deleteMutationFn={async () => Promise.resolve()}
 							refetchQueryKey='fetchSubscriptions'
 							entityName={t('subscriptions.listPage.entityNameForActions')}

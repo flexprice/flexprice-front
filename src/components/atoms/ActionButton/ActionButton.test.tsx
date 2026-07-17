@@ -90,6 +90,7 @@ const defaultProps = {
 describe('ActionButton Component', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		Object.assign(navigator, { clipboard: { writeText: vi.fn().mockResolvedValue(undefined) } });
 	});
 
 	describe('Basic Rendering', () => {
@@ -249,7 +250,7 @@ describe('ActionButton Component', () => {
 			});
 
 			await waitFor(() => {
-				expect(screen.getByText('Are you sure you want to delete this Test Entity?')).toBeInTheDocument();
+				expect(screen.getByText(/Are you sure you want to delete/i)).toBeInTheDocument();
 			});
 		});
 
@@ -287,23 +288,26 @@ describe('ActionButton Component', () => {
 
 			render(
 				<TestWrapper>
-					<ActionButton {...defaultProps} archive={{ enabled: true, text: 'Archive' }} />
+					<ActionButton {...defaultProps} archive={{ enabled: true }} />
 				</TestWrapper>,
 			);
 
-			// Trigger delete flow
+			// Open dropdown and click the default Archive action
 			const triggerButton = screen.getByRole('button');
 			fireEvent.click(triggerButton);
 
 			await waitFor(() => {
-				const archiveButton = screen.getByText('Archive');
-				fireEvent.click(archiveButton);
+				expect(screen.getByText(/archive/i)).toBeInTheDocument();
 			});
+			fireEvent.click(screen.getByText(/archive/i));
 
+			// Wait for confirmation dialog, then confirm
 			await waitFor(() => {
-				const confirmButton = screen.getByRole('button', { name: 'Archive' });
-				fireEvent.click(confirmButton);
+				expect(screen.getByText(/Are you sure you want to/i)).toBeInTheDocument();
 			});
+			const confirmButtons = screen.getAllByRole('button');
+			// last button in dialog is the confirm action
+			fireEvent.click(confirmButtons[confirmButtons.length - 1]);
 
 			await waitFor(() => {
 				expect(toast.success).toHaveBeenCalledWith('Test Entity archived successfully');
@@ -311,7 +315,7 @@ describe('ActionButton Component', () => {
 		});
 
 		it('should show error toast on deletion failure', async () => {
-			const error = { error: { message: 'Delete failed' } };
+			const error = new Error('Delete failed');
 			mockDeleteMutationFn.mockRejectedValue(error);
 
 			render(
@@ -428,6 +432,77 @@ describe('ActionButton Component', () => {
 		});
 	});
 
+	describe('Copy ID Action', () => {
+		it('should not render Copy ID when copyId prop is omitted', async () => {
+			render(
+				<TestWrapper>
+					<ActionButton {...defaultProps} edit={{ enabled: true }} />
+				</TestWrapper>,
+			);
+
+			const triggerButton = screen.getByRole('button');
+			fireEvent.click(triggerButton);
+
+			await waitFor(() => {
+				expect(screen.getByText('Edit')).toBeInTheDocument();
+			});
+			expect(screen.queryByText('Copy ID')).not.toBeInTheDocument();
+		});
+
+		it('should render the generic "Copy ID" label and copy the id when no entityType is given', async () => {
+			render(
+				<TestWrapper>
+					<ActionButton {...defaultProps} copyId={{}} />
+				</TestWrapper>,
+			);
+
+			const triggerButton = screen.getByRole('button');
+			fireEvent.click(triggerButton);
+
+			await waitFor(() => {
+				const copyIdButton = screen.getByText('Copy ID');
+				fireEvent.click(copyIdButton);
+			});
+
+			expect(navigator.clipboard.writeText).toHaveBeenCalledWith('test-id');
+		});
+
+		it('should show an entity-specific toast message when entityType is given', async () => {
+			render(
+				<TestWrapper>
+					<ActionButton {...defaultProps} copyId={{ entityType: 'Plan' }} />
+				</TestWrapper>,
+			);
+
+			const triggerButton = screen.getByRole('button');
+			fireEvent.click(triggerButton);
+
+			await waitFor(() => {
+				const copyIdButton = screen.getByText('Copy ID');
+				fireEvent.click(copyIdButton);
+			});
+
+			await waitFor(() => {
+				expect(toast.success).toHaveBeenCalledWith('Plan ID copied to clipboard');
+			});
+		});
+
+		it('should render a custom label when provided', async () => {
+			render(
+				<TestWrapper>
+					<ActionButton {...defaultProps} copyId={{ label: 'Copy Plan ID' }} />
+				</TestWrapper>,
+			);
+
+			const triggerButton = screen.getByRole('button');
+			fireEvent.click(triggerButton);
+
+			await waitFor(() => {
+				expect(screen.getByText('Copy Plan ID')).toBeInTheDocument();
+			});
+		});
+	});
+
 	describe('Dialog Behavior', () => {
 		it('should close dialog when cancel is clicked', async () => {
 			render(
@@ -446,7 +521,7 @@ describe('ActionButton Component', () => {
 			});
 
 			await waitFor(() => {
-				expect(screen.getByText('Are you sure you want to delete this Test Entity?')).toBeInTheDocument();
+				expect(screen.getByText(/Are you sure you want to delete/i)).toBeInTheDocument();
 			});
 
 			// Click cancel
@@ -454,7 +529,7 @@ describe('ActionButton Component', () => {
 			fireEvent.click(cancelButton);
 
 			await waitFor(() => {
-				expect(screen.queryByText('Are you sure you want to delete this Test Entity?')).not.toBeInTheDocument();
+				expect(screen.queryByText(/Are you sure you want to delete/i)).not.toBeInTheDocument();
 			});
 		});
 	});

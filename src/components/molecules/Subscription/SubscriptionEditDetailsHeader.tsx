@@ -49,6 +49,7 @@ const SubscriptionEditDetailsHeader: FC<SubscriptionEditDetailsHeaderProps> = ({
 			{ label: t('subscriptions.editDetailsHeader.billingCycle'), value: subscription?.billing_cycle || t('common:labels.na') },
 			{ label: t('subscriptions.editDetailsHeader.startDate'), value: formatDate(subscription?.start_date ?? '') },
 			{ label: t('subscriptions.editDetailsHeader.currentPeriodEnd'), value: formatDate(subscription?.current_period_end ?? '') },
+			...(subscription?.timezone?.trim() ? [{ label: t('subscriptions.editDetailsHeader.timezone'), value: subscription.timezone }] : []),
 			...(subscription?.commitment_amount
 				? [
 						{

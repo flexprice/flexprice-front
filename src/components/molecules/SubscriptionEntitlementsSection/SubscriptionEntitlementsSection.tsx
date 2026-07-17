@@ -2,8 +2,9 @@ import { FC, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Plus, Trash2, Pencil, Info } from 'lucide-react';
-import { Button, Card, CardHeader, Chip, Dialog, NoDataCard } from '@/components/atoms';
+import { Button, Card, CardHeader, Chip, Dialog, NoDataCard, Sheet } from '@/components/atoms';
 import { FlexpriceTable, ColumnData, AddEntitlementDrawer, EditSubscriptionEntitlementDrawer } from '@/components/molecules';
+import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import EntitlementApi from '@/api/EntitlementApi';
 import { FEATURE_TYPE } from '@/models/Feature';
@@ -20,8 +21,10 @@ import {
 	enrichSubscriptionEntitlements,
 	getPrimarySourceLabel,
 	getEffectiveStaticValue,
+	getEffectiveConfigValue,
 } from '@/utils/subscription/subscriptionEntitlementHelpers';
 import { formatLocalizedNumber } from '@/i18n/display/formatNumber';
+import { JsonObject } from '@/types/common';
 
 interface SubscriptionEntitlementsSectionProps {
 	subscriptionId: string;
@@ -38,6 +41,11 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 	const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [entitlementToDelete, setEntitlementToDelete] = useState<EnrichedSubscriptionEntitlement | null>(null);
+	const [configSheet, setConfigSheet] = useState<{ open: boolean; name: string; value: JsonObject | null }>({
+		open: false,
+		name: '',
+		value: null,
+	});
 	const queryClient = useQueryClient();
 
 	const invalidateEntitlements = () => {
@@ -172,6 +180,8 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 				return <Chip label={tc('labels.boolean')} variant='success' />;
 			case 'static':
 				return <Chip label={tc('labels.static')} variant='warning' />;
+			case 'config':
+				return <Chip label={tc('labels.config')} variant='default' />;
 			default:
 				return <Chip label={featureType} variant='info' />;
 		}
@@ -291,6 +301,40 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 										<div className='text-sm text-gray-600'>
 											{t('entitlements.overridesTable.tooltipStatus', { from: originalValue!, to: value })}
 										</div>
+									</div>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+					)}
+				</div>
+			);
+		}
+
+		if (featureType === FEATURE_TYPE.CONFIG) {
+			const cv = getEffectiveConfigValue(row.sources);
+			const compact = cv && Object.keys(cv).length > 0 ? JSON.stringify(cv) : null;
+			if (!compact) return <span className='text-muted-foreground'>{tc('labels.na')}</span>;
+			return (
+				<div className='flex items-center gap-2'>
+					<button
+						type='button'
+						className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-md'
+						style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-all' }}
+						onClick={() => setConfigSheet({ open: true, name: row.feature?.name ?? '', value: cv ?? null })}>
+						{compact}
+					</button>
+					{row.isOverrideOfParent && (
+						<TooltipProvider delayDuration={0}>
+							<Tooltip>
+								<TooltipTrigger>
+									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+								</TooltipTrigger>
+								<TooltipContent
+									sideOffset={5}
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									<div className='space-y-2'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>{t('entitlements.overridesTable.tooltipConfig')}</div>
 									</div>
 								</TooltipContent>
 							</Tooltip>
@@ -505,6 +549,10 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 					</div>
 				</div>
 			</Dialog>
+
+			<Sheet isOpen={configSheet.open} onOpenChange={(open) => setConfigSheet((s) => ({ ...s, open }))} title={configSheet.name} size='2xl'>
+				<div className='p-6'>{configSheet.value && <JsonCodeBlock value={configSheet.value} />}</div>
+			</Sheet>
 		</>
 	);
 };

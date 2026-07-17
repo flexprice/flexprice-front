@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { ENTITY_STATUS } from '@/models';
 
 const DEFAULT_PAYMENTS_TUTORIAL_IMAGE = 'https://mintlify.s3.us-west-1.amazonaws.com/flexprice/UsageBaseMetering(1).jpg';
 
@@ -25,7 +26,7 @@ const PaymentList = () => {
 		isError,
 	} = useQuery({
 		queryKey: ['payments', page],
-		queryFn: () => PaymentApi.getAllPayments({ limit, offset }),
+		queryFn: () => PaymentApi.getAllPayments({ limit, offset, status: ENTITY_STATUS.PUBLISHED }),
 	});
 
 	if (isLoading) {

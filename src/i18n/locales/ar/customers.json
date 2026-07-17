@@ -27,6 +27,11 @@
 			"email": "البريد الإلكتروني",
 			"createdAt": "تاريخ الإنشاء",
 			"updatedAt": "تاريخ التحديث"
+		},
+		"orgTypeFilter": {
+			"ariaLabel": "تصفية حسب نوع المؤسسة",
+			"parent": "أصل",
+			"child": "فرعي"
 		}
 	},
 	"detail": {
@@ -63,7 +68,8 @@
 			"city": "المدينة",
 			"postalCode": "الرمز البريدي",
 			"subscriptionAmount": "مبلغ الاشتراك",
-			"subscriptionStartDate": "تاريخ بدء الاشتراك"
+			"subscriptionStartDate": "تاريخ بدء الاشتراك",
+			"timezone": "المنطقة الزمنية"
 		},
 		"customerCardSectionTitle": "تفاصيل العميل",
 		"customerCardSlug": "المعرّف",
@@ -196,7 +202,8 @@
 			"metered": "حسب القياس",
 			"boolean": "نعم/لا",
 			"dash": "—",
-			"usageProgressUnlimited": "{{usage}} / غير محدود"
+			"usageProgressUnlimited": "{{usage}} / غير محدود",
+			"config": "إعداد"
 		},
 		"fallback": "--"
 	},
@@ -220,7 +227,10 @@
 			"missingExternalId": "يجب أن يكون لعميل الفوترة معرّف خارجي."
 		},
 		"sandboxNotice": "هذا اشتراك تجريبي وستنتهي صلاحيته تلقائيًا في {{date}} (بعد {{days}} يومًا من الآن).",
-		"saveAsDraft": "حفظ كمسودّة"
+		"saveAsDraft": "حفظ كمسودّة",
+		"selectCustomerLabel": "العميل",
+		"selectCustomerPlaceholder": "ابحث عن عميل...",
+		"selectCustomerHint": "اختر عميلاً للمتابعة مع إنشاء اشتراك"
 	},
 	"subscriptionDetail": {
 		"breadcrumbSubscription": "الاشتراك",
@@ -267,7 +277,9 @@
 			"halfYearly": "نصف سنوي",
 			"weekly": "أسبوعي",
 			"daily": "يومي"
-		}
+		},
+		"timezone": "المنطقة الزمنية",
+		"couponAssociations": "ارتباطات القسيمة"
 	},
 	"tabPanels": {
 		"common": {
@@ -295,12 +307,14 @@
 			"expandAll": "توسيع الكل",
 			"totalUsage": "إجمالي الاستخدام",
 			"totalCost": "إجمالي التكلفة",
-			"tableEmpty": "--"
+			"tableEmpty": "--",
+			"cogs": "تكلفة البضاعة المباعة"
 		},
 		"information": {
 			"saveCardOnStripe": "حفظ البطاقة على Stripe",
 			"sharePortalLinkTitle": "مشاركة رابط بوابة العميل",
-			"childCustomersTitle": "العملاء الفرعيون"
+			"childCustomersTitle": "العملاء الفرعيون",
+			"setupAutopayMoyasar": "إعداد الدفع التلقائي (Moyasar)"
 		},
 		"invoice": {
 			"title": "الفواتير",
@@ -416,6 +430,7 @@
 			"menu": {
 				"activateSubscription": "تفعيل الاشتراك",
 				"editSubscription": "تعديل الاشتراك",
+				"alertSettings": "إعدادات التنبيهات",
 				"addSubscriptionPhase": "إضافة مرحلة اشتراك",
 				"cancelSubscription": "إلغاء الاشتراك"
 			}
@@ -549,6 +564,38 @@
 		},
 		"lineItemsQueryBuilder": {
 			"billingPeriod": "فترة الفوترة"
-		}
+		},
+		"couponAssociations": "ارتباطات الكوبون",
+		"addCoupon": "إضافة كوبون",
+		"taxAssociations": "ارتباطات الضريبة",
+		"addTax": "إضافة ضريبة"
+	},
+	"moyasarAutopay": {
+		"title": "إعداد الدفع التلقائي مع Moyasar",
+		"intro": "أدخل تفاصيل البطاقة لتفعيل الدفع التلقائي. يتم ترميز البطاقة بأمان بواسطة Moyasar — نحن لا نخزّن رقم البطاقة الأصلي.",
+		"setupCard": "إعداد البطاقة",
+		"loadingForm": "جارٍ تحميل نموذج البطاقة الآمن…",
+		"savingCard": "جارٍ حفظ البطاقة…",
+		"successTitle": "تم تفعيل الدفع التلقائي. سيتم تحصيل الفواتير المستقبلية لهذا العميل تلقائيًا.",
+		"alreadyConfiguredTitle": "تم إعداد الدفع التلقائي مسبقاً",
+		"alreadyConfiguredDesc": "هذا العميل لديه طريقة دفع محفوظة بالفعل. قم بإزالتها أولاً لتسجيل بطاقة جديدة.",
+		"done": "تم",
+		"toastEnabled": "تم تفعيل الدفع التلقائي. سيتم تحصيل الفواتير المستقبلية تلقائيًا.",
+		"toastInitFailed": "فشل في تهيئة الدفع التلقائي لـ Moyasar",
+		"toastSaveFailed": "فشل في حفظ البطاقة",
+		"toastScriptFailed": "فشل تحميل Moyasar.js. يرجى تحديث الصفحة والمحاولة مرة أخرى.",
+		"toastNoToken": "لم يتم إرجاع رمز البطاقة من Moyasar",
+		"toastParseTokenFailed": "فشل في تحليل رمز الدفع",
+		"loadingSetup": "جارٍ إكمال إعداد البطاقة…",
+		"formTitle": "حفظ البطاقة للدفع التلقائي",
+		"formDesc": "سنخصم 1 ريال للتحقق من بطاقتك، ثم نستردها تلقائيًا.",
+		"formLoadFailed": "فشل تحميل نموذج الدفع. يرجى تحديث الصفحة.",
+		"cardSavedTitle": "تم حفظ البطاقة بنجاح",
+		"cardSavedDescription": "تم حفظ بطاقتك وتم تفعيل الدفع التلقائي. سيتم خصم الفواتير المستقبلية تلقائيًا.",
+		"cardSetupInProgressTitle": "إعداد البطاقة قيد التنفيذ",
+		"cardSetupInProgressDescription": "جارٍ التحقق من بطاقتك. يكتمل ذلك عادةً خلال دقائق قليلة. يمكنك إغلاق هذه الصفحة بأمان.",
+		"cardSetupFailedTitle": "فشل إعداد البطاقة",
+		"cardSetupFailedDefaultDescription": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+		"tryAgain": "حاول مرة أخرى"
 	}
 }

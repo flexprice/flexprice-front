@@ -26,6 +26,11 @@ export enum AUTH_PROVIDER {
 	Supabase = 'supabase',
 }
 
+export enum WEBHOOK_PROVIDER {
+	Svix = 'svix',
+	Custom = 'custom',
+}
+
 interface AppConfig {
 	env: APP_ENV;
 	isProd: boolean;
@@ -56,6 +61,10 @@ interface IntercomConfig {
 	enabled: boolean;
 	appId: string;
 }
+interface ReoConfig {
+	enabled: boolean;
+	clientId: string;
+}
 interface RegionConfig {
 	indiaUrl: string;
 	usUrl: string;
@@ -63,6 +72,8 @@ interface RegionConfig {
 }
 interface IntegrationsConfig {
 	googleSheetsWebAppUrl: string;
+	/** Flexprice's AWS account ID, injected into the AWS Marketplace trust-policy template. */
+	flexpriceAwsAccountId: string;
 }
 interface RestrictionsConfig {
 	rawEnvs: string;
@@ -84,6 +95,9 @@ export interface PlatformConfig {
 	contact_us: {
 		enabled: boolean;
 	};
+	production: {
+		enabled: boolean;
+	};
 }
 
 const PLATFORM_FEATURE_DEFAULTS = {
@@ -91,6 +105,7 @@ const PLATFORM_FEATURE_DEFAULTS = {
 	sidebar_documentation: true,
 	guides: true,
 	onboarding: true,
+	production: false,
 } as const;
 
 type PlatformFeatureKey = keyof typeof PLATFORM_FEATURE_DEFAULTS;
@@ -101,6 +116,7 @@ interface PlatformConfigJson {
 	guides?: { enabled?: boolean };
 	onboarding?: { enabled?: boolean };
 	contact_us?: boolean | { enabled?: boolean };
+	production?: { enabled?: boolean };
 }
 
 function parsePlatformFeatureEnabled(parsed: PlatformConfigJson | undefined, key: PlatformFeatureKey): boolean {
@@ -135,10 +151,17 @@ export function parsePlatformConfig(rawPlatformConfig?: string): PlatformConfig 
 		guides: { enabled: parsePlatformFeatureEnabled(parsed, 'guides') },
 		onboarding: { enabled: parsePlatformFeatureEnabled(parsed, 'onboarding') },
 		contact_us: { enabled: parseContactUsEnabled(parsed) },
+		production: { enabled: parsePlatformFeatureEnabled(parsed, 'production') },
 	};
 }
 
 const platformConfig = parsePlatformConfig(import.meta.env.VITE_PLATFORM_CONFIG);
+
+export interface WebhooksConfig {
+	provider: WEBHOOK_PROVIDER;
+	/** Public origin of a self-hosted Svix API (browser-reachable). Empty when using hosted Svix. */
+	svixUrl: string;
+}
 
 /** Primary defaults to **Geist** (Google Fonts in `src/index.css`). Override via `VITE_FONT_CONFIG` or `VITE_FONT_PRIMARY`. */
 export interface TypographyConfig {
@@ -231,6 +254,7 @@ export interface Config {
 	posthog: PosthogConfig;
 	paddle: PaddleConfig;
 	intercom: IntercomConfig;
+	reo: ReoConfig;
 	region: RegionConfig;
 	integrations: IntegrationsConfig;
 	restrictions: RestrictionsConfig;
@@ -242,6 +266,21 @@ export interface Config {
 	typography: TypographyConfig;
 	platform: PlatformConfig;
 	features: FeaturesConfig;
+	webhooks: WebhooksConfig;
+}
+
+/**
+ * Resolves the active webhook portal provider from env.
+ * - `flexprice` → custom (Flexprice portal).
+ * - `svix` → hosted Svix (explicit default).
+ * - unset/empty → hosted Svix, unless VITE_SVIX_URL is set (then custom).
+ */
+export function resolveWebhookProvider(providerRaw?: string, svixUrl?: string): WEBHOOK_PROVIDER {
+	const provider = providerRaw?.trim().toLowerCase();
+	if (provider === 'flexprice') return WEBHOOK_PROVIDER.Custom;
+	if (provider === 'svix') return WEBHOOK_PROVIDER.Svix;
+	if (!provider && svixUrl?.trim()) return WEBHOOK_PROVIDER.Custom;
+	return WEBHOOK_PROVIDER.Svix;
 }
 
 function parseAppEnv(): APP_ENV {
@@ -253,6 +292,8 @@ function parseAppEnv(): APP_ENV {
 }
 
 const appEnv = parseAppEnv();
+
+const svixUrl = import.meta.env.VITE_SVIX_URL ?? '';
 
 export const config: Config = {
 	app: {
@@ -285,6 +326,10 @@ export const config: Config = {
 		enabled: import.meta.env.VITE_INTERCOM_ENABLED === 'true',
 		appId: import.meta.env.VITE_INTERCOM_APP_ID ?? import.meta.env.VITE_APP_INTERCOM_APP_ID ?? '',
 	},
+	reo: {
+		enabled: import.meta.env.VITE_REO_ENABLED === 'true',
+		clientId: import.meta.env.VITE_REO_CLIENT_ID ?? '',
+	},
 	region: {
 		indiaUrl: import.meta.env.VITE_DASHBOARD_URL_INDIA ?? '',
 		usUrl: import.meta.env.VITE_DASHBOARD_URL_US ?? '',
@@ -292,6 +337,7 @@ export const config: Config = {
 	},
 	integrations: {
 		googleSheetsWebAppUrl: import.meta.env.VITE_GOOGLE_SHEETS_WEB_APP_URL ?? '',
+		flexpriceAwsAccountId: import.meta.env.VITE_FLEXPRICE_AWS_ACCOUNT_ID ?? '',
 	},
 	restrictions: {
 		rawEnvs: import.meta.env.VITE_RESTRICTED_ENVS ?? '',
@@ -305,6 +351,10 @@ export const config: Config = {
 	platform: platformConfig,
 	features: {
 		tenantFeatureAllowlist,
+	},
+	webhooks: {
+		provider: resolveWebhookProvider(import.meta.env.VITE_WEBHOOK_PROVIDER, svixUrl),
+		svixUrl,
 	},
 };
 

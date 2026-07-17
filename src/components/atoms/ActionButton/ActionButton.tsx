@@ -4,10 +4,11 @@ import { FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Button, Dialog } from '@/components/atoms';
-import { EyeOff, Pencil } from 'lucide-react';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { useTranslation } from 'react-i18next';
+import { Button, Dialog } from '@/components/atoms';
+import { Copy, EyeOff, Pencil } from 'lucide-react';
+import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { copyToClipboard } from '@/utils/common/helper_functions';
 
 interface EditActionConfig {
 	enabled?: boolean;
@@ -30,6 +31,13 @@ interface CustomAction {
 	enabled?: boolean;
 }
 
+interface CopyIdActionConfig {
+	enabled?: boolean;
+	/** e.g. "Plan" — renders the menu label/toast as "Copy Plan ID" via the copyId i18n keys. Omit for the generic "Copy ID" label. */
+	entityType?: string;
+	label?: string;
+}
+
 interface ActionProps {
 	id: string;
 	deleteMutationFn: (id: string) => Promise<void>;
@@ -39,6 +47,8 @@ interface ActionProps {
 	edit?: EditActionConfig;
 	archive?: ArchiveActionConfig;
 	customActions?: CustomAction[];
+	/** Opt-in "Copy ID" menu item, rendered first. Omit to leave the menu unchanged. */
+	copyId?: CopyIdActionConfig;
 	disableToast?: boolean;
 	// Legacy props for backward compatibility
 	row?: unknown;
@@ -61,6 +71,7 @@ const ActionButton: FC<ActionProps> = ({
 	edit,
 	archive,
 	customActions,
+	copyId,
 	disableToast = false,
 	// Legacy props
 	editPath,
@@ -139,6 +150,21 @@ const ActionButton: FC<ActionProps> = ({
 						<button>{trigger}</button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>
+						{copyId && copyId.enabled !== false && (
+							<DropdownMenuItem
+								onSelect={(event) => {
+									event.preventDefault();
+									setIsOpen(false);
+									void copyToClipboard(
+										id,
+										copyId.entityType ? t('copyId.toastWithType', { type: copyId.entityType }) : t('copyId.toastFallback'),
+									);
+								}}
+								className='flex gap-2 items-center w-full cursor-pointer'>
+								<Copy />
+								<span>{copyId.label || t('copyId.genericLabel')}</span>
+							</DropdownMenuItem>
+						)}
 						{editConfig.enabled !== false && (
 							<DropdownMenuItem
 								onSelect={(event) => {

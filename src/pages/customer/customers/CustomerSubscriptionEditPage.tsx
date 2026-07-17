@@ -147,6 +147,7 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 				limit: 100,
 				offset: 0,
 				expand: generateExpandQueryParams([EXPAND.PLAN, EXPAND.CUSTOMER]),
+				status: ENTITY_STATUS.PUBLISHED,
 			}),
 		enabled: !!subscriptionId && !!subscriptionDetails,
 	});

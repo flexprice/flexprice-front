@@ -1,60 +1,137 @@
-import { Button, CardHeader, Chip, Loader, Page, ShortPagination, Spacer, NoDataCard } from '@/components/atoms';
-import { ApiDocsContent, ColumnData, FlexpriceTable, CostSheetDrawer, DetailsCard } from '@/components/molecules';
+import { Button, CardHeader, Chip, Loader, Page, ShortPagination, Spacer, NoDataCard, Input, Tooltip } from '@/components/atoms';
+import { ApiDocsContent, ColumnData, FlexpriceTable, CostSheetDrawer, DetailsCard, QueryBuilder } from '@/components/molecules';
+import type { Detail } from '@/components/molecules/DetailsCard/DetailsCard';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import usePagination, { PAGINATION_PREFIX } from '@/hooks/usePagination';
+import useFilterSorting from '@/hooks/useFilterSorting';
 import { RouteNames } from '@/core/routes/Routes';
 import { Price } from '@/models/Price';
 import { ENTITY_STATUS } from '@/models';
+import { PRICE_TYPE, PRICE_ENTITY_TYPE } from '@/models/Price';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import CostSheetApi from '@/api/CostSheetApi';
 import { PriceApi } from '@/api/PriceApi';
-import { PRICE_ENTITY_TYPE } from '@/models/Price';
-import { formatBillingPeriodForDisplay, formatInvoiceCadence, getPriceTypeLabel } from '@/utils/common/helper_functions';
-import { formatEntityStatus } from '@/utils/common/format_chips';
+import { getPriceTypeLabel, formatBillingPeriodForDisplay, formatInvoiceCadence } from '@/utils/common/helper_functions';
 import type { TFunction } from 'i18next';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { EyeOff, Plus, Pencil } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { EyeOff, Plus, Pencil, Search } from 'lucide-react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { Card } from '@/components/atoms';
+import { formatEntityStatus } from '@/utils/common/format_chips';
 import { ChargeValueCell } from '@/components/molecules';
-import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
+import { BILLING_PERIOD } from '@/constants/constants';
+import { cn } from '@/lib/utils';
+import {
+	DataType,
+	FilterCondition,
+	FilterField,
+	FilterFieldType,
+	FilterOperator,
+	SortDirection,
+	SortOption,
+	DEFAULT_OPERATORS_PER_DATA_TYPE,
+} from '@/types/common/QueryBuilder';
 
 type Params = {
 	id: string;
 };
 
+const getChargeSortOptions = (t: TFunction): SortOption[] => [
+	{ field: 'display_name', label: t('catalog:costSheets.details.filters.name'), direction: SortDirection.ASC },
+	{ field: 'created_at', label: t('catalog:costSheets.details.filters.createdAt'), direction: SortDirection.DESC },
+	{ field: 'updated_at', label: t('catalog:costSheets.details.filters.updatedAt'), direction: SortDirection.DESC },
+];
+
+const getChargeFilterOptions = (t: TFunction): FilterField[] => [
+	{
+		field: 'display_name',
+		label: t('catalog:costSheets.details.filters.name'),
+		fieldType: FilterFieldType.INPUT,
+		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.STRING],
+		dataType: DataType.STRING,
+	},
+	{
+		field: 'type',
+		label: t('catalog:costSheets.details.filters.chargeType'),
+		fieldType: FilterFieldType.MULTI_SELECT,
+		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.ARRAY],
+		dataType: DataType.ARRAY,
+		options: [
+			{ value: PRICE_TYPE.FIXED, label: t('catalog:costSheets.details.filters.chargeTypeOptions.fixed') },
+			{ value: PRICE_TYPE.USAGE, label: t('catalog:costSheets.details.filters.chargeTypeOptions.usage') },
+		],
+	},
+	{
+		field: 'billing_period',
+		label: t('catalog:costSheets.details.filters.billingPeriod'),
+		fieldType: FilterFieldType.MULTI_SELECT,
+		operators: DEFAULT_OPERATORS_PER_DATA_TYPE[DataType.ARRAY],
+		dataType: DataType.ARRAY,
+		options: [
+			{ value: BILLING_PERIOD.MONTHLY, label: t('catalog:costSheets.details.filters.billingPeriodOptions.monthly') },
+			{ value: BILLING_PERIOD.ANNUAL, label: t('catalog:costSheets.details.filters.billingPeriodOptions.yearly') },
+			{ value: BILLING_PERIOD.QUARTERLY, label: t('catalog:costSheets.details.filters.billingPeriodOptions.quarterly') },
+			{ value: BILLING_PERIOD.WEEKLY, label: t('catalog:costSheets.details.filters.billingPeriodOptions.weekly') },
+			{ value: BILLING_PERIOD.DAILY, label: t('catalog:costSheets.details.filters.billingPeriodOptions.daily') },
+			{ value: BILLING_PERIOD.HALF_YEARLY, label: t('catalog:costSheets.details.filters.billingPeriodOptions.halfYearly') },
+			{ value: BILLING_PERIOD.ONETIME, label: t('catalog:costSheets.details.filters.billingPeriodOptions.oneTime') },
+		],
+	},
+];
+
+const INITIAL_CHARGE_FILTERS: FilterCondition[] = [
+	{ field: 'display_name', operator: FilterOperator.CONTAINS, valueString: '', dataType: DataType.STRING, id: 'cs-charge-name' },
+];
+
+const TruncatedText: FC<{ text: string; className?: string }> = ({ text, className }) => (
+	<Tooltip content={text} side='top' align='start'>
+		<span className={cn('block max-w-full truncate', className)}>{text}</span>
+	</Tooltip>
+);
+
 const getChargeColumns = (naLabel: string, t: TFunction): ColumnData<Price>[] => [
 	{
-		title: t('catalog:shared.chargeColumns.chargeType'),
-		render: (row) => {
-			return <span>{getPriceTypeLabel(row.type, t)}</span>;
+		title: t('catalog:costSheets.details.columns.feature'),
+		width: '36%',
+		className: 'min-w-0',
+		render(rowData) {
+			const label = rowData.display_name ?? naLabel;
+			return <TruncatedText text={label} className='text-sm text-foreground' />;
 		},
 	},
 	{
-		title: t('catalog:shared.chargeColumns.feature'),
+		title: t('catalog:costSheets.details.columns.chargeType'),
+		width: 128,
+		render: (row) => <span className='whitespace-nowrap text-muted-foreground'>{getPriceTypeLabel(row.type, t)}</span>,
+	},
+	{
+		title: t('catalog:costSheets.details.columns.billingTiming'),
+		width: 112,
 		render(rowData) {
-			return <span>{rowData.meter?.name ?? naLabel}</span>;
+			const cadence = formatInvoiceCadence(rowData.invoice_cadence as string, t);
+			return <span className='whitespace-nowrap text-muted-foreground'>{cadence || naLabel}</span>;
 		},
 	},
 	{
-		title: t('catalog:shared.chargeColumns.billingTiming'),
+		title: t('catalog:costSheets.details.columns.billingPeriod'),
+		width: 112,
 		render(rowData) {
-			return <span>{formatInvoiceCadence(rowData.invoice_cadence as string, t)}</span>;
+			return <span className='whitespace-nowrap text-muted-foreground'>{formatBillingPeriodForDisplay(rowData.billing_period as string, t)}</span>;
 		},
 	},
 	{
-		title: t('catalog:shared.chargeColumns.billingPeriod'),
+		title: t('catalog:costSheets.details.columns.value'),
+		width: 148,
+		align: 'right',
 		render(rowData) {
-			return <span>{formatBillingPeriodForDisplay(rowData.billing_period as string, t)}</span>;
-		},
-	},
-	{
-		title: t('catalog:shared.chargeColumns.value'),
-		render(rowData) {
-			return <ChargeValueCell data={rowData} />;
+			return (
+				<div className='flex justify-end tabular-nums'>
+					<ChargeValueCell data={rowData} />
+				</div>
+			);
 		},
 	},
 ];
@@ -86,39 +163,76 @@ const CostSheetDetails = () => {
 			navigate(RouteNames.costSheets);
 		},
 		onError: (error: Error) => {
-			toast.error(error.message || t('catalog:costSheets.toast.archiveFailed'));
+			toast.error(error.message || 'Failed to archive cost sheet');
 		},
 	});
 
 	const { updateBreadcrumb } = useBreadcrumbsStore();
-	const { limit, offset } = usePagination({
+	const { limit, offset, reset } = usePagination({
 		initialLimit: 10,
 		prefix: PAGINATION_PREFIX.COST_SHEET_CHARGES,
 	});
 
+	const { filters, setFilters, sorts, setSorts, sanitizedFilters, sanitizedSorts } = useFilterSorting({
+		initialFilters: INITIAL_CHARGE_FILTERS,
+		debounceTime: 500,
+		onFilterChange: () => reset(),
+		onSortChange: () => reset(),
+	});
+
+	const searchTerm = useMemo(() => filters.find((f) => f.field === 'display_name')?.valueString ?? '', [filters]);
+
+	const hasActiveChargeFilters = useMemo(() => {
+		if (searchTerm.trim()) return true;
+		return filters.some((f) => {
+			if (f.field === 'display_name') return false;
+			if (f.valueArray && f.valueArray.length > 0) return true;
+			return Boolean(f.valueString?.trim());
+		});
+	}, [filters, searchTerm]);
+
+	const handleSearch = useCallback(
+		(value: string) => {
+			setFilters((prev) => prev.map((f) => (f.field === 'display_name' ? { ...f, valueString: value } : f)));
+			reset();
+		},
+		[setFilters, reset],
+	);
+
+	const baseFilters = useMemo(
+		() => [
+			{
+				field: 'entity_type',
+				operator: FilterOperator.EQUAL,
+				data_type: DataType.STRING,
+				value: { string: PRICE_ENTITY_TYPE.COST_SHEET },
+			},
+			{
+				field: 'entity_id',
+				operator: FilterOperator.EQUAL,
+				data_type: DataType.STRING,
+				value: { string: id! },
+			},
+		],
+		[id],
+	);
+
+	const mergedFilters = useMemo(() => [...baseFilters, ...sanitizedFilters], [baseFilters, sanitizedFilters]);
+
 	const { data: pricesResponse, isLoading: pricesLoading } = useQuery({
-		queryKey: ['costSheetCharges', id, limit, offset],
+		queryKey: ['costSheetCharges', id, limit, offset, mergedFilters, sanitizedSorts],
 		queryFn: () =>
 			PriceApi.searchPrices({
-				filters: [
-					{
-						field: 'entity_type',
-						operator: FilterOperator.EQUAL,
-						data_type: DataType.STRING,
-						value: { string: PRICE_ENTITY_TYPE.COST_SHEET },
-					},
-					{
-						field: 'entity_id',
-						operator: FilterOperator.EQUAL,
-						data_type: DataType.STRING,
-						value: { string: id! },
-					},
-				],
+				filters: mergedFilters,
+				sorts: sanitizedSorts,
 				limit,
 				offset,
 			}),
 		enabled: !!id && !!costSheetData,
 	});
+
+	const totalCharges = pricesResponse?.pagination?.total ?? 0;
+	const showChargesSection = pricesLoading || totalCharges > 0 || hasActiveChargeFilters;
 
 	useEffect(() => {
 		if (costSheetData?.name) {
@@ -128,23 +242,9 @@ const CostSheetDetails = () => {
 
 	const chargeColumns = useMemo(() => getChargeColumns(t('common:labels.na'), t), [t]);
 
-	const costSheetDetails = useMemo(
-		() => [
-			{ label: t('catalog:costSheets.drawer.costSheetName'), value: costSheetData?.name },
-			{ label: t('catalog:shared.lookupKey'), value: costSheetData?.lookup_key },
-			{
-				label: t('catalog:shared.chargeColumns.status'),
-				value: (
-					<Chip
-						label={formatEntityStatus(costSheetData?.status ?? '', t)}
-						variant={costSheetData?.status === ENTITY_STATUS.PUBLISHED ? 'success' : 'default'}
-					/>
-				),
-			},
-			{ label: t('catalog:shared.description'), value: costSheetData?.description || t('common:labels.na') },
-		],
-		[costSheetData, t],
-	);
+	const handleAddCharges = useCallback(() => {
+		navigate(`${RouteNames.costSheetCharges.replace(':costSheetId', id!)}`);
+	}, [navigate, id]);
 
 	if (isLoading) {
 		return <Loader />;
@@ -160,26 +260,38 @@ const CostSheetDetails = () => {
 		return null;
 	}
 
+	const costSheetDetails: Detail[] = [
+		{ label: t('catalog:costSheets.details.fields.costSheetName'), value: costSheetData.name },
+		{ label: t('catalog:costSheets.details.fields.lookupKey'), value: costSheetData.lookup_key },
+		{
+			label: t('catalog:costSheets.details.fields.status'),
+			value: (
+				<Chip
+					label={formatEntityStatus(costSheetData.status, t)}
+					variant={costSheetData.status === ENTITY_STATUS.PUBLISHED ? 'success' : 'default'}
+				/>
+			),
+		},
+		{ label: t('catalog:costSheets.details.fields.description'), value: costSheetData.description || '--' },
+	];
+
 	return (
 		<Page
-			documentTitle={costSheetData?.name}
-			heading={costSheetData?.name}
+			documentTitle={costSheetData.name}
+			heading={costSheetData.name}
 			headingCTA={
-				<>
-					<Button onClick={() => setCostSheetDrawerOpen(true)} variant={'outline'} className='flex gap-2'>
-						<Pencil />
+				<div className='flex flex-wrap items-center gap-2'>
+					<Button onClick={() => setCostSheetDrawerOpen(true)} variant='outline' prefixIcon={<Pencil />}>
 						{t('common:actions.edit')}
 					</Button>
-
 					<Button
 						onClick={() => archiveCostSheet()}
-						disabled={costSheetData?.status !== ENTITY_STATUS.PUBLISHED}
-						variant={'outline'}
-						className='flex gap-2'>
-						<EyeOff />
+						disabled={costSheetData.status !== ENTITY_STATUS.PUBLISHED}
+						variant='outline'
+						prefixIcon={<EyeOff />}>
 						{t('common:actions.archive')}
 					</Button>
-				</>
+				</div>
 			}>
 			<CostSheetDrawer
 				data={costSheetData}
@@ -191,37 +303,62 @@ const CostSheetDetails = () => {
 			<div className='space-y-6'>
 				<DetailsCard variant='stacked' title={t('catalog:costSheets.details.title')} data={costSheetDetails} />
 
-				{/* cost sheet charges table (prices from Price API by cost sheet id) */}
-				{pricesLoading ? (
-					<Card variant='notched'>
-						<CardHeader title={t('catalog:costSheets.details.charges')} />
-						<div className='p-8 flex justify-center'>
-							<Loader />
-						</div>
-					</Card>
-				) : (pricesResponse?.pagination?.total ?? 0) > 0 ? (
-					<Card variant='notched'>
+				{showChargesSection ? (
+					<Card noPadding className='card bg-white overflow-hidden'>
 						<CardHeader
 							title={t('catalog:costSheets.details.charges')}
 							cta={
-								<Button prefixIcon={<Plus />} onClick={() => navigate(`${RouteNames.costSheetCharges.replace(':costSheetId', id!)}`)}>
+								<Button prefixIcon={<Plus />} onClick={handleAddCharges}>
 									{t('common:actions.add')}
 								</Button>
 							}
 						/>
-						<FlexpriceTable columns={chargeColumns} data={pricesResponse?.items ?? []} />
-						<ShortPagination
-							unit={t('common:labels.charges')}
-							totalItems={pricesResponse?.pagination?.total ?? 0}
-							prefix={PAGINATION_PREFIX.COST_SHEET_CHARGES}
-						/>
+
+						<div className='mt-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between'>
+							<div className='relative w-full lg:max-w-sm'>
+								<Search className='pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+								<Input
+									type='search'
+									placeholder={t('catalog:costSheets.details.searchCharges')}
+									value={searchTerm}
+									onChange={handleSearch}
+									className='ps-9'
+								/>
+							</div>
+							<QueryBuilder
+								filterOptions={getChargeFilterOptions(t)}
+								filters={filters}
+								onFilterChange={setFilters}
+								sortOptions={getChargeSortOptions(t)}
+								selectedSorts={sorts}
+								onSortChange={setSorts}
+							/>
+						</div>
+
+						{pricesLoading ? (
+							<div className='flex justify-center py-12'>
+								<Loader />
+							</div>
+						) : (
+							<>
+								<FlexpriceTable
+									columns={chargeColumns}
+									data={pricesResponse?.items ?? []}
+									showEmptyRow
+									tableClassName='table-fixed w-full'
+								/>
+								<div className='pt-2'>
+									<ShortPagination unit='charges' totalItems={totalCharges} prefix={PAGINATION_PREFIX.COST_SHEET_CHARGES} />
+								</div>
+							</>
+						)}
 					</Card>
 				) : (
 					<NoDataCard
 						title={t('catalog:costSheets.details.charges')}
-						subtitle={t('catalog:costSheets.details.noChargesLinked')}
+						subtitle={t('catalog:costSheets.details.noChargesSubtitle')}
 						cta={
-							<Button prefixIcon={<Plus />} onClick={() => navigate(`${RouteNames.costSheetCharges.replace(':costSheetId', id!)}`)}>
+							<Button prefixIcon={<Plus />} onClick={handleAddCharges}>
 								{t('common:actions.add')}
 							</Button>
 						}
@@ -231,8 +368,10 @@ const CostSheetDetails = () => {
 				{costSheetData.metadata && Object.keys(costSheetData.metadata).length > 0 && (
 					<Card variant='notched'>
 						<CardHeader title={t('catalog:costSheets.details.metadata')} />
-						<div className='p-4'>
-							<pre className='text-sm bg-gray-50 p-3 rounded overflow-auto'>{JSON.stringify(costSheetData.metadata, null, 2)}</pre>
+						<div className='p-4 pt-0'>
+							<pre className='overflow-auto rounded-md bg-muted/40 p-3 text-xs text-muted-foreground'>
+								{JSON.stringify(costSheetData.metadata, null, 2)}
+							</pre>
 						</div>
 					</Card>
 				)}

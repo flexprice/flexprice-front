@@ -191,6 +191,7 @@ describe('config object', () => {
 		expect(typeof config.platform.guides.enabled).toBe('boolean');
 		expect(typeof config.platform.onboarding.enabled).toBe('boolean');
 		expect(typeof config.platform.contact_us.enabled).toBe('boolean');
+		expect(typeof config.platform.production.enabled).toBe('boolean');
 	});
 });
 
@@ -203,6 +204,7 @@ describe('parsePlatformConfig', () => {
 		expect(result.guides.enabled).toBe(true);
 		expect(result.onboarding.enabled).toBe(true);
 		expect(result.contact_us.enabled).toBe(false);
+		expect(result.production.enabled).toBe(false);
 	});
 
 	it('applies per-feature overrides from VITE_PLATFORM_CONFIG JSON', async () => {
@@ -238,6 +240,13 @@ describe('parsePlatformConfig', () => {
 		expect(parsePlatformConfig('{"contact_us":true}').contact_us.enabled).toBe(true);
 		expect(parsePlatformConfig('{"contact_us":{"enabled":true}}').contact_us.enabled).toBe(true);
 		expect(parsePlatformConfig('{"contact_us":false}').contact_us.enabled).toBe(false);
+	});
+
+	it('enables production environment creation only when explicitly set', async () => {
+		const { parsePlatformConfig } = await import('./config');
+		expect(parsePlatformConfig('{"production":{"enabled":true}}').production.enabled).toBe(true);
+		expect(parsePlatformConfig('{"production":{"enabled":false}}').production.enabled).toBe(false);
+		expect(parsePlatformConfig('{"guides":{"enabled":false}}').production.enabled).toBe(false);
 	});
 });
 

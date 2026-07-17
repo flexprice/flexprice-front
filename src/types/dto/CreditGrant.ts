@@ -19,6 +19,7 @@ export interface CreateCreditGrantRequest {
 	name: string;
 	scope: CREDIT_GRANT_SCOPE;
 	plan_id?: string;
+	addon_id?: string;
 	subscription_id?: string;
 	credits: number;
 	cadence: CREDIT_GRANT_CADENCE;
@@ -67,6 +68,7 @@ export const creditGrantToInternal = (grant: CreditGrant): InternalCreditGrantRe
 		name: grant.name,
 		scope: grant.scope,
 		plan_id: grant.plan_id,
+		addon_id: grant.addon_id,
 		subscription_id: grant.subscription_id,
 		credits: grant.credits,
 		cadence: grant.cadence,
@@ -117,6 +119,7 @@ export interface CreditGrantFilter extends Omit<QueryFilter, 'sort'>, TimeRangeF
 
 	// Entity-specific filters (matches backend)
 	plan_ids?: string[];
+	addon_ids?: string[];
 	subscription_ids?: string[];
 	scope?: CREDIT_GRANT_SCOPE;
 	credit_grant_ids?: string[];

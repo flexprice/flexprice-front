@@ -21,6 +21,8 @@ import ZohoBooksConnectionDrawer from '@/components/molecules/ZohoBooksConnectio
 import NomodConnectionDrawer from '@/components/molecules/NomodConnectionDrawer';
 import MoyasarConnectionDrawer from '@/components/molecules/MoyasarConnectionDrawer';
 import WhopConnectionDrawer from '@/components/molecules/WhopConnectionDrawer';
+import TabsConnectionDrawer from '@/components/molecules/TabsConnectionDrawer';
+import AwsMarketplaceConnectionDrawer from '@/components/molecules/AwsMarketplaceConnectionDrawer';
 import IntegrationDrawer from '@/components/molecules/IntegrationDrawer/IntegrationDrawer';
 import { isFlexpriceContactEnabled } from '@/utils/hostname/isFlexpriceIoHostname';
 
@@ -294,6 +296,42 @@ const Integrations = () => {
 						/>
 					) : activeIntegration.id === CONNECTION_PROVIDER_TYPE.WHOP ? (
 						<WhopConnectionDrawer
+							isOpen={isDrawerOpen}
+							onOpenChange={(open) => {
+								setIsDrawerOpen(open);
+								if (!open) {
+									setEditingConnection(null);
+									setActiveIntegration(null);
+								}
+							}}
+							connection={editingConnection}
+							onSave={() => {
+								connectionQueries.forEach((q) => q.refetch?.());
+								setIsDrawerOpen(false);
+								setEditingConnection(null);
+								setActiveIntegration(null);
+							}}
+						/>
+					) : activeIntegration.id === CONNECTION_PROVIDER_TYPE.TABS ? (
+						<TabsConnectionDrawer
+							isOpen={isDrawerOpen}
+							onOpenChange={(open) => {
+								setIsDrawerOpen(open);
+								if (!open) {
+									setEditingConnection(null);
+									setActiveIntegration(null);
+								}
+							}}
+							connection={editingConnection}
+							onSave={() => {
+								connectionQueries.forEach((q) => q.refetch?.());
+								setIsDrawerOpen(false);
+								setEditingConnection(null);
+								setActiveIntegration(null);
+							}}
+						/>
+					) : activeIntegration.id === CONNECTION_PROVIDER_TYPE.AWS_MARKETPLACE ? (
+						<AwsMarketplaceConnectionDrawer
 							isOpen={isDrawerOpen}
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
