@@ -7,6 +7,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
 import { config } from '@/config/config';
+import { getAuthFullscreenBackdropImage } from './authBackdrop';
 
 const EmailVerification = () => {
 	const navigate = useNavigate();
@@ -52,7 +53,7 @@ const EmailVerification = () => {
 		<div
 			className='fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto p-4'
 			style={{
-				backgroundImage: `url('/assets/onboarding.png')`,
+				backgroundImage: `url('${getAuthFullscreenBackdropImage()}')`,
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
 			}}>

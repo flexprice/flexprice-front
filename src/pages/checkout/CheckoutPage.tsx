@@ -125,7 +125,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 			if (redirectStatus === 'paid' || redirectStatus === 'captured') {
 				setState(MoyasarState.Success);
 			} else if (redirectStatus === 'failed' || redirectStatus === 'canceled') {
-				setErrorMsg('Card authentication failed. Please try again.');
+				setErrorMsg(t('moyasarAutopay.authFailed'));
 				setState(MoyasarState.Failed);
 			} else {
 				// initiated / in_progress — webhook will reconcile
@@ -136,7 +136,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 
 		if (!window.Moyasar) {
 			setState(MoyasarState.Failed);
-			setErrorMsg('Moyasar.js failed to load. Please refresh.');
+			setErrorMsg(t('moyasarAutopay.sdkLoadFailed'));
 			return;
 		}
 
@@ -184,8 +184,8 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		return (
 			<ResultCard
 				icon={<CheckCircle className='h-9 w-9 text-green-500' />}
-				title={t('moyasarAutopay.cardSavedTitle')}
-				description={t('moyasarAutopay.cardSavedDescription')}
+				title={t('moyasarAutopay.successTitle')}
+				description={t('moyasarAutopay.successDesc')}
 			/>
 		);
 	}
@@ -194,8 +194,8 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		return (
 			<ResultCard
 				icon={<Clock className='h-9 w-9 text-zinc-500' />}
-				title={t('moyasarAutopay.cardSetupInProgressTitle')}
-				description={t('moyasarAutopay.cardSetupInProgressDescription')}
+				title={t('moyasarAutopay.processingTitle')}
+				description={t('moyasarAutopay.processingDesc')}
 			/>
 		);
 	}
@@ -204,8 +204,8 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		return (
 			<ResultCard
 				icon={<AlertCircle className='h-9 w-9 text-red-500' />}
-				title={t('moyasarAutopay.cardSetupFailedTitle')}
-				description={errorMsg || t('moyasarAutopay.cardSetupFailedDefaultDescription')}
+				title={t('moyasarAutopay.failedTitle')}
+				description={errorMsg || t('moyasarAutopay.failedDesc')}
 				action={
 					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[140px]'>
 						{t('moyasarAutopay.tryAgain')}

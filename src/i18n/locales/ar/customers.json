@@ -312,9 +312,9 @@
 		},
 		"information": {
 			"saveCardOnStripe": "حفظ البطاقة على Stripe",
+			"setupAutopayMoyasar": "إعداد الدفع التلقائي عبر Moyasar",
 			"sharePortalLinkTitle": "مشاركة رابط بوابة العميل",
-			"childCustomersTitle": "العملاء الفرعيون",
-			"setupAutopayMoyasar": "إعداد الدفع التلقائي (Moyasar)"
+			"childCustomersTitle": "العملاء الفرعيون"
 		},
 		"invoice": {
 			"title": "الفواتير",
@@ -430,9 +430,9 @@
 			"menu": {
 				"activateSubscription": "تفعيل الاشتراك",
 				"editSubscription": "تعديل الاشتراك",
-				"alertSettings": "إعدادات التنبيهات",
 				"addSubscriptionPhase": "إضافة مرحلة اشتراك",
-				"cancelSubscription": "إلغاء الاشتراك"
+				"cancelSubscription": "إلغاء الاشتراك",
+				"alertSettings": "إعدادات التنبيهات"
 			}
 		},
 		"subscriptionForm": {
@@ -571,31 +571,38 @@
 		"addTax": "إضافة ضريبة"
 	},
 	"moyasarAutopay": {
-		"title": "إعداد الدفع التلقائي مع Moyasar",
-		"intro": "أدخل تفاصيل البطاقة لتفعيل الدفع التلقائي. يتم ترميز البطاقة بأمان بواسطة Moyasar — نحن لا نخزّن رقم البطاقة الأصلي.",
-		"setupCard": "إعداد البطاقة",
+		"title": "حفظ البطاقة على Moyasar",
+		"intro": "سيفتح هذا صفحة دفع آمنة يمكن للعميل من خلالها حفظ بيانات بطاقته على Moyasar لدفع الفواتير تلقائياً.",
+		"setupCard": "إعداد الدفع التلقائي",
+		"toastInitFailed": "تعذّر بدء إعداد الدفع التلقائي",
+		"loadingSetup": "جارٍ تحميل إعداد الدفع…",
+		"formTitle": "احفظ بطاقتك",
+		"formDesc": "أدخل بيانات بطاقتك أدناه لتفعيل الدفع التلقائي للفواتير المستقبلية.",
+		"formLoadFailed": "تعذّر تحميل نموذج الدفع. يرجى المحاولة مرة أخرى.",
+		"successTitle": "تم حفظ البطاقة بنجاح",
+		"successDesc": "تم حفظ بطاقتك وتم تفعيل الدفع التلقائي. سيتم خصم الفواتير المستقبلية تلقائياً.",
+		"processingTitle": "جارٍ إعداد البطاقة",
+		"processingDesc": "جارٍ التحقّق من بطاقتك. عادةً ما يكتمل ذلك خلال دقائق قليلة. يمكنك إغلاق هذه الصفحة بأمان.",
+		"failedTitle": "تعذّر إعداد البطاقة",
+		"failedDesc": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+		"authFailed": "تعذّرت مصادقة البطاقة. يرجى المحاولة مرة أخرى.",
+		"sdkLoadFailed": "تعذّر تحميل Moyasar.js. يرجى تحديث الصفحة.",
+		"tryAgain": "حاول مرة أخرى",
 		"loadingForm": "جارٍ تحميل نموذج البطاقة الآمن…",
 		"savingCard": "جارٍ حفظ البطاقة…",
-		"successTitle": "تم تفعيل الدفع التلقائي. سيتم تحصيل الفواتير المستقبلية لهذا العميل تلقائيًا.",
 		"alreadyConfiguredTitle": "تم إعداد الدفع التلقائي مسبقاً",
 		"alreadyConfiguredDesc": "هذا العميل لديه طريقة دفع محفوظة بالفعل. قم بإزالتها أولاً لتسجيل بطاقة جديدة.",
 		"done": "تم",
 		"toastEnabled": "تم تفعيل الدفع التلقائي. سيتم تحصيل الفواتير المستقبلية تلقائيًا.",
-		"toastInitFailed": "فشل في تهيئة الدفع التلقائي لـ Moyasar",
 		"toastSaveFailed": "فشل في حفظ البطاقة",
 		"toastScriptFailed": "فشل تحميل Moyasar.js. يرجى تحديث الصفحة والمحاولة مرة أخرى.",
 		"toastNoToken": "لم يتم إرجاع رمز البطاقة من Moyasar",
 		"toastParseTokenFailed": "فشل في تحليل رمز الدفع",
-		"loadingSetup": "جارٍ إكمال إعداد البطاقة…",
-		"formTitle": "حفظ البطاقة للدفع التلقائي",
-		"formDesc": "سنخصم 1 ريال للتحقق من بطاقتك، ثم نستردها تلقائيًا.",
-		"formLoadFailed": "فشل تحميل نموذج الدفع. يرجى تحديث الصفحة.",
 		"cardSavedTitle": "تم حفظ البطاقة بنجاح",
 		"cardSavedDescription": "تم حفظ بطاقتك وتم تفعيل الدفع التلقائي. سيتم خصم الفواتير المستقبلية تلقائيًا.",
 		"cardSetupInProgressTitle": "إعداد البطاقة قيد التنفيذ",
 		"cardSetupInProgressDescription": "جارٍ التحقق من بطاقتك. يكتمل ذلك عادةً خلال دقائق قليلة. يمكنك إغلاق هذه الصفحة بأمان.",
 		"cardSetupFailedTitle": "فشل إعداد البطاقة",
-		"cardSetupFailedDefaultDescription": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
-		"tryAgain": "حاول مرة أخرى"
+		"cardSetupFailedDefaultDescription": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
 	}
 }

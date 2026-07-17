@@ -9,25 +9,26 @@ import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { Connection } from '@/models/Connection';
 import { UpdateConnectionPayload } from '@/types/dto';
 import { mergeConnectionMetadata } from '@/utils/common/connection_metadata_helpers';
 
-interface MoyasarConnection {
-	id: string;
-	name: string;
-	encrypted_secret_data?: {
-		publishable_key?: string;
-		secret_key?: string;
-		webhook_secret?: string;
-	};
-	metadata?: Record<string, string>;
+interface MoyasarEncryptedSecretData {
+	publishable_key?: string;
+	secret_key?: string;
+	webhook_secret?: string;
+}
+
+// `metadata` is inherited from Connection.
+interface MoyasarConnection extends Connection {
+	encrypted_secret_data?: MoyasarEncryptedSecretData;
 }
 
 interface MoyasarConnectionDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	connection?: MoyasarConnection;
-	onSave: (connection: MoyasarConnection) => void;
+	onSave: (connection: Connection) => void;
 }
 
 interface MoyasarFormData {
@@ -110,7 +111,7 @@ const MoyasarConnectionDrawer: FC<MoyasarConnectionDrawerProps> = ({ isOpen, onO
 				newErrors.secret_key = t('connection.validation.secretKeyRequired');
 			}
 			if (!formData.publishable_key.trim()) {
-				newErrors.publishable_key = t('connection.validation.publishableKeyRequired', 'Publishable key is required');
+				newErrors.publishable_key = t('connection.validation.publishableKeyRequired');
 			}
 		}
 

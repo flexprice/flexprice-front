@@ -9,6 +9,7 @@ import type { i18n as I18nInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import MoyasarConnectionDrawer from './MoyasarConnectionDrawer';
 import ConnectionApi from '@/api/ConnectionApi';
+import { CONNECTION_PROVIDER_TYPE, CONNECTION_STATUS, ENTITY_STATUS } from '@/models';
 
 vi.mock('@/api/ConnectionApi', () => ({ default: { Get: vi.fn(), Create: vi.fn(), Update: vi.fn() } }));
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }));
@@ -16,6 +17,21 @@ vi.mock('@/hooks/UserContext', () => ({ useUser: () => ({ user: { tenant: { id: 
 vi.mock('@/hooks/useEnvironment', () => ({ useEnvironment: () => ({ activeEnvironment: { id: 'env-1' } }) }));
 
 const CONNECTION_ID = 'conn_moyasar_1';
+
+const buildConnection = (metadata: Record<string, string>) => ({
+	id: CONNECTION_ID,
+	name: 'Moyasar Production',
+	provider_type: CONNECTION_PROVIDER_TYPE.MOYASAR,
+	connection_status: CONNECTION_STATUS.PUBLISHED,
+	status: ENTITY_STATUS.PUBLISHED,
+	tenant_id: 'tenant-1',
+	environment_id: 'env-1',
+	created_at: '2026-01-01T00:00:00Z',
+	updated_at: '2026-01-01T00:00:00Z',
+	created_by: 'user-1',
+	updated_by: 'user-1',
+	metadata,
+});
 
 let testI18n: I18nInstance;
 beforeAll(async () => {
@@ -55,15 +71,9 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 const renderDrawer = (metadata: Record<string, string>) =>
-	render(
-		<MoyasarConnectionDrawer
-			isOpen={true}
-			onOpenChange={vi.fn()}
-			connection={{ id: CONNECTION_ID, name: 'Moyasar Production', metadata }}
-			onSave={vi.fn()}
-		/>,
-		{ wrapper: Wrapper },
-	);
+	render(<MoyasarConnectionDrawer isOpen={true} onOpenChange={vi.fn()} connection={buildConnection(metadata)} onSave={vi.fn()} />, {
+		wrapper: Wrapper,
+	});
 
 describe('MoyasarConnectionDrawer redirect URLs', () => {
 	beforeEach(() => {
