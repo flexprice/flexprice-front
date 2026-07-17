@@ -27,6 +27,11 @@
 			"email": "Email",
 			"createdAt": "Created At",
 			"updatedAt": "Updated At"
+		},
+		"orgTypeFilter": {
+			"ariaLabel": "Filter by organization type",
+			"parent": "Parent",
+			"child": "Child"
 		}
 	},
 	"detail": {
@@ -63,7 +68,8 @@
 			"city": "City",
 			"postalCode": "Postal Code",
 			"subscriptionAmount": "Subscription Amount",
-			"subscriptionStartDate": "Subscription Start Date"
+			"subscriptionStartDate": "Subscription Start Date",
+			"timezone": "Timezone"
 		},
 		"customerCardSectionTitle": "Customer Details",
 		"customerCardSlug": "Slug",
@@ -196,7 +202,8 @@
 			"metered": "Metered",
 			"boolean": "Boolean",
 			"dash": "--",
-			"usageProgressUnlimited": "{{usage}} / Unlimited"
+			"usageProgressUnlimited": "{{usage}} / Unlimited",
+			"config": "Config"
 		},
 		"fallback": "--"
 	},
@@ -213,14 +220,18 @@
 			"saveEditsFirst": "Please save your changes before submitting.",
 			"trialDays": "Enter a valid trial length in days (at least 1), or leave empty to use the plan default.",
 			"autoThresholdFixed": "Auto invoice threshold is not available when the plan includes fixed charges.",
-			"autoThresholdNonNegative": "Enter a valid auto invoice threshold (0 or greater), or leave empty to omit."
+			"autoThresholdNonNegative": "Enter a valid auto invoice threshold (0 or greater), or leave empty to omit.",
+			"entitlementOverridesWithProration": "Entitlement overrides cannot be combined with proration. Disable proration or remove entitlement overrides."
 		},
 		"billingCustomer": {
 			"loadFailed": "Could not load billing customer details.",
 			"missingExternalId": "Billing customer must have an external ID."
 		},
 		"sandboxNotice": "This is a sandbox subscription and will automatically end on {{date}} ({{days}} days from now).",
-		"saveAsDraft": "Save as Draft"
+		"saveAsDraft": "Save as Draft",
+		"selectCustomerLabel": "Customer",
+		"selectCustomerPlaceholder": "Search for customer...",
+		"selectCustomerHint": "Select a customer to continue with creating a subscription"
 	},
 	"subscriptionDetail": {
 		"breadcrumbSubscription": "Subscription",
@@ -267,7 +278,9 @@
 			"halfYearly": "Half-Yearly",
 			"weekly": "Weekly",
 			"daily": "Daily"
-		}
+		},
+		"timezone": "Timezone",
+		"couponAssociations": "Coupon Associations"
 	},
 	"tabPanels": {
 		"common": {
@@ -295,7 +308,8 @@
 			"expandAll": "Expand all",
 			"totalUsage": "Total Usage",
 			"totalCost": "Total Cost",
-			"tableEmpty": "--"
+			"tableEmpty": "--",
+			"cogs": "Cost"
 		},
 		"information": {
 			"saveCardOnStripe": "Save Card on Stripe",
@@ -418,7 +432,8 @@
 				"activateSubscription": "Activate Subscription",
 				"editSubscription": "Edit Subscription",
 				"addSubscriptionPhase": "Add Subscription Phase",
-				"cancelSubscription": "Cancel Subscription"
+				"cancelSubscription": "Cancel Subscription",
+				"alertSettings": "Alert Settings"
 			}
 		},
 		"subscriptionForm": {
@@ -550,7 +565,11 @@
 			"creditGrantDeleted": "Credit grant deleted successfully",
 			"creditGrantDeleteFailed": "Failed to delete credit grant",
 			"loadError": "Error loading subscription data"
-		}
+		},
+		"couponAssociations": "Coupon Associations",
+		"addCoupon": "Add Coupon",
+		"taxAssociations": "Tax Associations",
+		"addTax": "Add Tax"
 	},
 	"moyasarAutopay": {
 		"title": "Save Card on Moyasar",
@@ -569,6 +588,22 @@
 		"failedDesc": "Something went wrong. Please try again.",
 		"authFailed": "Card authentication failed. Please try again.",
 		"sdkLoadFailed": "Moyasar.js failed to load. Please refresh.",
-		"tryAgain": "Try again"
+		"tryAgain": "Try again",
+		"loadingForm": "Loading secure card form…",
+		"savingCard": "Saving card…",
+		"alreadyConfiguredTitle": "Autopay already configured",
+		"alreadyConfiguredDesc": "This customer already has a saved payment method. Remove it first to register a new card.",
+		"done": "Done",
+		"toastEnabled": "Autopay enabled. Future invoices will be charged automatically.",
+		"toastSaveFailed": "Failed to save card",
+		"toastScriptFailed": "Moyasar.js failed to load. Please refresh and try again.",
+		"toastNoToken": "No card token returned from Moyasar",
+		"toastParseTokenFailed": "Failed to parse checkout token",
+		"cardSavedTitle": "Card saved successfully",
+		"cardSavedDescription": "Your card has been saved and autopay is now active. Future invoices will be charged automatically.",
+		"cardSetupInProgressTitle": "Card setup in progress",
+		"cardSetupInProgressDescription": "Your card is being verified. This usually completes within a few minutes. You can safely close this page.",
+		"cardSetupFailedTitle": "Card setup failed",
+		"cardSetupFailedDefaultDescription": "Something went wrong. Please try again."
 	}
 }

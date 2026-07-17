@@ -136,10 +136,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			[enforceEnglishOnly],
 		);
 
+		const supportsSelectionRange = (element: HTMLInputElement) =>
+			typeof element.setSelectionRange === 'function' && ['text', 'search', 'url', 'tel', 'password', ''].includes(element.type ?? '');
+
 		// Handle cursor position after formatting
 		React.useEffect(() => {
 			if (cursorPosition !== null && inputRef.current) {
-				inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+				if (supportsSelectionRange(inputRef.current)) {
+					inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+				}
 				setCursorPosition(null);
 			}
 		}, [cursorPosition]);
@@ -206,7 +211,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						sizes[size].padding,
 						sizes[size].text,
 						sizes[size].display,
-						'w-full flex h-full group items-center rounded-[6px] border bg-background ring-offset-background placeholder:text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed',
+						'w-full flex group items-center rounded-[6px] border bg-background ring-offset-background placeholder:text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed',
 						error ? 'border-destructive' : 'border-input focus-within:ring-ring focus-within:ring-offset-2',
 						'focus-within:border-black',
 						className,

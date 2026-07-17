@@ -89,13 +89,12 @@ const FlexPriceSelect: React.FC<Props> = ({
 
 			<Select
 				defaultOpen={defaultOpen}
-				defaultValue={value || ''}
 				onValueChange={(newValue) => {
 					if (onChange) {
 						onChange(newValue === value ? '' : newValue);
 					}
 				}}
-				value={value}
+				value={value ?? ''}
 				disabled={disabled}>
 				<SelectTrigger className={cn(disabled && 'cursor-not-allowed', className)}>
 					{trigger ? (

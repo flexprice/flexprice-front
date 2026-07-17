@@ -17,7 +17,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial, logoHeig
 	return (
 		<Card
 			className={cn(
-				'bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border w-[300px] border-gray-200 flex flex-col gap-4 p-6',
+				'bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border w-[340px] border-gray-200 flex flex-col gap-4 p-6',
 				'transition-shadow hover:shadow-xl',
 			)}>
 			<div className='flex items-center justify-between gap-2 mb-1'>

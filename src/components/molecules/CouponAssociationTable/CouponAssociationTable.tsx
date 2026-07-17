@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import CouponApi from '@/api/CouponApi';
 import FlexpriceTable, { ColumnData } from '../Table';
-import { DropdownMenu } from '@/components/molecules';
+import { DropdownMenu, getCopyIdOption } from '@/components/molecules';
 import { Chip, Card, CardHeader, AddButton, NoDataCard } from '@/components/atoms';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { RouteNames } from '@/core/routes/Routes';
@@ -44,6 +44,7 @@ const RowActions: FC<RowActionsProps> = ({ row, onRemove }) => {
 				isOpen={isOpen}
 				onOpenChange={setIsOpen}
 				options={[
+					getCopyIdOption(row.id, t, { entityType: 'Coupon Association' }),
 					{
 						label: t('form.remove'),
 						icon: <TrashIcon />,

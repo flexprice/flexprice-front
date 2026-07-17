@@ -1,3 +1,4 @@
+import { JsonObject } from '@/types/common';
 import { BaseModel } from './base';
 import Feature from './Feature';
 
@@ -31,6 +32,7 @@ export interface EntitlementSource {
 	readonly usage_limit: number | null;
 	readonly static_value: string | null;
 	readonly usage_reset_period: string | null;
+	readonly config_value?: JsonObject | null;
 	// Legacy fields for backward compatibility
 	readonly plan_id?: string;
 	readonly plan_name?: string;

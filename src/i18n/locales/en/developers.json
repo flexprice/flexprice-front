@@ -149,12 +149,176 @@
 		"toastFetchError": "Error fetching webhook dashboard: {{message}}",
 		"unknownError": "Unknown error",
 		"emptyLoadFailed": {
-			"heading": "Unable to Load Webhooks",
+			"heading": "Unable to Load",
 			"description": "There was an error loading the webhook dashboard. Please try refreshing the page."
 		},
 		"disabled": {
-			"heading": "Webhooks",
+			"heading": "Not Enabled",
 			"description": "Webhooks are not enabled. Please contact support to enable webhooks."
+		},
+		"tabs": {
+			"endpoints": "Endpoints",
+			"eventCatalog": "Event Catalog",
+			"logs": "Logs",
+			"activity": "Activity"
+		},
+		"endpoints": {
+			"heading": "Endpoints",
+			"addEndpoint": "Add Endpoint",
+			"loadFailed": "Failed to load endpoints.",
+			"columns": {
+				"endpoint": "Endpoint",
+				"errorRate": "Error Rate"
+			},
+			"empty": {
+				"title": "Set up an endpoint to get started",
+				"subtitle": "For a list of events you can subscribe to, take a look at the <link>Event Catalog</link>."
+			},
+			"deleteConfirm": "Delete endpoint {{url}}?",
+			"deleteSuccess": "Endpoint deleted",
+			"deleteFailed": "Failed to delete endpoint",
+			"secret": {
+				"reveal": "Reveal secret",
+				"hide": "Hide secret",
+				"loading": "Loading…",
+				"loadFailed": "Failed to load secret",
+				"masked": "••••••••••••",
+				"copy": "Copy secret",
+				"copied": "Secret copied to clipboard"
+			},
+			"form": {
+				"newEndpointTitle": "New Endpoint",
+				"urlLabel": "Endpoint URL",
+				"urlPlaceholder": "e.g. https://www.example.com/webhook",
+				"urlHint": "This URL will receive a POST request for each subscribed event.",
+				"descriptionLabel": "Description",
+				"descriptionPlaceholder": "An optional description of what this endpoint is used for.",
+				"subscribeToEvents": "Subscribe to events",
+				"searchEventsPlaceholder": "Search events…",
+				"submit": "Add endpoint",
+				"submitting": "Adding…",
+				"addSuccess": "Endpoint added",
+				"addFailed": "Failed to add endpoint"
+			},
+			"detail": {
+				"backToEndpoint": "Endpoint detail",
+				"tabs": {
+					"overview": "Overview",
+					"testing": "Testing",
+					"advanced": "Advanced"
+				},
+				"createdAt": "Creation Date",
+				"updatedAt": "Last Updated",
+				"subscribedEvents": "Subscribed events",
+				"allEvents": "All events",
+				"eventsSaved": "Subscribed events updated",
+				"eventsSaveFailed": "Failed to update subscribed events",
+				"signingSecret": "Signing Secret",
+				"enableEndpoint": "Enable Endpoint",
+				"disableEndpoint": "Disable Endpoint",
+				"disabledBadge": "Disabled",
+				"enableSuccess": "Endpoint enabled",
+				"disableSuccess": "Endpoint disabled",
+				"toggleFailed": "Failed to update endpoint",
+				"description": "Description",
+				"noDescription": "No description",
+				"descriptionSaved": "Description updated",
+				"descriptionSaveFailed": "Failed to update description",
+				"deliveryStats": "Delivery Stats (last 24h)",
+				"noDeliveries": "No messages received in the last 24 hours",
+				"throttling": "Endpoint Throttling",
+				"throttlePlaceholder": "e.g. 10",
+				"throttleValue": "{{rate}} requests / second",
+				"noThrottle": "No throttling rate set",
+				"throttleSaved": "Throttling updated",
+				"throttleSaveFailed": "Failed to update throttling",
+				"customHeaders": "Custom Headers",
+				"headerKeyPlaceholder": "Key",
+				"headerValuePlaceholder": "Value",
+				"headersSaveFailed": "Failed to update custom headers"
+			},
+			"testing": {
+				"heading": "Example Webhook",
+				"description": "To test your integration, ping this endpoint with an example event.",
+				"note": "Failed messages sent this way will not be retried.",
+				"sendEvent": "Send event",
+				"selectEventType": "Select an event type",
+				"sendExample": "Send Example",
+				"sendSuccess": "Example event sent",
+				"sendFailed": "Failed to send example event"
+			},
+			"attempts": {
+				"heading": "Message Attempts",
+				"columns": {
+					"status": "Status",
+					"eventType": "Event Type",
+					"messageId": "Message ID",
+					"timestamp": "Timestamp",
+					"replay": "Replay"
+				},
+				"filters": {
+					"all": "All",
+					"succeeded": "Succeeded",
+					"failed": "Failed"
+				},
+				"status": {
+					"succeeded": "Succeeded",
+					"failed": "Failed",
+					"sending": "Sending",
+					"pending": "Pending",
+					"unknown": "Unknown"
+				},
+				"empty": {
+					"title": "No messages yet",
+					"subtitle": "This endpoint has not received any messages yet."
+				},
+				"loadFailed": "Failed to load message attempts.",
+				"replaySuccess": "Message queued for redelivery",
+				"replayFailed": "Failed to replay message"
+			}
+		},
+		"messages": {
+			"loadFailed": "Failed to load message.",
+			"content": "Message content",
+			"raw": "Raw",
+			"createdAt": "Created at",
+			"attempts": {
+				"heading": "Webhook Attempts",
+				"emptyTitle": "No attempts yet",
+				"empty": "No delivery attempts for this message yet.",
+				"httpResponseCode": "HTTP Response Code",
+				"response": "Response",
+				"webhookHeaders": "Webhook Headers"
+			}
+		},
+		"eventCatalog": {
+			"heading": "Event Types",
+			"filterPlaceholder": "Filter event types…",
+			"allEvents": "All events",
+			"empty": "No event types found.",
+			"loadFailed": "Failed to load event catalog."
+		},
+		"logs": {
+			"heading": "Message Logs",
+			"latestMessages": "Latest Messages",
+			"loadFailed": "Failed to load message logs.",
+			"empty": {
+				"title": "No messages yet",
+				"subtitle": "Delivered events will show up here once endpoints start receiving traffic."
+			},
+			"columns": {
+				"eventType": "Event Type",
+				"messageId": "Message ID",
+				"timestamp": "Timestamp"
+			}
+		},
+		"activity": {
+			"heading": "Historical Delivery Attempts",
+			"subheading": "Delivery attempts across all endpoints.",
+			"successfulAttempts": "Successful Attempts",
+			"failedAttempts": "Failed Attempts",
+			"recentActivity": "Recent Activity",
+			"noActivity": "No activity recorded in the last 6 hours."
 		}
 	},
 	"workflows": {

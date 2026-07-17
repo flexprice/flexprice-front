@@ -19,6 +19,7 @@ import { CustomerResponse } from '@/types/dto';
 import { uniq } from 'lodash';
 import { Skeleton } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
+import { ENTITY_STATUS } from '@/models';
 
 type ContextType = {
 	isArchived: boolean;
@@ -58,6 +59,7 @@ const CustomerInformationTab = () => {
 			SubscriptionApi.listSubscriptions({
 				invoicing_customer_ids: [customerId!],
 				limit: INVOICED_SUBSCRIPTIONS_LIMIT,
+				status: ENTITY_STATUS.PUBLISHED,
 				offset: 0,
 			}),
 		enabled: !!customerId,
@@ -159,6 +161,14 @@ const CustomerInformationTab = () => {
 				label: t('overview.labels.email'),
 				value: customer?.email || emptyValue,
 			},
+			...(customer?.timezone?.trim()
+				? [
+						{
+							label: t('overview.labels.timezone'),
+							value: customer.timezone,
+						},
+					]
+				: []),
 			{
 				variant: 'divider',
 			},

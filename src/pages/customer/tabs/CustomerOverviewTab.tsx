@@ -3,7 +3,7 @@ import { AddButton, Card, CardHeader, Loader, Spacer, ShortPagination } from '@/
 import CustomerApi from '@/api/CustomerApi';
 import { useQuery, useQueries } from '@tanstack/react-query';
 import { SubscriptionTable } from '@/components/organisms';
-import { Subscription, SUBSCRIPTION_STATUS, PRICE_ENTITY_TYPE } from '@/models';
+import { Subscription, SUBSCRIPTION_STATUS, PRICE_ENTITY_TYPE, ENTITY_STATUS } from '@/models';
 import toast from 'react-hot-toast';
 import { RouteNames } from '@/core/routes/Routes';
 import CustomerUsageTable from '@/components/molecules/CustomerUsageTable';
@@ -150,6 +150,7 @@ const CustomerOverviewTab = () => {
 				offset,
 				filters: sanitizedFilters,
 				sort: sanitizedSorts,
+				status: ENTITY_STATUS.PUBLISHED,
 			}),
 		enabled: !!customerId,
 	});

@@ -7,6 +7,9 @@ export type { FilterField, FilterCondition } from './QueryBuilder';
 // Common interface types
 export type { Filters } from './Filters';
 
+export type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
+export type JsonObject = { [key: string]: JsonValue };
+
 // Currency and Price Unit Selector types
 export type { CurrencyOption, PriceUnitOption, CurrencyPriceUnitOption, CurrencyPriceUnitSelection } from './PriceUnitSelector';
 export { currencyToOption, priceUnitToOption, isCurrencyOption, isPriceUnitOption } from './PriceUnitSelector';

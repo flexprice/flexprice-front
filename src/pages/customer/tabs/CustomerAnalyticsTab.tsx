@@ -10,12 +10,10 @@ import CostSheetApi from '@/api/CostSheetApi';
 import FeatureApi from '@/api/FeatureApi';
 import { Feature } from '@/models';
 import { GetUsageAnalyticsRequest, GetCostAnalyticsRequest } from '@/types';
-import { RedirectCell } from '@/components/molecules';
+import { RedirectCell, MetricCard, CostDataTable } from '@/components/molecules';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/molecules/Table/Table';
 import { UsageAnalyticItem, PRICE_ENTITY_TYPE } from '@/models';
-import { formatNumber } from '@/utils';
-import { MetricCard, CostDataTable } from '@/components/molecules';
-import { getCurrencySymbol } from '@/utils';
+import { formatNumber, formatCurrencyAmount, getCurrencySymbol } from '@/utils';
 import { PriceTooltip } from '@/components/molecules/PriceTooltip';
 import { Skeleton } from '@/components/ui';
 import { ENTITY_STATUS } from '@/models/base';
@@ -30,6 +28,7 @@ const CHEVRON_DOWN_SVG = '/assets/svg/chevron-down-svgrepo-com.svg';
 import { cn } from '@/lib/utils';
 import { Checkbox as UiCheckbox } from '@/components/ui/checkbox';
 import { useTranslation } from 'react-i18next';
+import { mergeUsageAndCostAnalytics, type MergedUsageAnalyticRow } from '@/utils/analytics/mergeUsageAndCostAnalytics';
 
 const CustomerAnalyticsTab = () => {
 	const { t } = useTranslation('customers');
@@ -219,6 +218,14 @@ const CustomerAnalyticsTab = () => {
 			items: filteredItems,
 		};
 	}, [usageData]);
+
+	const { mergedUsageItems, unmatchedCostItems } = useMemo(() => {
+		if (!filteredUsageData?.items) {
+			return { mergedUsageItems: [], unmatchedCostItems: costData?.cost_analytics ?? [] };
+		}
+
+		return mergeUsageAndCostAnalytics(filteredUsageData.items, costData?.cost_analytics ?? []);
+	}, [filteredUsageData, costData?.cost_analytics]);
 
 	// Check if revenue metrics should be displayed
 	const hasRevenueData = useMemo(() => {
@@ -434,16 +441,16 @@ const CustomerAnalyticsTab = () => {
 					)} */}
 
 					{/* Usage Data Table */}
-					{filteredUsageData && filteredUsageData.items.length > 0 && (
+					{filteredUsageData != null && (
 						<div className='!mt-10'>
-							<UsageDataTable items={filteredUsageData.items} />
+							<UsageDataTable items={mergedUsageItems} />
 						</div>
 					)}
 
-					{/* Cost Data Table */}
-					{costData && costData.cost_analytics && costData.cost_analytics.length > 0 && (
+					{/* Cost Data Table — only unmatched cost analytics (no usage meter match) */}
+					{unmatchedCostItems.length > 0 && (
 						<div className='pt-9'>
-							<CostDataTable items={costData.cost_analytics} />
+							<CostDataTable items={unmatchedCostItems} />
 						</div>
 					)}
 				</>
@@ -457,13 +464,15 @@ const UNGROUPED_KEY = '__ungrouped__';
 interface GroupBucket {
 	groupKey: string;
 	groupName: string;
-	items: UsageAnalyticItem[];
+	items: MergedUsageAnalyticRow[];
 }
 
 /** API sort field keys — not user-visible copy */
 const USAGE_BREAKDOWN_SORT_FIELDS = {
 	totalUsage: 'total_usage',
-	totalCost: 'total_cost',
+	revenue: 'total_cost',
+	cogs: 'cogs',
+	margin: 'margin',
 } as const;
 
 /** Unique key for a usage row (same feature can appear multiple times under different prices/meters). */
@@ -491,7 +500,9 @@ const GroupChildRows = React.memo(function GroupChildRows({ bucket, isExpanded }
 						)}
 					</TableCell>
 					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsage(row)}</TableCell>
-					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalCost(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderRevenue(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderCogs(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderMargin(row)}</TableCell>
 				</TableRow>
 			))}
 		</>
@@ -523,7 +534,7 @@ function renderTotalUsage(row: UsageAnalyticItem) {
 	);
 }
 
-function renderTotalCost(row: UsageAnalyticItem) {
+function renderRevenue(row: UsageAnalyticItem) {
 	const cost = Number(row.total_cost);
 	if (cost === 0 || !row.currency) return '-';
 	const currency = getCurrencySymbol(row.currency);
@@ -539,9 +550,28 @@ function renderTotalCost(row: UsageAnalyticItem) {
 	);
 }
 
-const UsageDataTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }) => {
+function renderCurrencyAmount(amount: number | null, currency?: string, options?: { showSign?: boolean }) {
+	if (amount == null || !currency) return '-';
+	return <span>{formatCurrencyAmount(amount, currency, { showSign: options?.showSign })}</span>;
+}
+
+function renderCogs(row: MergedUsageAnalyticRow) {
+	return renderCurrencyAmount(row.cogs, row.currency);
+}
+
+function renderMargin(row: MergedUsageAnalyticRow) {
+	return renderCurrencyAmount(row.margin, row.currency, { showSign: true });
+}
+
+function getUsageSortValue(row: MergedUsageAnalyticRow, field: 'total_usage' | 'total_cost' | 'cogs' | 'margin'): number {
+	if (field === 'total_usage') return Number(row.total_usage);
+	if (field === 'total_cost') return Number(row.total_cost);
+	return Number(row[field] ?? Number.NEGATIVE_INFINITY);
+}
+
+const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }) => {
 	const { t } = useTranslation('customers');
-	type UsageSortField = 'total_usage' | 'total_cost';
+	type UsageSortField = 'total_usage' | 'total_cost' | 'cogs' | 'margin';
 	type SortDirection = 'asc' | 'desc';
 
 	const [sortField, setSortField] = useState<UsageSortField>('total_cost');
@@ -560,11 +590,7 @@ const UsageDataTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }) => 
 	const sortedItems = useMemo(() => {
 		const sorted = [...items];
 		const directionMultiplier = sortDirection === 'asc' ? 1 : -1;
-		sorted.sort((a, b) => {
-			const valueA = sortField === 'total_usage' ? Number(a.total_usage) : Number(a.total_cost);
-			const valueB = sortField === 'total_usage' ? Number(b.total_usage) : Number(b.total_cost);
-			return (valueA - valueB) * directionMultiplier;
-		});
+		sorted.sort((a, b) => (getUsageSortValue(a, sortField) - getUsageSortValue(b, sortField)) * directionMultiplier);
 		return sorted;
 	}, [items, sortDirection, sortField]);
 
@@ -657,15 +683,25 @@ const UsageDataTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }) => 
 							<TableHead className='font-semibold text-gray-700 text-[13px]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.totalUsage, t('tabPanels.analytics.totalUsage'))}
 							</TableHead>
+							<TableHead className='font-semibold text-gray-700 text-[13px]'>
+								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.revenue, t('tabPanels.analytics.metricRevenue'))}
+							</TableHead>
+							<TableHead className='font-semibold text-gray-700 text-[13px]'>
+								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.cogs, t('tabPanels.analytics.cogs'))}
+							</TableHead>
 							<TableHead className='rounded-tr-md font-semibold text-gray-700 text-[13px]'>
-								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.totalCost, t('tabPanels.analytics.totalCost'))}
+								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.margin, t('tabPanels.analytics.metricMargin'))}
 							</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{groupedBuckets.map((bucket) => {
 							const isExpanded = expandedGroupIds.has(bucket.groupKey);
-							const aggregateCost = bucket.items.reduce((sum, i) => sum + Number(i.total_cost), 0);
+							const aggregateRevenue = bucket.items.reduce((sum, i) => sum + Number(i.total_cost), 0);
+							const aggregateCogs = bucket.items.reduce((sum, i) => sum + (i.cogs ?? 0), 0);
+							const aggregateMargin = bucket.items.reduce((sum, i) => sum + (i.margin ?? 0), 0);
+							const hasCogs = bucket.items.some((i) => i.cogs != null);
+							const hasMargin = bucket.items.some((i) => i.margin != null);
 							const firstCurrency = bucket.items[0]?.currency;
 							return (
 								<React.Fragment key={bucket.groupKey}>
@@ -694,14 +730,13 @@ const UsageDataTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }) => 
 										</TableCell>
 										<TableCell className='py-2.5 font-normal text-gray-700 text-[13px]'>—</TableCell>
 										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
-											{firstCurrency ? (
-												<>
-													{getCurrencySymbol(firstCurrency)}
-													{formatNumber(aggregateCost, 2)}
-												</>
-											) : (
-												'—'
-											)}
+											{renderCurrencyAmount(aggregateRevenue, firstCurrency)}
+										</TableCell>
+										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
+											{hasCogs ? renderCurrencyAmount(aggregateCogs, firstCurrency) : '—'}
+										</TableCell>
+										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
+											{hasMargin ? renderCurrencyAmount(aggregateMargin, firstCurrency, { showSign: true }) : '—'}
 										</TableCell>
 									</TableRow>
 									<GroupChildRows bucket={bucket} isExpanded={isExpanded} />
@@ -722,12 +757,14 @@ const UsageDataTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }) => 
 									)}
 								</TableCell>
 								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsage(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalCost(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderRevenue(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderCogs(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderMargin(row)}</TableCell>
 							</TableRow>
 						))}
 						{items.length === 0 && (
 							<TableRow className='bg-white'>
-								<TableCell colSpan={3} className='pl-4 py-4 font-normal text-gray-500 text-[13px]'>
+								<TableCell colSpan={5} className='pl-4 py-4 font-normal text-gray-500 text-[13px]'>
 									{t('tabPanels.analytics.tableEmpty')}
 								</TableCell>
 							</TableRow>

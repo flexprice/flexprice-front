@@ -518,8 +518,8 @@ const PriceOverrideDialog: FC<Props> = ({
 				</div>
 			}
 			description={t('priceDialogs.modifyPricingDescription', { name: chargeDisplayName })}
-			className={lineItem ? 'w-full max-w-4xl overflow-x-hidden' : 'w-full max-w-lg sm:max-w-[32rem]'}>
-			<div className='space-y-6 max-h-[80vh] overflow-y-auto overflow-x-hidden min-w-0'>
+			className={lineItem ? 'w-full max-w-4xl overflow-x-hidden ' : 'w-full max-w-lg sm:max-w-[32rem]'}>
+			<div className='space-y-6 min-w-0'>
 				<div className='space-y-4'>
 					{/* Original Price Display */}
 					<div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>

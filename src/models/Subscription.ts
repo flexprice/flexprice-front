@@ -108,6 +108,9 @@ export interface Subscription extends BaseModel {
 
 	/** Usage-style subscriptions: optional threshold amount for auto-invoicing behavior (API-defined semantics). */
 	readonly auto_invoice_threshold?: number;
+
+	/** IANA timezone for billing period calculations; defaults to UTC when unset. */
+	readonly timezone?: string;
 }
 
 export interface SubscriptionUsage extends BaseModel {

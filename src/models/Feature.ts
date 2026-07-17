@@ -1,6 +1,7 @@
 import { BaseModel, Metadata } from './base';
 import { Group } from './Group';
 import { Meter } from './Meter';
+import { JsonObject } from '@/types/common';
 
 export enum AlertLevel {
 	CRITICAL = 'critical',
@@ -45,12 +46,14 @@ export interface Feature extends BaseModel {
 	readonly alert_settings?: AlertSettings;
 	readonly group_id?: string;
 	readonly group?: Group;
+	readonly config_value?: JsonObject;
 }
 
 export enum FEATURE_TYPE {
 	METERED = 'metered',
 	STATIC = 'static',
 	BOOLEAN = 'boolean',
+	CONFIG = 'config',
 }
 
 export default Feature;

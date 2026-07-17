@@ -9,6 +9,7 @@ import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { PaddleWebhookEvents, getDefaultPaddleWebhookEvents } from '@/types';
 import { mergeConnectionMetadata } from '@/utils/common/connection_metadata_helpers';
 
 interface PaddleConnection {
@@ -57,6 +58,10 @@ const PaddleConnectionDrawer: FC<PaddleConnectionDrawerProps> = ({ isOpen, onOpe
 
 	const webhookUrl =
 		user?.tenant?.id && activeEnvironment?.id ? `${config.api.baseUrl}/webhooks/paddle/${user.tenant.id}/${activeEnvironment.id}` : '';
+
+	const getWebhookEvents = (): PaddleWebhookEvents[] => {
+		return getDefaultPaddleWebhookEvents();
+	};
 
 	useEffect(() => {
 		if (isOpen) {
@@ -285,10 +290,12 @@ const PaddleConnectionDrawer: FC<PaddleConnectionDrawerProps> = ({ isOpen, onOpe
 							<div className='mt-2 p-3 bg-white border border-blue-200 rounded-md'>
 								<p className='text-xs text-blue-700 mb-3'>{t('connection.paddle.webhookEventsIntro')}</p>
 								<div className='space-y-1'>
-									<div className='flex items-center gap-2 text-xs text-blue-700'>
-										<div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
-										<code className='font-mono'>{t('connection.paddle.webhookEventTransactionsCompleted')}</code>
-									</div>
+									{getWebhookEvents().map((event, index) => (
+										<div key={index} className='flex items-center gap-2 text-xs text-blue-700'>
+											<div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+											<code className='font-mono'>{event}</code>
+										</div>
+									))}
 								</div>
 							</div>
 						)}

@@ -84,6 +84,7 @@ const SubscriptionEditCreditGrantsSection: FC<SubscriptionEditCreditGrantsSectio
 				render: (row) => (
 					<ActionButton
 						id={row.id}
+						copyId={{ entityType: 'Credit Grant' }}
 						deleteMutationFn={async () => {}}
 						refetchQueryKey='creditGrants'
 						entityName={row.name}

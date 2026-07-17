@@ -71,7 +71,8 @@
 			"entitlements": "Entitlements",
 			"metadata": "Metadata",
 			"noChargesLinked": "No charges added to the addon yet",
-			"noEntitlementsLinked": "No entitlements added to the addon yet"
+			"noEntitlementsLinked": "No entitlements added to the addon yet",
+			"creditGrants": "Credit Grants"
 		},
 		"subscriptionSheet": {
 			"editTitle": "Edit Addon",
@@ -159,7 +160,44 @@
 			"title": "Cost Sheet Details",
 			"charges": "Charges",
 			"metadata": "Metadata",
-			"noChargesLinked": "No charges added to the cost sheet yet"
+			"noChargesLinked": "No charges added to the cost sheet yet",
+			"chargeCount": "{{count}} charges",
+			"searchCharges": "Search charges...",
+			"noDescription": "No description",
+			"noChargesSubtitle": "No charges added to the cost sheet yet",
+			"columns": {
+				"feature": "Feature",
+				"chargeType": "Charge Type",
+				"billingTiming": "Billing Timing",
+				"billingPeriod": "Billing Period",
+				"value": "Value"
+			},
+			"fields": {
+				"costSheetName": "Cost Sheet Name",
+				"lookupKey": "Lookup Key",
+				"status": "Status",
+				"description": "Description"
+			},
+			"filters": {
+				"name": "Name",
+				"createdAt": "Created At",
+				"updatedAt": "Updated At",
+				"chargeType": "Charge Type",
+				"billingPeriod": "Billing Period",
+				"chargeTypeOptions": {
+					"fixed": "Fixed",
+					"usage": "Usage"
+				},
+				"billingPeriodOptions": {
+					"monthly": "Monthly",
+					"yearly": "Yearly",
+					"quarterly": "Quarterly",
+					"weekly": "Weekly",
+					"daily": "Daily",
+					"halfYearly": "Half Yearly",
+					"oneTime": "One-time"
+				}
+			}
 		},
 		"toast": {
 			"updated": "Cost Sheet updated successfully",
@@ -591,6 +629,12 @@
 					"billingPeriod": "Billing period"
 				}
 			}
+		},
+		"entitlementsTab": {
+			"configSheet": {
+				"keysCount": "{{count}} keys",
+				"title": "Config Value"
+			}
 		}
 	},
 	"priceUnits": {
@@ -720,13 +764,15 @@
 			"filterTypes": {
 				"metered": "Metered",
 				"boolean": "Boolean",
-				"static": "Static"
+				"static": "Static",
+				"config": "Config"
 			},
 			"typeChips": {
 				"metered": "Metered",
 				"boolean": "Boolean",
 				"static": "Static",
-				"unknown": "Unknown"
+				"unknown": "Unknown",
+				"config": "Config"
 			},
 			"emptyCell": "—",
 			"paginationUnit": "Features",
@@ -848,7 +894,12 @@
 					"label": "Static",
 					"description": "Functionality that can be configured for a customer i.e. log retention period, support tier, etc."
 				}
-			}
+			},
+			"customExpressionButton": "Custom expression",
+			"aggregationFieldButton": "Aggregation field",
+			"customExpression": "Custom Expression*",
+			"customExpressionPh": "ceil(duration_ms / 1000)",
+			"customExpressionHelp": "Write a CEL formula evaluated per event to compute the quantity. Variables are top-level property names on your events (e.g. duration_ms, tokens).\n\nAvailable functions: max(a, b), min(a, b), abs(x), ceil(x), floor(x), round(x), pow(x, y), sqrt(x), log(x).\n\nExamples:\n• input_tokens + output_tokens\n• ceil(duration_ms / 1000)\n• min(usage, quota)\n• max(cores * hours * rate, 0.01)\n\nOnly available for SUM, AVG, MAX and LATEST."
 		},
 		"details": {
 			"charges": "Charges",
@@ -888,7 +939,10 @@
 			"usageResetPeriod": {
 				"periodic": "Periodic",
 				"cumulative": "Cumulative"
-			}
+			},
+			"customExpression": "Custom Expression",
+			"archiveSuccess": "Feature archived successfully",
+			"fetchError": "Error fetching feature details"
 		}
 	},
 	"entityChargesPage": {
@@ -1026,7 +1080,8 @@
 			"save": "Save",
 			"unlimitedDisplay": "Unlimited",
 			"calculatorAriaLabel": "Display value calculator",
-			"unitsFallback": "units"
+			"unitsFallback": "units",
+			"configValueRequired": "A valid JSON object is required for config features"
 		},
 		"displayCalculator": {
 			"titleFallback": "Display value",
@@ -1080,7 +1135,8 @@
 			"unlimited": "Unlimited",
 			"enabled": "Enabled",
 			"disabled": "Disabled",
-			"unknownFeature": "Unknown Feature"
+			"unknownFeature": "Unknown Feature",
+			"tooltipConfig": "Config value overridden for this subscription"
 		},
 		"subscriptionEdit": {
 			"columnSource": "Source",
@@ -1140,5 +1196,26 @@
 		"toastScheduled": "{{name}} will be effective from {{date}}.",
 		"toastUpdated": "{{name}} has been updated successfully.",
 		"fallbackPriceName": "Price"
+	},
+	"jsonEditor": {
+		"title": "Config Value (JSON)",
+		"showEditor": "Show Editor",
+		"hideEditor": "Hide Editor",
+		"validJson": "Valid JSON",
+		"errorInvalidJson": "Invalid JSON",
+		"errorMustBeObject": "Must be a JSON object",
+		"lines": "lines"
+	},
+	"configKeyValueEditor": {
+		"title": "Config Values",
+		"addRow": "Add",
+		"keyHeader": "Key",
+		"valueHeader": "Value",
+		"keyPlaceholder": "usage_limit",
+		"valuePlaceholder": "100",
+		"errorDuplicateKey": "Duplicate key: \"{{key}}\"",
+		"errorEmptyValue": "Value is required",
+		"errorEmptyKey": "Key is required",
+		"removeRow": "Remove row"
 	}
 }

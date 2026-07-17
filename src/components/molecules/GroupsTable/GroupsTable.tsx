@@ -48,6 +48,7 @@ const GroupsTable: FC<GroupsTableProps> = ({ data, onEdit }) => {
 			render: (row) => (
 				<ActionButton
 					id={row.id}
+					copyId={{ entityType: 'Group' }}
 					deleteMutationFn={(id) => GroupApi.deleteGroup(id)}
 					refetchQueryKey='fetchGroups'
 					entityName={t('catalog:groups.table.entityName')}

@@ -183,6 +183,7 @@ const CouponsPage = () => {
 				render: (row) => (
 					<ActionButton
 						id={row.id}
+						copyId={{ entityType: 'Coupon' }}
 						deleteMutationFn={(id) => CouponApi.deleteCoupon(id)}
 						refetchQueryKey='fetchCoupons'
 						entityName={t('coupons.table.entityName')}

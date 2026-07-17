@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { Mail, CalendarDays, AlertTriangle } from 'lucide-react';
 import { SANDBOX_AUTO_CANCELLATION_DAYS } from '@/constants/constants';
 import { isContactEnabled, getContactDetails } from '@/config/contact';
+import { config } from '@/config/config';
 
 interface Props {
 	isOpen: boolean;
@@ -86,6 +87,9 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 
 	const isProduction = type === ENVIRONMENT_TYPE.PRODUCTION;
 	const isSandbox = type === ENVIRONMENT_TYPE.DEVELOPMENT;
+	// When enabled via VITE_PLATFORM_CONFIG, this platform can self-create production
+	// environments (shows the create form) instead of the "contact us" options.
+	const productionEnabled = config.platform.production.enabled;
 
 	const { slackUrl, email, bookCallUrl } = getContactDetails();
 	const emailLink = `mailto:${email}`;
@@ -107,7 +111,7 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 					placeholder={t('environment.creator.namePlaceholder')}
 					value={name}
 					onChange={setName}
-					disabled={isPending || isProduction}
+					disabled={isPending || (isProduction && !productionEnabled)}
 				/>
 
 				<Select
@@ -129,8 +133,8 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 					</div>
 				)}
 
-				{/* Production Contact Options */}
-				{isProduction && isContactEnabled() && (
+				{/* Production Contact Options — shown when this platform cannot self-create production envs and contact is configured */}
+				{isProduction && !productionEnabled && isContactEnabled() && (
 					<div className='space-y-6 pt-2'>
 						<div className='text-center'>
 							<p className='text-sm text-gray-600 mb-6'>
@@ -186,8 +190,8 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 					</div>
 				)}
 
-				{/* Action Buttons - Only show for non-production */}
-				{!isProduction && (
+				{/* Action Buttons - shown for non-production, or for production when platform config enables it */}
+				{(!isProduction || productionEnabled) && (
 					<div className='flex justify-end space-x-2 pt-4'>
 						<Button variant='outline' onClick={handleCancel} disabled={isPending}>
 							{t('connection.buttons.cancel')}

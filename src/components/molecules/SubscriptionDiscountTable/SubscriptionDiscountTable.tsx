@@ -142,6 +142,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 			render: (row) => (
 				<ActionButton
 					id={row.id}
+					copyId={{ entityType: 'Discount' }}
 					deleteMutationFn={handleDelete}
 					refetchQueryKey='subscription_discount'
 					entityName={`Discount ${formatCouponName(row)}`}

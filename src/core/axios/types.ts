@@ -24,6 +24,20 @@ export interface FlatApiError {
 	http_status_code?: number;
 }
 
+/** True when the shared axios client rejected a 404 (e.g. DELETE with no saved setting row). */
+export function isHttpNotFoundError(error: unknown): boolean {
+	if (!(error instanceof Error)) return false;
+
+	const cause = (error as HttpRejectedError).cause;
+	if (cause && typeof cause === 'object') {
+		const status = (cause as FlatApiError).http_status_code;
+		if (status === 404) return true;
+	}
+
+	const message = error.message.toLowerCase();
+	return message.includes('not found') || /\b404\b/.test(error.message);
+}
+
 function pickMessage(value: unknown): string | undefined {
 	if (typeof value === 'string' && value.trim()) {
 		return value.trim();

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
 import FeatureApi from '@/api/FeatureApi';
 import { useQuery } from '@tanstack/react-query';
-import { Gauge, SquareCheckBig, Wrench } from 'lucide-react';
+import { Gauge, Settings2, SquareCheckBig, Wrench } from 'lucide-react';
 import { FC, useMemo } from 'react';
 import { ENTITY_STATUS } from '@/models/base';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +33,8 @@ export const getFeatureIcon = (featureType: string) => {
 		return <Gauge className={className} />;
 	} else if (featureType === FEATURE_TYPE.STATIC) {
 		return <Wrench className={className} />;
+	} else if (featureType === FEATURE_TYPE.CONFIG) {
+		return <Settings2 className={className} />;
 	}
 };
 
@@ -45,7 +47,7 @@ const SelectFeature: FC<Props> = ({
 	description,
 	className,
 	disabledFeatures,
-	featureTypes = [FEATURE_TYPE.METERED, FEATURE_TYPE.BOOLEAN, FEATURE_TYPE.STATIC],
+	featureTypes = [FEATURE_TYPE.METERED, FEATURE_TYPE.BOOLEAN, FEATURE_TYPE.STATIC, FEATURE_TYPE.CONFIG],
 	popoverSide = 'bottom',
 	popoverAlign = 'start',
 }) => {

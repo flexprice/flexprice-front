@@ -424,6 +424,7 @@
 			"billingCycle": "Billing Cycle",
 			"startDate": "Start Date",
 			"currentPeriodEnd": "Current Period End",
+			"timezone": "Timezone",
 			"commitmentAmount": "Commitment Amount",
 			"overageFactor": "Overage Factor",
 			"parentSubscription": "Parent subscription",
@@ -956,7 +957,20 @@
 			"cancel": "Cancel",
 			"saving": "Saving...",
 			"saveChanges": "Save Changes",
-			"statusBadgeLabel": "balance {{condition}} {{threshold}}"
+			"statusBadgeLabel": "balance {{condition}} {{threshold}}",
+			"validation": {
+				"atLeastOneThreshold": "Please configure at least one threshold level when alerts are enabled",
+				"invalidCriticalThreshold": "Please enter a valid critical threshold value",
+				"invalidWarningThreshold": "Please enter a valid warning threshold value",
+				"invalidInfoThreshold": "Please enter a valid info threshold value",
+				"criticalRequiredForWarning": "A critical threshold is required when a warning threshold is set",
+				"warningMustBeLessThanCritical": "For \"Above\" alerts, the warning threshold must be less than the critical threshold",
+				"warningMustBeGreaterThanCritical": "For \"Below\" alerts, the warning threshold must be greater than the critical threshold",
+				"infoMustBeLessThanWarning": "For \"Above\" alerts, the info threshold must be less than the warning threshold",
+				"infoMustBeGreaterThanWarning": "For \"Below\" alerts, the info threshold must be greater than the warning threshold",
+				"infoMustBeLessThanCritical": "For \"Above\" alerts, the info threshold must be less than the critical threshold",
+				"infoMustBeGreaterThanCritical": "For \"Below\" alerts, the info threshold must be greater than the critical threshold"
+			}
 		},
 		"autoTopup": {
 			"dialogTitle": "Auto Top-Up Settings",
@@ -1011,5 +1025,49 @@
 		"copied": "Copied!",
 		"copyLink": "Copy Link",
 		"close": "Close"
+	},
+	"spendAlerts": {
+		"remove": "Remove",
+		"add": "Add",
+		"thresholdValueLabel": "Threshold Value{{currencySuffix}}",
+		"amountPlaceholder": "0.00",
+		"conditionLabel": "Condition",
+		"conditionAbove": "Above",
+		"subscriptionDialogTitle": "Subscription Alert Settings",
+		"lineItemDialogTitle": "Line Item Alert Settings",
+		"enableTitle": "Enable Alerts",
+		"subscriptionEnableLabel": "Monitor total subscription spend against configured thresholds",
+		"lineItemEnableLabel": "Monitor this line item's spend against configured thresholds",
+		"enableDescription": "Get notified when spend crosses configured thresholds for the current billing period",
+		"criticalTitle": "Critical Threshold",
+		"criticalDescription": "Alert when spend reaches critical level",
+		"warningTitle": "Warning Threshold",
+		"warningDescription": "Alert when spend reaches warning level",
+		"infoTitle": "Info Threshold",
+		"infoDescription": "Alert when spend reaches info level",
+		"cancel": "Cancel",
+		"saving": "Saving...",
+		"saveChanges": "Save Changes",
+		"saveSuccess": "Alert settings saved successfully",
+		"saveError": "Failed to save alert settings"
+	},
+	"tableColumns": {
+		"displayName": "Display Name",
+		"phase": "Phase",
+		"priceType": "Price Type",
+		"billingPeriod": "Billing Period",
+		"quantity": "Quantity",
+		"source": "Source",
+		"status": "Status",
+		"charge": "Charge"
+	},
+	"actions": {
+		"edit": "Edit"
+	},
+	"tableMenu": {
+		"terminate": "Terminate",
+		"alertSettings": "Alert Settings",
+		"applyCoupon": "Apply coupon",
+		"removeCoupon": "Remove coupon"
 	}
 }

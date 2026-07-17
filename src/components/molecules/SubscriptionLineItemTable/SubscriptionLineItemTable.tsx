@@ -2,13 +2,22 @@ import { Card, CardHeader, NoDataCard, Chip, Tooltip } from '@/components/atoms'
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import type { SubscriptionCommitmentInfo } from '@/models/Subscription';
-import { ChargeValueCell, ColumnData, FlexpriceTable, TerminateLineItemModal, DropdownMenu } from '@/components/molecules';
+import {
+	ChargeValueCell,
+	ColumnData,
+	FlexpriceTable,
+	TerminateLineItemModal,
+	DropdownMenu,
+	AlertSettingsDialog,
+} from '@/components/molecules';
 import { PriceTooltip } from '@/components/molecules/PriceTooltip';
 import { LineItem, SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE } from '@/models/Subscription';
+import { ALERT_ENTITY_TYPE } from '@/models/AlertSetting';
 import { FC, useState, useCallback, useMemo } from 'react';
-import { Trash2, Pencil, Info, Eye, Tag, TicketX } from 'lucide-react';
+import { Trash2, Pencil, Info, Eye, Tag, TicketX, Copy, Bell } from 'lucide-react';
 import { ENTITY_STATUS } from '@/models/base';
 import {
+	copyToClipboard,
 	formatBillingPeriodForDisplay,
 	formatLocalizedCurrency,
 	formatLocalizedNumber,
@@ -17,7 +26,7 @@ import {
 import { PRICE_ENTITY_TYPE, PRICE_STATUS, PRICE_TYPE } from '@/models/Price';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import LineItemWindowCommitmentViewDialog from '@/components/molecules/Subscription/LineItemWindowCommitmentViewDialog';
-import { lineItemHasWindowCommitment } from '@/utils/subscription/subscription_line_item_commitment_helpers';
+import { lineItemHasCommitment } from '@/utils/subscription/subscription_line_item_commitment_helpers';
 interface Props {
 	data: LineItem[];
 	onEdit?: (lineItem: LineItem) => void;
@@ -41,6 +50,15 @@ interface Props {
 	lineItemIdsWithCoupon?: Set<string>;
 }
 
+/**
+ * Quantity is only meaningful for FIXED charges — USAGE charges are billed
+ * from metered consumption, so their quantity column shows "--" instead.
+ */
+export function getQuantityDisplayForLineItem(row: Pick<LineItem, 'price_type' | 'quantity'>): string {
+	if (row.price_type !== PRICE_TYPE.FIXED) return '--';
+	return String(row.quantity);
+}
+
 interface LineItemWithStatus extends LineItem {
 	precomputedStatus: PRICE_STATUS;
 	statusVariant: 'info' | 'default' | 'success';
@@ -56,6 +74,10 @@ interface ViewCommitmentDropdownProps {
 const ViewCommitmentDropdown: FC<ViewCommitmentDropdownProps> = ({ row, onView }) => {
 	const { t } = useTranslation('billing');
 	const [isOpen, setIsOpen] = useState(false);
+
+	if (!lineItemHasCommitment(row)) {
+		return null;
+	}
 
 	const handleClick = (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -108,8 +130,10 @@ const LineItemDropdown: FC<LineItemDropdownProps> = ({
 	hasLinkedCoupon,
 }) => {
 	const { t } = useTranslation('billing');
+	const { t: tCommon } = useTranslation('common');
 	const [isOpen, setIsOpen] = useState(false);
-	const showViewCommitment = !!onViewCommitment && lineItemHasWindowCommitment(row);
+	const [showAlertDialog, setShowAlertDialog] = useState(false);
+	const showViewCommitment = !!onViewCommitment && lineItemHasCommitment(row);
 
 	const handleClick = (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -118,73 +142,110 @@ const LineItemDropdown: FC<LineItemDropdownProps> = ({
 	};
 
 	return (
-		<div data-interactive='true' onClick={handleClick}>
-			<DropdownMenu
-				isOpen={isOpen}
-				onOpenChange={setIsOpen}
-				options={[
-					...(showViewCommitment
-						? [
-								{
-									label: t('commitmentConfig.viewCommitment', { defaultValue: 'View commitment' }),
-									icon: <Eye />,
-									onSelect: (e: Event) => {
-										e.preventDefault();
-										setIsOpen(false);
-										onViewCommitment?.(row);
-									},
-								},
-							]
-						: []),
-					{
-						label: t('actions.edit'),
-						icon: <Pencil />,
-						onSelect: (e: Event) => {
-							e.preventDefault();
-							setIsOpen(false);
-							onEdit(row);
+		<>
+			<div data-interactive='true' onClick={handleClick}>
+				<DropdownMenu
+					isOpen={isOpen}
+					onOpenChange={setIsOpen}
+					options={[
+						{
+							label: tCommon('copyId.lineItemId'),
+							icon: <Copy />,
+							onSelect: (e: Event) => {
+								e.preventDefault();
+								setIsOpen(false);
+								void copyToClipboard(row.id, tCommon('copyId.toastWithType', { type: tCommon('copyId.entityTypes.lineItem') }));
+							},
 						},
-						disabled: isEditDisabled,
-					},
-					{
-						label: t('tableMenu.terminate'),
-						icon: <Trash2 />,
-						onSelect: (e: Event) => {
-							e.preventDefault();
-							setIsOpen(false);
-							onTerminate(row);
+						{
+							label: tCommon('copyId.priceId'),
+							icon: <Copy />,
+							onSelect: (e: Event) => {
+								e.preventDefault();
+								setIsOpen(false);
+								void copyToClipboard(row.price_id, tCommon('copyId.toastWithType', { type: tCommon('copyId.entityTypes.price') }));
+							},
+							disabled: !row.price_id,
 						},
-						disabled: isTerminateDisabled,
-					},
-					...(onApplyCoupon && !hasLinkedCoupon
-						? [
-								{
-									label: 'Apply coupon',
-									icon: <Tag />,
-									onSelect: (e: Event) => {
-										e.preventDefault();
-										setIsOpen(false);
-										onApplyCoupon(row);
+						...(showViewCommitment
+							? [
+									{
+										label: t('commitmentConfig.viewCommitment', { defaultValue: 'View commitment' }),
+										icon: <Eye />,
+										onSelect: (e: Event) => {
+											e.preventDefault();
+											setIsOpen(false);
+											onViewCommitment?.(row);
+										},
 									},
-								},
-							]
-						: []),
-					...(onRemoveCoupon && hasLinkedCoupon
-						? [
-								{
-									label: 'Remove coupon',
-									icon: <TicketX />,
-									onSelect: (e: Event) => {
-										e.preventDefault();
-										setIsOpen(false);
-										onRemoveCoupon(row);
+								]
+							: []),
+						{
+							label: t('actions.edit'),
+							icon: <Pencil />,
+							onSelect: (e: Event) => {
+								e.preventDefault();
+								setIsOpen(false);
+								onEdit(row);
+							},
+							disabled: isEditDisabled,
+						},
+						{
+							label: t('tableMenu.alertSettings'),
+							icon: <Bell />,
+							onSelect: (e: Event) => {
+								e.preventDefault();
+								setIsOpen(false);
+								setShowAlertDialog(true);
+							},
+						},
+						{
+							label: t('tableMenu.terminate'),
+							icon: <Trash2 />,
+							onSelect: (e: Event) => {
+								e.preventDefault();
+								setIsOpen(false);
+								onTerminate(row);
+							},
+							disabled: isTerminateDisabled,
+						},
+						...(onApplyCoupon && !hasLinkedCoupon
+							? [
+									{
+										label: t('tableMenu.applyCoupon'),
+										icon: <Tag />,
+										onSelect: (e: Event) => {
+											e.preventDefault();
+											setIsOpen(false);
+											onApplyCoupon(row);
+										},
 									},
-								},
-							]
-						: []),
-				]}
+								]
+							: []),
+						...(onRemoveCoupon && hasLinkedCoupon
+							? [
+									{
+										label: t('tableMenu.removeCoupon'),
+										icon: <TicketX />,
+										onSelect: (e: Event) => {
+											e.preventDefault();
+											setIsOpen(false);
+											onRemoveCoupon(row);
+										},
+									},
+								]
+							: []),
+					]}
+				/>
+			</div>
+			<AlertSettingsDialog
+				open={showAlertDialog}
+				onClose={() => setShowAlertDialog(false)}
+				entityType={ALERT_ENTITY_TYPE.SUBSCRIPTION_LINE_ITEM}
+				entityId={row.id}
+				parentEntityId={row.subscription_id}
 			/>
-		</div>
+		</>
 	);
 };
 
@@ -521,6 +582,10 @@ const SubscriptionLineItemTable: FC<Props> = ({
 						</Tooltip>
 					);
 				},
+			},
+			{
+				title: t('tableColumns.quantity'),
+				render: (row) => <span>{getQuantityDisplayForLineItem(row)}</span>,
 			},
 			{
 				title: t('tableColumns.charge'),

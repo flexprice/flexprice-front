@@ -51,6 +51,7 @@ const CostSheetTable: FC<Props> = ({ data, onEdit }) => {
 				return (
 					<ActionButton
 						id={row?.id}
+						copyId={{ entityType: 'Cost Sheet' }}
 						deleteMutationFn={async () => {
 							return await CostSheetApi.DeleteCostSheet(row?.id);
 						}}

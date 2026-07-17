@@ -19,7 +19,7 @@ export const commandPalettePaths = {
 	'billing-invoices': '/billing/invoices',
 	'billing-credit-notes': '/billing/credit-notes',
 	'billing-payments': '/billing/payments',
-	'settings-billing': '/settings/billing',
+	'settings-billing': '/settings?tab=billing',
 	'tools-bulk-imports': '/tools/bulk-imports',
 	'tools-revenue': '/revenue',
 	'tools-exports': '/tools/exports',

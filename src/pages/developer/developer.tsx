@@ -183,6 +183,7 @@ const DeveloperPage = () => {
 						<div className='flex justify-end'>
 							<ActionButton
 								id={rowData.id}
+								copyId={{ entityType: 'Secret Key' }}
 								deleteMutationFn={async (id: string) => {
 									await SecretKeysApi.deleteSecretKey(id);
 								}}

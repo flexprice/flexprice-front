@@ -1,4 +1,5 @@
 import { AxiosClient } from '@/core/axios/verbs';
+import { isHttpNotFoundError } from '@/core/axios/types';
 
 export interface Setting {
 	key: string;
@@ -36,6 +37,20 @@ class SettingsApi {
 	 */
 	public static async deleteSettingByKey(key: string): Promise<void> {
 		return await AxiosClient.delete<void>(`${this.baseUrl}/${key}`);
+	}
+
+	/**
+	 * Reset a setting to server defaults. DELETE removes a saved override; 404 means
+	 * nothing was saved (already on defaults). Returns the effective config from GET.
+	 */
+	public static async resetSettingToDefaults(key: string): Promise<Setting> {
+		try {
+			await this.deleteSettingByKey(key);
+		} catch (error) {
+			if (!isHttpNotFoundError(error)) throw error;
+		}
+
+		return this.getSettingByKey(key);
 	}
 }
 

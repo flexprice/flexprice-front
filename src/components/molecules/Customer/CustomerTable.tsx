@@ -19,6 +19,7 @@ const ActionButtonWithPortal: FC<{ customer: Customer; onEdit: (customer: Custom
 	return (
 		<ActionButton
 			id={customer.id}
+			copyId={{ entityType: 'Customer' }}
 			deleteMutationFn={(id) => CustomerApi.deleteCustomerById(id)}
 			refetchQueryKey='fetchCustomers'
 			entityName={t('list.entityName')}

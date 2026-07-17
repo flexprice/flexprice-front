@@ -8,7 +8,7 @@ import { CreditCard, Banknote, Receipt, CircleDollarSign, ExternalLink, Copy, Ey
 import { RouteNames } from '@/core/routes/Routes';
 import { RedirectCell } from '../Table';
 import { PAYMENT_METHOD_TYPE } from '@/constants';
-import DropdownMenu, { DropdownMenuOption } from '../DropdownMenu';
+import DropdownMenu, { DropdownMenuOption, getCopyIdOption } from '../DropdownMenu';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 
@@ -75,6 +75,7 @@ const PaymentTableMenu: FC<PaymentTableMenuProps> = ({ payment }) => {
 		const isEnabled = isPaymentLink && hasPaymentUrl;
 
 		const options = [
+			getCopyIdOption(payment.id, t, { entityType: 'Payment' }),
 			{
 				label: t('tableMenu.viewInvoice'),
 				icon: <Eye className='w-4 h-4' />,
@@ -102,6 +103,7 @@ const PaymentTableMenu: FC<PaymentTableMenuProps> = ({ payment }) => {
 		navigate,
 		payment.destination_id,
 		payment.destination_type,
+		payment.id,
 		t,
 	]);
 

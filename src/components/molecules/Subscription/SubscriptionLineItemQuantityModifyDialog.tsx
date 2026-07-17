@@ -3,6 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import type { LineItem } from '@/models/Subscription';
 import { useSubscriptionQuantityModify } from '@/hooks/useSubscriptionQuantityModify';
 import { buildQuantityChangeModifyRequest } from '@/utils/subscription/buildQuantityChangeModifyRequest';
+import { isValidNonNegativeQuantityString } from '@/utils/subscription/quantityValidation';
 import type { ExecuteSubscriptionModifyRequest } from '@/types/dto/Subscription';
 import type { FC } from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -25,13 +26,6 @@ export interface SubscriptionLineItemQuantityModifyDialogProps {
 	/** Subscription billing period bounds (ISO 8601); used to default effective date by invoice cadence. */
 	currentPeriodStart: string;
 	currentPeriodEnd: string;
-}
-
-function isValidPositiveQuantityString(q: string): boolean {
-	const t = q.trim().replace(/,/g, '');
-	if (!t) return false;
-	const n = Number(t);
-	return Number.isFinite(n) && n > 0;
 }
 
 type Step = 'form' | 'preview';
@@ -87,8 +81,8 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 	};
 
 	const buildPayloadFromForm = useCallback((): ExecuteSubscriptionModifyRequest | null => {
-		if (!isValidPositiveQuantityString(quantityInput)) {
-			setFormError('Enter a valid quantity greater than zero.');
+		if (!isValidNonNegativeQuantityString(quantityInput)) {
+			setFormError('Enter a valid quantity — zero or greater.');
 			return null;
 		}
 		if (effectiveDate && !isEffectiveDateWithinLineItemWindow(lineItem, effectiveDate)) {

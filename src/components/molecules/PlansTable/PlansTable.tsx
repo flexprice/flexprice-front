@@ -46,6 +46,7 @@ const PlansTable: FC<PlansTableProps> = ({ data, onEdit }) => {
 				render: (row) => (
 					<ActionButton
 						id={row.id}
+						copyId={{ entityType: 'Plan' }}
 						deleteMutationFn={(id) => PlanApi.deletePlan(id)}
 						refetchQueryKey='fetchPlans'
 						entityName={t('plans.listPage.entityName')}

@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { WalletAlertLevel } from '@/models/Wallet';
 import {
 	computeWalletAlertStatus,
+	getWalletAlertValidationErrorKey,
 	hasActiveWalletAlertStatus,
 	hasConfiguredWalletAlertThresholds,
 	isWalletAlertThresholdTriggered,
+	normalizeWalletAlertSettingsForSave,
+	updateWalletAlertThreshold,
 } from './walletAlertUtils';
 
 describe('walletAlertUtils', () => {
@@ -86,6 +89,130 @@ describe('walletAlertUtils', () => {
 					info: { threshold: '10', condition: 'below' },
 				}),
 			).toBe(true);
+		});
+	});
+
+	describe('normalizeWalletAlertSettingsForSave', () => {
+		it('syncs all threshold conditions to the master condition before save', () => {
+			const normalized = normalizeWalletAlertSettingsForSave({
+				alert_enabled: true,
+				critical: { threshold: '0', condition: 'below' },
+				warning: { threshold: '10', condition: 'above' },
+				info: null,
+			});
+
+			expect(normalized.warning).toEqual({ threshold: '10', condition: 'below' });
+			expect(normalized.critical).toEqual({ threshold: '0', condition: 'below' });
+		});
+
+		it('drops thresholds with empty values', () => {
+			const normalized = normalizeWalletAlertSettingsForSave({
+				alert_enabled: true,
+				critical: { threshold: '0', condition: 'below' },
+				warning: { threshold: '', condition: 'below' },
+				info: null,
+			});
+
+			expect(normalized.warning).toBeNull();
+		});
+	});
+
+	describe('updateWalletAlertThreshold', () => {
+		it('syncs condition across all configured levels', () => {
+			const updated = updateWalletAlertThreshold(
+				{
+					alert_enabled: true,
+					critical: { threshold: '0', condition: 'below' },
+					warning: { threshold: '10', condition: 'below' },
+					info: null,
+				},
+				WalletAlertLevel.WARNING,
+				{ condition: 'above' },
+			);
+
+			expect(updated.critical?.condition).toBe('above');
+			expect(updated.warning?.condition).toBe('above');
+		});
+	});
+
+	describe('getWalletAlertValidationErrorKey', () => {
+		it('returns null when alerts are disabled', () => {
+			expect(getWalletAlertValidationErrorKey({ alert_enabled: false })).toBeNull();
+		});
+
+		it('requires at least one threshold when alerts are enabled', () => {
+			expect(getWalletAlertValidationErrorKey({ alert_enabled: true })).toBe('atLeastOneThreshold');
+		});
+
+		it('requires critical when warning is set', () => {
+			expect(
+				getWalletAlertValidationErrorKey({
+					alert_enabled: true,
+					warning: { threshold: '10', condition: 'below' },
+				}),
+			).toBe('criticalRequiredForWarning');
+		});
+
+		it('rejects above condition when warning is greater than critical', () => {
+			expect(
+				getWalletAlertValidationErrorKey({
+					alert_enabled: true,
+					critical: { threshold: '10', condition: 'above' },
+					warning: { threshold: '12', condition: 'above' },
+				}),
+			).toBe('warningMustBeLessThanCritical');
+		});
+
+		it('accepts above condition when warning is less than critical', () => {
+			expect(
+				getWalletAlertValidationErrorKey({
+					alert_enabled: true,
+					critical: { threshold: '12', condition: 'above' },
+					warning: { threshold: '10', condition: 'above' },
+				}),
+			).toBeNull();
+		});
+
+		it('rejects below condition when warning is less than critical', () => {
+			expect(
+				getWalletAlertValidationErrorKey({
+					alert_enabled: true,
+					critical: { threshold: '20', condition: 'below' },
+					warning: { threshold: '10', condition: 'below' },
+				}),
+			).toBe('warningMustBeGreaterThanCritical');
+		});
+
+		it('accepts below condition when warning is greater than critical', () => {
+			expect(
+				getWalletAlertValidationErrorKey({
+					alert_enabled: true,
+					critical: { threshold: '10', condition: 'below' },
+					warning: { threshold: '20', condition: 'below' },
+				}),
+			).toBeNull();
+		});
+
+		it('rejects above info threshold greater than warning', () => {
+			expect(
+				getWalletAlertValidationErrorKey({
+					alert_enabled: true,
+					critical: { threshold: '20', condition: 'above' },
+					warning: { threshold: '10', condition: 'above' },
+					info: { threshold: '15', condition: 'above' },
+				}),
+			).toBe('infoMustBeLessThanWarning');
+		});
+
+		it('rejects below info threshold less than warning', () => {
+			expect(
+				getWalletAlertValidationErrorKey({
+					alert_enabled: true,
+					critical: { threshold: '5', condition: 'below' },
+					warning: { threshold: '20', condition: 'below' },
+					info: { threshold: '10', condition: 'below' },
+				}),
+			).toBe('infoMustBeGreaterThanWarning');
 		});
 	});
 });

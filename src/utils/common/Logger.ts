@@ -51,7 +51,16 @@ class Logger {
 			parts.push(`[${level.toUpperCase()}]`);
 		}
 
-		parts.push(...args.map((arg) => (typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg))));
+		parts.push(
+			...args.map((arg) => {
+				if (arg instanceof Error) {
+					return arg.stack || `${arg.name}: ${arg.message}`;
+				}
+				// Error objects serialize to "{}" via JSON.stringify (message/stack/name are
+				// non-enumerable), so they're special-cased above rather than falling through here.
+				return typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg);
+			}),
+		);
 
 		return parts.join(' ');
 	}

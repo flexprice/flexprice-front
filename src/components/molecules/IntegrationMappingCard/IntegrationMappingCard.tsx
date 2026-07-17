@@ -13,10 +13,14 @@ import { integrationCatalogSpecs } from '@/pages/insights-tools/integrations/int
 import formatDate from '@/utils/common/format_date';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 import PaymentApi from '@/api/PaymentApi';
+import ConnectionApi from '@/api/ConnectionApi';
 import { IntegrationEntityType } from '@/types/dto';
 
 const PROVIDER_ID_MAP: Record<string, string> = {
 	zoho_books: 'zoho',
+};
+const CONNECTION_DRIVEN_PROVIDERS: Record<string, IntegrationEntityType[]> = {
+	[CONNECTION_PROVIDER_TYPE.AWS_MARKETPLACE]: ['customer', 'subscription', 'plan'],
 };
 
 const providerLogoMap = new Map(integrationCatalogSpecs.map((spec) => [spec.id, spec.logo]));
@@ -78,23 +82,55 @@ const IntegrationMappingCard: FC<IntegrationMappingCardProps> = ({
 
 	const hasIntegrationConfig = (integrationConfigData?.integrations?.length ?? 0) > 0;
 
+	// Providers surfaced purely because a published connection exists (e.g. AWS Marketplace),
+	// even when they're absent from `/integrations/config`.
+	const { data: publishedConnectionsData } = useQuery({
+		queryKey: ['publishedConnections'],
+		queryFn: () => ConnectionApi.ListPublished(),
+	});
+
+	const connectionDrivenProviders = useMemo<string[]>(() => {
+		const connections = publishedConnectionsData?.connections ?? [];
+		const providers: string[] = [];
+		for (const conn of connections) {
+			const supportedEntities = CONNECTION_DRIVEN_PROVIDERS[conn.provider_type];
+			if (supportedEntities?.includes(entityType) && !providers.includes(conn.provider_type)) {
+				providers.push(conn.provider_type);
+			}
+		}
+		return providers;
+	}, [publishedConnectionsData?.connections, entityType]);
+
+	const hasContent = hasIntegrationConfig || connectionDrivenProviders.length > 0;
+
 	const { data: integrationMappingsData, isPending: isMappingsPending } = useQuery({
 		queryKey: ['integrationMappings', entityType, entityId],
 		queryFn: () => IntegrationMappingApi.getIntegrationMappings(entityType, entityId),
-		enabled: !!entityId && hasIntegrationConfig,
+		enabled: !!entityId && hasContent,
 	});
 
 	const integrationRows = useMemo<IntegrationRow[]>(() => {
 		const configs = integrationConfigData?.integrations ?? [];
 		const mappings = integrationMappingsData?.items ?? [];
 		const mappingByProvider = new Map(mappings.map((m) => [m.provider_type, m]));
-		return configs.map((cfg: IntegrationConfigItem) => ({
+		const rows: IntegrationRow[] = configs.map((cfg: IntegrationConfigItem) => ({
 			provider_type: cfg.provider,
 			mapping: mappingByProvider.get(cfg.provider) ?? null,
 			syncOutboundEnabled: !!cfg.current_config?.[entityType]?.outbound,
 			syncInboundEnabled: !!cfg.current_config?.[entityType]?.inbound,
 		}));
-	}, [integrationConfigData?.integrations, integrationMappingsData?.items, entityType]);
+		const configuredProviders = new Set(configs.map((cfg) => cfg.provider));
+		for (const provider of connectionDrivenProviders) {
+			if (configuredProviders.has(provider)) continue;
+			rows.push({
+				provider_type: provider,
+				mapping: mappingByProvider.get(provider) ?? null,
+				syncOutboundEnabled: false,
+				syncInboundEnabled: false,
+			});
+		}
+		return rows;
+	}, [integrationConfigData?.integrations, integrationMappingsData?.items, entityType, connectionDrivenProviders]);
 
 	const { mutate: syncIntegration, isPending: isSyncing } = useMutation({
 		mutationFn: (method: 'push' | 'pull') =>
@@ -333,7 +369,7 @@ const IntegrationMappingCard: FC<IntegrationMappingCardProps> = ({
 		],
 	);
 
-	if (!hasIntegrationConfig) {
+	if (!hasContent) {
 		return null;
 	}
 

@@ -10,6 +10,7 @@ import {
 	applyWindowCommitmentToLineItem,
 	buildLineItemCommitmentUpdatePayload,
 	DEFAULT_SUBSCRIPTION_CHARGE_COMMITMENT_STATE,
+	lineItemHasCommitment,
 	lineItemWindowCommitmentStateFromBuckets,
 	subscriptionChargeCommitmentFromLineItem,
 } from '@/utils/subscription/subscription_line_item_commitment_helpers';
@@ -182,5 +183,23 @@ describe('buildLineItemCommitmentUpdatePayload', () => {
 			expect(result.payload.commitment_windowed).toBe(true);
 			expect(result.payload.commitment_time_buckets).toEqual([]);
 		}
+	});
+});
+
+describe('lineItemHasCommitment', () => {
+	it('returns false when no commitment fields are set', () => {
+		expect(lineItemHasCommitment({})).toBe(false);
+	});
+
+	it('returns true for base amount commitment', () => {
+		expect(lineItemHasCommitment({ commitment_amount: 100 })).toBe(true);
+	});
+
+	it('returns true for base quantity commitment', () => {
+		expect(lineItemHasCommitment({ commitment_quantity: 50 })).toBe(true);
+	});
+
+	it('returns true for window commitment', () => {
+		expect(lineItemHasCommitment({ commitment_windowed: true })).toBe(true);
 	});
 });

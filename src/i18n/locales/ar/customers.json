@@ -27,6 +27,11 @@
 			"email": "البريد الإلكتروني",
 			"createdAt": "تاريخ الإنشاء",
 			"updatedAt": "تاريخ التحديث"
+		},
+		"orgTypeFilter": {
+			"ariaLabel": "تصفية حسب نوع المؤسسة",
+			"parent": "أصل",
+			"child": "فرعي"
 		}
 	},
 	"detail": {
@@ -63,7 +68,8 @@
 			"city": "المدينة",
 			"postalCode": "الرمز البريدي",
 			"subscriptionAmount": "مبلغ الاشتراك",
-			"subscriptionStartDate": "تاريخ بدء الاشتراك"
+			"subscriptionStartDate": "تاريخ بدء الاشتراك",
+			"timezone": "المنطقة الزمنية"
 		},
 		"customerCardSectionTitle": "تفاصيل العميل",
 		"customerCardSlug": "المعرّف",
@@ -196,7 +202,8 @@
 			"metered": "حسب القياس",
 			"boolean": "نعم/لا",
 			"dash": "—",
-			"usageProgressUnlimited": "{{usage}} / غير محدود"
+			"usageProgressUnlimited": "{{usage}} / غير محدود",
+			"config": "إعداد"
 		},
 		"fallback": "--"
 	},
@@ -220,7 +227,10 @@
 			"missingExternalId": "يجب أن يكون لعميل الفوترة معرّف خارجي."
 		},
 		"sandboxNotice": "هذا اشتراك تجريبي وستنتهي صلاحيته تلقائيًا في {{date}} (بعد {{days}} يومًا من الآن).",
-		"saveAsDraft": "حفظ كمسودّة"
+		"saveAsDraft": "حفظ كمسودّة",
+		"selectCustomerLabel": "العميل",
+		"selectCustomerPlaceholder": "ابحث عن عميل...",
+		"selectCustomerHint": "اختر عميلاً للمتابعة مع إنشاء اشتراك"
 	},
 	"subscriptionDetail": {
 		"breadcrumbSubscription": "الاشتراك",
@@ -267,7 +277,9 @@
 			"halfYearly": "نصف سنوي",
 			"weekly": "أسبوعي",
 			"daily": "يومي"
-		}
+		},
+		"timezone": "المنطقة الزمنية",
+		"couponAssociations": "ارتباطات القسيمة"
 	},
 	"tabPanels": {
 		"common": {
@@ -295,7 +307,8 @@
 			"expandAll": "توسيع الكل",
 			"totalUsage": "إجمالي الاستخدام",
 			"totalCost": "إجمالي التكلفة",
-			"tableEmpty": "--"
+			"tableEmpty": "--",
+			"cogs": "تكلفة البضاعة المباعة"
 		},
 		"information": {
 			"saveCardOnStripe": "حفظ البطاقة على Stripe",
@@ -418,7 +431,8 @@
 				"activateSubscription": "تفعيل الاشتراك",
 				"editSubscription": "تعديل الاشتراك",
 				"addSubscriptionPhase": "إضافة مرحلة اشتراك",
-				"cancelSubscription": "إلغاء الاشتراك"
+				"cancelSubscription": "إلغاء الاشتراك",
+				"alertSettings": "إعدادات التنبيهات"
 			}
 		},
 		"subscriptionForm": {
@@ -550,7 +564,11 @@
 		},
 		"lineItemsQueryBuilder": {
 			"billingPeriod": "فترة الفوترة"
-		}
+		},
+		"couponAssociations": "ارتباطات الكوبون",
+		"addCoupon": "إضافة كوبون",
+		"taxAssociations": "ارتباطات الضريبة",
+		"addTax": "إضافة ضريبة"
 	},
 	"moyasarAutopay": {
 		"title": "حفظ البطاقة على Moyasar",
@@ -569,6 +587,22 @@
 		"failedDesc": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
 		"authFailed": "تعذّرت مصادقة البطاقة. يرجى المحاولة مرة أخرى.",
 		"sdkLoadFailed": "تعذّر تحميل Moyasar.js. يرجى تحديث الصفحة.",
-		"tryAgain": "حاول مرة أخرى"
+		"tryAgain": "حاول مرة أخرى",
+		"loadingForm": "جارٍ تحميل نموذج البطاقة الآمن…",
+		"savingCard": "جارٍ حفظ البطاقة…",
+		"alreadyConfiguredTitle": "تم إعداد الدفع التلقائي مسبقاً",
+		"alreadyConfiguredDesc": "هذا العميل لديه طريقة دفع محفوظة بالفعل. قم بإزالتها أولاً لتسجيل بطاقة جديدة.",
+		"done": "تم",
+		"toastEnabled": "تم تفعيل الدفع التلقائي. سيتم تحصيل الفواتير المستقبلية تلقائيًا.",
+		"toastSaveFailed": "فشل في حفظ البطاقة",
+		"toastScriptFailed": "فشل تحميل Moyasar.js. يرجى تحديث الصفحة والمحاولة مرة أخرى.",
+		"toastNoToken": "لم يتم إرجاع رمز البطاقة من Moyasar",
+		"toastParseTokenFailed": "فشل في تحليل رمز الدفع",
+		"cardSavedTitle": "تم حفظ البطاقة بنجاح",
+		"cardSavedDescription": "تم حفظ بطاقتك وتم تفعيل الدفع التلقائي. سيتم خصم الفواتير المستقبلية تلقائيًا.",
+		"cardSetupInProgressTitle": "إعداد البطاقة قيد التنفيذ",
+		"cardSetupInProgressDescription": "جارٍ التحقق من بطاقتك. يكتمل ذلك عادةً خلال دقائق قليلة. يمكنك إغلاق هذه الصفحة بأمان.",
+		"cardSetupFailedTitle": "فشل إعداد البطاقة",
+		"cardSetupFailedDefaultDescription": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
 	}
 }

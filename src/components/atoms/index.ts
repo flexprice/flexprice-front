@@ -60,7 +60,7 @@ export { default as Page } from './Page';
 
 export { default as Card, CardHeader } from './Card';
 
-export { default as ShortPagination } from './ShortPagination';
+export { default as ShortPagination, ShortPaginationControls } from './ShortPagination';
 
 export { default as Progress } from './Progress';
 
@@ -83,5 +83,10 @@ export { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './
 export { default as ErrorBoundary } from './ErrorBoundary';
 
 export { default as Tooltip } from './Tooltip';
+
+export { InfoIcon } from './InfoIcon';
+export type { InfoIconProps } from './InfoIcon';
+export { FieldWithInfo } from './FieldWithInfo';
+export type { FieldWithInfoProps } from './FieldWithInfo';
 
 export { CopyIdButton } from './CopyIdButton';

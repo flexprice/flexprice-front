@@ -21,6 +21,8 @@ export enum CONNECTION_PROVIDER_TYPE {
 	MOYASAR = 'moyasar',
 	PADDLE = 'paddle',
 	WHOP = 'whop',
+	TABS = 'tabs',
+	AWS_MARKETPLACE = 'aws_marketplace',
 	// Add more providers as needed
 }
 
