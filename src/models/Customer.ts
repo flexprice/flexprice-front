@@ -12,6 +12,7 @@ export interface Customer extends BaseModel {
 	metadata: Metadata;
 	name: string;
 	environment_id: string;
+	timezone?: string;
 }
 
 export default Customer;

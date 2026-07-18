@@ -6,6 +6,12 @@ export enum RazorpayWebhookEvents {
 	// Payment events
 	PAYMENT_CAPTURED = 'payment.captured',
 	PAYMENT_FAILED = 'payment.failed',
+
+	// Payment link events (https://razorpay.com/docs/webhooks/payment-links/)
+	// Note: Razorpay has no payment.link.failed event; failed link payments use PAYMENT_FAILED
+	PAYMENT_LINK_PAID = 'payment.link.paid',
+	PAYMENT_LINK_EXPIRED = 'payment.link.expired',
+	PAYMENT_LINK_CANCELLED = 'payment.link.cancelled',
 }
 
 /**
@@ -15,4 +21,5 @@ export enum RazorpayWebhookEvents {
 export const getDefaultRazorpayWebhookEvents = (): RazorpayWebhookEvents[] => [
 	RazorpayWebhookEvents.PAYMENT_CAPTURED,
 	RazorpayWebhookEvents.PAYMENT_FAILED,
+	RazorpayWebhookEvents.PAYMENT_LINK_PAID,
 ];

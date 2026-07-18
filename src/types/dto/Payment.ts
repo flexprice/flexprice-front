@@ -23,6 +23,12 @@ export interface GetAllPaymentsResponse {
 	pagination: Pagination;
 }
 
+export interface MoyasarSetupIntentResponse {
+	status: string;
+	customer_id: string;
+	checkout_token: string;
+}
+
 export interface RecordPaymentPayload {
 	amount: number;
 	currency: string;

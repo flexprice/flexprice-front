@@ -87,6 +87,7 @@ const TaxTable: FC<Props> = ({ data, onEdit }) => {
 					return (
 						<ActionButton
 							id={row?.id}
+							copyId={{ entityType: 'Tax Rate' }}
 							deleteMutationFn={async () => {
 								return await TaxApi.deleteTaxRate(row?.id);
 							}}

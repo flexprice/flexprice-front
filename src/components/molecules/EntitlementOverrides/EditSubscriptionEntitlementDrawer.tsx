@@ -1,7 +1,9 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { Sheet, Label, Input, Button, Checkbox } from '@/components/atoms';
 import { Switch } from '@/components/ui/switch';
+import { JsonEditor } from '@/components/molecules/JsonEditor';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
+import { JsonObject } from '@/types/common';
 import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import EntitlementApi from '@/api/EntitlementApi';
 import { useMutation } from '@tanstack/react-query';
@@ -11,6 +13,7 @@ import {
 	EnrichedSubscriptionEntitlement,
 	SubscriptionEntitlementOverrideValues,
 	getEffectiveStaticValue,
+	getEffectiveConfigValue,
 } from '@/utils/subscription/subscriptionEntitlementHelpers';
 
 interface EditSubscriptionEntitlementDrawerProps {
@@ -35,6 +38,14 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 	const [isInfinite, setIsInfinite] = useState<boolean>(false);
 	const [staticValue, setStaticValue] = useState<string>('');
 	const [isEnabled, setIsEnabled] = useState<boolean>(true);
+	const [configValue, setConfigValue] = useState<JsonObject | null>(null);
+	const [configInvalid, setConfigInvalid] = useState<boolean>(false);
+
+	const initialConfigValue = useMemo((): JsonObject | null => {
+		const raw = getEffectiveConfigValue(entitlement?.sources ?? []);
+		if (raw !== null && typeof raw === 'object' && !Array.isArray(raw)) return raw as JsonObject;
+		return null;
+	}, [entitlement]);
 
 	useEffect(() => {
 		if (entitlement) {
@@ -45,6 +56,8 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 			setUsageLimit(isCurrentlyInfinite ? '' : currentLimit?.toString() || '');
 			setStaticValue(getEffectiveStaticValue(entitlement.entitlement) || '');
 			setIsEnabled(entitlement.entitlement?.is_enabled ?? true);
+			setConfigValue(null);
+			setConfigInvalid(false);
 		}
 	}, [entitlement]);
 
@@ -108,6 +121,17 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 			values.static_value = staticValue;
 		} else if (entitlement.feature_type === FEATURE_TYPE.BOOLEAN) {
 			values.is_enabled = isEnabled;
+		} else if (entitlement.feature_type === FEATURE_TYPE.CONFIG) {
+			if (configInvalid) {
+				toast.error(t('jsonEditor.errorInvalidJson'));
+				return;
+			}
+			const effectiveConfigValue = configValue ?? initialConfigValue;
+			if (!effectiveConfigValue) {
+				toast.error(t('entitlements.addDrawer.configValueRequired'));
+				return;
+			}
+			values.config_value = effectiveConfigValue;
 		}
 
 		saveOverride(values);
@@ -221,6 +245,20 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 								{originalEnabled ? t('entitlements.editDrawer.enabled') : t('entitlements.editDrawer.disabled')}
 							</div>
 						)}
+					</div>
+				)}
+
+				{entitlement.feature_type === FEATURE_TYPE.CONFIG && (
+					<div className='space-y-2'>
+						<Label label={t('catalog:jsonEditor.title')} />
+						<JsonEditor
+							key={entitlement.entitlement?.id ?? entitlement.feature_id}
+							value={initialConfigValue}
+							onChange={(val, raw) => {
+								setConfigValue(val);
+								setConfigInvalid(raw.trim() !== '' && raw.trim() !== '{}' && val === null);
+							}}
+						/>
 					</div>
 				)}
 

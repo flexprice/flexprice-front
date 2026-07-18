@@ -1,3 +1,4 @@
+import { config } from '@/config/config';
 import { ApiDocsSnippet } from '@/store/useApiDocsStore';
 
 const API_DOCS_URL = 'https://raw.githubusercontent.com/flexprice/flexprice-docs/main/api-reference/openapi.json';
@@ -44,7 +45,7 @@ export const fetchAndExtractSnippetsByTags = async (tags: string[], json?: any):
 			openApiJson = await response.json();
 		}
 
-		const baseUrl = openApiJson?.servers?.[0]?.url || '';
+		const baseUrl = config.api.baseUrl || openApiJson?.servers?.[0]?.url || '';
 		const schemas = openApiJson?.components?.schemas || {};
 		const snippets: ApiDocsSnippet[] = [];
 

@@ -2,12 +2,15 @@
 
 interface ImportMetaEnv {
 	readonly VITE_DEPLOYMENT_REGION?: string;
+	readonly VITE_PLATFORM_CONFIG?: string;
 }
 
 declare const __APP_VERSION__: string;
 
 interface ImportMetaEnv {
 	readonly VITE_PADDLE_CLIENT_TOKEN: string;
+	/** Flexprice's AWS account ID used in the AWS Marketplace trust-policy template. */
+	readonly VITE_FLEXPRICE_AWS_ACCOUNT_ID?: string;
 }
 
 interface ImportMeta {

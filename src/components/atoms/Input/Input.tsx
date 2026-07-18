@@ -53,10 +53,10 @@ export const removeFormatting = (amount: string, options: NumberFormatOptions = 
 	return amount.replace(new RegExp(escapedSeparator, 'g'), '');
 };
 
-/** Printable ASCII only (English keyboard characters). */
-const ENGLISH_ONLY_REGEX = /[^\x20-\x7E]/g;
+/** Printable ASCII + Basic Arabic (U+0600–U+06FF). */
+const ENGLISH_ARABIC_REGEX = /[^\x20-\x7E\u0600-\u06FF]/g;
 
-export const sanitizeEnglishOnly = (value: string): string => value.replace(ENGLISH_ONLY_REGEX, '');
+export const sanitizeEnglishOnly = (value: string): string => value.replace(ENGLISH_ARABIC_REGEX, '');
 
 const getInputPattern = (variant: InputVariant, options: NumberFormatOptions = DEFAULT_FORMAT_OPTIONS): RegExp => {
 	const { allowNegative, allowDecimals, decimalSeparator } = { ...DEFAULT_FORMAT_OPTIONS, ...options };
@@ -91,7 +91,7 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 	formatOptions?: NumberFormatOptions;
 	size?: SizeVariant;
 	/**
-	 * Restrict to printable ASCII (English keyboard characters).
+	 * Restrict to printable ASCII and Basic Arabic.
 	 * Defaults to true for `variant="text"`; set `englishOnly={false}` to allow other scripts.
 	 */
 	englishOnly?: boolean;
@@ -136,10 +136,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			[enforceEnglishOnly],
 		);
 
+		const supportsSelectionRange = (element: HTMLInputElement) =>
+			typeof element.setSelectionRange === 'function' && ['text', 'search', 'url', 'tel', 'password', ''].includes(element.type ?? '');
+
 		// Handle cursor position after formatting
 		React.useEffect(() => {
 			if (cursorPosition !== null && inputRef.current) {
-				inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+				if (supportsSelectionRange(inputRef.current)) {
+					inputRef.current.setSelectionRange(cursorPosition, cursorPosition);
+				}
 				setCursorPosition(null);
 			}
 		}, [cursorPosition]);
@@ -206,7 +211,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						sizes[size].padding,
 						sizes[size].text,
 						sizes[size].display,
-						'w-full flex h-full group items-center rounded-[6px] border bg-background ring-offset-background placeholder:text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed',
+						'w-full flex group items-center rounded-[6px] border bg-background ring-offset-background placeholder:text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed',
 						error ? 'border-destructive' : 'border-input focus-within:ring-ring focus-within:ring-offset-2',
 						'focus-within:border-black',
 						className,

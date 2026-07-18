@@ -70,6 +70,7 @@ const CreditGrantsTable: React.FC<CreditGrantsTableProps> = ({ data, onDelete, s
 				return (
 					<ActionButton
 						id={row.id}
+						copyId={{ entityType: 'Credit Grant' }}
 						deleteMutationFn={async () => {
 							await handleDelete(row);
 						}}

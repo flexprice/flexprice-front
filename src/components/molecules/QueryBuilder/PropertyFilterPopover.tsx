@@ -179,7 +179,7 @@ const PropertyFilterPopover: React.FC<Props> = ({
 						date={filter.valueDate}
 						{...inputProps}
 						popoverContentClassName='w-full !z-[110]'
-						className={cn(inputProps.className, 'h-9 min-w-[182px] text-xs')}
+						className={cn(inputProps.className, 'h-9 text-xs')}
 						placeholder={t('queryBuilder.selectDate')}
 					/>
 				),

@@ -89,7 +89,27 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 		);
 
 	if (!environments || environments.length === 0) {
-		return <div className='p-2 text-sm text-muted-foreground'>{t('environment.selector.noneAvailable')}</div>;
+		return (
+			<div className={cn('mt-1 w-full', className)}>
+				<p className='p-2 text-sm text-muted-foreground'>{t('environment.selector.noneAvailable')}</p>
+				<Button onClick={() => setIsCreatorOpen(true)} size='sm' className='w-full text-center rounded-[6px] justify-center items-center'>
+					<Plus className='h-4 w-4' />
+					{t('environment.selector.addEnvironment')}
+				</Button>
+
+				<EnvironmentCreator
+					isOpen={isCreatorOpen}
+					onOpenChange={setIsCreatorOpen}
+					onEnvironmentCreated={async (environmentId) => {
+						await refetchEnvironments();
+						if (environmentId) {
+							changeActiveEnvironment(environmentId);
+							navigate(RouteNames.home);
+						}
+					}}
+				/>
+			</div>
+		);
 	}
 
 	const options: SelectOption[] = environments.map((env) => ({

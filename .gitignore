@@ -44,3 +44,4 @@ vite.config.js
 
 # Local scratch
 tmp-*.txt
+deploy-config.json

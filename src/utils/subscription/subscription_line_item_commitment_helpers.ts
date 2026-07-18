@@ -175,6 +175,20 @@ export function lineItemHasWindowCommitment(
 	return !!lineItem.commitment_windowed || (lineItem.commitment_time_buckets?.length ?? 0) > 0;
 }
 
+export function lineItemHasCommitment(
+	lineItem: Pick<CommitmentLineItemSource, 'commitment_amount' | 'commitment_quantity' | 'commitment_windowed' | 'commitment_time_buckets'>,
+): boolean {
+	if (lineItemHasWindowCommitment(lineItem)) return true;
+
+	const amount = lineItem.commitment_amount;
+	if (amount != null && amount !== '' && Number(amount) > 0) return true;
+
+	const quantity = lineItem.commitment_quantity;
+	if (quantity != null && quantity !== '' && Number(quantity) > 0) return true;
+
+	return false;
+}
+
 /** Collect unique bucket price IDs that need fetching when inline price is omitted. */
 export function collectCommitmentBucketPriceIds(buckets: CommitmentTimeBucket[]): string[] {
 	return [...new Set(buckets.filter((bucket) => !bucket.price && bucket.price_id).map((bucket) => bucket.price_id!))];

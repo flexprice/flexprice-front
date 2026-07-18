@@ -15,7 +15,7 @@ import formatChips from '@/utils/common/format_chips';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 
 // Components
-import { Button, Card, CardHeader, Chip, CopyIdButton, Divider, Loader, NoDataCard, Page, Spacer } from '@/components/atoms';
+import { Button, Card, CardHeader, Chip, CopyIdButton, Divider, Loader, NoDataCard, Page, Sheet, Spacer } from '@/components/atoms';
 import {
 	ApiDocsContent,
 	ColumnData,
@@ -25,8 +25,10 @@ import {
 	DropdownMenuOption,
 	FeatureDrawer,
 } from '@/components/molecules';
+import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { FilterOperator, DataType } from '@/types/common/QueryBuilder';
+import { JsonObject } from '@/types/common';
 import { FeatureAlertDialog } from '@/components/molecules/FeatureAlertDialog';
 
 // Models and types
@@ -105,6 +107,11 @@ const FeatureDetails = () => {
 	const { updateBreadcrumb } = useBreadcrumbsStore();
 	const [showAlertDialog, setShowAlertDialog] = useState(false);
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [configSheet, setConfigSheet] = useState<{ open: boolean; name: string; value: JsonObject | null }>({
+		open: false,
+		name: '',
+		value: null,
+	});
 
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['fetchFeatureDetails', featureId],
@@ -227,7 +234,6 @@ const FeatureDetails = () => {
 			},
 			{
 				title: 'Value',
-				align: 'right',
 				render: (rowData) => {
 					if (rowData.feature_type === FEATURE_TYPE.BOOLEAN) {
 						return rowData.is_enabled ? t('common:labels.yes') : t('common:labels.no');
@@ -242,10 +248,35 @@ const FeatureDetails = () => {
 								? rowData.feature?.unit_plural || t('catalog:features.form.unitsDefault')
 								: rowData.feature?.unit_singular || t('catalog:features.form.unitDefault');
 						return (
-							<span className='text-right'>
+							<span className='flex items-end gap-1'>
 								{usageLimit}
-								<span className='text-muted-foreground text-sm font-sans ml-2'>{unit}</span>
+								<span className='text-muted-foreground text-sm font-sans'>{unit}</span>
 							</span>
+						);
+					}
+					if (rowData.feature_type === FEATURE_TYPE.CONFIG) {
+						const cv = rowData.config_value;
+						const compact = cv && Object.keys(cv).length > 0 ? JSON.stringify(cv) : null;
+						return (
+							<button
+								type='button'
+								onClick={() =>
+									setConfigSheet({
+										open: true,
+										name: rowData.plan?.name ?? rowData.addon?.name ?? t('catalog:features.listPage.typeChips.config'),
+										value: cv ?? null,
+									})
+								}
+								className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-xs'
+								style={{
+									display: '-webkit-box',
+									WebkitLineClamp: 2,
+									WebkitBoxOrient: 'vertical',
+									overflow: 'hidden',
+									wordBreak: 'break-all',
+								}}>
+								{compact ?? t('common:labels.na')}
+							</button>
 						);
 					}
 					return <span className='text-muted-foreground'>{t('common:labels.na')}</span>;
@@ -299,178 +330,194 @@ const FeatureDetails = () => {
 	}
 
 	return (
-		<Page
-			headingCTA={
-				<div className='flex gap-1'>
-					<Button
-						isLoading={isArchiving}
-						disabled={isArchiving || data?.status !== ENTITY_STATUS.PUBLISHED}
-						variant={'outline'}
-						size={'lg'}
-						onClick={() => archiveFeature()}
-						className='flex gap-1 px-3'>
-						<EyeOff className='w-4 h-4' />
-						{isArchiving ? t('catalog:plans.archive.archiving') : t('common:actions.archive')}
-					</Button>
-					<DropdownMenu
-						options={dropdownOptions}
-						trigger={<Button variant={'outline'} prefixIcon={<EllipsisVertical />} size={'icon'} className='h-10 w-10 p-0'></Button>}
-					/>
+		<>
+			{/* Config value side sheet */}
+			<Sheet isOpen={configSheet.open} onOpenChange={(open) => setConfigSheet((s) => ({ ...s, open }))} title={configSheet.name} size='2xl'>
+				<div className='px-6 py-6'>
+					<JsonCodeBlock value={configSheet.value ?? {}} title={t('catalog:plans.entitlementsTab.configSheet.title')} />
 				</div>
-			}
-			documentTitle={data?.name}
-			heading={
-				<div className='flex items-center gap-2'>
-					{data?.name}
-					{data?.id && <CopyIdButton id={data.id} entityType='Feature' />}
-				</div>
-			}>
-			<ApiDocsContent tags={API_DOCS_TAGS.Features} snippets={data?.type === FEATURE_TYPE.METERED ? snippets : undefined} />
-
-			{/* Feature Alert Dialog */}
-			<FeatureAlertDialog
-				open={showAlertDialog}
-				alertSettings={data?.alert_settings}
-				onSave={async (alertSettings: AlertSettings) => {
-					if (!featureId) return;
-					try {
-						await FeatureApi.updateFeature(featureId, {
-							alert_settings: alertSettings,
-						});
-						setShowAlertDialog(false);
-						refetchQueries(['fetchFeatureDetails', featureId]);
-						toast.success('Alert settings updated successfully');
-					} catch (e: any) {
-						const errorMessage = e?.response?.data?.error?.message || e?.message || 'Failed to update alert settings';
-						toast.error(errorMessage);
-					}
-				}}
-				onClose={() => setShowAlertDialog(false)}
-			/>
-
-			<Spacer className='!h-4' />
-			<div className='space-y-6'>
-				{data?.type === FEATURE_TYPE.METERED && (
-					<div>
-						{linkedPrices?.items?.length && linkedPrices?.items?.length > 0 ? (
-							<Card variant='notched'>
-								<CardHeader title={t('catalog:features.details.charges')} />
-								<FlexpriceTable showEmptyRow columns={priceColumns} data={linkedPrices?.items ?? []} variant='no-bordered' />
-							</Card>
-						) : (
-							<NoDataCard title={t('catalog:features.details.charges')} subtitle='No charges linked to the feature yet' />
-						)}
+			</Sheet>
+			<Page
+				headingCTA={
+					<div className='flex gap-1'>
+						<Button
+							isLoading={isArchiving}
+							disabled={isArchiving || data?.status !== ENTITY_STATUS.PUBLISHED}
+							variant={'outline'}
+							size={'lg'}
+							onClick={() => archiveFeature()}
+							className='flex gap-1 px-3'>
+							<EyeOff className='w-4 h-4' />
+							{isArchiving ? t('catalog:plans.archive.archiving') : t('common:actions.archive')}
+						</Button>
+						<DropdownMenu
+							options={dropdownOptions}
+							trigger={<Button variant={'outline'} prefixIcon={<EllipsisVertical />} size={'icon'} className='h-10 w-10 p-0'></Button>}
+						/>
 					</div>
-				)}
+				}
+				documentTitle={data?.name}
+				heading={
+					<div className='flex items-center gap-2'>
+						{data?.name}
+						{data?.id && <CopyIdButton id={data.id} entityType='Feature' />}
+					</div>
+				}>
+				<ApiDocsContent tags={API_DOCS_TAGS.Features} snippets={data?.type === FEATURE_TYPE.METERED ? snippets : undefined} />
 
-				{planOrAddonEntitlements.length > 0 ? (
-					<Card variant='notched'>
-						<CardHeader title={t('catalog:features.details.entitlements')} />
-						<FlexpriceTable showEmptyRow columns={columns} data={planOrAddonEntitlements} variant='no-bordered' />
-					</Card>
-				) : (
-					<NoDataCard title={t('catalog:features.details.entitlements')} subtitle='No entitlements linked to the feature yet' />
-				)}
+				{/* Feature Alert Dialog */}
+				<FeatureAlertDialog
+					open={showAlertDialog}
+					alertSettings={data?.alert_settings}
+					onSave={async (alertSettings: AlertSettings) => {
+						if (!featureId) return;
+						try {
+							await FeatureApi.updateFeature(featureId, {
+								alert_settings: alertSettings,
+							});
+							setShowAlertDialog(false);
+							refetchQueries(['fetchFeatureDetails', featureId]);
+							toast.success('Alert settings updated successfully');
+						} catch (e: any) {
+							const errorMessage = e?.response?.data?.error?.message || e?.message || 'Failed to update alert settings';
+							toast.error(errorMessage);
+						}
+					}}
+					onClose={() => setShowAlertDialog(false)}
+				/>
 
-				{data?.type === FEATURE_TYPE.METERED && (
-					<Card variant='notched'>
-						<div className='!space-y-6'>
-							<CardHeader title={t('catalog:features.details.eventDetails')} className='!p-0 !mb-2' />
-							<div>
-								<div className='grid grid-cols-[200px_1fr] items-center'>
-									<span className='text-gray-500 text-sm'>{t('catalog:features.details.eventName')}</span>
-									<span className='text-gray-800 text-sm'>{data?.meter?.event_name}</span>
-								</div>
-							</div>
-
-							<Divider />
-
-							{data?.meter?.filters && data.meter.filters.length > 0 && (
-								<>
-									<div className='space-y-4'>
-										<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.eventFilters')}</span>
-										<div className='space-y-3'>
-											{data?.meter?.filters?.map((filter) => {
-												return (
-													<div className='grid grid-cols-[200px_1fr] items-start'>
-														<span className='text-gray-800 text-sm'>{filter.key}</span>
-														<div className='flex gap-1.5 flex-wrap'>
-															{filter.values.map((value) => {
-																return <Chip className='text-xs py-0.5' variant='default' label={value} />;
-															})}
-														</div>
-													</div>
-												);
-											})}
-										</div>
-									</div>
-									<Divider />
-								</>
+				<Spacer className='!h-4' />
+				<div className='space-y-6'>
+					{data?.type === FEATURE_TYPE.METERED && (
+						<div>
+							{linkedPrices?.items?.length && linkedPrices?.items?.length > 0 ? (
+								<Card variant='notched'>
+									<CardHeader title={t('catalog:features.details.charges')} />
+									<FlexpriceTable showEmptyRow columns={priceColumns} data={linkedPrices?.items ?? []} variant='no-bordered' />
+								</Card>
+							) : (
+								<NoDataCard title={t('catalog:features.details.charges')} subtitle='No charges linked to the feature yet' />
 							)}
+						</div>
+					)}
 
-							<div className='space-y-4'>
-								<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.aggregationDetails')}</span>
-								<div className='space-y-3'>
-									{/* <div className='grid grid-cols-[200px_1fr] items-center'>
+					{planOrAddonEntitlements.length > 0 ? (
+						<Card variant='notched'>
+							<CardHeader title={t('catalog:features.details.entitlements')} />
+							<FlexpriceTable showEmptyRow columns={columns} data={planOrAddonEntitlements} variant='no-bordered' />
+						</Card>
+					) : (
+						<NoDataCard title={t('catalog:features.details.entitlements')} subtitle='No entitlements linked to the feature yet' />
+					)}
+
+					{data?.type === FEATURE_TYPE.METERED && (
+						<Card variant='notched'>
+							<div className='!space-y-6'>
+								<CardHeader title={t('catalog:features.details.eventDetails')} className='!p-0 !mb-2' />
+								<div>
+									<div className='grid grid-cols-[200px_1fr] items-center'>
+										<span className='text-gray-500 text-sm'>{t('catalog:features.details.eventName')}</span>
+										<span className='text-gray-800 text-sm'>{data?.meter?.event_name}</span>
+									</div>
+								</div>
+
+								<Divider />
+
+								{data?.meter?.filters && data.meter.filters.length > 0 && (
+									<>
+										<div className='space-y-4'>
+											<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.eventFilters')}</span>
+											<div className='space-y-3'>
+												{data?.meter?.filters?.map((filter) => {
+													return (
+														<div className='grid grid-cols-[200px_1fr] items-start'>
+															<span className='text-gray-800 text-sm'>{filter.key}</span>
+															<div className='flex gap-1.5 flex-wrap'>
+																{filter.values.map((value) => {
+																	return <Chip className='text-xs py-0.5' variant='default' label={value} />;
+																})}
+															</div>
+														</div>
+													);
+												})}
+											</div>
+										</div>
+										<Divider />
+									</>
+								)}
+
+								<div className='space-y-4'>
+									<span className='text-gray-500 text-sm font-medium block'>{t('catalog:features.details.aggregationDetails')}</span>
+									<div className='space-y-3'>
+										{/* <div className='grid grid-cols-[200px_1fr] items-center'>
 										<span className='text-gray-500 text-sm'>Aggregation</span>
 										<span className='text-gray-800 text-sm'>{toSentenceCase(data?.meter?.aggregation.type || '--')}</span>
 									</div> */}
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.type')}</span>
-										<span className='text-gray-800 text-sm'>
-											{formatAggregationType(data?.meter?.aggregation.type || t('common:labels.na'))}
-										</span>
-									</div>
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.value')}</span>
-										<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.field || t('common:labels.na')}</span>
-									</div>
-
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.unitName')}</span>
-										<span className='text-gray-800 text-sm'>{`${data?.unit_singular || t('catalog:features.form.unitDefault')} / ${data?.unit_plural || t('catalog:features.form.unitsDefault')}`}</span>
-									</div>
-									{data?.reporting_unit && (
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>{t('catalog:features.details.displayUnitName')}</span>
-											<span className='text-gray-800 text-sm'>{`${data.reporting_unit.unit_singular || t('common:labels.na')} / ${data.reporting_unit.unit_plural || t('common:labels.na')}`}</span>
+											<span className='text-gray-500 text-sm'>{t('catalog:features.details.type')}</span>
+											<span className='text-gray-800 text-sm'>
+												{formatAggregationType(data?.meter?.aggregation.type || t('common:labels.na'))}
+											</span>
 										</div>
-									)}
-									<div className='grid grid-cols-[200px_1fr] items-center'>
-										<span className='text-gray-500 text-sm'>{t('catalog:features.details.usageReset')}</span>
-										<span className='text-gray-800 text-sm'>
-											{formatMeterUsageResetPeriodToDisplay(data?.meter?.reset_usage || t('common:labels.na'))}
-										</span>
-									</div>
-									{(data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX ||
-										data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM) &&
-										data?.meter?.aggregation?.bucket_size && (
+										<div className='grid grid-cols-[200px_1fr] items-center'>
+											<span className='text-gray-500 text-sm'>
+												{t(
+													data?.meter?.aggregation?.expression
+														? 'catalog:features.details.customExpression'
+														: 'catalog:features.details.value',
+												)}
+											</span>
+											<span className='text-gray-800 text-sm'>
+												{data?.meter?.aggregation?.expression || data?.meter?.aggregation?.field || t('common:labels.na')}
+											</span>
+										</div>
+
+										<div className='grid grid-cols-[200px_1fr] items-center'>
+											<span className='text-gray-500 text-sm'>{t('catalog:features.details.unitName')}</span>
+											<span className='text-gray-800 text-sm'>{`${data?.unit_singular || t('catalog:features.form.unitDefault')} / ${data?.unit_plural || t('catalog:features.form.unitsDefault')}`}</span>
+										</div>
+										{data?.reporting_unit && (
 											<div className='grid grid-cols-[200px_1fr] items-center'>
-												<span className='text-gray-500 text-sm'>{t('catalog:features.details.bucketSize')}</span>
-												<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.bucket_size || t('common:labels.na')}</span>
+												<span className='text-gray-500 text-sm'>{t('catalog:features.details.displayUnitName')}</span>
+												<span className='text-gray-800 text-sm'>{`${data.reporting_unit.unit_singular || t('common:labels.na')} / ${data.reporting_unit.unit_plural || t('common:labels.na')}`}</span>
 											</div>
 										)}
-									{data?.meter?.aggregation?.group_by && (
 										<div className='grid grid-cols-[200px_1fr] items-center'>
-											<span className='text-gray-500 text-sm'>{t('catalog:features.details.groupBy')}</span>
-											<span className='text-gray-800 text-sm'>{data.meter.aggregation.group_by}</span>
+											<span className='text-gray-500 text-sm'>{t('catalog:features.details.usageReset')}</span>
+											<span className='text-gray-800 text-sm'>
+												{formatMeterUsageResetPeriodToDisplay(data?.meter?.reset_usage || t('common:labels.na'))}
+											</span>
 										</div>
-									)}
+										{(data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX ||
+											data?.meter?.aggregation?.type === METER_AGGREGATION_TYPE.SUM) &&
+											data?.meter?.aggregation?.bucket_size && (
+												<div className='grid grid-cols-[200px_1fr] items-center'>
+													<span className='text-gray-500 text-sm'>{t('catalog:features.details.bucketSize')}</span>
+													<span className='text-gray-800 text-sm'>{data?.meter?.aggregation.bucket_size || t('common:labels.na')}</span>
+												</div>
+											)}
+										{data?.meter?.aggregation?.group_by && (
+											<div className='grid grid-cols-[200px_1fr] items-center'>
+												<span className='text-gray-500 text-sm'>{t('catalog:features.details.groupBy')}</span>
+												<span className='text-gray-800 text-sm'>{data.meter.aggregation.group_by}</span>
+											</div>
+										)}
+									</div>
 								</div>
 							</div>
-						</div>
-					</Card>
+						</Card>
+					)}
+				</div>
+				{data && (
+					<FeatureDrawer
+						data={data}
+						open={isDrawerOpen}
+						onOpenChange={setIsDrawerOpen}
+						refetchQueryKeys={['fetchFeatureDetails', featureId]}
+					/>
 				)}
-			</div>
-			{data && (
-				<FeatureDrawer
-					data={data}
-					open={isDrawerOpen}
-					onOpenChange={setIsDrawerOpen}
-					refetchQueryKeys={['fetchFeatureDetails', featureId]}
-				/>
-			)}
-		</Page>
+			</Page>
+		</>
 	);
 };
 

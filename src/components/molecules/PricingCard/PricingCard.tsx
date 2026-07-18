@@ -10,6 +10,7 @@ import { formatAmount } from '@/components/atoms/Input/Input';
 import { PlanType } from '@/constants/planTypes';
 import { cn } from '@/lib/utils';
 import { PRICE_TYPE } from '@/models';
+import { JsonObject } from '@/types/common';
 export interface UsageCharge {
 	amount?: string;
 	currency?: string;
@@ -40,8 +41,8 @@ export interface PricingCardProps {
 		id: string;
 		feature_id: string;
 		name: string;
-		type: 'STATIC' | 'BOOLEAN' | 'METERED';
-		value: string | number | boolean;
+		type: 'STATIC' | 'BOOLEAN' | 'METERED' | 'CONFIG';
+		value: string | number | boolean | JsonObject | null;
 		description?: string;
 		usage_reset_period?: string;
 	}>;
@@ -71,7 +72,7 @@ const formatEntitlementValue = ({
 	t,
 }: {
 	type: string;
-	value: string | number | boolean;
+	value: string | number | boolean | JsonObject | null;
 	name: string;
 	usage_reset_period: string;
 	feature_id: string;
@@ -109,10 +110,12 @@ const formatEntitlementValue = ({
 		case 'METERED':
 			return (
 				<>
-					{formatAmount(value.toString())} {feature}
+					{formatAmount((value ?? '').toString())} {feature}
 					{usage_reset_period ? t('pricingCard.perBillingPeriod', { period: formatBillingPeriodForPrice(usage_reset_period) }) : ''}
 				</>
 			);
+		case 'CONFIG':
+			return feature;
 		default:
 			return `${value} ${feature}`;
 	}
@@ -177,6 +180,8 @@ function formatEntitlementPreviewLine(ent: PricingCardProps['entitlements'][0], 
 			return ent.value ? String(ent.name) : t('pricingCard.previewBooleanNotIncluded', { name: ent.name });
 		case 'METERED':
 			return `${formatAmount(String(ent.value))} ${ent.name}${period}`;
+		case 'CONFIG':
+			return String(ent.name);
 		default:
 			return `${ent.value} ${ent.name}`;
 	}

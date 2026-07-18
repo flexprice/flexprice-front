@@ -1,0 +1,204 @@
+# Unified deployment workflow.
+#
+# All deployments are driven by the DEPLOYMENTS_CONFIG repository secret.
+# Add / remove / disable deployments by editing that secret — no code change needed.
+#
+# DEPLOYMENTS_CONFIG format — pretty-printed or minified JSON array:
+# [
+#   {
+#     "deployment_name": "production-us",
+#     "vercel_project_id": "prj_xxxx",   <- required
+#     "vercel_org_id":     "",            <- empty: falls back to VERCEL_ORG_ID secret
+#     "vercel_token":      "",            <- empty: falls back to VERCEL_TOKEN secret
+#     "enabled":       true,
+#     "branches":      ["main"],
+#     "generate_meta": true
+#   }
+# ]
+#
+# Required repository secrets: VERCEL_TOKEN, VERCEL_ORG_ID, SENTRY_AUTH_TOKEN, DEPLOYMENTS_CONFIG
+# DEPLOYMENTS_CONFIG may also be stored as a repository Variable (falls back automatically).
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - private
+      - private-staging
+
+# One deploy run per branch at a time; a newer push cancels any in-progress run.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      DEPLOYMENTS_CONFIG: ${{ secrets.DEPLOYMENTS_CONFIG || vars.DEPLOYMENTS_CONFIG }}
+      VERCEL_TOKEN_DEFAULT: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID_DEFAULT: ${{ secrets.VERCEL_ORG_ID }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Install dependencies
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          npm install
+
+      - name: Deploy matching targets
+        run: |
+          set -uo pipefail
+
+          config="${DEPLOYMENTS_CONFIG:-}"
+
+          # Strip Windows-style carriage returns
+          config="${config//$'\r'/}"
+
+          if [ -z "${config//[[:space:]]/}" ]; then
+            echo "::error::DEPLOYMENTS_CONFIG is empty. Add a repository Secret named DEPLOYMENTS_CONFIG under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+          # jq handles pretty-printed JSON natively; compact it to a single line for safe
+          # shell variable handling and to strip any stray whitespace/newlines.
+          config="$(jq -c '.' <<<"$config" 2>/dev/null)" || {
+            echo "::error::DEPLOYMENTS_CONFIG is not valid JSON."
+            exit 1
+          }
+
+          # Unwrap if the secret was double-encoded as a JSON string
+          if jq -e 'type == "string"' <<<"$config" >/dev/null 2>&1; then
+            config="$(jq -rc '.' <<<"$config")"
+          fi
+
+          # Support both a bare array and { "deployments": [...] }
+          normalized="$(jq -c '
+            if type == "array" then .
+            elif type == "object" and (.deployments | type == "array") then .deployments
+            else error("not an array")
+            end
+          ' <<<"$config" 2>/dev/null)" || {
+            echo "::error::DEPLOYMENTS_CONFIG must be a JSON array or { \"deployments\": [...] }."
+            exit 1
+          }
+
+          current_branch="${GITHUB_REF_NAME}"
+          echo "Branch: ${current_branch}"
+
+          pass_count=0
+          fail_count=0
+          skip_count=0
+
+          # Results written incrementally so the summary step has data even on early exit
+          results_file="/tmp/deploy-results.md"
+          counts_file="/tmp/deploy-counts.env"
+          : > "$results_file"
+
+          while IFS= read -r deployment; do
+            name="$(jq -r '.deployment_name' <<<"$deployment")"
+            enabled="$(jq -r '.enabled // true' <<<"$deployment")"
+            generate_meta="$(jq -r '.generate_meta // false' <<<"$deployment")"
+            branch_match="$(jq -r --arg b "$current_branch" \
+              'if (.branches | any(. == $b)) then "yes" else "no" end' <<<"$deployment")"
+
+            if [ "$enabled" != "true" ]; then
+              skip_count=$((skip_count + 1))
+              echo "| \`${name}\` | ⏭️ Skipped (disabled) |" >> "$results_file"
+              continue
+            fi
+
+            if [ "$branch_match" != "yes" ]; then
+              skip_count=$((skip_count + 1))
+              echo "| \`${name}\` | ⏭️ Skipped (branch: \`${current_branch}\`) |" >> "$results_file"
+              continue
+            fi
+
+            token="$(jq -r '.vercel_token // ""' <<<"$deployment")"
+            org="$(jq -r '.vercel_org_id // ""' <<<"$deployment")"
+            project_id="$(jq -r '.vercel_project_id' <<<"$deployment")"
+
+            [ -n "$token" ] && echo "::add-mask::${token}"
+            [ -n "$org" ]   && echo "::add-mask::${org}"
+
+            export VERCEL_TOKEN="${token:-$VERCEL_TOKEN_DEFAULT}"
+            export VERCEL_ORG_ID="${org:-$VERCEL_ORG_ID_DEFAULT}"
+            export VERCEL_PROJECT_ID="$project_id"
+            export _GENERATE_META="$generate_meta"
+
+            echo "::group::Deploy ${name}"
+
+            deploy_ok=true
+            (
+              set -e
+              vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+              if [ "$_GENERATE_META" = "true" ]; then
+                npm run generate-meta
+              fi
+              export NODE_OPTIONS="--max-old-space-size=4096"
+              vercel build --prod --token="$VERCEL_TOKEN"
+              vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+            ) || deploy_ok=false
+
+            echo "::endgroup::"
+
+            if [ "$deploy_ok" = "true" ]; then
+              pass_count=$((pass_count + 1))
+              echo "| \`${name}\` | ✅ Deployed |" >> "$results_file"
+            else
+              fail_count=$((fail_count + 1))
+              echo "| \`${name}\` | ❌ Failed |" >> "$results_file"
+              echo "::error::Deployment ${name} failed"
+            fi
+
+          done < <(jq -c '.[]' <<<"$normalized")
+
+          # Persist counts for the summary step
+          printf 'pass_count=%s\nfail_count=%s\nskip_count=%s\nbranch=%s\n' \
+            "$pass_count" "$fail_count" "$skip_count" "$current_branch" > "$counts_file"
+
+          total=$((pass_count + fail_count + skip_count))
+          if [ "$total" -eq 0 ]; then
+            echo "No deployments defined in DEPLOYMENTS_CONFIG — nothing to do."
+          fi
+
+          if [ "$fail_count" -gt 0 ]; then
+            exit 1
+          fi
+
+      - name: Deployment summary
+        if: always()
+        run: |
+          results_file="/tmp/deploy-results.md"
+          counts_file="/tmp/deploy-counts.env"
+
+          if [ ! -f "$counts_file" ]; then
+            echo "## Deployment Summary" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "> Workflow did not reach the deployment step." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Load counts written by the deploy step
+          source "$counts_file"
+
+          {
+            echo "## Deployment Summary"
+            echo ""
+            echo "**Branch:** \`${branch}\`"
+            echo ""
+            echo "| Deployment | Status |"
+            echo "|---|---|"
+            [ -f "$results_file" ] && cat "$results_file"
+            echo ""
+            echo "**${pass_count} deployed, ${fail_count} failed, ${skip_count} skipped**"
+          } >> "$GITHUB_STEP_SUMMARY"

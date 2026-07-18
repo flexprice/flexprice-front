@@ -75,6 +75,7 @@ const FeatureTable: FC<Props> = ({ data, onEdit }) => {
 					return (
 						<ActionButton
 							id={row?.id}
+							copyId={{ entityType: 'Feature' }}
 							deleteMutationFn={async () => {
 								return await FeatureApi.deleteFeature(row?.id);
 							}}

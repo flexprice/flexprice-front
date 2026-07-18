@@ -251,10 +251,17 @@
 		"notFoundBackToHome": "Back to Home"
 	},
 	"copyId": {
+		"genericLabel": "Copy ID",
 		"toastFallback": "ID copied to clipboard",
 		"toastWithType": "{{type}} ID copied to clipboard",
 		"titleWithType": "Copy {{type}} ID",
-		"defaultEntityType": "ID"
+		"defaultEntityType": "ID",
+		"lineItemId": "Line item ID",
+		"priceId": "Price ID",
+		"entityTypes": {
+			"lineItem": "Line item",
+			"price": "Price"
+		}
 	},
 	"dateTime": {
 		"placeholderFormat": "MM/DD/YYYY hh:mm aa",
@@ -368,6 +375,7 @@
 		"metered": "Metered",
 		"boolean": "Boolean",
 		"static": "Static",
+		"config": "Config",
 		"unknownFeature": "Unknown Feature",
 		"entitlementOverrideApplied": "Entitlement Override Applied",
 		"noEntitlementsAvailable": "No entitlements available",

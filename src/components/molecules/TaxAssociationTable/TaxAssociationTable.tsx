@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import FlexpriceTable, { ColumnData, RedirectCell } from '../Table';
 import { TaxAssociationResponse } from '@/types/dto/tax';
 import { Chip, ActionButton, Card, CardHeader, AddButton, NoDataCard } from '@/components/atoms';
-import { DropdownMenu } from '@/components/molecules';
+import { DropdownMenu, getCopyIdOption } from '@/components/molecules';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import TaxApi from '@/api/TaxApi';
 import { RouteNames } from '@/core/routes/Routes';
@@ -36,6 +36,7 @@ const RowActions: FC<RowActionsProps> = ({ row, onRemove }) => {
 				isOpen={isOpen}
 				onOpenChange={setIsOpen}
 				options={[
+					getCopyIdOption(row.id, t, { entityType: 'Tax Association' }),
 					{
 						label: t('form.remove'),
 						icon: <TrashIcon />,
@@ -95,6 +96,7 @@ const TaxAssociationTable: FC<Props> = ({ data, onAdd, showDelete = true, refetc
 				return (
 					<ActionButton
 						id={row?.id}
+						copyId={{ entityType: 'Tax Association' }}
 						deleteMutationFn={async () => {
 							return await TaxApi.deleteTaxAssociation(row?.id);
 						}}

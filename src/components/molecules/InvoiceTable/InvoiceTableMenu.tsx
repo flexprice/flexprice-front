@@ -1,8 +1,9 @@
 import { Invoice, INVOICE_STATUS, INVOICE_TYPE } from '@/models/Invoice';
 import { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DropdownMenu, RecordPaymentTopup } from '..';
 import InvoiceDownloadFormatDialog from '../InvoiceDownloadFormatDialog/InvoiceDownloadFormatDialog';
-import { DropdownMenuOption } from '../DropdownMenu/DropdownMenu';
+import { DropdownMenuOption, getCopyIdOption } from '../DropdownMenu/DropdownMenu';
 import { useMutation } from '@tanstack/react-query';
 import InvoiceApi from '@/api/InvoiceApi';
 import toast from 'react-hot-toast';
@@ -20,6 +21,7 @@ interface Props {
 
 const InvoiceTableMenu: FC<Props> = ({ data }) => {
 	const navigate = useNavigate();
+	const { t: tc } = useTranslation('common');
 
 	const { mutate: triggerCommunication } = useMutation({
 		mutationFn: async (invoice_id: string) => {
@@ -77,6 +79,7 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 	});
 
 	const menuOptions: DropdownMenuOption[] = [
+		getCopyIdOption(data.id, tc, { entityType: 'Invoice' }),
 		{
 			label: 'Download Invoice',
 			group: 'Actions',

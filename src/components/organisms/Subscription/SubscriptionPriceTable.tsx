@@ -4,7 +4,7 @@ import { ColumnData, FlexpriceTable, LineItemCoupon } from '@/components/molecul
 import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
 import CommitmentConfigDialog from '@/components/molecules/CommitmentConfigDialog';
 import { Price, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models';
-import { ChevronDownIcon, ChevronUpIcon, Pencil, RotateCcw, Tag, Target, Trash2 } from 'lucide-react';
+import { ChevronDownIcon, ChevronUpIcon, Copy, Pencil, RotateCcw, Tag, Target, Trash2 } from 'lucide-react';
 import { FormHeader, DecimalUsageInput, AddButton } from '@/components/atoms';
 import { ChargeValueCell } from '@/components/molecules';
 import { capitalize } from 'es-toolkit';
@@ -16,7 +16,7 @@ import { ExtendedPriceOverride } from '@/utils';
 import { LineItemCommitmentConfig } from '@/types/dto/LineItemCommitmentConfig';
 import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
 import type { AddedSubscriptionLineItem } from './AddSubscriptionChargeDialog';
-import { getCurrencySymbol } from '@/utils/common/helper_functions';
+import { getCurrencySymbol, copyToClipboard } from '@/utils/common/helper_functions';
 import { formatBillingPeriodForPrice } from '@/utils/common/helper_functions';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { BILLING_PERIOD } from '@/constants/constants';
@@ -24,6 +24,16 @@ import { isOneTimePlanPrice } from '@/utils/subscription/planPricesForSubscripti
 import { useTranslation } from 'react-i18next';
 
 const DEFAULT_ROW_LIMIT = 5;
+
+/**
+ * Resolves the committed quantity from a table-cell input string.
+ * Falls back to `minQuantity` only when the input doesn't parse to a
+ * number at all — a typed "0" must resolve to 0, not fall back.
+ */
+export function resolveQuantityFromInput(value: string, minQuantity: number): number {
+	const parsed = parseInt(value, 10);
+	return Number.isNaN(parsed) ? minQuantity : parsed;
+}
 
 type ChargeTableData = {
 	priceId: string;
@@ -54,6 +64,7 @@ const PriceActionMenu: FC<PriceActionMenuProps> = ({
 	onOpenCoupon,
 }) => {
 	const { t } = useTranslation('customers');
+	const { t: tc } = useTranslation('common');
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	return (
@@ -71,6 +82,13 @@ const PriceActionMenu: FC<PriceActionMenuProps> = ({
 					</button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end' className='w-48'>
+					<DropdownMenuItem
+						onClick={() => {
+							void copyToClipboard(price.id, tc('copyId.toastWithType', { type: 'Price' }));
+						}}>
+						<Copy className='me-2 h-4 w-4' />
+						{tc('copyId.genericLabel')}
+					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => onOverride(price)}>
 						<Pencil className='me-2 h-4 w-4' />
 						{isOverridden ? t('organisms.subscriptionPriceTable.editOverride') : t('organisms.subscriptionPriceTable.overridePrice')}
@@ -150,7 +168,7 @@ const PriceQuantityCell: FC<PriceQuantityCellProps> = ({
 						onQuantityChange('');
 						return;
 					}
-					const quantity = parseInt(value, 10) || minQuantity;
+					const quantity = resolveQuantityFromInput(value, minQuantity);
 
 					if (quantity === minQuantity) {
 						const onlyQuantityOverride =

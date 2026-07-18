@@ -233,10 +233,17 @@
 		"notFoundBackToHome": "العودة إلى الرئيسية"
 	},
 	"copyId": {
+		"genericLabel": "نسخ المعرّف",
 		"toastFallback": "تم نسخ المعرّف إلى الحافظة",
 		"toastWithType": "تم نسخ معرّف {{type}} إلى الحافظة",
 		"titleWithType": "نسخ معرّف {{type}}",
-		"defaultEntityType": "المعرّف"
+		"defaultEntityType": "المعرّف",
+		"lineItemId": "معرّف بند السطر",
+		"priceId": "معرّف السعر",
+		"entityTypes": {
+			"lineItem": "بند السطر",
+			"price": "السعر"
+		}
 	},
 	"dateTime": {
 		"placeholderFormat": "MM/DD/YYYY hh:mm aa",
@@ -363,6 +370,7 @@
 		"metered": "مقاس",
 		"boolean": "منطقي",
 		"static": "ثابت",
+		"config": "تهيئة",
 		"unknownFeature": "ميزة غير معروفة",
 		"entitlementOverrideApplied": "تم تطبيق تجاوز الاستحقاق",
 		"noEntitlementsAvailable": "لا توجد استحقاقات متاحة",

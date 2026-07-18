@@ -7,6 +7,7 @@ import {
 	AddEntitlementDrawer,
 	RedirectCell,
 	DetailsCard,
+	AddonCreditGrantsSection,
 } from '@/components/molecules';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { RouteNames } from '@/core/routes/Routes';
@@ -157,6 +158,7 @@ const getEntitlementColumns = (
 			return (
 				<ActionButton
 					id={row?.id}
+					copyId={{ entityType: 'Entitlement' }}
 					deleteMutationFn={async () => {
 						return await EntitlementApi.delete(row?.id);
 					}}
@@ -334,6 +336,9 @@ const AddonDetails = () => {
 						}
 					/>
 				)}
+
+				{/* Credit Grants Section */}
+				<AddonCreditGrantsSection addonId={addonData.id} />
 
 				{addonData.metadata && Object.keys(addonData.metadata).length > 0 && (
 					<Card variant='notched'>

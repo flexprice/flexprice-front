@@ -51,6 +51,7 @@
 			"title": "Addon Details",
 			"charges": "Charges",
 			"entitlements": "Entitlements",
+			"creditGrants": "Credit Grants",
 			"metadata": "Metadata"
 		},
 		"subscriptionSheet": {
@@ -138,6 +139,23 @@
 		"details": {
 			"title": "Cost Sheet Details",
 			"charges": "Charges",
+			"chargeCount": "{{count}} charges",
+			"searchCharges": "Search charges...",
+			"noDescription": "No description",
+			"noChargesSubtitle": "No charges added to the cost sheet yet",
+			"columns": {
+				"feature": "Feature",
+				"chargeType": "Charge Type",
+				"billingTiming": "Billing Timing",
+				"billingPeriod": "Billing Period",
+				"value": "Value"
+			},
+			"fields": {
+				"costSheetName": "Cost Sheet Name",
+				"lookupKey": "Lookup Key",
+				"status": "Status",
+				"description": "Description"
+			},
 			"metadata": "Metadata"
 		},
 		"toast": {
@@ -406,6 +424,12 @@
 			"creditGrants": "Credit Grants",
 			"entitlements": "Entitlements"
 		},
+		"entitlementsTab": {
+			"configSheet": {
+				"keysCount": "{{count}} keys",
+				"title": "Config Value"
+			}
+		},
 		"information": {
 			"loading": "Loading plan details...",
 			"planDetails": "Plan Details",
@@ -631,12 +655,14 @@
 			"filterTypes": {
 				"metered": "Metered",
 				"boolean": "Boolean",
-				"static": "Static"
+				"static": "Static",
+				"config": "Config"
 			},
 			"typeChips": {
 				"metered": "Metered",
 				"boolean": "Boolean",
 				"static": "Static",
+				"config": "Config",
 				"unknown": "Unknown"
 			},
 			"emptyCell": "—",
@@ -731,6 +757,11 @@
 			"aggregationField": "Aggregation Field*",
 			"aggregationFieldPh": "tokens",
 			"aggregationFieldHelp": "Specify the property in the event data that will be aggregated. e.g. tokens, messages_sent, storage_used.",
+			"customExpressionButton": "Custom expression",
+			"aggregationFieldButton": "Aggregation field",
+			"customExpression": "Custom Expression*",
+			"customExpressionPh": "ceil(duration_ms / 1000)",
+			"customExpressionHelp": "Write a CEL formula evaluated per event to compute the quantity. Variables are top-level property names on your events (e.g. duration_ms, tokens).\n\nAvailable functions: max(a, b), min(a, b), abs(x), ceil(x), floor(x), round(x), pow(x, y), sqrt(x), log(x).\n\nExamples:\n• input_tokens + output_tokens\n• ceil(duration_ms / 1000)\n• min(usage, quota)\n• max(cores * hours * rate, 0.01)\n\nOnly available for SUM, AVG, MAX and LATEST.",
 			"aggregationMultiplier": "Aggregation Multiplier*",
 			"aggregationMultiplierPh": "1",
 			"aggregationMultiplierHelp": "Specify the multiplier for the aggregation. e.g. 1.5, 0.25, or 1000.",
@@ -756,6 +787,7 @@
 			"aggregationDetails": "Aggregation Details",
 			"type": "Type",
 			"value": "Value",
+			"customExpression": "Custom Expression",
 			"unitName": "Unit Name",
 			"displayUnitName": "Display Unit Name",
 			"usageReset": "Usage Reset ",
@@ -839,6 +871,27 @@
 			"detailSep": ", "
 		}
 	},
+	"jsonEditor": {
+		"title": "Config Value (JSON)",
+		"showEditor": "Show Editor",
+		"hideEditor": "Hide Editor",
+		"validJson": "Valid JSON",
+		"errorInvalidJson": "Invalid JSON",
+		"errorMustBeObject": "Must be a JSON object",
+		"lines": "lines"
+	},
+	"configKeyValueEditor": {
+		"title": "Config Values",
+		"addRow": "Add",
+		"keyHeader": "Key",
+		"valueHeader": "Value",
+		"keyPlaceholder": "usage_limit",
+		"valuePlaceholder": "100",
+		"errorDuplicateKey": "Duplicate key: \"{{key}}\"",
+		"errorEmptyValue": "Value is required",
+		"errorEmptyKey": "Key is required",
+		"removeRow": "Remove row"
+	},
 	"entitlements": {
 		"usageResetPeriod": {
 			"DAILY": "Daily",
@@ -888,7 +941,8 @@
 			"save": "Save",
 			"unlimitedDisplay": "Unlimited",
 			"calculatorAriaLabel": "Display value calculator",
-			"unitsFallback": "units"
+			"unitsFallback": "units",
+			"configValueRequired": "A valid JSON object is required for config features"
 		},
 		"displayCalculator": {
 			"titleFallback": "Display value",
@@ -931,6 +985,7 @@
 			"tooltipUsageLimit": "Usage Limit: {{from}} → {{to}}",
 			"tooltipStaticValue": "Static Value: {{from}} → {{to}}",
 			"tooltipStatus": "Status: {{from}} → {{to}}",
+			"tooltipConfig": "Config value overridden for this subscription",
 			"valuePlaceholder": "--",
 			"perPeriodSuffix": " / {{period}}",
 			"featureTypeMetered": "Metered",

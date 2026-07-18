@@ -1,6 +1,16 @@
 export type {
+	CreateAlertSettingsRequest,
+	UpdateAlertSettingsRequest,
+	AlertSettingResponse,
+	AlertSettingsFilter,
+	SearchAlertSettingsRequest,
+	SearchAlertSettingsResponse,
+} from './AlertSetting';
+
+export type {
 	CreateFeatureRequest,
 	UpdateFeatureRequest,
+	FeatureFormData,
 	FeatureResponse,
 	ListFeaturesResponse,
 	FeatureFilter,
@@ -328,8 +338,11 @@ export { NomodWebhookEvents, getDefaultNomodWebhookEvents } from '../enums/Nomod
 
 export { QuickBooksWebhookEvents, getDefaultQuickBooksWebhookEvents } from '../enums/QuickBooksWebhookEvents';
 
+export { PaddleWebhookEvents, getDefaultPaddleWebhookEvents } from '../enums/PaddleWebhookEvents';
+
 // Additional DTO types
 export type { Testimonial } from './Testimonial';
+export type { CustomerLogo } from './CustomerLogo';
 
 export type {
 	CreateGroupRequest,

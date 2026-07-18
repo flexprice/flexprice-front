@@ -36,6 +36,7 @@ import { Invoice } from '@/models/Invoice';
 import type { WalletTransaction } from '@/models/WalletTransaction';
 import { Coupon } from '@/models/Coupon';
 import Customer from '@/models/Customer';
+import { JsonObject } from '@/types/common';
 
 // Re-export existing enums for convenience
 export { BILLING_PERIOD } from '@/constants/constants';
@@ -367,8 +368,7 @@ export interface CreateSubscriptionRequest {
 	// Proration behavior
 	proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
 
-	// Customer timezone
-	customer_timezone?: string;
+	timezone?: string;
 
 	// Entitlement overrides
 	override_entitlements?: EntitlementOverrideRequest[];
@@ -777,6 +777,7 @@ export interface EntitlementOverrideRequest {
 	usage_limit?: number | null;
 	static_value?: string;
 	is_enabled?: boolean;
+	config_value?: JsonObject;
 }
 
 // =============================================================================
@@ -790,6 +791,7 @@ export interface SubscriptionEntitlementSource {
 	usage_limit?: number | null;
 	static_value?: string;
 	is_enabled?: boolean;
+	config_value?: JsonObject | null;
 }
 
 export interface SubscriptionEntitlementEffective {
@@ -801,6 +803,11 @@ export interface SubscriptionEntitlementEffective {
 	/** Present on EntitlementSource rows, not on aggregated entitlement */
 	static_value?: string;
 	is_soft_limit?: boolean;
+	/** Aggregated config values array (backend field name: config_values) */
+	config_values?: JsonObject[];
+	/** Present on EntitlementSource rows */
+	config_value?: JsonObject | null;
+	id?: string;
 }
 
 export interface SubscriptionEntitlementFeature {

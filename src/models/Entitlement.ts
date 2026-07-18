@@ -1,3 +1,4 @@
+import { JsonObject } from '@/types/common';
 import { BaseModel } from './base';
 import Feature from './Feature';
 
@@ -35,4 +36,5 @@ export interface Entitlement extends BaseModel {
 	readonly start_date?: string;
 	/** ISO date string. Optional end date for the entitlement. */
 	readonly end_date?: string;
+	readonly config_value?: JsonObject | null;
 }

@@ -1,1 +1,2 @@
-export { default } from './ShortPagination';
+export { default, ShortPaginationControls } from './ShortPagination';
+export type { ShortPaginationControlsProps } from './ShortPagination';

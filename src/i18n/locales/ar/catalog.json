@@ -51,6 +51,7 @@
 			"title": "تفاصيل الإضافة",
 			"charges": "الرسوم",
 			"entitlements": "الاستحقاقات",
+			"creditGrants": "منح الرصيد",
 			"metadata": "البيانات الوصفية"
 		},
 		"subscriptionSheet": {
@@ -138,6 +139,23 @@
 		"details": {
 			"title": "تفاصيل جدول التكلفة",
 			"charges": "الرسوم",
+			"chargeCount": "{{count}} رسوم",
+			"searchCharges": "البحث في الرسوم...",
+			"noDescription": "لا يوجد وصف",
+			"noChargesSubtitle": "لم تُضف أي رسوم إلى جدول التكلفة بعد",
+			"columns": {
+				"feature": "الميزة",
+				"chargeType": "نوع الرسوم",
+				"billingTiming": "توقيت الفوترة",
+				"billingPeriod": "فترة الفوترة",
+				"value": "القيمة"
+			},
+			"fields": {
+				"costSheetName": "اسم جدول التكلفة",
+				"lookupKey": "مفتاح البحث",
+				"status": "الحالة",
+				"description": "الوصف"
+			},
 			"metadata": "البيانات الوصفية"
 		},
 		"toast": {
@@ -406,6 +424,12 @@
 			"creditGrants": "منح الرصيد",
 			"entitlements": "الاستحقاقات"
 		},
+		"entitlementsTab": {
+			"configSheet": {
+				"keysCount": "{{count}} مفاتيح",
+				"title": "قيمة الإعداد"
+			}
+		},
 		"information": {
 			"loading": "جاري تحميل تفاصيل الخطة…",
 			"planDetails": "تفاصيل الخطة",
@@ -631,12 +655,14 @@
 			"filterTypes": {
 				"metered": "مُقاس",
 				"boolean": "منطقي",
-				"static": "ثابت"
+				"static": "ثابت",
+				"config": "إعداد"
 			},
 			"typeChips": {
 				"metered": "مُقاس",
 				"boolean": "منطقي",
 				"static": "ثابت",
+				"config": "إعداد",
 				"unknown": "غير معروف"
 			},
 			"emptyCell": "—",
@@ -732,6 +758,11 @@
 			"aggregationFieldPh": "tokens",
 			"aggregationFieldHelp": "حدد الخاصية في بيانات الحدث التي ستُجمَّع، مثل tokens وmessages_sent وstorage_used.",
 			"aggregationMultiplier": "مضاعف التجميع*",
+			"customExpressionButton": "تعبير مخصص",
+			"aggregationFieldButton": "حقل التجميع",
+			"customExpression": "تعبير مخصص*",
+			"customExpressionPh": "ceil(duration_ms / 1000)",
+			"customExpressionHelp": "اكتب صيغة CEL تُحسب لكل حدث لحساب الكمية. المتغيرات هي أسماء الخصائص ذات المستوى الأعلى في الأحداث (مثل duration_ms وtokens).\n\nالدوال المتاحة: max(a, b)، min(a, b)، abs(x)، ceil(x)، floor(x)، round(x)، pow(x, y)، sqrt(x)، log(x).\n\nأمثلة:\n• input_tokens + output_tokens\n• ceil(duration_ms / 1000)\n• min(usage, quota)\n• max(cores * hours * rate, 0.01)\n\nمتاح فقط لـ SUM وAVG وMAX وLATEST.",
 			"aggregationMultiplierPh": "1",
 			"aggregationMultiplierHelp": "حدد المضاعف للتجميع، مثل 1.5 أو 0.25 أو 1000.",
 			"bucketSizeButton": "حجم الدفعة",
@@ -756,6 +787,7 @@
 			"aggregationDetails": "تفاصيل التجميع",
 			"type": "النوع",
 			"value": "القيمة",
+			"customExpression": "تعبير مخصص",
 			"unitName": "اسم الوحدة",
 			"displayUnitName": "اسم وحدة العرض",
 			"usageReset": "إعادة ضبط الاستخدام ",
@@ -839,6 +871,27 @@
 			"detailSep": "، "
 		}
 	},
+	"jsonEditor": {
+		"title": "قيمة الإعداد (JSON)",
+		"showEditor": "إظهار المحرر",
+		"hideEditor": "إخفاء المحرر",
+		"validJson": "JSON صالح",
+		"errorInvalidJson": "JSON غير صالح",
+		"errorMustBeObject": "يجب أن يكون كائن JSON",
+		"lines": "سطور"
+	},
+	"configKeyValueEditor": {
+		"title": "قيم الإعداد",
+		"addRow": "إضافة",
+		"keyHeader": "المفتاح",
+		"valueHeader": "القيمة",
+		"keyPlaceholder": "usage_limit",
+		"valuePlaceholder": "100",
+		"errorDuplicateKey": "مفتاح مكرر: \"{{key}}\"",
+		"errorEmptyValue": "القيمة مطلوبة",
+		"errorEmptyKey": "المفتاح مطلوب",
+		"removeRow": "إزالة الصف"
+	},
 	"entitlements": {
 		"usageResetPeriod": {
 			"DAILY": "يومي",
@@ -888,7 +941,8 @@
 			"save": "حفظ",
 			"unlimitedDisplay": "غير محدود",
 			"calculatorAriaLabel": "آلة حاسبة للقيمة المعروضة",
-			"unitsFallback": "وحدات"
+			"unitsFallback": "وحدات",
+			"configValueRequired": "كائن JSON صالح مطلوب لميزات الإعداد"
 		},
 		"displayCalculator": {
 			"titleFallback": "القيمة المعروضة",
@@ -931,6 +985,7 @@
 			"tooltipUsageLimit": "حد الاستخدام: {{from}} → {{to}}",
 			"tooltipStaticValue": "القيمة الثابتة: {{from}} → {{to}}",
 			"tooltipStatus": "الحالة: {{from}} → {{to}}",
+			"tooltipConfig": "تم تجاوز قيمة التكوين لهذا الاشتراك",
 			"valuePlaceholder": "--",
 			"perPeriodSuffix": " / {{period}}",
 			"featureTypeMetered": "مقاس",

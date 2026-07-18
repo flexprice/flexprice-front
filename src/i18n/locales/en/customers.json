@@ -67,6 +67,7 @@
 			"state": "State",
 			"city": "City",
 			"postalCode": "Postal Code",
+			"timezone": "Timezone",
 			"subscriptionAmount": "Subscription Amount",
 			"subscriptionStartDate": "Subscription Start Date"
 		},
@@ -197,6 +198,7 @@
 			"static": "Static",
 			"metered": "Metered",
 			"boolean": "Boolean",
+			"config": "Config",
 			"dash": "--",
 			"usageProgressUnlimited": "{{usage}} / Unlimited"
 		},
@@ -236,6 +238,7 @@
 		"billingCycle": "Billing cycle",
 		"commitmentPeriod": "Commitment Period",
 		"paymentTerms": "Payment terms",
+		"timezone": "Timezone",
 		"invoicingCustomer": "Invoicing Customer",
 		"parentCustomer": "Parent customer",
 		"commitmentLabel": "Commitment",
@@ -301,10 +304,12 @@
 			"expandAll": "Expand all",
 			"totalUsage": "Total Usage",
 			"totalCost": "Total Cost",
+			"cogs": "Cost",
 			"tableEmpty": "--"
 		},
 		"information": {
 			"saveCardOnStripe": "Save Card on Stripe",
+			"setupAutopayMoyasar": "Setup Autopay",
 			"sharePortalLinkTitle": "Share Customer Portal Link",
 			"childCustomersTitle": "Child customers"
 		},
@@ -349,6 +354,34 @@
 			"noMetadataTitle": "No metadata",
 			"noMetadataHint": "Add custom metadata to store additional information about this wallet."
 		}
+	},
+	"moyasarAutopay": {
+		"title": "Setup Autopay with Moyasar",
+		"intro": "Enter card details to enable autopay. The card is securely tokenized by Moyasar.",
+		"setupCard": "Set up card",
+		"loadingForm": "Loading secure card form…",
+		"savingCard": "Saving card…",
+		"successTitle": "Autopay is enabled. Future invoices for this customer will be charged automatically.",
+		"alreadyConfiguredTitle": "Autopay already configured",
+		"alreadyConfiguredDesc": "This customer already has a saved payment method. Remove it first to register a new card.",
+		"done": "Done",
+		"toastEnabled": "Autopay enabled. Future invoices will be charged automatically.",
+		"toastInitFailed": "Failed to initialize Moyasar autopay",
+		"toastSaveFailed": "Failed to save card",
+		"toastScriptFailed": "Moyasar.js failed to load. Please refresh and try again.",
+		"toastNoToken": "No card token returned from Moyasar",
+		"toastParseTokenFailed": "Failed to parse checkout token",
+		"loadingSetup": "Completing card setup…",
+		"formTitle": "Save card for autopay",
+		"formDesc": "We’ll charge 1 SAR to verify your card, then refund it automatically.",
+		"formLoadFailed": "Failed to load payment form. Please refresh.",
+		"cardSavedTitle": "Card saved successfully",
+		"cardSavedDescription": "Your card has been saved and autopay is now active. Future invoices will be charged automatically.",
+		"cardSetupInProgressTitle": "Card setup in progress",
+		"cardSetupInProgressDescription": "Your card is being verified. This usually completes within a few minutes. You can safely close this page.",
+		"cardSetupFailedTitle": "Card setup failed",
+		"cardSetupFailedDefaultDescription": "Something went wrong. Please try again.",
+		"tryAgain": "Try again"
 	},
 	"organisms": {
 		"phaseForm": {

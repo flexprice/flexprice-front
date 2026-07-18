@@ -43,6 +43,15 @@ export const getFeatureTypeChips = ({
 					label={showLabel ? i18n.t('usageTable.featureTypes.boolean', { ns: CUSTOMERS_NS }) : undefined}
 				/>
 			);
+		case FEATURE_TYPE.CONFIG:
+			return (
+				<Chip
+					textColor='#5B21B6'
+					bgColor='#F5F3FF'
+					icon={showIcon && icon}
+					label={showLabel ? i18n.t('usageTable.featureTypes.config', { ns: CUSTOMERS_NS, defaultValue: 'Config' }) : undefined}
+				/>
+			);
 		default:
 			return (
 				<Chip

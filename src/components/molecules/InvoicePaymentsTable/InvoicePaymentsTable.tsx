@@ -8,7 +8,7 @@ import { CreditCard, Banknote, Receipt, CircleDollarSign, ExternalLink, Copy, Ey
 import { RouteNames } from '@/core/routes/Routes';
 import { RedirectCell } from '../Table';
 import { PAYMENT_METHOD_TYPE } from '@/constants';
-import DropdownMenu, { DropdownMenuOption } from '../DropdownMenu';
+import DropdownMenu, { DropdownMenuOption, getCopyIdOption } from '../DropdownMenu';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 
@@ -55,6 +55,7 @@ const PAYMENT_STATUS_CONFIG = {
 
 const PaymentTableMenu: FC<PaymentTableMenuProps> = ({ payment }) => {
 	const navigate = useNavigate();
+	const { t: tc } = useTranslation('common');
 	const handleCopyPaymentLink = useCallback(async () => {
 		if (!payment.payment_url) return;
 
@@ -73,6 +74,7 @@ const PaymentTableMenu: FC<PaymentTableMenuProps> = ({ payment }) => {
 		const isEnabled = isPaymentLink && hasPaymentUrl;
 
 		const options = [
+			getCopyIdOption(payment.id, tc, { entityType: 'Payment' }),
 			{
 				label: 'View Invoice',
 				icon: <Eye className='w-4 h-4' />,
@@ -93,7 +95,16 @@ const PaymentTableMenu: FC<PaymentTableMenuProps> = ({ payment }) => {
 		}
 
 		return options;
-	}, [payment.payment_method_type, payment.payment_url, handleCopyPaymentLink, navigate, payment.destination_id, payment.destination_type]);
+	}, [
+		payment.payment_method_type,
+		payment.payment_url,
+		handleCopyPaymentLink,
+		navigate,
+		payment.destination_id,
+		payment.destination_type,
+		payment.id,
+		tc,
+	]);
 
 	return <DropdownMenu options={menuOptions} />;
 };

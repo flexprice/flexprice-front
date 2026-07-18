@@ -49,6 +49,17 @@ class PaymentApi {
 		}>(`${this.baseUrl}/customers/${customerId}/setup/intent`, data);
 	}
 
+	public static async getMoyasarSetupIntent(customerId: string, successUrl?: string) {
+		return await AxiosClient.post<{
+			status: string;
+			customer_id: string;
+			checkout_url: string;
+		}>(`${this.baseUrl}/customers/${customerId}/setup/intent`, {
+			provider: 'moyasar',
+			success_url: successUrl ?? window.location.origin,
+		});
+	}
+
 	public static async processPayment(id: string): Promise<Payment> {
 		return await AxiosClient.post<Payment>(`${this.baseUrl}/${id}/process`);
 	}

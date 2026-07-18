@@ -158,6 +158,7 @@ const AddonsPage = () => {
 					return (
 						<ActionButton
 							id={row?.id}
+							copyId={{ entityType: 'Addon' }}
 							deleteMutationFn={async () => {
 								return await AddonApi.Delete(row?.id);
 							}}

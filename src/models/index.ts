@@ -2,6 +2,10 @@
 export type { BaseModel, Metadata } from './base';
 export { ENTITY_STATUS } from './base';
 
+// AlertSetting
+export type { AlertSetting, AlertSettingsConfig, SpendAlertThreshold } from './AlertSetting';
+export { SpendAlertLevel, ALERT_ENTITY_TYPE } from './AlertSetting';
+
 // Addon
 export type { default as Addon } from './Addon';
 

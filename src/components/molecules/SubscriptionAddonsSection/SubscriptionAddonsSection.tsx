@@ -2,7 +2,7 @@ import { FC, useState, useMemo, useCallback, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Copy } from 'lucide-react';
 import { Button, Card, CardHeader, Chip, DatePicker, Dialog, AddButton, Select, Tooltip, NoDataCard } from '@/components/atoms';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -12,7 +12,7 @@ import { ADDON_ASSOCIATION_STATUS } from '@/models/AddonAssociation';
 import { AddonAssociationResponse } from '@/types/dto/Subscription';
 import { ADDON_PRORATION_BEHAVIOR } from '@/types/dto/Addon';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { toSentenceCase } from '@/utils/common/helper_functions';
+import { toSentenceCase, copyToClipboard } from '@/utils/common/helper_functions';
 import { Price, PRICE_TYPE } from '@/models/Price';
 import { getCurrentPriceAmount } from '@/utils/common/price_override_helpers';
 import { getTotalPayableTextWithCoupons } from '@/utils/common/helper_functions';
@@ -327,6 +327,15 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 									</button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align='end'>
+									<DropdownMenuItem
+										onSelect={(e) => {
+											e.preventDefault();
+											void copyToClipboard(row.id, t('copyId.toastWithType', { type: 'Addon' }));
+										}}
+										className='flex gap-2 items-center cursor-pointer'>
+										<Copy className='h-4 w-4' />
+										<span>{t('copyId.genericLabel')}</span>
+									</DropdownMenuItem>
 									<DropdownMenuItem
 										disabled={hasEndDate}
 										onSelect={(e) => {

@@ -1,5 +1,5 @@
 import { Card, FormHeader, Page, Spacer, Chip } from '@/components/atoms';
-import { SubscriptionAddonsSection, UpcomingCreditGrantApplicationsTable } from '@/components/molecules';
+import { IntegrationMappingCard, SubscriptionAddonsSection, UpcomingCreditGrantApplicationsTable } from '@/components/molecules';
 import SubscriptionDetailChargesSection from '@/components/molecules/Subscription/SubscriptionDetailChargesSection';
 import FlexpriceTable, { ColumnData, RedirectCell } from '@/components/molecules/Table';
 import { SubscriptionPreviewLineItemTable } from '@/components/molecules/InvoiceLineItemTable';
@@ -21,7 +21,7 @@ import { TAXRATE_ENTITY_TYPE } from '@/models/Tax';
 import TaxAssociationTable from '@/components/molecules/TaxAssociationTable';
 import CouponAssociationTable from '@/components/molecules/CouponAssociationTable/CouponAssociationTable';
 import { Subscription as SubscriptionType, SUBSCRIPTION_STATUS, SUBSCRIPTION_TYPE } from '@/models/Subscription';
-import { EXPAND } from '@/models';
+import { ENTITY_STATUS, EXPAND } from '@/models';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 import { SubscriptionResponse } from '@/types/dto/Subscription';
 import { generateExpandQueryParams } from '@/utils/common/api_helper';
@@ -190,6 +190,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				limit: 100,
 				offset: 0,
 				expand: generateExpandQueryParams([EXPAND.PLAN, EXPAND.CUSTOMER]),
+				status: ENTITY_STATUS.PUBLISHED,
 			}),
 		enabled: !!subscription_id && !!subscriptionDetails,
 	});
@@ -369,6 +370,16 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				</div>
 				<Spacer className='!my-4' />
 
+				{subscriptionDetails?.timezone?.trim() && (
+					<>
+						<div className='w-full flex justify-between items-center'>
+							<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.timezone')}</p>
+							<p className='text-[#09090B] text-sm'>{subscriptionDetails.timezone}</p>
+						</div>
+						<Spacer className='!my-4' />
+					</>
+				)}
+
 				{subscriptionDetails?.invoicing_customer_id && (
 					<>
 						<div className='w-full flex justify-between items-center'>
@@ -439,6 +450,13 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				</div>
 				<Spacer className='!my-4' />
 			</Card>
+
+			{/* third-party integration mappings (e.g. AWS Marketplace license_arn) */}
+			{subscription_id && (
+				<div className='mt-8'>
+					<IntegrationMappingCard entityType='subscription' entityId={subscription_id} />
+				</div>
+			)}
 
 			{/* subscription schedule */}
 			{subscriptionDetails?.schedule?.phases?.length && subscriptionDetails?.schedule?.phases?.length > 0 && (

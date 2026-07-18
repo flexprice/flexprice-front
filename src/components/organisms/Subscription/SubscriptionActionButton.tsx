@@ -6,12 +6,14 @@ import {
 	SUBSCRIPTION_STATUS,
 } from '@/models/Subscription';
 import { useMutation } from '@tanstack/react-query';
-import { X, Plus, Pencil, Play } from 'lucide-react';
+import { X, Plus, Pencil, Play, Bell } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { DatePicker, Label, Modal, Input, Button, FormHeader, Spacer, Select, Toggle } from '@/components/atoms';
 import { toast } from 'react-hot-toast';
-import DropdownMenu, { DropdownMenuOption } from '@/components/molecules/DropdownMenu/DropdownMenu';
+import DropdownMenu, { DropdownMenuOption, getCopyIdOption } from '@/components/molecules/DropdownMenu/DropdownMenu';
+import { AlertSettingsDialog } from '@/components/molecules';
+import { ALERT_ENTITY_TYPE } from '@/models/AlertSetting';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { isInheritedSubscription } from '@/utils/subscription/isInheritedSubscription';
 import { useNavigate } from 'react-router';
@@ -25,12 +27,14 @@ interface Props {
 const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation(['customers', 'common']);
+	const { t: tc } = useTranslation('common');
 	const [state, setState] = useState({
 		// isPauseModalOpen: false,
 		// isResumeModalOpen: false,
 		isCancelModalOpen: false,
 		isAddPhaseModalOpen: false,
 		isActivateModalOpen: false,
+		isAlertSettingsOpen: false,
 		// pauseStartDate: new Date(),
 		// pauseDays: '',
 		// pauseReason: '',
@@ -149,6 +153,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 	const readOnly = isInheritedSubscription(subscription);
 
 	const menuOptions: DropdownMenuOption[] = [
+		getCopyIdOption(subscription.id, tc, { entityType: 'Subscription' }),
 		...(isDraft
 			? [
 					{
@@ -164,6 +169,12 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			icon: <Pencil className='h-4 w-4' />,
 			onSelect: () => navigate(`${RouteNames.subscriptions}/${subscription.id}/edit`),
 			disabled: isCancelled || readOnly,
+		},
+		{
+			label: 'Alert Settings',
+			icon: <Bell className='h-4 w-4' />,
+			onSelect: () => setState((prev) => ({ ...prev, isAlertSettingsOpen: true })),
+			disabled: readOnly,
 		},
 		...(!isCancelled && !isDraft
 			? [
@@ -350,6 +361,15 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 					</div>
 				</div>
 			</Modal>
+
+			{/* Alert Settings Dialog */}
+			<AlertSettingsDialog
+				open={state.isAlertSettingsOpen}
+				onClose={() => setState((prev) => ({ ...prev, isAlertSettingsOpen: false }))}
+				entityType={ALERT_ENTITY_TYPE.SUBSCRIPTION}
+				entityId={subscription.id}
+				currency={subscription.currency}
+			/>
 		</>
 	);
 };

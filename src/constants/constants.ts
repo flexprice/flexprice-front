@@ -37,9 +37,7 @@ export enum TIME_PERIOD {
 /** ISO 4217 codes valid but absent from iso-country-currency (funds, SDRs, etc.). */
 type SupplementalIsoCurrency = { currency: string; symbol: string };
 
-const SUPPLEMENTAL_ISO_CURRENCIES: SupplementalIsoCurrency[] = [
-	{ currency: 'CLF', symbol: 'CLF' },
-];
+const SUPPLEMENTAL_ISO_CURRENCIES: SupplementalIsoCurrency[] = [{ currency: 'CLF', symbol: 'CLF' }];
 
 export const getCurrencyOptions = () => {
 	const codes = getAllISOCodes();

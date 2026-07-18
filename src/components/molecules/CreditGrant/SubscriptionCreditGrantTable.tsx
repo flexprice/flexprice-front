@@ -113,6 +113,7 @@ const SubscriptionCreditGrantTable: React.FC<Props> = ({
 				return (
 					<ActionButton
 						id={row.id}
+						copyId={{ entityType: 'Credit Grant' }}
 						deleteMutationFn={() => handleDelete(row.id)}
 						refetchQueryKey='credit_grants'
 						entityName={row.name}

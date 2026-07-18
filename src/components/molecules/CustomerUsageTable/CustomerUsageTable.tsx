@@ -61,6 +61,11 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					);
 				case FEATURE_TYPE.BOOLEAN:
 					return usageRow.is_enabled ? t('usageTable.booleanTrue') : t('usageTable.booleanFalse');
+				case FEATURE_TYPE.CONFIG: {
+					const configVal = usageRow.sources?.[0]?.config_value;
+					if (!configVal || Object.keys(configVal).length === 0) return t('usageTable.fallback');
+					return <span className='font-mono text-xs text-muted-foreground truncate max-w-[200px] block'>{JSON.stringify(configVal)}</span>;
+				}
 				default:
 					return t('usageTable.fallback');
 			}
