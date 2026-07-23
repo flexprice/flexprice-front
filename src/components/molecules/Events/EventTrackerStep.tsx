@@ -17,22 +17,22 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 
 	const renderStepIcon = () => {
 		if (isIngested) {
-			return <CheckCircle2 className='h-5 w-5 text-emerald-500' />;
+			return <CheckCircle2 className='h-5 w-5 text-success' />;
 		}
 
 		switch (status) {
 			case 'attributed':
 			case 'found':
-				return <CheckCircle2 className='h-5 w-5 text-emerald-500' />;
+				return <CheckCircle2 className='h-5 w-5 text-success' />;
 			case 'processing':
-				return <Circle className='h-5 w-5 text-blue-500' />;
+				return <Circle className='h-5 w-5 text-info' />;
 			case 'not_found':
-				return <XCircle className='h-5 w-5 text-amber-500' />;
+				return <XCircle className='h-5 w-5 text-warning' />;
 			case 'error':
-				return <XCircle className='h-5 w-5 text-red-500' />;
+				return <XCircle className='h-5 w-5 text-destructive' />;
 			default:
 				// unprocessed — step not yet reached
-				return <Circle className='h-5 w-5 text-slate-300' />;
+				return <Circle className='h-5 w-5 text-muted-foreground/40' />;
 		}
 	};
 
@@ -56,13 +56,13 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 	const statusText = renderStepStatusText();
 	const statusColorClass =
 		status === 'found' || status === 'attributed'
-			? 'text-emerald-600'
+			? 'text-success'
 			: status === 'processing'
-				? 'text-blue-600'
+				? 'text-info'
 				: status === 'not_found'
-					? 'text-amber-600'
+					? 'text-warning'
 					: status === 'error'
-						? 'text-red-600'
+						? 'text-destructive'
 						: 'text-muted-foreground';
 
 	const formatTimestamp = (ts?: string) => {

@@ -24,11 +24,11 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 				return (
 					<div
 						key={`${pe.subscription_id}-${pe.sub_line_item_id}-${idx}`}
-						className='group relative rounded-xl border border-border bg-gradient-to-br from-white to-gray-50/50 p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-border'>
+						className='group relative rounded-xl border border-border bg-gradient-to-br from-card to-muted/40 p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-border'>
 						<div className='flex items-center justify-between mb-5 pb-4 border-b border-border'>
 							<div className='flex items-center gap-2.5'>
-								<div className='flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100'>
-									<CheckCircle2 className='w-4 h-4 text-emerald-600' />
+								<div className='flex items-center justify-center w-7 h-7 rounded-full bg-success-muted'>
+									<CheckCircle2 className='w-4 h-4 text-success-muted-foreground' />
 								</div>
 								<span className='text-xs font-semibold text-foreground'>{t('events.processed.eventNumber', { n: idx + 1 })}</span>
 							</div>
@@ -62,7 +62,7 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 									<button
 										type='button'
 										onClick={() => onOpenSubscription?.(pe.subscription_id)}
-										className='text-blue-600 hover:text-blue-700 hover:underline text-start text-xs transition-colors'>
+										className='text-info hover:text-info-muted-foreground hover:underline text-start text-xs transition-colors'>
 										{pe.subscription_id}
 									</button>
 								)}
