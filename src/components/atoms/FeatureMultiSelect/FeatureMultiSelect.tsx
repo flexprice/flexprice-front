@@ -139,7 +139,7 @@ const FeatureMultiSelect: FC<Props> = ({
 				}}
 			/>
 			{description && <p className='text-sm text-muted-foreground mt-1'>{description}</p>}
-			{error && <p className='text-sm text-red-500 mt-1'>{error}</p>}
+			{error && <p className='text-sm text-destructive mt-1'>{error}</p>}
 		</div>
 	);
 };
