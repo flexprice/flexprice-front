@@ -57,7 +57,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 			),
 			bordered: 'border-2 border-border',
 			elevated: 'border border-border shadow-lg',
-			warning: ' border border-red-200 text-red-600',
+			warning: ' border border-destructive/20 text-destructive',
 		};
 
 		return (
