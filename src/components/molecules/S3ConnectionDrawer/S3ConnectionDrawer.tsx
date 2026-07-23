@@ -231,9 +231,9 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 				)}
 
 				{/* Security Note */}
-				<div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
-					<h4 className='font-medium text-blue-900 mb-2'>{t('connection.s3.securityNote')}</h4>
-					<p className='text-sm text-blue-800'>
+				<div className='bg-info-muted border border-info-muted-foreground/20 rounded-lg p-4'>
+					<h4 className='font-medium text-info-muted-foreground mb-2'>{t('connection.s3.securityNote')}</h4>
+					<p className='text-sm text-info-muted-foreground'>
 						{formData.is_flexprice_managed ? t('connection.s3.securityFlexprice') : t('connection.s3.securityAws')}
 					</p>
 				</div>

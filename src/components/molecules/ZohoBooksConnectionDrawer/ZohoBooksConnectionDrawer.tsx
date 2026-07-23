@@ -247,9 +247,9 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 					disabled={!!connection}
 				/>
 
-				<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
-					<h3 className='text-sm font-medium text-blue-800 mb-3'>{t('connection.zohoBooks.webhookSection')}</h3>
-					<p className='text-xs text-blue-700 mb-4'>
+				<div className='p-4 bg-info-muted border border-info-muted-foreground/20 rounded-lg'>
+					<h3 className='text-sm font-medium text-info-muted-foreground mb-3'>{t('connection.zohoBooks.webhookSection')}</h3>
+					<p className='text-xs text-info-muted-foreground mb-4'>
 						<Trans
 							ns='settings'
 							i18nKey='connection.zohoBooks.webhookBodyHtml'
@@ -257,8 +257,8 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 						/>
 					</p>
 					<div className='mb-4'>
-						<label className='block text-sm font-medium text-blue-800 mb-2'>{t('connection.webhook.url')}</label>
-						<div className='flex items-center gap-2 p-2 bg-card border border-blue-200 rounded-md'>
+						<label className='block text-sm font-medium text-info-muted-foreground mb-2'>{t('connection.webhook.url')}</label>
+						<div className='flex items-center gap-2 p-2 bg-card border border-info-muted-foreground/20 rounded-md'>
 							<code className='flex-1 text-xs text-foreground font-mono break-all'>
 								{webhookUrl || t('connection.zohoBooks.selectTenantForUrl')}
 							</code>
@@ -286,10 +286,10 @@ const ZohoBooksConnectionDrawer: FC<ZohoBooksConnectionDrawerProps> = ({ isOpen,
 					/>
 				</div>
 
-				<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
-					<h3 className='text-sm font-medium text-blue-800 mb-2'>{t('connection.zohoBooks.oauthRedirectTitle')}</h3>
-					<p className='text-xs text-blue-700 mb-2'>{t('connection.zohoBooks.oauthRedirectBody')}</p>
-					<div className='flex items-center gap-2 p-2 bg-card border border-blue-200 rounded-md mt-2'>
+				<div className='p-4 bg-info-muted border border-info-muted-foreground/20 rounded-lg'>
+					<h3 className='text-sm font-medium text-info-muted-foreground mb-2'>{t('connection.zohoBooks.oauthRedirectTitle')}</h3>
+					<p className='text-xs text-info-muted-foreground mb-2'>{t('connection.zohoBooks.oauthRedirectBody')}</p>
+					<div className='flex items-center gap-2 p-2 bg-card border border-info-muted-foreground/20 rounded-md mt-2'>
 						<code className='flex-1 text-xs text-foreground font-mono break-all'>{redirectUri}</code>
 						<Button size='xs' variant='outline' onClick={handleCopyRedirectUri} className='flex items-center gap-1'>
 							{redirectUriCopied ? <CheckCircle className='w-3 h-3' /> : <Copy className='w-3 h-3' />}

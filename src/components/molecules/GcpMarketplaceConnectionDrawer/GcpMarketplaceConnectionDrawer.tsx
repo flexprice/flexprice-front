@@ -334,7 +334,7 @@ const GcpMarketplaceConnectionDrawer: FC<GcpMarketplaceConnectionDrawerProps> = 
 							</div>
 
 							{(!flexpriceAwsAccountId || !flexpriceAwsRoleName) && (
-								<p className='text-xs text-amber-600'>{t('connection.gcpMarketplace.accountIdMissing')}</p>
+								<p className='text-xs text-warning'>{t('connection.gcpMarketplace.accountIdMissing')}</p>
 							)}
 						</div>
 

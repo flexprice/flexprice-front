@@ -387,21 +387,21 @@ const HubSpotConnectionDrawer: FC<HubSpotConnectionDrawerProps> = ({ isOpen, onO
 				</div>
 
 				{/* Scopes Section */}
-				<div className='p-4 bg-amber-50 border border-amber-200 rounded-lg'>
+				<div className='p-4 bg-warning-muted border border-warning-muted-foreground/20 rounded-lg'>
 					<button
 						type='button'
 						onClick={() => setIsScopesExpanded(!isScopesExpanded)}
-						className='flex items-center gap-2 text-sm font-medium text-amber-800 hover:text-amber-900 mb-2'>
+						className='flex items-center gap-2 text-sm font-medium text-warning-muted-foreground hover:text-warning-muted-foreground mb-2'>
 						{isScopesExpanded ? <ChevronDown className='w-4 h-4' /> : <ChevronRight className='w-4 h-4' />}
 						{t('connection.scopes.requiredScopes')}
 					</button>
 
 					{isScopesExpanded && (
-						<div className='mt-2 p-3 bg-card border border-amber-200 rounded-md'>
-							<p className='text-xs text-amber-700 mb-3'>{t('connection.scopes.hubspotHint')}</p>
+						<div className='mt-2 p-3 bg-card border border-warning-muted-foreground/20 rounded-md'>
+							<p className='text-xs text-warning-muted-foreground mb-3'>{t('connection.scopes.hubspotHint')}</p>
 							<div className='space-y-1'>
 								{getRequiredScopes().map((scope, index) => (
-									<div key={index} className='flex items-center gap-2 text-xs text-amber-700'>
+									<div key={index} className='flex items-center gap-2 text-xs text-warning-muted-foreground'>
 										<div className='w-1.5 h-1.5 bg-amber-500 rounded-full'></div>
 										<code className='font-mono'>{scope}</code>
 									</div>
@@ -412,14 +412,14 @@ const HubSpotConnectionDrawer: FC<HubSpotConnectionDrawerProps> = ({ isOpen, onO
 				</div>
 
 				{/* Webhook Section */}
-				<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
-					<h3 className='text-sm font-medium text-blue-800 mb-3'>{t('connection.webhook.sectionTitle')}</h3>
+				<div className='p-4 bg-info-muted border border-info-muted-foreground/20 rounded-lg'>
+					<h3 className='text-sm font-medium text-info-muted-foreground mb-3'>{t('connection.webhook.sectionTitle')}</h3>
 
 					{/* Webhook URL Block */}
 					<div className='mb-4'>
-						<label className='text-sm font-medium text-blue-800 mb-2 block'>{t('connection.webhook.url')}</label>
-						<p className='text-xs text-blue-700 mb-3'>{t('connection.hubSpot.webhookIntro')}</p>
-						<div className='flex items-center gap-2 p-2 bg-card border border-blue-200 rounded-md'>
+						<label className='text-sm font-medium text-info-muted-foreground mb-2 block'>{t('connection.webhook.url')}</label>
+						<p className='text-xs text-info-muted-foreground mb-3'>{t('connection.hubSpot.webhookIntro')}</p>
+						<div className='flex items-center gap-2 p-2 bg-card border border-info-muted-foreground/20 rounded-md'>
 							<code className='flex-1 text-xs text-foreground font-mono break-all'>{webhookUrl}</code>
 							<Button size='xs' variant='outline' onClick={handleCopyWebhookUrl} className='flex items-center gap-1'>
 								{webhookCopied ? <CheckCircle className='w-3 h-3' /> : <Copy className='w-3 h-3' />}
@@ -433,17 +433,17 @@ const HubSpotConnectionDrawer: FC<HubSpotConnectionDrawerProps> = ({ isOpen, onO
 						<button
 							type='button'
 							onClick={() => setIsWebhookEventsExpanded(!isWebhookEventsExpanded)}
-							className='flex items-center gap-2 text-sm font-medium text-blue-800 hover:text-blue-900 mb-2'>
+							className='flex items-center gap-2 text-sm font-medium text-info-muted-foreground hover:text-info-muted-foreground mb-2'>
 							{isWebhookEventsExpanded ? <ChevronDown className='w-4 h-4' /> : <ChevronRight className='w-4 h-4' />}
 							{t('connection.webhook.eventsToSubscribe')}
 						</button>
 
 						{isWebhookEventsExpanded && (
-							<div className='mt-2 p-3 bg-card border border-blue-200 rounded-md'>
-								<p className='text-xs text-blue-700 mb-3'>{t('connection.hubSpot.webhookEventsIntro')}</p>
+							<div className='mt-2 p-3 bg-card border border-info-muted-foreground/20 rounded-md'>
+								<p className='text-xs text-info-muted-foreground mb-3'>{t('connection.hubSpot.webhookEventsIntro')}</p>
 								<div className='space-y-1'>
 									{getWebhookEvents().map((event, index) => (
-										<div key={index} className='flex items-center gap-2 text-xs text-blue-700'>
+										<div key={index} className='flex items-center gap-2 text-xs text-info-muted-foreground'>
 											<div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
 											<code className='font-mono'>{event}</code>
 										</div>
