@@ -79,7 +79,9 @@ const ServiceAccountsPage = () => {
 					return (
 						<div className='flex flex-wrap gap-1'>
 							{row.roles.map((role) => (
-								<span key={role} className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>
+								<span
+									key={role}
+									className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-info-muted text-info-muted-foreground'>
 									{role}
 								</span>
 							))}
@@ -91,7 +93,9 @@ const ServiceAccountsPage = () => {
 				title: t('labels.createdAt'),
 				width: 150,
 				align: 'right',
-				render: (row) => <span className='text-muted-foreground'>{formatDateShort(row.tenant?.created_at || row.tenant?.updated_at || '')}</span>,
+				render: (row) => (
+					<span className='text-muted-foreground'>{formatDateShort(row.tenant?.created_at || row.tenant?.updated_at || '')}</span>
+				),
 			},
 			{
 				fieldVariant: 'interactive',

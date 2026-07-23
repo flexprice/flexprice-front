@@ -126,20 +126,20 @@ const OnboardingPage = () => {
 						{tutorials.map((tutorial, index) => (
 							<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} key={index}>
 								<Card
-									className='p-6 h-full bg-card rounded-lg border shadow-sm transition-all duration-200 cursor-pointer group border-border hover:border-blue-100 hover:bg-muted hover:shadow-lg hover:shadow-blue-600/5'
+									className='p-6 h-full bg-card rounded-lg border shadow-sm transition-all duration-200 cursor-pointer group border-border hover:border-info-muted-foreground/20 hover:bg-muted hover:shadow-lg hover:shadow-blue-600/5'
 									onClick={tutorial.onClick}>
 									<div className='flex gap-4'>
 										<div className='flex-shrink-0 mt-1'>
-											<AlignJustify className='w-5 h-5 transition-colors duration-200 text-muted-foreground group-hover:text-blue-600' />
+											<AlignJustify className='w-5 h-5 transition-colors duration-200 text-muted-foreground group-hover:text-info' />
 										</div>
 
 										<div className='flex-1 min-w-0'>
-											<h3 className='mb-2 text-base font-medium transition-colors duration-200 text-foreground group-hover:text-blue-600'>
+											<h3 className='mb-2 text-base font-medium transition-colors duration-200 text-foreground group-hover:text-info'>
 												{tutorial.title}
 											</h3>
 											<p className='text-sm leading-relaxed text-muted-foreground'>{tutorial.description}</p>
 
-											<div className='flex gap-1 items-center mt-4 transition-all duration-200 text-muted-foreground group-hover:text-blue-600'>
+											<div className='flex gap-1 items-center mt-4 transition-all duration-200 text-muted-foreground group-hover:text-info'>
 												<span className='text-xs font-medium'>{t('onboardingLanding.learnMore')}</span>
 												<ArrowRight className='w-4 h-4 transition-transform duration-200 transform group-hover:translate-x-1' />
 											</div>

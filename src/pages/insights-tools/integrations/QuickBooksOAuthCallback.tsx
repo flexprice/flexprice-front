@@ -153,7 +153,7 @@ const QuickBooksOAuthCallback = () => {
 		return (
 			<Page>
 				<div className='flex flex-col items-center justify-center min-h-[400px]'>
-					<div className='text-red-600 text-lg font-semibold mb-2'>{t('insightsTools.oauthCallback.authorizationFailed')}</div>
+					<div className='text-destructive text-lg font-semibold mb-2'>{t('insightsTools.oauthCallback.authorizationFailed')}</div>
 					<div className='text-muted-foreground mb-4'>{error}</div>
 					<div className='text-sm text-muted-foreground'>{t('insightsTools.oauthCallback.redirectingToIntegrations')}</div>
 				</div>

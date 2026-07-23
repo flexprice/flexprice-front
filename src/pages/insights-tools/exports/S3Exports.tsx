@@ -112,7 +112,7 @@ const S3Exports = () => {
 							<div key={idx} className='flex items-center justify-between text-sm p-4 border-b last:border-b-0'>
 								<div className='flex-1'>
 									<div className='flex items-center gap-3'>
-										<div className='w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center'>
+										<div className='w-10 h-10 bg-warning-muted rounded-lg flex items-center justify-center'>
 											<Settings className='w-5 h-5 text-orange-600' />
 										</div>
 										<div>

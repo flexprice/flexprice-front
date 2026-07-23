@@ -143,7 +143,7 @@ const ExportDetails = () => {
 						onClick={handleDeleteTask}
 						disabled={isDeletingTask}
 						isLoading={isDeletingTask}
-						className='flex items-center gap-2 text-red-600 hover:text-red-700'>
+						className='flex items-center gap-2 text-destructive hover:text-destructive'>
 						<Trash2 className='w-4 h-4' />
 						{i18n.t('actions.delete', { ns: 'common' })}
 					</Button>

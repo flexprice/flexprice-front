@@ -480,7 +480,7 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 									</span>
 								)}
 								{integration.premium && (
-									<span className='inline-flex h-5 items-center rounded-sm bg-amber-100 px-2 text-xs font-medium text-amber-700'>
+									<span className='inline-flex h-5 items-center rounded-sm bg-warning-muted px-2 text-xs font-medium text-warning-muted-foreground'>
 										{t('insightsTools.integrations.badgePremium')}
 									</span>
 								)}
