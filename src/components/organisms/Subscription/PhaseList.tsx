@@ -381,14 +381,14 @@ const PhaseList: React.FC<PhaseListProps> = ({
 								<div className='text-xs text-muted-foreground mt-1'>
 									{t('organisms.phaseList.phaseIndex', { index: index + 1 })}
 									{phase.coupons && phase.coupons.length > 0 && (
-										<span className='ms-2 text-blue-600'>
+										<span className='ms-2 text-info'>
 											{phase.coupons.length > 1
 												? t('organisms.phaseList.couponPlural', { count: phase.coupons.length })
 												: t('organisms.phaseList.couponSingle', { count: phase.coupons.length })}
 										</span>
 									)}
 									{phase.line_item_coupons && Object.keys(phase.line_item_coupons).length > 0 && (
-										<span className='ms-2 text-green-600'>
+										<span className='ms-2 text-success'>
 											{Object.keys(phase.line_item_coupons).length > 1
 												? t('organisms.phaseList.lineItemCouponPlural', {
 														count: Object.keys(phase.line_item_coupons).length,
@@ -413,9 +413,9 @@ const PhaseList: React.FC<PhaseListProps> = ({
 								<div className='border-r h-4 border-border' />
 								<button
 									onClick={() => handleDeletePhase(index)}
-									className='p-2 hover:bg-red-50 rounded-md transition-colors'
+									className='p-2 hover:bg-destructive/10 rounded-md transition-colors'
 									title={t('organisms.phaseList.deletePhase')}>
-									<Trash2 size={16} className='text-red-500' />
+									<Trash2 size={16} className='text-destructive' />
 								</button>
 							</div>
 						)}

@@ -53,7 +53,7 @@ const SubscriptionWithOverrides: FC<Props> = ({ prices, onCreateSubscription, cl
 					<div className='flex items-center gap-2'>
 						<Chip
 							variant='warning'
-							className='bg-blue-50 border-blue-200 text-blue-700'
+							className='bg-info-muted border-info-muted-foreground/20 text-info-muted-foreground'
 							label={
 								getOverridesCount() > 1
 									? t('organisms.subscriptionWithOverrides.overridePlural', { count: getOverridesCount() })
@@ -77,11 +77,13 @@ const SubscriptionWithOverrides: FC<Props> = ({ prices, onCreateSubscription, cl
 
 			{/* Override information */}
 			{hasAnyOverrides() && (
-				<div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
+				<div className='bg-info-muted border border-info-muted-foreground/20 rounded-lg p-4'>
 					<div className='flex items-start gap-3'>
-						<AlertCircle className='w-5 h-5 text-blue-600 mt-0.5' />
+						<AlertCircle className='w-5 h-5 text-info mt-0.5' />
 						<div className='flex-1'>
-							<h4 className='font-medium text-blue-900 mb-2'>{t('organisms.subscriptionWithOverrides.priceOverridesTitle')}</h4>
+							<h4 className='font-medium text-info-muted-foreground mb-2'>
+								{t('organisms.subscriptionWithOverrides.priceOverridesTitle')}
+							</h4>
 							<div className='space-y-2'>
 								{Object.entries(overriddenPrices).map(([priceId, override]) => {
 									const price = prices.find((p) => p.id === priceId);
@@ -90,16 +92,16 @@ const SubscriptionWithOverrides: FC<Props> = ({ prices, onCreateSubscription, cl
 									return (
 										<div key={priceId} className='space-y-2'>
 											<div className='flex items-center justify-between text-sm'>
-												<span className='text-blue-800'>
+												<span className='text-info-muted-foreground'>
 													{price.meter?.name || price.description || t('organisms.subscriptionWithOverrides.chargeFallback')}
 												</span>
-												<span className='text-blue-700 font-medium'>
+												<span className='text-info-muted-foreground font-medium'>
 													{price.currency} {price.amount} → {price.currency} {override.amount || price.amount}
 												</span>
 											</div>
 											{/* Show package details only when relevant */}
 											{override.billing_model === 'PACKAGE' && override.transform_quantity && (
-												<div className='text-xs text-blue-600 ms-4'>{override.transform_quantity.divide_by} units</div>
+												<div className='text-xs text-info ms-4'>{override.transform_quantity.divide_by} units</div>
 											)}
 										</div>
 									);

@@ -402,7 +402,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 											label: t('organisms.subscriptionPriceTable.deleteAdded'),
 											icon: <Trash2 className='h-4 w-4' />,
 											onSelect: () => onRemoveAddedCharge(item.tempId),
-											className: 'text-red-600 focus:text-red-600',
+											className: 'text-destructive focus:text-destructive',
 										},
 									]
 								: []),
