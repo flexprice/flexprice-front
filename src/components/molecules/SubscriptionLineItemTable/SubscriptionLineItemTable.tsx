@@ -503,7 +503,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 										type='button'
 										data-interactive='true'
 										className='inline-flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'>
-										<Info className='h-4 w-4 text-blue-500 flex-shrink-0' />
+										<Info className='h-4 w-4 text-info flex-shrink-0' />
 									</button>
 								</Tooltip>
 							)}

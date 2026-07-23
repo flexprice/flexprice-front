@@ -318,14 +318,14 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 				)}
 
 				{validationError && commitmentErrorTarget === 'banner' && (
-					<div className='p-3 bg-red-50 border border-red-200 rounded-lg'>
-						<p className='text-sm text-red-700'>{validationError}</p>
+					<div className='p-3 bg-destructive/10 border border-destructive/20 rounded-lg'>
+						<p className='text-sm text-destructive'>{validationError}</p>
 					</div>
 				)}
 
 				{hasExistingConfig && (
-					<div className='p-3 bg-blue-50 border border-blue-200 rounded-lg'>
-						<p className='text-sm text-blue-700'>{t('commitmentConfig.existingNotice')}</p>
+					<div className='p-3 bg-info-muted border border-info-muted-foreground/20 rounded-lg'>
+						<p className='text-sm text-info-muted-foreground'>{t('commitmentConfig.existingNotice')}</p>
 					</div>
 				)}
 
@@ -334,7 +334,7 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 						{t('commitmentConfig.cancel')}
 					</Button>
 					{hasExistingConfig && (
-						<Button variant='outline' onClick={handleClear} className='flex-1 text-red-600 hover:bg-red-50' disabled={isSaving}>
+						<Button variant='outline' onClick={handleClear} className='flex-1 text-destructive hover:bg-destructive/10' disabled={isSaving}>
 							{t('commitmentConfig.clearCommitment')}
 						</Button>
 					)}

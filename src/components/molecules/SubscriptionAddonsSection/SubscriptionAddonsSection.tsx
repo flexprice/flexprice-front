@@ -343,7 +343,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 											e.preventDefault();
 											handleCancel(row);
 										}}
-										className={`flex gap-2 items-center cursor-pointer text-red-600 ${hasEndDate ? 'opacity-50 cursor-not-allowed' : ''}`}>
+										className={`flex gap-2 items-center cursor-pointer text-destructive ${hasEndDate ? 'opacity-50 cursor-not-allowed' : ''}`}>
 										<Trash2 className='h-4 w-4' />
 										<span>{t('actions.cancel')}</span>
 									</DropdownMenuItem>

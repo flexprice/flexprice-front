@@ -167,7 +167,7 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 									placeholder={t('subscriptions.quantityPlaceholder')}
 									disabled={busy}
 								/>
-								{formError && <p className='text-sm text-red-600'>{formError}</p>}
+								{formError && <p className='text-sm text-destructive'>{formError}</p>}
 							</div>
 							<div className='w-full space-y-3'>
 								<DatePicker
@@ -178,9 +178,9 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 									popoverTriggerClassName='w-full'
 									disabled={busy}
 								/>
-								<div className='flex w-full gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3.5'>
-									<Info className='mt-0.5 h-5 w-5 shrink-0 text-blue-600' aria-hidden />
-									<p className='min-w-0 flex-1 text-sm leading-relaxed text-blue-900'>
+								<div className='flex w-full gap-3 rounded-lg border border-info-muted-foreground/20 bg-info-muted px-4 py-3.5'>
+									<Info className='mt-0.5 h-5 w-5 shrink-0 text-info' aria-hidden />
+									<p className='min-w-0 flex-1 text-sm leading-relaxed text-info-muted-foreground'>
 										{t('subscriptions.quantityModify.effectiveDateHint')}
 									</p>
 								</div>

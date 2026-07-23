@@ -102,7 +102,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 					if (row?.type === 'fixed') {
 						const symbol = getCurrencySymbol(row.currency?.trim() ? row.currency : '');
 						return (
-							<div className='text-green-600 font-medium'>
+							<div className='text-success font-medium'>
 								{t('subscriptions.discountFixedOff', {
 									symbol,
 									amount: formatAmount(row.amount_off ?? '0'),
@@ -111,9 +111,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 						);
 					} else if (row?.type === 'percentage') {
 						return (
-							<div className='text-green-600 font-medium'>
-								{t('subscriptions.discountPercentOff', { percent: row.percentage_off ?? 0 })}
-							</div>
+							<div className='text-success font-medium'>{t('subscriptions.discountPercentOff', { percent: row.percentage_off ?? 0 })}</div>
 						);
 					}
 					return t('common:labels.na');

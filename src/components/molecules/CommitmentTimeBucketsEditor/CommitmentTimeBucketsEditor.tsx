@@ -336,7 +336,7 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 											onChange(buckets.filter((_, i) => i !== index));
 										}}
 										disabled={disabled}
-										className='rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50'
+										className='rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50'
 										aria-label={t('billing:commitmentConfig.timeBuckets.removeBucket')}>
 										<RiDeleteBin6Line className='size-4' />
 									</button>
@@ -377,9 +377,9 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 								</div>
 
 								<div className='mt-2 min-h-5'>
-									{sameTime && <p className='text-xs text-red-600'>{t('billing:commitmentConfig.timeBuckets.errors.sameTime')}</p>}
+									{sameTime && <p className='text-xs text-destructive'>{t('billing:commitmentConfig.timeBuckets.errors.sameTime')}</p>}
 									{!sameTime && stepErrorMessage && (startTimeError || endTimeError) && (
-										<p className='text-xs text-red-600'>{stepErrorMessage}</p>
+										<p className='text-xs text-destructive'>{stepErrorMessage}</p>
 									)}
 								</div>
 

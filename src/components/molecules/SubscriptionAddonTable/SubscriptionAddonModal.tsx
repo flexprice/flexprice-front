@@ -314,7 +314,7 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 							date={formData.end_date ? new Date(formData.end_date) : undefined}
 							setDate={(date) => handleDateChange('end_date', date)}
 						/>
-						{errors.end_date && <p className='text-sm text-red-500'>{errors.end_date}</p>}
+						{errors.end_date && <p className='text-sm text-destructive'>{errors.end_date}</p>}
 					</div>
 				</div> */}
 			</div>

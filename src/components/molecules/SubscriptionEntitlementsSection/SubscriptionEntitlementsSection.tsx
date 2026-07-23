@@ -438,7 +438,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 											e.preventDefault();
 											handleDelete(row);
 										}}
-										className='flex gap-2 items-center cursor-pointer text-red-600'>
+										className='flex gap-2 items-center cursor-pointer text-destructive'>
 										<Trash2 className='h-4 w-4' />
 										<span>{row.isOverrideOfParent ? t('entitlements.subscriptionEdit.resetAction') : tc('actions.delete')}</span>
 									</DropdownMenuItem>

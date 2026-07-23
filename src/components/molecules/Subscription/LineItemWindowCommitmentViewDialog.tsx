@@ -38,7 +38,7 @@ const LineItemWindowCommitmentViewDialog: FC<Props> = ({ isOpen, onOpenChange, l
 					{t('commitmentConfig.view.loadingBucketPrices', { defaultValue: 'Loading bucket pricing…' })}
 				</p>
 			) : isError ? (
-				<p className='text-sm text-red-600'>
+				<p className='text-sm text-destructive'>
 					{t('commitmentConfig.view.loadBucketPricesFailed', {
 						defaultValue: 'Could not load bucket pricing details.',
 					})}
