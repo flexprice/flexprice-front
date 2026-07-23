@@ -92,7 +92,7 @@ const MessageDetail: FC<Props> = ({ messageId, backLabel, onBack }) => {
 	}
 
 	if (message.error || !message.data) {
-		return <div className='p-4 text-sm text-red-600'>{t('webhooks.messages.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-destructive'>{t('webhooks.messages.loadFailed')}</div>;
 	}
 
 	const content = message.data.payload;
