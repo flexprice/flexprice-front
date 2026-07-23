@@ -47,7 +47,7 @@ const CurrentUsageWidget = ({ usageData, label }: CurrentUsageWidgetProps) => {
 								value={item.is_unlimited ? 0 : percentage}
 								className='h-2'
 								indicatorColor={isOverLimit ? 'bg-gradient-to-r from-red-600 to-red-400' : 'bg-[var(--portal-primary)]'}
-								backgroundColor={isOverLimit ? 'bg-red-50' : 'bg-muted'}
+								backgroundColor={isOverLimit ? 'bg-destructive/10' : 'bg-muted'}
 							/>
 						</div>
 					);

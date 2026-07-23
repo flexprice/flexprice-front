@@ -78,7 +78,7 @@ const SubscriptionsWidget = ({ subscriptions, label }: SubscriptionsWidgetProps)
 								</div>
 							)}
 							{subscription.subscription_status === SUBSCRIPTION_STATUS.TRIALING && subscription.trial_end && (
-								<div className='flex items-center gap-1.5 text-blue-600'>
+								<div className='flex items-center gap-1.5 text-info'>
 									<Clock className='h-3.5 w-3.5' />
 									<span>{t('subscriptions.trialEnds', { date: formatDateShort(subscription.trial_end) })}</span>
 								</div>
