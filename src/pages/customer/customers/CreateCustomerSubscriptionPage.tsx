@@ -852,9 +852,9 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 
 				{/* Sandbox Note */}
 				{effectiveCustomerId && isDevelopment && subscriptionState.selectedPlan && subscriptionState.startDate && (
-					<div className='w-full flex items-center gap-2.5 rounded-md border border-amber-300 bg-amber-50/80 px-3 py-2.5'>
-						<AlertTriangle className='h-4 w-4 flex-shrink-0 text-amber-600' />
-						<span className='text-sm font-medium text-amber-800 leading-relaxed'>
+					<div className='w-full flex items-center gap-2.5 rounded-md border border-amber-300 bg-warning-muted/80 px-3 py-2.5'>
+						<AlertTriangle className='h-4 w-4 flex-shrink-0 text-warning' />
+						<span className='text-sm font-medium text-warning-muted-foreground leading-relaxed'>
 							{t('subscriptionCreate.sandboxNotice', {
 								date: new Date(
 									new Date(subscriptionState.startDate).getTime() + SANDBOX_AUTO_CANCELLATION_DAYS * 24 * 60 * 60 * 1000,

@@ -183,7 +183,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		}
 		return (
 			<ResultCard
-				icon={<CheckCircle className='h-9 w-9 text-green-500' />}
+				icon={<CheckCircle className='h-9 w-9 text-success' />}
 				title={t('moyasarAutopay.cardSavedTitle')}
 				description={t('moyasarAutopay.cardSavedDescription')}
 			/>
@@ -203,7 +203,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 	if (state === MoyasarState.Failed) {
 		return (
 			<ResultCard
-				icon={<AlertCircle className='h-9 w-9 text-red-500' />}
+				icon={<AlertCircle className='h-9 w-9 text-destructive' />}
 				title={t('moyasarAutopay.cardSetupFailedTitle')}
 				description={errorMsg || t('moyasarAutopay.cardSetupFailedDefaultDescription')}
 				action={
@@ -313,7 +313,9 @@ const PaddleCheckout = () => {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
-					<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>{t('checkoutPage.paymentLinkExpiredDescription')}</p>
+					<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>
+						{t('checkoutPage.paymentLinkExpiredDescription')}
+					</p>
 				</CardContent>
 			</PageWrap>
 		);
@@ -331,7 +333,9 @@ const PaddleCheckout = () => {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
-					<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>{t('checkoutPage.invalidPaymentLinkDescription')}</p>
+					<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>
+						{t('checkoutPage.invalidPaymentLinkDescription')}
+					</p>
 					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[140px]'>
 						<RefreshCw className='w-4 h-4 mr-2' />
 						{t('checkoutPage.refreshPage')}

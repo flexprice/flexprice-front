@@ -220,8 +220,8 @@ const AddCreditNotePage = () => {
 							<span className='text-sm font-medium'>{formatCurrency(creditNotePreview.totalAmount, invoiceCurrency)}</span>
 						</div>
 					</div>
-					<div className=' border border-blue-200 rounded-lg p-4'>
-						<p className='text-sm text-blue-800'>{creditNotePreview.effectDescription}</p>
+					<div className=' border border-info-muted-foreground/20 rounded-lg p-4'>
+						<p className='text-sm text-info-muted-foreground'>{creditNotePreview.effectDescription}</p>
 					</div>
 
 					{/* Actions */}

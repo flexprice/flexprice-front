@@ -334,7 +334,7 @@ const CreateInvoicePage: FC = () => {
 								<span>{`${getCurrencySymbol(currency)}${calculateSubtotal().toFixed(2)}`}</span>
 							</div>
 							{calculatedDiscount > 0 && (
-								<div className='flex justify-between text-green-600'>
+								<div className='flex justify-between text-success'>
 									<span>{t('createInvoice.couponDiscount')}</span>
 									<span>-{`${getCurrencySymbol(currency)}${calculatedDiscount.toFixed(2)}`}</span>
 								</div>
