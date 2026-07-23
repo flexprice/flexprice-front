@@ -148,7 +148,7 @@ const CustomerOnboardingTab = () => {
 									)}
 						</p>
 						{hasAdvancedActions ? (
-							<p className='mt-2 text-sm text-amber-700'>{t('customerOnboarding.workflow.advancedActionsPreserved')}</p>
+							<p className='mt-2 text-sm text-warning-muted-foreground'>{t('customerOnboarding.workflow.advancedActionsPreserved')}</p>
 						) : null}
 					</div>
 

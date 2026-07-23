@@ -125,7 +125,7 @@ const SubscriptionConfigurationSection = () => {
 					)}
 
 					{draft.auto_cancellation_enabled ? (
-						<div className='mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4'>
+						<div className='mt-6 rounded-lg border border-info-muted-foreground/20 bg-info-muted p-4'>
 							<p className='text-sm font-medium text-foreground'>{t('billing.subscriptionConfiguration.infoCallout.title')}</p>
 							<ul className='mt-2 list-disc space-y-2 ps-5 text-sm text-muted-foreground'>
 								<li>{t('billing.subscriptionConfiguration.infoCallout.description1')}</li>
