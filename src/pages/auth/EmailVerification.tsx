@@ -83,7 +83,7 @@ const EmailVerification = () => {
 
 				<p className='mt-5 text-center text-sm text-muted-foreground'>
 					{t('verification.needHelp')}{' '}
-					<a href={`mailto:${config.brand.supportEmail}`} className='font-medium text-blue-600 hover:text-blue-500'>
+					<a href={`mailto:${config.brand.supportEmail}`} className='font-medium text-info hover:text-info'>
 						{config.brand.supportEmail}
 					</a>
 				</p>

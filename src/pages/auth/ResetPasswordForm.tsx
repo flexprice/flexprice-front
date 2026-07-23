@@ -74,8 +74,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 		return (
 			<>
 				<div className='rounded-xl border border-border/80 bg-muted/50 p-6 text-center shadow-sm'>
-					<div className='mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100'>
-						<Link2Off className='h-6 w-6 text-amber-600' aria-hidden />
+					<div className='mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-warning-muted'>
+						<Link2Off className='h-6 w-6 text-warning' aria-hidden />
 					</div>
 					<h3 className='text-base font-medium text-foreground'>{t('resetLink.expiredTitle')}</h3>
 					<p className='mt-1.5 text-sm text-muted-foreground'>{t('resetLink.expiredDescription')}</p>

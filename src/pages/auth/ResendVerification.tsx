@@ -53,7 +53,7 @@ const ResendVerification = () => {
 			<div className='flex min-h-screen flex-col items-center justify-center bg-muted p-4'>
 				<div className='w-full max-w-md space-y-8 rounded-lg bg-card p-8 shadow-lg'>
 					<div className='text-center'>
-						<div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-50'>
+						<div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-info-muted'>
 							<img src='/assets/svg/query.svg' alt={t('images.emailIconAlt')} className='h-10 w-10' />
 						</div>
 						<h2 className='mt-6 text-2xl font-bold text-foreground'>{t('resend.checkEmailHeading')}</h2>
@@ -70,7 +70,7 @@ const ResendVerification = () => {
 						<div className='text-center'>
 							<p className='text-sm text-muted-foreground'>
 								{t('resend.didntReceive')}{' '}
-								<button onClick={() => setResendSuccess(false)} className='font-medium text-blue-600 hover:text-blue-500'>
+								<button onClick={() => setResendSuccess(false)} className='font-medium text-info hover:text-info'>
 									{t('links.tryAgain')}
 								</button>
 							</p>
@@ -85,7 +85,7 @@ const ResendVerification = () => {
 		<div className='flex min-h-screen flex-col items-center justify-center bg-muted p-4'>
 			<div className='w-full max-w-md space-y-8 rounded-lg bg-card p-8 shadow-lg'>
 				<div className='text-center'>
-					<div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-50'>
+					<div className='mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-info-muted'>
 						<img src={logo} alt={`${name} Logo`} className='h-10 w-10' />
 					</div>
 					<h2 className='mt-6 text-2xl font-bold text-foreground'>{t('resend.resendHeading')}</h2>
@@ -111,7 +111,7 @@ const ResendVerification = () => {
 					<div className='text-center'>
 						<p className='mt-4 text-sm text-muted-foreground'>
 							{t('rememberPassword')}{' '}
-							<button onClick={handleGoToLogin} className='font-medium text-blue-600 hover:text-blue-500'>
+							<button onClick={handleGoToLogin} className='font-medium text-info hover:text-info'>
 								{t('links.backToLogin')}
 							</button>
 						</p>
