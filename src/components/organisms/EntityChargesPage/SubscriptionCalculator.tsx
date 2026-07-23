@@ -122,7 +122,7 @@ export const SubscriptionCalculatorContent: React.FC<SubscriptionCalculatorConte
 					</div>
 				)}
 				{amountNum == null && amountStr.trim() !== '' && (
-					<p className='text-sm text-amber-600'>{t('entityChargesPage.subscriptionCalculator.invalidAmountHint')}</p>
+					<p className='text-sm text-warning'>{t('entityChargesPage.subscriptionCalculator.invalidAmountHint')}</p>
 				)}
 				{onApply && displayValue != null && (
 					<div className='mt-4 flex justify-end'>

@@ -460,7 +460,7 @@ const RecurringChargesForm = ({
 							suffix={`/ units / ${formatBillingPeriodForPrice(localPrice.billing_period || '')}`}
 						/>
 					</div>
-					{modelErrors.packagedModelError && <p className='text-red-500 text-sm'>{modelErrors.packagedModelError}</p>}
+					{modelErrors.packagedModelError && <p className='text-destructive text-sm'>{modelErrors.packagedModelError}</p>}
 				</div>
 			)}
 
@@ -472,7 +472,7 @@ const RecurringChargesForm = ({
 						currency={isCustomUnit ? localPrice.price_unit_config?.price_unit || localPrice.currency : localPrice.currency}
 						tierMode={billingModel === 'SLAB_TIERED' ? TIER_MODE.SLAB : TIER_MODE.VOLUME}
 					/>
-					{modelErrors.tieredModelError && <p className='text-red-500 text-sm'>{modelErrors.tieredModelError}</p>}
+					{modelErrors.tieredModelError && <p className='text-destructive text-sm'>{modelErrors.tieredModelError}</p>}
 				</div>
 			)}
 			<Spacer height={'8px'} />

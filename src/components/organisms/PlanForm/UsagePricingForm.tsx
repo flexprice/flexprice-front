@@ -605,7 +605,7 @@ const UsagePricingForm: FC<Props> = ({
 							suffix={`/ units / ${formatBillingPeriodForPrice(billingPeriod)}`}
 						/>
 					</div>
-					{inputErrors.packagedModelError && <p className='text-red-500 text-sm'>{inputErrors.packagedModelError}</p>}
+					{inputErrors.packagedModelError && <p className='text-destructive text-sm'>{inputErrors.packagedModelError}</p>}
 				</div>
 			)}
 
@@ -618,7 +618,7 @@ const UsagePricingForm: FC<Props> = ({
 						currency={priceUnitType === PRICE_UNIT_TYPE.CUSTOM ? priceUnitConfig?.price_unit || currency : currency}
 						tierMode={billingModel === billingModels[2].value ? TIER_MODE.VOLUME : TIER_MODE.SLAB}
 					/>
-					{inputErrors.tieredModelError && <p className='text-red-500 text-sm'>{inputErrors.tieredModelError}</p>}
+					{inputErrors.tieredModelError && <p className='text-destructive text-sm'>{inputErrors.tieredModelError}</p>}
 				</div>
 			)}
 			<Spacer height='8px' />
