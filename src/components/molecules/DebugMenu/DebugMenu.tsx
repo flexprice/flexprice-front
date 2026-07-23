@@ -151,11 +151,11 @@ const DebugMenu = () => {
 							onClick={() => setIsOpen(!isOpen)}>
 							{isStreaming ? (
 								<div className='relative'>
-									<Rocket className='text-blue-500 size-8 text-3xl' />
+									<Rocket className='text-info size-8 text-3xl' />
 									<div className='absolute -top-2 -right-2 size-3 bg-blue-500 rounded-full animate-pulse' />
 								</div>
 							) : (
-								<Rocket className='text-blue-500 size-8 text-3xl' />
+								<Rocket className='text-info size-8 text-3xl' />
 							)}
 						</Button>
 					</TooltipTrigger>
@@ -214,7 +214,7 @@ const DebugMenu = () => {
 								<div className='space-y-5'>
 									<p className='text-sm text-muted-foreground leading-6'>
 										{t('debug.needSubscriptionLead')}{' '}
-										<Link to={`${RouteNames.customers}/${custId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}`} className='text-info'>
 											{custName}
 										</Link>
 									</p>
@@ -224,11 +224,11 @@ const DebugMenu = () => {
 								<>
 									<p className='text-sm text-muted-foreground mb-4'>
 										{t('debug.eventsFiredSentence', { count: eventCount * eventsScale })}
-										<Link to={`${RouteNames.customers}/${custId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}`} className='text-info'>
 											{` ${custName} `}
 										</Link>
 										{t('debug.eventsFiredMiddle')}
-										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-info'>
 											{` ${planName} `}
 										</Link>
 										{t('debug.eventsFiredTrailing')}
@@ -248,11 +248,11 @@ const DebugMenu = () => {
 								<>
 									<p className='text-sm text-muted-foreground mb-4'>
 										{t('debug.streamIntro')}
-										<Link to={`${RouteNames.customers}/${custId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}`} className='text-info'>
 											{` ${custName} `}
 										</Link>
 										{t('debug.planBridge')}
-										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-info'>
 											{` ${planName} `}
 										</Link>
 										{t('debug.planEnd')}

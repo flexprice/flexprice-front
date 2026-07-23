@@ -57,7 +57,7 @@ export const SnippetBlock: FC<SnippetBlockProps> = ({ snippet }) => {
 							onClick={() => setSelectedLanguage(lang)}
 							className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
 								selectedLanguage === lang
-									? 'text-blue-600 border-b-2 border-blue-600 bg-card'
+									? 'text-info border-b-2 border-blue-600 bg-card'
 									: 'text-muted-foreground hover:text-foreground hover:bg-muted'
 							}`}>
 							{lang}

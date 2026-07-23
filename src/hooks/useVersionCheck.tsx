@@ -41,8 +41,8 @@ export default function useVersionCheck(intervalMs = 5 * 60 * 1000) {
 								{/* Header */}
 								<div className='flex items-center justify-between mb-3'>
 									<div className='flex items-center gap-3'>
-										<div className='w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center'>
-											<InfoIcon className='w-4 h-4 text-blue-600' />
+										<div className='w-8 h-8 bg-info-muted rounded-full flex items-center justify-center'>
+											<InfoIcon className='w-4 h-4 text-info' />
 										</div>
 										<h3 className='text-lg font-regular text-foreground'>{t('versionCheck.toastTitle')}</h3>
 									</div>
