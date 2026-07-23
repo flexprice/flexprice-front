@@ -174,7 +174,7 @@ function getEntitlementVisual(type: string, name: string): { Icon: LucideIcon; i
 		if (n.includes('email') || n.includes('mail')) return { Icon: Mail, iconClass: 'text-sky-600' };
 		if (n.includes('sms') || n.includes('chat') || n.includes('message')) return { Icon: MessageSquare, iconClass: 'text-violet-600' };
 		if (n.includes('phone') || n.includes('call') || n.includes('minute')) return { Icon: Phone, iconClass: 'text-emerald-600' };
-		if (n.includes('api') || n.includes('request') || n.includes('agent')) return { Icon: Zap, iconClass: 'text-amber-600' };
+		if (n.includes('api') || n.includes('request') || n.includes('agent')) return { Icon: Zap, iconClass: 'text-warning' };
 		return { Icon: Gauge, iconClass: 'text-indigo-600' };
 	}
 	return { Icon: Sparkles, iconClass: 'text-emerald-600' };

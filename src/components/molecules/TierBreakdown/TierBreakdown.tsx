@@ -50,16 +50,16 @@ const TierBreakdown: FC<Props> = ({ tiers, totalCost, effectiveRate, tierMode, c
 				</div>
 
 				{tierMode === TIER_MODE.VOLUME && (
-					<div className='bg-blue-50 p-3 rounded-md'>
-						<div className='text-sm text-blue-800'>
+					<div className='bg-info-muted p-3 rounded-md'>
+						<div className='text-sm text-info-muted-foreground'>
 							<strong>{t('tierBreakdown.volumeModeTitle')}</strong> {t('tierBreakdown.volumeModeBody', { usageQuantity, rate: volumeRate })}
 						</div>
 					</div>
 				)}
 
 				{tierMode === TIER_MODE.SLAB && (
-					<div className='bg-green-50 p-3 rounded-md'>
-						<div className='text-sm text-green-800'>
+					<div className='bg-success-muted p-3 rounded-md'>
+						<div className='text-sm text-success-muted-foreground'>
 							<strong>{t('tierBreakdown.slabModeTitle')}</strong> {t('tierBreakdown.slabModeBody')}
 						</div>
 					</div>

@@ -130,15 +130,15 @@ const LineItemCoupon: React.FC<Props> = ({
 	return (
 		<div className={cn('space-y-2', className)}>
 			{selectedCoupon && (
-				<div className='rounded-lg border border-border bg-blue-50 p-2'>
+				<div className='rounded-lg border border-border bg-info-muted p-2'>
 					<div className='flex items-center justify-between'>
 						<div className='flex-1'>
-							<div className='text-xs font-medium text-blue-900'>{selectedCoupon.name}</div>
-							<div className='text-xs text-blue-700'>{formatCouponName(selectedCoupon)}</div>
+							<div className='text-xs font-medium text-info-muted-foreground'>{selectedCoupon.name}</div>
+							<div className='text-xs text-info-muted-foreground'>{formatCouponName(selectedCoupon)}</div>
 						</div>
 						{!disabled && (
 							<div className='flex gap-1'>
-								<button onClick={handleDelete} className='text-xs text-red-600 hover:text-red-800 underline'>
+								<button onClick={handleDelete} className='text-xs text-destructive hover:text-destructive underline'>
 									{t('form.remove')}
 								</button>
 							</div>
@@ -149,7 +149,7 @@ const LineItemCoupon: React.FC<Props> = ({
 
 			{!disabled && showAddButton && !selectedCoupon && (
 				<div className='flex justify-start'>
-					<button onClick={openModal} className='text-xs text-blue-600 hover:text-blue-800 underline'>
+					<button onClick={openModal} className='text-xs text-info hover:text-info-muted-foreground underline'>
 						{t('labels.addCoupon')}
 					</button>
 				</div>

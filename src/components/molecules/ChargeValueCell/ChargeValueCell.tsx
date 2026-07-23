@@ -45,7 +45,7 @@ const DiscountedPriceDisplay: FC<{
 		<TooltipProvider delayDuration={0}>
 			<Tooltip>
 				<TooltipTrigger>
-					<Info className='h-4 w-4 text-blue-500 hover:text-blue-600 transition-colors duration-150' />
+					<Info className='h-4 w-4 text-info hover:text-info transition-colors duration-150' />
 				</TooltipTrigger>
 				<TooltipContent sideOffset={5} className='bg-card border border-border shadow-lg text-sm text-foreground px-3 py-2 rounded-lg'>
 					<div className='font-medium'>{couponName}</div>

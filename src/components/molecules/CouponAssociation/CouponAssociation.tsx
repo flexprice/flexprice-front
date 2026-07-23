@@ -66,7 +66,7 @@ const CouponAssociation: FC<Props> = ({ data, onChange, currency, disabled }) =>
 				<Button
 					variant='ghost'
 					size='sm'
-					className='h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600'
+					className='h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive'
 					onClick={() => handleDelete(row.id)}
 					disabled={disabled}
 					aria-label={`Remove coupon ${row.name}`}>

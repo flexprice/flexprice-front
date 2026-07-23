@@ -368,7 +368,7 @@ const PriceTooltip: FC<Props> = ({ data, appliedCoupon, priceOverride, isSubscri
 	const hasDiscount = !!discountInfo;
 	const couponName = appliedCoupon ? formatCouponName(appliedCoupon) : undefined;
 
-	const iconColor = hasOverrides || isSubscriptionOverride ? 'text-orange-600' : hasDiscount ? 'text-blue-500' : 'text-muted-foreground';
+	const iconColor = hasOverrides || isSubscriptionOverride ? 'text-orange-600' : hasDiscount ? 'text-info' : 'text-muted-foreground';
 
 	return (
 		<TooltipProvider delayDuration={0}>

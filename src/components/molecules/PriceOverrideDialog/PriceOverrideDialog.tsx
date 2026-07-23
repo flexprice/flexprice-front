@@ -664,8 +664,8 @@ const PriceOverrideDialog: FC<Props> = ({
 					)}
 
 					{isOverridden && (
-						<div className='flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg'>
-							<div className='text-sm text-blue-700'>{t('priceDialogs.priceOverriddenNotice')}</div>
+						<div className='flex items-center gap-2 p-3 bg-info-muted border border-info-muted-foreground/20 rounded-lg'>
+							<div className='text-sm text-info-muted-foreground'>{t('priceDialogs.priceOverriddenNotice')}</div>
 						</div>
 					)}
 				</div>
