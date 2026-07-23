@@ -64,7 +64,7 @@ const EndpointsTable: FC<Props> = ({ onViewEventCatalog }) => {
 	}
 
 	if (endpoints.error) {
-		return <div className='p-4 text-sm text-red-600'>{t('webhooks.endpoints.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-destructive'>{t('webhooks.endpoints.loadFailed')}</div>;
 	}
 
 	const openDetail = (endpointId: string) => {

@@ -69,8 +69,8 @@ const ActivityOverview: FC = () => {
 								<XAxis dataKey='timestamp' />
 								<YAxis allowDecimals={false} />
 								<Tooltip />
-								<Area type='monotone' dataKey='successful' stroke='#22c55e' fill='#22c55e33' />
-								<Area type='monotone' dataKey='failed' stroke='#ef4444' fill='#ef444433' />
+								<Area type='monotone' dataKey='successful' stroke='hsl(var(--success))' fill='hsl(var(--success) / 0.2)' />
+								<Area type='monotone' dataKey='failed' stroke='hsl(var(--destructive))' fill='hsl(var(--destructive) / 0.2)' />
 							</AreaChart>
 						</ResponsiveContainer>
 					)}

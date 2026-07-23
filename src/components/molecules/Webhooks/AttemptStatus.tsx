@@ -29,7 +29,9 @@ export const AttemptStatusFilters: FC<{ active: AttemptStatusFilterKey; onChange
 					onClick={() => onChange(f.key)}
 					className={cn(
 						'px-3 py-1 text-xs font-medium rounded-md border',
-						active === f.key ? 'bg-gray-900 text-white border-foreground' : 'bg-card text-muted-foreground border-border hover:bg-muted',
+						active === f.key
+							? 'bg-primary text-primary-foreground border-primary'
+							: 'bg-card text-muted-foreground border-border hover:bg-muted',
 					)}>
 					{t(`webhooks.endpoints.attempts.filters.${f.key}`)}
 				</button>

@@ -32,7 +32,7 @@ const EventCatalogBrowser: FC = () => {
 	}
 
 	if (eventTypes.error) {
-		return <div className='p-4 text-sm text-red-600'>{t('webhooks.eventCatalog.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-destructive'>{t('webhooks.eventCatalog.loadFailed')}</div>;
 	}
 
 	return (

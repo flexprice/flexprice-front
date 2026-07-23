@@ -162,7 +162,7 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 	}
 
 	if (endpoint.error || !endpoint.data) {
-		return <div className='p-4 text-sm text-red-600'>{t('webhooks.endpoints.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-destructive'>{t('webhooks.endpoints.loadFailed')}</div>;
 	}
 
 	const data = endpoint.data;
@@ -217,7 +217,7 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 				<div className='min-w-0'>
 					<span className='truncate font-medium text-base'>{data.url}</span>
 					{data.disabled && (
-						<span className='ms-2 inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200'>
+						<span className='ms-2 inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-warning-muted text-warning-muted-foreground border border-warning-muted-foreground/20'>
 							{t('webhooks.endpoints.detail.disabledBadge')}
 						</span>
 					)}
@@ -233,7 +233,7 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 							label: data.disabled ? t('webhooks.endpoints.detail.enableEndpoint') : t('webhooks.endpoints.detail.disableEndpoint'),
 							onSelect: handleToggleDisabled,
 						},
-						{ label: t('common:actions.delete'), onSelect: handleDelete, disabled: isDeleting, className: 'text-red-600' },
+						{ label: t('common:actions.delete'), onSelect: handleDelete, disabled: isDeleting, className: 'text-destructive' },
 					]}
 				/>
 			</div>
