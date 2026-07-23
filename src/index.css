@@ -115,44 +115,44 @@
 		--portal-chart-grid: rgba(0, 0, 0, 0.06);
 	}
 	.dark {
-		/* Neutral dark theme built on the Tailwind gray scale (gray-950 → gray-100). */
-		--background: 222 39% 11%; /* gray-900 */
+		/* Linear "Midnight" dark theme — seeds: bg #0F0F10, text #EEEFF1, sidebar #151516, accent #D25E65. */
+		--background: 240 2% 9%; /* content well — lighter than the chrome, per Linear's layering */
 
-		--foreground: 220 14% 96%; /* gray-100 */
+		--foreground: 220 10% 94%; /* #EEEFF1 */
 
-		--card: 215 28% 17%; /* gray-800 — elevated above the gray-900 canvas */
+		--card: 240 3% 12%; /* elevated panel above the content well */
 
-		--card-foreground: 220 14% 96%;
+		--card-foreground: 220 10% 94%;
 
-		--popover: 215 28% 17%;
+		--popover: 240 4% 15%;
 
-		--popover-foreground: 220 14% 96%;
+		--popover-foreground: 220 10% 94%;
 
 		--primary: 0 0% 98%;
 
 		--primary-foreground: 0 0% 9%;
 
-		--secondary: 215 28% 17%;
+		--secondary: 240 4% 14%;
 
-		--secondary-foreground: 220 14% 96%;
+		--secondary-foreground: 220 10% 94%;
 
-		--muted: 215 25% 22%;
+		--muted: 240 4% 16%;
 
-		--muted-foreground: 218 11% 65%; /* gray-400 */
+		--muted-foreground: 220 6% 57%; /* Linear secondary text ~#8A8F98 */
 
-		--accent: 217 19% 27%; /* gray-700 */
+		--accent: 240 4% 16%; /* hover surface */
 
-		--accent-foreground: 220 14% 96%;
+		--accent-foreground: 220 10% 94%;
 
-		--destructive: 0 62.8% 45%;
+		--destructive: 0 65% 55%;
 
 		--destructive-foreground: 0 0% 98%;
 
-		--border: 215 19% 27%; /* gray-700 */
+		--border: 240 5% 17%;
 
-		--input: 215 19% 27%;
+		--input: 240 5% 22%;
 
-		--ring: 216 12% 60%;
+		--ring: 356 56% 60%; /* Midnight accent #D25E65 */
 
 		--chart-1: 220 70% 50%;
 
@@ -164,40 +164,47 @@
 
 		--chart-5: 340 75% 55%;
 
-		/* Sidebar surface (dark) */
-		--sidebar-background: 222 39% 11%; /* gray-900 */
+		/* Sidebar surface (dark) — Midnight sidebar #151516 */
+		--sidebar-background: 240 3% 6%; /* chrome — Midnight base #0F0F10, darkest layer */
 
-		--sidebar-foreground: 220 9% 78%;
+		--sidebar-foreground: 220 10% 88%;
 
-		--sidebar-primary: 0 0% 98%;
+		--sidebar-primary: 356 56% 60%; /* Midnight accent #D25E65 */
 
-		--sidebar-primary-foreground: 0 0% 9%;
+		--sidebar-primary-foreground: 0 0% 100%;
 
-		--sidebar-accent: 217 19% 27%;
+		--sidebar-accent: 240 4% 12%;
 
-		--sidebar-accent-foreground: 220 14% 96%;
+		--sidebar-accent-foreground: 220 10% 94%;
 
-		--sidebar-border: 215 19% 27%;
+		--sidebar-border: 240 5% 14%;
 
-		--sidebar-ring: 216 12% 60%;
+		--sidebar-ring: 356 56% 60%;
 
-		--sidebar-text-accent-foreground: 220 14% 96%;
+		--sidebar-text-accent-foreground: 220 10% 94%;
 
-		--brand: 201 77% 20%;
+		--brand: 356 56% 60%; /* Midnight accent #D25E65 */
 
 		--brand-foreground: 0 0% 100%;
 
-		--success-muted: 160 30% 18%;
+		/* Base status colors brightened for dark surfaces (light values are tuned for white) */
+		--success: 142 55% 52%;
 
-		--success-muted-foreground: 142 50% 65%;
+		--warning: 30 90% 58%;
 
-		--warning-muted: 21 50% 15%;
+		--info: 215 90% 64%;
 
-		--warning-muted-foreground: 33 90% 65%;
+		--success-muted: 151 40% 13%;
 
-		--info-muted: 217 40% 18%;
+		--success-muted-foreground: 151 55% 65%;
 
-		--info-muted-foreground: 214 80% 70%;
+		--warning-muted: 30 45% 13%;
+
+		--warning-muted-foreground: 35 90% 65%;
+
+		--info-muted: 217 45% 15%;
+
+		--info-muted-foreground: 215 85% 72%;
 
 		--portal-bg: hsl(var(--background));
 		--portal-surface: hsl(var(--card));
