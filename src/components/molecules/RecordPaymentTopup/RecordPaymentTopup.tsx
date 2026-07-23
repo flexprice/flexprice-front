@@ -306,7 +306,7 @@ const RecordPaymentTopup: FC<Props> = ({
 								maxDate={new Date()}
 							/>
 							<p className='text-xs text-muted-foreground'>{t('payments.recordedReceivedHint')}</p>
-							{errors.recorded_at && <p className='text-xs text-red-500'>{errors.recorded_at}</p>}
+							{errors.recorded_at && <p className='text-xs text-destructive'>{errors.recorded_at}</p>}
 						</div>
 						{descriptionField}
 					</div>

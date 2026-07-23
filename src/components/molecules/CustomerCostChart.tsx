@@ -28,14 +28,14 @@ export const CustomerCostChart: React.FC<CustomerCostChartProps> = ({ data, titl
 				<div className='space-y-4'>
 					{/* Summary Statistics */}
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-						<div className='p-4 bg-blue-50 rounded-lg border border-blue-100'>
-							<p className='text-sm text-blue-600 font-medium mb-1'>{t('customerCharts.totalCost')}</p>
-							<p className='text-2xl font-bold text-blue-900'>{parseFloat(data.total_cost || '0').toFixed(2)}</p>
-							<p className='text-xs text-blue-500 mt-1'>{data.currency}</p>
+						<div className='p-4 bg-info-muted rounded-lg border border-info-muted-foreground/20'>
+							<p className='text-sm text-info font-medium mb-1'>{t('customerCharts.totalCost')}</p>
+							<p className='text-2xl font-bold text-info-muted-foreground'>{parseFloat(data.total_cost || '0').toFixed(2)}</p>
+							<p className='text-xs text-info mt-1'>{data.currency}</p>
 						</div>
-						<div className='p-4 bg-green-50 rounded-lg border border-green-100'>
-							<p className='text-sm text-green-600 font-medium mb-1'>{t('customerCharts.totalQuantity')}</p>
-							<p className='text-2xl font-bold text-green-900'>{parseFloat(data.total_quantity || '0').toLocaleString()}</p>
+						<div className='p-4 bg-success-muted rounded-lg border border-success-muted-foreground/20'>
+							<p className='text-sm text-success font-medium mb-1'>{t('customerCharts.totalQuantity')}</p>
+							<p className='text-2xl font-bold text-success-muted-foreground'>{parseFloat(data.total_quantity || '0').toLocaleString()}</p>
 						</div>
 						<div className='p-4 bg-purple-50 rounded-lg border border-purple-100'>
 							<p className='text-sm text-purple-600 font-medium mb-1'>{t('customerCharts.totalEvents')}</p>

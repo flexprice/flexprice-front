@@ -63,8 +63,8 @@ const CancelCreditGrantModal: React.FC<Props> = ({ isOpen, onOpenChange, onConfi
 					<p className='text-xs text-muted-foreground'>{t('creditGrant.cancelModal.dateHint')}</p>
 				</div>
 
-				<div className='bg-amber-50 border border-amber-200 rounded-md p-3 mt-4'>
-					<p className='text-sm text-amber-800'>
+				<div className='bg-warning-muted border border-warning-muted-foreground/20 rounded-md p-3 mt-4'>
+					<p className='text-sm text-warning-muted-foreground'>
 						<strong>{t('creditGrant.cancelModal.noteBold')}</strong> {t('creditGrant.cancelModal.noteRest')}
 					</p>
 				</div>

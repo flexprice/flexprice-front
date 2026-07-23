@@ -138,8 +138,8 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 					</DialogHeader>
 
 					<div className='space-y-4 py-4'>
-						<div className='p-4 bg-green-50 border border-green-200 rounded-lg'>
-							<div className='text-sm text-green-800 mb-2'>{t('saveCardModal.successBody')}</div>
+						<div className='p-4 bg-success-muted border border-success-muted-foreground/20 rounded-lg'>
+							<div className='text-sm text-success-muted-foreground mb-2'>{t('saveCardModal.successBody')}</div>
 						</div>
 
 						<div className='flex gap-3'>

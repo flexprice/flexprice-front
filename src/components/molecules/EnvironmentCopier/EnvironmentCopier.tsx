@@ -131,12 +131,12 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 			}>
 			<div className='space-y-5'>
 				{/* Cleanup callout */}
-				<div className='rounded-lg border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-3.5'>
+				<div className='rounded-lg border border-warning-muted-foreground/20 bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-3.5'>
 					<div className='flex items-start gap-2.5'>
-						<AlertTriangle className='h-4 w-4 mt-0.5 flex-shrink-0 text-amber-500' />
+						<AlertTriangle className='h-4 w-4 mt-0.5 flex-shrink-0 text-warning' />
 						<div>
-							<p className='text-[13px] font-semibold text-amber-800 mb-0.5'>{t('environment.copy.cleanupTitle')}</p>
-							<p className='text-[13px] text-amber-700 leading-relaxed'>
+							<p className='text-[13px] font-semibold text-warning-muted-foreground mb-0.5'>{t('environment.copy.cleanupTitle')}</p>
+							<p className='text-[13px] text-warning-muted-foreground leading-relaxed'>
 								{t('environment.copy.cleanupBodyLead')}
 								<span className='font-medium'>{t('environment.copy.cleanupBefore')}</span>
 								{t('environment.copy.cleanupBodyTrail')}

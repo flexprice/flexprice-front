@@ -183,7 +183,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					const value = Math.ceil((usage / limit) * 100);
 					const indicatorColor = value >= 100 ? 'bg-gradient-to-r from-red-600 to-red-400' : 'bg-gradient-to-r from-[#6167d9] to-[#2563eb]';
 
-					const backgroundColor = value >= 100 ? 'bg-red-50' : 'bg-blue-200';
+					const backgroundColor = value >= 100 ? 'bg-destructive/10' : 'bg-blue-200';
 
 					return (
 						<Progress

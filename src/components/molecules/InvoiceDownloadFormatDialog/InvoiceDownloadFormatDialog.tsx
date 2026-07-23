@@ -64,7 +64,7 @@ const InvoiceDownloadFormatDialog: FC<InvoiceDownloadFormatDialogProps> = ({
 							'ring-1 ring-inset ring-red-500/15',
 						)}>
 						{isPdfPending ? (
-							<Loader2 className='h-8 w-8 animate-spin text-red-600' aria-hidden />
+							<Loader2 className='h-8 w-8 animate-spin text-destructive' aria-hidden />
 						) : (
 							<FaFilePdf className='h-10 w-10 text-[#EC1C24] drop-shadow-sm' aria-hidden />
 						)}

@@ -30,7 +30,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial, logoHeig
 				{testimonial.labelImageUrl ? (
 					<img src={testimonial.labelImageUrl} alt={t('labels.label')} className='h-4 w-auto object-contain' />
 				) : (
-					testimonial.label && <span className='text-xs font-medium text-blue-600'>{testimonial.label}</span>
+					testimonial.label && <span className='text-xs font-medium text-info'>{testimonial.label}</span>
 				)}
 			</div>
 			<div className={cn('text-foreground mb-6', 'font-normal', 'text-[13px]', 'leading-relaxed', 'font-[400]')}>

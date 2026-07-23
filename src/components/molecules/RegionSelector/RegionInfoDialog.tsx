@@ -22,15 +22,15 @@ const RegionInfoDialog: React.FC<RegionInfoDialogProps> = ({ isOpen, onOpenChang
 					<h3 className='font-semibold text-base mb-3'>{t('region.sectionUs')}</h3>
 					<ul className='space-y-2'>
 						<li className='flex items-start gap-2'>
-							<Check className='h-5 w-5 text-green-600 mt-0.5 flex-shrink-0' />
+							<Check className='h-5 w-5 text-success mt-0.5 flex-shrink-0' />
 							<span className='text-sm text-foreground'>{t('region.benefitUs1')}</span>
 						</li>
 						<li className='flex items-start gap-2'>
-							<Check className='h-5 w-5 text-green-600 mt-0.5 flex-shrink-0' />
+							<Check className='h-5 w-5 text-success mt-0.5 flex-shrink-0' />
 							<span className='text-sm text-foreground'>{t('region.benefitUs2')}</span>
 						</li>
 						<li className='flex items-start gap-2'>
-							<Check className='h-5 w-5 text-green-600 mt-0.5 flex-shrink-0' />
+							<Check className='h-5 w-5 text-success mt-0.5 flex-shrink-0' />
 							<span className='text-sm text-foreground'>{t('region.benefitUs3')}</span>
 						</li>
 					</ul>
@@ -40,11 +40,11 @@ const RegionInfoDialog: React.FC<RegionInfoDialogProps> = ({ isOpen, onOpenChang
 					<h3 className='font-semibold text-base mb-3'>{t('region.sectionIndia')}</h3>
 					<ul className='space-y-2'>
 						<li className='flex items-start gap-2'>
-							<Check className='h-5 w-5 text-green-600 mt-0.5 flex-shrink-0' />
+							<Check className='h-5 w-5 text-success mt-0.5 flex-shrink-0' />
 							<span className='text-sm text-foreground'>{t('region.benefitIn1')}</span>
 						</li>
 						<li className='flex items-start gap-2'>
-							<Check className='h-5 w-5 text-green-600 mt-0.5 flex-shrink-0' />
+							<Check className='h-5 w-5 text-success mt-0.5 flex-shrink-0' />
 							<span className='text-sm text-foreground'>{t('region.benefitIn2')}</span>
 						</li>
 					</ul>
