@@ -270,7 +270,7 @@ function UsersSection() {
 				{isLoading && <Loader />}
 				{!isLoading && isError && (
 					<div className='flex flex-col items-center justify-center gap-3 py-8 text-center'>
-						<p className='text-sm text-red-700'>{t('members.errors.loadError')}</p>
+						<p className='text-sm text-destructive'>{t('members.errors.loadError')}</p>
 						<Button variant='outline' onClick={() => refetch()}>
 							{t('common:actions.retry')}
 						</Button>
@@ -309,9 +309,11 @@ function UsersSection() {
 				className='rounded-xl border border-border shadow-lg sm:max-w-[425px]'>
 				<div className='mt-3 space-y-3'>
 					{addError && (
-						<div className='flex w-full items-center gap-2.5 rounded-md border border-red-200 bg-red-50 px-3 py-2' role='alert'>
-							<AlertTriangle className='h-4 w-4 flex-shrink-0 text-red-600' />
-							<span className='text-sm font-medium leading-relaxed text-red-700'>{addError}</span>
+						<div
+							className='flex w-full items-center gap-2.5 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2'
+							role='alert'>
+							<AlertTriangle className='h-4 w-4 flex-shrink-0 text-destructive' />
+							<span className='text-sm font-medium leading-relaxed text-destructive'>{addError}</span>
 						</div>
 					)}
 					<div>
@@ -438,7 +440,7 @@ function UsersSection() {
 
 					<div className='flex flex-col gap-1.5 text-xs text-muted-foreground'>
 						<div className='flex items-center gap-2'>
-							<AlertTriangle className='h-3.5 w-3.5 flex-shrink-0 text-amber-500' />
+							<AlertTriangle className='h-3.5 w-3.5 flex-shrink-0 text-warning' />
 							<span>{t('members.credentials.passwordResetNote')}</span>
 						</div>
 						<div className='flex items-center gap-2'>

@@ -30,7 +30,7 @@ const OrganizationInfoCard = () => {
 		<Card variant='default' noPadding className='rounded-lg border border-border bg-card p-5 shadow-none'>
 			<div className='flex items-center justify-between gap-4'>
 				<div className='flex min-w-0 items-center gap-3'>
-					<span className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#0B1121] text-sm font-semibold text-white'>
+					<span className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand text-sm font-semibold text-brand-foreground'>
 						{initials}
 					</span>
 					<div className='min-w-0'>
