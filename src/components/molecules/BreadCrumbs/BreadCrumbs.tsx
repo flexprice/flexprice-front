@@ -47,7 +47,7 @@ const BreadCrumbs: FC = () => {
 
 	if (isLoading) {
 		return (
-			<header className='bg-card sticky top-0 z-10 border-b-[1.5px] border-border'>
+			<header className='bg-sidebar sticky top-0 z-10'>
 				<div className='px-6 py-4'>
 					<div className='h-6 animate-pulse bg-muted rounded w-48'></div>
 				</div>
@@ -56,7 +56,7 @@ const BreadCrumbs: FC = () => {
 	}
 
 	return (
-		<header className='bg-card sticky top-0 z-10 border-b-[1.5px] border-border'>
+		<header className='bg-sidebar sticky top-0 z-10'>
 			<div className='px-6 py-4 flex items-center justify-between'>
 				{/* Breadcrumbs */}
 				<nav className='flex items-center space-x-2 text-sm text-muted-foreground'>
