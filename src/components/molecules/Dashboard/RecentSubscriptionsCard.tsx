@@ -61,7 +61,7 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 					</div>
 				) : error ? (
 					<div className='flex flex-col items-center justify-center py-8'>
-						<AlertCircle className='h-8 w-8 text-red-500 mb-3' />
+						<AlertCircle className='h-8 w-8 text-destructive mb-3' />
 						<p className={getTypographyClass('body-small', 'text-center text-muted-foreground')}>
 							{t('dashboardHome.recentSubscriptionsLoadError')}
 						</p>

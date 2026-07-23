@@ -92,7 +92,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 					</div>
 				) : error ? (
 					<div className='flex flex-col items-center justify-center py-8'>
-						<AlertCircle className='h-8 w-8 text-red-500 mb-3' />
+						<AlertCircle className='h-8 w-8 text-destructive mb-3' />
 						<p className={getTypographyClass('body-small', 'text-center text-muted-foreground')}>{t('dashboardHome.invoiceLoadError')}</p>
 					</div>
 				) : (
@@ -106,7 +106,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 							onKeyDown={(e) => e.key === 'Enter' && handleStatusClick(PAYMENT_STATUS.SUCCEEDED)}>
 							<div className='flex items-center justify-between'>
 								<div className='flex items-center gap-3'>
-									<CheckCircle className='w-5 h-5 text-green-600' />
+									<CheckCircle className='w-5 h-5 text-success' />
 									<p className={getTypographyClass('body-default', 'font-medium text-foreground')}>{t('status.paid')}</p>
 								</div>
 								<span className='text-2xl font-bold text-foreground'>{invoicesByStatus?.paid?.length || 0}</span>
@@ -122,7 +122,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 							onKeyDown={(e) => e.key === 'Enter' && handleStatusClick(PAYMENT_STATUS.PENDING)}>
 							<div className='flex items-center justify-between'>
 								<div className='flex items-center gap-3'>
-									<Clock className='w-5 h-5 text-yellow-600' />
+									<Clock className='w-5 h-5 text-warning' />
 									<p className={getTypographyClass('body-default', 'font-medium text-foreground')}>{t('status.pending')}</p>
 								</div>
 								<span className='text-2xl font-bold text-foreground'>{invoicesByStatus?.pending?.length || 0}</span>
@@ -138,7 +138,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 							onKeyDown={(e) => e.key === 'Enter' && handleStatusClick(PAYMENT_STATUS.FAILED)}>
 							<div className='flex items-center justify-between'>
 								<div className='flex items-center gap-3'>
-									<AlertCircle className='w-5 h-5 text-red-600' />
+									<AlertCircle className='w-5 h-5 text-destructive' />
 									<p className={getTypographyClass('body-default', 'font-medium text-foreground')}>{t('status.failed')}</p>
 								</div>
 								<span className='text-2xl font-bold text-foreground'>{invoicesByStatus?.failed?.length || 0}</span>
@@ -150,7 +150,7 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 							<div className='bg-card border border-border rounded-lg p-4'>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center gap-3'>
-										<RefreshCw className='w-5 h-5 text-blue-600' />
+										<RefreshCw className='w-5 h-5 text-info' />
 										<p className={getTypographyClass('body-default', 'font-medium text-foreground')}>
 											{t('dashboardHome.invoiceStatusProcessing')}
 										</p>
