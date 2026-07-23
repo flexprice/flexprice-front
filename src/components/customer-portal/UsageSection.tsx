@@ -56,7 +56,7 @@ const UsageSection = ({ usageData, isLoading }: UsageSectionProps) => {
 								value={item.is_unlimited ? 0 : percentage}
 								className='h-2'
 								indicatorColor={isOverLimit ? 'bg-gradient-to-r from-red-600 to-red-400' : 'bg-gradient-to-r from-[#6167d9] to-[#2563eb]'}
-								backgroundColor={isOverLimit ? 'bg-red-50' : 'bg-blue-100'}
+								backgroundColor={isOverLimit ? 'bg-destructive/10' : 'bg-info-muted'}
 							/>
 						</div>
 					);

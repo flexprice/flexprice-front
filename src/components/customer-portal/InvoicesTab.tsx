@@ -202,7 +202,7 @@ const InvoicesTab = () => {
 							</Tooltip>
 						</TooltipProvider>
 					</div>
-					<p className={`text-xl font-semibold mt-1 ${totalOverdue > 0 ? 'text-red-600' : 'text-foreground'}`}>
+					<p className={`text-xl font-semibold mt-1 ${totalOverdue > 0 ? 'text-destructive' : 'text-foreground'}`}>
 						{currencySymbol}
 						{formatAmount(String(totalOverdue))}
 					</p>

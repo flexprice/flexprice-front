@@ -60,7 +60,7 @@ const BillingOverviewCard = ({ invoices, currency = 'USD' }: BillingOverviewCard
 							</Tooltip>
 						</TooltipProvider>
 					</div>
-					<p className={`text-2xl font-semibold ${totalOverdue > 0 ? 'text-red-600' : 'text-foreground'}`}>
+					<p className={`text-2xl font-semibold ${totalOverdue > 0 ? 'text-destructive' : 'text-foreground'}`}>
 						{currencySymbol}
 						{formatAmount(String(totalOverdue))}
 					</p>

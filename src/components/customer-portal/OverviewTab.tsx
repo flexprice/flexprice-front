@@ -142,8 +142,8 @@ const OverviewTab = () => {
 			{firstWallet && (
 				<Card className={CARD_CLASS}>
 					<div className={`flex items-center gap-3 ${TITLE_TO_CONTENT_GAP}`}>
-						<div className='h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0'>
-							<WalletIcon className='h-5 w-5 text-blue-600' />
+						<div className='h-10 w-10 rounded-full bg-info-muted flex items-center justify-center shrink-0'>
+							<WalletIcon className='h-5 w-5 text-info' />
 						</div>
 						<div>
 							<h3 className='text-base font-medium text-foreground'>{firstWallet.name || t('wallet.defaultName')}</h3>

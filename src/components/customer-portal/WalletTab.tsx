@@ -110,8 +110,8 @@ const WalletTab = () => {
 			{/* Wallet Balance Card */}
 			<Card className='bg-card border border-border rounded-xl p-6'>
 				<div className='flex items-center gap-3 mb-6'>
-					<div className='h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center'>
-						<WalletIcon className='h-5 w-5 text-blue-600' />
+					<div className='h-10 w-10 rounded-full bg-info-muted flex items-center justify-center'>
+						<WalletIcon className='h-5 w-5 text-info' />
 					</div>
 					<div>
 						<h3 className='text-base font-medium text-foreground'>{activeWallet?.name || t('wallet.defaultName')}</h3>
