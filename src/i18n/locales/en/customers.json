@@ -484,7 +484,8 @@
 			"aboutAutoInvoiceAria": "About auto invoice threshold",
 			"autoInvoiceHelp": "Usage amount that can trigger an invoice before the period ends. Available when charges are usage-based; fixed-price subscription charges disable this field.",
 			"autoInvoicePlaceholder": "100.00",
-			"autoInvoiceAmountAria": "Auto invoice threshold amount"
+			"autoInvoiceAmountAria": "Auto invoice threshold amount",
+			"planNoCharges": "No charges added to this plan"
 		},
 		"subscriptionPriceTable": {
 			"overridePrice": "Override Price",

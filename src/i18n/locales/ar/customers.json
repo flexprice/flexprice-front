@@ -506,7 +506,8 @@
 			"aboutAutoInvoiceAria": "عن حد الفاتورة التلقائية",
 			"autoInvoiceHelp": "مبلغ الاستخدام الذي قد يستدعي فاتورة قبل نهاية الفترة. متاح عند الرسوم بالاستخدام؛ الرسوم الثابتة تعطّله.",
 			"autoInvoicePlaceholder": "100.00",
-			"autoInvoiceAmountAria": "مبلغ حد الفاتورة التلقائية"
+			"autoInvoiceAmountAria": "مبلغ حد الفاتورة التلقائية",
+			"planNoCharges": "لا توجد رسوم مضافة إلى هذه الخطة"
 		},
 		"subscriptionPriceTable": {
 			"overridePrice": "تجاوز السعر",

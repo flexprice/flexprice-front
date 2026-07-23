@@ -30,6 +30,7 @@ import {
 	ENTITY_STATUS,
 	EXPAND,
 	Customer,
+	PRICE_ENTITY_TYPE,
 	PRICE_TYPE,
 } from '@/models';
 import { BILLING_PERIOD, PAYMENT_TERMS_NONE, paymentTermsOptions } from '@/constants/constants';
@@ -37,6 +38,7 @@ import { SubscriptionFormState } from '@/pages';
 import { useQuery } from '@tanstack/react-query';
 import { usePlanPrices } from '@/hooks/usePlanPrices';
 import CreditGrantApi from '@/api/CreditGrantApi';
+import { PriceApi } from '@/api/PriceApi';
 import EntitlementApi from '@/api/EntitlementApi';
 import AddonApi from '@/api/AddonApi';
 import { AddAddonToSubscriptionRequest } from '@/types/dto/Addon';
@@ -216,14 +218,72 @@ const SubscriptionForm = ({
 		}
 	}, [overriddenPrices, setState]);
 
+	const planIds = useMemo(() => plans?.map((p) => p.id) ?? [], [plans]);
+
+	// Plans without any published charge cannot produce a valid subscription — look up which
+	// plans have prices so charge-less plans render grayed out and unselectable in the dropdown.
+	// Returns an array (not a Set) so the React Query cache stays serializable.
+	const { data: planIdsWithCharges } = useQuery({
+		queryKey: ['planIdsWithCharges', planIds],
+		queryFn: async () => {
+			const idsWithCharges = new Set<string>();
+			const PAGE_SIZE = 500;
+			let offset = 0;
+			while (true) {
+				const response = await PriceApi.searchPrices({
+					filters: [
+						{
+							field: 'entity_type',
+							operator: FilterOperator.EQUAL,
+							data_type: DataType.STRING,
+							value: { string: PRICE_ENTITY_TYPE.PLAN },
+						},
+						{
+							field: 'entity_id',
+							operator: FilterOperator.IN,
+							data_type: DataType.ARRAY,
+							value: { array: planIds },
+						},
+						{
+							field: 'status',
+							operator: FilterOperator.EQUAL,
+							data_type: DataType.STRING,
+							value: { string: ENTITY_STATUS.PUBLISHED },
+						},
+					],
+					limit: PAGE_SIZE,
+					offset,
+				});
+				response.items.forEach((price) => {
+					if (price.entity_id) idsWithCharges.add(price.entity_id);
+				});
+				if (response.items.length < PAGE_SIZE) break;
+				const total = response.pagination?.total;
+				if (total != null && offset + response.items.length >= total) break;
+				offset += PAGE_SIZE;
+			}
+			return [...idsWithCharges];
+		},
+		enabled: planIds.length > 0,
+	});
+
+	// Derived Set preserves O(1) lookups; undefined while the lookup is in flight.
+	const planIdsWithChargesSet = useMemo(() => (planIdsWithCharges ? new Set(planIdsWithCharges) : undefined), [planIdsWithCharges]);
+
 	const plansWithCharges = useMemo(() => {
 		return (
-			plans?.map((plan) => ({
-				label: plan.name,
-				value: plan.id,
-			})) ?? []
+			plans?.map((plan) => {
+				// While the price lookup is in flight, leave plans selectable to avoid a flicker lockout.
+				const hasCharges = !planIdsWithChargesSet || planIdsWithChargesSet.has(plan.id);
+				return {
+					label: plan.name,
+					value: plan.id,
+					disabled: !hasCharges,
+					...(!hasCharges ? { description: t('organisms.subscriptionForm.planNoCharges') } : {}),
+				};
+			}) ?? []
 		);
-	}, [plans]);
+	}, [plans, planIdsWithChargesSet, t]);
 
 	// Get available billing periods and currencies from selectedPlanPrices
 	const availableBillingPeriods = useMemo(() => {
