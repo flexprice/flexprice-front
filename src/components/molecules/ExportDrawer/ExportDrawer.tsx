@@ -480,7 +480,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 										delayDuration={0}
 										side='right'
 										content={<div className='max-w-[280px] text-sm'>{t('exportDrawer.metadata.tooltip')}</div>}>
-										<span className='inline-flex items-center text-blue-500 hover:text-blue-600'>
+										<span className='inline-flex items-center text-info hover:text-info'>
 											<Info className='h-3.5 w-3.5' />
 										</span>
 									</Tooltip>
@@ -527,7 +527,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 												<button
 													type='button'
 													onClick={() => removeMetadataField(index)}
-													className='self-center p-1 text-muted-foreground hover:text-red-500 transition-colors rounded'>
+													className='self-center p-1 text-muted-foreground hover:text-destructive transition-colors rounded'>
 													<Trash2 className='h-4 w-4' />
 												</button>
 											</div>
@@ -544,7 +544,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 													<button
 														type='button'
 														onClick={() => toggleColumnName(index)}
-														className='text-xs text-muted-foreground hover:text-blue-600 transition-colors'>
+														className='text-xs text-muted-foreground hover:text-info transition-colors'>
 														{t('exportDrawer.metadata.setColumnName')}
 													</button>
 												</div>
@@ -553,12 +553,12 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 									);
 								})}
 
-								{errors.export_metadata_fields && <p className='text-xs text-red-500'>{errors.export_metadata_fields}</p>}
+								{errors.export_metadata_fields && <p className='text-xs text-destructive'>{errors.export_metadata_fields}</p>}
 
 								<button
 									type='button'
 									onClick={addMetadataField}
-									className='inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-700 font-medium pt-0.5'>
+									className='inline-flex items-center gap-1.5 text-sm text-info hover:text-info-muted-foreground font-medium pt-0.5'>
 									<Plus className='h-4 w-4' />
 									{t('exportDrawer.metadata.addField')}
 								</button>
@@ -580,9 +580,9 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 
 				{/* Flexprice Managed Info */}
 				{isFlexpriceManaged && (
-					<div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
-						<h4 className='font-medium text-blue-900 mb-2'>{t('exportDrawer.flexpriceManaged.title')}</h4>
-						<p className='text-sm text-blue-800'>{t('exportDrawer.flexpriceManaged.body')}</p>
+					<div className='bg-info-muted border border-info-muted-foreground/20 rounded-lg p-4'>
+						<h4 className='font-medium text-info-muted-foreground mb-2'>{t('exportDrawer.flexpriceManaged.title')}</h4>
+						<p className='text-sm text-info-muted-foreground'>{t('exportDrawer.flexpriceManaged.body')}</p>
 					</div>
 				)}
 
@@ -593,7 +593,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 						id='enabled'
 						checked={formData.enabled}
 						onChange={(e) => handleChange('enabled', e.target.checked)}
-						className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-border rounded'
+						className='h-4 w-4 text-info focus:ring-blue-500 border-border rounded'
 					/>
 					<label htmlFor='enabled' className='text-sm font-medium text-foreground'>
 						{t('exportDrawer.enabled')}

@@ -56,13 +56,13 @@ const ExportRunItem: FC<ExportRunItemProps> = ({ run }) => {
 	const getStatusIcon = (status: ExportRun['status']) => {
 		switch (status) {
 			case 'completed':
-				return <CheckCircle className='w-4 h-4 text-green-500' />;
+				return <CheckCircle className='w-4 h-4 text-success' />;
 			case 'failed':
-				return <XCircle className='w-4 h-4 text-red-500' />;
+				return <XCircle className='w-4 h-4 text-destructive' />;
 			case 'running':
-				return <Play className='w-4 h-4 text-blue-500' />;
+				return <Play className='w-4 h-4 text-info' />;
 			case 'pending':
-				return <Clock className='w-4 h-4 text-yellow-500' />;
+				return <Clock className='w-4 h-4 text-warning' />;
 			case 'cancelled':
 				return <AlertCircle className='w-4 h-4 text-muted-foreground' />;
 			default:
@@ -73,13 +73,13 @@ const ExportRunItem: FC<ExportRunItemProps> = ({ run }) => {
 	const getStatusColor = (status: ExportRun['status']) => {
 		switch (status) {
 			case 'completed':
-				return 'text-green-700 bg-green-50';
+				return 'text-success-muted-foreground bg-success-muted';
 			case 'failed':
-				return 'text-red-700 bg-red-50';
+				return 'text-destructive bg-destructive/10';
 			case 'running':
-				return 'text-blue-700 bg-blue-50';
+				return 'text-info-muted-foreground bg-info-muted';
 			case 'pending':
-				return 'text-yellow-700 bg-yellow-50';
+				return 'text-warning-muted-foreground bg-warning-muted';
 			case 'cancelled':
 				return 'text-foreground bg-muted';
 			default:
@@ -121,7 +121,7 @@ const ExportRunItem: FC<ExportRunItemProps> = ({ run }) => {
 							{run.completed_at && ` • ${t('exportRuns.completed', { time: formatDate(run.completed_at) })}`}
 						</div>
 						{run.error_message && (
-							<div className='text-xs text-red-600 mt-1'>
+							<div className='text-xs text-destructive mt-1'>
 								{t('exportRuns.errorPrefix')} {run.error_message}
 							</div>
 						)}
