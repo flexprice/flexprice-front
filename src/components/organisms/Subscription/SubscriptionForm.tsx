@@ -228,8 +228,11 @@ const SubscriptionForm = ({
 		queryFn: async () => {
 			const idsWithCharges = new Set<string>();
 			const PAGE_SIZE = 500;
+			// Hard cap on page requests so a misbehaving backend (full pages with an unreliable
+			// `total`) can't loop forever; return whatever IDs we've collected once reached.
+			const MAX_PAGES = 20;
 			let offset = 0;
-			while (true) {
+			for (let page = 0; page < MAX_PAGES; page++) {
 				const response = await PriceApi.searchPrices({
 					filters: [
 						{
