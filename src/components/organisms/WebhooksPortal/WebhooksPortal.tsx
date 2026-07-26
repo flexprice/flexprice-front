@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
-import { Rss, LayoutGrid, History /* , Activity */ } from 'lucide-react';
+import { Rss, LayoutGrid, History, Activity } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { EndpointsTable, EventCatalogBrowser, MessageLogsTable /* , ActivityOverview */ } from '@/components/molecules/Webhooks';
+import { EndpointsTable, EventCatalogBrowser, MessageLogsTable, ActivityOverview } from '@/components/molecules/Webhooks';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +20,7 @@ const WebhooksPortal: FC = () => {
 		},
 		{ value: EVENT_CATALOG_TAB, label: t('webhooks.tabs.eventCatalog'), icon: LayoutGrid, content: <EventCatalogBrowser /> },
 		{ value: 'logs', label: t('webhooks.tabs.logs'), icon: History, content: <MessageLogsTable /> },
-		// { value: 'activity', label: t('webhooks.tabs.activity'), icon: Activity, content: <ActivityOverview /> },
+		{ value: 'activity', label: t('webhooks.tabs.activity'), icon: Activity, content: <ActivityOverview /> },
 	];
 
 	return (

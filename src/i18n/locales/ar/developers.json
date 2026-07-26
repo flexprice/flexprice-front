@@ -158,6 +158,9 @@
 				"svixPlayGenerating": "جارٍ الإنشاء…",
 				"svixPlayFailed": "تعذّر إنشاء رابط Svix Play"
 			}
+		},
+		"activity": {
+			"loadFailed": "تعذّر تحميل النشاط"
 		}
 	},
 	"workflows": {

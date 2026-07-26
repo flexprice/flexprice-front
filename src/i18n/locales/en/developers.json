@@ -323,7 +323,8 @@
 			"successfulAttempts": "Successful Attempts",
 			"failedAttempts": "Failed Attempts",
 			"recentActivity": "Recent Activity",
-			"noActivity": "No activity recorded in the last 6 hours."
+			"noActivity": "No activity recorded in the last 6 hours.",
+			"loadFailed": "Failed to load activity"
 		}
 	},
 	"workflows": {
