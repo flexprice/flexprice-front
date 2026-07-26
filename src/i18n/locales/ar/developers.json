@@ -148,6 +148,16 @@
 		"disabled": {
 			"heading": "الويب هوكس",
 			"description": "الويب هوكس غير مفعّلة. يرجى التواصل مع الدعم لتفعيلها."
+		},
+		"endpoints": {
+			"form": {
+				"urlHintPrefix": "قم بإعداد نقطة نهاية أو اختبر",
+				"svixPlayLink": "باستخدام Svix Play",
+				"svixPlayTooltip": "يمنحكم Svix Play فوراً نقطة نهاية فريدة لاستقبال وفحص الويب هوكس الواردة.",
+				"svixPlayTooltipAria": "حول Svix Play",
+				"svixPlayGenerating": "جارٍ الإنشاء…",
+				"svixPlayFailed": "تعذّر إنشاء رابط Svix Play"
+			}
 		}
 	},
 	"workflows": {

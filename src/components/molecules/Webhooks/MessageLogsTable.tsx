@@ -42,8 +42,6 @@ const MessageLogsTable: FC = () => {
 				</Button>
 			</div>
 
-			<h4 className='text-sm font-medium text-gray-700'>{t('webhooks.logs.latestMessages')}</h4>
-
 			{messages.loading && !messages.data ? (
 				<div className='flex h-64 items-center justify-center'>
 					<Loader />

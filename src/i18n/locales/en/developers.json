@@ -191,6 +191,12 @@
 				"urlLabel": "Endpoint URL",
 				"urlPlaceholder": "e.g. https://www.example.com/webhook",
 				"urlHint": "This URL will receive a POST request for each subscribed event.",
+				"urlHintPrefix": "Configure an endpoint or test",
+				"svixPlayLink": "with Svix Play",
+				"svixPlayTooltip": "Svix Play instantly gives you a unique endpoint to receive and inspect incoming webhooks.",
+				"svixPlayTooltipAria": "About Svix Play",
+				"svixPlayGenerating": "Generating…",
+				"svixPlayFailed": "Failed to generate Svix Play URL",
 				"descriptionLabel": "Description",
 				"descriptionPlaceholder": "An optional description of what this endpoint is used for.",
 				"subscribeToEvents": "Subscribe to events",
@@ -300,7 +306,6 @@
 		},
 		"logs": {
 			"heading": "Message Logs",
-			"latestMessages": "Latest Messages",
 			"loadFailed": "Failed to load message logs.",
 			"empty": {
 				"title": "No messages yet",
