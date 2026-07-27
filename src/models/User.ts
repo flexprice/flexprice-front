@@ -1,3 +1,5 @@
+import { SecretKey } from './SecretKey';
+
 export interface User {
 	id: string;
 	tenant: {
@@ -22,4 +24,5 @@ export interface User {
 	type?: 'user' | 'service_account';
 	roles?: string[];
 	metadata?: Record<string, string>;
+	api_keys?: SecretKey[];
 }

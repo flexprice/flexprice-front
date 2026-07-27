@@ -82,9 +82,21 @@
 		"paginationUnit": "Service Accounts",
 		"noRoles": "No Roles",
 		"emptyCard": {
-			"heading": "Create A Service Account",
+			"heading": "Create a Service Account",
 			"description": "Create a service account to manage programmatic access with specific roles and permissions.",
 			"button": "Create Service Account"
+		},
+		"deleteDialog": {
+			"title": "Delete service account?",
+			"archiveMessage": "Deleting {{name}} will archive this service account. This action cannot be undone.",
+			"keysWarning": "All connected API keys across all environments will be revoked.",
+			"keysListTitle": "Connected API keys",
+			"expired": "Expired",
+			"loading": "Loading connected API keys…",
+			"previewFailed": "Failed to load service account details. Please try again.",
+			"deleteFailed": "Failed to delete service account. Please try again.",
+			"deleteSuccess": "Service account deleted successfully",
+			"confirmDelete": "Delete"
 		}
 	},
 	"secretKeyDrawer": {
