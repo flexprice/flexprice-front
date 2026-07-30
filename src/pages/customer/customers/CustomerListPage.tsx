@@ -301,7 +301,6 @@ const CustomerListPage = () => {
 					tutorials: guides.customers.tutorials,
 				}}
 			/>
-			<CreateCustomerDrawer open={customerDrawerOpen} onOpenChange={setcustomerDrawerOpen} data={activeCustomer} />
 		</Page>
 	);
 };
