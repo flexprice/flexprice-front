@@ -1,9 +1,20 @@
-import { FC, ReactNode, useRef, useEffect, useState, cloneElement, isValidElement } from 'react';
+import { FC, ReactNode, useRef, useEffect, useState, useCallback, cloneElement, isValidElement } from 'react';
 import { Sheet as ShadcnSheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { hasRegisteredOpenModals, registerModalOpen } from '@/lib/modal-scroll-lock';
 import { useLocaleStore } from '@/store/useLocaleStore';
 import { Direction } from '@/config/branding';
+
+/**
+ * Modal sheets set body `pointer-events: none`, and Radix Popover-based comboboxes
+ * (SearchableSelect, AsyncSearchableSelect, and anything built on them, e.g. SelectGroup,
+ * SelectFeature) portal their option list outside the sheet's DOM subtree, so their options
+ * become unclickable — clicks fall through to the overlay instead of the option. Rendering
+ * the sheet as non-modal and ignoring "outside" interactions that originate inside a
+ * portaled popper avoids this for every consumer of this atom.
+ */
+export const isPortaledSelectTarget = (target: EventTarget | null) =>
+	target instanceof Element && !!target.closest('[data-radix-popper-content-wrapper]');
 
 interface Props {
 	trigger?: ReactNode;
@@ -21,6 +32,12 @@ const Sheet: FC<Props> = ({ children, trigger, description, title, isOpen, onOpe
 	const direction = useLocaleStore((s) => s.direction);
 	const side = direction === Direction.RTL ? 'left' : 'right';
 	const [isScrollable, setIsScrollable] = useState(false);
+
+	const preventPortaledSelectDismiss = useCallback((event: Event) => {
+		if (isPortaledSelectTarget(event.target)) {
+			event.preventDefault();
+		}
+	}, []);
 
 	useEffect(() => {
 		if (isOpen && contentRef.current) {
@@ -141,11 +158,14 @@ const Sheet: FC<Props> = ({ children, trigger, description, title, isOpen, onOpe
 	}
 
 	return (
-		<ShadcnSheet open={isOpen} onOpenChange={onOpenChange}>
+		<ShadcnSheet open={isOpen} onOpenChange={onOpenChange} modal={false}>
 			{trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
 			<SheetContent
 				ref={contentRef}
 				side={side}
+				onPointerDownOutside={preventPortaledSelectDismiss}
+				onInteractOutside={preventPortaledSelectDismiss}
+				onFocusOutside={preventPortaledSelectDismiss}
 				className={cn('h-screen overflow-y-auto rounded-[10px]', className, {
 					'sm:max-w-sm': size === 'sm',
 					'sm:max-w-md': size === 'md',

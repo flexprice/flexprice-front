@@ -1,5 +1,6 @@
 import { Button, Checkbox, Dialog, FormHeader, Input, Select, SelectFeature, Spacer, Toggle } from '@/components/atoms';
 import { Sheet as ShadcnSheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { isPortaledSelectTarget } from '@/components/atoms/Sheet/Sheet';
 import { JsonObject } from '@/types/common';
 import { JsonEditor } from '@/components/molecules/JsonEditor';
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
@@ -21,13 +22,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useLocaleStore } from '@/store/useLocaleStore';
 import { Direction } from '@/config/branding';
-
-/**
- * Modal Sheets set body `pointer-events: none`. SelectFeature portals its Popover outside
- * Sheet content, so options become unclickable and clicks fall through to the overlay.
- */
-const isPortaledSelectTarget = (target: EventTarget | null) =>
-	target instanceof Element && !!target.closest('[data-radix-popper-content-wrapper]');
 
 interface Props {
 	isOpen: boolean;
