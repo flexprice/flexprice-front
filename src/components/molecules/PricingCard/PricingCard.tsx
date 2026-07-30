@@ -310,7 +310,7 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 				'flexprice-ui',
 				'border transition-all shadow-md',
 				visualModern
-					? 'rounded-2xl border-border/90 bg-gradient-to-b from-white to-slate-50/90 p-5 shadow-sm ring-1 ring-slate-100 hover:border-border/90'
+					? 'rounded-2xl border-border/90 bg-gradient-to-b from-card to-muted/40 p-5 shadow-sm ring-1 ring-border hover:border-border/90'
 					: 'border-border bg-card hover:border-border rounded-3xl p-7',
 				className,
 			)}>
