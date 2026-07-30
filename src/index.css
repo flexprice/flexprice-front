@@ -8,7 +8,7 @@
 		/* Overridden at runtime by `initTypography()` — `config.typography.fontFamily` */
 		--font-sans: 'Geist', sans-serif;
 
-		--background: 210 40% 98%;
+		--background: #f8fafc;
 
 		--foreground: 0 0% 3.9%;
 
@@ -34,7 +34,7 @@
 
 		--accent: 0 0% 96.1%;
 
-		--accent-foreground: 240 6% 10%;
+		--accent-foreground: #f4f4f5;
 
 		--brand: 201 77% 15%;
 
