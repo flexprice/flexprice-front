@@ -39,6 +39,15 @@ const Sheet: FC<Props> = ({ children, trigger, description, title, isOpen, onOpe
 		}
 	}, []);
 
+	// Non-modal dialogs get no default protection against focus-outside dismissal (Radix only
+	// applies that to modal dialogs). Without it, a sheet opened from a menu item/action button
+	// closes itself the instant that trigger reclaims focus after its own menu finishes closing.
+	// Focus moving elsewhere should never by itself close the sheet — only an explicit outside
+	// click or the close button should.
+	const preventFocusOutsideDismiss = useCallback((event: Event) => {
+		event.preventDefault();
+	}, []);
+
 	useEffect(() => {
 		if (isOpen && contentRef.current) {
 			// Check if content is scrollable after a short delay to ensure DOM is fully rendered
@@ -165,7 +174,7 @@ const Sheet: FC<Props> = ({ children, trigger, description, title, isOpen, onOpe
 				side={side}
 				onPointerDownOutside={preventPortaledSelectDismiss}
 				onInteractOutside={preventPortaledSelectDismiss}
-				onFocusOutside={preventPortaledSelectDismiss}
+				onFocusOutside={preventFocusOutsideDismiss}
 				className={cn('h-screen overflow-y-auto rounded-[10px]', className, {
 					'sm:max-w-sm': size === 'sm',
 					'sm:max-w-md': size === 'md',

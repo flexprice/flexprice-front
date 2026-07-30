@@ -332,6 +332,14 @@ const AddEntitlementDrawer: FC<Props> = ({
 		}
 	}, []);
 
+	// Non-modal dialogs get no default protection against focus-outside dismissal (Radix only
+	// applies that to modal dialogs). Without it, opening this drawer from a menu item/action
+	// button would close it the instant that trigger reclaims focus after its own menu finishes
+	// closing. Focus moving elsewhere should never by itself close the drawer.
+	const preventFocusOutsideDismiss = useCallback((event: Event) => {
+		event.preventDefault();
+	}, []);
+
 	// Reset states when drawer opens/closes
 	useEffect(() => {
 		if (isOpen) {
@@ -479,7 +487,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 					className={cn('h-screen overflow-y-auto rounded-[10px] sm:max-w-sm bg-card')}
 					onPointerDownOutside={preventPortaledSelectDismiss}
 					onInteractOutside={preventPortaledSelectDismiss}
-					onFocusOutside={preventPortaledSelectDismiss}>
+					onFocusOutside={preventFocusOutsideDismiss}>
 					<SheetHeader>
 						<SheetTitle>{t('entitlements.addDrawer.title')}</SheetTitle>
 						<SheetDescription>{t('entitlements.addDrawer.description')}</SheetDescription>
