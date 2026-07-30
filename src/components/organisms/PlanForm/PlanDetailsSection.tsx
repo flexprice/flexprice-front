@@ -20,7 +20,7 @@ const PlanDetailsSection = ({ plan, setPlanField, errors }: Props) => {
 	}, [plan]);
 
 	return (
-		<div className='p-6  rounded-xl border border-border'>
+		<div className='p-6  rounded-xl border border-[#E4E4E7]'>
 			<Input
 				placeholder={t('catalog:plans.drawer.namePlaceholder')}
 				description={t('catalog:plans.drawer.nameHelp')}

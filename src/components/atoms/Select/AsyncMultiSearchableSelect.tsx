@@ -204,7 +204,7 @@ const AsyncMultiSearchableSelect = <T = unknown,>({
 	return (
 		<div className={cn('space-y-1', className)}>
 			{label && (
-				<label className={cn('block text-sm font-medium text-zinc break-words', disabled ? 'text-muted-foreground' : 'text-foreground')}>
+				<label className={cn('block text-sm font-medium text-zinc break-words', disabled ? 'text-zinc-500' : 'text-zinc-950')}>
 					{label}
 				</label>
 			)}

@@ -40,7 +40,7 @@ const EventFilter: FC<Props> = ({ eventFilters, setEventFilters, error, disabled
 					return (
 						<div
 							key={index}
-							className={cn('relative', isHorizontal ? 'flex h-full w-full gap-4' : 'bg-card rounded-lg border border-input')}>
+							className={cn('relative', isHorizontal ? 'flex h-full w-full gap-4' : 'bg-white rounded-lg border border-input')}>
 							<div className={cn(isHorizontal ? 'flex-1 flex gap-4' : 'flex flex-col gap-4 p-6')}>
 								<div className={cn('w-full', !isHorizontal && 'relative pe-12')}>
 									<Input
@@ -58,7 +58,7 @@ const EventFilter: FC<Props> = ({ eventFilters, setEventFilters, error, disabled
 									/>
 									{!isHorizontal && (
 										<button
-											className='absolute right-0 top-8 flex justify-center items-center size-8 rounded-md hover:bg-muted text-muted-foreground'
+											className='absolute right-0 top-8 flex justify-center items-center size-8 rounded-md hover:bg-gray-100 text-gray-500'
 											onClick={() => {
 												const newEventFilters = [...safeEventFilters];
 												newEventFilters.splice(index, 1);

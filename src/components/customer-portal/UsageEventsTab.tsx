@@ -132,11 +132,11 @@ const UsageEventsTab = ({ customerId }: UsageEventsTabProps) => {
 	if (customerLoading) {
 		return (
 			<div className='space-y-6'>
-				<Card className='bg-card border border-border rounded-xl p-6'>
+				<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
 					<div className='animate-pulse space-y-4'>
-						<div className='h-10 bg-muted rounded'></div>
-						<div className='h-12 bg-muted rounded'></div>
-						<div className='h-12 bg-muted rounded'></div>
+						<div className='h-10 bg-zinc-100 rounded'></div>
+						<div className='h-12 bg-zinc-100 rounded'></div>
+						<div className='h-12 bg-zinc-100 rounded'></div>
 					</div>
 				</Card>
 			</div>
@@ -145,7 +145,7 @@ const UsageEventsTab = ({ customerId }: UsageEventsTabProps) => {
 
 	if (!customer?.external_id) {
 		return (
-			<Card className='bg-card border border-border rounded-xl p-6'>
+			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
 				<EmptyState title={t('usageEvents.unableTitle')} description={t('usageEvents.unableDescription')} />
 			</Card>
 		);
@@ -154,9 +154,9 @@ const UsageEventsTab = ({ customerId }: UsageEventsTabProps) => {
 	return (
 		<div className='space-y-6'>
 			{/* Events Table */}
-			<Card className='bg-card border border-border rounded-xl overflow-hidden'>
-				<div className='flex items-center justify-between p-6 border-b border-border'>
-					<h3 className='text-base font-medium text-foreground'>{t('usage.title')}</h3>
+			<Card className='bg-white border border-[#E9E9E9] rounded-xl overflow-hidden'>
+				<div className='flex items-center justify-between p-6 border-b border-[#E9E9E9]'>
+					<h3 className='text-base font-medium text-zinc-950'>{t('usage.title')}</h3>
 					<TimePeriodSelector selectedPeriod={selectedPeriod} onPeriodChange={setSelectedPeriod} />
 				</div>
 				{events.length > 0 ? (

@@ -7,7 +7,6 @@ import { formatCompactNumber } from '@/utils';
 import { GetUsageAnalyticsResponse } from '@/types/dto';
 import { UsageAnalyticItem } from '@/models/Analytics';
 import { useTranslation } from 'react-i18next';
-import { chartTheme } from '@/lib/chartTheme';
 
 // Configuration constants - adjust these values as needed
 const MAX_LEGEND_ITEMS = 5;
@@ -239,7 +238,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 			<Card className={`py-2 sm:py-0 shadow-none ${className || ''}`}>
 				<CardHeader className='px-6 py-4'>
 					{title && <CardTitle className='text-base font-medium'>{title}</CardTitle>}
-					{description && <CardDescription className='text-xs text-muted-foreground'>{description}</CardDescription>}
+					{description && <CardDescription className='text-xs text-gray-500'>{description}</CardDescription>}
 				</CardHeader>
 				<CardContent className='px-2 sm:px-6 pt-0 pb-4'>
 					<div className='flex justify-end mb-3'>
@@ -271,7 +270,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 					</div>
 					<div className='relative' style={{ width: '100%', height: 400 }}>
 						{zoomState.refAreaLeft && zoomState.refAreaRight && (
-							<div className='absolute top-0 right-0 bg-info-muted text-xs text-info-muted-foreground py-1 px-2 rounded-md z-10 border border-border'>
+							<div className='absolute top-0 right-0 bg-indigo-50 text-xs text-indigo-600 py-1 px-2 rounded-md z-10 border border-indigo-200'>
 								{t('customerCharts.selectingArea')}
 							</div>
 						)}
@@ -282,12 +281,12 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 								onMouseDown={handleZoomStart}
 								onMouseMove={handleZoomMove}
 								onMouseUp={handleZoomEnd}>
-								<CartesianGrid vertical={false} stroke={chartTheme.gridStroke} />
+								<CartesianGrid vertical={false} stroke='rgba(243, 244, 246, 0.8)' />
 								<XAxis
 									dataKey='date'
 									tickLine={false}
-									axisLine={{ stroke: chartTheme.axisLineStroke }}
-									tick={{ fill: chartTheme.tickFill, fontSize: 11 }}
+									axisLine={{ stroke: 'rgba(229, 231, 235, 0.8)' }}
+									tick={{ fill: '#9ca3af', fontSize: 11 }}
 									domain={[zoomState.left, zoomState.right]}
 									tickFormatter={(value) => {
 										const date = new Date(value);
@@ -302,7 +301,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 								<YAxis
 									tickLine={false}
 									axisLine={false}
-									tick={{ fill: chartTheme.tickFill, fontSize: 11 }}
+									tick={{ fill: '#9ca3af', fontSize: 11 }}
 									width={48}
 									tickCount={5}
 									dx={-5}
@@ -317,8 +316,8 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 										return (
 											<div
 												style={{
-													backgroundColor: chartTheme.tooltipBg,
-													border: `1px solid ${chartTheme.tooltipBorder}`,
+													backgroundColor: 'rgba(255, 255, 255, 0.98)',
+													border: 'none',
 													borderRadius: '6px',
 													boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
 													fontSize: '12px',
@@ -332,7 +331,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 												onWheel={(e) => e.stopPropagation()}>
 												<div
 													style={{
-														borderBottom: `1px solid ${chartTheme.tooltipBorder}`,
+														borderBottom: '1px solid #f3f4f6',
 														paddingBottom: '6px',
 														marginBottom: '8px',
 														padding: '10px 14px 10px 14px',
@@ -340,7 +339,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 													<div
 														style={{
 															fontWeight: 600,
-															color: chartTheme.tooltipTitle,
+															color: '#374151',
 															fontSize: '12px',
 															letterSpacing: '0.025em',
 														}}>
@@ -352,7 +351,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 													</div>
 													<div
 														style={{
-															color: chartTheme.tooltipSubtitle,
+															color: '#6b7280',
 															fontSize: '11px',
 															marginTop: '2px',
 														}}>
@@ -384,11 +383,11 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 																		backgroundColor: entry.color,
 																		display: 'inline-block',
 																	}}></span>
-																<span style={{ color: chartTheme.tooltipLabel, fontSize: '11px' }}>
+																<span style={{ color: '#4b5563', fontSize: '11px' }}>
 																	{(typeof entry.dataKey === 'string' && seriesConfig[entry.dataKey]?.label) || entry.name || entry.dataKey}
 																</span>
 															</div>
-															<span style={{ fontWeight: 500, color: chartTheme.tooltipValue }}>
+															<span style={{ fontWeight: 500, color: '#111827' }}>
 																{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}
 															</span>
 														</div>
@@ -406,7 +405,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 											fontSize: '11px',
 											paddingTop: '15px',
 											paddingBottom: '5px',
-											color: chartTheme.legendColor,
+											color: '#6b7280',
 										}}
 										onClick={(data) => {
 											// Could implement toggle visibility here
@@ -418,7 +417,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 									dataKey='date'
 									height={20}
 									stroke={primaryColor ? `${primaryColor}99` : 'rgba(99, 102, 241, 0.6)'}
-									fill={primaryColor ? `${primaryColor}22` : chartTheme.brushFill}
+									fill={primaryColor ? `${primaryColor}22` : 'rgba(243, 244, 246, 0.2)'}
 									travellerWidth={8}
 									y={330} // Position at the bottom of the chart, below the data lines
 									tickFormatter={(value) => {
@@ -472,7 +471,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 										dot={false}
 										activeDot={{
 											r: 3.5,
-											stroke: chartTheme.activeDotStroke,
+											stroke: '#fff',
 											strokeWidth: 1,
 											fill: getSeriesColor(index),
 										}}

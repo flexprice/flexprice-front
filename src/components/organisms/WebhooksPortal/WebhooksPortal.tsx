@@ -24,7 +24,7 @@ const WebhooksPortal: FC = () => {
 	];
 
 	return (
-		<div className='border border-border rounded-lg bg-card p-6'>
+		<div className='border border-border rounded-lg bg-white p-6'>
 			<Tabs value={activeTab} onValueChange={setActiveTab} className='w-full'>
 				<TabsList className='space-x-1 bg-transparent border-b border-border w-full justify-start rounded-none'>
 					{tabs.map(({ value, label, icon: Icon }) => (
@@ -32,9 +32,9 @@ const WebhooksPortal: FC = () => {
 							key={value}
 							value={value}
 							className={cn(
-								'flex items-center gap-1.5 text-sm font-medium text-muted-foreground px-3 py-2 rounded-none border-b-2 border-transparent',
-								'data-[state=active]:text-foreground data-[state=active]:border-foreground',
-								'hover:text-foreground transition-colors bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0',
+								'flex items-center gap-1.5 text-sm font-medium text-gray-500 px-3 py-2 rounded-none border-b-2 border-transparent',
+								'data-[state=active]:text-gray-900 data-[state=active]:border-gray-900',
+								'hover:text-gray-900 transition-colors bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0',
 							)}>
 							<Icon className='w-4 h-4' />
 							{label}

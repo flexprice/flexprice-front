@@ -60,7 +60,9 @@ const WalletTransactionsWidget = () => {
 
 	if (!wallets || wallets.length === 0) {
 		return (
-			<Card className='rounded-xl p-6' style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
+			<Card
+				className='rounded-xl p-6'
+				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
 				<EmptyState title={t('wallet.emptyTitle')} description={t('wallet.emptyDescription')} />
 			</Card>
 		);
@@ -84,9 +86,9 @@ const WalletTransactionsWidget = () => {
 
 			<Card
 				className='rounded-xl overflow-hidden'
-				style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
-				<div className='p-6' style={{ borderBottom: '1px solid var(--portal-border)' }}>
-					<h3 className='text-base font-medium' style={{ color: 'var(--portal-text-primary)' }}>
+				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+				<div className='p-6' style={{ borderBottom: '1px solid var(--portal-border, #E9E9E9)' }}>
+					<h3 className='text-base font-medium' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
 						{t('wallet.transactionHistory')}
 					</h3>
 				</div>
@@ -94,7 +96,7 @@ const WalletTransactionsWidget = () => {
 					{transactionsLoading ? (
 						<div className='animate-pulse space-y-3'>
 							{[1, 2, 3].map((i) => (
-								<div key={i} className='h-12 bg-muted rounded'></div>
+								<div key={i} className='h-12 bg-zinc-100 rounded'></div>
 							))}
 						</div>
 					) : transactionsData?.items && transactionsData.items.length > 0 ? (

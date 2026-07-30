@@ -260,12 +260,10 @@ const AddAddonDialog: React.FC<Props> = ({ isOpen, onOpenChange, subscriptionId,
 				title: t('billing:subscriptions.addAddonDialog.columns.commitment'),
 				render: (row) => {
 					if (row.price.type !== PRICE_TYPE.USAGE) {
-						return (
-							<span className='text-sm text-muted-foreground'>{t('billing:subscriptions.addAddonDialog.commitmentNotAvailable')}</span>
-						);
+						return <span className='text-sm text-gray-400'>{t('billing:subscriptions.addAddonDialog.commitmentNotAvailable')}</span>;
 					}
 					const config = lineItemCommitments[row.price.id];
-					return config ? <span className='text-sm text-muted-foreground'>{formatCommitmentSummary(config)}</span> : <span>—</span>;
+					return config ? <span className='text-sm text-gray-600'>{formatCommitmentSummary(config)}</span> : <span>—</span>;
 				},
 			},
 			{
@@ -321,16 +319,16 @@ const AddAddonDialog: React.FC<Props> = ({ isOpen, onOpenChange, subscriptionId,
 					<div className='space-y-3'>
 						<div className='flex items-center justify-between'>
 							<div>
-								<p className='text-sm font-medium text-foreground'>{t('common:labels.charges')}</p>
+								<p className='text-sm font-medium text-gray-700'>{t('common:labels.charges')}</p>
 							</div>
 						</div>
 						{selectedAddonPrices.length > 0 ? (
-							<div className='rounded-xl border border-border'>
+							<div className='rounded-xl border border-gray-200'>
 								<FlexpriceTable columns={addonChargeColumns} data={selectedAddonPrices.map((p) => ({ price: p }))} />
 							</div>
 						) : (
-							<div className='rounded-xl border border-border p-4'>
-								<p className='text-sm text-muted-foreground'>{t('billing:subscriptions.addAddonDialog.emptyNoChargesForPeriodCurrency')}</p>
+							<div className='rounded-xl border border-gray-200 p-4'>
+								<p className='text-sm text-gray-600'>{t('billing:subscriptions.addAddonDialog.emptyNoChargesForPeriodCurrency')}</p>
 							</div>
 						)}
 
@@ -343,15 +341,13 @@ const AddAddonDialog: React.FC<Props> = ({ isOpen, onOpenChange, subscriptionId,
 									applyAdvancedDefaults();
 								}
 							}}>
-							<div className='rounded-xl border border-border bg-card'>
+							<div className='rounded-xl border border-gray-200 bg-white'>
 								<CollapsibleTrigger asChild>
 									<button
 										type='button'
-										className='w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-foreground hover:bg-muted rounded-xl'>
+										className='w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 rounded-xl'>
 										<span>{t('billing:subscriptions.addAddonDialog.advancedOptions')}</span>
-										<ChevronDown
-											className={`h-4 w-4 text-muted-foreground transition-transform ${advancedOpen ? 'rotate-180' : 'rotate-0'}`}
-										/>
+										<ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${advancedOpen ? 'rotate-180' : 'rotate-0'}`} />
 									</button>
 								</CollapsibleTrigger>
 								<CollapsibleContent>
@@ -405,7 +401,7 @@ const AddAddonDialog: React.FC<Props> = ({ isOpen, onOpenChange, subscriptionId,
 										<div className='pt-3'>
 											<button
 												type='button'
-												className='text-xs text-muted-foreground hover:text-foreground'
+												className='text-xs text-gray-500 hover:text-gray-700'
 												onClick={() => {
 													setStartDate(undefined);
 													setCadence(ADDON_CADENCE.RECURRING);

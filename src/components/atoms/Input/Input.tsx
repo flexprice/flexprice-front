@@ -213,7 +213,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						sizes[size].display,
 						'w-full flex group items-center rounded-[6px] border bg-background ring-offset-background placeholder:text-muted-foreground disabled:opacity-50 disabled:cursor-not-allowed',
 						error ? 'border-destructive' : 'border-input focus-within:ring-ring focus-within:ring-offset-2',
-						'focus-within:border-border',
+						'focus-within:border-black',
 						className,
 					)}>
 					{inputPrefix && <div className='me-2'>{inputPrefix}</div>}
@@ -226,7 +226,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						placeholder={placeholder}
 						className={cn(
 							'peer relative min-h-0 min-w-0 flex-1 bg-transparent outline-none ring-0 focus:outline-none placeholder:text-muted-foreground',
-							disabled && 'text-muted-foreground',
+							disabled && 'text-zinc-500',
 							className,
 						)}
 						onChange={handleChange}
@@ -246,7 +246,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					)}
 				</div>
 				{/* Description */}
-				{description && <p className={cn('text-sm', disabled ? 'text-muted-foreground' : 'text-muted-foreground')}>{description}</p>}
+				{description && <p className={cn('text-sm', disabled ? 'text-zinc-500' : 'text-muted-foreground')}>{description}</p>}
 				{/* Error Message */}
 				{error && <p className='text-sm text-destructive'>{error}</p>}
 			</div>

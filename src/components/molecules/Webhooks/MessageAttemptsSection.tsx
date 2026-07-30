@@ -64,7 +64,7 @@ const MessageAttemptsSection: FC<Props> = ({ endpointId, onSelectMessage }) => {
 					<Loader />
 				</div>
 			) : attempts.error ? (
-				<div className='p-4 text-sm text-destructive'>{t('webhooks.endpoints.attempts.loadFailed')}</div>
+				<div className='p-4 text-sm text-red-600'>{t('webhooks.endpoints.attempts.loadFailed')}</div>
 			) : attempts.data?.length ? (
 				<FlexpriceTable columns={columns} data={attempts.data} onRowClick={(row) => onSelectMessage(row.id)} />
 			) : (

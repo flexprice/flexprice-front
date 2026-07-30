@@ -146,7 +146,7 @@ const AzureMarketplaceConnectionDrawer: FC<AzureMarketplaceConnectionDrawerProps
 						{/* Step 1 — what the tenant sets up in their own Azure AD tenant, entirely on their side */}
 						<div className='space-y-1'>
 							<p className='text-sm font-medium text-foreground'>{t('connection.azureMarketplace.step1Title')}</p>
-							<p className='text-xs text-muted-foreground'>{t('connection.azureMarketplace.step1Hint')}</p>
+							<p className='text-xs text-gray-500'>{t('connection.azureMarketplace.step1Hint')}</p>
 						</div>
 
 						<div className='p-3 bg-amber-50 border border-amber-200 rounded-lg'>

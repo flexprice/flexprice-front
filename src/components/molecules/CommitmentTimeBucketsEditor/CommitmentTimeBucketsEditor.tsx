@@ -153,7 +153,7 @@ const TimePointInput: FC<TimePointInputProps> = ({
 	onOpenIdChange,
 }) => (
 	<div className='flex w-fit shrink-0 flex-col gap-2'>
-		<span className='text-xs font-medium text-muted-foreground'>{label}</span>
+		<span className='text-xs font-medium text-gray-600'>{label}</span>
 		<div className='flex flex-nowrap items-center gap-0'>
 			<TimeUnitSelect
 				id={`${idPrefix}-hour`}
@@ -167,7 +167,7 @@ const TimePointInput: FC<TimePointInputProps> = ({
 				ariaLabel={`${label} hour`}
 				hasError={hasError}
 			/>
-			<span className='shrink-0 px-0.5 text-xs font-medium text-muted-foreground/70'>:</span>
+			<span className='shrink-0 px-0.5 text-xs font-medium text-gray-300'>:</span>
 			<TimeUnitSelect
 				id={`${idPrefix}-minute`}
 				openId={openId}
@@ -261,11 +261,11 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 	};
 
 	return (
-		<div className='rounded-lg border border-border bg-card p-4 min-w-0 overflow-x-hidden'>
+		<div className='rounded-lg border border-gray-200 bg-white p-4 min-w-0 overflow-x-hidden'>
 			<div className='flex items-center justify-between gap-4'>
 				<div className='min-w-0'>
-					<h4 className='text-sm font-semibold text-foreground'>{t('billing:commitmentConfig.timeBuckets.title')}</h4>
-					<p className='mt-0.5 text-xs text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.descriptionShort')}</p>
+					<h4 className='text-sm font-semibold text-gray-900'>{t('billing:commitmentConfig.timeBuckets.title')}</h4>
+					<p className='mt-0.5 text-xs text-gray-500'>{t('billing:commitmentConfig.timeBuckets.descriptionShort')}</p>
 				</div>
 				<Button type='button' variant='outline' size='sm' onClick={handleAddBucket} disabled={disabled} className='shrink-0 gap-1.5'>
 					{t('billing:commitmentConfig.timeBuckets.addBucket')}
@@ -273,8 +273,8 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 			</div>
 
 			{buckets.length === 0 ? (
-				<div className='mt-5 rounded-md border border-dashed border-border bg-muted/60 px-4 py-10 text-center'>
-					<p className='text-sm text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.emptyShort')}</p>
+				<div className='mt-5 rounded-md border border-dashed border-gray-200 bg-gray-50/60 px-4 py-10 text-center'>
+					<p className='text-sm text-gray-500'>{t('billing:commitmentConfig.timeBuckets.emptyShort')}</p>
 				</div>
 			) : (
 				<div className='mt-5 space-y-3'>
@@ -321,9 +321,9 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 							showErrors && isTiered && !hasTier ? t('billing:commitmentConfig.timeBuckets.errors.tiersRequired') : undefined;
 
 						return (
-							<div key={index} className='rounded-lg border border-border bg-muted/40 p-4'>
+							<div key={index} className='rounded-lg border border-gray-200 bg-gray-50/40 p-4'>
 								<div className='mb-4 flex items-center justify-between gap-3'>
-									<span className='text-xs font-semibold uppercase tracking-wide text-muted-foreground'>
+									<span className='text-xs font-semibold uppercase tracking-wide text-gray-500'>
 										{t('billing:commitmentConfig.timeBuckets.bucketLabel', { index: index + 1 })}
 									</span>
 									<button
@@ -336,7 +336,7 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 											onChange(buckets.filter((_, i) => i !== index));
 										}}
 										disabled={disabled}
-										className='rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50'
+										className='rounded-md p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50'
 										aria-label={t('billing:commitmentConfig.timeBuckets.removeBucket')}>
 										<RiDeleteBin6Line className='size-4' />
 									</button>
@@ -373,13 +373,13 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 										disabled={disabled}
 										hasError={endTimeError}
 									/>
-									<span className='shrink-0 pb-2 text-xs font-medium text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.utc')}</span>
+									<span className='shrink-0 pb-2 text-xs font-medium text-gray-400'>{t('billing:commitmentConfig.timeBuckets.utc')}</span>
 								</div>
 
 								<div className='mt-2 min-h-5'>
-									{sameTime && <p className='text-xs text-destructive'>{t('billing:commitmentConfig.timeBuckets.errors.sameTime')}</p>}
+									{sameTime && <p className='text-xs text-red-600'>{t('billing:commitmentConfig.timeBuckets.errors.sameTime')}</p>}
 									{!sameTime && stepErrorMessage && (startTimeError || endTimeError) && (
-										<p className='text-xs text-destructive'>{stepErrorMessage}</p>
+										<p className='text-xs text-red-600'>{stepErrorMessage}</p>
 									)}
 								</div>
 
@@ -394,7 +394,7 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 
 								<div className='mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2'>
 									<div className='space-y-1'>
-										<label className='text-xs font-medium text-muted-foreground'>{commitmentValueLabel}</label>
+										<label className='text-xs font-medium text-gray-600'>{commitmentValueLabel}</label>
 										<Input
 											type={rowCommitmentType === CommitmentType.QUANTITY ? 'number' : 'formatted-number'}
 											value={row.commitment_value ?? ''}
@@ -405,16 +405,16 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 											className='w-full'
 											error={commitmentValueError}
 										/>
-										<p className='text-xs text-muted-foreground'>
+										<p className='text-xs text-gray-500'>
 											{rowCommitmentType === CommitmentType.QUANTITY
 												? t('billing:commitmentConfig.commitmentQuantityHint')
 												: t('billing:commitmentConfig.commitmentAmountHint')}
 										</p>
 									</div>
 									<div className='space-y-1'>
-										<label className='text-xs font-medium text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.trueUpEnabled')}</label>
+										<label className='text-xs font-medium text-gray-600'>{t('billing:commitmentConfig.timeBuckets.trueUpEnabled')}</label>
 										<div className='flex h-10 w-full items-center justify-between rounded-[6px] border border-input bg-background px-3'>
-											<span className={cn('text-sm', row.true_up_enabled ? 'font-medium text-foreground' : 'text-muted-foreground')}>
+											<span className={cn('text-sm', row.true_up_enabled ? 'font-medium text-gray-900' : 'text-muted-foreground')}>
 												{row.true_up_enabled ? t('common:labels.enabled') : t('common:labels.disabled')}
 											</span>
 											<Switch
@@ -423,11 +423,11 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 												disabled={disabled}
 											/>
 										</div>
-										<p className='text-xs text-muted-foreground'>{t('billing:commitmentConfig.enableTrueUpHint')}</p>
+										<p className='text-xs text-gray-500'>{t('billing:commitmentConfig.enableTrueUpHint')}</p>
 									</div>
 								</div>
 								<div className='w-full'>
-									<label className='text-xs font-medium text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.overageFactor')}</label>
+									<label className='text-xs font-medium text-gray-600'>{t('billing:commitmentConfig.timeBuckets.overageFactor')}</label>
 									<Input
 										type='number'
 										value={row.overage_factor ?? ''}
@@ -437,11 +437,11 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 										className='w-full'
 										error={overageFactorError}
 									/>
-									<p className='text-xs text-muted-foreground'>{t('billing:commitmentConfig.overageFactorHint')}</p>
+									<p className='text-xs text-gray-500'>{t('billing:commitmentConfig.overageFactorHint')}</p>
 								</div>
 
 								<div className='mt-4 space-y-1'>
-									<label className='text-xs font-medium text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.billingModel')}</label>
+									<label className='text-xs font-medium text-gray-600'>{t('billing:commitmentConfig.timeBuckets.billingModel')}</label>
 									<AtomSelect
 										value={billingModel}
 										options={billingModelOptions}
@@ -449,12 +449,12 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 										disabled={disabled}
 										placeholder={t('billing:commitmentConfig.timeBuckets.billingModelPlaceholder')}
 									/>
-									<p className='text-xs text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.billingModelHint')}</p>
+									<p className='text-xs text-gray-500'>{t('billing:commitmentConfig.timeBuckets.billingModelHint')}</p>
 								</div>
 
 								<div className='mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2'>
 									<div className='space-y-1'>
-										<label className='text-xs font-medium text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.bucketAmount')}</label>
+										<label className='text-xs font-medium text-gray-600'>{t('billing:commitmentConfig.timeBuckets.bucketAmount')}</label>
 										{isTiered ? (
 											<div
 												className={cn(
@@ -486,14 +486,14 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 										{isTiered && tiersError ? (
 											<p className='text-xs text-red-500'>{tiersError}</p>
 										) : (
-											<p className='text-xs text-muted-foreground'>
+											<p className='text-xs text-gray-500'>
 												{isTiered ? tieredPriceHint : t('billing:commitmentConfig.timeBuckets.bucketAmountHint')}
 											</p>
 										)}
 									</div>
 									{isPackage && (
 										<div className='space-y-1'>
-											<label className='text-xs font-medium text-muted-foreground'>
+											<label className='text-xs font-medium text-gray-600'>
 												{t('billing:commitmentConfig.timeBuckets.unitsPerPackage')}
 											</label>
 											<Input
@@ -504,13 +504,13 @@ const CommitmentTimeBucketsEditor: FC<Props> = ({
 												disabled={disabled}
 												className='w-full'
 											/>
-											<p className='text-xs text-muted-foreground'>{t('billing:commitmentConfig.timeBuckets.unitsPerPackageHint')}</p>
+											<p className='text-xs text-gray-500'>{t('billing:commitmentConfig.timeBuckets.unitsPerPackageHint')}</p>
 										</div>
 									)}
 								</div>
 
 								<div className={cn('mt-4 space-y-2', !isTiered && 'hidden')}>
-									<label className='text-xs font-medium text-muted-foreground'>{tieredSectionLabel}</label>
+									<label className='text-xs font-medium text-gray-600'>{tieredSectionLabel}</label>
 									<VolumeTieredPricingForm
 										tieredPrices={tierFormRows}
 										setTieredPrices={(setter) => {

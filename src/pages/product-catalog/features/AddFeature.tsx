@@ -389,7 +389,7 @@ const FeatureDetailsSection = ({
 	const isMeteredType = data.type === FEATURE_TYPE.METERED;
 
 	return (
-		<Card className='p-6 rounded-[6px] border border-border'>
+		<Card className='p-6 rounded-[6px] border border-[#E4E4E7]'>
 			<Input
 				label={t('catalog:features.form.name')}
 				placeholder={t('catalog:features.form.namePlaceholder')}
@@ -956,11 +956,11 @@ const AggregationSection = ({
 					{supportsBucketSize && formState.showBucketSize ? (
 						<div className='space-y-1'>
 							<div className='flex items-center justify-between gap-2'>
-								<label className='text-sm font-medium text-foreground'>{t('catalog:features.form.bucketSize')}</label>
+								<label className='text-sm font-medium text-gray-700'>{t('catalog:features.form.bucketSize')}</label>
 								<button
 									type='button'
 									onClick={handleClearBucketSize}
-									className='text-sm text-muted-foreground hover:text-foreground underline-offset-2 hover:underline'>
+									className='text-sm text-gray-500 hover:text-gray-800 underline-offset-2 hover:underline'>
 									{t('common:form.remove')}
 								</button>
 							</div>

@@ -118,9 +118,7 @@ const DateRangePicker = ({
 							variant='outline'
 							className={cn(
 								' justify-start text-start font-normal !h-10',
-								!selectedRange?.from || !selectedRange?.to
-									? 'text-muted-foreground opacity-70 hover:text-muted-foreground'
-									: 'text-foreground',
+								!selectedRange?.from || !selectedRange?.to ? 'text-muted-foreground opacity-70 hover:text-muted-foreground' : 'text-black',
 								!className && (selectedRange?.from && selectedRange?.to ? 'w-[260px]' : 'w-[240px]'),
 								'transition-all duration-300 ease-in-out',
 								className,

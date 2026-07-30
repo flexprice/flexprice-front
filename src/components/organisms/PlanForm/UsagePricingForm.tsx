@@ -563,7 +563,7 @@ const UsagePricingForm: FC<Props> = ({
 								setFlatFee(e);
 							}
 						}}
-						suffix={<span className='text-muted-foreground'>{`/ unit / ${formatBillingPeriodForPrice(billingPeriod)}`}</span>}
+						suffix={<span className='text-[#64748B]'>{`/ unit / ${formatBillingPeriodForPrice(billingPeriod)}`}</span>}
 					/>
 				</div>
 			)}
@@ -586,7 +586,7 @@ const UsagePricingForm: FC<Props> = ({
 							}}
 						/>
 						<div className='h-[50px] items-center flex gap-2'>
-							<p className='text-foreground font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
+							<p className='text-[#18181B] font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
 						</div>
 						<Input
 							value={packagedFee.unit}
@@ -605,7 +605,7 @@ const UsagePricingForm: FC<Props> = ({
 							suffix={`/ units / ${formatBillingPeriodForPrice(billingPeriod)}`}
 						/>
 					</div>
-					{inputErrors.packagedModelError && <p className='text-destructive text-sm'>{inputErrors.packagedModelError}</p>}
+					{inputErrors.packagedModelError && <p className='text-red-500 text-sm'>{inputErrors.packagedModelError}</p>}
 				</div>
 			)}
 
@@ -618,7 +618,7 @@ const UsagePricingForm: FC<Props> = ({
 						currency={priceUnitType === PRICE_UNIT_TYPE.CUSTOM ? priceUnitConfig?.price_unit || currency : currency}
 						tierMode={billingModel === billingModels[2].value ? TIER_MODE.VOLUME : TIER_MODE.SLAB}
 					/>
-					{inputErrors.tieredModelError && <p className='text-destructive text-sm'>{inputErrors.tieredModelError}</p>}
+					{inputErrors.tieredModelError && <p className='text-red-500 text-sm'>{inputErrors.tieredModelError}</p>}
 				</div>
 			)}
 			<Spacer height='8px' />
@@ -670,7 +670,7 @@ const UsagePricingForm: FC<Props> = ({
 
 			<Spacer height={'16px'} />
 			<div className='flex justify-end'>
-				<Button onClick={handleCancel} variant='secondary' className='me-4 text-foreground' disabled={isSaving}>
+				<Button onClick={handleCancel} variant='secondary' className='me-4 text-zinc-900' disabled={isSaving}>
 					{price.internal_state === PriceInternalState.EDIT ? t('common:actions.delete') : t('common:actions.cancel')}
 				</Button>
 				<Button onClick={handleSubmit} variant='default' className='me-4 font-normal' isLoading={isSaving} disabled={isSaving}>

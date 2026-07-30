@@ -258,7 +258,7 @@ const CouponDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQue
 					placeholder={t('coupons.drawer.selectStartDate')}
 				/>
 				<p className='text-xs text-muted-foreground mt-1'>{t('coupons.drawer.redeemAfterHelp')}</p>
-				{errors.redeem_after && <p className='text-xs text-destructive mt-1'>{errors.redeem_after}</p>}
+				{errors.redeem_after && <p className='text-xs text-red-500 mt-1'>{errors.redeem_after}</p>}
 			</div>
 
 			<Spacer height={'20px'} />
@@ -270,7 +270,7 @@ const CouponDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQue
 					placeholder={t('coupons.drawer.selectExpiryDate')}
 				/>
 				<p className='text-xs text-muted-foreground mt-1'>{t('coupons.drawer.redeemBeforeHelp')}</p>
-				{errors.redeem_before && <p className='text-xs text-destructive mt-1'>{errors.redeem_before}</p>}
+				{errors.redeem_before && <p className='text-xs text-red-500 mt-1'>{errors.redeem_before}</p>}
 			</div>
 
 			<Spacer height={'20px'} />

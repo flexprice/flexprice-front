@@ -172,9 +172,14 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 					<div
 						className={cn(
 							'w-full mt-3.5 flex items-center justify-between h-10 px-2 py-[10px] rounded-[6px] border',
-							isDevelopment && 'border-warning-muted-foreground/20 bg-warning-muted text-warning-muted-foreground',
-							isProduction && 'border-info-muted-foreground/20 bg-info-muted text-info-muted-foreground',
-						)}>
+							isDevelopment && 'border-yellow-400 text-yellow-900',
+							isProduction && 'border-[#BFD0F5] text-[#1F5ADA]',
+						)}
+						style={{
+							background: isProduction
+								? 'linear-gradient(to right, #EEF4FF, #DDE7FF, #EEF4FF)'
+								: 'linear-gradient(to right, #FFFCEE, #FFF9DD, #FFFCEE)',
+						}}>
 						<div className='flex items-center gap-2 min-w-0'>
 							{isDevelopment ? (
 								<Blocks absoluteStrokeWidth className='!size-5 !stroke-[1.5px] text-current' />

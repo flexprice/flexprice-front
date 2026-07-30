@@ -114,7 +114,7 @@ const ApplyCouponDialog: FC<Props> = ({ subscriptionId, lineItems, prefilledLine
 
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
-			<DialogContent className='w-full max-w-lg bg-card'>
+			<DialogContent className='w-full max-w-lg bg-white'>
 				<DialogHeader>
 					<DialogTitle>{t('subscriptions.applyCouponDialog.title')}</DialogTitle>
 				</DialogHeader>

@@ -62,9 +62,9 @@ const UsageGraphWidget = ({ config, analyticsParams, label }: UsageGraphWidgetPr
 	return (
 		<Card
 			className='rounded-xl overflow-hidden'
-			style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
-			<div className='p-6' style={{ borderBottom: '1px solid var(--portal-border)' }}>
-				<h3 className='text-base font-medium' style={{ color: 'var(--portal-text-primary)' }}>
+			style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+			<div className='p-6' style={{ borderBottom: '1px solid var(--portal-border, #E9E9E9)' }}>
+				<h3 className='text-base font-medium' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
 					{label || t('usage.trendTitle')}
 				</h3>
 			</div>
@@ -89,7 +89,7 @@ const UsageGraphWidget = ({ config, analyticsParams, label }: UsageGraphWidgetPr
 								{[...Array(5)].map((_, i) => (
 									<div key={i} className='flex items-center gap-3 w-full'>
 										<Skeleton className='h-3 w-8 shrink-0' style={{ opacity: 0.5 }} />
-										<div className='flex-1 h-px' style={{ backgroundColor: 'var(--portal-border)', opacity: 0.4 }} />
+										<div className='flex-1 h-px' style={{ backgroundColor: 'var(--portal-border, #e5e7eb)', opacity: 0.4 }} />
 									</div>
 								))}
 								{/* Fake chart bars */}

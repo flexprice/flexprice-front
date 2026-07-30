@@ -306,7 +306,7 @@ const RecordPaymentTopup: FC<Props> = ({
 								maxDate={new Date()}
 							/>
 							<p className='text-xs text-muted-foreground'>{t('payments.recordedReceivedHint')}</p>
-							{errors.recorded_at && <p className='text-xs text-destructive'>{errors.recorded_at}</p>}
+							{errors.recorded_at && <p className='text-xs text-red-500'>{errors.recorded_at}</p>}
 						</div>
 						{descriptionField}
 					</div>
@@ -337,8 +337,8 @@ const RecordPaymentTopup: FC<Props> = ({
 			case PAYMENT_METHOD_TYPE.ACH:
 				return (
 					<div className='space-y-3'>
-						<div className='p-4 bg-muted border border-border rounded-lg'>
-							<div className='text-sm text-muted-foreground'>
+						<div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+							<div className='text-sm text-gray-600'>
 								{t('payments.paymentMethodUnavailable', { method: formData.payment_method_type })}
 							</div>
 						</div>
@@ -358,7 +358,7 @@ const RecordPaymentTopup: FC<Props> = ({
 				onOpenChange={onOpenChange}
 				title={t('payments.recordPayment')}
 				className='sm:max-w-[500px]'
-				titleClassName='text-lg font-semibold text-foreground'>
+				titleClassName='text-lg font-semibold text-[#18181B]'>
 				<div className='space-y-4 py-4'>
 					<Input
 						label={t('payments.amount')}

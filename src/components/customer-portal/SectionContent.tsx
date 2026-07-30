@@ -89,7 +89,7 @@ const SectionDateFilter = ({
 			style={
 				hasTheme
 					? { backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }
-					: { backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }
+					: { backgroundColor: 'white', border: '1px solid #E9E9E9' }
 			}>
 			{usageGraphConfig.date_presets.map((preset) => {
 				const isActive = !useCustom && selectedPreset === preset;
@@ -99,13 +99,13 @@ const SectionDateFilter = ({
 						onClick={() => onPresetClick(preset)}
 						className={cn(
 							'px-3 py-1.5 text-xs font-medium rounded-md transition-colors',
-							!hasTheme && (isActive ? 'bg-muted text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'),
+							!hasTheme && (isActive ? 'bg-zinc-100 text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700'),
 						)}
 						style={
 							hasTheme
 								? isActive
 									? { backgroundColor: 'var(--portal-primary)', color: 'white' }
-									: { color: 'var(--portal-text-secondary)' }
+									: { color: 'var(--portal-text-secondary, #71717a)' }
 								: undefined
 						}>
 						{getPresetLabel(preset)}
@@ -120,14 +120,14 @@ const SectionDateFilter = ({
 					date={effectiveStart ? new Date(effectiveStart) : undefined}
 					setDate={(d) => onCustomStartChange(d ? startOfDay(d).toISOString() : '')}
 					placeholder={startPlaceholder}
-					className={`w-[130px] h-9 text-xs ${hasTheme ? '' : 'bg-card'}`}
+					className={`w-[130px] h-9 text-xs ${hasTheme ? '' : 'bg-white'}`}
 					popoverTriggerClassName={`[&_button]:h-9 [&_button]:text-xs [&_button]:rounded-md${hasTheme ? ' [&_button]:bg-[var(--portal-surface)] [&_button]:border-[var(--portal-border)] [&_button]:text-[var(--portal-text-primary)]' : ''}`}
 				/>
 				<DatePicker
 					date={effectiveEnd ? new Date(effectiveEnd) : undefined}
 					setDate={(d) => onCustomEndChange(d ? endOfDay(d).toISOString() : '')}
 					placeholder={endPlaceholder}
-					className={`w-[130px] h-9 text-xs ${hasTheme ? '' : 'bg-card'}`}
+					className={`w-[130px] h-9 text-xs ${hasTheme ? '' : 'bg-white'}`}
 					popoverTriggerClassName={`[&_button]:h-9 [&_button]:text-xs [&_button]:rounded-md${hasTheme ? ' [&_button]:bg-[var(--portal-surface)] [&_button]:border-[var(--portal-border)] [&_button]:text-[var(--portal-text-primary)]' : ''}`}
 				/>
 			</div>

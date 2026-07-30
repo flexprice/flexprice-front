@@ -34,7 +34,7 @@ interface Props {
 }
 
 const Notice: FC<{ children: ReactNode }> = ({ children }) => (
-	<div className='rounded-lg border border-dashed border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground'>{children}</div>
+	<div className='rounded-lg border border-dashed border-gray-200 bg-gray-50/50 px-4 py-3 text-sm text-gray-500'>{children}</div>
 );
 
 const SubscriptionChargeCommitmentSection: FC<Props> = ({
@@ -70,7 +70,7 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 	const updateValue = (patch: Partial<SubscriptionChargeCommitmentState>) => onChange({ ...value, ...patch });
 
 	return (
-		<div className='space-y-6 border-t border-border pt-6 min-w-0 overflow-x-hidden'>
+		<div className='space-y-6 border-t border-gray-200 pt-6 min-w-0 overflow-x-hidden'>
 			<CommitmentTypeSelect
 				value={value.commitmentType}
 				onChange={(commitmentType) => updateValue({ commitmentType })}
@@ -81,7 +81,7 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 				<div className='space-y-1'>
 					{value.commitmentType === CommitmentType.AMOUNT ? (
 						<>
-							<label className='text-sm font-medium text-foreground'>
+							<label className='text-sm font-medium text-gray-700'>
 								{t('commitmentConfig.commitmentAmount', { currency: (currency ?? 'usd').toUpperCase() })}
 							</label>
 							<Input
@@ -93,11 +93,11 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 								className='w-full'
 								disabled={disabled}
 							/>
-							<p className='text-xs text-muted-foreground'>{t('commitmentConfig.commitmentAmountHint')}</p>
+							<p className='text-xs text-gray-500'>{t('commitmentConfig.commitmentAmountHint')}</p>
 						</>
 					) : (
 						<>
-							<label className='text-sm font-medium text-foreground'>{t('commitmentConfig.commitmentQuantity')}</label>
+							<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.commitmentQuantity')}</label>
 							<Input
 								type='number'
 								value={value.commitmentQuantity}
@@ -106,12 +106,12 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 								className='w-full'
 								disabled={disabled}
 							/>
-							<p className='text-xs text-muted-foreground'>{t('commitmentConfig.commitmentQuantityHint')}</p>
+							<p className='text-xs text-gray-500'>{t('commitmentConfig.commitmentQuantityHint')}</p>
 						</>
 					)}
 				</div>
 				<div className='space-y-1'>
-					<label className='text-sm font-medium text-foreground'>{t('commitmentConfig.commitmentPeriod')}</label>
+					<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.commitmentPeriod')}</label>
 					<Select
 						value={value.commitmentDuration || billingPeriod?.toUpperCase() || ''}
 						options={commitmentDurationOptions}
@@ -119,12 +119,12 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 						placeholder={t('commitmentConfig.sameAsBillingPlaceholder')}
 						disabled={disabled}
 					/>
-					<p className='text-xs text-muted-foreground'>{t('commitmentConfig.commitmentPeriodHint')}</p>
+					<p className='text-xs text-gray-500'>{t('commitmentConfig.commitmentPeriodHint')}</p>
 				</div>
 			</div>
 
 			<div className='space-y-2'>
-				<label className='text-sm font-medium text-foreground'>{t('commitmentConfig.overageFactor')}</label>
+				<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.overageFactor')}</label>
 				<Input
 					type='number'
 					value={value.overageFactor}
@@ -133,13 +133,13 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 					className='w-full'
 					disabled={disabled}
 				/>
-				<p className='text-xs text-muted-foreground'>{t('commitmentConfig.overageFactorHint')}</p>
+				<p className='text-xs text-gray-500'>{t('commitmentConfig.overageFactorHint')}</p>
 			</div>
 
-			<div className='flex items-center justify-between rounded-lg bg-muted p-4'>
+			<div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
 				<div className='flex-1 pr-4'>
-					<label className='text-sm font-medium text-foreground'>{t('commitmentConfig.enableTrueUp')}</label>
-					<p className='mt-0.5 text-xs text-muted-foreground'>{t('commitmentConfig.enableTrueUpHint')}</p>
+					<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.enableTrueUp')}</label>
+					<p className='mt-0.5 text-xs text-gray-500'>{t('commitmentConfig.enableTrueUpHint')}</p>
 				</div>
 				<Switch checked={value.enableTrueUp} onCheckedChange={(enableTrueUp) => updateValue({ enableTrueUp })} disabled={disabled} />
 			</div>
@@ -162,10 +162,10 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 				) : null
 			) : (
 				<>
-					<div className='flex items-center justify-between rounded-lg bg-muted p-4'>
+					<div className='flex items-center justify-between rounded-lg bg-gray-50 p-4'>
 						<div className='flex-1 pr-4'>
-							<label className='text-sm font-medium text-foreground'>{t('commitmentConfig.windowCommitment')}</label>
-							<p className='mt-0.5 text-xs text-muted-foreground'>
+							<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.windowCommitment')}</label>
+							<p className='mt-0.5 text-xs text-gray-500'>
 								{t('commitmentConfig.windowCommitmentHint', { bucketSize: meter?.aggregation?.bucket_size ?? '—' })}
 							</p>
 						</div>

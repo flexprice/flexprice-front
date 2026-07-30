@@ -275,7 +275,7 @@ const CustomerAnalyticsTab = () => {
 		<div className='pt-9'>
 			<div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
 				{[1, 2, 3, 4].map((i) => (
-					<div key={i} className='bg-card border border-border p-[25px] rounded-md'>
+					<div key={i} className='bg-white border border-[#E5E7EB] p-[25px] rounded-md'>
 						<Skeleton className='h-5 w-20 mb-3' />
 						<Skeleton className='h-7 w-24' />
 					</div>
@@ -304,7 +304,7 @@ const CustomerAnalyticsTab = () => {
 
 	return (
 		<div className='space-y-6'>
-			<h3 className='text-lg font-medium flex items-center gap-2 text-foreground mb-8 mt-1'>
+			<h3 className='text-lg font-medium flex items-center gap-2 text-gray-900 mb-8 mt-1'>
 				<span>{t('tabPanels.analytics.heading')}</span>
 				<PremiumFeatureIcon />
 			</h3>
@@ -356,7 +356,7 @@ const CustomerAnalyticsTab = () => {
 							/>
 						</div>
 						<div className='ml-auto min-w-[200px]'>
-							<div className='mb-1 w-full text-start text-sm text-muted-foreground'>{t('tabPanels.analytics.options')}</div>
+							<div className='mb-1 w-full text-start text-sm text-zinc-600'>{t('tabPanels.analytics.options')}</div>
 							<label
 								htmlFor='include-children'
 								className={cn(
@@ -364,7 +364,7 @@ const CustomerAnalyticsTab = () => {
 									'cursor-pointer select-none',
 								)}>
 								<UiCheckbox id='include-children' checked={includeChildren} onCheckedChange={(v) => setIncludeChildren(Boolean(v))} />
-								<span className='text-sm font-medium text-foreground'>{t('tabPanels.analytics.includeChildren')}</span>
+								<span className='text-sm font-medium text-zinc-900'>{t('tabPanels.analytics.includeChildren')}</span>
 							</label>
 						</div>
 					</>
@@ -493,8 +493,8 @@ const GroupChildRows = React.memo(function GroupChildRows({ bucket, isExpanded }
 			{bucket.items.map((row, childIndex) => (
 				<TableRow
 					key={usageRowKey(row, childIndex)}
-					className='h-10 align-middle border-b border-border bg-card hover:bg-muted/50 transition-colors'>
-					<TableCell className='py-2.5 pl-4 font-normal text-foreground text-[13px] align-middle'>
+					className='h-10 align-middle border-b border-gray-200 bg-white hover:bg-gray-50/50 transition-colors'>
+					<TableCell className='py-2.5 pl-4 font-normal text-gray-700 text-[13px] align-middle'>
 						{row.feature_id ? (
 							<RedirectCell target='_blank' redirectUrl={`${RouteNames.featureDetails}/${row.feature_id}`}>
 								{row.name}
@@ -503,10 +503,10 @@ const GroupChildRows = React.memo(function GroupChildRows({ bucket, isExpanded }
 							<span>{row.name || t('tabPanels.common.unknown')}</span>
 						)}
 					</TableCell>
-					<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderTotalUsage(row)}</TableCell>
-					<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderRevenue(row)}</TableCell>
-					<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderCogs(row)}</TableCell>
-					<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderMargin(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsage(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderRevenue(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderCogs(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderMargin(row)}</TableCell>
 				</TableRow>
 			))}
 		</>
@@ -647,16 +647,16 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 				type='button'
 				className={cn(
 					'group -ml-1 inline-flex h-7 items-center gap-1 rounded-md px-1.5 text-left transition-colors',
-					isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+					isActive ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
 				)}
 				onClick={() => handleSortToggle(field)}>
 				<span className='leading-none'>{label}</span>
 				{sortDirection === 'asc' && isActive ? (
-					<ChevronUp className='h-3.5 w-3.5 shrink-0 text-foreground' />
+					<ChevronUp className='h-3.5 w-3.5 shrink-0 text-gray-900' />
 				) : isActive ? (
-					<ChevronDown className='h-3.5 w-3.5 shrink-0 text-foreground' />
+					<ChevronDown className='h-3.5 w-3.5 shrink-0 text-gray-900' />
 				) : (
-					<ChevronsUpDown className='h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-muted-foreground' />
+					<ChevronsUpDown className='h-3.5 w-3.5 shrink-0 text-gray-400 group-hover:text-gray-500' />
 				)}
 			</button>
 		);
@@ -665,35 +665,35 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 	return (
 		<>
 			<div className='flex items-center justify-between mb-4'>
-				<h1 className='text-lg font-medium text-foreground'>{t('tabPanels.analytics.usageBreakdown')}</h1>
+				<h1 className='text-lg font-medium text-gray-900'>{t('tabPanels.analytics.usageBreakdown')}</h1>
 				{hasGroups && (
 					<button
 						type='button'
 						onClick={toggleExpandAll}
-						className='inline-flex items-center justify-center text-muted-foreground hover:text-foreground'
+						className='inline-flex items-center justify-center text-gray-600 hover:text-gray-900'
 						aria-label={allExpanded ? t('tabPanels.analytics.collapseAll') : t('tabPanels.analytics.expandAll')}>
 						<img src={allExpanded ? COLLAPSE_ALL_SVG : EXPAND_ALL_SVG} alt='' className='h-4 w-4' />
 					</button>
 				)}
 			</div>
 
-			<div className='rounded-md border border-border bg-card overflow-hidden shadow-sm'>
+			<div className='rounded-md border border-gray-200 bg-white overflow-hidden shadow-sm'>
 				<Table>
-					<TableHeader className='h-10 bg-muted border-b border-border rounded-t-md'>
-						<TableRow className='rounded-t-md border-b border-border'>
-							<TableHead className='rounded-tl-md pl-4 font-semibold text-foreground text-[13px]'>
+					<TableHeader className='h-10 bg-gray-50 border-b border-gray-200 rounded-t-md'>
+						<TableRow className='rounded-t-md border-b border-gray-200'>
+							<TableHead className='rounded-tl-md pl-4 font-semibold text-gray-700 text-[13px]'>
 								{t('usageTable.columns.feature')}
 							</TableHead>
-							<TableHead className='font-semibold text-foreground text-[13px]'>
+							<TableHead className='font-semibold text-gray-700 text-[13px]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.totalUsage, t('tabPanels.analytics.totalUsage'))}
 							</TableHead>
-							<TableHead className='font-semibold text-foreground text-[13px]'>
+							<TableHead className='font-semibold text-gray-700 text-[13px]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.revenue, t('tabPanels.analytics.metricRevenue'))}
 							</TableHead>
-							<TableHead className='font-semibold text-foreground text-[13px]'>
+							<TableHead className='font-semibold text-gray-700 text-[13px]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.cogs, t('tabPanels.analytics.cogs'))}
 							</TableHead>
-							<TableHead className='rounded-tr-md font-semibold text-foreground text-[13px]'>
+							<TableHead className='rounded-tr-md font-semibold text-gray-700 text-[13px]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.margin, t('tabPanels.analytics.metricMargin'))}
 							</TableHead>
 						</TableRow>
@@ -720,26 +720,26 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 											}
 										}}
 										className={cn(
-											'h-10 align-middle border-b border-border bg-card cursor-pointer hover:bg-muted/50 transition-colors',
+											'h-10 align-middle border-b border-gray-200 bg-white cursor-pointer hover:bg-gray-50/50 transition-colors',
 											bucket.items.length === 0 && 'border-b-0',
 											bucket.items.length === 0 && 'cursor-default',
 										)}>
 										<TableCell className='pl-4 py-2.5 align-middle'>
 											<div className='inline-flex items-center gap-2 text-left'>
-												<span className='font-semibold text-foreground text-[13px]'>{bucket.groupName}</span>
+												<span className='font-semibold text-gray-900 text-[13px]'>{bucket.groupName}</span>
 												{bucket.items.length > 0 ? (
 													<img src={isExpanded ? CHEVRON_UP_SVG : CHEVRON_DOWN_SVG} alt='' className='h-4 w-4 shrink-0' aria-hidden />
 												) : null}
 											</div>
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-foreground text-[13px]'>—</TableCell>
-										<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-gray-700 text-[13px]'>—</TableCell>
+										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
 											{renderCurrencyAmount(aggregateRevenue, firstCurrency)}
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
 											{hasCogs ? renderCurrencyAmount(aggregateCogs, firstCurrency) : '—'}
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
 											{hasMargin ? renderCurrencyAmount(aggregateMargin, firstCurrency, { showSign: true }) : '—'}
 										</TableCell>
 									</TableRow>
@@ -750,8 +750,8 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 						{ungroupedItems.map((row, index) => (
 							<TableRow
 								key={`ungrouped:${usageRowKey(row, index)}`}
-								className='h-10 align-middle border-b border-border bg-card hover:bg-muted/50 transition-colors'>
-								<TableCell className='pl-4 py-2.5 font-normal text-foreground text-[13px]'>
+								className='h-10 align-middle border-b border-gray-200 bg-white hover:bg-gray-50/50 transition-colors'>
+								<TableCell className='pl-4 py-2.5 font-normal text-gray-700 text-[13px]'>
 									{row.feature_id ? (
 										<RedirectCell target='_blank' redirectUrl={`${RouteNames.featureDetails}/${row.feature_id}`}>
 											{row.name}
@@ -760,15 +760,15 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 										<span>{row.name || t('tabPanels.common.unknown')}</span>
 									)}
 								</TableCell>
-								<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderTotalUsage(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderRevenue(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderCogs(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>{renderMargin(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsage(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderRevenue(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderCogs(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderMargin(row)}</TableCell>
 							</TableRow>
 						))}
 						{items.length === 0 && (
-							<TableRow className='bg-card'>
-								<TableCell colSpan={5} className='pl-4 py-4 font-normal text-muted-foreground text-[13px]'>
+							<TableRow className='bg-white'>
+								<TableCell colSpan={5} className='pl-4 py-4 font-normal text-gray-500 text-[13px]'>
 									{t('tabPanels.analytics.tableEmpty')}
 								</TableCell>
 							</TableRow>

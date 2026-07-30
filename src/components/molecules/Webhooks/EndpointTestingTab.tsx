@@ -37,8 +37,8 @@ const EndpointTestingTab: FC<Props> = ({ endpointId }) => {
 		<Card noPadding className='p-4 flex flex-col gap-4'>
 			<div>
 				<h4 className='text-sm font-medium'>{t('webhooks.endpoints.testing.heading')}</h4>
-				<p className='text-sm text-muted-foreground mt-1'>{t('webhooks.endpoints.testing.description')}</p>
-				<p className='text-xs text-muted-foreground mt-1'>{t('webhooks.endpoints.testing.note')}</p>
+				<p className='text-sm text-gray-500 mt-1'>{t('webhooks.endpoints.testing.description')}</p>
+				<p className='text-xs text-gray-400 mt-1'>{t('webhooks.endpoints.testing.note')}</p>
 			</div>
 
 			<div className='flex flex-col gap-2'>

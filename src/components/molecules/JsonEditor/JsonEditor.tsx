@@ -217,7 +217,7 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 	const lineCount = rawText.split('\n').length;
 
 	return (
-		<div className='rounded-lg overflow-hidden border border-border' style={{ background: themes.nightOwl.plain.backgroundColor }}>
+		<div className='rounded-lg overflow-hidden border border-gray-200' style={{ background: themes.nightOwl.plain.backgroundColor }}>
 			{/* Header — title + copy only */}
 			<div className='px-4 py-2 border-b border-white/10 flex items-center justify-between'>
 				<p className='text-xs font-medium text-slate-300'>{t('catalog:jsonEditor.title')}</p>
@@ -225,7 +225,7 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 					onClick={handleCopy}
 					variant='ghost'
 					size='sm'
-					className={cn('h-7 text-slate-300 hover:text-white hover:bg-card/10', copied && 'text-green-400 hover:text-green-400')}>
+					className={cn('h-7 text-slate-300 hover:text-white hover:bg-white/10', copied && 'text-green-400 hover:text-green-400')}>
 					{copied ? <Check size={12} className='me-1 text-green-400' /> : <Copy size={12} className='me-1' />}
 					<span className='text-xs'>{copied ? t('common:actions.copied') : t('common:actions.copy')}</span>
 				</Button>
@@ -248,8 +248,8 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 
 			{/* Status bar — error or valid + line count */}
 			<div className='px-4 py-1.5 border-t border-white/10 flex items-center justify-between'>
-				<span className={error ? 'text-xs text-red-400' : 'text-xs text-muted-foreground'}>{error || t('catalog:jsonEditor.validJson')}</span>
-				<span className='text-xs text-muted-foreground'>
+				<span className={error ? 'text-xs text-red-400' : 'text-xs text-slate-400'}>{error || t('catalog:jsonEditor.validJson')}</span>
+				<span className='text-xs text-slate-500'>
 					{lineCount} {t('catalog:jsonEditor.lines')}
 				</span>
 			</div>

@@ -131,10 +131,10 @@ const ServiceAccountDrawer: FC<Props> = ({ isOpen, onOpenChange, data }) => {
 			title={t('developers:serviceAccountDrawer.title')}
 			description={t('developers:serviceAccountDrawer.description')}>
 			<div className='flex flex-col gap-5 mt-2'>
-				<div className='bg-info-muted border border-info-muted-foreground/20 rounded-md p-3'>
+				<div className='bg-blue-50 border border-blue-200 rounded-md p-3'>
 					<div className='flex items-start gap-2'>
-						<Info className='w-4 h-4 text-info shrink-0 mt-0.5' />
-						<div className='text-sm text-info-muted-foreground'>
+						<Info className='w-4 h-4 text-blue-600 shrink-0 mt-0.5' />
+						<div className='text-sm text-blue-800'>
 							<p className='font-medium mb-1'>{t('developers:serviceAccountDrawer.intro.title')}</p>
 							<p>{t('developers:serviceAccountDrawer.intro.body')}</p>
 						</div>
@@ -149,10 +149,10 @@ const ServiceAccountDrawer: FC<Props> = ({ isOpen, onOpenChange, data }) => {
 				/>
 
 				{isRolesError ? (
-					<div className='bg-warning-muted border border-warning-muted-foreground/20 rounded-md p-3'>
+					<div className='bg-amber-50 border border-amber-200 rounded-md p-3'>
 						<div className='flex items-start gap-2'>
-							<AlertTriangle className='w-4 h-4 text-warning shrink-0 mt-0.5' />
-							<div className='text-sm text-warning-muted-foreground'>
+							<AlertTriangle className='w-4 h-4 text-amber-500 shrink-0 mt-0.5' />
+							<div className='text-sm text-amber-800'>
 								<p className='font-medium mb-1'>{t('developers:serviceAccountDrawer.rolesUnavailable.title')}</p>
 								<p>{t('developers:serviceAccountDrawer.rolesUnavailable.body')}</p>
 							</div>
@@ -160,15 +160,15 @@ const ServiceAccountDrawer: FC<Props> = ({ isOpen, onOpenChange, data }) => {
 					</div>
 				) : (
 					<div className='flex flex-col gap-2'>
-						<label className='block text-sm font-medium text-foreground'>
-							{t('developers:labels.roleRequiredHint')} <span className='text-destructive'>*</span>
+						<label className='block text-sm font-medium text-gray-700'>
+							{t('developers:labels.roleRequiredHint')} <span className='text-red-500'>*</span>
 						</label>
-						<p className='text-sm text-muted-foreground'>{t('developers:serviceAccountDrawer.rolesHint')}</p>
-						<div className='border rounded-md p-4 flex flex-col gap-3 bg-card'>
+						<p className='text-sm text-gray-500'>{t('developers:serviceAccountDrawer.rolesHint')}</p>
+						<div className='border rounded-md p-4 flex flex-col gap-3 bg-white'>
 							{isLoadingRoles ? (
-								<p className='text-sm text-muted-foreground'>{t('developers:serviceAccountDrawer.loadingRoles')}</p>
+								<p className='text-sm text-gray-500'>{t('developers:serviceAccountDrawer.loadingRoles')}</p>
 							) : roleOptions.length === 0 ? (
-								<p className='text-sm text-muted-foreground'>{t('developers:serviceAccountDrawer.noRolesAvailable')}</p>
+								<p className='text-sm text-gray-500'>{t('developers:serviceAccountDrawer.noRolesAvailable')}</p>
 							) : (
 								roleOptions.map((role) => {
 									const isDisabled = isSuperAdminSelected && role.value !== 'super_admin';
@@ -194,12 +194,10 @@ const ServiceAccountDrawer: FC<Props> = ({ isOpen, onOpenChange, data }) => {
 
 				{selectedRoles.length > 0 && (
 					<div className='flex flex-col gap-1.5'>
-						<label className='block text-sm font-medium text-foreground'>{t('developers:labels.selectedRoles')}</label>
+						<label className='block text-sm font-medium text-gray-700'>{t('developers:labels.selectedRoles')}</label>
 						<div className='flex flex-wrap gap-1'>
 							{selectedRoles.map((role) => (
-								<span
-									key={role}
-									className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-info-muted text-info-muted-foreground'>
+								<span key={role} className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>
 									{roleOptions.find((r) => r.value === role)?.label || role}
 								</span>
 							))}

@@ -32,7 +32,7 @@ const EventCatalogBrowser: FC = () => {
 	}
 
 	if (eventTypes.error) {
-		return <div className='p-4 text-sm text-destructive'>{t('webhooks.eventCatalog.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-red-600'>{t('webhooks.eventCatalog.loadFailed')}</div>;
 	}
 
 	return (
@@ -45,7 +45,7 @@ const EventCatalogBrowser: FC = () => {
 						onClick={() => setActiveGroup(null)}
 						className={cn(
 							'flex items-center justify-between px-3 py-2 text-sm text-start',
-							activeGroup === null ? 'bg-muted font-medium' : 'text-muted-foreground hover:bg-muted',
+							activeGroup === null ? 'bg-gray-50 font-medium' : 'text-gray-600 hover:bg-gray-50',
 						)}>
 						{t('webhooks.eventCatalog.allEvents')}
 					</button>
@@ -55,21 +55,21 @@ const EventCatalogBrowser: FC = () => {
 							onClick={() => setActiveGroup(group.name)}
 							className={cn(
 								'flex items-center justify-between px-3 py-2 text-sm text-start',
-								activeGroup === group.name ? 'bg-muted font-medium' : 'text-muted-foreground hover:bg-muted',
+								activeGroup === group.name ? 'bg-gray-50 font-medium' : 'text-gray-600 hover:bg-gray-50',
 							)}>
 							<span>{group.name}</span>
-							<span className='text-xs text-muted-foreground'>{group.eventTypes.length}</span>
+							<span className='text-xs text-gray-400'>{group.eventTypes.length}</span>
 						</button>
 					))}
 				</div>
 			</div>
 
 			<div className='flex flex-col divide-y divide-border'>
-				{visibleEvents.length === 0 && <p className='text-sm text-muted-foreground py-6'>{t('webhooks.eventCatalog.empty')}</p>}
+				{visibleEvents.length === 0 && <p className='text-sm text-gray-500 py-6'>{t('webhooks.eventCatalog.empty')}</p>}
 				{visibleEvents.map((eventType) => (
 					<div key={eventType.name} className='py-4'>
 						<div className='font-medium text-sm'>{eventType.name}</div>
-						{eventType.description && <p className='text-sm text-muted-foreground mt-1'>{eventType.description}</p>}
+						{eventType.description && <p className='text-sm text-gray-500 mt-1'>{eventType.description}</p>}
 					</div>
 				))}
 			</div>

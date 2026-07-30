@@ -324,13 +324,13 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 					<SubscriptionActionButton subscription={subscriptionDetails!} />
 				</div>
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.subscriptionName')}</p>
-					<p className='text-foreground text-sm'>{subscriptionDetails?.plan.name ?? t('usageTable.featureTypes.dash')}</p>
+					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.subscriptionName')}</p>
+					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.plan.name ?? t('usageTable.featureTypes.dash')}</p>
 				</div>
 				<Spacer className='!my-4' />
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.status')}</p>
-					<div className='text-foreground text-sm flex items-center gap-2'>
+					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.status')}</p>
+					<div className='text-[#09090B] text-sm flex items-center gap-2'>
 						{getSubscriptionStatus(subscriptionDetails?.subscription_status ?? '', t)}
 						{showEndDateTag ? (
 							<Chip
@@ -353,28 +353,28 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.billingCycle')}</p>
-					<p className='text-foreground text-sm'>{subscriptionDetails?.billing_cycle || t('usageTable.featureTypes.dash')}</p>
+					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.billingCycle')}</p>
+					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.billing_cycle || t('usageTable.featureTypes.dash')}</p>
 				</div>
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.commitmentPeriod')}</p>
-					<p className='text-foreground text-sm'>{getCommitmentPeriodLabel(subscriptionDetails, t)}</p>
+					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.commitmentPeriod')}</p>
+					<p className='text-[#09090B] text-sm'>{getCommitmentPeriodLabel(subscriptionDetails, t)}</p>
 				</div>
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.paymentTerms')}</p>
-					<p className='text-foreground text-sm'>{subscriptionDetails?.payment_terms ?? t('usageTable.featureTypes.dash')}</p>
+					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.paymentTerms')}</p>
+					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.payment_terms ?? t('usageTable.featureTypes.dash')}</p>
 				</div>
 				<Spacer className='!my-4' />
 
 				{subscriptionDetails?.timezone?.trim() && (
 					<>
 						<div className='w-full flex justify-between items-center'>
-							<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.timezone')}</p>
-							<p className='text-foreground text-sm'>{subscriptionDetails.timezone}</p>
+							<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.timezone')}</p>
+							<p className='text-[#09090B] text-sm'>{subscriptionDetails.timezone}</p>
 						</div>
 						<Spacer className='!my-4' />
 					</>
@@ -383,7 +383,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				{subscriptionDetails?.invoicing_customer_id && (
 					<>
 						<div className='w-full flex justify-between items-center'>
-							<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.invoicingCustomer')}</p>
+							<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.invoicingCustomer')}</p>
 							<Link
 								to={`${RouteNames.customers}/${subscriptionDetails.invoicing_customer_id}`}
 								className='inline-flex items-center text-sm gap-1.5 hover:underline transition-colors'>
@@ -398,7 +398,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				{subscriptionDetails?.parent_subscription_id && (
 					<>
 						<div className='w-full flex justify-between items-center'>
-							<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.parentCustomer')}</p>
+							<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.parentCustomer')}</p>
 							{isParentSubscriptionLoading || (parentCustomerId && isParentCustomerLoading) ? (
 								<Skeleton className='h-4 w-40' />
 							) : parentCustomerId ? (
@@ -409,7 +409,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 									<ExternalLink className='w-3.5 h-3.5' />
 								</Link>
 							) : (
-								<p className='text-foreground text-sm'>{t('usageTable.featureTypes.dash')}</p>
+								<p className='text-[#09090B] text-sm'>{t('usageTable.featureTypes.dash')}</p>
 							)}
 						</div>
 						<Spacer className='!my-4' />
@@ -418,8 +418,8 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 
 				{subscriptionDetails?.commitment_amount && (
 					<div className='w-full flex justify-between items-center'>
-						<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.commitmentLabel')}</p>
-						<p className='text-foreground text-sm'>
+						<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.commitmentLabel')}</p>
+						<p className='text-[#09090B] text-sm'>
 							{getCurrencySymbol(subscriptionDetails?.currency || '')} {subscriptionDetails?.commitment_amount || '0'}/{' '}
 							{getCommitmentPeriodLabel(subscriptionDetails, t)}
 						</p>
@@ -428,8 +428,8 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 
 				{subscriptionDetails?.auto_invoice_threshold != null && (
 					<div className='w-full flex justify-between items-center'>
-						<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.autoInvoiceThreshold')}</p>
-						<p className='text-foreground text-sm'>
+						<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.autoInvoiceThreshold')}</p>
+						<p className='text-[#09090B] text-sm'>
 							{getCurrencySymbol(subscriptionDetails?.currency || '')} {subscriptionDetails.auto_invoice_threshold}
 						</p>
 					</div>
@@ -438,15 +438,15 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 
 				{subscriptionDetails?.overage_factor && subscriptionDetails?.overage_factor > 1 && (
 					<div className='w-full flex justify-between items-center'>
-						<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.overageFactor')}</p>
-						<p className='text-foreground text-sm'>{subscriptionDetails?.overage_factor}</p>
+						<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.overageFactor')}</p>
+						<p className='text-[#09090B] text-sm'>{subscriptionDetails?.overage_factor}</p>
 					</div>
 				)}
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-muted-foreground text-sm'>{t('subscriptionDetail.startDate')}</p>
-					<p className='text-foreground text-sm'>{formatDateShort(subscriptionDetails?.start_date ?? '')}</p>
+					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.startDate')}</p>
+					<p className='text-[#09090B] text-sm'>{formatDateShort(subscriptionDetails?.start_date ?? '')}</p>
 				</div>
 				<Spacer className='!my-4' />
 			</Card>
@@ -476,18 +476,18 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 									</div>
 									{/* Phase Card */}
 									<div className='flex-1'>
-										<div className='rounded-2xl border border-border bg-muted px-8 py-5 flex flex-col gap-1'>
-											<div className='text-sm font-medium text-muted-foreground mb-2'>
+										<div className='rounded-2xl border border-gray-100 bg-[#FAFAFA] px-8 py-5 flex flex-col gap-1'>
+											<div className='text-sm font-medium text-gray-400 mb-2'>
 												{t('subscriptionDetail.phaseHeading', { index: idx + 1 })}
 											</div>
 											<div className='grid grid-cols-4 gap-8'>
 												<div>
-													<div className='text-xs text-muted-foreground'>{t('subscriptionDetail.phaseStart')}</div>
-													<div className='font-normal text-lg text-foreground'>{formatDateShort(phase.start_date.toString())}</div>
+													<div className='text-xs text-gray-400'>{t('subscriptionDetail.phaseStart')}</div>
+													<div className='font-normal text-lg text-gray-900'>{formatDateShort(phase.start_date.toString())}</div>
 												</div>
 												<div>
-													<div className='text-xs text-muted-foreground'>{t('subscriptionDetail.phaseEnd')}</div>
-													<div className='font-normal text-lg text-foreground'>
+													<div className='text-xs text-gray-400'>{t('subscriptionDetail.phaseEnd')}</div>
+													<div className='font-normal text-lg text-gray-900'>
 														{phase.end_date ? formatDateShort(phase.end_date.toString()) : t('usageTable.featureTypes.dash')}
 													</div>
 												</div>
@@ -498,7 +498,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 								</div>
 							))
 						) : (
-							<span className='text-muted-foreground text-sm'>{t('subscriptionDetail.noPhases')}</span>
+							<span className='text-[#71717A] text-sm'>{t('subscriptionDetail.noPhases')}</span>
 						)}
 					</div>
 				</Card>
@@ -512,8 +512,8 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 							<>
 								<FormHeader
 									variant='sub-header'
-									titleClassName='font-semibold text-foreground'
-									subtitleClassName='text-sm text-muted-foreground !mb-0 !mt-1'
+									titleClassName='font-semibold text-gray-900'
+									subtitleClassName='text-sm text-gray-500 !mb-0 !mt-1'
 									title={t('subscriptionDetail.upcomingInvoicesTitle')}
 									subtitle={t('subscriptionDetail.upcomingInvoicesSubtitle', {
 										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
@@ -547,7 +547,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 							<>
 								<FormHeader
 									variant='sub-header'
-									titleClassName='font-semibold text-foreground'
+									titleClassName='font-semibold text-gray-900'
 									title={t('subscriptionDetail.upcomingInvoicesTitle')}
 									subtitle={t('subscriptionDetail.upcomingInvoicesEmpty', {
 										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
@@ -596,7 +596,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 						variant='sub-header'
 						titleClassName='font-semibold'
 					/>
-					<div className='mt-4 rounded-[6px] border border-border'>
+					<div className='mt-4 rounded-[6px] border border-gray-300'>
 						<FlexpriceTable data={inheritedSubscriptionRows} columns={inheritedSubscriptionsColumns} />
 					</div>
 				</Card>

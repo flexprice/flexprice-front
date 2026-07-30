@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const PREMIUM_TOOLTIP_CLASSNAME =
-	'max-w-[200px] border border-amber-300 bg-warning-muted dark:bg-amber-950 dark:border-amber-500 opacity-100 z-[190] py-1 px-2';
+	'max-w-[200px] border border-amber-300 bg-amber-50 dark:bg-amber-950 dark:border-amber-500 opacity-100 z-[190] py-1 px-2';
 
 interface PremiumFeatureIconProps {
 	className?: string;
@@ -31,7 +31,7 @@ export const PremiumFeatureIcon: React.FC<PremiumFeatureIconProps> = ({ classNam
 			sideOffset={sideOffset ?? 4}
 			className={cn(PREMIUM_TOOLTIP_CLASSNAME, className)}>
 			<span className={cn('inline-flex items-center justify-center', className)}>
-				<Sparkles className='size-4 text-warning' fill='currentColor' />
+				<Sparkles className='size-4 text-amber-500' fill='currentColor' />
 			</span>
 		</Tooltip>
 	);
@@ -39,7 +39,7 @@ export const PremiumFeatureIcon: React.FC<PremiumFeatureIconProps> = ({ classNam
 
 export const PremiumFeatureTag = () => {
 	return (
-		<div className='flex gap-2 top-2 right-2 items-center justify-center  text-warning-muted-foreground text-xs !font-semibold px-2 py-1 rounded-2xl !opacity-80'>
+		<div className='flex gap-2 top-2 right-2 items-center justify-center  text-[#ffbf76] text-xs !font-semibold px-2 py-1 rounded-2xl !opacity-80'>
 			<Sparkles fill='#ffbf76' className='size-4 text-xs !font-bold' />
 		</div>
 	);

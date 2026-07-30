@@ -51,13 +51,13 @@ const RemoveCouponDialog: FC<Props> = ({ subscriptionId, association, open, onOp
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className='w-full max-w-md bg-card'>
+			<DialogContent className='w-full max-w-md bg-white'>
 				<DialogHeader>
 					<DialogTitle>{t('subscriptions.removeCouponDialog.title')}</DialogTitle>
 				</DialogHeader>
 
 				<div className='py-2'>
-					<p className='text-sm text-foreground'>
+					<p className='text-sm text-zinc-700'>
 						<Trans
 							ns='billing'
 							i18nKey={

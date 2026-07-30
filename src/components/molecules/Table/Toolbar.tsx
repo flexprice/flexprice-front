@@ -60,21 +60,21 @@ const Toolbar = ({ config, filters, onFilterChange }: ToolbarProps) => {
 				{sortOptions.length > 0 && (
 					<Popover>
 						<PopoverTrigger disabled asChild>
-							<Button variant='outline' size='xs' className='text-foreground hover:bg-muted border-border'>
-								<ArrowUpDown className='w-4 h-4 me-2 text-muted-foreground' />
+							<Button variant='outline' size='xs' className='text-gray-700 hover:bg-gray-50 border-gray-300'>
+								<ArrowUpDown className='w-4 h-4 me-2 text-gray-500' />
 								{t('labels.sort')}
 							</Button>
 						</PopoverTrigger>
-						<PopoverContent className='w-48 bg-card shadow-2xl rounded-xl border-none p-2' align='start'>
+						<PopoverContent className='w-48 bg-white shadow-2xl rounded-xl border-none p-2' align='start'>
 							<div className='space-y-1'>
 								{sortOptions.map((sort) => (
 									<Button
 										size='xs'
 										key={sort.key}
 										variant={filters.sortBy === sort.key ? 'secondary' : 'ghost'}
-										className='w-full justify-start text-foreground
-                                            hover:bg-muted
-                                            data-[state=open]:bg-muted'
+										className='w-full justify-start text-gray-700
+                                            hover:bg-gray-100
+                                            data-[state=open]:bg-gray-100'
 										onClick={() => handleSortChange(sort.key)}>
 										{sort.label}
 										{filters.sortBy === sort.key && (filters.sortDirection === 'asc' ? ' ↑' : ' ↓')}
@@ -90,7 +90,7 @@ const Toolbar = ({ config, filters, onFilterChange }: ToolbarProps) => {
 			{enableSearch && (
 				<div className='w-1/2'>
 					<Input
-						suffix={<Search className='size-[14px] text-muted-foreground' />}
+						suffix={<Search className='size-[14px] text-gray-500' />}
 						placeholder={resolvedPlaceholder}
 						value={filters.searchQuery}
 						onChange={(e) => onFilterChange({ searchQuery: e })}

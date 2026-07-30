@@ -212,7 +212,7 @@ const Revenue = () => {
 						{selectedCurrency === '' ? (
 							// No currency selected yet (or no data) — show per-currency summaries from the "summaries" map.
 							isLoading || showGlobalEmpty ? (
-								<div className='rounded-xl border border-border bg-card overflow-hidden'>
+								<div className='rounded-xl border border-gray-200 bg-white overflow-hidden'>
 									<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
 										<MetricTile
 											title={t('insightsTools.revenue.metricNetRevenue')}
@@ -241,8 +241,8 @@ const Revenue = () => {
 										.sort(([a], [b]) => a.localeCompare(b))
 										.map(([cur, sum]) => (
 											<div key={cur}>
-												<p className='text-xs font-medium text-muted-foreground uppercase tracking-wide px-1 mb-1'>{cur}</p>
-												<div className='rounded-xl border border-border bg-card overflow-hidden'>
+												<p className='text-xs font-medium text-gray-400 uppercase tracking-wide px-1 mb-1'>{cur}</p>
+												<div className='rounded-xl border border-gray-200 bg-white overflow-hidden'>
 													<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
 														<MetricTile
 															title={t('insightsTools.revenue.metricNetRevenue')}
@@ -271,7 +271,7 @@ const Revenue = () => {
 							)
 						) : (
 							// Single currency selected — show summary tiles for that currency.
-							<div className='rounded-xl border border-border bg-card overflow-hidden'>
+							<div className='rounded-xl border border-gray-200 bg-white overflow-hidden'>
 								<div className={`grid grid-cols-1 sm:grid-cols-2 ${showVoiceColumns ? 'lg:grid-cols-5' : 'lg:grid-cols-3'}`}>
 									<MetricTile
 										title={t('insightsTools.revenue.metricNetRevenue')}
@@ -315,10 +315,10 @@ const Revenue = () => {
 					</div>
 
 					{showGlobalEmpty && (
-						<div className='absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-md bg-card/45'>
+						<div className='absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-md bg-white/45'>
 							<div className='text-center max-w-sm px-4'>
-								<h3 className='text-xl font-semibold text-foreground'>{t('insightsTools.revenue.emptyRangeTitle')}</h3>
-								<p className='text-sm text-muted-foreground mt-2'>{t('insightsTools.revenue.emptyRangeBody')}</p>
+								<h3 className='text-xl font-semibold text-zinc-900'>{t('insightsTools.revenue.emptyRangeTitle')}</h3>
+								<p className='text-sm text-zinc-600 mt-2'>{t('insightsTools.revenue.emptyRangeBody')}</p>
 								<Button onClick={() => setSelectedFilter('this_quarter')} className='mt-4'>
 									{t('insightsTools.revenue.viewLatestData')}
 								</Button>
@@ -332,7 +332,7 @@ const Revenue = () => {
 						<div className={`grid grid-cols-1 gap-4 ${graphCharts.length === 1 ? 'md:grid-cols-1' : 'md:grid-cols-2'}`}>
 							{isLoading
 								? [0, 1].map((i) => (
-										<Card key={i} className='shadow-sm border border-border'>
+										<Card key={i} className='shadow-sm border border-gray-200'>
 											<CardHeader className='pb-2'>
 												<Skeleton className='h-4 w-32' />
 											</CardHeader>
@@ -349,26 +349,26 @@ const Revenue = () => {
 				)}
 
 				<div className='pt-8'>
-					<div className='rounded-md border border-border bg-card overflow-hidden shadow-sm'>
-						<div className='flex items-center justify-between px-4 py-2.5 border-b border-border bg-card'>
+					<div className='rounded-md border border-gray-200 bg-white overflow-hidden shadow-sm'>
+						<div className='flex items-center justify-between px-4 py-2.5 border-b border-gray-200 bg-white'>
 							<div className='relative flex items-center w-64'>
-								<Search className='absolute left-2.5 h-3.5 w-3.5 text-muted-foreground pointer-events-none' />
+								<Search className='absolute left-2.5 h-3.5 w-3.5 text-gray-400 pointer-events-none' />
 								<Input
 									placeholder={t('insightsTools.revenue.searchCustomersPlaceholder')}
 									value={search}
 									onChange={(e) => handleSearch(e.target.value)}
-									className='pl-8 h-8 text-[13px] border-border bg-muted focus:bg-card placeholder:text-muted-foreground'
+									className='pl-8 h-8 text-[13px] border-gray-200 bg-gray-50 focus:bg-white placeholder:text-gray-400'
 								/>
 							</div>
 							<div className='flex items-center gap-4'>
 								{search.trim() && (
-									<p className='text-[12px] text-muted-foreground'>
+									<p className='text-[12px] text-gray-400'>
 										{filteredItems.length === 1
 											? i18n.t('search.resultsCountSingular', { ns: 'common', count: filteredItems.length })
 											: i18n.t('search.resultsCountPlural', { ns: 'common', count: filteredItems.length })}
 									</p>
 								)}
-								<p className='text-[12px] text-muted-foreground'>
+								<p className='text-[12px] text-gray-400'>
 									{start.toLocaleDateString(undefined, UTC_SHORT_DATE)}
 									{' – '}
 									{end.toLocaleDateString(undefined, UTC_SHORT_DATE)}
@@ -376,28 +376,28 @@ const Revenue = () => {
 							</div>
 						</div>
 						<Table>
-							<TableHeader className='h-10 bg-muted border-b border-border rounded-t-md'>
-								<TableRow className='rounded-t-md border-b border-border'>
-									<TableHead className='rounded-tl-md pl-4 font-semibold text-foreground text-[13px]'>
+							<TableHeader className='h-10 bg-gray-50 border-b border-gray-200 rounded-t-md'>
+								<TableRow className='rounded-t-md border-b border-gray-200'>
+									<TableHead className='rounded-tl-md pl-4 font-semibold text-gray-700 text-[13px]'>
 										{t('insightsTools.revenue.colCustomer')}
 									</TableHead>
 									{selectedCurrency === '' && (
-										<TableHead className='font-semibold text-foreground text-[13px]'>{t('insightsTools.revenue.colCurrency')}</TableHead>
+										<TableHead className='font-semibold text-gray-700 text-[13px]'>{t('insightsTools.revenue.colCurrency')}</TableHead>
 									)}
-									<TableHead className='font-semibold text-foreground text-[13px]'>{t('insightsTools.revenue.metricNetRevenue')}</TableHead>
-									<TableHead className='font-semibold text-foreground text-[13px]'>
+									<TableHead className='font-semibold text-gray-700 text-[13px]'>{t('insightsTools.revenue.metricNetRevenue')}</TableHead>
+									<TableHead className='font-semibold text-gray-700 text-[13px]'>
 										{t('insightsTools.revenue.metricContractRevenue')}
 									</TableHead>
-									<TableHead className={`font-semibold text-foreground text-[13px] ${!showVoiceColumns ? 'rounded-tr-md' : ''}`}>
+									<TableHead className={`font-semibold text-gray-700 text-[13px] ${!showVoiceColumns ? 'rounded-tr-md' : ''}`}>
 										{t('insightsTools.revenue.metricUsageRevenue')}
 									</TableHead>
 									{showVoiceColumns && (
-										<TableHead className='font-semibold text-foreground text-[13px]'>
+										<TableHead className='font-semibold text-gray-700 text-[13px]'>
 											{t('insightsTools.revenue.metricVoiceMinutes')}
 										</TableHead>
 									)}
 									{showVoiceColumns && (
-										<TableHead className='rounded-tr-md font-semibold text-foreground text-[13px]'>
+										<TableHead className='rounded-tr-md font-semibold text-gray-700 text-[13px]'>
 											{t('insightsTools.revenue.metricCostPerMinute')}
 										</TableHead>
 									)}
@@ -409,20 +409,13 @@ const Revenue = () => {
 									return (
 										<TableRow
 											key={`${row.customer_id}:${row.currency}`}
-											className='h-10 align-middle border-b border-border bg-card hover:bg-muted/50 transition-colors'>
-											<TableCell className='py-2.5 pl-4 font-normal text-foreground text-[13px] align-middle'>
+											className='h-10 align-middle border-b border-gray-200 bg-white hover:bg-gray-50/50 transition-colors'>
+											<TableCell className='py-2.5 pl-4 font-normal text-gray-700 text-[13px] align-middle'>
 												<RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer_id}`} allowRedirect={Boolean(row.customer_id)}>
 													{row.customer_name || row.external_customer_id || unknownLabel}
 												</RedirectCell>
 											</TableCell>
-											{selectedCurrency === '' && (
-												<TableCell className='py-2.5 font-normal text-muted-foreground text-[12px]'>
-													<span className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-muted-foreground'>
-														{rowCurrency.toUpperCase()}
-													</span>
-												</TableCell>
-											)}
-											<TableCell className='py-2.5 font-semibold text-foreground text-[13px]'>
+											<TableCell className='py-2.5 font-semibold text-gray-700 text-[13px]'>
 												{formatCurrency(
 													toNumberOrNull(row.total_revenue) ??
 														(toNumberOrNull(row.total_usage_revenue) ?? 0) + (toNumberOrNull(row.total_fixed_revenue) ?? 0),
@@ -430,19 +423,19 @@ const Revenue = () => {
 													naLabel,
 												)}
 											</TableCell>
-											<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+											<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
 												{formatCurrency(toNumberOrNull(row.total_fixed_revenue), rowCurrency, naLabel)}
 											</TableCell>
-											<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+											<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
 												{formatCurrency(toNumberOrNull(row.total_usage_revenue), rowCurrency, naLabel)}
 											</TableCell>
 											{showVoiceColumns && (
-												<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+												<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
 													{formatInteger(toNumberOrNull(row.voice_minutes), naLabel)}
 												</TableCell>
 											)}
 											{showVoiceColumns && (
-												<TableCell className='py-2.5 font-normal text-muted-foreground text-[13px]'>
+												<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
 													{formatDecimal(toNumberOrNull(row.cpm), naLabel)}
 												</TableCell>
 											)}
@@ -450,10 +443,10 @@ const Revenue = () => {
 									);
 								})}
 								{pagedItems.length === 0 && (
-									<TableRow className='bg-card'>
+									<TableRow className='bg-white'>
 										<TableCell
 											colSpan={showVoiceColumns ? 6 : selectedCurrency === '' ? 5 : 4}
-											className='pl-4 py-4 font-normal text-muted-foreground text-[13px]'>
+											className='pl-4 py-4 font-normal text-gray-500 text-[13px]'>
 											{search.trim() ? t('insightsTools.revenue.noSearchMatches') : i18n.t('labels.na', { ns: 'common' })}
 										</TableCell>
 									</TableRow>
@@ -463,7 +456,7 @@ const Revenue = () => {
 					</div>
 					{filteredItems.length > 0 && totalPages > 1 && (
 						<div className='flex items-center justify-between py-4'>
-							<p className='text-sm text-muted-foreground font-light'>
+							<p className='text-sm text-gray-500 font-light'>
 								{i18n.t('pagination.showingRange', {
 									ns: 'common',
 									start: (currentPage - 1) * PAGE_SIZE + 1,
@@ -479,7 +472,7 @@ const Revenue = () => {
 									size='icon'
 									onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
 									disabled={currentPage === 1}
-									className={cn('size-8', currentPage === 1 && 'text-muted-foreground/70 cursor-not-allowed')}>
+									className={cn('size-8', currentPage === 1 && 'text-gray-300 cursor-not-allowed')}>
 									<ChevronLeft className='h-4 w-4' />
 								</Button>
 								<Button
@@ -488,7 +481,7 @@ const Revenue = () => {
 									size='icon'
 									onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
 									disabled={currentPage === totalPages}
-									className={cn('size-8', currentPage === totalPages && 'text-muted-foreground/70 cursor-not-allowed')}>
+									className={cn('size-8', currentPage === totalPages && 'text-gray-300 cursor-not-allowed')}>
 									<ChevronRight className='h-4 w-4' />
 								</Button>
 							</div>
@@ -515,9 +508,9 @@ const MetricTile = ({
 }) => {
 	return (
 		<div
-			className={`px-5 py-4 min-h-[104px] flex flex-col ${!isLast ? 'lg:border-r lg:border-border' : ''} border-b sm:border-b-0 border-border`}>
-			<p className='text-[12px] leading-4 text-muted-foreground whitespace-normal break-words'>{title}</p>
-			<p className='mt-4 text-[22px] leading-[1.2] font-medium text-foreground'>{loading ? loadingLabel : value}</p>
+			className={`px-5 py-4 min-h-[104px] flex flex-col ${!isLast ? 'lg:border-r lg:border-gray-200' : ''} border-b sm:border-b-0 border-gray-200`}>
+			<p className='text-[12px] leading-4 text-zinc-600 whitespace-normal break-words'>{title}</p>
+			<p className='mt-4 text-[22px] leading-[1.2] font-medium text-zinc-900'>{loading ? loadingLabel : value}</p>
 		</div>
 	);
 };
@@ -547,9 +540,9 @@ const RevenueBarChart = ({ title, data, type }: { title: string; data: RevenueDa
 	};
 
 	return (
-		<Card className='shadow-sm border border-border bg-card'>
+		<Card className='shadow-sm border border-gray-200 bg-white'>
 			<CardHeader className='pb-2 pt-5 px-5'>
-				<CardTitle className='text-sm font-medium text-muted-foreground'>{title}</CardTitle>
+				<CardTitle className='text-sm font-medium text-zinc-600'>{title}</CardTitle>
 			</CardHeader>
 			<CardContent className='px-5 pb-5'>
 				<ResponsiveContainer width='100%' height={220}>

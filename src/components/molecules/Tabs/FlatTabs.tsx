@@ -43,10 +43,8 @@ const FlatTabs: FC<FlatTabsProps> = ({ tabs, defaultValue = tabs[0]?.value, clas
 								key={tab.value}
 								onClick={() => onTabChange(tab.value)}
 								className={cn(
-									'px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none border-b-2 -mb-px',
-									activeTab === tab.value
-										? 'text-foreground border-foreground'
-										: 'text-muted-foreground border-transparent hover:text-foreground hover:border-border',
+									'px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none',
+									activeTab === tab.value ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
 								)}
 								role='tab'
 								aria-selected={activeTab === tab.value}>

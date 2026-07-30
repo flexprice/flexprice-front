@@ -72,7 +72,7 @@ const BillingAccordionInfoTooltip = ({ description, ariaLabel }: { description: 
 		content={<span className='block max-w-xs text-xs font-normal leading-relaxed text-popover-foreground'>{description}</span>}
 		className='max-w-xs'>
 		<span
-			className='inline-flex size-[22px] shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-zinc-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
+			className='inline-flex size-[22px] shrink-0 items-center justify-center rounded-md text-zinc-400 outline-none transition-colors hover:bg-zinc-100 hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-zinc-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
 			tabIndex={0}
 			aria-label={ariaLabel}
 			onPointerDown={(e) => e.stopPropagation()}
@@ -113,9 +113,9 @@ const BillingCycleSelector = ({
 						key={index}
 						data-state={value === option.value ? 'active' : 'inactive'}
 						className={cn(
-							'text-[15px] font-normal text-muted-foreground px-3 py-1 rounded-[6px]',
-							'data-[state=active]:text-foreground data-[state=active]:bg-muted',
-							'hover:text-foreground transition-colors',
+							'text-[15px] font-normal text-gray-500 px-3 py-1 rounded-[6px]',
+							'data-[state=active]:text-gray-900 data-[state=active]:bg-gray-100',
+							'hover:text-gray-900 transition-colors',
 							'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=active]:border-primary',
 							'bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0',
 							'cursor-pointer',
@@ -551,7 +551,7 @@ const SubscriptionForm = ({
 	};
 
 	return (
-		<div className='p-6 rounded-[6px] border border-border space-y-6 bg-card'>
+		<div className='p-6 rounded-[6px] border border-gray-300 space-y-6 bg-white'>
 			<FormHeader title={t('organisms.subscriptionForm.subscriptionDetails')} variant='sub-header' />
 
 			{customerPicker && (
@@ -588,7 +588,7 @@ const SubscriptionForm = ({
 						}
 					/>
 					{isLoadingPlanDetails && state.selectedPlan && (
-						<p className='text-sm text-muted-foreground'>{t('organisms.subscriptionForm.loadingPlanDetails')}</p>
+						<p className='text-sm text-gray-500'>{t('organisms.subscriptionForm.loadingPlanDetails')}</p>
 					)}
 				</div>
 			)}
@@ -711,7 +711,7 @@ const SubscriptionForm = ({
 					)}
 
 					{/* Subscription Level Price Table (always show in single-phase so Add charge is available) */}
-					<div className='mt-6 pt-6 border-t border-border'>
+					<div className='mt-6 pt-6 border-t border-gray-200'>
 						<SubscriptionPriceTable
 							data={currentPrices}
 							billingPeriod={state.billingPeriod}
@@ -789,7 +789,7 @@ const SubscriptionForm = ({
 
 			{/* Subscription Phases Section - Show when phases exist OR as add phase button */}
 			{state.selectedPlan && !isLoadingPlanDetails && phases !== undefined && onPhasesChange && (
-				<div className='mt-6 pt-6 border-t border-border'>
+				<div className='mt-6 pt-6 border-t border-gray-200'>
 					<PhaseList
 						phases={phases}
 						onChange={onPhasesChange}
@@ -841,7 +841,7 @@ const SubscriptionForm = ({
 			{/* Commitment and Overage - Always visible */}
 			{state.selectedPlan && !isLoadingPlanDetails && (
 				<>
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-border'>
+					<div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200'>
 						<DecimalUsageInput
 							label={t('organisms.subscriptionForm.commitmentAmount')}
 							value={state.commitmentAmount}
@@ -890,7 +890,7 @@ const SubscriptionForm = ({
 
 			{/* Credit Grants (Subscription Level) */}
 			{state.selectedPlan && !isLoadingPlanDetails && (
-				<div className='mt-6 pt-6 border-t border-border'>
+				<div className='mt-6 pt-6 border-t border-gray-200'>
 					<SubscriptionCreditGrantTable
 						getEmptyCreditGrant={() => getEmptyCreditGrant()}
 						data={relevantCreditGrants}
@@ -957,7 +957,7 @@ const SubscriptionForm = ({
 
 			{/* Tax Rate Overrides */}
 			{state.selectedPlan && !isLoadingPlanDetails && (
-				<div className='mt-6 pt-6 border-t border-border'>
+				<div className='mt-6 pt-6 border-t border-gray-200'>
 					<SubscriptionTaxAssociationTable
 						data={state.tax_rate_overrides || []}
 						onChange={(data) => setState((prev) => ({ ...prev, tax_rate_overrides: data }))}
@@ -968,7 +968,7 @@ const SubscriptionForm = ({
 
 			{/* Addons Section */}
 			{state.selectedPlan && !isLoadingPlanDetails && (
-				<div className='mt-6 pt-6 border-t border-border'>
+				<div className='mt-6 pt-6 border-t border-gray-200'>
 					<SubscriptionAddonTable
 						getEmptyAddon={getEmptyAddon}
 						data={state.addons || []}
@@ -984,9 +984,9 @@ const SubscriptionForm = ({
 
 			{/* Entitlements Section */}
 			{state.selectedPlan && !isLoadingPlanDetails && allEntitlements.length > 0 && (
-				<div className='space-y-4 mt-4 pt-3 border-t border-border'>
+				<div className='space-y-4 mt-4 pt-3 border-t border-gray-200'>
 					<FormHeader className='mb-0' title={t('organisms.subscriptionForm.entitlements')} variant='sub-header' />
-					<div className='rounded-[6px] border border-border space-y-6 mt-2'>
+					<div className='rounded-[6px] border border-gray-300 space-y-6 mt-2'>
 						<EntitlementOverridesTable
 							entitlements={allEntitlements}
 							overrides={state.entitlementOverrides}
@@ -999,7 +999,7 @@ const SubscriptionForm = ({
 
 			{/* Advanced Configuration */}
 			{state.selectedPlan && !isLoadingPlanDetails && (
-				<div className='mt-6 pt-6 border-t border-border space-y-6'>
+				<div className='mt-6 pt-6 border-t border-gray-200 space-y-6'>
 					<FormHeader title={t('organisms.subscriptionForm.billingConfiguration')} variant='sub-header' />
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 						<Select
@@ -1040,7 +1040,7 @@ const SubscriptionForm = ({
 
 					<Accordion
 						type='multiple'
-						className='overflow-hidden rounded-lg border border-border bg-card shadow-[0_1px_3px_rgba(15,23,42,0.06)]'>
+						className='overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-[0_1px_3px_rgba(15,23,42,0.06)]'>
 						<AccordionItem value='trial'>
 							<AccordionTrigger className='px-5 py-4'>
 								<span className='flex min-w-0 flex-1 items-center'>
@@ -1053,7 +1053,7 @@ const SubscriptionForm = ({
 									</span>
 								</span>
 							</AccordionTrigger>
-							<AccordionContent className='border-t border-border bg-card px-5 pb-5 pt-4'>
+							<AccordionContent className='border-t border-zinc-100 bg-white px-5 pb-5 pt-4'>
 								<div className='max-w-xs'>
 									<Input
 										id='subscription-billing-trial-days'
@@ -1081,9 +1081,9 @@ const SubscriptionForm = ({
 									</span>
 								</span>
 							</AccordionTrigger>
-							<AccordionContent className='border-t border-border bg-card px-5 pb-5 pt-4'>
+							<AccordionContent className='border-t border-zinc-100 bg-white px-5 pb-5 pt-4'>
 								<div className='flex flex-row items-center justify-between gap-4 w-full'>
-									<p className='text-[13px] leading-relaxed text-muted-foreground min-w-0 flex-1'>
+									<p className='text-[13px] leading-relaxed text-zinc-600 min-w-0 flex-1'>
 										{t('organisms.subscriptionForm.prorationInline')}
 									</p>
 									<Switch
@@ -1109,7 +1109,7 @@ const SubscriptionForm = ({
 									</span>
 								</span>
 							</AccordionTrigger>
-							<AccordionContent className='border-t border-border bg-card px-5 pb-5 pt-4'>
+							<AccordionContent className='border-t border-zinc-100 bg-white px-5 pb-5 pt-4'>
 								<div className='flex-1 min-w-[12rem] max-w-md'>
 									<DecimalUsageInput
 										id='subscription-billing-auto-invoice-threshold-amount'

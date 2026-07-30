@@ -41,10 +41,10 @@ const WalletAlertThresholdCard = ({
 	];
 
 	return (
-		<div className={cn('space-y-3 rounded-lg border bg-muted p-4', disabled && 'opacity-50')}>
+		<div className={cn('space-y-3 rounded-lg border bg-gray-50 p-4', disabled && 'opacity-50')}>
 			<div className='flex items-center justify-between gap-4'>
 				<div className='flex min-w-0 items-center gap-1.5'>
-					<label className='text-sm font-medium text-foreground'>{labels.title}</label>
+					<label className='text-sm font-medium text-gray-900'>{labels.title}</label>
 					<InfoIcon description={labels.description} ariaLabel={labels.title} disabled={disabled} />
 				</div>
 				{threshold ? (
@@ -61,7 +61,7 @@ const WalletAlertThresholdCard = ({
 			{threshold && (
 				<div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
 					<div className='space-y-1'>
-						<label className='text-xs font-medium text-foreground'>{labels.thresholdValue}</label>
+						<label className='text-xs font-medium text-gray-700'>{labels.thresholdValue}</label>
 						<Input
 							placeholder={labels.amountPlaceholder}
 							value={threshold.threshold}
@@ -72,7 +72,7 @@ const WalletAlertThresholdCard = ({
 						/>
 					</div>
 					<div className='space-y-1'>
-						<label className='text-xs font-medium text-foreground'>{labels.condition}</label>
+						<label className='text-xs font-medium text-gray-700'>{labels.condition}</label>
 						<Select
 							options={conditionOptions}
 							value={threshold.condition}

@@ -108,19 +108,19 @@ const IntegrationDetails = () => {
 		<Page>
 			<ApiDocsContent tags={API_DOCS_TAGS.Integrations} />
 			<div className={cn('border rounded-[6px] p-4 flex items-center shadow-sm', !integration.premium && 'cursor-pointer')}>
-				<div className='size-20 flex items-center justify-center bg-muted rounded-[6px]'>
+				<div className='size-20 flex items-center justify-center bg-gray-100 rounded-[6px]'>
 					<img src={integration.logo} alt={integration.name} className='size-10 object-contain' />
 				</div>
 				<div className='ml-4 flex-1'>
 					<div className='flex items-center justify-between w-full'>
 						<h3 className='font-semibold text-lg'>{integration.name}</h3>
 						{integration.premium && (
-							<div className='absolute top-2 right-2 bg-warning-muted text-warning-muted-foreground text-xs !font-semibold px-2 py-1 rounded-[6px] !opacity-55'>
+							<div className='absolute top-2 right-2 bg-[#FEF08A] text-[#D97706] text-xs !font-semibold px-2 py-1 rounded-[6px] !opacity-55'>
 								{t('insightsTools.integrations.comingSoon')}
 							</div>
 						)}
 					</div>
-					<p className='text-muted-foreground text-sm'>{integration.description}</p>
+					<p className='text-gray-500 text-sm'>{integration.description}</p>
 					<div className='mt-2 flex items-center gap-2'>
 						{integration.tags.map((tag, idx) => (
 							<span key={idx} className='text-xs bg-gray-200 px-2 py-1 rounded-[6px]'>
@@ -276,8 +276,8 @@ const IntegrationDetails = () => {
 							return (
 								<div key={idx} className='flex items-center justify-between text-sm p-3 border-b last:border-b-0'>
 									<div>
-										<p className='text-foreground font-medium'>{item.name}</p>
-										<p className='text-xs text-muted-foreground capitalize'>
+										<p className='text-gray-900 font-medium'>{item.name}</p>
+										<p className='text-xs text-gray-500 capitalize'>
 											{item.connection_status} • {item.provider_type}
 										</p>
 									</div>
@@ -307,7 +307,7 @@ const IntegrationDetails = () => {
 					<div key={idx} className='mt-4'>
 						<FormHeader variant='form-component-title' title={infoItem.title}></FormHeader>
 						{infoItem.description.map((desc, descIdx) => (
-							<p key={descIdx} className='text-muted-foreground text-sm mt-1'>
+							<p key={descIdx} className='text-gray-500 text-sm mt-1'>
 								{desc}
 							</p>
 						))}
@@ -319,7 +319,7 @@ const IntegrationDetails = () => {
 			<Dialog
 				title={t('insightsTools.integrations.deleteConnectionConfirmTitle', { name: connectionToDelete?.name ?? '' })}
 				description={t('insightsTools.integrations.deleteConnectionIrreversible')}
-				titleClassName='text-lg font-normal text-foreground'
+				titleClassName='text-lg font-normal text-gray-800'
 				isOpen={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 				showCloseButton={false}>

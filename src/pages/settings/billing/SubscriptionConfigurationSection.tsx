@@ -52,33 +52,33 @@ const SubscriptionConfigurationSection = () => {
 	const gracePeriodDaysLabel = t('billing.subscriptionConfiguration.fields.gracePeriodDays');
 
 	return (
-		<Card variant='default' className='rounded-xl border border-border bg-card shadow-sm'>
-			<CardHeader title={t('billing.subscriptionConfiguration.title')} titleClassName='text-lg font-medium text-foreground' />
+		<Card variant='default' className='rounded-xl border border-gray-200 bg-white shadow-sm'>
+			<CardHeader title={t('billing.subscriptionConfiguration.title')} titleClassName='text-lg font-medium text-zinc-800' />
 			{isLoading ? (
 				<Loader />
 			) : (
 				<>
-					<p className='mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+					<p className='mb-2 text-xs font-medium uppercase tracking-wide text-zinc-400'>
 						{t('billing.subscriptionConfiguration.previewLabel')}
 					</p>
-					<div className='mb-6 flex overflow-hidden rounded-lg border border-border'>
-						<div className='flex-1 border-r border-border px-4 py-4'>
-							<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+					<div className='mb-6 flex overflow-hidden rounded-lg border border-gray-200'>
+						<div className='flex-1 border-r border-gray-200 px-4 py-4'>
+							<p className='text-xs font-medium uppercase tracking-wide text-zinc-400'>
 								{t('billing.subscriptionConfiguration.preview.triggerColumn')}
 							</p>
-							<p className='mt-2 text-sm font-semibold text-foreground'>{t('billing.subscriptionConfiguration.preview.triggerValue')}</p>
+							<p className='mt-2 text-sm font-semibold text-zinc-900'>{t('billing.subscriptionConfiguration.preview.triggerValue')}</p>
 						</div>
-						<div className='flex-1 border-r border-border px-4 py-4'>
-							<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+						<div className='flex-1 border-r border-gray-200 px-4 py-4'>
+							<p className='text-xs font-medium uppercase tracking-wide text-zinc-400'>
 								{t('billing.subscriptionConfiguration.preview.gracePeriodColumn')}
 							</p>
-							<p className='mt-2 text-sm font-semibold text-foreground'>{gracePeriodLabel}</p>
+							<p className='mt-2 text-sm font-semibold text-zinc-900'>{gracePeriodLabel}</p>
 						</div>
 						<div className='flex-1 px-4 py-4'>
-							<p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+							<p className='text-xs font-medium uppercase tracking-wide text-zinc-400'>
 								{t('billing.subscriptionConfiguration.preview.actionColumn')}
 							</p>
-							<p className={cn('mt-2 text-sm', draft.auto_cancellation_enabled ? 'font-semibold text-foreground' : 'text-muted-foreground')}>
+							<p className={cn('mt-2 text-sm', draft.auto_cancellation_enabled ? 'font-semibold text-zinc-900' : 'text-zinc-400')}>
 								{actionLabel}
 							</p>
 						</div>
@@ -121,13 +121,13 @@ const SubscriptionConfigurationSection = () => {
 							</FieldWithInfo>
 						</div>
 					) : (
-						<hr className='my-4 border-border' />
+						<hr className='my-4 border-gray-200' />
 					)}
 
 					{draft.auto_cancellation_enabled ? (
-						<div className='mt-6 rounded-lg border border-info-muted-foreground/20 bg-info-muted p-4'>
-							<p className='text-sm font-medium text-foreground'>{t('billing.subscriptionConfiguration.infoCallout.title')}</p>
-							<ul className='mt-2 list-disc space-y-2 ps-5 text-sm text-muted-foreground'>
+						<div className='mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4'>
+							<p className='text-sm font-medium text-zinc-900'>{t('billing.subscriptionConfiguration.infoCallout.title')}</p>
+							<ul className='mt-2 list-disc space-y-2 ps-5 text-sm text-zinc-600'>
 								<li>{t('billing.subscriptionConfiguration.infoCallout.description1')}</li>
 								<li>{t('billing.subscriptionConfiguration.infoCallout.description2')}</li>
 								<li>{t('billing.subscriptionConfiguration.infoCallout.description3')}</li>

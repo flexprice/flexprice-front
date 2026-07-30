@@ -40,7 +40,7 @@ export const ShortPaginationControls = ({
 
 	return (
 		<div className='flex items-center justify-between py-4'>
-			<div className='text-sm font-light text-muted-foreground'>
+			<div className='text-sm font-light text-gray-500'>
 				{t('pagination.showingRange', { start: startItem, end: endItem, total: totalItems, unit })}
 			</div>
 			<div className='flex items-center space-x-2'>
@@ -50,11 +50,11 @@ export const ShortPaginationControls = ({
 					size='icon'
 					onClick={() => handlePageChange(clampedPage - 1)}
 					disabled={clampedPage === 1}
-					className={cn('size-8', clampedPage === 1 && 'cursor-not-allowed text-muted-foreground/50')}>
+					className={cn('size-8', clampedPage === 1 && 'cursor-not-allowed text-gray-300')}>
 					<ChevronLeft className='h-4 w-4' />
 				</Button>
 				{showPages && (
-					<div className='text-sm font-light text-muted-foreground'>{t('pagination.page', { current: clampedPage, total: totalPages })}</div>
+					<div className='text-sm font-light text-gray-500'>{t('pagination.page', { current: clampedPage, total: totalPages })}</div>
 				)}
 				<Button
 					type='button'
@@ -62,7 +62,7 @@ export const ShortPaginationControls = ({
 					size='icon'
 					onClick={() => handlePageChange(clampedPage + 1)}
 					disabled={clampedPage === totalPages}
-					className={cn('size-8', clampedPage === totalPages && 'cursor-not-allowed text-muted-foreground/50')}>
+					className={cn('size-8', clampedPage === totalPages && 'cursor-not-allowed text-gray-300')}>
 					<ChevronRight className='h-4 w-4' />
 				</Button>
 			</div>

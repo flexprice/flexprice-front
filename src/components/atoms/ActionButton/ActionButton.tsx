@@ -215,9 +215,9 @@ const ActionButton: FC<ActionProps> = ({
 
 			<Dialog
 				title={
-					<span className='text-lg font-normal text-foreground'>
+					<span className='text-lg font-normal text-gray-800'>
 						{t('actionButton.confirmActionOnEntityPrefix', { action: confirmArchiveVerb })}{' '}
-						<span className='font-semibold text-foreground'>{entityName}</span>?
+						<span className='font-semibold text-gray-900'>{entityName}</span>?
 					</span>
 				}
 				titleClassName='w-[90%]'

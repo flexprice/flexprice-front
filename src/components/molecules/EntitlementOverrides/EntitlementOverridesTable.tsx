@@ -119,10 +119,10 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>
 											{t('entitlements.overridesTable.tooltipUsageLimit', {
 												from: originalLimit === null ? t('entitlements.overridesTable.unlimited') : String(originalLimit?.toLocaleString()),
 												to: limit === null ? t('entitlements.overridesTable.unlimited') : String(limit?.toLocaleString()),
@@ -150,10 +150,10 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>
 											{t('entitlements.overridesTable.tooltipStaticValue', {
 												from: String(originalValue),
 												to: String(value),
@@ -181,10 +181,10 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>
 											{t('entitlements.overridesTable.tooltipStatus', {
 												from: originalValue,
 												to: value,
@@ -218,10 +218,10 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>{t('entitlements.overridesTable.tooltipConfig')}</div>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>{t('entitlements.overridesTable.tooltipConfig')}</div>
 									</div>
 								</TooltipContent>
 							</Tooltip>
@@ -306,7 +306,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 
 	if (entitlements.length === 0) {
 		return (
-			<div className='text-center py-8 text-muted-foreground'>
+			<div className='text-center py-8 text-gray-500'>
 				<p>{t('entitlements.overridesTable.noEntitlements')}</p>
 			</div>
 		);

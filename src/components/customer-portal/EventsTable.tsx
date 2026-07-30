@@ -38,7 +38,7 @@ const EventsTable: FC<Props> = ({ data }) => {
 			render(rowData) {
 				const propertyCount = rowData.properties ? Object.keys(rowData.properties).length : 0;
 				return (
-					<span className='text-muted-foreground'>
+					<span className='text-zinc-600'>
 						{propertyCount > 0 ? t('events.propertyCount', { count: propertyCount }) : t('events.noProperties')}
 					</span>
 				);

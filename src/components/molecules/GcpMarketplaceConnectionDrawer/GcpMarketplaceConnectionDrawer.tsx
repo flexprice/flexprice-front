@@ -97,8 +97,8 @@ const CodeBlock: FC<{
 	const clipboardText = copyCode ?? code;
 
 	return (
-		<Collapsible open={open} onOpenChange={setOpen} className='rounded-lg border border-border overflow-hidden'>
-			<div className='flex items-center justify-between bg-muted px-4 py-2'>
+		<Collapsible open={open} onOpenChange={setOpen} className='rounded-lg border border-gray-200 overflow-hidden'>
+			<div className='flex items-center justify-between bg-gray-50 px-4 py-2'>
 				<div className='flex items-center gap-1'>
 					<CollapsibleTrigger asChild>
 						<button type='button' className='flex items-center gap-2 text-sm font-medium text-foreground'>
@@ -148,7 +148,7 @@ const VariableCopyRow: FC<{ name: string; value: string; copyToast: string; info
 					<p className='text-xs font-medium text-foreground font-fira-code'>{name}</p>
 					{info && <InfoIcon description={info} ariaLabel={infoAriaLabel ?? name} />}
 				</div>
-				<p className='text-sm tracking-widest text-muted-foreground select-none' aria-hidden>
+				<p className='text-sm tracking-widest text-gray-400 select-none' aria-hidden>
 					{MASKED_VALUE}
 				</p>
 			</div>
@@ -299,7 +299,7 @@ const GcpMarketplaceConnectionDrawer: FC<GcpMarketplaceConnectionDrawerProps> = 
 						<div className='space-y-3'>
 							<div>
 								<p className='text-sm font-medium text-foreground'>{t('connection.gcpMarketplace.step1Title')}</p>
-								<p className='text-xs text-muted-foreground mt-1'>{t('connection.gcpMarketplace.step1Hint')}</p>
+								<p className='text-xs text-gray-500 mt-1'>{t('connection.gcpMarketplace.step1Hint')}</p>
 							</div>
 
 							<CodeBlock
@@ -314,8 +314,8 @@ const GcpMarketplaceConnectionDrawer: FC<GcpMarketplaceConnectionDrawerProps> = 
 							{/* Variables — copy the real values without revealing them on screen */}
 							<div>
 								<p className='text-sm font-medium text-foreground'>{t('connection.gcpMarketplace.variablesTitle')}</p>
-								<p className='text-xs text-muted-foreground mt-1 mb-2'>{t('connection.gcpMarketplace.variablesHint')}</p>
-								<div className='rounded-lg border border-border divide-y divide-border'>
+								<p className='text-xs text-gray-500 mt-1 mb-2'>{t('connection.gcpMarketplace.variablesHint')}</p>
+								<div className='rounded-lg border border-gray-200 divide-y divide-gray-200'>
 									<VariableCopyRow
 										name='FLEXPRICE_AWS_ACCOUNT_ID'
 										value={flexpriceAwsAccountId}
@@ -334,7 +334,7 @@ const GcpMarketplaceConnectionDrawer: FC<GcpMarketplaceConnectionDrawerProps> = 
 							</div>
 
 							{(!flexpriceAwsAccountId || !flexpriceAwsRoleName) && (
-								<p className='text-xs text-warning'>{t('connection.gcpMarketplace.accountIdMissing')}</p>
+								<p className='text-xs text-amber-600'>{t('connection.gcpMarketplace.accountIdMissing')}</p>
 							)}
 						</div>
 

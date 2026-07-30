@@ -208,10 +208,10 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 
 					{formData.accountType === 'user' && (
 						<>
-							<div className='bg-info-muted border border-info-muted-foreground/20 rounded-md p-3'>
+							<div className='bg-blue-50 border border-blue-200 rounded-md p-3'>
 								<div className='flex items-start gap-2'>
-									<Info className='w-4 h-4 text-info-muted-foreground flex-shrink-0 mt-0.5' />
-									<div className='text-sm text-info-muted-foreground'>
+									<Info className='w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5' />
+									<div className='text-sm text-blue-800'>
 										<p className='font-medium mb-1'>{t('developers:secretKeyDrawer.fullAccess.title')}</p>
 										<p>{t('developers:secretKeyDrawer.fullAccess.body')}</p>
 									</div>
@@ -223,20 +223,20 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 					{formData.accountType === 'service_account' && (
 						<>
 							{isServiceAccountsError ? (
-								<div className='bg-warning-muted border border-warning-muted-foreground/20 rounded-md p-3'>
+								<div className='bg-amber-50 border border-amber-200 rounded-md p-3'>
 									<div className='flex items-start gap-2'>
-										<AlertTriangle className='w-4 h-4 text-warning-muted-foreground flex-shrink-0 mt-0.5' />
-										<div className='text-sm text-warning-muted-foreground'>
+										<AlertTriangle className='w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5' />
+										<div className='text-sm text-amber-800'>
 											<p className='font-medium mb-1'>{t('developers:secretKeyDrawer.serviceAccountsUnavailable.title')}</p>
 											<p>{t('developers:secretKeyDrawer.serviceAccountsUnavailable.body')}</p>
 										</div>
 									</div>
 								</div>
 							) : serviceAccountOptions.length === 0 && !isLoadingServiceAccounts ? (
-								<div className='bg-info-muted border border-info-muted-foreground/20 rounded-md p-3'>
+								<div className='bg-blue-50 border border-blue-200 rounded-md p-3'>
 									<div className='flex items-start gap-2'>
-										<Info className='w-4 h-4 text-info-muted-foreground flex-shrink-0 mt-0.5' />
-										<div className='text-sm text-info-muted-foreground'>
+										<Info className='w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5' />
+										<div className='text-sm text-blue-800'>
 											<p className='font-medium mb-1'>{t('developers:secretKeyDrawer.noServiceAccounts.title')}</p>
 											<p>{t('developers:secretKeyDrawer.noServiceAccounts.body')}</p>
 										</div>
@@ -255,17 +255,17 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 
 									{selectedServiceAccount && selectedServiceAccount.roles && selectedServiceAccount.roles.length > 0 && (
 										<div className='space-y-2'>
-											<label className='block text-sm font-medium text-foreground'>{t('developers:labels.accountRolesPermissions')}</label>
-											<div className='bg-info-muted border border-info-muted-foreground/20 rounded-md p-3'>
+											<label className='block text-sm font-medium text-gray-700'>{t('developers:labels.accountRolesPermissions')}</label>
+											<div className='bg-blue-50 border border-blue-200 rounded-md p-3'>
 												<div className='flex items-start gap-2'>
-													<Info className='w-4 h-4 text-info-muted-foreground flex-shrink-0 mt-0.5' />
-													<div className='text-sm text-info-muted-foreground'>
+													<Info className='w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5' />
+													<div className='text-sm text-blue-800'>
 														<p className='font-medium mb-1'>{t('developers:secretKeyDrawer.inheritedPrefix')}</p>
 														<div className='flex flex-wrap gap-1'>
 															{selectedServiceAccount.roles.map((role: string) => (
 																<span
 																	key={role}
-																	className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-info-muted text-info-muted-foreground'>
+																	className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>
 																	{role}
 																</span>
 															))}
@@ -295,27 +295,27 @@ const SecretKeyDrawer: FC<Props> = ({ isOpen, onOpenChange }) => {
 			</Sheet>
 
 			<Modal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
-				<div className='space-y-4 bg-card card p-5 max-w-md mx-auto'>
+				<div className='space-y-4 bg-white card p-5 max-w-md mx-auto'>
 					<h1 className='text-xl font-semibold mb-4'>{t('developers:secretKeyDrawer.modal.title')}</h1>
 
-					<div className='bg-warning-muted border border-warning-muted-foreground/20 rounded-md p-3 flex items-start gap-2'>
-						<AlertTriangle className='w-5 h-5 text-warning-muted-foreground flex-shrink-0 mt-0.5' />
-						<p className='text-sm text-warning-muted-foreground'>{t('developers:secretKeyDrawer.modal.warning')}</p>
+					<div className='bg-amber-50 border border-amber-200 rounded-md p-3 flex items-start gap-2'>
+						<AlertTriangle className='w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5' />
+						<p className='text-sm text-amber-800'>{t('developers:secretKeyDrawer.modal.warning')}</p>
 					</div>
 
 					<div className='mt-4'>
 						<label className='block text-sm font-medium mb-1'>{t('developers:labels.apiKey')}</label>
-						<div className='relative bg-muted rounded-md'>
+						<div className='relative bg-gray-100 rounded-md'>
 							<Input
 								value={showApiKey ? data?.api_key || '' : maskApiKey(data?.api_key || '')}
 								readOnly
-								className='pr-16 border-none text-muted-foreground'
+								className='pr-16 border-none text-gray-600'
 							/>
-							<div className='bg-muted absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1'>
-								<button onClick={toggleApiKeyVisibility} className='p-1 text-foreground hover:text-foreground' type='button'>
+							<div className='bg-gray-100 absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1'>
+								<button onClick={toggleApiKeyVisibility} className='p-1 text-gray-700 hover:text-gray-700' type='button'>
 									{showApiKey ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
 								</button>
-								<button onClick={copyApiKey} className='p-1 text-muted-foreground hover:text-foreground' type='button'>
+								<button onClick={copyApiKey} className='p-1 text-gray-500 hover:text-gray-700' type='button'>
 									<Copy className='w-4 h-4' />
 								</button>
 							</div>

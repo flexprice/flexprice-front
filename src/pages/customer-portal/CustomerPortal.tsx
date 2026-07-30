@@ -117,7 +117,7 @@ const CustomerPortalInner = () => {
 
 	return (
 		<div
-			className={hasTheme ? 'min-h-screen' : 'min-h-screen bg-muted'}
+			className={hasTheme ? 'min-h-screen' : 'min-h-screen bg-[#fafafa]'}
 			style={hasTheme ? { backgroundColor: 'var(--portal-bg)' } : undefined}>
 			<PortalHeader customer={customerData} />
 
@@ -130,7 +130,11 @@ const CustomerPortalInner = () => {
 				<div className='mb-6'>
 					<div
 						className='flex space-x-1 rounded-[6px] p-1 w-fit'
-						style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
+						style={
+							hasTheme
+								? { backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }
+								: { backgroundColor: 'white', border: '1px solid #E9E9E9' }
+						}>
 						{visibleSections.map((section) => {
 							const isActive = activeSection?.id === section.id;
 							return (
@@ -139,13 +143,13 @@ const CustomerPortalInner = () => {
 									onClick={() => setActiveSectionId(section.id)}
 									className={cn(
 										'px-4 py-2 text-sm font-medium rounded-[6px] transition-colors',
-										!hasTheme && (isActive ? 'bg-muted text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted'),
+										!hasTheme && (isActive ? 'bg-zinc-100 text-zinc-900' : 'text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50'),
 									)}
 									style={
 										hasTheme
 											? isActive
 												? { backgroundColor: 'var(--portal-primary)', color: 'white' }
-												: { color: 'var(--portal-text-secondary)' }
+												: { color: 'var(--portal-text-secondary, #71717a)' }
 											: undefined
 									}>
 									{section.label}
@@ -159,14 +163,14 @@ const CustomerPortalInner = () => {
 				{activeSection && <SectionContent key={activeSection.id} section={activeSection} />}
 
 				{/* Footer */}
-				<div className='mt-12 pt-6 text-center' style={{ borderTop: `1px solid ${'var(--portal-border)'}` }}>
-					<p className='text-xs text-muted-foreground'>
+				<div className='mt-12 pt-6 text-center' style={{ borderTop: `1px solid ${hasTheme ? 'var(--portal-border)' : '#E9E9E9'}` }}>
+					<p className='text-xs text-zinc-400'>
 						{t('footer.poweredBy')}{' '}
 						<a
 							href='https://flexprice.io'
 							target='_blank'
 							rel='noopener noreferrer'
-							className='text-muted-foreground hover:text-foreground transition-colors'>
+							className='text-zinc-500 hover:text-zinc-700 transition-colors'>
 							{t('footer.brand')}
 						</a>
 					</p>

@@ -48,7 +48,7 @@ const EndpointThrottling: FC<Props> = ({ endpoint, onUpdated }) => {
 			<div className='flex items-center justify-between mb-2'>
 				<h4 className='text-sm font-medium'>{t('webhooks.endpoints.detail.throttling')}</h4>
 				{!isEditing && (
-					<button className='text-sm text-muted-foreground hover:text-foreground' onClick={() => setIsEditing(true)}>
+					<button className='text-sm text-gray-600 hover:text-gray-900' onClick={() => setIsEditing(true)}>
 						{t('common:actions.edit')}
 					</button>
 				)}
@@ -73,7 +73,7 @@ const EndpointThrottling: FC<Props> = ({ endpoint, onUpdated }) => {
 					</div>
 				</div>
 			) : (
-				<p className='text-sm text-muted-foreground'>
+				<p className='text-sm text-gray-500'>
 					{endpoint.rateLimit
 						? t('webhooks.endpoints.detail.throttleValue', { rate: endpoint.rateLimit })
 						: t('webhooks.endpoints.detail.noThrottle')}
@@ -132,8 +132,8 @@ const CustomHeaders: FC<{ endpointId: string }> = ({ endpointId }) => {
 			<div className='flex flex-col gap-2'>
 				{rows.map((row) => (
 					<div key={row.key} className='flex items-center gap-2 text-sm'>
-						<span className='flex-1 font-mono text-xs bg-muted border border-border rounded px-2 py-1.5 truncate'>{row.key}</span>
-						<span className='flex-1 font-mono text-xs bg-muted border border-border rounded px-2 py-1.5 truncate'>{row.value}</span>
+						<span className='flex-1 font-mono text-xs bg-gray-50 border border-border rounded px-2 py-1.5 truncate'>{row.key}</span>
+						<span className='flex-1 font-mono text-xs bg-gray-50 border border-border rounded px-2 py-1.5 truncate'>{row.value}</span>
 						<Button variant='outline' size='sm' disabled={isSaving} onClick={() => handleRemove(row.key)}>
 							<X className='w-3.5 h-3.5' />
 						</Button>

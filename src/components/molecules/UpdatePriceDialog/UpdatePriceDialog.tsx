@@ -301,8 +301,8 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 			className='w-auto min-w-[32rem] max-w-[90vw]'>
 			<div className='space-y-6 max-h-[80vh] overflow-y-auto'>
 				<div className='space-y-4'>
-					<div className='flex items-center justify-between p-3 bg-muted rounded-lg'>
-						<div className='text-sm text-muted-foreground'>{t('priceDialogs.originalPrice')}</div>
+					<div className='flex items-center justify-between p-3 bg-gray-50 rounded-lg'>
+						<div className='text-sm text-gray-600'>{t('priceDialogs.originalPrice')}</div>
 						<div className='font-medium'>
 							{displaySymbol}
 							{originalFormatted}
@@ -311,7 +311,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 
 					{price.type === PRICE_TYPE.USAGE && (
 						<div className='space-y-2'>
-							<label className='text-sm font-medium text-foreground'>{t('priceDialogs.billingModel')}</label>
+							<label className='text-sm font-medium text-gray-700'>{t('priceDialogs.billingModel')}</label>
 							<Select
 								value={overrideBillingModel}
 								onChange={(value) => setOverrideBillingModel(value as BILLING_MODEL)}
@@ -323,7 +323,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 
 					{overrideBillingModel !== BILLING_MODEL.TIERED && overrideBillingModel !== 'SLAB_TIERED' && (
 						<div className='space-y-2'>
-							<label className='text-sm font-medium text-foreground'>
+							<label className='text-sm font-medium text-gray-700'>
 								{t('priceDialogs.overrideAmountLabel', { unit: isCustomPriceUnit ? displaySymbol : price.currency })}
 							</label>
 							<Input
@@ -339,7 +339,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 
 					{(overrideBillingModel === BILLING_MODEL.TIERED || overrideBillingModel === 'SLAB_TIERED') && (
 						<div className='space-y-2'>
-							<label className='text-sm font-medium text-foreground'>{t('priceDialogs.tiers')}</label>
+							<label className='text-sm font-medium text-gray-700'>{t('priceDialogs.tiers')}</label>
 							<VolumeTieredPricingForm
 								tieredPrices={
 									overrideTiers.length > 0
@@ -394,9 +394,9 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 
 					{overrideBillingModel === BILLING_MODEL.PACKAGE && (
 						<div className='space-y-4'>
-							<label className='text-sm font-medium text-foreground'>{t('priceDialogs.packageConfiguration')}</label>
+							<label className='text-sm font-medium text-gray-700'>{t('priceDialogs.packageConfiguration')}</label>
 							<div className='space-y-2'>
-								<label className='text-sm text-muted-foreground'>{t('priceDialogs.unitsPerPackage')}</label>
+								<label className='text-sm text-gray-600'>{t('priceDialogs.unitsPerPackage')}</label>
 								<Input
 									type='number'
 									value={overrideTransformQuantity?.divide_by || ''}
@@ -410,7 +410,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 									className='w-full'
 								/>
 								{price.transform_quantity && (
-									<div className='text-xs text-muted-foreground'>
+									<div className='text-xs text-gray-500'>
 										{t('priceDialogs.originalUnitsPerPackage', { count: price.transform_quantity.divide_by })}
 									</div>
 								)}
@@ -428,7 +428,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 							labelClassName=''
 							popoverTriggerClassName='w-full'
 						/>
-						<p className='text-xs text-muted-foreground'>{t('priceDialogs.schedulePriceChangeHint')}</p>
+						<p className='text-xs text-gray-500'>{t('priceDialogs.schedulePriceChangeHint')}</p>
 					</div>
 				</div>
 

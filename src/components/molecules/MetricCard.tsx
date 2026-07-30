@@ -19,7 +19,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 	showChangeIndicator = false,
 	isNegative = false,
 }) => {
-	const arrowColor = isNegative ? 'text-destructive' : 'text-success';
+	const arrowColor = isNegative ? 'text-[#DC2626]' : 'text-[#16A34A]';
 
 	const renderValue = () => {
 		if (isPercent) {
@@ -32,9 +32,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
 	};
 
 	return (
-		<div className='bg-card border border-border p-[25px] flex flex-col gap-3 rounded-md'>
-			<p className='text-[14px] leading-[21px] text-muted-foreground font-normal'>{title}</p>
-			<p className='text-[24px] leading-[28px] font-medium text-foreground flex items-center'>
+		<div className='bg-white border border-[#E5E7EB] p-[25px] flex flex-col gap-3 rounded-md'>
+			<p className='text-[14px] leading-[21px] text-[#4B5563] font-normal'>{title}</p>
+			<p className='text-[24px] leading-[28px] font-medium text-[#111827] flex items-center'>
 				{renderValue()}
 				{showChangeIndicator && (
 					<span className={`inline-block ${arrowColor} ms-3`}>{isNegative ? <TrendingDown size={18} /> : <TrendingUp size={18} />}</span>

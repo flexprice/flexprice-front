@@ -89,8 +89,8 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 						<PaginationPrevious
 							onClick={() => handlePageChange(currentPage - 1)}
 							className={cn(
-								currentPage === 1 && 'text-muted-foreground select-none cursor-not-allowed hover:bg-card hover:text-muted-foreground',
-								'!font-normal !text-muted-foreground',
+								currentPage === 1 && 'text-gray-500 select-none cursor-not-allowed hover:bg-white hover:text-gray-500',
+								'!font-normal !text-gray-500',
 							)}
 							disabled={currentPage === 1}
 						/>
@@ -102,7 +102,7 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 							return (
 								<PaginationItem key={`ellipsis-${index}`}>
 									<PaginationEllipsis
-										className='cursor-pointer hover:bg-muted'
+										className='cursor-pointer hover:bg-gray-100'
 										onClick={() => handleEllipsisClick(index < currentPage ? 'left' : 'right')}
 									/>
 								</PaginationItem>
@@ -114,7 +114,7 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 								<PaginationLink
 									isActive={currentPage === pageNumber}
 									onClick={() => handlePageChange(pageNumber)}
-									className={cn(currentPage === pageNumber && 'text-muted-foreground')}>
+									className={cn(currentPage === pageNumber && 'text-gray-500')}>
 									{pageNumber}
 								</PaginationLink>
 							</PaginationItem>
@@ -126,9 +126,8 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 						<PaginationNext
 							onClick={() => handlePageChange(currentPage + 1)}
 							className={cn(
-								currentPage === totalPages &&
-									'text-muted-foreground select-none cursor-not-allowed hover:bg-card hover:text-muted-foreground',
-								'!font-normal !text-muted-foreground',
+								currentPage === totalPages && 'text-gray-500 select-none cursor-not-allowed hover:bg-white hover:text-gray-500',
+								'!font-normal !text-gray-500',
 							)}
 							disabled={currentPage === totalPages}
 						/>

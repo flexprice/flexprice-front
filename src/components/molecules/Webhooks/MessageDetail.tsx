@@ -25,8 +25,8 @@ const SVIX_TIMESTAMP_HEADER = 'svix-timestamp';
 
 const DetailRow: FC<{ label: string; value: string; mono?: boolean }> = ({ label, value, mono = true }) => (
 	<div className='grid grid-cols-[180px_1fr] gap-4 py-3 border-b border-border last:border-b-0'>
-		<span className='text-xs font-medium tracking-wide text-muted-foreground uppercase'>{label}</span>
-		<span className={mono ? 'font-mono text-sm text-foreground break-all' : 'text-sm text-foreground break-all'}>{value}</span>
+		<span className='text-xs font-medium tracking-wide text-gray-500 uppercase'>{label}</span>
+		<span className={mono ? 'font-mono text-sm text-gray-700 break-all' : 'text-sm text-gray-700 break-all'}>{value}</span>
 	</div>
 );
 
@@ -38,17 +38,17 @@ const AttemptRow: FC<{ attempt: MessageAttemptOut; onReplayed: () => void }> = (
 		<div className='border border-border rounded-md overflow-hidden'>
 			<button
 				type='button'
-				className='w-full flex items-center gap-3 px-3 py-3 text-start hover:bg-muted'
+				className='w-full flex items-center gap-3 px-3 py-3 text-start hover:bg-gray-50'
 				onClick={() => setExpanded((e) => !e)}>
 				{expanded ? (
-					<ChevronDown className='w-4 h-4 shrink-0 text-muted-foreground' />
+					<ChevronDown className='w-4 h-4 shrink-0 text-gray-400' />
 				) : (
-					<ChevronRight className='w-4 h-4 shrink-0 text-muted-foreground' />
+					<ChevronRight className='w-4 h-4 shrink-0 text-gray-400' />
 				)}
 				<div className='w-28 shrink-0'>
 					<AttemptStatusChip status={attempt.status} />
 				</div>
-				<span className='flex-1 min-w-0 truncate font-mono text-xs text-muted-foreground'>{attempt.url}</span>
+				<span className='flex-1 min-w-0 truncate font-mono text-xs text-gray-600'>{attempt.url}</span>
 				<span className='shrink-0'>
 					<WebhookTimestamp value={attempt.timestamp} />
 				</span>
@@ -61,7 +61,7 @@ const AttemptRow: FC<{ attempt: MessageAttemptOut; onReplayed: () => void }> = (
 					<DetailRow label={t('webhooks.messages.attempts.httpResponseCode')} value={String(attempt.responseStatusCode)} />
 					{attempt.response && <DetailRow label={t('webhooks.messages.attempts.response')} value={attempt.response} />}
 					<div className='py-3'>
-						<span className='text-xs font-medium tracking-wide text-muted-foreground uppercase'>
+						<span className='text-xs font-medium tracking-wide text-gray-500 uppercase'>
 							{t('webhooks.messages.attempts.webhookHeaders')}
 						</span>
 						<div className='mt-2 flex flex-col'>
@@ -92,19 +92,19 @@ const MessageDetail: FC<Props> = ({ messageId, backLabel, onBack }) => {
 	}
 
 	if (message.error || !message.data) {
-		return <div className='p-4 text-sm text-destructive'>{t('webhooks.messages.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-red-600'>{t('webhooks.messages.loadFailed')}</div>;
 	}
 
 	const content = message.data.payload;
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
-				<button className='hover:text-foreground' onClick={onBack}>
+			<div className='flex items-center gap-1.5 text-sm text-gray-500'>
+				<button className='hover:text-gray-900' onClick={onBack}>
 					{backLabel}
 				</button>
 				<ChevronRight className='w-3.5 h-3.5' />
-				<span className='text-foreground font-medium font-mono'>{messageId}</span>
+				<span className='text-gray-900 font-medium font-mono'>{messageId}</span>
 			</div>
 
 			<div className='grid grid-cols-[1fr_260px] gap-8'>
@@ -122,7 +122,7 @@ const MessageDetail: FC<Props> = ({ messageId, backLabel, onBack }) => {
 
 				<div className='flex flex-col gap-4'>
 					<div>
-						<h4 className='text-sm font-medium text-muted-foreground'>{t('webhooks.messages.createdAt')}</h4>
+						<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.messages.createdAt')}</h4>
 						<p className='text-sm mt-1'>
 							<WebhookTimestamp value={message.data.timestamp} className='text-sm' />
 						</p>

@@ -24,16 +24,16 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 				return (
 					<div
 						key={`${pe.subscription_id}-${pe.sub_line_item_id}-${idx}`}
-						className='group relative rounded-xl border border-border bg-gradient-to-br from-card to-muted/40 p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-border'>
-						<div className='flex items-center justify-between mb-5 pb-4 border-b border-border'>
+						className='group relative rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50/50 p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-gray-300'>
+						<div className='flex items-center justify-between mb-5 pb-4 border-b border-gray-100'>
 							<div className='flex items-center gap-2.5'>
-								<div className='flex items-center justify-center w-7 h-7 rounded-full bg-success-muted'>
-									<CheckCircle2 className='w-4 h-4 text-success-muted-foreground' />
+								<div className='flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100'>
+									<CheckCircle2 className='w-4 h-4 text-emerald-600' />
 								</div>
-								<span className='text-xs font-semibold text-foreground'>{t('events.processed.eventNumber', { n: idx + 1 })}</span>
+								<span className='text-xs font-semibold text-slate-800'>{t('events.processed.eventNumber', { n: idx + 1 })}</span>
 							</div>
 							{processedAt && (
-								<div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
+								<div className='flex items-center gap-1.5 text-xs text-slate-500'>
 									<Clock className='w-3.5 h-3.5' />
 									<span>{processedAt}</span>
 								</div>
@@ -41,19 +41,19 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 						</div>
 
 						<div className='grid grid-cols-12 gap-x-8 gap-y-3.5'>
-							<dt className='col-span-3 text-xs font-medium text-muted-foreground flex items-start pt-0.5'>{t('labels.customer')}</dt>
+							<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>{t('labels.customer')}</dt>
 							<dd className='col-span-9 text-xs break-all'>
 								{pe.customer_id ? (
 									<RedirectCell redirectUrl={`${RouteNames.customers}/${pe.customer_id}`}>
 										{customerNames[pe.customer_id] || pe.customer_id}
 									</RedirectCell>
 								) : (
-									<span className='text-muted-foreground'>{t('labels.missingValue')}</span>
+									<span className='text-slate-400'>{t('labels.missingValue')}</span>
 								)}
 							</dd>
 
-							<dt className='col-span-3 text-xs font-medium text-muted-foreground flex items-start pt-0.5'>{t('labels.subscription')}</dt>
-							<dd className='col-span-9 text-xs font-mono text-foreground break-all'>
+							<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>{t('labels.subscription')}</dt>
+							<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>
 								{pe.customer_id ? (
 									<RedirectCell redirectUrl={`${RouteNames.customers}/${pe.customer_id}/subscription/${pe.subscription_id}`}>
 										{pe.subscription_id}
@@ -62,30 +62,30 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 									<button
 										type='button'
 										onClick={() => onOpenSubscription?.(pe.subscription_id)}
-										className='text-info hover:text-info-muted-foreground hover:underline text-start text-xs transition-colors'>
+										className='text-blue-600 hover:text-blue-700 hover:underline text-start text-xs transition-colors'>
 										{pe.subscription_id}
 									</button>
 								)}
 							</dd>
 
-							<dt className='col-span-3 text-xs font-medium text-muted-foreground flex items-start pt-0.5'>{t('labels.feature')}</dt>
+							<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>{t('labels.feature')}</dt>
 							<dd className='col-span-9 text-xs break-all'>
 								<RedirectCell redirectUrl={`${RouteNames.featureDetails}/${pe.feature_id}`}>
 									{featureNames[pe.feature_id] || pe.feature_id}
 								</RedirectCell>
 							</dd>
 
-							<dt className='col-span-3 text-xs font-medium text-muted-foreground flex items-start pt-0.5'>{t('labels.lineItem')}</dt>
-							<dd className='col-span-9 text-xs font-mono text-foreground break-all'>{pe.sub_line_item_id}</dd>
+							<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>{t('labels.lineItem')}</dt>
+							<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>{pe.sub_line_item_id}</dd>
 
-							<dt className='col-span-3 text-xs font-medium text-muted-foreground flex items-start pt-0.5'>{t('labels.meter')}</dt>
-							<dd className='col-span-9 text-xs font-mono text-foreground break-all'>{pe.meter_id}</dd>
+							<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>{t('labels.meter')}</dt>
+							<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>{pe.meter_id}</dd>
 
-							<dt className='col-span-3 text-xs font-medium text-muted-foreground flex items-start pt-0.5'>{t('labels.price')}</dt>
-							<dd className='col-span-9 text-xs font-mono text-foreground break-all'>{pe.price_id}</dd>
+							<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>{t('labels.price')}</dt>
+							<dd className='col-span-9 text-xs font-mono text-slate-900 break-all'>{pe.price_id}</dd>
 
-							<dt className='col-span-3 text-xs font-medium text-muted-foreground flex items-start pt-0.5'>{t('labels.qty')}</dt>
-							<dd className='col-span-9 text-xs font-mono text-foreground font-semibold'>{pe.qty_total}</dd>
+							<dt className='col-span-3 text-xs font-medium text-slate-600 flex items-start pt-0.5'>{t('labels.qty')}</dt>
+							<dd className='col-span-9 text-xs font-mono text-slate-900 font-semibold'>{pe.qty_total}</dd>
 						</div>
 					</div>
 				);

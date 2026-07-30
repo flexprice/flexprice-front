@@ -21,7 +21,7 @@ const InfoIcon = ({ description, ariaLabel, disabled, className }: InfoIconProps
 			tabIndex={0}
 			aria-label={ariaLabel}
 			className={cn(
-				'inline-flex size-5 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:ring-2 focus-visible:ring-zinc-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white',
+				'inline-flex size-5 shrink-0 items-center justify-center rounded-md text-zinc-400 outline-none transition-colors hover:bg-zinc-100 hover:text-zinc-600 focus-visible:ring-2 focus-visible:ring-zinc-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white',
 				disabled && 'opacity-50',
 				className,
 			)}>

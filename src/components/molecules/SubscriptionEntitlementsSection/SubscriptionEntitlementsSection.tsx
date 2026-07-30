@@ -228,10 +228,10 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>
 											{t('entitlements.overridesTable.tooltipUsageLimit', {
 												from: formatUsageLimit(originalLimit),
 												to: formatUsageLimit(limit),
@@ -262,10 +262,10 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>
 											{t('entitlements.overridesTable.tooltipStaticValue', { from: String(originalValue), to: String(value) })}
 										</div>
 									</div>
@@ -294,10 +294,10 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>
 											{t('entitlements.overridesTable.tooltipStatus', { from: originalValue!, to: value })}
 										</div>
 									</div>
@@ -330,10 +330,10 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-foreground'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-muted-foreground'>{t('entitlements.overridesTable.tooltipConfig')}</div>
+										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-gray-600'>{t('entitlements.overridesTable.tooltipConfig')}</div>
 									</div>
 								</TooltipContent>
 							</Tooltip>
@@ -382,7 +382,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		},
 		{
 			title: t('entitlements.subscriptionEdit.columnSource'),
-			render: (row) => <span className='capitalize text-sm text-muted-foreground'>{getSourceLabel(row)}</span>,
+			render: (row) => <span className='capitalize text-sm text-gray-600'>{getSourceLabel(row)}</span>,
 		},
 		{
 			title: t('entitlements.overridesTable.columnFeatureType'),
@@ -438,7 +438,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 											e.preventDefault();
 											handleDelete(row);
 										}}
-										className='flex gap-2 items-center cursor-pointer text-destructive'>
+										className='flex gap-2 items-center cursor-pointer text-red-600'>
 										<Trash2 className='h-4 w-4' />
 										<span>{row.isOverrideOfParent ? t('entitlements.subscriptionEdit.resetAction') : tc('actions.delete')}</span>
 									</DropdownMenuItem>
@@ -463,7 +463,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			<Card variant='notched'>
 				<CardHeader title={tc('labels.entitlements')} />
 				<div className='flex justify-center items-center py-8'>
-					<span className='text-muted-foreground'>{tc('labels.loadingEntitlements')}</span>
+					<span className='text-gray-500'>{tc('labels.loadingEntitlements')}</span>
 				</div>
 			</Card>
 		);
@@ -533,7 +533,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			<Dialog
 				title={deleteDialogTitle}
 				description={deleteDialogDescription}
-				titleClassName='text-lg font-normal text-foreground'
+				titleClassName='text-lg font-normal text-gray-800'
 				isOpen={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 				showCloseButton={false}>

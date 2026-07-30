@@ -42,10 +42,10 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 		};
 
 		const variants = {
-			default: 'border border-border',
+			default: 'border border-gray-300',
 			notched: cn(
 				'relative',
-				'border border-border shadow-sm',
+				'border border-gray-200 shadow-sm',
 				notchPosition === 'left' ? 'ps-8' : 'pe-8',
 				'before:absolute',
 				notchPosition === 'left' ? 'before:left-0' : 'before:right-0',
@@ -55,9 +55,9 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 				notchPosition === 'left' ? 'before:rounded-r' : 'before:rounded-l',
 				getNotchColor(notchColor),
 			),
-			bordered: 'border-2 border-border',
-			elevated: 'border border-border shadow-lg',
-			warning: ' border border-destructive/20 text-destructive',
+			bordered: 'border-2 border-gray-300',
+			elevated: 'border border-gray-200 shadow-lg',
+			warning: ' border border-red-200 text-red-600',
 		};
 
 		return (

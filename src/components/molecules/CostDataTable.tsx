@@ -45,7 +45,7 @@ export const CostDataTable: React.FC<CostDataTableProps> = ({ items }) => {
 
 	return (
 		<>
-			<h1 className='text-lg font-medium text-foreground mb-4'>{t('common:labels.costBreakdown')}</h1>
+			<h1 className='text-lg font-medium text-gray-900 mb-4'>{t('common:labels.costBreakdown')}</h1>
 			<FlexpriceTable columns={columns} data={tableData} showEmptyRow />
 		</>
 	);

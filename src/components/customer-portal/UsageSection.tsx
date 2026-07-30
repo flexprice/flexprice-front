@@ -13,12 +13,12 @@ const UsageSection = ({ usageData, isLoading }: UsageSectionProps) => {
 	const { t } = useTranslation('customer-portal');
 	if (isLoading) {
 		return (
-			<Card className='bg-card border border-border rounded-xl p-6'>
+			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
 				<div className='animate-pulse space-y-4'>
-					<div className='h-5 bg-muted rounded w-1/4'></div>
+					<div className='h-5 bg-zinc-100 rounded w-1/4'></div>
 					<div className='space-y-3'>
-						<div className='h-12 bg-muted rounded'></div>
-						<div className='h-12 bg-muted rounded'></div>
+						<div className='h-12 bg-zinc-100 rounded'></div>
+						<div className='h-12 bg-zinc-100 rounded'></div>
 					</div>
 				</div>
 			</Card>
@@ -34,8 +34,8 @@ const UsageSection = ({ usageData, isLoading }: UsageSectionProps) => {
 	}
 
 	return (
-		<Card className='bg-card border border-border rounded-xl p-6'>
-			<h3 className='text-base font-medium text-foreground mb-4'>{t('usage.currentTitle')}</h3>
+		<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
+			<h3 className='text-base font-medium text-zinc-950 mb-4'>{t('usage.currentTitle')}</h3>
 			<div className='space-y-4'>
 				{meteredUsage.map((item, index) => {
 					const usage = Number(item.current_usage || 0);
@@ -46,8 +46,8 @@ const UsageSection = ({ usageData, isLoading }: UsageSectionProps) => {
 					return (
 						<div key={item.feature?.id || index} className='space-y-2'>
 							<div className='flex items-center justify-between'>
-								<span className='text-sm text-foreground'>{item.feature?.name || t('usage.unknownFeature')}</span>
-								<span className='text-sm text-muted-foreground'>
+								<span className='text-sm text-zinc-700'>{item.feature?.name || t('usage.unknownFeature')}</span>
+								<span className='text-sm text-zinc-500'>
 									{formatAmount(usage.toString())}
 									{limit ? ` / ${formatAmount(limit.toString())}` : ` / ${t('usage.unlimited')}`}
 								</span>
@@ -56,7 +56,7 @@ const UsageSection = ({ usageData, isLoading }: UsageSectionProps) => {
 								value={item.is_unlimited ? 0 : percentage}
 								className='h-2'
 								indicatorColor={isOverLimit ? 'bg-gradient-to-r from-red-600 to-red-400' : 'bg-gradient-to-r from-[#6167d9] to-[#2563eb]'}
-								backgroundColor={isOverLimit ? 'bg-destructive/10' : 'bg-info-muted'}
+								backgroundColor={isOverLimit ? 'bg-red-50' : 'bg-blue-100'}
 							/>
 						</div>
 					);

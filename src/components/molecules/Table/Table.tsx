@@ -93,7 +93,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
 	<tr
 		ref={ref}
 		className={cn(
-			'border-b border-border h-[36px] transition-colors hover:bg-muted/50',
+			'border-b border-[#E2E8F0] h-[36px] transition-colors hover:bg-muted/50',
 			'align-middle', // Vertically align middle
 			className,
 		)}
@@ -114,11 +114,11 @@ const TableHead = React.forwardRef<
 		ref={ref}
 		style={{ textAlign: alignStyle(align), width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined, ...style }}
 		className={cn(
-			'h-12 px-4 text-[14px] font-medium text-muted-foreground',
+			'h-12 px-4 text-[14px] font-medium text-[#64748B]',
 			alignClass(align),
 			'align-middle',
 			className,
-			variant === 'default' && 'border-b border-border',
+			variant === 'default' && 'border-b border-[#E2E8F0]',
 		)}
 		{...props}
 	/>
@@ -205,11 +205,11 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 	const renderTableHeader = () => (
 		<TableHeader
 			className={cn(
-				variant === 'default' ? 'h-8 bg-secondary/80 border-b border-border rounded-t-[6px]' : 'h-8',
+				variant === 'default' ? 'h-8 bg-muted border-b border-[#E2E8F0] rounded-t-[6px]' : 'h-8',
 				variant === 'no-bordered' && 'bg-transparent',
 			)}>
 			<TableRow
-				className={cn(variant === 'default' ? 'rounded-t-[6px] border-b border-border' : '', variant === 'no-bordered' && 'border-b-0')}>
+				className={cn(variant === 'default' ? 'rounded-t-[6px] border-b border-[#E2E8F0]' : '', variant === 'no-bordered' && 'border-b-0')}>
 				{columns.map(({ title, flex = 1, width, color = '#64748B', align = 'left', className, children }, index) => (
 					<TableHead
 						variant={variant}
@@ -218,7 +218,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 						width={width}
 						align={align}
 						className={cn(
-							color ? `text-[${color}] !text-foreground` : 'text-foreground',
+							color ? `text-[${color}] !text-black` : 'text-black',
 							'font-sans font-medium px-3',
 							variant === 'default' && index === 0 ? 'rounded-ss-[6px]' : '',
 							variant === 'default' && index === columns.length - 1 ? 'rounded-se-[6px]' : '',
@@ -240,7 +240,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 				onClick={(e) => handleRowClick(row, e)}
 				className={cn(
 					'transition-colors hover:bg-muted/50',
-					variant === 'default' && !lastRow && 'border-b border-border',
+					variant === 'default' && !lastRow && 'border-b border-[#E2E8F0]',
 					onRowClick && 'cursor-pointer hover:bg-muted/50',
 					lastRow && hideBottomBorder && 'border-b-0',
 					'!py-1',
@@ -255,11 +255,11 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 							key={colIndex}
 							data-interactive={fieldVariant === 'interactive'}
 							className={cn(
-								textColor ? `text-[${textColor}]` : 'text-foreground',
+								textColor ? `text-[${textColor}]` : 'text-gray-700',
 								variant === 'default' ? 'font-normal' : 'font-light',
 								'!max-h-8 px-3 py-3 text-[14px]',
 								onCLick && 'cursor-pointer hover:bg-muted/50',
-								fieldVariant === 'title' ? 'font-regular text-foreground' : '!font-light text-foreground',
+								fieldVariant === 'title' ? 'font-regular text-foreground' : '!font-light text-gray-700',
 								fieldVariant === 'link' && 'cursor-pointer text-primary hover:underline',
 								fieldVariant === 'icon' && 'w-10',
 								fieldVariant === 'interactive' && 'cursor-default',
@@ -286,7 +286,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 						<TableCell
 							key={colIndex}
 							className={cn(
-								textColor ? `text-[${textColor}]` : 'text-foreground w-full ',
+								textColor ? `text-[${textColor}]` : 'text-[#09090B] w-full ',
 								'font-normal',
 								'!max-h-8 px-4 py-2 text-[14px]',
 								lastRow ? 'text-center' : '',
@@ -306,8 +306,8 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 		<div
 			className={cn(
 				'overflow-hidden',
-				variant === 'default' && 'rounded-[6px] border border-border bg-card shadow-sm',
-				variant === 'default' && !hideBottomBorder && 'border-b border-border',
+				variant === 'default' && 'rounded-[6px] border border-[#E2E8F0]',
+				variant === 'default' && !hideBottomBorder && 'border-b border-[#E2E8F0]',
 				variant === 'no-bordered' && 'border-0',
 			)}>
 			<Table className={tableClassName}>

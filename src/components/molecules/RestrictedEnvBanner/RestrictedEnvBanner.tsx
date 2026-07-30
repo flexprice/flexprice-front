@@ -69,13 +69,19 @@ const RestrictedEnvBanner: React.FC = () => {
 		const dayWord = days === 1 ? t('environment.restrictedBanner.dayWordOne') : t('environment.restrictedBanner.dayWordPlural');
 		return (
 			<>
-				<div className='w-full flex items-center justify-center border-b border-info-muted bg-gradient-to-r from-info-muted via-info-muted/90 to-info-muted px-4 py-2'>
-					<span className='text-sm text-info-muted-foreground'>
+				<div
+					className='w-full flex items-center justify-center border-b px-4 py-2'
+					style={{
+						background: 'linear-gradient(to right, #EEF4FF, #DDE7FF, #EEF4FF)',
+						borderColor: '#E3ECFF',
+					}}>
+					<span className='text-sm' style={{ color: '#184FC7' }}>
 						{t('environment.restrictedBanner.grace', { envType: envTypeLabel, count: days, dayWord })}{' '}
 						<button
 							type='button'
 							onClick={() => setIsContactDialogOpen(true)}
-							className='inline-flex items-center gap-1 underline text-info-muted-foreground hover:opacity-80'>
+							className='inline-flex items-center gap-1 underline hover:opacity-80'
+							style={{ color: '#184FC7' }}>
 							{t('environment.restrictedBanner.contactUs')}
 							<ExternalLink className='h-3.5 w-3.5 shrink-0' aria-hidden />
 						</button>
@@ -90,13 +96,19 @@ const RestrictedEnvBanner: React.FC = () => {
 	if (restriction.state === EnvRestrictionState.Suspended) {
 		return (
 			<>
-				<div className='w-full flex items-center justify-center border-b border-destructive/20 bg-gradient-to-r from-destructive/10 via-destructive/15 to-destructive/10 px-4 py-2'>
-					<span className='text-sm text-destructive'>
+				<div
+					className='w-full flex items-center justify-center border-b px-4 py-2'
+					style={{
+						background: 'linear-gradient(to right, #FFEEEE, #FFEAEA, #FFEEEE)',
+						borderColor: '#FFDDDD',
+					}}>
+					<span className='text-sm' style={{ color: '#C81B1B' }}>
 						{t('environment.restrictedBanner.suspended', { envType: envTypeLabel })}{' '}
 						<button
 							type='button'
 							onClick={() => setIsContactDialogOpen(true)}
-							className='inline-flex items-center gap-1 underline text-destructive hover:opacity-80'>
+							className='inline-flex items-center gap-1 underline hover:opacity-80'
+							style={{ color: '#C81B1B' }}>
 							{t('environment.restrictedBanner.contactUs')}
 							<ExternalLink className='h-3.5 w-3.5 shrink-0' aria-hidden />
 						</button>

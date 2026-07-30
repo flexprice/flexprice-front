@@ -20,9 +20,9 @@ const AddButton = ({ onClick, label }: { onClick: () => void; label: string }) =
 	<div className='w-fit'>
 		<button
 			onClick={onClick}
-			className='px-3 py-1.5 h-8 cursor-pointer flex gap-2 items-center bg-muted hover:bg-border rounded-md transition-colors'>
-			<CirclePlus size={14} className='text-muted-foreground' />
-			<p className='text-foreground text-sm font-medium'>{label}</p>
+			className='px-3 py-1.5 h-8 cursor-pointer flex gap-2 items-center bg-[#F4F4F5] hover:bg-[#E4E4E7] rounded-md transition-colors'>
+			<CirclePlus size={14} className='text-zinc-600' />
+			<p className='text-[#18181B] text-sm font-medium'>{label}</p>
 		</button>
 	</div>
 );
@@ -175,7 +175,7 @@ const CreateCustomerWalletModal: FC<Props> = ({ customerId, onSuccess = () => {}
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className='bg-card sm:max-w-[600px] max-h-[80vh] overflow-y-auto'>
+			<DialogContent className='bg-white sm:max-w-[600px] max-h-[80vh] overflow-y-auto'>
 				<DialogHeader>
 					<DialogTitle>{t('customers:wallet.createTitle')}</DialogTitle>
 					<DialogDescription>{t('customers:wallet.description')}</DialogDescription>
@@ -216,7 +216,7 @@ const CreateCustomerWalletModal: FC<Props> = ({ customerId, onSuccess = () => {}
 					{/* Conversion Rate - only show for FIAT currencies */}
 					{!isPriceUnitSelected && (
 						<div className='flex flex-col items-start gap-2 w-full'>
-							<label className={cn('block text-sm font-medium', 'text-foreground')}>{t('customers:wallet.conversionRate')}</label>
+							<label className={cn('block text-sm font-medium', 'text-zinc-950')}>{t('customers:wallet.conversionRate')}</label>
 							<div className='flex items-center gap-2 w-full'>
 								<Input className='w-full' value={'1'} disabled suffix={t('customers:wallet.suffixCredit')} />
 								<span>=</span>
@@ -237,7 +237,7 @@ const CreateCustomerWalletModal: FC<Props> = ({ customerId, onSuccess = () => {}
 					{/* Top-up Conversion Rate Input - conditionally rendered above */}
 					{showTopupConversionRate && (
 						<div className='flex flex-col items-start gap-2 w-full'>
-							<label className={cn('block text-sm font-medium', 'text-foreground')}>{t('customers:wallet.topupConversionRate')}</label>
+							<label className={cn('block text-sm font-medium', 'text-zinc-950')}>{t('customers:wallet.topupConversionRate')}</label>
 							<div className='flex items-center gap-2 w-full'>
 								<Input className='w-full' value={'1'} disabled suffix={t('customers:wallet.suffixCredit')} />
 								<span>=</span>

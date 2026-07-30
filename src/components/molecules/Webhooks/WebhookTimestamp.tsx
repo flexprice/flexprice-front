@@ -16,7 +16,7 @@ const toIso = (value: string | Date): string => (typeof value === 'string' ? val
  */
 const WebhookTimestamp: FC<Props> = ({ value, className }) => (
 	<Tooltip content={formatDateTimeWithSecondsAndTimezone(value)}>
-		<span className={className ?? 'text-sm text-muted-foreground'}>{formatDateTime(toIso(value))}</span>
+		<span className={className ?? 'text-sm text-gray-500'}>{formatDateTime(toIso(value))}</span>
 	</Tooltip>
 );
 

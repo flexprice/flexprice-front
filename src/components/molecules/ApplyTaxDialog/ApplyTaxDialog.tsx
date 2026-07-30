@@ -105,7 +105,7 @@ const ApplyTaxDialog: FC<Props> = ({ subscriptionId, open, onOpenChange, onSucce
 
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
-			<DialogContent className='w-full max-w-md bg-card'>
+			<DialogContent className='w-full max-w-md bg-white'>
 				<DialogHeader>
 					<DialogTitle>{t('subscriptions.applyTaxDialog.title')}</DialogTitle>
 				</DialogHeader>

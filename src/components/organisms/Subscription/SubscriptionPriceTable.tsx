@@ -402,7 +402,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 											label: t('organisms.subscriptionPriceTable.deleteAdded'),
 											icon: <Trash2 className='h-4 w-4' />,
 											onSelect: () => onRemoveAddedCharge(item.tempId),
-											className: 'text-destructive focus:text-destructive',
+											className: 'text-red-600 focus:text-red-600',
 										},
 									]
 								: []),
@@ -430,7 +430,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 				<FormHeader title={t('organisms.subscriptionPriceTable.charges')} variant='sub-header' />
 				{onAddCharge && <AddButton onClick={onAddCharge} disabled={disabled} className='w-fit'></AddButton>}
 			</div>
-			<div className='rounded-[6px] border border-border'>
+			<div className='rounded-[6px] border border-gray-300'>
 				<div style={{ overflow: 'hidden' }}>
 					<FlexpriceTable columns={chargesTableColumns} data={displayedData} />
 				</div>
@@ -439,7 +439,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 				<div className='flex justify-center mt-3'>
 					<button
 						onClick={() => setShowAllRows((prev) => !prev)}
-						className='flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors py-2 px-3 rounded-[6px] hover:bg-muted'>
+						className='flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors py-2 px-3 rounded-[6px] hover:bg-gray-50'>
 						{showAllRows ? (
 							<>
 								<span>{t('organisms.subscriptionPriceTable.showLess')}</span>

@@ -159,7 +159,7 @@ const TaxrateDetailsPage = () => {
 							<div className='grid grid-cols-2 gap-4'>
 								{Object.entries(taxData.metadata).map(([key, value]) => (
 									<div key={key} className='flex flex-col'>
-										<span className='text-sm text-muted-foreground'>{key}</span>
+										<span className='text-sm text-gray-500'>{key}</span>
 										<span className='text-sm font-medium'>{value}</span>
 									</div>
 								))}

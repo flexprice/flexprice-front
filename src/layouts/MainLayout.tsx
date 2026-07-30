@@ -41,23 +41,21 @@ const MainLayout: React.FC = () => {
 	}, [user]);
 
 	return (
-		<SidebarProvider className='flex h-screen bg-sidebar relative'>
+		<SidebarProvider className='flex h-screen bg-gray-100 relative'>
 			<AppPrefetcher />
 			<CommandPalette />
 			{/* Sidebar */}
 			<Sidebar />
-			{/* Right Layout — chrome shell (sidebar tone); content renders in an elevated rounded panel */}
-			<SidebarInset className='flex flex-col flex-1 bg-sidebar h-screen relative'>
+			{/* Right Layout */}
+			<SidebarInset className='flex flex-col flex-1 bg-white h-screen relative'>
 				<FundingStrip />
 				<BreadCrumbs />
 				<RestrictedEnvBanner />
-				{/* Main Content — Linear-style elevated well, lighter than the surrounding chrome */}
-				<div className='flex flex-1 min-h-0 flex-col overflow-hidden rounded-ss-xl border-s border-t border-border bg-background'>
-					<main className='flex-1 px-4 relative overflow-y-auto '>
-						<Outlet />
-						<DebugMenu />
-					</main>
-				</div>
+				{/* Main Content */}
+				<main className='flex-1 px-4 relative overflow-y-auto '>
+					<Outlet />
+					<DebugMenu />
+				</main>
 			</SidebarInset>
 		</SidebarProvider>
 	);

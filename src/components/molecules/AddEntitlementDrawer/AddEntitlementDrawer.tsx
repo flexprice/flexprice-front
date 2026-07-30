@@ -219,10 +219,10 @@ const DisplayValueCalculatorDialog: FC<DisplayValueCalculatorDialogProps> = ({
 				/>
 
 				{computedUnitValue != null && (
-					<div className='rounded-md border border-border bg-card p-4'>
+					<div className='rounded-md border border-gray-200 bg-white p-4'>
 						<p className='text-sm'>
-							<span className='font-medium text-foreground'>{t('entitlements.displayCalculator.calculatedUsageLimit')}</span>{' '}
-							<span className='font-semibold text-info'>{usageLimitDisplay}</span>{' '}
+							<span className='font-medium text-gray-900'>{t('entitlements.displayCalculator.calculatedUsageLimit')}</span>{' '}
+							<span className='font-semibold text-blue-600'>{usageLimitDisplay}</span>{' '}
 							<span className='text-muted-foreground text-xs'>{resolvedBasePlural}</span>
 						</p>
 					</div>
@@ -233,7 +233,7 @@ const DisplayValueCalculatorDialog: FC<DisplayValueCalculatorDialogProps> = ({
 						ns='catalog'
 						i18nKey='entitlements.displayCalculator.conversionFactor'
 						values={{ rate: reportingUnit.conversion_rate ?? emDash }}
-						components={{ rate: <span className='font-semibold text-info' /> }}
+						components={{ rate: <span className='font-semibold text-blue-600' /> }}
 					/>
 				</p>
 
@@ -458,13 +458,13 @@ const AddEntitlementDrawer: FC<Props> = ({
 	// Memoized error display component
 	const ErrorDisplay = useMemo(() => {
 		if (!errors.general) return null;
-		return <div className='p-3 rounded-md bg-destructive/10 text-destructive text-sm mb-4'>{errors.general}</div>;
+		return <div className='p-3 rounded-md bg-red-50 text-red-600 text-sm mb-4'>{errors.general}</div>;
 	}, [errors.general]);
 
 	// Memoized feature error display component
 	const FeatureErrorDisplay = useMemo(() => {
 		if (!errors.feature) return null;
-		return <div className='p-3 rounded-md bg-destructive/10 text-destructive text-sm mb-4'>{errors.feature}</div>;
+		return <div className='p-3 rounded-md bg-red-50 text-red-600 text-sm mb-4'>{errors.feature}</div>;
 	}, [errors.feature]);
 
 	const handleCancel = useCallback(() => {
@@ -484,7 +484,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 			<ShadcnSheet open={isOpen} onOpenChange={handleDrawerClose} modal={false}>
 				<SheetContent
 					side={sheetSide}
-					className={cn('h-screen overflow-y-auto rounded-[10px] sm:max-w-sm bg-card')}
+					className={cn('h-screen overflow-y-auto rounded-[10px] sm:max-w-sm bg-white')}
 					onPointerDownOutside={preventPortaledSelectDismiss}
 					onInteractOutside={preventPortaledSelectDismiss}
 					onFocusOutside={preventFocusOutsideDismiss}>
@@ -499,7 +499,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 							<div
 								key={`${entitlement.feature_id}-${index}`}
 								className='rounded-md border !p-2 !px-3 flex w-full justify-between items-center'>
-								<p className='text-foreground text-sm font-medium'>{entitlement.feature?.name}</p>
+								<p className='text-[#18181B] text-sm font-medium'>{entitlement.feature?.name}</p>
 								<button
 									onClick={() => {
 										setEntitlements((prev) => prev.filter((_, i) => i !== index));
@@ -558,7 +558,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 										{/* {activeFeature.type === FeatureType.metered && activeFeature.meter_id && (
 										<div className='w-full flex justify-between items-center'>
 											<span className='text-muted-foreground text-sm font-sans'>Meter</span>
-											<span className='text-foreground text-sm font-sans'>{activeFeature.meter?.name}</span>
+											<span className='text-[#09090B] text-sm font-sans'>{activeFeature.meter?.name}</span>
 										</div>
 									)} */}
 										{/* <Spacer className='!my-6' /> */}
@@ -654,7 +654,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 												setTempEntitlement((prev) => ({ ...prev, config_value: parsed ?? undefined }));
 											}}
 										/>
-										{errors.config_value && <p className='text-xs text-destructive mt-1'>{errors.config_value}</p>}
+										{errors.config_value && <p className='text-xs text-red-500 mt-1'>{errors.config_value}</p>}
 									</div>
 								)}
 

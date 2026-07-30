@@ -11,9 +11,9 @@ const SettingsDashboard = () => {
 	const { t } = useTranslation(['settings', 'common']);
 
 	return (
-		<Page heading={t('page.settings')} documentTitle={t('page.settings')} headingClassName='font-semibold text-2xl text-foreground'>
+		<Page heading={t('page.settings')} documentTitle={t('page.settings')} headingClassName='font-semibold text-2xl text-zinc-900'>
 			<FlatTabs
-				className='[&_.border-b]:border-border'
+				className='[&_.border-b]:border-gray-200'
 				tabs={[
 					{
 						value: 'team',

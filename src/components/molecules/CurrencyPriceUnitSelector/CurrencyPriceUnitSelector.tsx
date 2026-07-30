@@ -84,7 +84,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 	return (
 		<div className={cn('space-y-1', className)}>
 			{resolvedLabel && (
-				<label className={cn('block text-sm font-medium text-zinc break-words', disabled ? 'text-muted-foreground' : 'text-foreground')}>
+				<label className={cn('block text-sm font-medium text-zinc break-words', disabled ? 'text-zinc-500' : 'text-zinc-950')}>
 					{resolvedLabel}
 				</label>
 			)}
@@ -112,7 +112,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 									{priceUnitOptionsList.map((option) => (
 										<SelectItem key={option.value} value={option.value}>
 											<div className='flex items-center gap-2'>
-												<Layers className='h-4 w-4 text-info flex-shrink-0' />
+												<Layers className='h-4 w-4 text-blue-600 flex-shrink-0' />
 												<div className='flex flex-col min-w-0'>
 													<span className='truncate'>{option.label}</span>
 													<span className='text-xs text-muted-foreground'>
@@ -132,7 +132,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 										{currencyOptionsList.map((option) => (
 											<SelectItem key={option.value} value={option.value}>
 												<div className='flex items-center gap-2'>
-													<Coins className='h-4 w-4 text-success' />
+													<Coins className='h-4 w-4 text-green-600' />
 													<span className='truncate'>{option.label}</span>
 												</div>
 											</SelectItem>

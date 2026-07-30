@@ -153,7 +153,7 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 			<button
 				type='button'
 				className='group -ms-1 inline-flex h-7 items-center gap-1 rounded-md px-1.5 text-start transition-colors'
-				style={{ color: 'var(--portal-text-primary)' }}
+				style={{ color: 'var(--portal-text-primary, #374151)' }}
 				onClick={() => {
 					if (sortField !== field) {
 						setSortField(field);
@@ -164,11 +164,11 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 				}}>
 				<span className='leading-none'>{label}</span>
 				{sortDirection === 'asc' && isActive ? (
-					<ChevronUp className='h-3.5 w-3.5 shrink-0' style={{ color: 'var(--portal-text-primary)' }} />
+					<ChevronUp className='h-3.5 w-3.5 shrink-0' style={{ color: 'var(--portal-text-primary, #374151)' }} />
 				) : isActive ? (
-					<ChevronDown className='h-3.5 w-3.5 shrink-0' style={{ color: 'var(--portal-text-primary)' }} />
+					<ChevronDown className='h-3.5 w-3.5 shrink-0' style={{ color: 'var(--portal-text-primary, #374151)' }} />
 				) : (
-					<ChevronsUpDown className='h-3.5 w-3.5 shrink-0' style={{ color: 'var(--portal-text-secondary)' }} />
+					<ChevronsUpDown className='h-3.5 w-3.5 shrink-0' style={{ color: 'var(--portal-text-secondary, #9ca3af)' }} />
 				)}
 			</button>
 		);
@@ -181,13 +181,13 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 		return (
 			<Card
 				className='rounded-xl overflow-hidden'
-				style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
-				<div className='p-6' style={{ borderBottom: '1px solid var(--portal-border)' }}>
-					<div className='h-5 w-40 bg-muted animate-pulse rounded' />
+				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+				<div className='p-6' style={{ borderBottom: '1px solid var(--portal-border, #E9E9E9)' }}>
+					<div className='h-5 w-40 bg-zinc-100 animate-pulse rounded' />
 				</div>
 				<div className='p-6 space-y-3'>
 					{[1, 2, 3].map((i) => (
-						<div key={i} className='h-8 bg-muted animate-pulse rounded' />
+						<div key={i} className='h-8 bg-zinc-100 animate-pulse rounded' />
 					))}
 				</div>
 			</Card>
@@ -197,22 +197,22 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 	return (
 		<Card
 			className='rounded-xl overflow-hidden'
-			style={{ backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }}>
+			style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
 			<div className='p-6'>
 				<div className='flex items-center justify-between'>
-					<h3 className='text-base font-semibold' style={{ color: 'var(--portal-text-primary)' }}>
+					<h3 className='text-base font-semibold' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
 						{label || t('usage.breakdownTitle')}
 					</h3>
 					{hasGroups && (
 						<button
 							type='button'
 							onClick={toggleExpandAll}
-							className='inline-flex items-center justify-center text-muted-foreground hover:text-foreground'
+							className='inline-flex items-center justify-center text-gray-600 hover:text-gray-900'
 							aria-label={allExpanded ? t('usageBreakdown.collapseAllAria') : t('usageBreakdown.expandAllAria')}>
 							{allExpanded ? (
-								<ChevronUp className='h-4 w-4 transition-colors' style={{ color: 'var(--portal-text-secondary)' }} />
+								<ChevronUp className='h-4 w-4 transition-colors' style={{ color: 'var(--portal-text-secondary, #6b7280)' }} />
 							) : (
-								<ChevronsUpDown className='h-4 w-4 transition-colors' style={{ color: 'var(--portal-text-secondary)' }} />
+								<ChevronsUpDown className='h-4 w-4 transition-colors' style={{ color: 'var(--portal-text-secondary, #6b7280)' }} />
 							)}
 						</button>
 					)}
@@ -221,17 +221,17 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 
 			<div className='px-6 pb-6'>
 				{/* Inner bordered rectangle — matches Figma design */}
-				<div className='rounded-lg overflow-hidden' style={{ border: '1px solid var(--portal-border)' }}>
+				<div className='rounded-lg overflow-hidden' style={{ border: '1px solid var(--portal-border, #e5e7eb)' }}>
 					<Table>
-						<TableHeader className='h-10' style={{ borderBottom: '1px solid var(--portal-border)' }}>
-							<TableRow style={{ borderBottom: '1px solid var(--portal-border)' }}>
-								<TableHead className='ps-3 font-semibold text-[13px] w-[35%]' style={{ color: 'var(--portal-text-primary)' }}>
+						<TableHeader className='h-10' style={{ borderBottom: '1px solid var(--portal-border, #e5e7eb)' }}>
+							<TableRow style={{ borderBottom: '1px solid var(--portal-border, #e5e7eb)' }}>
+								<TableHead className='ps-3 font-semibold text-[13px] w-[35%]' style={{ color: 'var(--portal-text-primary, #374151)' }}>
 									{t('usageBreakdown.feature')}
 								</TableHead>
-								<TableHead className='font-semibold text-[13px]' style={{ color: 'var(--portal-text-primary)' }}>
+								<TableHead className='font-semibold text-[13px]' style={{ color: 'var(--portal-text-primary, #374151)' }}>
 									{renderSortableHeader(SORT_TOTAL_USAGE, t('usageBreakdown.totalUsage'))}
 								</TableHead>
-								<TableHead className='font-semibold text-[13px]' style={{ color: 'var(--portal-text-primary)' }}>
+								<TableHead className='font-semibold text-[13px]' style={{ color: 'var(--portal-text-primary, #374151)' }}>
 									{renderSortableHeader(SORT_TOTAL_COST, t('usageBreakdown.totalCost'))}
 								</TableHead>
 							</TableRow>
@@ -260,20 +260,20 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 											style={rowStyle}>
 											<TableCell className='ps-3 py-2.5 align-middle'>
 												<div className='inline-flex items-center gap-2 text-start'>
-													<span className='font-semibold text-[13px]' style={{ color: 'var(--portal-text-primary)' }}>
+													<span className='font-semibold text-[13px]' style={{ color: 'var(--portal-text-primary, #111827)' }}>
 														{bucket.groupName}
 													</span>
 													{bucket.items.length > 0 ? (
 														isExpanded ? (
 															<ChevronUp
 																className='h-4 w-4 shrink-0 transition-colors'
-																style={{ color: 'var(--portal-text-secondary)' }}
+																style={{ color: 'var(--portal-text-secondary, #6b7280)' }}
 																aria-hidden
 															/>
 														) : (
 															<ChevronDown
 																className='h-4 w-4 shrink-0 transition-colors'
-																style={{ color: 'var(--portal-text-secondary)' }}
+																style={{ color: 'var(--portal-text-secondary, #6b7280)' }}
 																aria-hidden
 															/>
 														)
@@ -281,10 +281,10 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 												</div>
 											</TableCell>
 											{/* Total Usage — aggregate not available for groups */}
-											<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary)' }}>
+											<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary, #6b7280)' }}>
 												{t('usageBreakdown.cellEmDash')}
 											</TableCell>
-											<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary)' }}>
+											<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary, #6b7280)' }}>
 												{firstCurrency ? (
 													<>
 														{getCurrencySymbol(firstCurrency)}
@@ -303,13 +303,13 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 													style={rowStyle}>
 													<TableCell
 														className='py-2.5 ps-3 font-normal text-[13px] align-middle'
-														style={{ color: 'var(--portal-text-primary)' }}>
+														style={{ color: 'var(--portal-text-primary, #374151)' }}>
 														{row.name || row.feature?.name || row.event_name || t('usageBreakdown.unknownRow')}
 													</TableCell>
-													<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary)' }}>
+													<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary, #6b7280)' }}>
 														{renderTotalUsagePortal(row)}
 													</TableCell>
-													<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary)' }}>
+													<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary, #6b7280)' }}>
 														{renderTotalCostPortal(row)}
 													</TableCell>
 												</TableRow>
@@ -322,20 +322,23 @@ const UsageBreakdownWidget = ({ analyticsParams, label }: UsageBreakdownWidgetPr
 									key={`ungrouped:${row.feature_id ?? row.price_id ?? row.meter_id ?? index}`}
 									className='h-10 align-middle border-b'
 									style={rowStyle}>
-									<TableCell className='ps-3 py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-primary)' }}>
+									<TableCell className='ps-3 py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-primary, #374151)' }}>
 										<span>{row.name || row.feature?.name || row.event_name || t('usageBreakdown.unknownRow')}</span>
 									</TableCell>
-									<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary)' }}>
+									<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary, #6b7280)' }}>
 										{renderTotalUsagePortal(row)}
 									</TableCell>
-									<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary)' }}>
+									<TableCell className='py-2.5 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary, #6b7280)' }}>
 										{renderTotalCostPortal(row)}
 									</TableCell>
 								</TableRow>
 							))}
 							{items.length === 0 && (
 								<TableRow style={rowStyle}>
-									<TableCell colSpan={3} className='ps-3 py-4 font-normal text-[13px]' style={{ color: 'var(--portal-text-secondary)' }}>
+									<TableCell
+										colSpan={3}
+										className='ps-3 py-4 font-normal text-[13px]'
+										style={{ color: 'var(--portal-text-secondary, #6b7280)' }}>
 										{t('usageBreakdown.cellEmpty')}
 									</TableCell>
 								</TableRow>

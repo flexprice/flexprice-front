@@ -120,7 +120,7 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 				sourceEnvironment ? (
 					<span className='text-sm text-muted-foreground'>
 						{t('environment.copy.introBeforeBadge')}{' '}
-						<span className='inline-flex items-center font-semibold text-foreground bg-muted border border-border rounded px-1.5 py-0.5 text-[12px] leading-none'>
+						<span className='inline-flex items-center font-semibold text-gray-900 bg-gray-100 border border-gray-200 rounded px-1.5 py-0.5 text-[12px] leading-none'>
 							{sourceEnvironment.name}
 						</span>{' '}
 						{isNewEnvironment ? t('environment.copy.intoNew') : t('environment.copy.intoSelected')}
@@ -131,12 +131,12 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 			}>
 			<div className='space-y-5'>
 				{/* Cleanup callout */}
-				<div className='rounded-lg border border-warning-muted-foreground/20 bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-3.5'>
+				<div className='rounded-lg border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-3.5'>
 					<div className='flex items-start gap-2.5'>
-						<AlertTriangle className='h-4 w-4 mt-0.5 flex-shrink-0 text-warning' />
+						<AlertTriangle className='h-4 w-4 mt-0.5 flex-shrink-0 text-amber-500' />
 						<div>
-							<p className='text-[13px] font-semibold text-warning-muted-foreground mb-0.5'>{t('environment.copy.cleanupTitle')}</p>
-							<p className='text-[13px] text-warning-muted-foreground leading-relaxed'>
+							<p className='text-[13px] font-semibold text-amber-800 mb-0.5'>{t('environment.copy.cleanupTitle')}</p>
+							<p className='text-[13px] text-amber-700 leading-relaxed'>
 								{t('environment.copy.cleanupBodyLead')}
 								<span className='font-medium'>{t('environment.copy.cleanupBefore')}</span>
 								{t('environment.copy.cleanupBodyTrail')}
@@ -177,28 +177,26 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 				)}
 
 				{/* What gets copied */}
-				<div className='rounded-lg border border-border divide-y divide-border overflow-hidden'>
-					<div className='px-4 py-2.5 bg-muted'>
-						<p className='text-[11px] font-semibold text-muted-foreground uppercase tracking-widest'>
-							{t('environment.copy.whatCopiedHeading')}
-						</p>
+				<div className='rounded-lg border border-gray-200 divide-y divide-gray-100 overflow-hidden'>
+					<div className='px-4 py-2.5 bg-gray-50'>
+						<p className='text-[11px] font-semibold text-gray-400 uppercase tracking-widest'>{t('environment.copy.whatCopiedHeading')}</p>
 					</div>
 					<div className='px-4 py-3 flex items-start gap-3'>
 						<CheckCircle2 className='h-4 w-4 mt-0.5 flex-shrink-0 text-emerald-500' />
 						<div>
-							<p className='text-sm font-medium text-foreground'>{t('environment.copy.featuresTitle')}</p>
-							<p className='text-xs text-muted-foreground mt-0.5'>{t('environment.copy.featuresDescription')}</p>
+							<p className='text-sm font-medium text-gray-800'>{t('environment.copy.featuresTitle')}</p>
+							<p className='text-xs text-gray-500 mt-0.5'>{t('environment.copy.featuresDescription')}</p>
 						</div>
 					</div>
 					<div className='px-4 py-3 flex items-start gap-3'>
 						<CheckCircle2 className='h-4 w-4 mt-0.5 flex-shrink-0 text-emerald-500' />
 						<div>
-							<p className='text-sm font-medium text-foreground'>{t('environment.copy.plansTitle')}</p>
-							<p className='text-xs text-muted-foreground mt-0.5'>{t('environment.copy.plansDescription')}</p>
+							<p className='text-sm font-medium text-gray-800'>{t('environment.copy.plansTitle')}</p>
+							<p className='text-xs text-gray-500 mt-0.5'>{t('environment.copy.plansDescription')}</p>
 						</div>
 					</div>
-					<div className='px-4 py-2.5 bg-muted'>
-						<p className='text-xs text-muted-foreground'>
+					<div className='px-4 py-2.5 bg-gray-50'>
+						<p className='text-xs text-gray-400'>
 							{t('environment.copy.excludedLead')}
 							<span className='font-medium'>{t('environment.copy.excludedBold')}</span>
 							{t('environment.copy.excludedTail')}
@@ -207,7 +205,7 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 				</div>
 
 				{/* Async note */}
-				<div className='flex items-center gap-2.5 text-muted-foreground'>
+				<div className='flex items-center gap-2.5 text-gray-500'>
 					<Clock className='h-3.5 w-3.5 flex-shrink-0' />
 					<p className='text-xs'>{isNewEnvironment ? t('environment.copy.noteAsyncNewEnv') : t('environment.copy.noteAsyncOnly')}</p>
 				</div>

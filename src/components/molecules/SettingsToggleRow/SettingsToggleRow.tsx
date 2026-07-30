@@ -24,7 +24,7 @@ const SettingsToggleRow = ({
 	return (
 		<div className={cn('flex items-center justify-between gap-4 py-4', className)}>
 			<div className='flex min-w-0 items-center gap-1.5'>
-				<span className='text-sm font-medium text-foreground'>{label}</span>
+				<span className='text-sm font-medium text-zinc-900'>{label}</span>
 				{description ? <InfoIcon description={description} ariaLabel={infoAriaLabel ?? label} disabled={disabled} /> : null}
 			</div>
 			<Switch checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} aria-label={label} />

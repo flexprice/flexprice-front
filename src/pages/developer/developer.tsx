@@ -57,19 +57,19 @@ export const getPermissionIcon = (permissions: readonly string[]): LucideIcon =>
 // Utility function to get color based on permission level
 export const getPermissionColor = (permissions: readonly string[]): string => {
 	if (!permissions || permissions.length === 0) {
-		return 'text-muted-foreground';
+		return 'text-gray-500';
 	}
 	const hasRead = permissions.includes('read');
 	const hasWrite = permissions.includes('write');
 
 	if (hasRead && hasWrite) {
-		return 'text-success';
+		return 'text-green-600'; // Full access color
 	} else if (hasRead) {
-		return 'text-info';
+		return 'text-blue-600'; // Read only color
 	} else if (hasWrite) {
-		return 'text-warning';
+		return 'text-amber-600'; // Write only color
 	} else {
-		return 'text-muted-foreground'; // No access color
+		return 'text-gray-500'; // No access color
 	}
 };
 
@@ -100,9 +100,9 @@ const DeveloperPage = () => {
 				render(rowData: SecretKey) {
 					return (
 						<div className='flex flex-col gap-0.5'>
-							<span className='font-medium text-sm text-foreground'>{rowData.name}</span>
+							<span className='font-medium text-sm text-gray-900'>{rowData.name}</span>
 							{rowData.user_type === 'service_account' && rowData.service_account_name && (
-								<span className='text-xs text-muted-foreground'>{rowData.service_account_name}</span>
+								<span className='text-xs text-gray-400'>{rowData.service_account_name}</span>
 							)}
 						</div>
 					);
@@ -117,7 +117,7 @@ const DeveloperPage = () => {
 
 					return (
 						<div className='flex gap-2 items-center'>
-							<code className='px-2 py-1 text-sm bg-muted rounded font-mono'>{masked}</code>
+							<code className='px-2 py-1 text-sm bg-gray-100 rounded font-mono'>{masked}</code>
 						</div>
 					);
 				},
@@ -134,7 +134,7 @@ const DeveloperPage = () => {
 									<span className='text-sm font-medium'>{t('apiKeys.accountTypes.serviceAccount')}</span>
 								</div>
 							) : (
-								<div className='flex items-center gap-1.5 text-info'>
+								<div className='flex items-center gap-1.5 text-blue-600'>
 									<User2 size={16} />
 									<span className='text-sm font-medium'>{t('apiKeys.accountTypes.userAccount')}</span>
 								</div>
@@ -147,14 +147,12 @@ const DeveloperPage = () => {
 				title: t('labels.roles'),
 				render(rowData: SecretKey) {
 					if (!rowData.roles || rowData.roles.length === 0) {
-						return <span className='text-sm text-muted-foreground'>{t('apiKeys.roles.fullAccess')}</span>;
+						return <span className='text-sm text-gray-500'>{t('apiKeys.roles.fullAccess')}</span>;
 					}
 					return (
 						<div className='flex flex-wrap gap-1'>
 							{rowData.roles.map((role) => (
-								<span
-									key={role}
-									className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-info-muted text-info-muted-foreground'>
+								<span key={role} className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>
 									{role}
 								</span>
 							))}
@@ -167,7 +165,7 @@ const DeveloperPage = () => {
 				width: 150,
 				align: 'right',
 				render(rowData) {
-					return <span className='text-muted-foreground'>{formatDateShort(rowData.created_at)}</span>;
+					return <span className='text-gray-600'>{formatDateShort(rowData.created_at)}</span>;
 				},
 			},
 		],

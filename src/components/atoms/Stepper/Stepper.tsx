@@ -25,17 +25,17 @@ const Stepper: FC<StepperProps> = ({ steps, activeStep }) => {
 							<div
 								className={cn('flex items-center justify-center size-5 rounded-full  text-base', {
 									'': isCompleted,
-									'border-foreground text-foreground border': isActive && !isCompleted,
-									'border-border text-muted-foreground bg-muted border': !isActive && !isCompleted,
+									'border-[#333333] text-black border': isActive && !isCompleted,
+									'border-[#EBEBEB] text-[#999999] bg-[#00000005] border': !isActive && !isCompleted,
 								})}>
-								{isCompleted ? <IoCheckmarkCircleSharp className='text-foreground size-5' /> : <span className='text-xs'>{index + 1}</span>}
+								{isCompleted ? <IoCheckmarkCircleSharp className='text-[#333333] size-5' /> : <span className='text-xs'>{index + 1}</span>}
 							</div>
 
 							{/* Step Label */}
 							<div
 								className={cn('ms-2 text-xs font-semibold', {
-									'text-foreground': isCompleted || isActive,
-									'text-muted-foreground': !isCompleted && !isActive,
+									'text-[#333333]': isCompleted || isActive,
+									'text-[#999999]': !isCompleted && !isActive,
 								})}>
 								{step.label}
 							</div>

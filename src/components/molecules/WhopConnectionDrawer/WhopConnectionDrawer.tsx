@@ -225,14 +225,14 @@ const WhopConnectionDrawer: FC<WhopConnectionDrawerProps> = ({ isOpen, onOpenCha
 				/>
 
 				{/* Sync configuration */}
-				<div className='p-4 bg-muted border border-border rounded-lg'>
-					<h3 className='text-sm font-medium text-foreground mb-3'>{t('connection.sync.title')}</h3>
-					<p className='text-xs text-muted-foreground mb-4'>{t('connection.sync.description', { partner: 'Whop' })}</p>
+				<div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
+					<h3 className='text-sm font-medium text-gray-800 mb-3'>{t('connection.sync.title')}</h3>
+					<p className='text-xs text-gray-600 mb-4'>{t('connection.sync.description', { partner: 'Whop' })}</p>
 					<div className='space-y-4'>
-						<div className='flex items-center justify-between p-3 bg-card border border-border rounded-lg'>
+						<div className='flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg'>
 							<div>
-								<label className='text-sm font-medium text-foreground'>{t('connection.labels.invoices')}</label>
-								<p className='text-xs text-muted-foreground'>{t('connection.whop.invoiceSyncHint')}</p>
+								<label className='text-sm font-medium text-gray-700'>{t('connection.labels.invoices')}</label>
+								<p className='text-xs text-gray-500'>{t('connection.whop.invoiceSyncHint')}</p>
 							</div>
 							<Switch checked={formData.sync_config.invoice} onCheckedChange={handleSyncConfigChange} />
 						</div>
@@ -240,16 +240,16 @@ const WhopConnectionDrawer: FC<WhopConnectionDrawerProps> = ({ isOpen, onOpenCha
 				</div>
 
 				{/* Webhook Section */}
-				<div className='p-4 bg-info-muted border border-info-muted-foreground/20 rounded-lg'>
-					<h3 className='text-sm font-medium text-info-muted-foreground mb-2'>{t('connection.webhook.sectionTitle')}</h3>
-					<p className='text-xs text-info-muted-foreground mb-3'>
+				<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
+					<h3 className='text-sm font-medium text-blue-800 mb-2'>{t('connection.webhook.sectionTitle')}</h3>
+					<p className='text-xs text-blue-700 mb-3'>
 						{t('connection.whop.webhookIntroPrefix')} <code className='font-mono'>{t('connection.whop.webhookEventName')}</code>{' '}
 						{t('connection.whop.webhookIntroSuffix')}
 					</p>
 					<div>
-						<label className='text-sm font-medium text-info-muted-foreground mb-2 block'>{t('connection.webhook.url')}</label>
-						<div className='flex items-center gap-2 p-2 bg-card border border-info-muted-foreground/20 rounded-md'>
-							<code className='flex-1 text-xs text-foreground font-mono break-all'>{webhookUrl}</code>
+						<label className='text-sm font-medium text-blue-800 mb-2 block'>{t('connection.webhook.url')}</label>
+						<div className='flex items-center gap-2 p-2 bg-white border border-blue-200 rounded-md'>
+							<code className='flex-1 text-xs text-gray-800 font-mono break-all'>{webhookUrl}</code>
 							<Button size='xs' variant='outline' onClick={handleCopyWebhookUrl} className='flex items-center gap-1'>
 								{webhookCopied ? <CheckCircle className='w-3 h-3' /> : <Copy className='w-3 h-3' />}
 								{webhookCopied ? tc('actions.copied') : tc('actions.copy')}

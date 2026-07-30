@@ -50,9 +50,9 @@ const ServiceAccountsPage = () => {
 					return (
 						<div className='flex items-center gap-1.5 group'>
 							{displayName ? (
-								<span className='text-sm font-medium text-foreground'>{displayName}</span>
+								<span className='text-sm font-medium text-gray-800'>{displayName}</span>
 							) : (
-								<code className='px-2 py-0.5 text-sm bg-muted rounded font-mono text-muted-foreground'>{maskedId}</code>
+								<code className='px-2 py-0.5 text-sm bg-gray-100 rounded font-mono text-gray-500'>{maskedId}</code>
 							)}
 							<span className='opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity'>
 								<CopyIdButton id={row.id} entityType='Service Account' />
@@ -74,14 +74,12 @@ const ServiceAccountsPage = () => {
 				title: t('labels.roles'),
 				render: (row: User) => {
 					if (!row.roles || row.roles.length === 0) {
-						return <span className='text-muted-foreground text-sm'>{t('serviceAccounts.noRoles')}</span>;
+						return <span className='text-gray-500 text-sm'>{t('serviceAccounts.noRoles')}</span>;
 					}
 					return (
 						<div className='flex flex-wrap gap-1'>
 							{row.roles.map((role) => (
-								<span
-									key={role}
-									className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-info-muted text-info-muted-foreground'>
+								<span key={role} className='inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800'>
 									{role}
 								</span>
 							))}
@@ -93,9 +91,7 @@ const ServiceAccountsPage = () => {
 				title: t('labels.createdAt'),
 				width: 150,
 				align: 'right',
-				render: (row) => (
-					<span className='text-muted-foreground'>{formatDateShort(row.tenant?.created_at || row.tenant?.updated_at || '')}</span>
-				),
+				render: (row) => <span className='text-gray-600'>{formatDateShort(row.tenant?.created_at || row.tenant?.updated_at || '')}</span>,
 			},
 			{
 				fieldVariant: 'interactive',

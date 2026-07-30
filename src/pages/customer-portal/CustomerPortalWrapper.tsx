@@ -24,21 +24,21 @@ interface ErrorStateProps {
 }
 
 const ErrorState = ({ icon, title, description, actionLabel, onAction }: ErrorStateProps) => (
-	<div className='min-h-screen flex items-center justify-center bg-muted px-4 py-12 sm:px-6'>
+	<div className='min-h-screen flex items-center justify-center bg-[#fafafa] px-4 py-12 sm:px-6'>
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.4, ease: 'easeOut' }}
 			className='w-full max-w-lg'>
-			<Card className='bg-card border border-border rounded-xl shadow-sm'>
+			<Card className='bg-white border border-[#E9E9E9] rounded-xl shadow-sm'>
 				<CardHeader className='text-center pb-6 pt-10 px-8'>
-					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10'>
-						<div className='text-foreground'>{icon}</div>
+					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#FEE2E2]/30'>
+						<div className='text-zinc-700'>{icon}</div>
 					</div>
-					<CardTitle className='text-[20px] font-medium text-foreground mb-4 leading-normal'>{title}</CardTitle>
+					<CardTitle className='text-[20px] font-medium text-zinc-950 mb-4 leading-normal'>{title}</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
-					<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>{description}</p>
+					<p className='text-base text-zinc-600 mb-8 leading-normal max-w-md mx-auto'>{description}</p>
 					{actionLabel && onAction && (
 						<Button
 							onClick={onAction}
@@ -62,7 +62,7 @@ const CustomerPortalWrapper = () => {
 	if (!token) {
 		return (
 			<ErrorState
-				icon={<Shield className='h-9 w-9 text-foreground' />}
+				icon={<Shield className='h-9 w-9 text-zinc-700' />}
 				title={t('wrapper.invalidLinkTitle')}
 				description={t('wrapper.invalidLinkDescription')}
 				actionLabel={t('wrapper.refreshPage')}

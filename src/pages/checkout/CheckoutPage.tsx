@@ -40,13 +40,13 @@ const moyasarTokenSchema = z.object({
 // ─── Shared wrappers ──────────────────────────────────────────────────────────
 
 const PageWrap = ({ children }: { children: React.ReactNode }) => (
-	<div className='min-h-screen flex items-center justify-center bg-muted px-4 py-12 sm:px-6'>
+	<div className='min-h-screen flex items-center justify-center bg-zinc-50 px-4 py-12 sm:px-6'>
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.4, ease: 'easeOut' }}
 			className='w-full max-w-lg'>
-			<Card className='bg-card border border-border rounded-xl shadow-sm'>{children}</Card>
+			<Card className='bg-white border border-zinc-200 rounded-xl shadow-sm'>{children}</Card>
 		</motion.div>
 	</div>
 );
@@ -54,8 +54,8 @@ const PageWrap = ({ children }: { children: React.ReactNode }) => (
 const LoadingSpinner = ({ message }: { message: string }) => (
 	<PageWrap>
 		<CardContent className='flex flex-col items-center gap-4 py-16'>
-			<Loader2 className='h-10 w-10 animate-spin text-muted-foreground' />
-			<p className='text-sm text-muted-foreground'>{message}</p>
+			<Loader2 className='h-10 w-10 animate-spin text-zinc-400' />
+			<p className='text-sm text-zinc-500'>{message}</p>
 		</CardContent>
 	</PageWrap>
 );
@@ -73,11 +73,11 @@ const ResultCard = ({
 }) => (
 	<PageWrap>
 		<CardHeader className='text-center pb-4 pt-10 px-8'>
-			<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted'>{icon}</div>
-			<CardTitle className='text-[20px] font-medium text-foreground leading-normal'>{title}</CardTitle>
+			<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100'>{icon}</div>
+			<CardTitle className='text-[20px] font-medium text-zinc-950 leading-normal'>{title}</CardTitle>
 		</CardHeader>
 		<CardContent className='text-center px-8 pb-10'>
-			<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>{description}</p>
+			<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>{description}</p>
 			{action}
 		</CardContent>
 	</PageWrap>
@@ -183,7 +183,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 		}
 		return (
 			<ResultCard
-				icon={<CheckCircle className='h-9 w-9 text-success' />}
+				icon={<CheckCircle className='h-9 w-9 text-green-500' />}
 				title={t('moyasarAutopay.cardSavedTitle')}
 				description={t('moyasarAutopay.cardSavedDescription')}
 			/>
@@ -193,7 +193,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 	if (state === MoyasarState.Processing) {
 		return (
 			<ResultCard
-				icon={<Clock className='h-9 w-9 text-muted-foreground' />}
+				icon={<Clock className='h-9 w-9 text-zinc-500' />}
 				title={t('moyasarAutopay.cardSetupInProgressTitle')}
 				description={t('moyasarAutopay.cardSetupInProgressDescription')}
 			/>
@@ -203,7 +203,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 	if (state === MoyasarState.Failed) {
 		return (
 			<ResultCard
-				icon={<AlertCircle className='h-9 w-9 text-destructive' />}
+				icon={<AlertCircle className='h-9 w-9 text-red-500' />}
 				title={t('moyasarAutopay.cardSetupFailedTitle')}
 				description={errorMsg || t('moyasarAutopay.cardSetupFailedDefaultDescription')}
 				action={
@@ -219,13 +219,13 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 	return (
 		<PageWrap>
 			<CardHeader className='text-center pb-4 pt-10 px-8'>
-				<div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted'>
-					<CreditCard className='h-8 w-8 text-muted-foreground' />
+				<div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100'>
+					<CreditCard className='h-8 w-8 text-zinc-600' />
 				</div>
-				<CardTitle className='text-[20px] font-medium text-foreground'>{t('moyasarAutopay.formTitle')}</CardTitle>
+				<CardTitle className='text-[20px] font-medium text-zinc-950'>{t('moyasarAutopay.formTitle')}</CardTitle>
 			</CardHeader>
 			<CardContent className='px-8 pb-10'>
-				<p className='text-sm text-muted-foreground text-center mb-6'>{t('moyasarAutopay.formDesc')}</p>
+				<p className='text-sm text-zinc-500 text-center mb-6'>{t('moyasarAutopay.formDesc')}</p>
 				<div className={`${MOYASAR_FORM_SELECTOR} ${!formReady ? 'opacity-0' : ''}`} />
 			</CardContent>
 		</PageWrap>
@@ -288,14 +288,14 @@ const PaddleCheckout = () => {
 
 	if (state === 'loading') {
 		return (
-			<div className='min-h-screen flex items-center justify-center bg-muted'>
+			<div className='min-h-screen flex items-center justify-center bg-zinc-50'>
 				<motion.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 0.3 }}
 					className='flex flex-col items-center gap-4'>
-					<div className='h-10 w-10 rounded-full border-2 border-border border-t-zinc-700 animate-spin' />
-					<p className='text-sm text-muted-foreground'>{t('checkoutPage.loadingPaymentForm')}</p>
+					<div className='h-10 w-10 rounded-full border-2 border-zinc-300 border-t-zinc-700 animate-spin' />
+					<p className='text-sm text-zinc-500'>{t('checkoutPage.loadingPaymentForm')}</p>
 				</motion.div>
 			</div>
 		);
@@ -305,17 +305,15 @@ const PaddleCheckout = () => {
 		return (
 			<PageWrap>
 				<CardHeader className='text-center pb-6 pt-10 px-8'>
-					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted'>
-						<Clock className='h-9 w-9 text-muted-foreground' />
+					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100'>
+						<Clock className='h-9 w-9 text-zinc-600' />
 					</div>
-					<CardTitle className='text-[20px] font-medium text-foreground mb-4 leading-normal'>
+					<CardTitle className='text-[20px] font-medium text-zinc-950 mb-4 leading-normal'>
 						{t('checkoutPage.paymentLinkExpiredTitle')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
-					<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>
-						{t('checkoutPage.paymentLinkExpiredDescription')}
-					</p>
+					<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>{t('checkoutPage.paymentLinkExpiredDescription')}</p>
 				</CardContent>
 			</PageWrap>
 		);
@@ -325,17 +323,15 @@ const PaddleCheckout = () => {
 		return (
 			<PageWrap>
 				<CardHeader className='text-center pb-6 pt-10 px-8'>
-					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted'>
-						<AlertCircle className='h-9 w-9 text-muted-foreground' />
+					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100'>
+						<AlertCircle className='h-9 w-9 text-zinc-600' />
 					</div>
-					<CardTitle className='text-[20px] font-medium text-foreground mb-4 leading-normal'>
+					<CardTitle className='text-[20px] font-medium text-zinc-950 mb-4 leading-normal'>
 						{t('checkoutPage.invalidPaymentLinkTitle')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
-					<p className='text-base text-muted-foreground mb-8 leading-normal max-w-md mx-auto'>
-						{t('checkoutPage.invalidPaymentLinkDescription')}
-					</p>
+					<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>{t('checkoutPage.invalidPaymentLinkDescription')}</p>
 					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[140px]'>
 						<RefreshCw className='w-4 h-4 mr-2' />
 						{t('checkoutPage.refreshPage')}
@@ -347,16 +343,16 @@ const PaddleCheckout = () => {
 
 	// 'open' — Paddle overlay is showing
 	return (
-		<div className='min-h-screen flex flex-col items-center justify-center bg-muted p-6'>
+		<div className='min-h-screen flex flex-col items-center justify-center bg-zinc-50 p-6'>
 			<div className='max-w-md w-full text-center space-y-6'>
 				<div className='flex justify-center'>
-					<div className='rounded-full bg-muted p-4'>
-						<CreditCard className='h-12 w-12 text-muted-foreground' />
+					<div className='rounded-full bg-zinc-100 p-4'>
+						<CreditCard className='h-12 w-12 text-zinc-600' />
 					</div>
 				</div>
 				<div>
-					<h1 className='text-xl font-medium text-foreground'>{t('checkoutPage.completePaymentTitle')}</h1>
-					<p className='mt-2 text-sm text-muted-foreground'>{t('checkoutPage.completePaymentDescription')}</p>
+					<h1 className='text-xl font-medium text-zinc-900'>{t('checkoutPage.completePaymentTitle')}</h1>
+					<p className='mt-2 text-sm text-zinc-500'>{t('checkoutPage.completePaymentDescription')}</p>
 				</div>
 			</div>
 		</div>

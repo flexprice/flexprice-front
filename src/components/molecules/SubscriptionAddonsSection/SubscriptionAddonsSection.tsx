@@ -83,7 +83,7 @@ const formatAddonAssociationTooltip = (association: AddonAssociationResponse, t:
 		if (!isNaN(parsed.getTime())) {
 			items.push(
 				<div key='start' className='flex items-center gap-2'>
-					<span className='text-xs font-medium text-muted-foreground'>{t('labels.start')}</span>
+					<span className='text-xs font-medium text-gray-500'>{t('labels.start')}</span>
 					<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(parsed)}</span>
 				</div>,
 			);
@@ -95,7 +95,7 @@ const formatAddonAssociationTooltip = (association: AddonAssociationResponse, t:
 		if (!isNaN(parsed.getTime())) {
 			items.push(
 				<div key='end' className='flex items-center gap-2'>
-					<span className='text-xs font-medium text-muted-foreground'>{t('labels.end')}</span>
+					<span className='text-xs font-medium text-gray-500'>{t('labels.end')}</span>
 					<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(parsed)}</span>
 				</div>,
 			);
@@ -291,7 +291,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 						content={row.tooltipContent}
 						delayDuration={0}
 						sideOffset={5}
-						className='bg-card border border-border shadow-lg text-sm text-foreground px-4 py-3 rounded-lg max-w-[320px]'>
+						className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-lg max-w-[320px]'>
 						<span>
 							<Chip label={row.statusLabel} variant={row.statusVariant} />
 						</span>
@@ -343,7 +343,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 											e.preventDefault();
 											handleCancel(row);
 										}}
-										className={`flex gap-2 items-center cursor-pointer text-destructive ${hasEndDate ? 'opacity-50 cursor-not-allowed' : ''}`}>
+										className={`flex gap-2 items-center cursor-pointer text-red-600 ${hasEndDate ? 'opacity-50 cursor-not-allowed' : ''}`}>
 										<Trash2 className='h-4 w-4' />
 										<span>{t('actions.cancel')}</span>
 									</DropdownMenuItem>
@@ -364,7 +364,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 			<Card variant='notched'>
 				<CardHeader title={t('labels.addons')} cta={addButton} />
 				<div className='flex justify-center items-center py-8'>
-					<span className='text-muted-foreground'>{t('labels.loadingAddons')}</span>
+					<span className='text-gray-500'>{t('labels.loadingAddons')}</span>
 				</div>
 			</Card>
 		);
@@ -400,7 +400,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 			<Dialog
 				title={`Cancel "${addonNameToCancel}"?`}
 				description={t('labels.cancelAddonDescription')}
-				titleClassName='text-lg font-normal text-foreground'
+				titleClassName='text-lg font-normal text-gray-800'
 				isOpen={isCancelDialogOpen}
 				onOpenChange={(open) => {
 					setIsCancelDialogOpen(open);
@@ -437,7 +437,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 								onChange={(v) => setCancelProrationBehavior(v as ADDON_PRORATION_BEHAVIOR)}
 							/>
 						</div>
-						<p className='text-xs text-muted-foreground'>{t('labels.leaveEmptyToCancelAtPeriodEnd')}</p>
+						<p className='text-xs text-gray-500'>{t('labels.leaveEmptyToCancelAtPeriodEnd')}</p>
 					</div>
 
 					<div className='flex justify-end gap-3'>

@@ -39,15 +39,15 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 	};
 
 	return (
-		<div className='flex w-full min-h-screen bg-card page !p-0 !flex-row'>
+		<div className='flex w-full min-h-screen bg-white page !p-0 !flex-row'>
 			<div className='w-[45%] flex flex-col'>
 				<a
 					href={SLACK_COMMUNITY_URL}
 					target='_blank'
 					rel='noopener noreferrer'
-					className='w-full h-[48px] flex items-center justify-center gap-2.5 cursor-pointer border-y border-border hover:opacity-90 transition-opacity'
+					className='w-full h-[48px] flex items-center justify-center gap-2.5 cursor-pointer border-y border-gray-100 hover:opacity-90 transition-opacity'
 					style={{ background: 'linear-gradient(to right, #F7F7F7, #EDEDED, #F7F7F7)' }}>
-					<span className='text-[15px] font-medium text-foreground'>{t('slackBanner', { brandName: name })}</span>
+					<span className='text-[15px] font-medium text-gray-700'>{t('slackBanner', { brandName: name })}</span>
 					<img src='/assets/logo/slack-logo.png' alt={t('images.slackLogoAlt')} className='h-4 w-auto' />
 				</a>
 				<div className='flex-1 flex justify-center items-center pt-[10px]'>
@@ -57,8 +57,8 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 						</div>
 						{signupEnabled && currentTab === AuthTab.SIGNUP && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-foreground mb-2'>{t('createAccount.heading')}</h2>
-								<p className='text-center text-muted-foreground mb-10'>{t('createAccount.subheading', { brandName: name })}</p>
+								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>{t('createAccount.heading')}</h2>
+								<p className='text-center text-gray-600 mb-10'>{t('createAccount.subheading', { brandName: name })}</p>
 								<div className='mb-6'>
 									<RegionSelector />
 								</div>
@@ -66,8 +66,8 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 						)}
 						{(currentTab === AuthTab.LOGIN || (!signupEnabled && currentTab === AuthTab.SIGNUP)) && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-foreground mb-3'>{t('login.heading')}</h2>
-								<p className='text-center text-muted-foreground mb-10'>{t('login.subheading')}</p>
+								<h2 className='text-3xl font-medium text-center text-gray-800 mb-3'>{t('login.heading')}</h2>
+								<p className='text-center text-gray-600 mb-10'>{t('login.subheading')}</p>
 								<div className='mb-6'>
 									<RegionSelector />
 								</div>
@@ -75,14 +75,14 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 						)}
 						{currentTab === AuthTab.FORGOT_PASSWORD && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-foreground mb-2'>{t('forgotPassword.heading')}</h2>
-								<p className='text-center text-muted-foreground mb-8'>{t('forgotPassword.subheading')}</p>
+								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>{t('forgotPassword.heading')}</h2>
+								<p className='text-center text-gray-600 mb-8'>{t('forgotPassword.subheading')}</p>
 							</>
 						)}
 						{currentTab === AuthTab.RESET_PASSWORD && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-foreground mb-2'>{t('resetPassword.heading')}</h2>
-								<p className='text-center text-muted-foreground mb-8'>{t('resetPassword.subheading')}</p>
+								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>{t('resetPassword.heading')}</h2>
+								<p className='text-center text-gray-600 mb-8'>{t('resetPassword.subheading')}</p>
 							</>
 						)}
 						{renderForm()}

@@ -125,9 +125,9 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 
 				{/* Sandbox Note */}
 				{isSandbox && (
-					<div className='w-full flex items-center gap-2.5 rounded-md border border-amber-300 bg-warning-muted/80 px-3 py-2.5'>
-						<AlertTriangle className='h-4 w-4 flex-shrink-0 text-warning' />
-						<span className='text-sm font-medium text-warning-muted-foreground leading-relaxed'>
+					<div className='w-full flex items-center gap-2.5 rounded-md border border-amber-300 bg-amber-50/80 px-3 py-2.5'>
+						<AlertTriangle className='h-4 w-4 flex-shrink-0 text-amber-600' />
+						<span className='text-sm font-medium text-amber-800 leading-relaxed'>
 							{t('environment.creator.sandboxCancellationNote', { days: SANDBOX_AUTO_CANCELLATION_DAYS })}
 						</span>
 					</div>
@@ -137,7 +137,7 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 				{isProduction && !productionEnabled && (
 					<div className='space-y-6 pt-2'>
 						<div className='text-center'>
-							<p className='text-sm text-muted-foreground mb-6'>
+							<p className='text-sm text-gray-600 mb-6'>
 								{t('environment.creator.productionBodyLine1')}
 								<br />
 								{t('environment.creator.productionContactPrompt')}
@@ -154,7 +154,7 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 									style={{ backgroundColor: '#4A154B' }}>
 									<img src='/assets/logo/slack-logo.png' alt={t('environment.creator.slackAlt')} className='h-7 w-7 object-contain' />
 								</div>
-								<span className='text-xs font-medium text-foreground group-hover:text-[#4A154B] transition-colors duration-300 ease-in-out'>
+								<span className='text-xs font-medium text-gray-700 group-hover:text-[#4A154B] transition-colors duration-300 ease-in-out'>
 									{t('environment.creator.brandSlack')}
 								</span>
 							</button>
@@ -166,9 +166,9 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 								<div
 									className='h-14 w-14 rounded-xl flex items-center justify-center shadow-sm transition-shadow duration-300 ease-in-out group-hover:shadow-md'
 									style={{ backgroundColor: '#E5E7EB' }}>
-									<Mail className='h-7 w-7 text-foreground' strokeWidth={1.5} />
+									<Mail className='h-7 w-7 text-gray-700' strokeWidth={1.5} />
 								</div>
-								<span className='text-xs font-medium text-foreground group-hover:text-foreground transition-colors duration-300 ease-in-out'>
+								<span className='text-xs font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-300 ease-in-out'>
 									{t('environment.creator.brandEmail')}
 								</span>
 							</button>
@@ -182,7 +182,7 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 									style={{ backgroundColor: '#0069FF' }}>
 									<CalendarDays className='h-7 w-7 text-white' strokeWidth={1.5} />
 								</div>
-								<span className='text-xs font-medium text-foreground group-hover:text-[#0069FF] transition-colors duration-300 ease-in-out'>
+								<span className='text-xs font-medium text-gray-700 group-hover:text-[#0069FF] transition-colors duration-300 ease-in-out'>
 									{t('environment.creator.bookACall')}
 								</span>
 							</button>

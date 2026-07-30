@@ -82,7 +82,7 @@ const WalletTab = () => {
 
 	if (!wallets || wallets.length === 0) {
 		return (
-			<Card className='bg-card border border-border rounded-xl p-6'>
+			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
 				<EmptyState title={t('wallet.emptyTitle')} description={t('wallet.emptyDescription')} />
 			</Card>
 		);
@@ -108,13 +108,13 @@ const WalletTab = () => {
 			)}
 
 			{/* Wallet Balance Card */}
-			<Card className='bg-card border border-border rounded-xl p-6'>
+			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
 				<div className='flex items-center gap-3 mb-6'>
-					<div className='h-10 w-10 rounded-full bg-info-muted flex items-center justify-center'>
-						<WalletIcon className='h-5 w-5 text-info' />
+					<div className='h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center'>
+						<WalletIcon className='h-5 w-5 text-blue-600' />
 					</div>
 					<div>
-						<h3 className='text-base font-medium text-foreground'>{activeWallet?.name || t('wallet.defaultName')}</h3>
+						<h3 className='text-base font-medium text-zinc-950'>{activeWallet?.name || t('wallet.defaultName')}</h3>
 						{activeWallet?.wallet_status && getWalletStatusChip(activeWallet.wallet_status)}
 					</div>
 				</div>
@@ -122,20 +122,20 @@ const WalletTab = () => {
 				{/* Balance */}
 				{balanceLoading ? (
 					<div className='animate-pulse space-y-3'>
-						<div className='h-4 bg-muted rounded w-20'></div>
-						<div className='h-10 bg-muted rounded w-32'></div>
-						<div className='h-4 bg-muted rounded w-24'></div>
+						<div className='h-4 bg-zinc-100 rounded w-20'></div>
+						<div className='h-10 bg-zinc-100 rounded w-32'></div>
+						<div className='h-4 bg-zinc-100 rounded w-24'></div>
 					</div>
 				) : (
 					<div>
-						<span className='text-sm text-muted-foreground block mb-2'>{t('wallet.balance')}</span>
+						<span className='text-sm text-zinc-500 block mb-2'>{t('wallet.balance')}</span>
 						<div className='flex items-baseline gap-2'>
-							<span className='text-4xl font-semibold text-foreground'>
+							<span className='text-4xl font-semibold text-zinc-950'>
 								{formatAmount(walletBalance?.real_time_credit_balance ?? activeWallet?.credit_balance?.toString() ?? '0')}
 							</span>
-							<span className='text-base font-normal text-muted-foreground'>{t('wallet.credits')}</span>
+							<span className='text-base font-normal text-zinc-500'>{t('wallet.credits')}</span>
 						</div>
-						<p className='text-sm text-muted-foreground mt-1'>
+						<p className='text-sm text-zinc-500 mt-1'>
 							{currencySymbol}
 							{formatAmount(walletBalance?.real_time_balance ?? activeWallet?.balance?.toString() ?? '0')} {t('wallet.valueSuffix')}
 						</p>
@@ -144,13 +144,13 @@ const WalletTab = () => {
 			</Card>
 
 			{/* Transactions */}
-			<Card className='bg-card border border-border rounded-xl p-6'>
-				<h3 className='text-base font-medium text-foreground mb-4'>{t('wallet.transactionHistory')}</h3>
+			<Card className='bg-white border border-[#E9E9E9] rounded-xl p-6'>
+				<h3 className='text-base font-medium text-zinc-950 mb-4'>{t('wallet.transactionHistory')}</h3>
 
 				{transactionsLoading ? (
 					<div className='animate-pulse space-y-3'>
 						{[1, 2, 3].map((i) => (
-							<div key={i} className='h-12 bg-muted rounded'></div>
+							<div key={i} className='h-12 bg-zinc-100 rounded'></div>
 						))}
 					</div>
 				) : transactionsData?.items && transactionsData.items.length > 0 ? (

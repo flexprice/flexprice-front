@@ -46,12 +46,12 @@ const SectionHeader: FC<Props> = ({
 			<div className={cn('flex gap-2 items-center', optionsClassName)}>
 				{showSearch && (
 					<button onClick={onSearchClick} className='px-2 py-1'>
-						<IoSearch className='size-4 font-extralight text-foreground' />
+						<IoSearch className='size-4 font-extralight text-zinc-950' />
 					</button>
 				)}
 				{showFilter && (
 					<button onClick={onFilterClick} className='px-2 py-1'>
-						<SlidersHorizontal className='size-4 text-foreground' />
+						<SlidersHorizontal className='size-4 text-zinc-950' />
 					</button>
 				)}
 				{showButton && (
