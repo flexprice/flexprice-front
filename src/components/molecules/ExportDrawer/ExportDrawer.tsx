@@ -593,7 +593,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 						id='enabled'
 						checked={formData.enabled}
 						onChange={(e) => handleChange('enabled', e.target.checked)}
-						className='h-4 w-4 text-info focus:ring-blue-500 border-border rounded'
+						className='h-4 w-4 text-info focus:ring-ring border-border rounded'
 					/>
 					<label htmlFor='enabled' className='text-sm font-medium text-foreground'>
 						{t('exportDrawer.enabled')}

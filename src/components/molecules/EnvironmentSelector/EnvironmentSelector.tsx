@@ -172,10 +172,8 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 					<div
 						className={cn(
 							'w-full mt-3.5 flex items-center justify-between h-10 px-2 py-[10px] rounded-[6px] border',
-							isDevelopment &&
-								'border-yellow-500/40 bg-gradient-to-r from-warning-muted via-warning-muted/90 to-warning-muted text-warning-muted-foreground',
-							isProduction &&
-								'border-info-muted bg-gradient-to-r from-info-muted via-info-muted/90 to-info-muted text-info-muted-foreground',
+							isDevelopment && 'border-warning-muted-foreground/20 bg-warning-muted text-warning-muted-foreground',
+							isProduction && 'border-info-muted-foreground/20 bg-info-muted text-info-muted-foreground',
 						)}>
 						<div className='flex items-center gap-2 min-w-0'>
 							{isDevelopment ? (

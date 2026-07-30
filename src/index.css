@@ -99,7 +99,7 @@
 
 		--sidebar-border: 220 13% 91%;
 
-		--sidebar-ring: 217 91% 60%;
+		--sidebar-ring: 240 5% 65%;
 
 		--sidebar-text-accent-foreground: 240 6% 10%;
 
@@ -132,7 +132,7 @@
 
 		--primary-foreground: 0 0% 9%;
 
-		--secondary: 240 4% 14%;
+		--secondary: 240 4% 18%;
 
 		--secondary-foreground: 220 10% 94%;
 
@@ -152,7 +152,7 @@
 
 		--input: 240 5% 22%;
 
-		--ring: 356 56% 60%; /* Midnight accent #D25E65 */
+		--ring: 0 0% 45%; /* neutral focus ring — no colored selection box */
 
 		--chart-1: 220 70% 50%;
 
@@ -179,13 +179,13 @@
 
 		--sidebar-border: 240 5% 14%;
 
-		--sidebar-ring: 356 56% 60%;
+		--sidebar-ring: 0 0% 45%;
 
 		--sidebar-text-accent-foreground: 220 10% 94%;
 
-		--brand: 356 56% 60%; /* Midnight accent #D25E65 */
+		--brand: 0 0% 98%; /* neutral near-white (Linear-style); red is reserved for destructive */
 
-		--brand-foreground: 0 0% 100%;
+		--brand-foreground: 0 0% 9%;
 
 		/* Base status colors brightened for dark surfaces (light values are tuned for white) */
 		--success: 142 55% 52%;
