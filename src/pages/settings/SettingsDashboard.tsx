@@ -6,6 +6,7 @@ import { BillingTab } from './billing';
 import { CustomerPortalTab } from './customer-portal';
 import { CustomerOnboardingTab } from './customer-onboarding';
 import { AlertsTab } from './alerts';
+import { AppearanceTab } from './appearance';
 
 const SettingsDashboard = () => {
 	const { t } = useTranslation(['settings', 'common']);
@@ -39,6 +40,11 @@ const SettingsDashboard = () => {
 						value: 'alerts',
 						label: t('alerts.tabs.alerts'),
 						content: <AlertsTab />,
+					},
+					{
+						value: 'appearance',
+						label: t('appearance.tabs.appearance'),
+						content: <AppearanceTab />,
 					},
 				]}
 				defaultValue='team'

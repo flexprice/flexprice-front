@@ -11,8 +11,14 @@ Status: **Step 3 (`.dark` retune) complete.** Branch `feat/dark_theme`, tracking
 | 1    | Token layer + byte-identity guard (86 tokens)                            | ✅      |
 | 2    | Theme store + `initTheme()` pre-paint, 11 tests                          | ✅      |
 | 3    | `.dark` retuned to Midnight; sidebar chrome defined; `:root` guard added | ✅      |
-| 4    | Settings toggle UI                                                       | ⬜ next |
-| 5    | App shell: `MainLayout`, `Sidebar`, `BreadCrumbs`, `SidebarInset`        | ⬜      |
+| 4    | Settings → Appearance tab with the dark-mode toggle, 5 tests             | ✅      |
+| 5    | App shell: `MainLayout`, `Sidebar`, `BreadCrumbs`, `SidebarInset`        | ⬜ next |
+
+### Convention from Step 4 onward
+
+New files use the `--fp-*` tokens directly (`bg-surface`, `text-content-muted`) rather than raw
+palette classes. Light values are identical either way, and writing `bg-white` in a new file just
+creates work for a later migration step.
 
 Run the guard any time with:
 

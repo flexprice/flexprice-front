@@ -334,6 +334,17 @@
 			}
 		}
 	},
+	"appearance": {
+		"tabs": {
+			"appearance": "Appearance"
+		},
+		"theme": {
+			"title": "Dark mode",
+			"description": "Switch the dashboard between the light and dark colour themes. The choice is saved on this device.",
+			"toggleAriaLabel": "Toggle dark mode",
+			"rolloutNote": "Dark mode is still being rolled out — some screens have not been converted yet and will keep their light styling for now."
+		}
+	},
 	"billingPage": {
 		"errorFetchBilling": "Error fetching billing details",
 		"labels": {
