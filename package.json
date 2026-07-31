@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite --port 3000",
     "generate-meta": "node scripts/generate-meta.js",
+    "verify:theme": "node scripts/verify-theme-tokens.mjs",
     "build": "tsc -b && vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

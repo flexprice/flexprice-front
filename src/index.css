@@ -57,6 +57,127 @@
 		--chart-5: 27 87% 67%;
 
 		--radius: 6px;
+
+		/* ------------------------------------------------------------------
+		 * Dark-theme token layer (--fp-*). ADDITIVE ONLY.
+		 *
+		 * Every light value below is byte-identical to the Tailwind palette color it replaces,
+		 * so migrating a component from e.g. `text-gray-500` to `text-content-muted` cannot
+		 * change light mode. Enforced by scripts/verify-theme-tokens.mjs.
+		 *
+		 * Channels are space-separated RGB, consumed as `rgb(var(--fp-x) / <alpha-value>)` so
+		 * Tailwind opacity modifiers (`/50`) keep working. Do not convert these to hex or HSL.
+		 *
+		 * Source of truth: scripts/theme-tokens.mjs. Do not hand-edit values here.
+		 * ------------------------------------------------------------------ */
+
+		/* Surfaces — backgrounds. Midnight layers chrome (darkest) under panels (lighter). */
+		--fp-surface: 255 255 255; /* #ffffff — bg-white — the elevated panel */
+		--fp-surface-subtle: 249 250 251; /* #f9fafb — recessed wells, table headers, hover rows */
+		--fp-surface-muted: 244 244 245; /* #f4f4f5 */
+		--fp-surface-shell: 243 244 246; /* #f3f4f6 — app chrome behind every panel — darkest layer */
+		--fp-surface-strong: 229 231 235; /* #e5e7eb */
+		--fp-surface-faint: 250 250 250; /* #fafafa */
+		--fp-surface-cool: 248 250 252; /* #f8fafc */
+		--fp-surface-inverse: 17 24 39; /* #111827 — dark-on-light chips invert */
+		--fp-surface-scrim: 0 0 0; /* #000000 — modal scrim — black in both themes */
+
+		/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
+		--fp-content: 17 24 39; /* #111827 */
+		--fp-content-heading: 31 41 55; /* #1f2937 */
+		--fp-content-secondary: 55 65 81; /* #374151 */
+		--fp-content-tertiary: 75 85 99; /* #4b5563 */
+		--fp-content-muted: 107 114 128; /* #6b7280 — Linear secondary text */
+		--fp-content-subtle: 156 163 175; /* #9ca3af */
+		--fp-content-disabled: 209 213 219; /* #d1d5db */
+		--fp-content-inverse: 255 255 255; /* #ffffff — text on a filled button — button goes light in dark mode */
+		--fp-content-black: 0 0 0; /* #000000 */
+
+		/* Content (zinc ramp) — exists only to keep light byte-identical. Collapsible later. */
+		--fp-content-zinc: 9 9 11; /* #09090b */
+		--fp-content-zinc-bold: 24 24 27; /* #18181b */
+		--fp-content-zinc-strong: 39 39 42; /* #27272a */
+		--fp-content-zinc-secondary: 63 63 70; /* #3f3f46 */
+		--fp-content-zinc-tertiary: 82 82 91; /* #52525b */
+		--fp-content-zinc-muted: 113 113 122; /* #71717a */
+		--fp-content-zinc-subtle: 161 161 170; /* #a1a1aa */
+
+		/* Content (slate ramp) — same rationale as the zinc ramp. */
+		--fp-content-slate: 15 23 42; /* #0f172a */
+		--fp-content-slate-strong: 30 41 59; /* #1e293b */
+		--fp-content-slate-secondary: 51 65 85; /* #334155 */
+		--fp-content-slate-tertiary: 71 85 105; /* #475569 */
+		--fp-content-slate-muted: 100 116 139; /* #64748b */
+		--fp-content-slate-subtle: 148 163 184; /* #94a3b8 */
+
+		/* Lines — borders, dividers, rings. Hairlines, not surfaces. */
+		--fp-line: 229 231 235; /* #e5e7eb — the workhorse border */
+		--fp-line-subtle: 243 244 246; /* #f3f4f6 */
+		--fp-line-strong: 209 213 219; /* #d1d5db */
+		--fp-line-bold: 156 163 175; /* #9ca3af */
+		--fp-line-zinc: 228 228 231; /* #e4e4e7 */
+		--fp-line-zinc-subtle: 244 244 245; /* #f4f4f5 */
+		--fp-line-zinc-strong: 212 212 216; /* #d4d4d8 */
+		--fp-line-slate: 226 232 240; /* #e2e8f0 */
+		--fp-line-slate-subtle: 241 245 249; /* #f1f5f9 */
+		--fp-line-slate-strong: 203 213 225; /* #cbd5e1 */
+		--fp-line-inverse: 0 0 0; /* #000000 */
+
+		/* Status — info (blue). Solids brighten; tinted backgrounds invert to dark tints. */
+		--fp-info: 37 99 235; /* #2563eb */
+		--fp-info-bright: 59 130 246; /* #3b82f6 */
+		--fp-info-strong: 29 78 216; /* #1d4ed8 */
+		--fp-info-deep: 30 64 175; /* #1e40af */
+		--fp-info-deepest: 30 58 138; /* #1e3a8a */
+		--fp-info-muted: 239 246 255; /* #eff6ff */
+		--fp-info-muted-strong: 219 234 254; /* #dbeafe */
+		--fp-info-line: 191 219 254; /* #bfdbfe */
+
+		/* Status — danger (red). */
+		--fp-danger: 220 38 38; /* #dc2626 */
+		--fp-danger-bright: 239 68 68; /* #ef4444 */
+		--fp-danger-soft: 248 113 113; /* #f87171 */
+		--fp-danger-strong: 185 28 28; /* #b91c1c */
+		--fp-danger-deep: 153 27 27; /* #991b1b */
+		--fp-danger-muted: 254 242 242; /* #fef2f2 */
+		--fp-danger-line: 254 202 202; /* #fecaca */
+
+		/* Status — warning (amber) plus the orange/yellow one-offs. */
+		--fp-warning: 217 119 6; /* #d97706 */
+		--fp-warning-bright: 245 158 11; /* #f59e0b */
+		--fp-warning-soft: 251 191 36; /* #fbbf24 */
+		--fp-warning-strong: 180 83 9; /* #b45309 */
+		--fp-warning-deep: 146 64 14; /* #92400e */
+		--fp-warning-muted: 255 251 235; /* #fffbeb */
+		--fp-warning-muted-strong: 254 243 199; /* #fef3c7 */
+		--fp-warning-line: 253 230 138; /* #fde68a */
+		--fp-warning-line-strong: 252 211 77; /* #fcd34d */
+		--fp-accent-orange: 234 88 12; /* #ea580c */
+		--fp-accent-yellow: 234 179 8; /* #eab308 */
+
+		/* Status — success (green / emerald). */
+		--fp-success: 22 163 74; /* #16a34a */
+		--fp-success-bright: 34 197 94; /* #22c55e */
+		--fp-success-soft: 74 222 128; /* #4ade80 */
+		--fp-success-deep: 22 101 52; /* #166534 */
+		--fp-success-muted: 240 253 244; /* #f0fdf4 */
+		--fp-success-line: 187 247 208; /* #bbf7d0 */
+		--fp-accent-emerald: 16 185 129; /* #10b981 */
+		--fp-accent-emerald-strong: 5 150 105; /* #059669 */
+		--fp-accent-emerald-muted: 209 250 229; /* #d1fae5 */
+
+		/* Accents — indigo / purple / sky / violet. */
+		--fp-accent-indigo: 79 70 229; /* #4f46e5 */
+		--fp-accent-indigo-strong: 67 56 202; /* #4338ca */
+		--fp-accent-indigo-muted: 238 242 255; /* #eef2ff */
+		--fp-accent-indigo-line: 199 210 254; /* #c7d2fe */
+		--fp-accent-purple: 147 51 234; /* #9333ea */
+		--fp-accent-sky: 2 132 199; /* #0284c7 */
+		--fp-accent-violet: 124 58 237; /* #7c3aed */
+
+		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
+		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
+		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
 	}
 	.dark {
 		--background: 0 0% 3.9%;
@@ -106,6 +227,119 @@
 		--chart-4: 280 65% 60%;
 
 		--chart-5: 340 75% 55%;
+
+		/* ------------------------------------------------------------------
+		 * Dark-theme token layer — Linear "Midnight" values.
+		 * Source of truth: scripts/theme-tokens.mjs.
+		 * ------------------------------------------------------------------ */
+
+		/* Surfaces — backgrounds. Midnight layers chrome (darkest) under panels (lighter). */
+		--fp-surface: 29 29 31; /* #1d1d1f */
+		--fp-surface-subtle: 35 35 38; /* #232326 */
+		--fp-surface-muted: 37 37 40; /* #252528 */
+		--fp-surface-shell: 15 15 16; /* #0f0f10 */
+		--fp-surface-strong: 46 46 51; /* #2e2e33 */
+		--fp-surface-faint: 31 31 34; /* #1f1f22 */
+		--fp-surface-cool: 26 26 29; /* #1a1a1d */
+		--fp-surface-inverse: 238 239 241; /* #eeeff1 */
+		--fp-surface-scrim: 0 0 0; /* #000000 */
+
+		/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
+		--fp-content: 238 239 241; /* #eeeff1 */
+		--fp-content-heading: 228 229 232; /* #e4e5e8 */
+		--fp-content-secondary: 208 210 215; /* #d0d2d7 */
+		--fp-content-tertiary: 169 173 182; /* #a9adb6 */
+		--fp-content-muted: 138 143 152; /* #8a8f98 */
+		--fp-content-subtle: 110 114 123; /* #6e727b */
+		--fp-content-disabled: 85 88 95; /* #55585f */
+		--fp-content-inverse: 15 15 16; /* #0f0f10 */
+		--fp-content-black: 238 239 241; /* #eeeff1 */
+
+		/* Content (zinc ramp) — exists only to keep light byte-identical. Collapsible later. */
+		--fp-content-zinc: 238 239 241; /* #eeeff1 */
+		--fp-content-zinc-bold: 232 233 236; /* #e8e9ec */
+		--fp-content-zinc-strong: 220 221 225; /* #dcdde1 */
+		--fp-content-zinc-secondary: 198 200 206; /* #c6c8ce */
+		--fp-content-zinc-tertiary: 162 166 175; /* #a2a6af */
+		--fp-content-zinc-muted: 138 143 152; /* #8a8f98 */
+		--fp-content-zinc-subtle: 110 114 123; /* #6e727b */
+
+		/* Content (slate ramp) — same rationale as the zinc ramp. */
+		--fp-content-slate: 238 239 241; /* #eeeff1 */
+		--fp-content-slate-strong: 226 228 232; /* #e2e4e8 */
+		--fp-content-slate-secondary: 203 205 212; /* #cbcdd4 */
+		--fp-content-slate-tertiary: 165 169 179; /* #a5a9b3 */
+		--fp-content-slate-muted: 138 143 152; /* #8a8f98 */
+		--fp-content-slate-subtle: 116 120 127; /* #74787f */
+
+		/* Lines — borders, dividers, rings. Hairlines, not surfaces. */
+		--fp-line: 41 41 46; /* #29292e */
+		--fp-line-subtle: 31 31 35; /* #1f1f23 */
+		--fp-line-strong: 53 53 59; /* #35353b */
+		--fp-line-bold: 69 69 77; /* #45454d */
+		--fp-line-zinc: 41 41 46; /* #29292e */
+		--fp-line-zinc-subtle: 31 31 35; /* #1f1f23 */
+		--fp-line-zinc-strong: 53 53 59; /* #35353b */
+		--fp-line-slate: 41 41 46; /* #29292e */
+		--fp-line-slate-subtle: 31 31 35; /* #1f1f23 */
+		--fp-line-slate-strong: 53 53 59; /* #35353b */
+		--fp-line-inverse: 238 239 241; /* #eeeff1 */
+
+		/* Status — info (blue). Solids brighten; tinted backgrounds invert to dark tints. */
+		--fp-info: 91 155 255; /* #5b9bff */
+		--fp-info-bright: 107 165 255; /* #6ba5ff */
+		--fp-info-strong: 127 178 255; /* #7fb2ff */
+		--fp-info-deep: 154 194 255; /* #9ac2ff */
+		--fp-info-deepest: 176 207 255; /* #b0cfff */
+		--fp-info-muted: 20 32 58; /* #14203a */
+		--fp-info-muted-strong: 27 44 77; /* #1b2c4d */
+		--fp-info-line: 36 64 107; /* #24406b */
+
+		/* Status — danger (red). */
+		--fp-danger: 242 85 90; /* #f2555a */
+		--fp-danger-bright: 245 106 110; /* #f56a6e */
+		--fp-danger-soft: 248 138 141; /* #f88a8d */
+		--fp-danger-strong: 255 138 142; /* #ff8a8e */
+		--fp-danger-deep: 255 165 168; /* #ffa5a8 */
+		--fp-danger-muted: 42 21 22; /* #2a1516 */
+		--fp-danger-line: 74 34 36; /* #4a2224 */
+
+		/* Status — warning (amber) plus the orange/yellow one-offs. */
+		--fp-warning: 232 154 60; /* #e89a3c */
+		--fp-warning-bright: 240 169 63; /* #f0a93f */
+		--fp-warning-soft: 245 194 92; /* #f5c25c */
+		--fp-warning-strong: 242 176 99; /* #f2b063 */
+		--fp-warning-deep: 245 201 138; /* #f5c98a */
+		--fp-warning-muted: 42 31 13; /* #2a1f0d */
+		--fp-warning-muted-strong: 58 43 18; /* #3a2b12 */
+		--fp-warning-line: 77 58 24; /* #4d3a18 */
+		--fp-warning-line-strong: 94 71 32; /* #5e4720 */
+		--fp-accent-orange: 245 121 60; /* #f5793c */
+		--fp-accent-yellow: 239 198 74; /* #efc64a */
+
+		/* Status — success (green / emerald). */
+		--fp-success: 69 201 122; /* #45c97a */
+		--fp-success-bright: 79 214 135; /* #4fd687 */
+		--fp-success-soft: 111 224 155; /* #6fe09b */
+		--fp-success-deep: 125 224 165; /* #7de0a5 */
+		--fp-success-muted: 16 38 26; /* #10261a */
+		--fp-success-line: 30 70 48; /* #1e4630 */
+		--fp-accent-emerald: 52 214 160; /* #34d6a0 */
+		--fp-accent-emerald-strong: 46 200 148; /* #2ec894 */
+		--fp-accent-emerald-muted: 16 49 42; /* #10312a */
+
+		/* Accents — indigo / purple / sky / violet. */
+		--fp-accent-indigo: 138 130 255; /* #8a82ff */
+		--fp-accent-indigo-strong: 155 148 255; /* #9b94ff */
+		--fp-accent-indigo-muted: 27 27 58; /* #1b1b3a */
+		--fp-accent-indigo-line: 46 46 92; /* #2e2e5c */
+		--fp-accent-purple: 180 120 245; /* #b478f5 */
+		--fp-accent-sky: 56 169 232; /* #38a9e8 */
+		--fp-accent-violet: 161 118 245; /* #a176f5 */
+
+		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
+		--fp-brand-blue: 74 168 232; /* #4aa8e8 */
+		--fp-brand-blue-light: 22 40 63; /* #16283f */
 	}
 }
 
