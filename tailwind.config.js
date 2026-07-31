@@ -49,7 +49,15 @@ export default {
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
-					foreground: '#64748B',
+					/*
+					 * Was the literal '#64748B', which made `text-muted-foreground` (250 uses — the
+					 * second most common colour class in the app) unthemable: the `--muted-foreground`
+					 * CSS variable was dead, so retuning it for dark did nothing.
+					 *
+					 * `--fp-content-slate-muted` resolves to slate.500 = #64748b, byte-identical to the
+					 * literal it replaces, and scripts/verify-theme-tokens.mjs pins it there.
+					 */
+					foreground: 'rgb(var(--fp-content-slate-muted) / <alpha-value>)',
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',

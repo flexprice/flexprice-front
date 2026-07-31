@@ -180,43 +180,43 @@
 		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
 	}
 	.dark {
-		--background: 0 0% 3.9%;
+		--background: 240 2.2% 8.8%; /* #161617 — content well — the page behind the cards */
 
-		--foreground: 0 0% 98%;
+		--foreground: 220 9.7% 93.9%; /* #eeeff1 — matches --fp-content */
 
-		--card: 0 0% 3.9%;
+		--card: 240 3.3% 11.8%; /* #1d1d1f — elevated panel — matches --fp-surface */
 
-		--card-foreground: 0 0% 98%;
+		--card-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 
-		--popover: 0 0% 3.9%;
+		--popover: 240 3.9% 15.1%; /* #252528 — floats above cards */
 
-		--popover-foreground: 0 0% 98%;
+		--popover-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 
-		--primary: 0 0% 98%;
+		--primary: 220 9.7% 93.9%; /* #eeeff1 — filled buttons invert to light in dark mode */
 
-		--primary-foreground: 0 0% 9%;
+		--primary-foreground: 240 3.2% 6.1%; /* #0f0f10 — matches --fp-content-inverse */
 
-		--secondary: 0 0% 14.9%;
+		--secondary: 240 5.2% 19%; /* #2e2e33 — matches --fp-surface-strong */
 
-		--secondary-foreground: 0 0% 98%;
+		--secondary-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 
-		--muted: 0 0% 14.9%;
+		--muted: 240 4.1% 14.3%; /* #232326 — matches --fp-surface-subtle */
 
-		--muted-foreground: 0 0% 63.9%;
+		--muted-foreground: 218.6 6.4% 56.9%; /* #8a8f98 — matches --fp-content-muted */
 
-		--accent: 0 0% 14.9%;
+		--accent: 240 3.9% 15.1%; /* #252528 — hover surface */
 
-		--accent-foreground: 0 0% 98%;
+		--accent-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 
-		--destructive: 0 62.8% 30.6%;
+		--destructive: 358.1 85.8% 64.1%; /* #f2555a — matches --fp-danger; used as text 52x vs bg 19x, so it must read on dark */
 
-		--destructive-foreground: 0 0% 98%;
+		--destructive-foreground: 240 3.2% 6.1%; /* #0f0f10 — dark text on the bright red fill — 7.5:1 */
 
-		--border: 0 0% 14.9%;
+		--border: 240 5.7% 17.1%; /* #29292e — matches --fp-line */
 
-		--input: 0 0% 14.9%;
+		--input: 240 5.4% 22%; /* #35353b — matches --fp-line-strong */
 
-		--ring: 0 0% 83.1%;
+		--ring: 221.5 5.6% 45.7%; /* #6e727b — neutral focus ring — no coloured selection box */
 
 		--chart-1: 220 70% 50%;
 
@@ -227,6 +227,18 @@
 		--chart-4: 280 65% 60%;
 
 		--chart-5: 340 75% 55%;
+
+		/* Sidebar chrome. tailwind.config.js references these but no CSS ever defined them, so
+		 * `bg-sidebar` paints transparent in light mode. Defining them here only — never in :root —
+		 * leaves light exactly as it is today and gives dark its Midnight chrome. */
+		--sidebar-background: 240 3.2% 6.1%; /* #0f0f10 — darkest layer — the app chrome */
+		--sidebar-foreground: 222.9 8% 82.9%; /* #d0d2d7 */
+		--sidebar-primary: 220 9.7% 93.9%; /* #eeeff1 */
+		--sidebar-primary-foreground: 240 3.2% 6.1%; /* #0f0f10 */
+		--sidebar-accent: 240 3.3% 11.8%; /* #1d1d1f — selected / hovered nav item */
+		--sidebar-accent-foreground: 220 9.7% 93.9%; /* #eeeff1 */
+		--sidebar-border: 240 5.7% 17.1%; /* #29292e */
+		--sidebar-ring: 221.5 5.6% 45.7%; /* #6e727b */
 
 		/* ------------------------------------------------------------------
 		 * Dark-theme token layer — Linear "Midnight" values.

@@ -38,16 +38,68 @@ function blockBody(source, selector) {
 	throw new Error(`Unbalanced braces after ${selector}`);
 }
 
-const declarations = (body) => {
+const declarations = (body, pattern = /(--fp-[a-z0-9-]+)\s*:\s*([^;]+);/g) => {
 	const map = new Map();
-	for (const m of body.matchAll(/(--fp-[a-z0-9-]+)\s*:\s*([^;]+);/g)) map.set(m[1], m[2].trim());
+	for (const m of body.matchAll(pattern)) map.set(m[1], m[2].trim());
 	return map;
 };
 
-const lightVars = declarations(blockBody(css, ':root'));
+const rootBody = blockBody(css, ':root');
+const lightVars = declarations(rootBody);
 const darkVars = declarations(blockBody(css, '.dark'));
 
 const errors = [];
+
+/*
+ * Frozen baseline of the pre-existing :root declarations, captured from main.
+ *
+ * These are the variables the light UI actually renders through. #984 was reverted because it
+ * re-valued them — that is the single change this whole rebuild exists to avoid, so it is pinned
+ * here rather than left to reviewer diligence. Adding a NEW variable to :root is fine; changing or
+ * removing one of these is not.
+ *
+ * Two of these are already broken on main and are deliberately preserved as-is: `--background` is a
+ * hex fed to `hsl()`, and `--muted-foreground` is a quoted string. Fixing either would change light
+ * mode, so they stay wrong until someone decides to fix them in their own PR.
+ */
+const ROOT_BASELINE = {
+	'--font-sans': "'Geist', sans-serif",
+	'--background': '#f8fafc',
+	'--foreground': '0 0% 3.9%',
+	'--card': '0 0% 100%',
+	'--card-foreground': '0 0% 3.9%',
+	'--popover': '0 0% 100%',
+	'--popover-foreground': '0 0% 3.9%',
+	'--primary': '0 0% 9%',
+	'--primary-foreground': '0 0% 98%',
+	'--secondary': '0 0% 96.1%',
+	'--secondary-foreground': '0 0% 9%',
+	'--muted': '0 0% 96.1%',
+	'--muted-foreground': "'#64748B'",
+	'--accent': '0 0% 96.1%',
+	'--accent-foreground': '#f4f4f5',
+	'--destructive': '0 84.2% 60.2%',
+	'--destructive-foreground': '0 0% 98%',
+	'--border': '0 0% 89.8%',
+	'--input': '0 0% 89.8%',
+	'--ring': '0 0% 3.9%',
+	'--chart-1': '12 76% 61%',
+	'--chart-2': '173 58% 39%',
+	'--chart-3': '197 37% 24%',
+	'--chart-4': '43 74% 66%',
+	'--chart-5': '27 87% 67%',
+	'--radius': '6px',
+};
+
+const legacyRoot = declarations(rootBody, /(--(?!fp-)[a-z0-9-]+)\s*:\s*([^;]+);/g);
+for (const [name, expected] of Object.entries(ROOT_BASELINE)) {
+	const actual = legacyRoot.get(name);
+	if (actual === undefined) {
+		errors.push(`${name}: removed from :root — light mode would change`);
+	} else if (actual !== expected) {
+		errors.push(`${name}: :root value changed from "${expected}" to "${actual}" — light mode would change`);
+	}
+}
 const SCRIM = new Set(['surface-scrim']); // intentionally identical across themes
 
 for (const { name, light, dark } of ALL_TOKENS) {

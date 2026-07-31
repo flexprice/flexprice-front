@@ -1,17 +1,18 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 2 (theme store) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 3 (`.dark` retune) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
 
-| Step | Scope                                                 | State   |
-| ---- | ----------------------------------------------------- | ------- |
-| 0    | Plan + measured inventory                             | ✅      |
-| 1    | Token layer + byte-identity guard (86 tokens)         | ✅      |
-| 2    | Theme store + `initTheme()` pre-paint, 11 tests       | ✅      |
-| 3    | Retune the legacy `.dark` block to Midnight (**new**) | ⬜ next |
-| 4    | Settings toggle UI (was Step 3)                       | ⬜      |
+| Step | Scope                                                                    | State   |
+| ---- | ------------------------------------------------------------------------ | ------- |
+| 0    | Plan + measured inventory                                                | ✅      |
+| 1    | Token layer + byte-identity guard (86 tokens)                            | ✅      |
+| 2    | Theme store + `initTheme()` pre-paint, 11 tests                          | ✅      |
+| 3    | `.dark` retuned to Midnight; sidebar chrome defined; `:root` guard added | ✅      |
+| 4    | Settings toggle UI                                                       | ⬜ next |
+| 5    | App shell: `MainLayout`, `Sidebar`, `BreadCrumbs`, `SidebarInset`        | ⬜      |
 
 Run the guard any time with:
 
@@ -34,6 +35,46 @@ the Settings toggle ships, otherwise the first thing a user sees on flipping the
 screen. Hence the new Step 3, which pushes the toggle to Step 4 and shifts everything after it by one.
 
 Retuning `.dark` does not touch light mode, so the byte-identity invariant is unaffected.
+
+### `--sidebar-*` was never defined (found in Step 3)
+
+`tailwind.config.js` has always referenced `hsl(var(--sidebar-background))` and seven siblings, but
+no CSS file has ever defined them — on `main` either. So `bg-sidebar`, `text-sidebar-foreground`
+and the rest (40 usages) resolve to an invalid declaration and paint **transparent**. Verified in
+the browser: `bg-sidebar` → `rgba(0, 0, 0, 0)`.
+
+Step 3 defines them **only inside `.dark`**. Light keeps rendering exactly as it does today (still
+undefined, still transparent), while dark gets its Midnight chrome. Defining them in `:root` would
+turn 40 no-op classes into painted colour and change light mode — so that is left alone.
+
+### `muted.foreground` was an unthemable literal (found in Step 3)
+
+`tailwind.config.js` hardcoded `muted: { foreground: '#64748B' }`, so the `--muted-foreground` CSS
+variable was dead and retuning it for dark did nothing — leaving `text-muted-foreground`, at **250
+usages the second most common colour class in the app**, stuck at its light value in dark mode.
+
+Fixed by pointing it at `--fp-content-slate-muted`, whose light value is slate.500 = `#64748b`,
+byte-identical to the literal it replaces and pinned by the guard. Confirmed in the browser: light
+stays `rgb(100, 116, 139)`, dark becomes `rgb(138, 143, 152)`.
+
+Two literals remain in `tailwind.config.js` on purpose: `blue.DEFAULT` / `blue.light` (migrating to
+`brand-blue` at their call sites) and `sidebar['text-accent-foreground']` (zero usages).
+
+### The `:root` immutability guard
+
+`scripts/verify-theme-tokens.mjs` now pins every pre-existing `:root` declaration to a frozen
+baseline captured from `main`. Changing or removing one fails the check. This is the exact failure
+mode that sank #984, so it is enforced mechanically rather than left to review. Adding a new
+variable to `:root` is still fine.
+
+Both failure modes were tested by deliberately breaking them:
+
+- changing `--border` in `:root` → `--border: :root value changed from "0 0% 89.8%" to "0 0% 85%"`
+- drifting a token light value → `--fp-content-muted: LIGHT DRIFT — :root has "107 114 129" but gray.500 is "107 114 128"`
+
+Two `:root` values are already broken on `main` and are deliberately preserved: `--background` is a
+hex fed to `hsl()`, and `--muted-foreground` is a quoted string. Both are inert. Fixing either would
+change light mode, so they stay wrong until someone owns that in a separate PR.
 
 ## Why this exists
 
