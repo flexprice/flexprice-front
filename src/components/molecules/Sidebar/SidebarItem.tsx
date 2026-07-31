@@ -65,7 +65,12 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 
 	const mainButtonContent = (
 		<>
-			{Icon && <Icon absoluteStrokeWidth className={cn('!size-5 !stroke-[1.5px] me-1', iconActive ? 'text-blue-600' : 'text-[#3F3F46]')} />}
+			{Icon && (
+				<Icon
+					absoluteStrokeWidth
+					className={cn('!size-5 !stroke-[1.5px] me-1', iconActive ? 'text-info' : 'text-content-zinc-secondary')}
+				/>
+			)}
 			<span className='text-[14px] select-none font-normal'>{item.title}</span>
 		</>
 	);
@@ -81,7 +86,7 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 					isActive={isMainItemActive}
 					className={cn(
 						'flex items-center gap-2 h-10 px-2 py-[10px] rounded-[6px] text-[14px] cursor-pointer font-normal transition-all duration-200 ease-in-out',
-						isMainItemActive ? 'bg-zinc-200 border border-zinc-300 shadow-sm font-medium' : 'font-thin',
+						isMainItemActive ? 'bg-surface-selected border border-line-zinc-strong shadow-sm font-medium' : 'font-thin',
 						item.disabled && 'cursor-not-allowed opacity-50',
 					)}>
 					<Link to={item.url || '#'} onClick={(e) => item.disabled && e.preventDefault()}>
@@ -104,7 +109,7 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 						isActive={isMainItemActive}
 						className={cn(
 							'flex items-center gap-2 h-10 px-2 py-[10px] rounded-[6px] text-[14px] cursor-pointer font-normal transition-all duration-200 ease-in-out',
-							isMainItemActive ? 'bg-zinc-200 border border-zinc-300 shadow-sm font-medium' : 'font-thin',
+							isMainItemActive ? 'bg-surface-selected border border-line-zinc-strong shadow-sm font-medium' : 'font-thin',
 							item.disabled && 'cursor-not-allowed opacity-50',
 						)}>
 						<Link to={item.url || '#'} onClick={handleMainItemClick}>
@@ -128,12 +133,12 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 										<SidebarMenuSubButton
 											asChild
 											isActive={subActive}
-											className={cn('w-full font-light text-black transition-colors duration-200')}>
+											className={cn('w-full font-light text-content-black transition-colors duration-200')}>
 											<Link to={subItem.url} className='flex items-center gap-2'>
 												{SubIcon && (
 													<SubIcon
 														absoluteStrokeWidth
-														className={cn('!size-4 !stroke-[1.5px]', subActive ? 'text-blue-600' : 'text-[#52525B]')}
+														className={cn('!size-4 !stroke-[1.5px]', subActive ? 'text-info' : 'text-content-zinc-tertiary')}
 													/>
 												)}
 												<span>{subItem.title}</span>

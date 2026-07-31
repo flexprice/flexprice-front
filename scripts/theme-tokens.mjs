@@ -149,6 +149,23 @@ export const TOKEN_GROUPS = [
 		],
 	},
 	{
+		group: 'App shell — sidebar chrome and nav states. Light values are the exact hexes the shell already used.',
+		tokens: [
+			{ name: 'surface-sidebar', light: '#f9f9f9', dark: '#0f0f10', note: 'sidebar canvas — darkest Midnight layer' },
+			{ name: 'surface-bold', light: 'gray.300', dark: '#45454d', note: 'sidebar resize rail' },
+			{ name: 'surface-selected', light: 'zinc.200', dark: '#2e2e33', note: 'active nav item' },
+			{
+				name: 'surface-selected-alt',
+				light: '#ededed',
+				dark: '#2b2b30',
+				note: 'duplicate of surface-selected at a different light hex — collapsible later',
+			},
+			{ name: 'line-faint', light: '#bababa', dark: '#35353b', note: 'promo card hairline' },
+			{ name: 'content-slate-deep', light: 'slate.950', dark: '#eeeff1', note: 'active breadcrumb' },
+			{ name: 'brand-navy', light: '#092E44', dark: '#6db8e8', note: 'Flexprice navy — brightened so it reads on dark' },
+		],
+	},
+	{
 		group: 'Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged.',
 		tokens: [
 			{ name: 'brand-blue', light: '#3293D9', dark: '#4aa8e8', note: 'was colors.blue.DEFAULT' },

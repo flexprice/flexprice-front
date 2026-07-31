@@ -21,19 +21,19 @@ const SidebarPricingPromoCard: FC<SidebarPricingPromoCardProps> = ({ onCreateWit
 		<div
 			className={cn(
 				'group-data-[collapsible=icon]:hidden',
-				'relative w-full overflow-hidden rounded-lg border border-[#BABABA] bg-white',
+				'relative w-full overflow-hidden rounded-lg border border-line-faint bg-surface',
 				'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
 				className,
 			)}>
 			<div
-				className='pointer-events-none absolute inset-0 bg-[#FAFAFA] bg-cover bg-right bg-no-repeat'
+				className='pointer-events-none absolute inset-0 bg-surface-faint bg-cover bg-right bg-no-repeat'
 				style={{ backgroundImage: `url("${promoFrameUrl}")` }}
 				aria-hidden
 			/>
-			<div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/65 to-transparent' aria-hidden />
+			<div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-surface via-surface/65 to-transparent' aria-hidden />
 
 			<div className='relative z-10 flex flex-col gap-5 p-4'>
-				<h2 className='text-start text-base font-semibold leading-snug tracking-normal text-gray-900 antialiased'>
+				<h2 className='text-start text-base font-semibold leading-snug tracking-normal text-content antialiased'>
 					{t('labels.describeYourPricing')}
 				</h2>
 
@@ -43,11 +43,11 @@ const SidebarPricingPromoCard: FC<SidebarPricingPromoCardProps> = ({ onCreateWit
 					size='sm'
 					onClick={onCreateWithAI}
 					className={cn(
-						'h-10 w-full rounded-md border-gray-300 bg-white px-3.5 text-xs font-medium text-[#092E44]',
-						'shadow-none hover:bg-gray-50 hover:text-[#092E44]',
+						'h-10 w-full rounded-md border-line-strong bg-surface px-3.5 text-xs font-medium text-brand-navy',
+						'shadow-none hover:bg-surface-subtle hover:text-brand-navy',
 						'inline-flex items-center justify-center gap-1.5',
 					)}>
-					<Wand2 className='size-3.5 shrink-0 text-[#092E44] opacity-90' strokeWidth={1.75} aria-hidden />
+					<Wand2 className='size-3.5 shrink-0 text-brand-navy opacity-90' strokeWidth={1.75} aria-hidden />
 					<span className='analyzing-prompt-shimmer text-xs font-medium'>{t('labels.createPlan')}</span>
 				</Button>
 			</div>

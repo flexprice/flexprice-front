@@ -532,7 +532,7 @@ const SidebarMenuSub = React.forwardRef<HTMLUListElement, React.ComponentProps<'
 			className='ltr:block rtl:hidden absolute -left-1.5 top-0 bottom-0 flex items-center'
 			aria-hidden='true'
 			style={{ width: '1.25rem' }}>
-			<div className='mx-auto h-full w-px bg-gray-300' style={{ minHeight: '32px' }} />
+			<div className='mx-auto h-full w-px bg-surface-bold' style={{ minHeight: '32px' }} />
 		</div>
 		{children}
 	</ul>
@@ -547,7 +547,7 @@ SidebarMenuSubItem.displayName = 'SidebarMenuSubItem';
  *
  * Issues fixed:
  * 1. Vertical centering: Now uses proper height variants (h-8 for sm, h-10 for md)
- * 2. Hover behavior: Consistent hover states using the same colors as reference UI (#F4F4F5)
+ * 2. Hover behavior: Consistent hover states using the same colors as reference UI (surface-muted)
  * 3. Content alignment: Proper flex layout with items-center and justify-start
  * 4. Active state: Uses data-[active=true] attribute for consistent styling
  * 5. Transition: Smooth color transitions for better UX
@@ -572,14 +572,14 @@ const SidebarMenuSubButton = React.forwardRef<
 				// Base styles with proper vertical centering and consistent sizing
 				'flex min-w-0 -translate-x-px items-center justify-start gap-2 overflow-hidden rounded-[6px] ms-2 px-3 text-[14px] font-normal outline-none transition-colors duration-200',
 				// Interactive states with consistent hover behavior using the same colors as reference UI
-				'hover:bg-[#F4F4F5] hover:text-[#18181B]',
-				'focus-visible:ring-2 focus-visible:ring-blue-600',
-				'active:bg-[#F4F4F5] active:text-[#18181B]',
+				'hover:bg-surface-muted hover:text-content-zinc-bold',
+				'focus-visible:ring-2 focus-visible:ring-info',
+				'active:bg-surface-muted active:text-content-zinc-bold',
 				// Disabled states
 				'disabled:pointer-events-none disabled:opacity-50',
 				'aria-disabled:pointer-events-none aria-disabled:opacity-50',
 				// Active state matching the reference UI
-				'data-[active=true]:bg-[#EDEDED] data-[active=true]:text-[#18181B]',
+				'data-[active=true]:bg-surface-selected-alt data-[active=true]:text-content-zinc-bold',
 				// Content styling
 				'[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
 				// Size variants with proper heights
@@ -590,7 +590,7 @@ const SidebarMenuSubButton = React.forwardRef<
 				// Cursor pointer for better UX
 				'cursor-pointer',
 				// Ensure proper text color
-				'text-[#18181B]',
+				'text-content-zinc-bold',
 				className,
 			)}
 			{...props}

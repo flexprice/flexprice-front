@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 3 (`.dark` retune) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 5 (app shell) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -12,7 +12,17 @@ Status: **Step 3 (`.dark` retune) complete.** Branch `feat/dark_theme`, tracking
 | 2    | Theme store + `initTheme()` pre-paint, 11 tests                          | ✅      |
 | 3    | `.dark` retuned to Midnight; sidebar chrome defined; `:root` guard added | ✅      |
 | 4    | Settings → Appearance tab with the dark-mode toggle, 5 tests             | ✅      |
-| 5    | App shell: `MainLayout`, `Sidebar`, `BreadCrumbs`, `SidebarInset`        | ⬜ next |
+| 5    | App shell tokenized (6 files); token generator; 93 tokens                | ✅      |
+| 6    | `components/ui/` shadcn primitives                                       | ⬜ next |
+
+Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
+
+```bash
+node scripts/generate-theme-tokens.mjs && npx prettier --write src/index.css tailwind.config.js && npm run verify:theme
+```
+
+The generator only rewrites the regions between the `fp-tokens:begin` / `fp-tokens:end` markers, so
+pre-existing `:root` values are never touched.
 
 ### Convention from Step 4 onward
 
@@ -65,6 +75,21 @@ stays `rgb(100, 116, 139)`, dark becomes `rgb(138, 143, 152)`.
 
 Two literals remain in `tailwind.config.js` on purpose: `blue.DEFAULT` / `blue.light` (migrating to
 `brand-blue` at their call sites) and `sidebar['text-accent-foreground']` (zero usages).
+
+### The shell used colours outside the Tailwind palette (found in Step 5)
+
+Four of the shell's colours are not Tailwind values at all: `#f9f9f9` (sidebar canvas), `#ededed`
+(active menu item), `#bababa` (promo card hairline) and `#092e44` (Flexprice navy). Two more —
+gray-300 and zinc-200 — were already tokenized, but as _lines_, and the shell uses them as
+_surfaces_, which must diverge in dark.
+
+That added seven tokens (86 → 93). The four non-palette ones are declared as raw hex in
+`scripts/theme-tokens.mjs`; the guard still pins them, it just compares against the literal instead
+of a palette path.
+
+`surface-selected` (#e4e4e7) and `surface-selected-alt` (#ededed) are the same state at two
+near-identical light hexes — the same byte-identity debt as the zinc/slate ramps, and collapsible
+on the same schedule.
 
 ### The `:root` immutability guard
 
