@@ -1,21 +1,39 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 1 (token layer) complete — 86 tokens, guard green.** Branch `feat/dark_theme`,
-tracking `origin/feat/dark_theme`.
+Status: **Step 2 (theme store) complete.** Branch `feat/dark_theme`, tracking
+`origin/feat/dark_theme`.
 
 ## Progress log
 
-| Step | Scope                                         | State   |
-| ---- | --------------------------------------------- | ------- |
-| 0    | Plan + measured inventory                     | ✅      |
-| 1    | Token layer + byte-identity guard (86 tokens) | ✅      |
-| 2    | Theme store + `initTheme()`                   | ⬜ next |
+| Step | Scope                                                 | State   |
+| ---- | ----------------------------------------------------- | ------- |
+| 0    | Plan + measured inventory                             | ✅      |
+| 1    | Token layer + byte-identity guard (86 tokens)         | ✅      |
+| 2    | Theme store + `initTheme()` pre-paint, 11 tests       | ✅      |
+| 3    | Retune the legacy `.dark` block to Midnight (**new**) | ⬜ next |
+| 4    | Settings toggle UI (was Step 3)                       | ⬜      |
 
 Run the guard any time with:
 
 ```bash
 npm run verify:theme
 ```
+
+## Findings
+
+### The stock shadcn `.dark` block is live and wrong (found in Step 2)
+
+`src/index.css` already carried a `.dark` block from the original shadcn scaffold —
+`--background: 0 0% 3.9%`, `--card: 0 0% 3.9%`, `--popover: 0 0% 3.9%`. It was dead code until
+Step 2, because nothing could apply the `.dark` class. Now that the store can, those values go
+live the instant dark is enabled, and they are **not** Midnight: near-black `#0a0a0a` panels,
+with text that is still hardcoded `text-gray-900` sitting invisibly on top.
+
+This is separate from the `--fp-*` layer and was not introduced by it. It has to be retuned before
+the Settings toggle ships, otherwise the first thing a user sees on flipping the switch is a broken
+screen. Hence the new Step 3, which pushes the toggle to Step 4 and shifts everything after it by one.
+
+Retuning `.dark` does not touch light mode, so the byte-identity invariant is unaffected.
 
 ## Why this exists
 
@@ -286,17 +304,20 @@ Guard #3 is what makes "byte-identical" a machine-checked property rather than a
 
 ## Step sequence
 
-### Foundation (Steps 1–4) — no component changes
+### Foundation (Steps 1–5) — no component changes
 
-| Step  | Scope                                                                                                           | Files                                                              |
-| ----- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **1** | Token layer: `--fp-*` vars in `:root` + `.dark`, Tailwind color keys, `scripts/verify-theme-tokens.mjs`         | `src/index.css`, `tailwind.config.js`, 1 new script                |
-| **2** | Theme infrastructure: `useThemeStore` (Zustand + persist), `initTheme()` pre-paint in `main.tsx`, default light | `src/store/useThemeStore.ts`, `src/store/index.ts`, `src/main.tsx` |
-| **3** | Settings toggle UI (the only user-facing entry point)                                                           | `src/pages/settings/…`                                             |
-| **4** | App shell: `MainLayout`, `Sidebar`, `BreadCrumbs`, `SidebarInset`                                               | ~8 files                                                           |
+| Step  | Scope                                                                                                                                                                       | Files                                                              |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **1** | Token layer: `--fp-*` vars in `:root` + `.dark`, Tailwind color keys, `scripts/verify-theme-tokens.mjs`                                                                     | `src/index.css`, `tailwind.config.js`, 1 new script                |
+| **2** | Theme infrastructure: `useThemeStore` (Zustand + persist), `initTheme()` pre-paint in `main.tsx`, default light                                                             | `src/store/useThemeStore.ts`, `src/store/index.ts`, `src/main.tsx` |
+| **3** | Retune the stock shadcn `.dark` values to Midnight so `bg-card` / `bg-background` / `bg-popover` stop rendering near-black. `.dark` only — light untouched. See _Findings_. | `src/index.css`                                                    |
+| **4** | Settings toggle UI (the only user-facing entry point)                                                                                                                       | `src/pages/settings/…`                                             |
+| **5** | App shell: `MainLayout`, `Sidebar`, `BreadCrumbs`, `SidebarInset`                                                                                                           | ~8 files                                                           |
 
-After Step 4 the app is switchable and the chrome is dark-correct; page bodies are still light.
-That is intentional and visible only to whoever flips the setting.
+After Step 5 the app is switchable and the chrome is dark-correct; page bodies are still light.
+
+> Steps 6 onward keep the order below; their numbers each shift up by one from the original plan.
+> That is intentional and visible only to whoever flips the setting.
 
 ### Primitives (Steps 5–9)
 

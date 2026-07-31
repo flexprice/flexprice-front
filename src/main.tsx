@@ -10,6 +10,7 @@ import { initBranding } from './config/branding.ts';
 import { initI18n } from './i18n/index.ts';
 import { DirectionProvider } from '@radix-ui/react-direction';
 import { useLocaleStore } from './store/useLocaleStore.ts';
+import { initTheme } from './store/useThemeStore.ts';
 import React from 'react';
 
 // svix's browser bundle references the bare `process` identifier (not `typeof process`) inside
@@ -28,6 +29,9 @@ function DirectionWrapper({ children }: { children: React.ReactNode }) {
 }
 
 (async () => {
+	// First, and before any await: applies the persisted `.dark` class while the body is still
+	// empty, so a dark-mode user never sees a flash of the light theme.
+	initTheme();
 	initBranding();
 	initTypography();
 	initReo();
