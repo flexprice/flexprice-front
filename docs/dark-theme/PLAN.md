@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 7 (atoms A–F) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 8 (Chip + AppToaster) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -15,8 +15,8 @@ Status: **Step 7 (atoms A–F) complete.** Branch `feat/dark_theme`, tracking
 | 5    | App shell tokenized (6 files); token generator; 93 tokens                | ✅      |
 | 6    | `components/ui/` shadcn primitives (9 files)                             | ✅      |
 | 7    | `components/atoms/` A–F, mechanical (15 files); 95 tokens                | ✅      |
-| 8    | `Chip` + `AppToaster` — the status/feedback colour system                | ⬜ next |
-| 9    | `ErrorBoundary` — migrates the legacy bare `blue` key to `brand-blue`    | ⬜      |
+| 8    | `Chip` + `AppToaster` status/feedback palette; 107 tokens                | ✅      |
+| 9    | `ErrorBoundary` — migrates the legacy bare `blue` key to `brand-blue`    | ⬜ next |
 | 10   | `components/atoms/` G–Z                                                  | ⬜      |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
@@ -122,6 +122,26 @@ Same family of trap as the switch thumb in Step 6: the question is never "what h
 `CodePreview` and `Divider` pass colours as inline style values rather than classes. Those take
 `rgb(var(--fp-token))` directly, which resolves exactly like the utility class does — verified in
 the browser for all three. `Chip` uses the same mechanism and is handled in Step 8.
+
+### Light chips are below WCAG AA — pre-existing, deliberately preserved (found in Step 8)
+
+Measuring chip text against chip background after tokenizing:
+
+| Variant | Light | Dark |
+| ------- | ----- | ---- |
+| success | 4.47  | 6.98 |
+| default | 5.42  | 6.50 |
+| failed  | 3.95  | 4.63 |
+| info    | 4.35  | 6.25 |
+| warning | 4.88  | 6.95 |
+
+Three of the five light variants fail AA (4.5:1); `failed` at 3.95 is the worst. That is the
+**existing** design — the tokens reproduce it byte-for-byte, so this migration neither caused nor
+worsened it. The dark values were chosen to clear AA, and all five do.
+
+Fixing the light chips is a real accessibility improvement but it is a **visible light-mode change**,
+which is exactly what this workstream promises not to do. It belongs in its own PR with its own
+sign-off, not smuggled into a dark-theme commit.
 
 ### `dark:`-scoped classes are not migration debt
 

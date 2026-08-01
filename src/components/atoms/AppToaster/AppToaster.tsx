@@ -9,14 +9,16 @@ export const appToastOptions = {
 	},
 	success: {
 		iconTheme: {
-			primary: '#5CA7A0',
+			// `primary` is the icon disc, `secondary` the glyph drawn on top of it. The glyph stays
+			// white in both themes because it sits on the coloured disc, not on the toast surface.
+			primary: 'rgb(var(--fp-toast-success))',
 			secondary: '#fff',
 		},
 		className: 'whitespace-nowrap',
 	},
 	error: {
 		iconTheme: {
-			primary: '#E76E50',
+			primary: 'rgb(var(--fp-toast-danger))',
 			secondary: '#fff',
 		},
 		className: 'break-words',

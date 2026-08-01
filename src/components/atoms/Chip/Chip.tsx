@@ -31,12 +31,37 @@ interface ChipProps {
 	borderColor?: string;
 }
 
+/**
+ * Colours are applied through inline `style` (callers can override any of them per-chip), so these
+ * are `rgb(var(--fp-*))` references rather than Tailwind classes. Each token's light value is
+ * byte-identical to the hex it replaced — see scripts/theme-tokens.mjs.
+ */
 const CHIP_COLORS: Record<ChipVariant, ChipColorScheme> = {
-	success: { bgColor: '#ECFBE4', textColor: '#377E6A', borderColor: '#d1e9ca' },
-	default: { bgColor: '#F0F2F5', textColor: '#57646E', borderColor: '#F0F2F5' },
-	failed: { bgColor: '#FEE2E2', textColor: '#DC2626', borderColor: '#FEE2E2' },
-	info: { bgColor: '#EFF8FF', textColor: '#2F6FE2', borderColor: '#EFF8FF' },
-	warning: { bgColor: '#FFF7ED', textColor: '#C2410C', borderColor: '#FFF7ED' },
+	success: {
+		bgColor: 'rgb(var(--fp-chip-success-bg))',
+		textColor: 'rgb(var(--fp-chip-success-text))',
+		borderColor: 'rgb(var(--fp-chip-success-line))',
+	},
+	default: {
+		bgColor: 'rgb(var(--fp-chip-neutral-bg))',
+		textColor: 'rgb(var(--fp-chip-neutral-text))',
+		borderColor: 'rgb(var(--fp-chip-neutral-bg))',
+	},
+	failed: {
+		bgColor: 'rgb(var(--fp-chip-danger-bg))',
+		textColor: 'rgb(var(--fp-danger))',
+		borderColor: 'rgb(var(--fp-chip-danger-bg))',
+	},
+	info: {
+		bgColor: 'rgb(var(--fp-chip-info-bg))',
+		textColor: 'rgb(var(--fp-chip-info-text))',
+		borderColor: 'rgb(var(--fp-chip-info-bg))',
+	},
+	warning: {
+		bgColor: 'rgb(var(--fp-chip-warning-bg))',
+		textColor: 'rgb(var(--fp-chip-warning-text))',
+		borderColor: 'rgb(var(--fp-chip-warning-bg))',
+	},
 };
 
 const Chip: FC<ChipProps> = ({

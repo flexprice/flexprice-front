@@ -188,6 +188,20 @@
 		--fp-surface-notch: 212 212 216; /* #d4d4d8 — Card notch bar — zinc.300 as a fill, not a border */
 		--fp-accent-yellow-muted: 254 240 138; /* #fef08a — Coming-soon badge fill */
 
+		/* Status chips + toasts. Applied through inline style, so these are consumed as rgb(var(--fp-x)). */
+		--fp-chip-success-bg: 236 251 228; /* #ecfbe4 */
+		--fp-chip-success-text: 55 126 106; /* #377e6a */
+		--fp-chip-success-line: 209 233 202; /* #d1e9ca */
+		--fp-chip-neutral-bg: 240 242 245; /* #f0f2f5 */
+		--fp-chip-neutral-text: 87 100 110; /* #57646e */
+		--fp-chip-danger-bg: 254 226 226; /* #fee2e2 — chip danger text reuses the existing `danger` token (red.600) */
+		--fp-chip-info-bg: 239 248 255; /* #eff8ff */
+		--fp-chip-info-text: 47 111 226; /* #2f6fe2 */
+		--fp-chip-warning-bg: 255 247 237; /* #fff7ed */
+		--fp-chip-warning-text: 194 65 12; /* #c2410c */
+		--fp-toast-success: 92 167 160; /* #5ca7a0 — react-hot-toast iconTheme.primary */
+		--fp-toast-danger: 231 110 80; /* #e76e50 */
+
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
 		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
@@ -374,6 +388,20 @@
 		--fp-brand-navy: 109 184 232; /* #6db8e8 */
 		--fp-surface-notch: 69 69 77; /* #45454d */
 		--fp-accent-yellow-muted: 58 43 18; /* #3a2b12 */
+
+		/* Status chips + toasts. Applied through inline style, so these are consumed as rgb(var(--fp-x)). */
+		--fp-chip-success-bg: 22 48 31; /* #16301f */
+		--fp-chip-success-text: 95 201 154; /* #5fc99a */
+		--fp-chip-success-line: 36 80 58; /* #24503a */
+		--fp-chip-neutral-bg: 38 38 42; /* #26262a */
+		--fp-chip-neutral-text: 163 171 181; /* #a3abb5 */
+		--fp-chip-danger-bg: 58 26 28; /* #3a1a1c */
+		--fp-chip-info-bg: 22 36 60; /* #16243c */
+		--fp-chip-info-text: 107 165 255; /* #6ba5ff */
+		--fp-chip-warning-bg: 46 31 16; /* #2e1f10 */
+		--fp-chip-warning-text: 245 147 79; /* #f5934f */
+		--fp-toast-success: 111 196 188; /* #6fc4bc */
+		--fp-toast-danger: 240 138 112; /* #f08a70 */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

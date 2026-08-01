@@ -200,6 +200,20 @@ export default {
 				'surface-notch': 'rgb(var(--fp-surface-notch) / <alpha-value>)',
 				'accent-yellow-muted': 'rgb(var(--fp-accent-yellow-muted) / <alpha-value>)',
 
+				/* Status chips + toasts. Applied through inline style, so these are consumed as rgb(var(--fp-x)). */
+				'chip-success-bg': 'rgb(var(--fp-chip-success-bg) / <alpha-value>)',
+				'chip-success-text': 'rgb(var(--fp-chip-success-text) / <alpha-value>)',
+				'chip-success-line': 'rgb(var(--fp-chip-success-line) / <alpha-value>)',
+				'chip-neutral-bg': 'rgb(var(--fp-chip-neutral-bg) / <alpha-value>)',
+				'chip-neutral-text': 'rgb(var(--fp-chip-neutral-text) / <alpha-value>)',
+				'chip-danger-bg': 'rgb(var(--fp-chip-danger-bg) / <alpha-value>)',
+				'chip-info-bg': 'rgb(var(--fp-chip-info-bg) / <alpha-value>)',
+				'chip-info-text': 'rgb(var(--fp-chip-info-text) / <alpha-value>)',
+				'chip-warning-bg': 'rgb(var(--fp-chip-warning-bg) / <alpha-value>)',
+				'chip-warning-text': 'rgb(var(--fp-chip-warning-text) / <alpha-value>)',
+				'toast-success': 'rgb(var(--fp-toast-success) / <alpha-value>)',
+				'toast-danger': 'rgb(var(--fp-toast-danger) / <alpha-value>)',
+
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',
 				'brand-blue-light': 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',

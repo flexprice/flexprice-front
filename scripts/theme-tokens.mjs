@@ -168,6 +168,23 @@ export const TOKEN_GROUPS = [
 		],
 	},
 	{
+		group: 'Status chips + toasts. Applied through inline style, so these are consumed as rgb(var(--fp-x)).',
+		tokens: [
+			{ name: 'chip-success-bg', light: '#ECFBE4', dark: '#16301f' },
+			{ name: 'chip-success-text', light: '#377E6A', dark: '#5fc99a' },
+			{ name: 'chip-success-line', light: '#d1e9ca', dark: '#24503a' },
+			{ name: 'chip-neutral-bg', light: '#F0F2F5', dark: '#26262a' },
+			{ name: 'chip-neutral-text', light: '#57646E', dark: '#a3abb5' },
+			{ name: 'chip-danger-bg', light: 'red.100', dark: '#3a1a1c', note: 'chip danger text reuses the existing `danger` token (red.600)' },
+			{ name: 'chip-info-bg', light: '#EFF8FF', dark: '#16243c' },
+			{ name: 'chip-info-text', light: '#2F6FE2', dark: '#6ba5ff' },
+			{ name: 'chip-warning-bg', light: 'orange.50', dark: '#2e1f10' },
+			{ name: 'chip-warning-text', light: 'orange.700', dark: '#f5934f' },
+			{ name: 'toast-success', light: '#5CA7A0', dark: '#6fc4bc', note: 'react-hot-toast iconTheme.primary' },
+			{ name: 'toast-danger', light: '#E76E50', dark: '#f08a70' },
+		],
+	},
+	{
 		group: 'Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged.',
 		tokens: [
 			{ name: 'brand-blue', light: '#3293D9', dark: '#4aa8e8', note: 'was colors.blue.DEFAULT' },
