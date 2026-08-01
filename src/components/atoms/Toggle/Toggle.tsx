@@ -22,9 +22,9 @@ const Toggle: FC<Props> = ({ onChange, checked, description, error, label, title
 			<div className='flex items-start space-x-4 s'>
 				<Switch id={switchId} checked={checked} onCheckedChange={onChange} disabled={disabled} className={className} />
 				<Label htmlFor={switchId}>
-					<p className='font-medium text-sm text-[#18181B] peer-checked:text-black'>{label}</p>
+					<p className='font-medium text-sm text-content-zinc-bold peer-checked:text-content-black'>{label}</p>
 					<Spacer height={'4px'} />
-					<p className='text-sm font-normal text-[#71717A] peer-checked:text-gray-700'>{description}</p>
+					<p className='text-sm font-normal text-content-zinc-muted peer-checked:text-content-secondary'>{description}</p>
 				</Label>
 			</div>
 			{error && <p className='text-sm text-destructive'>{error}</p>}

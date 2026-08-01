@@ -29,9 +29,9 @@ const RadioGroup: FC<Props> = ({ items, onChange, selected, title, disabled }) =
 						<div
 							className={cn(
 								'w-full items-center flex gap-4 p-2  cursor-pointer rounded-lg border',
-								// isSelected ? 'bg-zinc-100' : 'bg-white',
+								// isSelected ? 'bg-surface-muted' : 'bg-surface',
 								disabled ? 'opacity-50 cursor-not-allowed  ' : '',
-								isSelected && 'border-zinc-600 border bg-white',
+								isSelected && 'border-line-zinc-tertiary border bg-surface',
 							)}
 							key={item.value}
 							onClick={() => {
@@ -47,7 +47,7 @@ const RadioGroup: FC<Props> = ({ items, onChange, selected, title, disabled }) =
 
 							<div>
 								<p className='font-medium  text-sm'>{item.label}</p>
-								<p className='font-normal  text-sm text-zinc-500 '>{item.description}</p>
+								<p className='font-normal  text-sm text-content-zinc-muted '>{item.description}</p>
 							</div>
 						</div>
 					);

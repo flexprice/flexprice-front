@@ -26,12 +26,12 @@ const PaymentUrlSuccessDialog: FC<PaymentUrlSuccessDialogProps> = ({
 			isOpen={isOpen}
 			onOpenChange={onClose}
 			title={t('paymentLink.dialogTitle')}
-			titleClassName='text-lg font-semibold text-[#18181B]'
+			titleClassName='text-lg font-semibold text-content-zinc-bold'
 			className='sm:max-w-[500px]'
 			showCloseButton={false}>
 			<div className='space-y-4'>
-				<div className='p-4 bg-green-50 border border-green-200 rounded-lg'>
-					<div className='text-sm text-green-800 mb-2'>{t('paymentLink.successBanner')}</div>
+				<div className='p-4 bg-success-muted border border-success-line rounded-lg'>
+					<div className='text-sm text-success-deep mb-2'>{t('paymentLink.successBanner')}</div>
 				</div>
 
 				<div className='flex gap-3'>

@@ -25,17 +25,21 @@ const Stepper: FC<StepperProps> = ({ steps, activeStep }) => {
 							<div
 								className={cn('flex items-center justify-center size-5 rounded-full  text-base', {
 									'': isCompleted,
-									'border-[#333333] text-black border': isActive && !isCompleted,
-									'border-[#EBEBEB] text-[#999999] bg-[#00000005] border': !isActive && !isCompleted,
+									'border-stepper-active text-content-black border': isActive && !isCompleted,
+									'border-stepper-line text-stepper-idle bg-[#00000005] border': !isActive && !isCompleted,
 								})}>
-								{isCompleted ? <IoCheckmarkCircleSharp className='text-[#333333] size-5' /> : <span className='text-xs'>{index + 1}</span>}
+								{isCompleted ? (
+									<IoCheckmarkCircleSharp className='text-stepper-active size-5' />
+								) : (
+									<span className='text-xs'>{index + 1}</span>
+								)}
 							</div>
 
 							{/* Step Label */}
 							<div
 								className={cn('ms-2 text-xs font-semibold', {
-									'text-[#333333]': isCompleted || isActive,
-									'text-[#999999]': !isCompleted && !isActive,
+									'text-stepper-active': isCompleted || isActive,
+									'text-stepper-idle': !isCompleted && !isActive,
 								})}>
 								{step.label}
 							</div>
@@ -45,8 +49,8 @@ const Stepper: FC<StepperProps> = ({ steps, activeStep }) => {
 						{index < steps.length - 1 && (
 							<div
 								className={cn('flex-1 border mx-2', {
-									'bg-black': isCompleted,
-									'bg-gray-300': !isCompleted,
+									'bg-content-black': isCompleted,
+									'bg-surface-bold': !isCompleted,
 								})}></div>
 						)}
 					</React.Fragment>

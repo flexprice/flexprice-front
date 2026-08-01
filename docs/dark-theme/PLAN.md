@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 8 (Chip + AppToaster) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 9 (atoms G–Z) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -16,8 +16,8 @@ Status: **Step 8 (Chip + AppToaster) complete.** Branch `feat/dark_theme`, track
 | 6    | `components/ui/` shadcn primitives (9 files)                             | ✅      |
 | 7    | `components/atoms/` A–F, mechanical (15 files); 95 tokens                | ✅      |
 | 8    | `Chip` + `AppToaster` status/feedback palette; 107 tokens                | ✅      |
-| 9    | `ErrorBoundary` — migrates the legacy bare `blue` key to `brand-blue`    | ⬜ next |
-| 10   | `components/atoms/` G–Z                                                  | ⬜      |
+| 9    | `components/atoms/` G–Z (17 files); 113 tokens                           | ✅      |
+| 10   | `components/molecules/` — 157 files, split across ~15 commits            | ⬜ next |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
@@ -142,6 +142,23 @@ worsened it. The dark values were chosen to clear AA, and all five do.
 Fixing the light chips is a real accessibility improvement but it is a **visible light-mode change**,
 which is exactly what this workstream promises not to do. It belongs in its own PR with its own
 sign-off, not smuggled into a dark-theme commit.
+
+### `blue-DEFAULT` and `text-zinc` are dead classes (found in Step 9)
+
+`ErrorBoundary` uses `bg-blue-DEFAULT/10`, `hover:border-blue-DEFAULT/30` and six similar classes,
+26 in total. Tailwind flattens a `DEFAULT` key to the bare name — `bg-blue`, never `bg-blue-DEFAULT`
+— so **none of them are emitted**. Confirmed: zero occurrences of `blue-DEFAULT` in the built CSS,
+and probing `bg-blue-DEFAULT/10` in the browser returns `rgba(0, 0, 0, 0)`.
+
+The bare forms (`bg-blue`, `bg-blue-light`) are used nowhere in `src/`, so `colors.blue.DEFAULT`
+and `colors.blue.light` in `tailwind.config.js` are dead config too, and the `brand-blue` /
+`brand-blue-light` tokens added in Step 1 currently have no consumer.
+
+Same story for a bare `text-zinc` in four atoms: `zinc` has no `DEFAULT`, so it paints nothing.
+
+**Left untouched on purpose.** Making these classes work would make blue accents appear on the error
+page that are not there today — a visible light-mode change, which is exactly what this workstream
+promises not to do. It is a real bug worth fixing, but it needs its own PR and its own sign-off.
 
 ### `dark:`-scoped classes are not migration debt
 

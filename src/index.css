@@ -201,6 +201,12 @@
 		--fp-chip-warning-text: 194 65 12; /* #c2410c */
 		--fp-toast-success: 92 167 160; /* #5ca7a0 — react-hot-toast iconTheme.primary */
 		--fp-toast-danger: 231 110 80; /* #e76e50 */
+		--fp-line-zinc-bold: 161 161 170; /* #a1a1aa — InfoIcon focus ring */
+		--fp-line-zinc-tertiary: 82 82 91; /* #52525b — RadioGroup selected border */
+		--fp-surface-slate-subtle: 241 245 249; /* #f1f5f9 — MultiChipInput chip fill */
+		--fp-stepper-active: 51 51 51; /* #333333 — Stepper active/completed step */
+		--fp-stepper-idle: 153 153 153; /* #999999 */
+		--fp-stepper-line: 235 235 235; /* #ebebeb */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
@@ -402,6 +408,12 @@
 		--fp-chip-warning-text: 245 147 79; /* #f5934f */
 		--fp-toast-success: 111 196 188; /* #6fc4bc */
 		--fp-toast-danger: 240 138 112; /* #f08a70 */
+		--fp-line-zinc-bold: 69 69 77; /* #45454d */
+		--fp-line-zinc-tertiary: 85 88 95; /* #55585f */
+		--fp-surface-slate-subtle: 35 35 38; /* #232326 */
+		--fp-stepper-active: 228 229 232; /* #e4e5e8 */
+		--fp-stepper-idle: 116 120 127; /* #74787f */
+		--fp-stepper-line: 53 53 59; /* #35353b */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

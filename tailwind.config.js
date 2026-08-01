@@ -213,6 +213,12 @@ export default {
 				'chip-warning-text': 'rgb(var(--fp-chip-warning-text) / <alpha-value>)',
 				'toast-success': 'rgb(var(--fp-toast-success) / <alpha-value>)',
 				'toast-danger': 'rgb(var(--fp-toast-danger) / <alpha-value>)',
+				'line-zinc-bold': 'rgb(var(--fp-line-zinc-bold) / <alpha-value>)',
+				'line-zinc-tertiary': 'rgb(var(--fp-line-zinc-tertiary) / <alpha-value>)',
+				'surface-slate-subtle': 'rgb(var(--fp-surface-slate-subtle) / <alpha-value>)',
+				'stepper-active': 'rgb(var(--fp-stepper-active) / <alpha-value>)',
+				'stepper-idle': 'rgb(var(--fp-stepper-idle) / <alpha-value>)',
+				'stepper-line': 'rgb(var(--fp-stepper-line) / <alpha-value>)',
 
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',

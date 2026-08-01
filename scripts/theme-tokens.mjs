@@ -182,6 +182,12 @@ export const TOKEN_GROUPS = [
 			{ name: 'chip-warning-text', light: 'orange.700', dark: '#f5934f' },
 			{ name: 'toast-success', light: '#5CA7A0', dark: '#6fc4bc', note: 'react-hot-toast iconTheme.primary' },
 			{ name: 'toast-danger', light: '#E76E50', dark: '#f08a70' },
+			{ name: 'line-zinc-bold', light: 'zinc.400', dark: '#45454d', note: 'InfoIcon focus ring' },
+			{ name: 'line-zinc-tertiary', light: 'zinc.600', dark: '#55585f', note: 'RadioGroup selected border' },
+			{ name: 'surface-slate-subtle', light: 'slate.100', dark: '#232326', note: 'MultiChipInput chip fill' },
+			{ name: 'stepper-active', light: '#333333', dark: '#e4e5e8', note: 'Stepper active/completed step' },
+			{ name: 'stepper-idle', light: '#999999', dark: '#74787f' },
+			{ name: 'stepper-line', light: '#EBEBEB', dark: '#35353b' },
 		],
 	},
 	{

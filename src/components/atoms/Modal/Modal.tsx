@@ -17,7 +17,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onOpenChange, children, className, show
 
 	const modalContent = (
 		<div
-			className={cn('fixed inset-0 z-50 flex items-center justify-center', showOverlay ? 'bg-black bg-opacity-50' : '')}
+			className={cn('fixed inset-0 z-50 flex items-center justify-center', showOverlay ? 'bg-surface-scrim bg-opacity-50' : '')}
 			onClick={() => onOpenChange(false)}>
 			<div className={cn('relative', className)} onClick={(e) => e.stopPropagation()}>
 				<Button

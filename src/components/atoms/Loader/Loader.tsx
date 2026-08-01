@@ -27,13 +27,13 @@ const Loader = () => {
 	}, []);
 
 	return (
-		<div className='w-full h-full flex items-center justify-center bg-white/80 z-50'>
+		<div className='w-full h-full flex items-center justify-center bg-surface/80 z-50'>
 			<div className='flex flex-col items-center gap-4 max-w-md text-center px-4'>
 				{/* <Spinner size={50} className='text-primary' /> */}
 				<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto'></div>
 				<p
 					className={`
-						text-sm text-gray-600 
+						text-sm text-content-tertiary 
 						transition-all duration-600 ease-in-out
 						${fadeOut ? 'opacity-0 transform -translate-y-2' : 'opacity-100 transform translate-y-0'}
 					`}>

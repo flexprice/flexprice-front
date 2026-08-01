@@ -13,7 +13,7 @@ const Label = ({ label, disabled, labelClassName, children, htmlFor, ...props }:
 		<label
 			{...props}
 			htmlFor={htmlFor}
-			className={cn(' block text-sm font-medium', disabled ? 'text-zinc-500' : 'text-zinc-950', labelClassName)}>
+			className={cn(' block text-sm font-medium', disabled ? 'text-content-zinc-muted' : 'text-content-zinc', labelClassName)}>
 			{label ? label : children}
 		</label>
 	);
