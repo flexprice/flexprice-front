@@ -218,7 +218,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 						width={width}
 						align={align}
 						className={cn(
-							color ? `text-[${color}] !text-black` : 'text-black',
+							color ? `text-[${color}] !text-content-black` : 'text-content-black',
 							'font-sans font-medium px-3',
 							variant === 'default' && index === 0 ? 'rounded-ss-[6px]' : '',
 							variant === 'default' && index === columns.length - 1 ? 'rounded-se-[6px]' : '',
@@ -255,11 +255,11 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 							key={colIndex}
 							data-interactive={fieldVariant === 'interactive'}
 							className={cn(
-								textColor ? `text-[${textColor}]` : 'text-gray-700',
+								textColor ? `text-[${textColor}]` : 'text-content-secondary',
 								variant === 'default' ? 'font-normal' : 'font-light',
 								'!max-h-8 px-3 py-3 text-[14px]',
 								onCLick && 'cursor-pointer hover:bg-muted/50',
-								fieldVariant === 'title' ? 'font-regular text-foreground' : '!font-light text-gray-700',
+								fieldVariant === 'title' ? 'font-regular text-foreground' : '!font-light text-content-secondary',
 								fieldVariant === 'link' && 'cursor-pointer text-primary hover:underline',
 								fieldVariant === 'icon' && 'w-10',
 								fieldVariant === 'interactive' && 'cursor-default',

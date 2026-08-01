@@ -33,11 +33,11 @@ const DiscountedPriceDisplay: FC<{
 }> = ({ originalAmount, discountedAmount, symbol, couponName }) => (
 	<div className='flex items-center gap-2'>
 		<div className='flex flex-col'>
-			<div className='line-through text-gray-400 text-sm'>
+			<div className='line-through text-content-subtle text-sm'>
 				{symbol}
 				{formatAmount(originalAmount.toString())}
 			</div>
-			<div className='text-gray-900 font-medium'>
+			<div className='text-content font-medium'>
 				{symbol}
 				{formatAmount(discountedAmount.toString())}
 			</div>
@@ -45,9 +45,9 @@ const DiscountedPriceDisplay: FC<{
 		<TooltipProvider delayDuration={0}>
 			<Tooltip>
 				<TooltipTrigger>
-					<Info className='h-4 w-4 text-blue-500 hover:text-blue-600 transition-colors duration-150' />
+					<Info className='h-4 w-4 text-info-bright hover:text-info transition-colors duration-150' />
 				</TooltipTrigger>
-				<TooltipContent sideOffset={5} className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-3 py-2 rounded-lg'>
+				<TooltipContent sideOffset={5} className='bg-surface border border-line shadow-lg text-sm text-content px-3 py-2 rounded-lg'>
 					<div className='font-medium'>{couponName}</div>
 				</TooltipContent>
 			</Tooltip>
@@ -215,13 +215,13 @@ const OverrideTooltip: FC<{
 		<TooltipProvider delayDuration={0}>
 			<Tooltip>
 				<TooltipTrigger>
-					<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+					<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 				</TooltipTrigger>
 				<TooltipContent
 					sideOffset={5}
-					className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-lg max-w-[300px]'>
+					className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[300px]'>
 					<div className='space-y-2'>
-						<div className='font-medium text-gray-900'>Price Override Applied</div>
+						<div className='font-medium text-content'>Price Override Applied</div>
 						{changes.map((change, index) => {
 							// Check if this is a tier change that should be formatted as a table
 							if (change.startsWith('Tier ') && change.includes(':')) {
@@ -230,7 +230,7 @@ const OverrideTooltip: FC<{
 								const tierDetails = tierInfo[1];
 
 								return (
-									<div key={index} className='text-sm text-gray-600 space-y-1'>
+									<div key={index} className='text-sm text-content-tertiary space-y-1'>
 										<div className='font-medium'>{tierHeader}:</div>
 										<div className='ml-2 space-y-1'>
 											{tierDetails.split(', ').map((detail, detailIndex) => (
@@ -245,7 +245,7 @@ const OverrideTooltip: FC<{
 
 							// Regular change format
 							return (
-								<div key={index} className='text-sm text-gray-600'>
+								<div key={index} className='text-sm text-content-tertiary'>
 									• {change}
 								</div>
 							);
@@ -282,15 +282,15 @@ const TieredPricingTooltip: FC<{
 		<TooltipProvider delayDuration={0}>
 			<Tooltip>
 				<TooltipTrigger>
-					<Info className={cn(hasOverrides && 'text-orange-600', 'h-4 w-4  transition-colors duration-150')} />
+					<Info className={cn(hasOverrides && 'text-accent-orange', 'h-4 w-4  transition-colors duration-150')} />
 				</TooltipTrigger>
 				<TooltipContent
 					sideOffset={5}
-					className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-lg max-w-[320px]'>
+					className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
 					<div className='space-y-3'>
-						<div className='font-medium border-b border-spacing-1 border-gray-200 pb-2 text-base text-gray-900'>
+						<div className='font-medium border-b border-spacing-1 border-line pb-2 text-base text-content'>
 							{t('catalog:chargeValue.tierPricingTitle', { mode: modeLabel })}
-							{hasOverrides && <span className='text-xs text-orange-600 ms-2'>{t('catalog:chargeValue.overridden')}</span>}
+							{hasOverrides && <span className='text-xs text-accent-orange ms-2'>{t('catalog:chargeValue.overridden')}</span>}
 						</div>
 						<div className='space-y-2'>
 							{tiers.map((tier, index) => (
@@ -307,7 +307,7 @@ const TieredPricingTooltip: FC<{
 												})}
 											</div>
 											{Number(tier.flat_amount) > 0 && (
-												<div className='text-xs text-gray-500'>
+												<div className='text-xs text-content-muted'>
 													{t('catalog:chargeValue.flatFeePlusLine', {
 														symbol,
 														amount: formatAmount(tier.flat_amount || '0'),
@@ -316,7 +316,7 @@ const TieredPricingTooltip: FC<{
 											)}
 										</div>
 									</div>
-									{index < tiers.length - 1 && <div className='h-px bg-gray-100' />}
+									{index < tiers.length - 1 && <div className='h-px bg-surface-shell' />}
 								</div>
 							))}
 						</div>

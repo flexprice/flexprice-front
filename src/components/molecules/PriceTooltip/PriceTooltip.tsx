@@ -52,9 +52,9 @@ const TierBreakdown: FC<{ normalized: NormalizedPriceDisplay; hasOverrides?: boo
 
 	return (
 		<div className='space-y-3'>
-			<div className='font-medium border-b border-gray-200 pb-2 text-base text-gray-900'>
+			<div className='font-medium border-b border-line pb-2 text-base text-content'>
 				{title}
-				{hasOverrides && <span className='text-xs text-orange-600 ms-2'>{t('priceTooltip.overriddenBadge')}</span>}
+				{hasOverrides && <span className='text-xs text-accent-orange ms-2'>{t('priceTooltip.overriddenBadge')}</span>}
 			</div>
 			<div className='space-y-2'>
 				{tiers.map((tier, index) => (
@@ -71,7 +71,7 @@ const TierBreakdown: FC<{ normalized: NormalizedPriceDisplay; hasOverrides?: boo
 									})}
 								</div>
 								{Number(tier.flat_amount) > 0 && (
-									<div className='text-xs text-gray-500'>
+									<div className='text-xs text-content-muted'>
 										{t('priceTooltip.flatFeeLine', {
 											symbol,
 											amount: formatAmount(tier.flat_amount || '0'),
@@ -80,7 +80,7 @@ const TierBreakdown: FC<{ normalized: NormalizedPriceDisplay; hasOverrides?: boo
 								)}
 							</div>
 						</div>
-						{index < tiers.length - 1 && <div className='h-px bg-gray-100' />}
+						{index < tiers.length - 1 && <div className='h-px bg-surface-shell' />}
 					</div>
 				))}
 			</div>
@@ -250,7 +250,7 @@ function OverrideChangesList({
 		<div className='space-y-2'>
 			{rows.map((change, index) =>
 				change.variant === 'tier' ? (
-					<div key={index} className='text-sm text-gray-600 space-y-1'>
+					<div key={index} className='text-sm text-content-tertiary space-y-1'>
 						<div className='font-medium'>{t('priceTooltip.tierNDetailsHeader', { n: change.tierNumber })}</div>
 						<div className='ms-2 space-y-1'>
 							{change.detailLines.map((detail, detailIndex) => (
@@ -261,7 +261,7 @@ function OverrideChangesList({
 						</div>
 					</div>
 				) : (
-					<div key={index} className='text-sm text-gray-600'>
+					<div key={index} className='text-sm text-content-tertiary'>
 						• {change.text}
 					</div>
 				),
@@ -289,15 +289,15 @@ const PriceTooltipContent: FC<{
 	return (
 		<TooltipContent
 			sideOffset={5}
-			className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-lg max-w-[320px]'>
+			className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
 			<div className='space-y-3'>
 				{isSubscriptionOverride && (
 					<div className='space-y-2'>
-						<div className='font-medium text-gray-900'>{t('priceTooltip.overriddenPrice')}</div>
+						<div className='font-medium text-content'>{t('priceTooltip.overriddenPrice')}</div>
 						{isTiered ? (
 							<TierBreakdown normalized={normalized} hasOverrides={false} t={t} />
 						) : (
-							<div className='text-sm text-gray-900'>
+							<div className='text-sm text-content'>
 								{normalized.billingModel === BILLING_MODEL.FLAT_FEE
 									? t('priceTooltip.displayPerUnit', {
 											symbol: normalized.symbol,
@@ -311,24 +311,24 @@ const PriceTooltipContent: FC<{
 
 				{!isSubscriptionOverride && hasDiscount && discountInfo && (
 					<div className='space-y-2'>
-						<div className='font-medium text-gray-900'>{t('priceTooltip.priceHeading')}</div>
+						<div className='font-medium text-content'>{t('priceTooltip.priceHeading')}</div>
 						<div className='space-y-1'>
-							<div className='line-through text-gray-400 text-sm'>
+							<div className='line-through text-content-subtle text-sm'>
 								{normalized.symbol}
 								{formatAmount(discountInfo.originalAmount.toString())}
 							</div>
-							<div className='text-gray-900 font-medium'>
+							<div className='text-content font-medium'>
 								{normalized.symbol}
 								{formatAmount(discountInfo.discountedAmount.toString())}
 							</div>
-							{couponName && <div className='text-xs text-gray-500 mt-1'>{couponName}</div>}
+							{couponName && <div className='text-xs text-content-muted mt-1'>{couponName}</div>}
 						</div>
 					</div>
 				)}
 
 				{!isSubscriptionOverride && hasOverrides && !isTiered && originalNormalized && originalPrice && (
 					<div className='space-y-2'>
-						<div className='font-medium text-gray-900'>{t('priceTooltip.priceOverrideApplied')}</div>
+						<div className='font-medium text-content'>{t('priceTooltip.priceOverrideApplied')}</div>
 						<OverrideChangesList original={originalNormalized} overridden={normalized} originalPrice={originalPrice} t={t} />
 					</div>
 				)}
@@ -341,8 +341,8 @@ const PriceTooltipContent: FC<{
 
 				{!isSubscriptionOverride && !hasDiscount && !hasOverrides && !isTiered && (
 					<div className='space-y-1'>
-						<div className='font-medium text-gray-900'>{t('priceTooltip.priceHeading')}</div>
-						<div className='text-sm text-gray-900'>
+						<div className='font-medium text-content'>{t('priceTooltip.priceHeading')}</div>
+						<div className='text-sm text-content'>
 							{normalized.billingModel === BILLING_MODEL.FLAT_FEE
 								? t('priceTooltip.displayPerUnit', {
 										symbol: normalized.symbol,
@@ -368,7 +368,7 @@ const PriceTooltip: FC<Props> = ({ data, appliedCoupon, priceOverride, isSubscri
 	const hasDiscount = !!discountInfo;
 	const couponName = appliedCoupon ? formatCouponName(appliedCoupon) : undefined;
 
-	const iconColor = hasOverrides || isSubscriptionOverride ? 'text-orange-600' : hasDiscount ? 'text-blue-500' : 'text-gray-500';
+	const iconColor = hasOverrides || isSubscriptionOverride ? 'text-accent-orange' : hasDiscount ? 'text-info-bright' : 'text-content-muted';
 
 	return (
 		<TooltipProvider delayDuration={0}>

@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 10 (connection drawers) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 11 (invoice/subscription tables) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -18,7 +18,8 @@ Status: **Step 10 (connection drawers) complete.** Branch `feat/dark_theme`, tra
 | 8    | `Chip` + `AppToaster` status/feedback palette; 107 tokens                | ✅      |
 | 9    | `components/atoms/` G–Z (17 files); 113 tokens                           | ✅      |
 | 10   | 15 connection drawers (283 replacements); 114 tokens                     | ✅      |
-| 11+  | rest of `components/molecules/` — ~140 files, ~12 more commits           | ⬜ next |
+| 11   | Invoice/subscription tables (13 files, 187 replacements); scripted map   | ✅      |
+| 12+  | rest of `components/molecules/` — ~127 files, ~10 more commits           | ⬜ next |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
@@ -178,6 +179,38 @@ first, then apply it mechanically, then verify the tokens rather than the files.
 translucent-white elevation overlays that only apply in dark mode — a standard technique, not a
 light-mode literal. They are left alone, and a future lint rule banning raw palette classes must
 exempt `dark:`-prefixed ones.
+
+### The migration is now scripted (Step 11)
+
+`scripts/migrate-theme-classes.mjs` holds the canonical class → token map and applies it to any set
+of paths (`--dry` to preview). Each remaining step is: dry-run a batch, scan it for role traps, apply,
+verify, commit.
+
+The map was **derived, not authored**. For each of the 160 distinct raw palette classes left in the
+app, the class's Tailwind hex was matched against tokens whose light value is byte-identical, then
+filtered by role (`bg` → surface/status, `text` → content/status, `border|ring|divide` → line/status).
+That produced **112 mappings with zero ambiguous cases** — a useful signal that the role model holds
+up. The 48 it could not place are the deferred long tail plus a handful of genuinely missing tokens.
+
+Three things it deliberately refuses to do:
+
+- **`dark:`-prefixed classes are skipped.** Those are dark-only overlays, not light-mode debt.
+- **Gradient stops (`from-`/`to-`/`via-`) are left alone.** Almost all are one-off decorations on the
+  checkout and pricing screens; they get a dedicated step.
+- **It never guesses.** Anything outside the table is left untouched and reported, so role traps stay
+  a human decision rather than a silent rewrite.
+
+The boundary assertions in its regex are load-bearing: without `(?<![\w-])…(?![\w-])`, `bg-blue-50`
+matches inside `bg-blue-500` and quietly rewrites a different colour.
+
+### Dead `text-zinc` classes (found in Step 11)
+
+`text-zinc` appears ~10 times but emits no CSS — `tailwind.config.js` defines no `zinc.DEFAULT`, and
+Tailwind's default `zinc` palette only has numbered steps. Those elements just inherit. Harmless, and
+removing them is a no-op in both themes, so it is filed as separate cleanup rather than mixed in here.
+
+By contrast `bg-blue` / `text-blue` / `border-blue` **are** real — they resolve through the `blue`
+key in `tailwind.config.js`, which Step 9 re-pointed at the brand tokens.
 
 ### The `:root` immutability guard
 

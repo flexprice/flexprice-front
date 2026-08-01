@@ -21,7 +21,7 @@ const RedirectCell: FC<Props> = ({ redirectUrl, children, allowRedirect = true, 
 				target={target}
 				to={redirectUrl}
 				aria-hidden='true'
-				className='flex items-center gap-2 max-w-fit group underline decoration-dashed decoration-[1px] decoration-gray-500/50 underline-offset-4'>
+				className='flex items-center gap-2 max-w-fit group underline decoration-dashed decoration-[1px] decoration-content-muted/50 underline-offset-4'>
 				{children}
 				<ExternalLink className='w-4 h-4 opacity-0 group-hover:opacity-40 transition-opacity duration-200' />
 			</Link>

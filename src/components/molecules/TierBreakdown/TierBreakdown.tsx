@@ -29,19 +29,19 @@ const TierBreakdown: FC<Props> = ({ tiers, totalCost, effectiveRate, tierMode, c
 		<Card className='p-4'>
 			<div className='space-y-4'>
 				<div className='flex justify-between items-center'>
-					<h3 className='text-lg font-semibold text-gray-900'>{t('tierBreakdown.title')}</h3>
-					<div className='text-sm text-gray-600'>
+					<h3 className='text-lg font-semibold text-content'>{t('tierBreakdown.title')}</h3>
+					<div className='text-sm text-content-tertiary'>
 						{t('tierBreakdown.modeLabel')} <span className='font-medium'>{tierMode}</span>
 					</div>
 				</div>
 
 				<div className='grid grid-cols-2 gap-4 text-sm'>
 					<div>
-						<span className='text-gray-600'>{t('tierBreakdown.totalUsage')}</span>
+						<span className='text-content-tertiary'>{t('tierBreakdown.totalUsage')}</span>
 						<span className='ms-2 font-medium'>{usageQuantity}</span>
 					</div>
 					<div>
-						<span className='text-gray-600'>{t('tierBreakdown.totalCost')}</span>
+						<span className='text-content-tertiary'>{t('tierBreakdown.totalCost')}</span>
 						<span className='ms-2 font-medium'>
 							{currencySymbol}
 							{totalCost}
@@ -50,16 +50,16 @@ const TierBreakdown: FC<Props> = ({ tiers, totalCost, effectiveRate, tierMode, c
 				</div>
 
 				{tierMode === TIER_MODE.VOLUME && (
-					<div className='bg-blue-50 p-3 rounded-md'>
-						<div className='text-sm text-blue-800'>
+					<div className='bg-info-muted p-3 rounded-md'>
+						<div className='text-sm text-info-deep'>
 							<strong>{t('tierBreakdown.volumeModeTitle')}</strong> {t('tierBreakdown.volumeModeBody', { usageQuantity, rate: volumeRate })}
 						</div>
 					</div>
 				)}
 
 				{tierMode === TIER_MODE.SLAB && (
-					<div className='bg-green-50 p-3 rounded-md'>
-						<div className='text-sm text-green-800'>
+					<div className='bg-success-muted p-3 rounded-md'>
+						<div className='text-sm text-success-deep'>
 							<strong>{t('tierBreakdown.slabModeTitle')}</strong> {t('tierBreakdown.slabModeBody')}
 						</div>
 					</div>
@@ -67,27 +67,27 @@ const TierBreakdown: FC<Props> = ({ tiers, totalCost, effectiveRate, tierMode, c
 
 				{tiers.length > 0 && (
 					<div className='space-y-2'>
-						<div className='text-sm font-medium text-gray-700'>{t('tierBreakdown.tierDetails')}</div>
+						<div className='text-sm font-medium text-content-secondary'>{t('tierBreakdown.tierDetails')}</div>
 						<div className='space-y-1'>
 							{tiers.map((tier, index) => (
-								<div key={index} className='flex justify-between text-sm py-1 border-b border-gray-100 last:border-b-0'>
+								<div key={index} className='flex justify-between text-sm py-1 border-b border-line-subtle last:border-b-0'>
 									<div className='flex-1'>
-										<span className='text-gray-600'>{t('tierBreakdown.range')}</span>
+										<span className='text-content-tertiary'>{t('tierBreakdown.range')}</span>
 										<span className='ms-2 font-medium'>{tier.range}</span>
 									</div>
 									<div className='flex-1'>
-										<span className='text-gray-600'>{t('tierBreakdown.quantity')}</span>
+										<span className='text-content-tertiary'>{t('tierBreakdown.quantity')}</span>
 										<span className='ms-2 font-medium'>{tier.quantity}</span>
 									</div>
 									<div className='flex-1'>
-										<span className='text-gray-600'>{t('tierBreakdown.rate')}</span>
+										<span className='text-content-tertiary'>{t('tierBreakdown.rate')}</span>
 										<span className='ms-2 font-medium'>
 											{currencySymbol}
 											{tier.rate}
 										</span>
 									</div>
 									<div className='flex-1'>
-										<span className='text-gray-600'>{t('tierBreakdown.cost')}</span>
+										<span className='text-content-tertiary'>{t('tierBreakdown.cost')}</span>
 										<span className='ms-2 font-medium'>
 											{currencySymbol}
 											{tier.cost}

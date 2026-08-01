@@ -174,8 +174,8 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 								})}
 								value={0}
 								className='h-[6px]'
-								indicatorColor='bg-blue-600'
-								backgroundColor='bg-blue-200'
+								indicatorColor='bg-info'
+								backgroundColor='bg-info-line'
 							/>
 						);
 					}
@@ -183,7 +183,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					const value = Math.ceil((usage / limit) * 100);
 					const indicatorColor = value >= 100 ? 'bg-gradient-to-r from-red-600 to-red-400' : 'bg-gradient-to-r from-[#6167d9] to-[#2563eb]';
 
-					const backgroundColor = value >= 100 ? 'bg-red-50' : 'bg-blue-200';
+					const backgroundColor = value >= 100 ? 'bg-danger-muted' : 'bg-info-line';
 
 					return (
 						<Progress

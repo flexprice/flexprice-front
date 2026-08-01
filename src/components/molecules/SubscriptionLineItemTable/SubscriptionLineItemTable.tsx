@@ -317,7 +317,7 @@ const formatLineItemDateTooltip = (lineItem: LineItem, t: TFunction): React.Reac
 			if (!isNaN(startDate.getTime())) {
 				dateItems.push(
 					<div key='start' className='flex items-center gap-2'>
-						<span className='text-xs font-medium text-gray-500'>{t('labels.start')}</span>
+						<span className='text-xs font-medium text-content-muted'>{t('labels.start')}</span>
 						<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(startDate)}</span>
 					</div>,
 				);
@@ -333,7 +333,7 @@ const formatLineItemDateTooltip = (lineItem: LineItem, t: TFunction): React.Reac
 			if (!isNaN(endDate.getTime())) {
 				dateItems.push(
 					<div key='end' className='flex items-center gap-2'>
-						<span className='text-xs font-medium text-gray-500'>{t('labels.end')}</span>
+						<span className='text-xs font-medium text-content-muted'>{t('labels.end')}</span>
 						<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(endDate)}</span>
 					</div>,
 				);
@@ -489,7 +489,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 									content={displayName}
 									delayDuration={0}
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 									<span className='block min-w-0 truncate'>{displayName}</span>
 								</Tooltip>
 							)}
@@ -498,12 +498,12 @@ const SubscriptionLineItemTable: FC<Props> = ({
 									content={formatCommitmentTooltip(commitmentInfo!, t)}
 									delayDuration={0}
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 									<button
 										type='button'
 										data-interactive='true'
-										className='inline-flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'>
-										<Info className='h-4 w-4 text-blue-500 flex-shrink-0' />
+										className='inline-flex items-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info-bright'>
+										<Info className='h-4 w-4 text-info-bright flex-shrink-0' />
 									</button>
 								</Tooltip>
 							)}
@@ -516,7 +516,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 						{
 							title: 'Phase',
 							render: (row: LineItemWithStatus) => (
-								<span className='text-sm text-gray-700'>
+								<span className='text-sm text-content-secondary'>
 									{(row.subscription_phase_id && phaseLabelsById[row.subscription_phase_id]) ?? '—'}
 								</span>
 							),
@@ -549,7 +549,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 							content={rowData.tooltipContent}
 							delayDuration={0}
 							sideOffset={5}
-							className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 							<span>
 								<Chip label={rowData.statusLabel} variant={rowData.statusVariant} />
 							</span>
@@ -635,9 +635,9 @@ const SubscriptionLineItemTable: FC<Props> = ({
 			return (
 				<div className='p-4'>
 					<div className='animate-pulse space-y-4'>
-						<div className='h-4 bg-gray-200 rounded w-3/4'></div>
-						<div className='h-4 bg-gray-200 rounded w-1/2'></div>
-						<div className='h-4 bg-gray-200 rounded w-5/6'></div>
+						<div className='h-4 bg-surface-strong rounded w-3/4'></div>
+						<div className='h-4 bg-surface-strong rounded w-1/2'></div>
+						<div className='h-4 bg-surface-strong rounded w-5/6'></div>
 					</div>
 				</div>
 			);
@@ -647,9 +647,9 @@ const SubscriptionLineItemTable: FC<Props> = ({
 				<CardHeader title={t('labels.subscriptionLineItems')} />
 				<div className='p-4'>
 					<div className='animate-pulse space-y-4'>
-						<div className='h-4 bg-gray-200 rounded w-3/4'></div>
-						<div className='h-4 bg-gray-200 rounded w-1/2'></div>
-						<div className='h-4 bg-gray-200 rounded w-5/6'></div>
+						<div className='h-4 bg-surface-strong rounded w-3/4'></div>
+						<div className='h-4 bg-surface-strong rounded w-1/2'></div>
+						<div className='h-4 bg-surface-strong rounded w-5/6'></div>
 					</div>
 				</div>
 			</Card>

@@ -33,25 +33,25 @@ const InvoiceCreditLineItemTable: FC<Props> = ({ data, total_amount, currency, t
 				<FormHeader className='!mb-0' title={title} variant='form-component-title' titleClassName='font-semibold' />
 
 				<div className='overflow-x-auto'>
-					<table className='table-auto w-full border-collapse text-start text-sm text-gray-800 my-4 px-4'>
-						<thead className='border-b border-gray-200'>
+					<table className='table-auto w-full border-collapse text-start text-sm text-content-heading my-4 px-4'>
+						<thead className='border-b border-line'>
 							<tr>
-								<th className='py-2 px-2 text-gray-600'>{t(`${li}.subscription`)}</th>
+								<th className='py-2 px-2 text-content-tertiary'>{t(`${li}.subscription`)}</th>
 
-								<th className='py-2 px-2 text-gray-600 text-center'>{t(`${clt}.creditQuantity`)}</th>
-								<th className='py-2 px-2 text-gray-600 text-center'>{t(`${clt}.unitPrice`)}</th>
-								<th className='py-2 px-2 text-gray-600 text-end'>{t(`${clt}.creditAmount`)}</th>
+								<th className='py-2 px-2 text-content-tertiary text-center'>{t(`${clt}.creditQuantity`)}</th>
+								<th className='py-2 px-2 text-content-tertiary text-center'>{t(`${clt}.unitPrice`)}</th>
+								<th className='py-2 px-2 text-content-tertiary text-end'>{t(`${clt}.creditAmount`)}</th>
 							</tr>
 						</thead>
 						<tbody>
 							{data?.map((item, index) => {
 								return (
 									<tr key={index}>
-										<td className='py-3 px-2 text-gray-800'>{item.display_name ?? t('common:labels.na')}</td>
-										<td className='py-3 px-2 text-center text-gray-800'>
+										<td className='py-3 px-2 text-content-heading'>{item.display_name ?? t('common:labels.na')}</td>
+										<td className='py-3 px-2 text-center text-content-heading'>
 											{item.quantity != null && item.quantity !== '' ? item.quantity : t('common:labels.na')}
 										</td>
-										<td className='py-3 px-2 text-center text-gray-800'>{t('common:labels.na')}</td>
+										<td className='py-3 px-2 text-center text-content-heading'>{t('common:labels.na')}</td>
 										<td className='py-3 px-2 text-end text-[#2A9D90]'>{formatAmount(Number(item.amount ?? 0), item.currency)}</td>
 									</tr>
 								);
@@ -60,8 +60,8 @@ const InvoiceCreditLineItemTable: FC<Props> = ({ data, total_amount, currency, t
 					</table>
 				</div>
 
-				<div className='flex justify-end px-[6px]  py-4 border-t border-gray-200'>
-					<div className='text-sm text-gray-800 space-y-4 w-1/3'>
+				<div className='flex justify-end px-[6px]  py-4 border-t border-line'>
+					<div className='text-sm text-content-heading space-y-4 w-1/3'>
 						<div className='flex justify-between'>
 							<span>{t(`${li}.subtotal`)}</span>
 							<span className='text-[#2A9D90] '>{`${getCurrencySymbol(currency ?? '')}${sub_total}`}</span>
@@ -71,7 +71,7 @@ const InvoiceCreditLineItemTable: FC<Props> = ({ data, total_amount, currency, t
 							<span>{tax != null ? tax : t('common:labels.na')}</span>
 						</div>
 						<div className=' border-t '></div>
-						<div className='flex justify-between font-bold text-gray-900 '>
+						<div className='flex justify-between font-bold text-content '>
 							<span>{total_label || t('invoices.details.creditOnCustomerWallet')}</span>
 							<span className=' text-[#2A9D90] '>{formatAmount(total_amount ?? 0, currency ?? '')}</span>
 						</div>
