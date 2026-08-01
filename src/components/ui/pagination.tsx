@@ -24,7 +24,7 @@ const PaginationContent = React.forwardRef<HTMLUListElement, React.ComponentProp
 PaginationContent.displayName = 'PaginationContent';
 
 const PaginationItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li'>>(({ className, ...props }, ref) => (
-	<li ref={ref} className={cn('!font-normal !text-gray-500', className)} {...props} />
+	<li ref={ref} className={cn('!font-normal !text-content-muted', className)} {...props} />
 ));
 PaginationItem.displayName = 'PaginationItem';
 

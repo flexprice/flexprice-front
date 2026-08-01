@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 5 (app shell) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 6 (`components/ui`) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -13,7 +13,8 @@ Status: **Step 5 (app shell) complete.** Branch `feat/dark_theme`, tracking
 | 3    | `.dark` retuned to Midnight; sidebar chrome defined; `:root` guard added | ✅      |
 | 4    | Settings → Appearance tab with the dark-mode toggle, 5 tests             | ✅      |
 | 5    | App shell tokenized (6 files); token generator; 93 tokens                | ✅      |
-| 6    | `components/ui/` shadcn primitives                                       | ⬜ next |
+| 6    | `components/ui/` shadcn primitives (9 files)                             | ✅      |
+| 7    | `components/atoms/` A–F                                                  | ⬜ next |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
@@ -90,6 +91,25 @@ of a palette path.
 `surface-selected` (#e4e4e7) and `surface-selected-alt` (#ededed) are the same state at two
 near-identical light hexes — the same byte-identity debt as the zinc/slate ramps, and collapsible
 on the same schedule.
+
+### Not every `bg-white` is a surface (found in Step 6)
+
+The switch thumb was `bg-white` while its checked track is `bg-primary`. `--primary` is near-black
+in light but near-**white** in dark, so mapping the thumb to `surface` (or leaving it white) puts a
+white thumb on a white track — measured contrast 1.06:1, i.e. invisible.
+
+It is now `content-inverse`: `#ffffff` in light (byte-identical to the `bg-white` it replaced) and
+`#0f0f10` in dark. Measured 17.93:1 in light, 16.65:1 in dark.
+
+The lesson for the remaining steps: a colour's _role_ has to be read from what it sits on, not
+matched by hex. A purely mechanical `bg-white → bg-surface` sweep would have shipped a broken switch.
+
+### `dark:`-scoped classes are not migration debt
+
+`command-palette.tsx` already carried `dark:bg-white/10` and `dark:bg-white/[0.08]`. Those are
+translucent-white elevation overlays that only apply in dark mode — a standard technique, not a
+light-mode literal. They are left alone, and a future lint rule banning raw palette classes must
+exempt `dark:`-prefixed ones.
 
 ### The `:root` immutability guard
 
