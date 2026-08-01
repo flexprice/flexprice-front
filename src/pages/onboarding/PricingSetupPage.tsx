@@ -268,8 +268,8 @@ const PricingSetupPage = () => {
 					aria-label={t('pricingSetupPage.closeReturnDashboardAria')}
 					className={cn(
 						'absolute right-3 top-3 z-[55] flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
-						'border border-gray-200/90 bg-white/85 text-gray-500 shadow-sm backdrop-blur-sm',
-						'transition-all hover:scale-105 hover:border-gray-300 hover:bg-white hover:text-gray-800 hover:shadow-md',
+						'border border-line/90 bg-surface/85 text-content-muted shadow-sm backdrop-blur-sm',
+						'transition-all hover:scale-105 hover:border-line-strong hover:bg-surface hover:text-content-heading hover:shadow-md',
 						'active:scale-95 sm:right-5 sm:top-5 sm:h-10 sm:w-10',
 					)}>
 					<X className='h-4 w-4 sm:h-[18px] sm:w-[18px]' strokeWidth={2.25} aria-hidden />
@@ -282,9 +282,9 @@ const PricingSetupPage = () => {
 					phase === 'preview' ? 'min-h-screen justify-center py-10 sm:py-12' : 'min-h-screen justify-center py-16',
 				)}>
 				{phase === 'input' && isParsing && (
-					<div className='fixed inset-0 z-[60] flex items-center justify-center bg-white/50' role='status' aria-live='polite'>
-						<div className='flex items-center gap-3 rounded-xl bg-white px-5 py-3 shadow-md ring-1 ring-gray-200/80'>
-							<Loader2 className='h-5 w-5 shrink-0 animate-spin text-indigo-600' aria-hidden />
+					<div className='fixed inset-0 z-[60] flex items-center justify-center bg-surface/50' role='status' aria-live='polite'>
+						<div className='flex items-center gap-3 rounded-xl bg-surface px-5 py-3 shadow-md ring-1 ring-line/80'>
+							<Loader2 className='h-5 w-5 shrink-0 animate-spin text-accent-indigo' aria-hidden />
 							<span className='analyzing-prompt-shimmer text-sm font-medium'>{t('pricingSetupPage.analyzingPrompt')}</span>
 						</div>
 					</div>
@@ -295,14 +295,14 @@ const PricingSetupPage = () => {
 					<div className='relative z-10 w-full min-w-0 max-w-3xl'>
 						{/* Header */}
 						<div className='mb-8 text-center'>
-							<h1 className='text-[2rem] font-medium tracking-tight text-gray-900'>{t('pricingSetupPage.title')}</h1>
-							<p className='mt-2.5 text-[15px] text-gray-600'>{t('pricingSetupPage.subtitle')}</p>
+							<h1 className='text-[2rem] font-medium tracking-tight text-content'>{t('pricingSetupPage.title')}</h1>
+							<p className='mt-2.5 text-[15px] text-content-tertiary'>{t('pricingSetupPage.subtitle')}</p>
 						</div>
 
 						{/* Template badge */}
 						{selectedTemplate && (
-							<div className='mb-3 flex items-center justify-between rounded-xl border border-gray-200 bg-white/80 px-4 py-2.5 backdrop-blur-sm'>
-								<span className='text-sm text-gray-700'>
+							<div className='mb-3 flex items-center justify-between rounded-xl border border-line bg-surface/80 px-4 py-2.5 backdrop-blur-sm'>
+								<span className='text-sm text-content-secondary'>
 									{selectedTemplate.iconSrc ? (
 										<img
 											src={selectedTemplate.iconSrc}
@@ -318,14 +318,14 @@ const PricingSetupPage = () => {
 									type='button'
 									onClick={handleClearTemplate}
 									aria-label={t('pricingSetupPage.clearTemplateAria')}
-									className='ml-3 rounded-lg p-1 text-gray-500 transition-colors hover:text-gray-900'>
+									className='ml-3 rounded-lg p-1 text-content-muted transition-colors hover:text-content'>
 									<X className='h-3.5 w-3.5' />
 								</button>
 							</div>
 						)}
 
 						{/* Textarea card */}
-						<div className='relative z-10 rounded-2xl border border-gray-300 bg-white shadow-sm focus-within:border-black focus-within:ring-2 focus-within:ring-black/10'>
+						<div className='relative z-10 rounded-2xl border border-line-strong bg-surface shadow-sm focus-within:border-line-inverse focus-within:ring-2 focus-within:ring-line-inverse/10'>
 							<textarea
 								key={promptFieldKey}
 								ref={promptRef}
@@ -337,15 +337,15 @@ const PricingSetupPage = () => {
 								spellCheck
 								rows={5}
 								disabled={isParsing}
-								className='relative z-10 w-full resize-none rounded-t-2xl bg-transparent px-5 pt-3 text-[15px] leading-relaxed text-gray-800 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:opacity-60'
+								className='relative z-10 w-full resize-none rounded-t-2xl bg-transparent px-5 pt-3 text-[15px] leading-relaxed text-content-heading outline-none placeholder:text-content-subtle disabled:cursor-not-allowed disabled:opacity-60'
 							/>
-							<div className='flex items-center justify-end border-t border-gray-100 px-4 py-3'>
+							<div className='flex items-center justify-end border-t border-line-subtle px-4 py-3'>
 								<button
 									type='button'
 									onClick={handleParseAndPreview}
 									disabled={!hasPromptText || isParsing}
 									className={cn(
-										'flex h-9 w-9 items-center justify-center rounded-xl bg-[#092E44] text-white transition-all',
+										'flex h-9 w-9 items-center justify-center rounded-xl bg-[#092E44] text-content-inverse transition-all',
 										'hover:opacity-90 active:scale-95',
 										'disabled:cursor-not-allowed disabled:opacity-30',
 									)}
@@ -362,9 +362,9 @@ const PricingSetupPage = () => {
 						{/* Templates row */}
 						<div className='mt-7'>
 							<div className='mb-5 flex items-center gap-3'>
-								<div className='h-px flex-1 bg-gray-200' />
-								<span className='text-xs font-medium text-gray-500'>{t('pricingSetupPage.templatesHeading')}</span>
-								<div className='h-px flex-1 bg-gray-200' />
+								<div className='h-px flex-1 bg-surface-strong' />
+								<span className='text-xs font-medium text-content-muted'>{t('pricingSetupPage.templatesHeading')}</span>
+								<div className='h-px flex-1 bg-surface-strong' />
 							</div>
 							<div className='flex justify-center gap-2.5 flex-wrap'>
 								{PRICING_TEMPLATES.map((tpl) => (
@@ -373,9 +373,11 @@ const PricingSetupPage = () => {
 										key={tpl.label}
 										onClick={() => handleTemplateClick(tpl)}
 										className={cn(
-											'flex shrink-0 items-center gap-3 rounded-xl border bg-white px-4 py-2.5 text-left text-sm shadow-sm',
-											'transition-all hover:border-gray-400 hover:shadow active:scale-95',
-											selectedTemplate?.label === tpl.label ? 'border-black text-gray-900 shadow-md' : 'border-gray-300 text-gray-700',
+											'flex shrink-0 items-center gap-3 rounded-xl border bg-surface px-4 py-2.5 text-left text-sm shadow-sm',
+											'transition-all hover:border-line-bold hover:shadow active:scale-95',
+											selectedTemplate?.label === tpl.label
+												? 'border-line-inverse text-content shadow-md'
+												: 'border-line-strong text-content-secondary',
 										)}>
 										{tpl.iconSrc ? (
 											<img
@@ -390,7 +392,7 @@ const PricingSetupPage = () => {
 											</span>
 										)}
 										<span
-											className={cn('font-medium leading-none', selectedTemplate?.label === tpl.label ? 'text-gray-900' : 'text-gray-900')}>
+											className={cn('font-medium leading-none', selectedTemplate?.label === tpl.label ? 'text-content' : 'text-content')}>
 											{tpl.label}
 										</span>
 									</button>
@@ -400,7 +402,7 @@ const PricingSetupPage = () => {
 
 						{/* Skip */}
 						<div className='mt-6 text-center'>
-							<button type='button' onClick={handleSkip} className='text-sm text-gray-500 transition-colors hover:text-gray-900'>
+							<button type='button' onClick={handleSkip} className='text-sm text-content-muted transition-colors hover:text-content'>
 								{t('pricingSetupPage.skipToDashboard')}
 							</button>
 						</div>
@@ -412,14 +414,14 @@ const PricingSetupPage = () => {
 					<div className='relative z-10 flex w-full min-w-0 max-w-[1420px] flex-col'>
 						{/* Header */}
 						<div className='mb-8 shrink-0 text-center sm:mb-9'>
-							<p className='text-[13px] font-semibold leading-relaxed text-gray-700'>{previewSummaryLine}</p>
+							<p className='text-[13px] font-semibold leading-relaxed text-content-secondary'>{previewSummaryLine}</p>
 						</div>
 
 						{/* Canvas: comfortable vertical padding + cap so 4+ cards can still scroll inside */}
 						<div className='flex flex-col px-2 sm:px-6'>
 							<div className='mx-auto w-full max-w-[1320px]'>
 								{/* min-h keeps the frame visibly tall when plans are few; max-h + overflow when many. Inner py is unmistakable breathing room. */}
-								<div className='relative min-h-[min(56vh,44rem)] max-h-[min(72vh,52rem)] w-full overflow-x-hidden overflow-y-auto rounded-2xl border border-gray-400 pricing-preview-canvas sm:max-h-[min(74vh,54rem)]'>
+								<div className='relative min-h-[min(56vh,44rem)] max-h-[min(72vh,52rem)] w-full overflow-x-hidden overflow-y-auto rounded-2xl border border-line-bold pricing-preview-canvas sm:max-h-[min(74vh,54rem)]'>
 									<div className='px-6 py-20 sm:px-8 sm:py-24 md:px-10 md:py-32'>
 										<div className='relative z-0 mx-auto w-full max-w-[1220px]'>
 											<div
@@ -450,7 +452,7 @@ const PricingSetupPage = () => {
 							</div>
 
 							<div className='mx-auto mt-9 flex w-full max-w-[1320px] shrink-0 items-center justify-end gap-6 sm:mt-10'>
-								<button type='button' onClick={handleBack} className='text-sm text-gray-800 transition-colors hover:text-gray-900'>
+								<button type='button' onClick={handleBack} className='text-sm text-content-heading transition-colors hover:text-content'>
 									{t('actions.back')}
 								</button>
 								<Button
@@ -467,9 +469,9 @@ const PricingSetupPage = () => {
 				{/* ── Phase: creating ──────────────────────────────────── */}
 				{phase === 'creating' && (
 					<div className='w-full max-w-2xl'>
-						<div className='rounded-2xl border border-gray-200 bg-white p-10 shadow-sm sm:p-11'>
-							<h2 className='text-center text-xl font-semibold text-gray-900'>{t('pricingSetupPage.buildingPricing')}</h2>
-							<p className='mt-2.5 text-center text-sm text-gray-500'>{t('pricingSetupPage.creatingSubtitle')}</p>
+						<div className='rounded-2xl border border-line bg-surface p-10 shadow-sm sm:p-11'>
+							<h2 className='text-center text-xl font-semibold text-content'>{t('pricingSetupPage.buildingPricing')}</h2>
+							<p className='mt-2.5 text-center text-sm text-content-muted'>{t('pricingSetupPage.creatingSubtitle')}</p>
 
 							<div className='mt-10 flex flex-col items-center'>
 								<div
@@ -487,7 +489,7 @@ const PricingSetupPage = () => {
 													<div
 														className={cn(
 															'mx-2 h-0.5 min-w-[2rem] flex-1 rounded-full transition-colors duration-500 ease-out sm:mx-3 sm:min-w-[3.5rem]',
-															prevCompleted ? 'bg-emerald-500' : 'bg-gray-200',
+															prevCompleted ? 'bg-accent-emerald' : 'bg-surface-strong',
 														)}
 														aria-hidden
 													/>
@@ -496,17 +498,17 @@ const PricingSetupPage = () => {
 													role='listitem'
 													className={cn(
 														'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors duration-300 sm:h-10 sm:w-10',
-														isCompleted && 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/25',
+														isCompleted && 'bg-accent-emerald text-content-inverse shadow-sm shadow-accent-emerald/25',
 														!isCompleted &&
 															isActive &&
-															'bg-white text-emerald-600 ring-2 ring-emerald-400/60 ring-offset-2 ring-offset-white',
-														!isCompleted && !isActive && 'border border-gray-200 bg-gray-50 text-gray-400',
+															'bg-surface text-accent-emerald-strong ring-2 ring-accent-emerald-soft/60 ring-offset-2 ring-offset-white',
+														!isCompleted && !isActive && 'border border-line bg-surface-subtle text-content-subtle',
 													)}
 													aria-current={isActive ? 'step' : undefined}>
 													{isCompleted ? (
 														<Check className='h-[18px] w-[18px] sm:h-5 sm:w-5' strokeWidth={2.5} aria-hidden />
 													) : isActive ? (
-														<span className='h-2 w-2 animate-pulse rounded-full bg-emerald-500' aria-hidden />
+														<span className='h-2 w-2 animate-pulse rounded-full bg-accent-emerald' aria-hidden />
 													) : (
 														<span aria-hidden>{idx + 1}</span>
 													)}
@@ -521,7 +523,7 @@ const PricingSetupPage = () => {
 										<p
 											className={cn(
 												'text-[15px] font-medium leading-relaxed transition-colors duration-300 sm:text-base',
-												currentStep === 'done' ? 'text-gray-500' : 'text-gray-900',
+												currentStep === 'done' ? 'text-content-muted' : 'text-content',
 											)}>
 											{creatingStatusLabel}
 										</p>
@@ -531,7 +533,7 @@ const PricingSetupPage = () => {
 
 							{currentStep === 'done' && (
 								<div className='mt-8 flex justify-center'>
-									<div className='flex items-center gap-2 text-sm font-medium text-gray-600'>
+									<div className='flex items-center gap-2 text-sm font-medium text-content-tertiary'>
 										<Loader2 className='h-4 w-4 animate-spin' aria-hidden />
 										{t('pricingSetupPage.redirectingToPlans')}
 									</div>

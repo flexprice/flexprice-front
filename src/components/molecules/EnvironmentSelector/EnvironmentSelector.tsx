@@ -173,12 +173,17 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 						className={cn(
 							'w-full mt-3.5 flex items-center justify-between h-10 px-2 py-[10px] rounded-[6px] border',
 							isDevelopment && 'border-accent-yellow-line text-accent-yellow-deep',
-							isProduction && 'border-[#BFD0F5] text-[#1F5ADA]',
+							isProduction && 'border-env-prod-line text-env-prod-text',
 						)}
+						/*
+						 * The gradient is tokenized rather than literal: its text colour is a token that
+						 * flips light in dark mode, so the surface underneath has to move with it. Leaving
+						 * these as pale pastels produced light-on-light in dark mode.
+						 */
 						style={{
 							background: isProduction
-								? 'linear-gradient(to right, #EEF4FF, #DDE7FF, #EEF4FF)'
-								: 'linear-gradient(to right, #FFFCEE, #FFF9DD, #FFFCEE)',
+								? 'linear-gradient(to right, rgb(var(--fp-env-prod-bg)), rgb(var(--fp-env-prod-bg-mid)), rgb(var(--fp-env-prod-bg)))'
+								: 'linear-gradient(to right, rgb(var(--fp-env-dev-bg)), rgb(var(--fp-env-dev-bg-mid)), rgb(var(--fp-env-dev-bg)))',
 						}}>
 						<div className='flex items-center gap-2 min-w-0'>
 							{isDevelopment ? (

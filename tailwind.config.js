@@ -91,10 +91,12 @@ export default {
 				'surface-muted': 'rgb(var(--fp-surface-muted) / <alpha-value>)',
 				'surface-shell': 'rgb(var(--fp-surface-shell) / <alpha-value>)',
 				'surface-strong': 'rgb(var(--fp-surface-strong) / <alpha-value>)',
+				'surface-heavy': 'rgb(var(--fp-surface-heavy) / <alpha-value>)',
 				'surface-faint': 'rgb(var(--fp-surface-faint) / <alpha-value>)',
 				'surface-cool': 'rgb(var(--fp-surface-cool) / <alpha-value>)',
 				'surface-inverse': 'rgb(var(--fp-surface-inverse) / <alpha-value>)',
 				'surface-inverse-zinc': 'rgb(var(--fp-surface-inverse-zinc) / <alpha-value>)',
+				'surface-track': 'rgb(var(--fp-surface-track) / <alpha-value>)',
 				'surface-scrim': 'rgb(var(--fp-surface-scrim) / <alpha-value>)',
 
 				/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
@@ -169,6 +171,7 @@ export default {
 				'warning-line-strong': 'rgb(var(--fp-warning-line-strong) / <alpha-value>)',
 				'warning-deepest': 'rgb(var(--fp-warning-deepest) / <alpha-value>)',
 				'accent-orange': 'rgb(var(--fp-accent-orange) / <alpha-value>)',
+				'accent-orange-muted': 'rgb(var(--fp-accent-orange-muted) / <alpha-value>)',
 				'accent-yellow': 'rgb(var(--fp-accent-yellow) / <alpha-value>)',
 				'accent-yellow-bg': 'rgb(var(--fp-accent-yellow-bg) / <alpha-value>)',
 				'accent-yellow-line': 'rgb(var(--fp-accent-yellow-line) / <alpha-value>)',
@@ -185,6 +188,8 @@ export default {
 				'success-line': 'rgb(var(--fp-success-line) / <alpha-value>)',
 				'accent-emerald': 'rgb(var(--fp-accent-emerald) / <alpha-value>)',
 				'accent-emerald-strong': 'rgb(var(--fp-accent-emerald-strong) / <alpha-value>)',
+				'accent-emerald-soft': 'rgb(var(--fp-accent-emerald-soft) / <alpha-value>)',
+				'accent-emerald-deep': 'rgb(var(--fp-accent-emerald-deep) / <alpha-value>)',
 				'accent-emerald-muted': 'rgb(var(--fp-accent-emerald-muted) / <alpha-value>)',
 
 				/* Accents — indigo / purple / sky / violet. */
@@ -227,6 +232,14 @@ export default {
 				'stepper-active': 'rgb(var(--fp-stepper-active) / <alpha-value>)',
 				'stepper-idle': 'rgb(var(--fp-stepper-idle) / <alpha-value>)',
 				'stepper-line': 'rgb(var(--fp-stepper-line) / <alpha-value>)',
+
+				/* Environment badge — sandbox/production pill in the sidebar. Gradient stops are applied via inline style. */
+				'env-dev-bg': 'rgb(var(--fp-env-dev-bg) / <alpha-value>)',
+				'env-dev-bg-mid': 'rgb(var(--fp-env-dev-bg-mid) / <alpha-value>)',
+				'env-prod-bg': 'rgb(var(--fp-env-prod-bg) / <alpha-value>)',
+				'env-prod-bg-mid': 'rgb(var(--fp-env-prod-bg-mid) / <alpha-value>)',
+				'env-prod-line': 'rgb(var(--fp-env-prod-line) / <alpha-value>)',
+				'env-prod-text': 'rgb(var(--fp-env-prod-text) / <alpha-value>)',
 
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',

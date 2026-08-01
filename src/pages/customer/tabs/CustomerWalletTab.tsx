@@ -422,7 +422,7 @@ const CustomerWalletTab = () => {
 										<Card key={index}>
 											<div className='flex justify-between items-center mb-4'>
 												<div className='flex items-center space-x-2'>
-													<span className='text-gray-600 text-sm font-medium'>
+													<span className='text-content-tertiary text-sm font-medium'>
 														{t('tabPanels.wallet.balanceLabel', {
 															type:
 																type === WALLET_BALANCE_TYPE.CURRENT
@@ -434,7 +434,7 @@ const CustomerWalletTab = () => {
 														<TooltipProvider delayDuration={0}>
 															<Tooltip>
 																<TooltipTrigger>
-																	<Info className='size-4 text-gray-400 hover:text-gray-600 transition-colors' />
+																	<Info className='size-4 text-content-subtle hover:text-content-tertiary transition-colors' />
 																</TooltipTrigger>
 																<TooltipContent>
 																	<p>{t('tabPanels.wallet.currentBalanceTooltip')}</p>
@@ -444,13 +444,17 @@ const CustomerWalletTab = () => {
 													)}
 												</div>
 												<div className='opacity-50 group-hover:opacity-100 transition-opacity'>
-													{type === WALLET_BALANCE_TYPE.CURRENT ? <WalletIcon className='size-5 text-gray-500' /> : <PremiumFeatureIcon />}
+													{type === WALLET_BALANCE_TYPE.CURRENT ? (
+														<WalletIcon className='size-5 text-content-muted' />
+													) : (
+														<PremiumFeatureIcon />
+													)}
 												</div>
 											</div>
 
 											<div className='flex items-baseline space-x-2'>
-												<span className='text-gray-500 text-2xl font-medium'>{getCurrencySymbol(walletBalance?.currency ?? '')}</span>
-												<span className='text-4xl font-medium text-gray-900 leading-tight'>
+												<span className='text-content-muted text-2xl font-medium'>{getCurrencySymbol(walletBalance?.currency ?? '')}</span>
+												<span className='text-4xl font-medium text-content leading-tight'>
 													{type === WALLET_BALANCE_TYPE.CURRENT
 														? formatAmount(walletBalance?.balance.toString() ?? '0')
 														: formatAmount(walletBalance?.real_time_balance.toString() ?? '0')}
@@ -458,7 +462,7 @@ const CustomerWalletTab = () => {
 											</div>
 
 											<div className='flex justify-between items-center'>
-												<span className='text-sm text-gray-500'>
+												<span className='text-sm text-content-muted'>
 													{type === WALLET_BALANCE_TYPE.CURRENT
 														? formatAmount(walletBalance?.credit_balance.toString() ?? '0')
 														: formatAmount(walletBalance?.real_time_credit_balance.toString() ?? '0')}
@@ -521,8 +525,8 @@ const CustomerWalletTab = () => {
 									/>
 								) : (
 									<div className='text-center py-8'>
-										<h3 className='text-lg font-medium text-gray-900 mb-1'>{t('tabPanels.wallet.noMetadataTitle')}</h3>
-										<p className='text-sm text-gray-500 mb-4'>{t('tabPanels.wallet.noMetadataHint')}</p>
+										<h3 className='text-lg font-medium text-content mb-1'>{t('tabPanels.wallet.noMetadataTitle')}</h3>
+										<p className='text-sm text-content-muted mb-4'>{t('tabPanels.wallet.noMetadataHint')}</p>
 									</div>
 								)}
 							</Card>

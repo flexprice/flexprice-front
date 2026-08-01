@@ -204,7 +204,7 @@ const OnboardingTenant = () => {
 					backgroundSize: 'cover',
 					backgroundPosition: 'center',
 				}}>
-				<div className='absolute inset-0 bg-white/30' aria-hidden />
+				<div className='absolute inset-0 bg-surface/30' aria-hidden />
 				<div
 					className='relative flex min-h-[min(100vh,100dvh)] w-full flex-1 items-center justify-center'
 					role='status'
@@ -224,16 +224,16 @@ const OnboardingTenant = () => {
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
 			}}>
-			<div className='absolute inset-0 bg-white/30' aria-hidden />
-			<div className='relative my-8 w-full max-w-[480px] rounded-2xl bg-white p-8 shadow-lg'>
+			<div className='absolute inset-0 bg-surface/30' aria-hidden />
+			<div className='relative my-8 w-full max-w-[480px] rounded-2xl bg-surface p-8 shadow-lg'>
 				<div className='mb-6 flex justify-center'>
 					<img src={flexpriceLogo} alt={t('tenantSetup.flexpriceLogoAlt')} className='h-12' />
 				</div>
-				<h1 className='text-center text-2xl font-semibold text-zinc-900'>{t('tenantSetup.welcomeHeading')}</h1>
-				<p className='mt-2 text-center text-sm text-zinc-500'>{t('tenantSetup.welcomeSubtext')}</p>
+				<h1 className='text-center text-2xl font-semibold text-content-zinc-bold'>{t('tenantSetup.welcomeHeading')}</h1>
+				<p className='mt-2 text-center text-sm text-content-zinc-muted'>{t('tenantSetup.welcomeSubtext')}</p>
 				<div className='mt-6 space-y-4'>
 					<div className='space-y-1'>
-						<label className='block text-sm font-medium text-zinc-900' htmlFor='onboarding-org-name'>
+						<label className='block text-sm font-medium text-content-zinc-bold' htmlFor='onboarding-org-name'>
 							{t('tenantSetup.orgNameLabel')} <span className='text-destructive'>*</span>
 						</label>
 						<Input
@@ -243,12 +243,12 @@ const OnboardingTenant = () => {
 							onChange={(v) => setOrgName(v)}
 							required
 							error={errors.orgName}
-							className='rounded-lg border-zinc-200'
+							className='rounded-lg border-line-zinc'
 							disabled={isPending}
 						/>
 					</div>
 					<div className='space-y-1'>
-						<label className='block text-sm font-medium text-zinc-900' htmlFor='onboarding-org-url'>
+						<label className='block text-sm font-medium text-content-zinc-bold' htmlFor='onboarding-org-url'>
 							{t('tenantSetup.websiteUrlLabel')} <span className='text-destructive'>*</span>
 						</label>
 						<Input
@@ -264,7 +264,7 @@ const OnboardingTenant = () => {
 							description={t('tenantSetup.websiteUrlDescription')}
 							error={errors.orgUrl}
 							required
-							className='rounded-lg border-zinc-200'
+							className='rounded-lg border-line-zinc'
 							disabled={isPending}
 						/>
 					</div>

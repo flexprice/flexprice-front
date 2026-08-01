@@ -107,8 +107,8 @@ const ExportDetails = () => {
 		return (
 			<Page heading={t('insightsTools.exports.exportNotFound')}>
 				<div className='text-center py-12'>
-					<h3 className='text-lg font-medium text-gray-900 mb-2'>{t('insightsTools.exports.exportNotFound')}</h3>
-					<p className='text-gray-500 mb-4'>{t('insightsTools.exports.exportNotFoundDescription')}</p>
+					<h3 className='text-lg font-medium text-content mb-2'>{t('insightsTools.exports.exportNotFound')}</h3>
+					<p className='text-content-muted mb-4'>{t('insightsTools.exports.exportNotFoundDescription')}</p>
 					<Button onClick={() => navigate(`/tools/exports/s3/${connectionId}/export`)}>{t('insightsTools.exports.backToExports')}</Button>
 				</div>
 			</Page>
@@ -143,7 +143,7 @@ const ExportDetails = () => {
 						onClick={handleDeleteTask}
 						disabled={isDeletingTask}
 						isLoading={isDeletingTask}
-						className='flex items-center gap-2 text-red-600 hover:text-red-700'>
+						className='flex items-center gap-2 text-danger hover:text-danger-strong'>
 						<Trash2 className='w-4 h-4' />
 						{i18n.t('actions.delete', { ns: 'common' })}
 					</Button>
@@ -166,25 +166,25 @@ const ExportDetails = () => {
 							<FormHeader variant='form-component-title' title={t('insightsTools.exports.basicInformation')} />
 							<div className='space-y-4'>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.statusLabel')}</label>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.statusLabel')}</label>
 									<div className='flex items-center gap-2 mt-1'>
-										<div className={`w-3 h-3 rounded-full ${exportTask.enabled ? 'bg-green-500' : 'bg-gray-400'}`} />
-										<span className='text-sm text-gray-600'>
+										<div className={`w-3 h-3 rounded-full ${exportTask.enabled ? 'bg-success-bright' : 'bg-surface-heavy'}`} />
+										<span className='text-sm text-content-tertiary'>
 											{exportTask.enabled ? i18n.t('status.active', { ns: 'common' }) : i18n.t('status.paused', { ns: 'common' })}
 										</span>
 									</div>
 								</div>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('exportDrawer.entityType')}</label>
-									<p className='text-sm text-gray-600 mt-1'>{formatEntityType(exportTask.entity_type)}</p>
+									<label className='text-sm font-medium text-content'>{t('exportDrawer.entityType')}</label>
+									<p className='text-sm text-content-tertiary mt-1'>{formatEntityType(exportTask.entity_type)}</p>
 								</div>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.intervalLabel')}</label>
-									<p className='text-sm text-gray-600 capitalize mt-1'>{exportTask.interval}</p>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.intervalLabel')}</label>
+									<p className='text-sm text-content-tertiary capitalize mt-1'>{exportTask.interval}</p>
 								</div>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.connectionLabel')}</label>
-									<p className='text-sm text-gray-600 mt-1'>{connection?.name || i18n.t('labels.unknown', { ns: 'common' })}</p>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.connectionLabel')}</label>
+									<p className='text-sm text-content-tertiary mt-1'>{connection?.name || i18n.t('labels.unknown', { ns: 'common' })}</p>
 								</div>
 							</div>
 						</div>
@@ -194,26 +194,28 @@ const ExportDetails = () => {
 							<FormHeader variant='form-component-title' title={t('insightsTools.exports.s3Configuration')} />
 							<div className='space-y-4'>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.bucketLabel')}</label>
-									<p className='text-sm text-gray-600 mt-1'>{exportTask.job_config.bucket}</p>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.bucketLabel')}</label>
+									<p className='text-sm text-content-tertiary mt-1'>{exportTask.job_config.bucket}</p>
 								</div>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.regionLabel')}</label>
-									<p className='text-sm text-gray-600 mt-1'>{exportTask.job_config.region}</p>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.regionLabel')}</label>
+									<p className='text-sm text-content-tertiary mt-1'>{exportTask.job_config.region}</p>
 								</div>
 								<div className='min-w-0'>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.keyPrefixLabel')}</label>
-									<p className='text-sm text-gray-600 mt-1 break-all min-w-0'>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.keyPrefixLabel')}</label>
+									<p className='text-sm text-content-tertiary mt-1 break-all min-w-0'>
 										{exportTask.job_config?.key_prefix ?? i18n.t('labels.na', { ns: 'common' })}
 									</p>
 								</div>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.compressionLabel')}</label>
-									<p className='text-sm text-gray-600 mt-1'>{exportTask.job_config.compression || t('exportDrawer.compression.none')}</p>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.compressionLabel')}</label>
+									<p className='text-sm text-content-tertiary mt-1'>
+										{exportTask.job_config.compression || t('exportDrawer.compression.none')}
+									</p>
 								</div>
 								<div>
-									<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.encryptionLabel')}</label>
-									<p className='text-sm text-gray-600 mt-1'>
+									<label className='text-sm font-medium text-content'>{t('insightsTools.exports.encryptionLabel')}</label>
+									<p className='text-sm text-content-tertiary mt-1'>
 										{exportTask.job_config.encryption || t('insightsTools.exports.fallbackEncryptionDisplay')}
 									</p>
 								</div>
@@ -226,12 +228,12 @@ const ExportDetails = () => {
 						<FormHeader variant='form-component-title' title={t('insightsTools.exports.timestamps')} />
 						<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 							<div>
-								<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.createdAt')}</label>
-								<p className='text-sm text-gray-600 mt-1'>{new Date(exportTask.created_at).toLocaleString()}</p>
+								<label className='text-sm font-medium text-content'>{t('insightsTools.exports.createdAt')}</label>
+								<p className='text-sm text-content-tertiary mt-1'>{new Date(exportTask.created_at).toLocaleString()}</p>
 							</div>
 							<div>
-								<label className='text-sm font-medium text-gray-900'>{t('insightsTools.exports.lastUpdated')}</label>
-								<p className='text-sm text-gray-600 mt-1'>{new Date(exportTask.updated_at).toLocaleString()}</p>
+								<label className='text-sm font-medium text-content'>{t('insightsTools.exports.lastUpdated')}</label>
+								<p className='text-sm text-content-tertiary mt-1'>{new Date(exportTask.updated_at).toLocaleString()}</p>
 							</div>
 						</div>
 					</div>

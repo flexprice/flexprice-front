@@ -465,22 +465,22 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 
 	return (
 		<PremiumFeature isPremiumFeature={integration.premium}>
-			<Card className={cn('min-w-0 overflow-hidden border-slate-200 shadow-sm rounded-xl h-full flex flex-col')} noPadding>
+			<Card className={cn('min-w-0 overflow-hidden border-line-slate shadow-sm rounded-xl h-full flex flex-col')} noPadding>
 				<div className='min-w-0 overflow-hidden p-6 flex-1'>
 					<div className='flex gap-5'>
-						<div className='flex size-14 shrink-0 items-center justify-center rounded-lg bg-slate-100'>
+						<div className='flex size-14 shrink-0 items-center justify-center rounded-lg bg-surface-slate-subtle'>
 							<img src={integration.logo} alt={integration.name} className='size-8 object-contain' />
 						</div>
 						<div className='min-w-0 flex-1 space-y-2'>
 							<div className='flex items-center gap-2'>
 								<h3 className='font-semibold text-lg text-foreground'>{integration.name}</h3>
 								{connected && (
-									<span className='inline-flex h-5 items-center rounded-sm bg-emerald-100 px-2 text-xs font-medium text-emerald-700'>
+									<span className='inline-flex h-5 items-center rounded-sm bg-accent-emerald-muted px-2 text-xs font-medium text-accent-emerald-deep'>
 										{t('insightsTools.integrations.badgeConnected')}
 									</span>
 								)}
 								{integration.premium && (
-									<span className='inline-flex h-5 items-center rounded-sm bg-amber-100 px-2 text-xs font-medium text-amber-700'>
+									<span className='inline-flex h-5 items-center rounded-sm bg-warning-muted-strong px-2 text-xs font-medium text-warning-strong'>
 										{t('insightsTools.integrations.badgePremium')}
 									</span>
 								)}
@@ -490,7 +490,7 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 											href={integration.docsUrl}
 											target='_blank'
 											rel='noopener noreferrer'
-											className='inline-flex h-5 items-center gap-1 text-xs text-slate-500 transition-colors hover:text-slate-700'
+											className='inline-flex h-5 items-center gap-1 text-xs text-content-slate-muted transition-colors hover:text-content-slate-secondary'
 											title={t('insightsTools.integrations.openDocsTitle', { name: integration.name })}>
 											{t('insightsTools.integrations.docsLink')}
 											<ExternalLinkIcon className='size-3.5' />
@@ -499,12 +499,12 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 								</div>
 							</div>
 							<div className='min-w-0 overflow-hidden'>
-								<p className='text-sm text-slate-500 line-clamp-2 break-words'>{integration.description}</p>
+								<p className='text-sm text-content-slate-muted line-clamp-2 break-words'>{integration.description}</p>
 							</div>
 							{integration.tags.length > 0 && (
 								<div className='flex flex-wrap gap-1.5 pt-1'>
 									{integration.tags.slice(0, 3).map((tag, idx) => (
-										<span key={idx} className='text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-sm'>
+										<span key={idx} className='text-xs bg-surface-slate-subtle text-content-slate-tertiary px-2 py-0.5 rounded-sm'>
 											{tag}
 										</span>
 									))}
@@ -544,8 +544,8 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 						onCheckedChange={handleToggle}
 						disabled={integration.premium}
 						className={cn(
-							'data-[state=unchecked]:bg-slate-800',
-							'data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500',
+							'data-[state=unchecked]:bg-surface-track',
+							'data-[state=checked]:bg-accent-emerald data-[state=checked]:border-accent-emerald',
 						)}
 					/>
 				</div>

@@ -79,10 +79,12 @@
 		--fp-surface-muted: 244 244 245; /* #f4f4f5 */
 		--fp-surface-shell: 243 244 246; /* #f3f4f6 — app chrome behind every panel — darkest layer */
 		--fp-surface-strong: 229 231 235; /* #e5e7eb */
+		--fp-surface-heavy: 156 163 175; /* #9ca3af */
 		--fp-surface-faint: 250 250 250; /* #fafafa */
 		--fp-surface-cool: 248 250 252; /* #f8fafc */
 		--fp-surface-inverse: 17 24 39; /* #111827 — dark-on-light chips invert */
 		--fp-surface-inverse-zinc: 24 24 27; /* #18181b — inverted tooltips built on zinc rather than gray */
+		--fp-surface-track: 30 41 59; /* #1e293b — switch track when off — dark on light cards, must lighten on dark ones */
 		--fp-surface-scrim: 0 0 0; /* #000000 — modal scrim — black in both themes */
 
 		/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
@@ -157,6 +159,7 @@
 		--fp-warning-line-strong: 252 211 77; /* #fcd34d */
 		--fp-warning-deepest: 120 53 15; /* #78350f */
 		--fp-accent-orange: 234 88 12; /* #ea580c */
+		--fp-accent-orange-muted: 255 237 213; /* #ffedd5 */
 		--fp-accent-yellow: 234 179 8; /* #eab308 */
 		--fp-accent-yellow-bg: 254 252 232; /* #fefce8 */
 		--fp-accent-yellow-line: 250 204 21; /* #facc15 */
@@ -173,6 +176,8 @@
 		--fp-success-line: 187 247 208; /* #bbf7d0 */
 		--fp-accent-emerald: 16 185 129; /* #10b981 */
 		--fp-accent-emerald-strong: 5 150 105; /* #059669 */
+		--fp-accent-emerald-soft: 52 211 153; /* #34d399 */
+		--fp-accent-emerald-deep: 4 120 87; /* #047857 */
 		--fp-accent-emerald-muted: 209 250 229; /* #d1fae5 */
 
 		/* Accents — indigo / purple / sky / violet. */
@@ -215,6 +220,14 @@
 		--fp-stepper-active: 51 51 51; /* #333333 — Stepper active/completed step */
 		--fp-stepper-idle: 153 153 153; /* #999999 */
 		--fp-stepper-line: 235 235 235; /* #ebebeb */
+
+		/* Environment badge — sandbox/production pill in the sidebar. Gradient stops are applied via inline style. */
+		--fp-env-dev-bg: 255 252 238; /* #fffcee — gradient edge */
+		--fp-env-dev-bg-mid: 255 249 221; /* #fff9dd — gradient centre */
+		--fp-env-prod-bg: 238 244 255; /* #eef4ff — gradient edge */
+		--fp-env-prod-bg-mid: 221 231 255; /* #dde7ff — gradient centre */
+		--fp-env-prod-line: 191 208 245; /* #bfd0f5 */
+		--fp-env-prod-text: 31 90 218; /* #1f5ada */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
@@ -294,10 +307,12 @@
 		--fp-surface-muted: 37 37 40; /* #252528 */
 		--fp-surface-shell: 15 15 16; /* #0f0f10 */
 		--fp-surface-strong: 46 46 51; /* #2e2e33 */
+		--fp-surface-heavy: 79 79 87; /* #4f4f57 */
 		--fp-surface-faint: 31 31 34; /* #1f1f22 */
 		--fp-surface-cool: 26 26 29; /* #1a1a1d */
 		--fp-surface-inverse: 238 239 241; /* #eeeff1 */
 		--fp-surface-inverse-zinc: 238 239 241; /* #eeeff1 */
+		--fp-surface-track: 69 69 77; /* #45454d */
 		--fp-surface-scrim: 0 0 0; /* #000000 */
 
 		/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
@@ -372,6 +387,7 @@
 		--fp-warning-line-strong: 94 71 32; /* #5e4720 */
 		--fp-warning-deepest: 247 217 171; /* #f7d9ab */
 		--fp-accent-orange: 245 121 60; /* #f5793c */
+		--fp-accent-orange-muted: 58 35 18; /* #3a2312 */
 		--fp-accent-yellow: 239 198 74; /* #efc64a */
 		--fp-accent-yellow-bg: 43 38 18; /* #2b2612 */
 		--fp-accent-yellow-line: 107 85 24; /* #6b5518 */
@@ -388,6 +404,8 @@
 		--fp-success-line: 30 70 48; /* #1e4630 */
 		--fp-accent-emerald: 52 214 160; /* #34d6a0 */
 		--fp-accent-emerald-strong: 46 200 148; /* #2ec894 */
+		--fp-accent-emerald-soft: 79 224 173; /* #4fe0ad */
+		--fp-accent-emerald-deep: 47 187 140; /* #2fbb8c */
 		--fp-accent-emerald-muted: 16 49 42; /* #10312a */
 
 		/* Accents — indigo / purple / sky / violet. */
@@ -430,6 +448,14 @@
 		--fp-stepper-active: 228 229 232; /* #e4e5e8 */
 		--fp-stepper-idle: 116 120 127; /* #74787f */
 		--fp-stepper-line: 53 53 59; /* #35353b */
+
+		/* Environment badge — sandbox/production pill in the sidebar. Gradient stops are applied via inline style. */
+		--fp-env-dev-bg: 36 31 16; /* #241f10 */
+		--fp-env-dev-bg-mid: 47 39 20; /* #2f2714 */
+		--fp-env-prod-bg: 20 29 51; /* #141d33 */
+		--fp-env-prod-bg-mid: 27 39 69; /* #1b2745 */
+		--fp-env-prod-line: 47 74 128; /* #2f4a80 */
+		--fp-env-prod-text: 143 184 255; /* #8fb8ff */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

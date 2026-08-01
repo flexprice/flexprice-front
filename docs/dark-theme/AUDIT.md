@@ -109,6 +109,27 @@ text on a dark tooltip. `surface-inverse-zinc` (zinc.900 → `#eeeff1`) inverts 
 This is the third instance of the same trap (switch thumb, nightOwl code surface, now this): **the
 question is never "what hex is this", it is "what does this sit on, and does that change".**
 
+### The environment badge was light-on-light in dark (found in Step 16)
+
+The sandbox/production pill in the sidebar sets its background through an **inline gradient of
+hardcoded pastels** (`#FFFCEE → #FFF9DD` for sandbox, `#EEF4FF → #DDE7FF` for production). Step 13
+tokenized its _text_ to `accent-yellow-deep`, which correctly flips light in dark mode — but the
+gradient underneath stayed a pale pastel. The result was light text on a light pill, on a Midnight
+sidebar.
+
+This is the same trap as the switch thumb and the nightOwl code surface, and this time the
+migration walked into it: **a token that inverts must not be paired with a surface that does not.**
+Inline `style` backgrounds are the easy place to miss, because the class-based tooling never sees
+them.
+
+Six tokens now carry the badge (`env-dev-bg`, `env-dev-bg-mid`, `env-prod-bg`, `env-prod-bg-mid`,
+`env-prod-line`, `env-prod-text`) so text and surface move together:
+
+|                          | Light (unchanged) | Dark (before → after)              |
+| ------------------------ | ----------------- | ---------------------------------- |
+| sandbox text on badge    | 8.43 / 8.19       | light-on-light → **11.79 / 10.60** |
+| production text on badge | 5.38 / 4.80       | light-on-light → **8.35 / 7.36**   |
+
 ## Known non-issues
 
 Things that look broken but are not:

@@ -47,27 +47,27 @@ const Exports = () => {
 			<div className='mb-14'>
 				<FormHeader title={t('insightsTools.exports.overviewSectionTitle')} variant='sub-header' />
 				<div className='card space-y-4'>
-					<p className='text-gray-600'>{t('insightsTools.exports.overviewIntro')}</p>
+					<p className='text-content-tertiary'>{t('insightsTools.exports.overviewIntro')}</p>
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-						<div className='flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white'>
-							<Download className='w-6 h-6 text-gray-600' />
+						<div className='flex items-center gap-3 p-3 rounded-lg border border-line bg-surface'>
+							<Download className='w-6 h-6 text-content-tertiary' />
 							<div>
-								<h4 className='font-medium text-gray-900'>{t('insightsTools.exports.highlightAutomatedExportsTitle')}</h4>
-								<p className='text-sm text-gray-500'>{t('insightsTools.exports.highlightAutomatedExportsBody')}</p>
+								<h4 className='font-medium text-content'>{t('insightsTools.exports.highlightAutomatedExportsTitle')}</h4>
+								<p className='text-sm text-content-muted'>{t('insightsTools.exports.highlightAutomatedExportsBody')}</p>
 							</div>
 						</div>
-						<div className='flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white'>
-							<Database className='w-6 h-6 text-gray-600' />
+						<div className='flex items-center gap-3 p-3 rounded-lg border border-line bg-surface'>
+							<Database className='w-6 h-6 text-content-tertiary' />
 							<div>
-								<h4 className='font-medium text-gray-900'>{t('insightsTools.exports.highlightMultipleFormatsTitle')}</h4>
-								<p className='text-sm text-gray-500'>{t('insightsTools.exports.highlightMultipleFormatsBody')}</p>
+								<h4 className='font-medium text-content'>{t('insightsTools.exports.highlightMultipleFormatsTitle')}</h4>
+								<p className='text-sm text-content-muted'>{t('insightsTools.exports.highlightMultipleFormatsBody')}</p>
 							</div>
 						</div>
-						<div className='flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-white'>
-							<Cloud className='w-6 h-6 text-gray-600' />
+						<div className='flex items-center gap-3 p-3 rounded-lg border border-line bg-surface'>
+							<Cloud className='w-6 h-6 text-content-tertiary' />
 							<div>
-								<h4 className='font-medium text-gray-900'>{t('insightsTools.exports.highlightSecureStorageTitle')}</h4>
-								<p className='text-sm text-gray-500'>{t('insightsTools.exports.highlightSecureStorageBody')}</p>
+								<h4 className='font-medium text-content'>{t('insightsTools.exports.highlightSecureStorageTitle')}</h4>
+								<p className='text-sm text-content-muted'>{t('insightsTools.exports.highlightSecureStorageBody')}</p>
 							</div>
 						</div>
 					</div>
@@ -102,8 +102,11 @@ const ExportProviderCard = ({ provider, onClick, premiumBadge }: ExportProviderC
 	return (
 		<div
 			onClick={() => onClick(provider)}
-			className={cn('border rounded-2xl p-6 flex shadow-sm cursor-pointer hover:shadow-md transition-shadow', 'bg-white hover:bg-gray-50')}>
-			<div className='w-16 h-16 flex items-center justify-center bg-gray-100 rounded-lg'>
+			className={cn(
+				'border rounded-2xl p-6 flex shadow-sm cursor-pointer hover:shadow-md transition-shadow',
+				'bg-surface hover:bg-surface-subtle',
+			)}>
+			<div className='w-16 h-16 flex items-center justify-center bg-surface-shell rounded-lg'>
 				<img src={provider.logo} alt={provider.name} className='w-12 h-12 object-contain' />
 			</div>
 			<div className='ml-4 flex-1'>
@@ -113,7 +116,7 @@ const ExportProviderCard = ({ provider, onClick, premiumBadge }: ExportProviderC
 						{provider.premium && <span className='text-[#c58e20] text-sm'>{premiumBadge}</span>}
 					</h3>
 				</div>
-				<p className='text-gray-500 text-sm mb-3'>{provider.description}</p>
+				<p className='text-content-muted text-sm mb-3'>{provider.description}</p>
 				<div className='flex items-center gap-2'>
 					{provider.tags.map((tag, idx) => (
 						<span key={idx} className='text-xs bg-[#f4f4f4] text-[#5e5e5e] px-2 py-1 rounded-md'>
