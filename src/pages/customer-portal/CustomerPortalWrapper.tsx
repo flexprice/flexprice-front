@@ -4,6 +4,7 @@ import { RefreshCw, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/atoms/Button';
+import { useForceLightTheme } from '@/hooks/useForceLightTheme';
 import CustomerPortal from './CustomerPortal';
 
 /**
@@ -54,6 +55,8 @@ const ErrorState = ({ icon, title, description, actionLabel, onAction }: ErrorSt
 	</div>
 );
 const CustomerPortalWrapper = () => {
+	// Tenant-facing: never inherit a Flexprice user's dark-mode preference.
+	useForceLightTheme();
 	const { t } = useTranslation('customer-portal');
 	const [searchParams] = useSearchParams();
 	const token = searchParams.get('token');

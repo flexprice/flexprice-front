@@ -57,6 +57,52 @@ describe('useThemeStore', () => {
 		expect(document.documentElement.classList.contains('dark')).toBe(true);
 	});
 
+	describe('public tenant-facing routes', () => {
+		const setPath = (pathname: string) => {
+			Object.defineProperty(window, 'location', { value: { ...window.location, pathname }, writable: true });
+		};
+
+		afterEach(() => setPath('/'));
+
+		it.each(['/customer-portal', '/customer-portal/invoices', '/checkout', '/checkout/x'])(
+			'never applies .dark on %s, even with dark persisted',
+			async (path) => {
+				setPath(path);
+				localStorage.setItem(STORAGE_KEY, persisted('dark'));
+
+				const { initTheme, useThemeStore } = await importStore();
+				initTheme();
+				expect(document.documentElement.classList.contains('dark')).toBe(false);
+
+				// Toggling from the portal must not paint it dark either.
+				act(() => useThemeStore.getState().setTheme('dark'));
+				expect(document.documentElement.classList.contains('dark')).toBe(false);
+				// …but the preference itself is still recorded for the app.
+				expect(useThemeStore.getState().theme).toBe('dark');
+			},
+		);
+
+		it('still applies .dark on app routes', async () => {
+			setPath('/home');
+			localStorage.setItem(STORAGE_KEY, persisted('dark'));
+
+			const { initTheme } = await importStore();
+			initTheme();
+
+			expect(document.documentElement.classList.contains('dark')).toBe(true);
+		});
+
+		it('does not treat a lookalike path as public', async () => {
+			setPath('/checkout-settings');
+			localStorage.setItem(STORAGE_KEY, persisted('dark'));
+
+			const { initTheme } = await importStore();
+			initTheme();
+
+			expect(document.documentElement.classList.contains('dark')).toBe(true);
+		});
+	});
+
 	describe('initTheme', () => {
 		it('applies dark before React mounts when dark is persisted', async () => {
 			localStorage.setItem(STORAGE_KEY, persisted('dark'));

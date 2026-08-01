@@ -13,11 +13,29 @@ const STORAGE_KEY = 'flexprice_theme';
 export const DEFAULT_THEME: ThemeMode = 'light';
 
 /**
+ * Public, tenant-facing routes that must always render light.
+ *
+ * These sit outside MainLayout and AuthMiddleware and are seen by the tenant's *customers*, not by
+ * Flexprice users. They carry their own per-tenant theming (`--portal-*`, see PortalConfigContext),
+ * which already derives its own dark/light treatment from the tenant's configured background.
+ *
+ * Dark mode is a Flexprice user's preference for the internal app. Letting it reach these routes
+ * means an employee's toggle restyles customer-facing, tenant-branded UI — and because these pages
+ * compose shared atoms that ARE tokenized, the result is dark buttons and tables inside an
+ * otherwise white page.
+ */
+const PUBLIC_LIGHT_ROUTES = ['/customer-portal', '/checkout'];
+
+export const isPublicLightRoute = (pathname: string = window.location.pathname): boolean =>
+	PUBLIC_LIGHT_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`));
+
+/**
  * Tailwind is configured with `darkMode: ['class']`, so the `.dark` class on <html> is the single
  * switch that re-points every `--fp-*` token at its Midnight value.
  */
 const applyThemeClass = (theme: ThemeMode) => {
-	document.documentElement.classList.toggle('dark', theme === 'dark');
+	const effective = isPublicLightRoute() ? 'light' : theme;
+	document.documentElement.classList.toggle('dark', effective === 'dark');
 };
 
 const isThemeMode = (value: unknown): value is ThemeMode => value === 'light' || value === 'dark';

@@ -35,9 +35,42 @@ Measured across 189 files, 1,491 occurrences.
 | `pages/checkout/CheckoutPage.tsx`                      | 14  | 4   | 11  |
 | `pages/settings/team/UsersSection.tsx`                 | 9   | 5   | 25  |
 
-Suggested order: **customer-portal** (self-contained, 4 files near the top), then **`pages/`**
-(analytics, revenue, exports, checkout, onboarding), then the remaining molecules, then
-`PricingCard` last — it feeds the exportable widget package, so it deserves its own commit.
+Suggested order: **`pages/`** (analytics, revenue, exports, onboarding), then the remaining
+molecules, then `PricingCard` last — it feeds the exportable widget package, so it deserves its own
+commit.
+
+> The customer-portal and checkout entries above are **excluded from the migration** — see
+> _Customer portal is deliberately not migrated_ below. Their counts are listed only because the
+> static sweep does not know about that decision.
+
+## Customer portal is deliberately not migrated
+
+`/customer-portal` and `/checkout` are **public routes**, outside `MainLayout` and `AuthMiddleware`.
+The viewer is the tenant's customer, not a Flexprice user.
+
+They already have their own theming contract: `PortalConfigContext` injects `--portal-primary`,
+`--portal-bg`, `--portal-surface`, `--portal-border` from per-tenant settings, and derives text
+colours automatically from the configured background via `isColorDark()`. A tenant can already
+configure a dark portal. Layering `.dark` on top would be a second, competing mechanism fighting the
+tenant's brand.
+
+**This surfaced a real defect.** `initTheme()` runs on every route, so `.dark` was being applied to
+those public pages — and because they compose shared atoms that _are_ tokenized (`Button`, `Input`,
+`Table`, `ui/card`), the result was dark buttons and tables inside an otherwise white,
+tenant-branded page. Measured on `/checkout`: `bg-surface` resolved to `#1d1d1f` while the
+surrounding `bg-white` chrome stayed `#ffffff`.
+
+Fixed by scoping dark mode to the authenticated app:
+
+- `useThemeStore` recognises `PUBLIC_LIGHT_ROUTES` and never applies `.dark` there, so first paint
+  is correct.
+- `useForceLightTheme()` (used by `CustomerPortalWrapper` and `CheckoutPage`) strips the class on
+  mount and restores the persisted preference on unmount, covering client-side navigation from
+  inside the app.
+
+Verified both directions: `/checkout` stays light with `dark` persisted, `/home` still goes dark.
+Seven tests cover it, including that a lookalike path like `/checkout-settings` is _not_ treated as
+public.
 
 ## Token fixes already applied
 

@@ -6,6 +6,7 @@ import { AlertCircle, CheckCircle, Clock, CreditCard, Loader2, RefreshCw } from 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/atoms/Button';
 import { PADDLE_URL_PARAMS, decodeCheckoutToken, isTokenExpired, removePaddleParamsFromUrl } from '@/core/paddle';
+import { useForceLightTheme } from '@/hooks/useForceLightTheme';
 import { z } from 'zod';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -373,6 +374,8 @@ const PaddleCheckout = () => {
  * appended; the webhook handles server-side reconciliation.
  */
 const CheckoutPage = () => {
+	// Tenant-facing: never inherit a Flexprice user's dark-mode preference.
+	useForceLightTheme();
 	const [searchParams] = useSearchParams();
 
 	const provider = searchParams.get('provider');
