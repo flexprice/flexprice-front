@@ -135,7 +135,7 @@ const SubscriptionEditInheritingCustomersSection: FC<SubscriptionEditInheritingC
 			<FormHeader
 				title={t('subscriptions.inheritingCustomers')}
 				variant='sub-header'
-				titleClassName='text-lg font-semibold text-gray-900'
+				titleClassName='text-lg font-semibold text-content'
 				className='mb-0'
 			/>
 			<AddButton onClick={handleAddClick} disabled={isAddDisabled} />
@@ -203,7 +203,7 @@ const SubscriptionEditInheritingCustomersSection: FC<SubscriptionEditInheritingC
 			) : (
 				<Card variant='notched'>
 					{headerRow}
-					<p className='text-sm text-gray-500'>{t('subscriptions.inheritanceEdit.emptyState')}</p>
+					<p className='text-sm text-content-muted'>{t('subscriptions.inheritanceEdit.emptyState')}</p>
 				</Card>
 			)}
 
@@ -212,7 +212,7 @@ const SubscriptionEditInheritingCustomersSection: FC<SubscriptionEditInheritingC
 				onOpenChange={(open) => !open && setChildToDetach(null)}
 				title={detachTitle}
 				description={t('subscriptions.inheritanceNote')}
-				titleClassName='text-lg font-normal text-gray-800'
+				titleClassName='text-lg font-normal text-content-heading'
 				showCloseButton={!isDetaching}>
 				<div className='flex justify-end gap-3 pt-2'>
 					<Button variant='outline' onClick={() => setChildToDetach(null)} disabled={isDetaching}>

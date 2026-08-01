@@ -224,14 +224,14 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>
 											{t('entitlements.overridesTable.tooltipUsageLimit', {
 												from: formatUsageLimit(originalLimit),
 												to: formatUsageLimit(limit),
@@ -258,14 +258,14 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>
 											{t('entitlements.overridesTable.tooltipStaticValue', { from: String(originalValue), to: String(value) })}
 										</div>
 									</div>
@@ -290,14 +290,14 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>
 											{t('entitlements.overridesTable.tooltipStatus', { from: originalValue!, to: value })}
 										</div>
 									</div>
@@ -326,14 +326,14 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>{t('entitlements.overridesTable.tooltipConfig')}</div>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>{t('entitlements.overridesTable.tooltipConfig')}</div>
 									</div>
 								</TooltipContent>
 							</Tooltip>
@@ -382,7 +382,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		},
 		{
 			title: t('entitlements.subscriptionEdit.columnSource'),
-			render: (row) => <span className='capitalize text-sm text-gray-600'>{getSourceLabel(row)}</span>,
+			render: (row) => <span className='capitalize text-sm text-content-tertiary'>{getSourceLabel(row)}</span>,
 		},
 		{
 			title: t('entitlements.overridesTable.columnFeatureType'),
@@ -438,7 +438,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 											e.preventDefault();
 											handleDelete(row);
 										}}
-										className='flex gap-2 items-center cursor-pointer text-red-600'>
+										className='flex gap-2 items-center cursor-pointer text-danger'>
 										<Trash2 className='h-4 w-4' />
 										<span>{row.isOverrideOfParent ? t('entitlements.subscriptionEdit.resetAction') : tc('actions.delete')}</span>
 									</DropdownMenuItem>
@@ -463,7 +463,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			<Card variant='notched'>
 				<CardHeader title={tc('labels.entitlements')} />
 				<div className='flex justify-center items-center py-8'>
-					<span className='text-gray-500'>{tc('labels.loadingEntitlements')}</span>
+					<span className='text-content-muted'>{tc('labels.loadingEntitlements')}</span>
 				</div>
 			</Card>
 		);
@@ -533,7 +533,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			<Dialog
 				title={deleteDialogTitle}
 				description={deleteDialogDescription}
-				titleClassName='text-lg font-normal text-gray-800'
+				titleClassName='text-lg font-normal text-content-heading'
 				isOpen={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 				showCloseButton={false}>

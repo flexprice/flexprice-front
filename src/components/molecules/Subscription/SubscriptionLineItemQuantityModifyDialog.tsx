@@ -142,12 +142,12 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 			title={step === 'form' ? t('subscriptions.changeQuantity') : t('subscriptions.reviewChanges')}
 			description={
 				step === 'form' ? (
-					<span className='text-sm text-gray-600'>
+					<span className='text-sm text-content-tertiary'>
 						<Trans
 							ns='billing'
 							i18nKey='subscriptions.quantityModify.updatingDescription'
 							values={{ name: lineItem.display_name }}
-							components={{ highlight: <span className='font-medium text-gray-900' /> }}
+							components={{ highlight: <span className='font-medium text-content' /> }}
 						/>
 					</span>
 				) : undefined
@@ -167,7 +167,7 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 									placeholder={t('subscriptions.quantityPlaceholder')}
 									disabled={busy}
 								/>
-								{formError && <p className='text-sm text-red-600'>{formError}</p>}
+								{formError && <p className='text-sm text-danger'>{formError}</p>}
 							</div>
 							<div className='w-full space-y-3'>
 								<DatePicker
@@ -178,9 +178,9 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 									popoverTriggerClassName='w-full'
 									disabled={busy}
 								/>
-								<div className='flex w-full gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3.5'>
-									<Info className='mt-0.5 h-5 w-5 shrink-0 text-blue-600' aria-hidden />
-									<p className='min-w-0 flex-1 text-sm leading-relaxed text-blue-900'>
+								<div className='flex w-full gap-3 rounded-lg border border-info-line bg-info-muted px-4 py-3.5'>
+									<Info className='mt-0.5 h-5 w-5 shrink-0 text-info' aria-hidden />
+									<p className='min-w-0 flex-1 text-sm leading-relaxed text-info-deepest'>
 										{t('subscriptions.quantityModify.effectiveDateHint')}
 									</p>
 								</div>
@@ -208,7 +208,7 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 								currency: lineItem.currency || 'USD',
 							}}
 						/>
-						<div className='flex justify-end gap-3 border-t border-gray-100 pt-4'>
+						<div className='flex justify-end gap-3 border-t border-line-subtle pt-4'>
 							<Button variant='outline' onClick={handleBack} disabled={busy}>
 								{t('common:actions.back')}
 							</Button>

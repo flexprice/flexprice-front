@@ -212,7 +212,7 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 					<div className='space-y-1'>
 						{commitmentType === CommitmentType.AMOUNT ? (
 							<>
-								<label className='text-sm font-medium text-gray-700'>
+								<label className='text-sm font-medium text-content-secondary'>
 									{t('commitmentConfig.commitmentAmount', { currency: price.currency })}
 								</label>
 								<Input
@@ -227,11 +227,11 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 									className='w-full'
 									error={showAmountError}
 								/>
-								<p className='text-xs text-gray-500'>{t('commitmentConfig.commitmentAmountHint')}</p>
+								<p className='text-xs text-content-muted'>{t('commitmentConfig.commitmentAmountHint')}</p>
 							</>
 						) : (
 							<>
-								<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.commitmentQuantity')}</label>
+								<label className='text-sm font-medium text-content-secondary'>{t('commitmentConfig.commitmentQuantity')}</label>
 								<Input
 									type='number'
 									value={commitmentQuantity}
@@ -243,12 +243,12 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 									className='w-full'
 									error={showQuantityError}
 								/>
-								<p className='text-xs text-gray-500'>{t('commitmentConfig.commitmentQuantityHint')}</p>
+								<p className='text-xs text-content-muted'>{t('commitmentConfig.commitmentQuantityHint')}</p>
 							</>
 						)}
 					</div>
 					<div className='space-y-1'>
-						<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.commitmentPeriod')}</label>
+						<label className='text-sm font-medium text-content-secondary'>{t('commitmentConfig.commitmentPeriod')}</label>
 						<Select
 							value={commitmentDuration}
 							options={commitmentDurationOptions}
@@ -258,12 +258,12 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 							}}
 							placeholder={t('commitmentConfig.sameAsBillingPlaceholder')}
 						/>
-						<p className='text-xs text-gray-500'>{t('commitmentConfig.commitmentPeriodHint')}</p>
+						<p className='text-xs text-content-muted'>{t('commitmentConfig.commitmentPeriodHint')}</p>
 					</div>
 				</div>
 
 				<div className='space-y-2'>
-					<label className='text-sm font-medium text-gray-700'>{t('commitmentConfig.overageFactor')}</label>
+					<label className='text-sm font-medium text-content-secondary'>{t('commitmentConfig.overageFactor')}</label>
 					<Input
 						type='number'
 						value={overageFactor}
@@ -275,22 +275,22 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 						className='w-full'
 						error={commitmentErrorTarget === 'overageField' ? (validationError ?? undefined) : undefined}
 					/>
-					<p className='text-xs text-gray-500'>{t('commitmentConfig.overageFactorHint')}</p>
+					<p className='text-xs text-content-muted'>{t('commitmentConfig.overageFactorHint')}</p>
 				</div>
 
-				<div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+				<div className='flex items-center justify-between p-4 bg-surface-subtle rounded-lg'>
 					<div className='flex-1'>
-						<label className='text-sm font-medium text-gray-700 block mb-1'>{t('commitmentConfig.enableTrueUp')}</label>
-						<p className='text-xs text-gray-500'>{t('commitmentConfig.enableTrueUpHint')}</p>
+						<label className='text-sm font-medium text-content-secondary block mb-1'>{t('commitmentConfig.enableTrueUp')}</label>
+						<p className='text-xs text-content-muted'>{t('commitmentConfig.enableTrueUpHint')}</p>
 					</div>
 					<Switch checked={enableTrueUp} onCheckedChange={setEnableTrueUp} />
 				</div>
 
 				{showWindowCommitment && (
-					<div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+					<div className='flex items-center justify-between p-4 bg-surface-subtle rounded-lg'>
 						<div className='flex-1'>
-							<label className='text-sm font-medium text-gray-700 block mb-1'>{t('commitmentConfig.windowCommitment')}</label>
-							<p className='text-xs text-gray-500'>
+							<label className='text-sm font-medium text-content-secondary block mb-1'>{t('commitmentConfig.windowCommitment')}</label>
+							<p className='text-xs text-content-muted'>
 								{t('commitmentConfig.windowCommitmentHint', { bucketSize: price.meter?.aggregation?.bucket_size })}
 							</p>
 						</div>
@@ -321,14 +321,14 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 				)}
 
 				{validationError && commitmentErrorTarget === 'banner' && (
-					<div className='p-3 bg-red-50 border border-red-200 rounded-lg'>
-						<p className='text-sm text-red-700'>{validationError}</p>
+					<div className='p-3 bg-danger-muted border border-danger-line rounded-lg'>
+						<p className='text-sm text-danger-strong'>{validationError}</p>
 					</div>
 				)}
 
 				{hasExistingConfig && (
-					<div className='p-3 bg-blue-50 border border-blue-200 rounded-lg'>
-						<p className='text-sm text-blue-700'>{t('commitmentConfig.existingNotice')}</p>
+					<div className='p-3 bg-info-muted border border-info-line rounded-lg'>
+						<p className='text-sm text-info-strong'>{t('commitmentConfig.existingNotice')}</p>
 					</div>
 				)}
 
@@ -337,7 +337,7 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 						{t('commitmentConfig.cancel')}
 					</Button>
 					{hasExistingConfig && (
-						<Button variant='outline' onClick={handleClear} className='flex-1 text-red-600 hover:bg-red-50' disabled={isSaving}>
+						<Button variant='outline' onClick={handleClear} className='flex-1 text-danger hover:bg-danger-muted' disabled={isSaving}>
 							{t('commitmentConfig.clearCommitment')}
 						</Button>
 					)}

@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 11 (invoice/subscription tables) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 12 (subscription/entitlement group) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -19,7 +19,8 @@ Status: **Step 11 (invoice/subscription tables) complete.** Branch `feat/dark_th
 | 9    | `components/atoms/` G–Z (17 files); 113 tokens                           | ✅      |
 | 10   | 15 connection drawers (283 replacements); 114 tokens                     | ✅      |
 | 11   | Invoice/subscription tables (13 files, 187 replacements); scripted map   | ✅      |
-| 12+  | rest of `components/molecules/` — ~127 files, ~10 more commits           | ⬜ next |
+| 12   | Subscription / entitlement / commitment group (17 files, 234 repl.)      | ✅      |
+| 13+  | rest of `components/molecules/` — ~110 files, ~8 more commits            | ⬜ next |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 

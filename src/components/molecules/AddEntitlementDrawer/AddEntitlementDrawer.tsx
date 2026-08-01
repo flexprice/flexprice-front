@@ -219,10 +219,10 @@ const DisplayValueCalculatorDialog: FC<DisplayValueCalculatorDialogProps> = ({
 				/>
 
 				{computedUnitValue != null && (
-					<div className='rounded-md border border-gray-200 bg-white p-4'>
+					<div className='rounded-md border border-line bg-surface p-4'>
 						<p className='text-sm'>
-							<span className='font-medium text-gray-900'>{t('entitlements.displayCalculator.calculatedUsageLimit')}</span>{' '}
-							<span className='font-semibold text-blue-600'>{usageLimitDisplay}</span>{' '}
+							<span className='font-medium text-content'>{t('entitlements.displayCalculator.calculatedUsageLimit')}</span>{' '}
+							<span className='font-semibold text-info'>{usageLimitDisplay}</span>{' '}
 							<span className='text-muted-foreground text-xs'>{resolvedBasePlural}</span>
 						</p>
 					</div>
@@ -233,7 +233,7 @@ const DisplayValueCalculatorDialog: FC<DisplayValueCalculatorDialogProps> = ({
 						ns='catalog'
 						i18nKey='entitlements.displayCalculator.conversionFactor'
 						values={{ rate: reportingUnit.conversion_rate ?? emDash }}
-						components={{ rate: <span className='font-semibold text-blue-600' /> }}
+						components={{ rate: <span className='font-semibold text-info' /> }}
 					/>
 				</p>
 
@@ -458,13 +458,13 @@ const AddEntitlementDrawer: FC<Props> = ({
 	// Memoized error display component
 	const ErrorDisplay = useMemo(() => {
 		if (!errors.general) return null;
-		return <div className='p-3 rounded-md bg-red-50 text-red-600 text-sm mb-4'>{errors.general}</div>;
+		return <div className='p-3 rounded-md bg-danger-muted text-danger text-sm mb-4'>{errors.general}</div>;
 	}, [errors.general]);
 
 	// Memoized feature error display component
 	const FeatureErrorDisplay = useMemo(() => {
 		if (!errors.feature) return null;
-		return <div className='p-3 rounded-md bg-red-50 text-red-600 text-sm mb-4'>{errors.feature}</div>;
+		return <div className='p-3 rounded-md bg-danger-muted text-danger text-sm mb-4'>{errors.feature}</div>;
 	}, [errors.feature]);
 
 	const handleCancel = useCallback(() => {
@@ -484,7 +484,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 			<ShadcnSheet open={isOpen} onOpenChange={handleDrawerClose} modal={false}>
 				<SheetContent
 					side={sheetSide}
-					className={cn('h-screen overflow-y-auto rounded-[10px] sm:max-w-sm bg-white')}
+					className={cn('h-screen overflow-y-auto rounded-[10px] sm:max-w-sm bg-surface')}
 					onPointerDownOutside={preventPortaledSelectDismiss}
 					onInteractOutside={preventPortaledSelectDismiss}
 					onFocusOutside={preventFocusOutsideDismiss}>
@@ -654,7 +654,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 												setTempEntitlement((prev) => ({ ...prev, config_value: parsed ?? undefined }));
 											}}
 										/>
-										{errors.config_value && <p className='text-xs text-red-500 mt-1'>{errors.config_value}</p>}
+										{errors.config_value && <p className='text-xs text-danger-bright mt-1'>{errors.config_value}</p>}
 									</div>
 								)}
 

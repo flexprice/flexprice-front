@@ -34,11 +34,11 @@ const LineItemWindowCommitmentViewDialog: FC<Props> = ({ isOpen, onOpenChange, l
 			description={lineItem.display_name}
 			className='w-full max-w-4xl overflow-x-hidden'>
 			{isLoading ? (
-				<p className='text-sm text-gray-500'>
+				<p className='text-sm text-content-muted'>
 					{t('commitmentConfig.view.loadingBucketPrices', { defaultValue: 'Loading bucket pricing…' })}
 				</p>
 			) : isError ? (
-				<p className='text-sm text-red-600'>
+				<p className='text-sm text-danger'>
 					{t('commitmentConfig.view.loadBucketPricesFailed', {
 						defaultValue: 'Could not load bucket pricing details.',
 					})}

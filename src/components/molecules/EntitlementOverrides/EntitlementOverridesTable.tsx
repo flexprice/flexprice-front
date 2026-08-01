@@ -115,14 +115,14 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>
 											{t('entitlements.overridesTable.tooltipUsageLimit', {
 												from: originalLimit === null ? t('entitlements.overridesTable.unlimited') : String(originalLimit?.toLocaleString()),
 												to: limit === null ? t('entitlements.overridesTable.unlimited') : String(limit?.toLocaleString()),
@@ -146,14 +146,14 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>
 											{t('entitlements.overridesTable.tooltipStaticValue', {
 												from: String(originalValue),
 												to: String(value),
@@ -177,14 +177,14 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>
 											{t('entitlements.overridesTable.tooltipStatus', {
 												from: originalValue,
 												to: value,
@@ -214,14 +214,14 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger>
-									<Info className='h-4 w-4 text-orange-600 hover:text-orange-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-accent-orange hover:text-accent-orange transition-colors duration-150' />
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
 									<div className='space-y-2'>
-										<div className='font-medium text-gray-900'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
-										<div className='text-sm text-gray-600'>{t('entitlements.overridesTable.tooltipConfig')}</div>
+										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
+										<div className='text-sm text-content-tertiary'>{t('entitlements.overridesTable.tooltipConfig')}</div>
 									</div>
 								</TooltipContent>
 							</Tooltip>
@@ -306,7 +306,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 
 	if (entitlements.length === 0) {
 		return (
-			<div className='text-center py-8 text-gray-500'>
+			<div className='text-center py-8 text-content-muted'>
 				<p>{t('entitlements.overridesTable.noEntitlements')}</p>
 			</div>
 		);

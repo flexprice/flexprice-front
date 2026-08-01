@@ -179,7 +179,7 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 			<div className='space-y-5 p-6'>
 				<div className='space-y-2'>
 					<Label label={t('entitlements.editDrawer.featureType')} />
-					<div className='text-sm text-gray-600 capitalize'>{entitlement.feature_type?.toLowerCase()}</div>
+					<div className='text-sm text-content-tertiary capitalize'>{entitlement.feature_type?.toLowerCase()}</div>
 				</div>
 
 				{entitlement.feature_type === FEATURE_TYPE.METERED && (
@@ -194,7 +194,7 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 								disabled={isInfinite}
 							/>
 							{(originalLimit !== undefined || entitlement.isOverrideOfParent) && (
-								<div className='text-xs text-gray-500'>
+								<div className='text-xs text-content-muted'>
 									{t('entitlements.editDrawer.originalPrefix')}{' '}
 									{originalLimit === null ? t('entitlements.addDrawer.unlimitedDisplay') : (originalLimit ?? '—')}
 									{resetPeriod && t('entitlements.editDrawer.resetsSuffix', { period: resetPeriod.toLowerCase() })}
@@ -225,7 +225,7 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 							placeholder={t('entitlements.editDrawer.enterStaticPlaceholder')}
 						/>
 						{originalStatic !== undefined && (
-							<div className='text-xs text-gray-500'>
+							<div className='text-xs text-content-muted'>
 								{t('entitlements.editDrawer.originalPrefix')} {originalStatic || t('entitlements.editDrawer.notSet')}
 							</div>
 						)}
@@ -240,7 +240,7 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 							<span className='text-sm'>{isEnabled ? t('entitlements.editDrawer.enabled') : t('entitlements.editDrawer.disabled')}</span>
 						</div>
 						{originalEnabled !== undefined && (
-							<div className='text-xs text-gray-500'>
+							<div className='text-xs text-content-muted'>
 								{t('entitlements.editDrawer.originalBooleanPrefix')}{' '}
 								{originalEnabled ? t('entitlements.editDrawer.enabled') : t('entitlements.editDrawer.disabled')}
 							</div>

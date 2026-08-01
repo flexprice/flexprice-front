@@ -110,19 +110,19 @@ const SubscriptionCoupon: React.FC<Props> = ({ currency, selectedCoupon, onChang
 			</div>
 
 			{selectedCoupon ? (
-				<div className='rounded-lg border border-gray-200 bg-blue-50 p-4'>
+				<div className='rounded-lg border border-line bg-info-muted p-4'>
 					<div className='flex items-center justify-between'>
 						<div className='flex-1'>
-							<div className='text-sm font-medium text-blue-900'>{selectedCoupon.name}</div>
-							<div className='text-sm text-blue-700'>{formatCouponName(selectedCoupon)}</div>
-							<div className='text-xs text-blue-600'>{selectedCoupon.currency?.toUpperCase()}</div>
+							<div className='text-sm font-medium text-info-deepest'>{selectedCoupon.name}</div>
+							<div className='text-sm text-info-strong'>{formatCouponName(selectedCoupon)}</div>
+							<div className='text-xs text-info'>{selectedCoupon.currency?.toUpperCase()}</div>
 						</div>
 						{!disabled && (
 							<div className='flex gap-2'>
-								<button onClick={handleEdit} className='text-sm text-blue-600 hover:text-blue-800 underline'>
+								<button onClick={handleEdit} className='text-sm text-info hover:text-info-deep underline'>
 									{t('subscriptions.coupon.change')}
 								</button>
-								<button onClick={handleDelete} className='text-sm text-red-600 hover:text-red-800 underline'>
+								<button onClick={handleDelete} className='text-sm text-danger hover:text-danger-deep underline'>
 									{t('subscriptions.coupon.remove')}
 								</button>
 							</div>
@@ -130,7 +130,9 @@ const SubscriptionCoupon: React.FC<Props> = ({ currency, selectedCoupon, onChang
 					</div>
 				</div>
 			) : (
-				<div className='rounded-xl border border-gray-300 p-4 text-center text-gray-500'>{t('subscriptions.coupon.emptyState')}</div>
+				<div className='rounded-xl border border-line-strong p-4 text-center text-content-muted'>
+					{t('subscriptions.coupon.emptyState')}
+				</div>
 			)}
 
 			<CouponModal

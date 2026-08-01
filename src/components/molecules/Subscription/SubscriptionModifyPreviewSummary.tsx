@@ -24,7 +24,7 @@ const SubscriptionModifyPreviewSummary: FC<SubscriptionModifyPreviewSummaryProps
 		return null;
 	}
 	if (!data) {
-		return <p className='text-sm text-gray-500'>{t('subscriptions.modifyPreview.noData')}</p>;
+		return <p className='text-sm text-content-muted'>{t('subscriptions.modifyPreview.noData')}</p>;
 	}
 
 	const lineItems = data.changed_resources?.line_items ?? [];
@@ -45,34 +45,38 @@ const SubscriptionModifyPreviewSummary: FC<SubscriptionModifyPreviewSummaryProps
 	const showDividerBeforeBilling = Boolean(showBillingSection && (quantityCopy || showLineSection));
 
 	return (
-		<div className='space-y-4 text-sm text-gray-800'>
+		<div className='space-y-4 text-sm text-content-heading'>
 			{quantityCopy && quantityChangeContext && (
 				<div>
-					<p className='font-medium leading-snug text-gray-900'>{quantityChangeContext.lineItemDisplayName}</p>
-					<p className='mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-gray-600'>
-						<span className='tabular-nums font-semibold text-gray-900'>{quantityCopy.fromDisplay}</span>
-						<span className='text-gray-400' aria-hidden>
+					<p className='font-medium leading-snug text-content'>{quantityChangeContext.lineItemDisplayName}</p>
+					<p className='mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-content-tertiary'>
+						<span className='tabular-nums font-semibold text-content'>{quantityCopy.fromDisplay}</span>
+						<span className='text-content-subtle' aria-hidden>
 							→
 						</span>
-						<span className='tabular-nums font-semibold text-gray-900'>{quantityCopy.toDisplay}</span>
-						{directionHint && <span className='text-xs font-normal text-gray-500'>{directionHint}</span>}
+						<span className='tabular-nums font-semibold text-content'>{quantityCopy.toDisplay}</span>
+						{directionHint && <span className='text-xs font-normal text-content-muted'>{directionHint}</span>}
 					</p>
 				</div>
 			)}
 
 			{showLineSection && (
-				<div className={showDividerBeforeLines ? 'border-t border-gray-100 pt-4' : undefined}>
+				<div className={showDividerBeforeLines ? 'border-t border-line-subtle pt-4' : undefined}>
 					<div className='grid grid-cols-[auto_auto_1fr] gap-x-4 gap-y-1.5'>
-						<span className='border-b border-gray-100 pb-1.5 text-xs text-gray-500'>{t('subscriptions.modifyPreview.columnType')}</span>
-						<span className='border-b border-gray-100 pb-1.5 text-xs tabular-nums text-gray-500'>
+						<span className='border-b border-line-subtle pb-1.5 text-xs text-content-muted'>
+							{t('subscriptions.modifyPreview.columnType')}
+						</span>
+						<span className='border-b border-line-subtle pb-1.5 text-xs tabular-nums text-content-muted'>
 							{t('subscriptions.modifyPreview.columnQty')}
 						</span>
-						<span className='border-b border-gray-100 pb-1.5 text-xs text-gray-500'>{t('subscriptions.modifyPreview.columnPeriod')}</span>
+						<span className='border-b border-line-subtle pb-1.5 text-xs text-content-muted'>
+							{t('subscriptions.modifyPreview.columnPeriod')}
+						</span>
 						{lineRows.map((row) => (
 							<Fragment key={row.id}>
-								<span className='py-1 text-gray-600'>{row.label}</span>
-								<span className='py-1 tabular-nums text-gray-900'>{row.quantityDisplay}</span>
-								<span className='py-1 text-gray-600'>{row.periodDisplay ?? t('common:labels.na')}</span>
+								<span className='py-1 text-content-tertiary'>{row.label}</span>
+								<span className='py-1 tabular-nums text-content'>{row.quantityDisplay}</span>
+								<span className='py-1 text-content-tertiary'>{row.periodDisplay ?? t('common:labels.na')}</span>
 							</Fragment>
 						))}
 					</div>
@@ -80,12 +84,12 @@ const SubscriptionModifyPreviewSummary: FC<SubscriptionModifyPreviewSummaryProps
 			)}
 
 			{showBillingSection && (
-				<div className={showDividerBeforeBilling ? 'border-t border-gray-100 pt-4' : undefined}>
+				<div className={showDividerBeforeBilling ? 'border-t border-line-subtle pt-4' : undefined}>
 					<div className='space-y-2'>
 						{billingRows.map((r) => (
 							<div key={r.id} className='flex items-baseline justify-between gap-3'>
-								<span className='text-gray-700'>{r.title}</span>
-								{r.amountText ? <span className='shrink-0 tabular-nums font-medium text-gray-900'>{r.amountText}</span> : null}
+								<span className='text-content-secondary'>{r.title}</span>
+								{r.amountText ? <span className='shrink-0 tabular-nums font-medium text-content'>{r.amountText}</span> : null}
 							</div>
 						))}
 					</div>
@@ -93,18 +97,22 @@ const SubscriptionModifyPreviewSummary: FC<SubscriptionModifyPreviewSummaryProps
 			)}
 
 			{subscriptions.length > 0 && (
-				<p className='text-gray-600'>
+				<p className='text-content-tertiary'>
 					<Trans
 						ns='billing'
 						i18nKey='subscriptions.modifyPreview.subscriptionUpdated'
-						components={{ bold: <span className='font-medium text-gray-900' /> }}
+						components={{ bold: <span className='font-medium text-content' /> }}
 					/>
 				</p>
 			)}
 
-			{quantityCopy && !anyResources && <p className='text-sm text-gray-600'>{t('subscriptions.modifyPreview.noExtraBillingDetails')}</p>}
+			{quantityCopy && !anyResources && (
+				<p className='text-sm text-content-tertiary'>{t('subscriptions.modifyPreview.noExtraBillingDetails')}</p>
+			)}
 
-			{!quantityCopy && !anyResources && <p className='text-sm text-gray-600'>{t('subscriptions.modifyPreview.noBillingChanges')}</p>}
+			{!quantityCopy && !anyResources && (
+				<p className='text-sm text-content-tertiary'>{t('subscriptions.modifyPreview.noBillingChanges')}</p>
+			)}
 		</div>
 	);
 };
