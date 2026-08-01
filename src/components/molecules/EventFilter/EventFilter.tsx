@@ -84,7 +84,7 @@ const EventFilter: FC<Props> = ({ eventFilters, setEventFilters, error, disabled
 							</div>
 							{isHorizontal && (
 								<button
-									className='flex justify-center items-center size-10 rounded-md border text-zinc self-end mb-[2px]'
+									className='flex justify-center items-center size-10 rounded-md border self-end mb-[2px]'
 									onClick={() => {
 										const newEventFilters = [...safeEventFilters];
 										newEventFilters.splice(index, 1);

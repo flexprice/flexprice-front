@@ -84,9 +84,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 	return (
 		<div className={cn('space-y-1', className)}>
 			{resolvedLabel && (
-				<label className={cn('block text-sm font-medium text-zinc break-words', disabled ? 'text-zinc-500' : 'text-zinc-950')}>
-					{resolvedLabel}
-				</label>
+				<label className={cn('block text-sm font-medium break-words', disabled ? 'text-zinc-500' : 'text-zinc-950')}>{resolvedLabel}</label>
 			)}
 
 			<Select value={value || ''} onValueChange={handleValueChange} disabled={disabled || isLoading}>

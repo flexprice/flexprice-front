@@ -207,9 +207,9 @@ const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, cur
 									<td className='px-1 py-2 text-center'>
 										<button
 											type='button'
-											className='mx-auto flex size-9 shrink-0 items-center justify-center rounded-md border text-zinc'
+											className='mx-auto flex size-9 shrink-0 items-center justify-center rounded-md border'
 											onClick={() => removeTier(index)}>
-											<RiDeleteBin6Line className='text-zinc' />
+											<RiDeleteBin6Line />
 										</button>
 									</td>
 								</tr>

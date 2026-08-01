@@ -20,7 +20,7 @@ interface RadioMenuItem {
 const RadioGroup: FC<Props> = ({ items, onChange, selected, title, disabled }) => {
 	return (
 		<div>
-			{title && <p className=' block text-sm font-medium text-zinc mb-2'>{title}</p>}
+			{title && <p className=' block text-sm font-medium mb-2'>{title}</p>}
 			<div className='space-y-2'>
 				{items.map((item) => {
 					const isSelected = selected?.value === item.value;

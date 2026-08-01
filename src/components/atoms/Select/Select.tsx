@@ -78,8 +78,7 @@ const FlexPriceSelect: React.FC<Props> = ({
 		<div className={cn('space-y-1 ', className)}>
 			{/* Label */}
 			{label && (
-				<label
-					className={cn(' block text-sm font-medium text-zinc break-words', disabled ? 'text-content-zinc-muted' : 'text-content-zinc')}>
+				<label className={cn(' block text-sm font-medium break-words', disabled ? 'text-content-zinc-muted' : 'text-content-zinc')}>
 					{label}
 					{required && <span className='text-destructive'> *</span>}
 				</label>
