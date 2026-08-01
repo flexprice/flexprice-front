@@ -71,20 +71,20 @@ const SubscribedEventsEditor: FC<{ endpointId: string; filterTypes: string[] | n
 	return (
 		<div>
 			<div className='flex items-center justify-between'>
-				<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.subscribedEvents')}</h4>
-				<button className='text-sm text-gray-600 hover:text-gray-900' onClick={() => setIsEditing(true)}>
+				<h4 className='text-sm font-medium text-content-muted'>{t('webhooks.endpoints.detail.subscribedEvents')}</h4>
+				<button className='text-sm text-content-tertiary hover:text-content' onClick={() => setIsEditing(true)}>
 					{t('common:actions.edit')}
 				</button>
 			</div>
 			<div className='flex flex-col gap-1 mt-1.5 max-h-56 overflow-y-auto'>
 				{filterTypes?.length ? (
 					filterTypes.map((name) => (
-						<span key={name} className='text-sm font-mono text-xs text-gray-700'>
+						<span key={name} className='text-sm font-mono text-xs text-content-secondary'>
 							{name}
 						</span>
 					))
 				) : (
-					<span className='text-sm text-gray-400'>{t('webhooks.endpoints.detail.allEvents')}</span>
+					<span className='text-sm text-content-subtle'>{t('webhooks.endpoints.detail.allEvents')}</span>
 				)}
 			</div>
 		</div>
@@ -102,10 +102,10 @@ const SigningSecret: FC<{ endpointId: string }> = ({ endpointId }) => {
 
 	return (
 		<div>
-			<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.signingSecret')}</h4>
+			<h4 className='text-sm font-medium text-content-muted'>{t('webhooks.endpoints.detail.signingSecret')}</h4>
 			<div className='flex items-center gap-1.5 mt-1.5'>
 				<span
-					className='min-w-0 flex-1 truncate font-mono text-xs bg-gray-50 border border-border rounded px-2 py-1.5'
+					className='min-w-0 flex-1 truncate font-mono text-xs bg-surface-subtle border border-border rounded px-2 py-1.5'
 					title={displayValue}>
 					{displayValue}
 				</span>
@@ -162,7 +162,7 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 	}
 
 	if (endpoint.error || !endpoint.data) {
-		return <div className='p-4 text-sm text-red-600'>{t('webhooks.endpoints.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-danger'>{t('webhooks.endpoints.loadFailed')}</div>;
 	}
 
 	const data = endpoint.data;
@@ -205,19 +205,19 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 
 	return (
 		<div className='flex flex-col gap-6'>
-			<div className='flex items-center gap-1.5 text-sm text-gray-500'>
-				<button className='hover:text-gray-900' onClick={onBack}>
+			<div className='flex items-center gap-1.5 text-sm text-content-muted'>
+				<button className='hover:text-content' onClick={onBack}>
 					{t('webhooks.endpoints.heading')}
 				</button>
 				<ChevronRight className='w-3.5 h-3.5' />
-				<span className='text-gray-900 font-medium truncate'>{data.id}</span>
+				<span className='text-content font-medium truncate'>{data.id}</span>
 			</div>
 
 			<div className='flex items-center justify-between gap-4 pb-5 border-b border-border'>
 				<div className='min-w-0'>
 					<span className='truncate font-medium text-base'>{data.url}</span>
 					{data.disabled && (
-						<span className='ms-2 inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200'>
+						<span className='ms-2 inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-warning-muted text-warning-strong border border-warning-line'>
 							{t('webhooks.endpoints.detail.disabledBadge')}
 						</span>
 					)}
@@ -233,7 +233,7 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 							label: data.disabled ? t('webhooks.endpoints.detail.enableEndpoint') : t('webhooks.endpoints.detail.disableEndpoint'),
 							onSelect: handleToggleDisabled,
 						},
-						{ label: t('common:actions.delete'), onSelect: handleDelete, disabled: isDeleting, className: 'text-red-600' },
+						{ label: t('common:actions.delete'), onSelect: handleDelete, disabled: isDeleting, className: 'text-danger' },
 					]}
 				/>
 			</div>
@@ -244,7 +244,7 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 						<TabsTrigger
 							key={tab.value}
 							value={tab.value}
-							className='text-sm font-medium text-gray-500 px-3 py-2 rounded-none border-b-2 border-transparent data-[state=active]:text-gray-900 data-[state=active]:border-gray-900 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0'>
+							className='text-sm font-medium text-content-muted px-3 py-2 rounded-none border-b-2 border-transparent data-[state=active]:text-content data-[state=active]:border-content bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0'>
 							{tab.label}
 						</TabsTrigger>
 					))}
@@ -265,11 +265,11 @@ const EndpointDetail: FC<Props> = ({ endpointId, onBack, onDeleted }) => {
 
 					<div className='flex flex-col gap-5'>
 						<div>
-							<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.createdAt')}</h4>
+							<h4 className='text-sm font-medium text-content-muted'>{t('webhooks.endpoints.detail.createdAt')}</h4>
 							<p className='text-sm mt-1'>{formatDate(data.createdAt)}</p>
 						</div>
 						<div>
-							<h4 className='text-sm font-medium text-gray-500'>{t('webhooks.endpoints.detail.updatedAt')}</h4>
+							<h4 className='text-sm font-medium text-content-muted'>{t('webhooks.endpoints.detail.updatedAt')}</h4>
 							<p className='text-sm mt-1'>{formatDate(data.updatedAt)}</p>
 						</div>
 						<div className='border-t border-border pt-5 flex flex-col gap-5'>

@@ -157,11 +157,16 @@
 		--fp-warning-deepest: 120 53 15; /* #78350f */
 		--fp-accent-orange: 234 88 12; /* #ea580c */
 		--fp-accent-yellow: 234 179 8; /* #eab308 */
+		--fp-accent-yellow-bg: 254 252 232; /* #fefce8 */
+		--fp-accent-yellow-line: 250 204 21; /* #facc15 */
+		--fp-accent-yellow-strong: 161 98 7; /* #a16207 */
+		--fp-accent-yellow-deep: 113 63 18; /* #713f12 */
 
 		/* Status — success (green / emerald). */
 		--fp-success: 22 163 74; /* #16a34a */
 		--fp-success-bright: 34 197 94; /* #22c55e */
 		--fp-success-soft: 74 222 128; /* #4ade80 */
+		--fp-success-strong: 21 128 61; /* #15803d */
 		--fp-success-deep: 22 101 52; /* #166534 */
 		--fp-success-muted: 240 253 244; /* #f0fdf4 */
 		--fp-success-line: 187 247 208; /* #bbf7d0 */
@@ -188,6 +193,7 @@
 		--fp-brand-navy: 9 46 68; /* #092e44 — Flexprice navy — brightened so it reads on dark */
 		--fp-surface-notch: 212 212 216; /* #d4d4d8 — Card notch bar — zinc.300 as a fill, not a border */
 		--fp-accent-yellow-muted: 254 240 138; /* #fef08a — Coming-soon badge fill */
+		--fp-surface-avatar: 0 0 0; /* #000000 — tenant initials tile — inverts, unlike surface-scrim which stays black */
 
 		/* Status chips + toasts. Applied through inline style, so these are consumed as rgb(var(--fp-x)). */
 		--fp-chip-success-bg: 236 251 228; /* #ecfbe4 */
@@ -365,11 +371,16 @@
 		--fp-warning-deepest: 247 217 171; /* #f7d9ab */
 		--fp-accent-orange: 245 121 60; /* #f5793c */
 		--fp-accent-yellow: 239 198 74; /* #efc64a */
+		--fp-accent-yellow-bg: 43 38 18; /* #2b2612 */
+		--fp-accent-yellow-line: 107 85 24; /* #6b5518 */
+		--fp-accent-yellow-strong: 232 189 82; /* #e8bd52 */
+		--fp-accent-yellow-deep: 242 217 138; /* #f2d98a */
 
 		/* Status — success (green / emerald). */
 		--fp-success: 69 201 122; /* #45c97a */
 		--fp-success-bright: 79 214 135; /* #4fd687 */
 		--fp-success-soft: 111 224 155; /* #6fe09b */
+		--fp-success-strong: 88 209 138; /* #58d18a */
 		--fp-success-deep: 125 224 165; /* #7de0a5 */
 		--fp-success-muted: 16 38 26; /* #10261a */
 		--fp-success-line: 30 70 48; /* #1e4630 */
@@ -396,6 +407,7 @@
 		--fp-brand-navy: 109 184 232; /* #6db8e8 */
 		--fp-surface-notch: 69 69 77; /* #45454d */
 		--fp-accent-yellow-muted: 58 43 18; /* #3a2b12 */
+		--fp-surface-avatar: 238 239 241; /* #eeeff1 */
 
 		/* Status chips + toasts. Applied through inline style, so these are consumed as rgb(var(--fp-x)). */
 		--fp-chip-success-bg: 22 48 31; /* #16301f */

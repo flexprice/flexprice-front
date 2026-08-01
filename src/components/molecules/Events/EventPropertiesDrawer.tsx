@@ -126,9 +126,9 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 							<Skeleton className='h-20 w-full' />
 						</div>
 					) : loadError ? (
-						<div className='rounded-lg border border-red-200 bg-red-50 px-4 py-3'>
-							<p className='text-sm font-medium text-red-700'>{t('events.debugger.loadFailedTitle')}</p>
-							<p className='text-xs text-red-600 mt-1'>{loadError.message || String(loadError)}</p>
+						<div className='rounded-lg border border-danger-line bg-danger-muted px-4 py-3'>
+							<p className='text-sm font-medium text-danger-strong'>{t('events.debugger.loadFailedTitle')}</p>
+							<p className='text-xs text-danger mt-1'>{loadError.message || String(loadError)}</p>
 						</div>
 					) : debugResponse ? (
 						<div className='space-y-6'>
@@ -144,7 +144,7 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 							) : debugResponse.debug_tracker ? (
 								<EventTrackerSection debugResponse={debugResponse} displayEventTimestamp={displayEvent?.timestamp} />
 							) : (
-								<p className='text-sm text-slate-500'>{t('events.debugger.noTrackerData')}</p>
+								<p className='text-sm text-content-slate-muted'>{t('events.debugger.noTrackerData')}</p>
 							)}
 						</div>
 					) : null}

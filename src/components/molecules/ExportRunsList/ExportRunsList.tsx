@@ -27,9 +27,9 @@ const ExportRunsList: FC<ExportRunsListProps> = ({ taskId, limit = 10 }) => {
 	if (runs.length === 0) {
 		return (
 			<div className='card text-center py-8'>
-				<Clock className='w-12 h-12 mx-auto mb-4 text-gray-300' />
-				<h3 className='text-lg font-medium text-gray-900 mb-2'>{t('exportRuns.emptyTitle')}</h3>
-				<p className='text-gray-500'>{t('exportRuns.emptyDescription')}</p>
+				<Clock className='w-12 h-12 mx-auto mb-4 text-content-disabled' />
+				<h3 className='text-lg font-medium text-content mb-2'>{t('exportRuns.emptyTitle')}</h3>
+				<p className='text-content-muted'>{t('exportRuns.emptyDescription')}</p>
 			</div>
 		);
 	}
@@ -56,34 +56,34 @@ const ExportRunItem: FC<ExportRunItemProps> = ({ run }) => {
 	const getStatusIcon = (status: ExportRun['status']) => {
 		switch (status) {
 			case 'completed':
-				return <CheckCircle className='w-4 h-4 text-green-500' />;
+				return <CheckCircle className='w-4 h-4 text-success-bright' />;
 			case 'failed':
-				return <XCircle className='w-4 h-4 text-red-500' />;
+				return <XCircle className='w-4 h-4 text-danger-bright' />;
 			case 'running':
-				return <Play className='w-4 h-4 text-blue-500' />;
+				return <Play className='w-4 h-4 text-info-bright' />;
 			case 'pending':
-				return <Clock className='w-4 h-4 text-yellow-500' />;
+				return <Clock className='w-4 h-4 text-accent-yellow' />;
 			case 'cancelled':
-				return <AlertCircle className='w-4 h-4 text-gray-500' />;
+				return <AlertCircle className='w-4 h-4 text-content-muted' />;
 			default:
-				return <Clock className='w-4 h-4 text-gray-500' />;
+				return <Clock className='w-4 h-4 text-content-muted' />;
 		}
 	};
 
 	const getStatusColor = (status: ExportRun['status']) => {
 		switch (status) {
 			case 'completed':
-				return 'text-green-700 bg-green-50';
+				return 'text-success-strong bg-success-muted';
 			case 'failed':
-				return 'text-red-700 bg-red-50';
+				return 'text-danger-strong bg-danger-muted';
 			case 'running':
-				return 'text-blue-700 bg-blue-50';
+				return 'text-info-strong bg-info-muted';
 			case 'pending':
-				return 'text-yellow-700 bg-yellow-50';
+				return 'text-accent-yellow-strong bg-accent-yellow-bg';
 			case 'cancelled':
-				return 'text-gray-700 bg-gray-50';
+				return 'text-content-secondary bg-surface-subtle';
 			default:
-				return 'text-gray-700 bg-gray-50';
+				return 'text-content-secondary bg-surface-subtle';
 		}
 	};
 
@@ -116,19 +116,19 @@ const ExportRunItem: FC<ExportRunItemProps> = ({ run }) => {
 							<span className='font-medium capitalize'>{statusLabel}</span>
 							<span className={cn('px-2 py-1 rounded-full text-xs font-medium', getStatusColor(run.status))}>{statusLabel}</span>
 						</div>
-						<div className='text-xs text-gray-500 mt-1'>
+						<div className='text-xs text-content-muted mt-1'>
 							{run.started_at ? t('exportRuns.started', { time: formatDate(run.started_at) }) : t('exportRuns.notStarted')}
 							{run.completed_at && ` • ${t('exportRuns.completed', { time: formatDate(run.completed_at) })}`}
 						</div>
 						{run.error_message && (
-							<div className='text-xs text-red-600 mt-1'>
+							<div className='text-xs text-danger mt-1'>
 								{t('exportRuns.errorPrefix')} {run.error_message}
 							</div>
 						)}
 					</div>
 				</div>
 			</div>
-			<div className='flex items-center gap-4 text-xs text-gray-500'>
+			<div className='flex items-center gap-4 text-xs text-content-muted'>
 				{run.records_processed !== undefined && (
 					<div>
 						<span className='font-medium'>{run.records_processed}</span> {t('exportRuns.processed')}

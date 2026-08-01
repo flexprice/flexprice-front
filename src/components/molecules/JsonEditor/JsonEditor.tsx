@@ -217,7 +217,10 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 	const lineCount = rawText.split('\n').length;
 
 	return (
-		<div className='rounded-lg overflow-hidden border border-gray-200' style={{ background: themes.nightOwl.plain.backgroundColor }}>
+		<div className='rounded-lg overflow-hidden border border-line' style={{ background: themes.nightOwl.plain.backgroundColor }}>
+			{/* Header sits on the nightOwl background set above, which is dark in light mode too, so
+			    its border-white/10, text-slate-300 and hover:bg-white/10 stay literal. Only the outer
+			    ring above is on the page and tokenized. */}
 			{/* Header — title + copy only */}
 			<div className='px-4 py-2 border-b border-white/10 flex items-center justify-between'>
 				<p className='text-xs font-medium text-slate-300'>{t('catalog:jsonEditor.title')}</p>

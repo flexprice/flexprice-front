@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 12 (subscription/entitlement group) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 13 (developer tooling + light-mode guard) ready to commit.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -20,7 +20,8 @@ Status: **Step 12 (subscription/entitlement group) complete.** Branch `feat/dark
 | 10   | 15 connection drawers (283 replacements); 114 tokens                     | ✅      |
 | 11   | Invoice/subscription tables (13 files, 187 replacements); scripted map   | ✅      |
 | 12   | Subscription / entitlement / commitment group (17 files, 234 repl.)      | ✅      |
-| 13+  | rest of `components/molecules/` — ~110 files, ~8 more commits            | ⬜ next |
+| 13   | Developer/environment tooling (26 files); light-mode guard; 120 tokens   | ✅      |
+| 14+  | rest of `components/molecules/` — ~85 files, ~7 more commits             | ⬜ next |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
@@ -37,11 +38,17 @@ New files use the `--fp-*` tokens directly (`bg-surface`, `text-content-muted`) 
 palette classes. Light values are identical either way, and writing `bg-white` in a new file just
 creates work for a later migration step.
 
-Run the guard any time with:
+Both guards run in the pre-commit hook, and on demand with:
 
 ```bash
-npm run verify:theme
+npm run verify:theme && npm run verify:light
 ```
+
+`verify:theme` pins each token's light value to its Tailwind source. `verify:light` proves each
+CLASS was mapped to the RIGHT token — a mis-map like `text-gray-500` → `text-content-heading` passes
+the first and is caught only by the second.
+
+**Restart the dev server after generating tokens** — see the finding below.
 
 ## Findings
 
@@ -212,6 +219,35 @@ removing them is a no-op in both themes, so it is filed as separate cleanup rath
 
 By contrast `bg-blue` / `text-blue` / `border-blue` **are** real — they resolve through the `blue`
 key in `tailwind.config.js`, which Step 9 re-pointed at the brand tokens.
+
+### Adding a token requires a dev-server restart (found in Step 13)
+
+Vite HMRs `src/index.css`, so a new `--fp-*` **variable** appears immediately — but
+`tailwind.config.js` is only read at startup, so the matching **utility class** is not emitted until
+the dev server restarts. The result is a class that resolves to nothing while its variable looks
+perfectly correct.
+
+This showed up as the sidebar logo tile rendering as an invisible "F": `bg-surface-avatar` had no
+rule, so the tile was transparent, and its white text vanished against the light sidebar. Nothing
+was wrong with the code — after a restart it renders black-on-white in light (21:1) and
+`#eeeff1` with `#0f0f10` text in dark (16.65:1).
+
+**Restart the dev server after every `node scripts/generate-theme-tokens.mjs`.** A reviewer who
+skips that will see phantom "broken" components and reasonably blame the migration.
+
+### Do not compare an old class to a new one in the running app (found in Step 13)
+
+Once every usage of `bg-zinc-200` is replaced, Tailwind stops emitting `.bg-zinc-200`, so probing
+that class in the browser always reports transparent — which looks exactly like a regression. The
+honest comparison is to compile both classes together:
+
+| class                       | emitted                                 |
+| --------------------------- | --------------------------------------- |
+| `bg-zinc-200` (old)         | `rgb(228 228 231)`                      |
+| `bg-surface-selected` (new) | `--fp-surface-selected` = `228 228 231` |
+
+Use `scripts/verify-light-unchanged.mjs` for this instead — it works from source, so it is immune to
+what the JIT currently happens to emit.
 
 ### The `:root` immutability guard
 

@@ -147,15 +147,15 @@ const DebugMenu = () => {
 					<TooltipTrigger asChild>
 						<Button
 							variant='outline'
-							className={`fixed bottom-6 ${anchorClass} size-10 z-[100] shadow-sm hover:shadow-md transition-all bg-white`}
+							className={`fixed bottom-6 ${anchorClass} size-10 z-[100] shadow-sm hover:shadow-md transition-all bg-surface`}
 							onClick={() => setIsOpen(!isOpen)}>
 							{isStreaming ? (
 								<div className='relative'>
-									<Rocket className='text-blue-500 size-8 text-3xl' />
-									<div className='absolute -top-2 -right-2 size-3 bg-blue-500 rounded-full animate-pulse' />
+									<Rocket className='text-info-bright size-8 text-3xl' />
+									<div className='absolute -top-2 -right-2 size-3 bg-info-bright rounded-full animate-pulse' />
 								</div>
 							) : (
-								<Rocket className='text-blue-500 size-8 text-3xl' />
+								<Rocket className='text-info-bright size-8 text-3xl' />
 							)}
 						</Button>
 					</TooltipTrigger>
@@ -163,7 +163,9 @@ const DebugMenu = () => {
 						side='top'
 						align='end'
 						sideOffset={8}
-						className='flex flex-col gap-1 bg-black/90 text-white px-4 py-2 rounded-lg max-w-[240px]'>
+						/* Always-dark tooltip: surface-scrim is black in both themes, so the text stays literal
+						   white — content-inverse would render it near-black on black in dark mode. */
+						className='flex flex-col gap-1 bg-surface-scrim/90 text-white px-4 py-2 rounded-lg max-w-[240px]'>
 						<div className='text-[13px] text-white'>{t('debug.tooltipTitle')}</div>
 					</TooltipContent>
 				</Tooltip>
@@ -181,7 +183,7 @@ const DebugMenu = () => {
 							damping: 25,
 							duration: 0.3,
 						}}
-						className={`fixed bottom-6 ${anchorClass} w-[300px] bg-white/95 dark:bg-gray-900/95 rounded-lg shadow-lg z-[100] border border-gray-200/50 dark:border-gray-800/50 backdrop-blur-sm`}
+						className={`fixed bottom-6 ${anchorClass} w-[300px] bg-surface/95 dark:bg-gray-900/95 rounded-lg shadow-lg z-[100] border border-line/50 dark:border-gray-800/50 backdrop-blur-sm`}
 						drag
 						dragConstraints={{
 							top: -400,
@@ -214,7 +216,7 @@ const DebugMenu = () => {
 								<div className='space-y-5'>
 									<p className='text-sm text-muted-foreground leading-6'>
 										{t('debug.needSubscriptionLead')}{' '}
-										<Link to={`${RouteNames.customers}/${custId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}`} className='text-info-bright'>
 											{custName}
 										</Link>
 									</p>
@@ -224,11 +226,11 @@ const DebugMenu = () => {
 								<>
 									<p className='text-sm text-muted-foreground mb-4'>
 										{t('debug.eventsFiredSentence', { count: eventCount * eventsScale })}
-										<Link to={`${RouteNames.customers}/${custId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}`} className='text-info-bright'>
 											{` ${custName} `}
 										</Link>
 										{t('debug.eventsFiredMiddle')}
-										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-info-bright'>
 											{` ${planName} `}
 										</Link>
 										{t('debug.eventsFiredTrailing')}
@@ -248,11 +250,11 @@ const DebugMenu = () => {
 								<>
 									<p className='text-sm text-muted-foreground mb-4'>
 										{t('debug.streamIntro')}
-										<Link to={`${RouteNames.customers}/${custId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}`} className='text-info-bright'>
 											{` ${custName} `}
 										</Link>
 										{t('debug.planBridge')}
-										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-blue-500'>
+										<Link to={`${RouteNames.customers}/${custId}/subscription/${subscriptionId}`} className='text-info-bright'>
 											{` ${planName} `}
 										</Link>
 										{t('debug.planEnd')}
@@ -268,7 +270,7 @@ const DebugMenu = () => {
 									)}
 
 									<Button
-										className='w-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm hover:shadow transition-all duration-200'
+										className='w-full bg-info-bright hover:bg-info text-content-inverse shadow-sm hover:shadow transition-all duration-200'
 										size='sm'
 										onClick={handleStartStreaming}
 										disabled={isLoading || isStreaming}>

@@ -47,7 +47,7 @@ const MessageLogsTable: FC = () => {
 					<Loader />
 				</div>
 			) : messages.error ? (
-				<div className='p-4 text-sm text-red-600'>{t('webhooks.logs.loadFailed')}</div>
+				<div className='p-4 text-sm text-danger'>{t('webhooks.logs.loadFailed')}</div>
 			) : messages.data?.length ? (
 				<FlexpriceTable columns={columns} data={messages.data} onRowClick={(row) => setSelectedMessageId(row.id)} />
 			) : (

@@ -121,6 +121,10 @@ export const TOKEN_GROUPS = [
 			{ name: 'warning-deepest', light: 'amber.900', dark: '#f7d9ab' },
 			{ name: 'accent-orange', light: 'orange.600', dark: '#f5793c' },
 			{ name: 'accent-yellow', light: 'yellow.500', dark: '#efc64a' },
+			{ name: 'accent-yellow-bg', light: 'yellow.50', dark: '#2b2612' },
+			{ name: 'accent-yellow-line', light: 'yellow.400', dark: '#6b5518' },
+			{ name: 'accent-yellow-strong', light: 'yellow.700', dark: '#e8bd52' },
+			{ name: 'accent-yellow-deep', light: 'yellow.900', dark: '#f2d98a' },
 		],
 	},
 	{
@@ -129,6 +133,7 @@ export const TOKEN_GROUPS = [
 			{ name: 'success', light: 'green.600', dark: '#45c97a' },
 			{ name: 'success-bright', light: 'green.500', dark: '#4fd687' },
 			{ name: 'success-soft', light: 'green.400', dark: '#6fe09b' },
+			{ name: 'success-strong', light: 'green.700', dark: '#58d18a' },
 			{ name: 'success-deep', light: 'green.800', dark: '#7de0a5' },
 			{ name: 'success-muted', light: 'green.50', dark: '#10261a' },
 			{ name: 'success-line', light: 'green.200', dark: '#1e4630' },
@@ -166,6 +171,12 @@ export const TOKEN_GROUPS = [
 			{ name: 'brand-navy', light: '#092E44', dark: '#6db8e8', note: 'Flexprice navy — brightened so it reads on dark' },
 			{ name: 'surface-notch', light: 'zinc.300', dark: '#45454d', note: 'Card notch bar — zinc.300 as a fill, not a border' },
 			{ name: 'accent-yellow-muted', light: 'yellow.200', dark: '#3a2b12', note: 'Coming-soon badge fill' },
+			{
+				name: 'surface-avatar',
+				light: 'black',
+				dark: '#eeeff1',
+				note: 'tenant initials tile — inverts, unlike surface-scrim which stays black',
+			},
 		],
 	},
 	{

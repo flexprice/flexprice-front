@@ -17,19 +17,19 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 
 	const renderStepIcon = () => {
 		if (isIngested) {
-			return <CheckCircle2 className='h-5 w-5 text-emerald-500' />;
+			return <CheckCircle2 className='h-5 w-5 text-accent-emerald' />;
 		}
 
 		switch (status) {
 			case 'attributed':
 			case 'found':
-				return <CheckCircle2 className='h-5 w-5 text-emerald-500' />;
+				return <CheckCircle2 className='h-5 w-5 text-accent-emerald' />;
 			case 'processing':
-				return <Circle className='h-5 w-5 text-blue-500' />;
+				return <Circle className='h-5 w-5 text-info-bright' />;
 			case 'not_found':
-				return <XCircle className='h-5 w-5 text-amber-500' />;
+				return <XCircle className='h-5 w-5 text-warning-bright' />;
 			case 'error':
-				return <XCircle className='h-5 w-5 text-red-500' />;
+				return <XCircle className='h-5 w-5 text-danger-bright' />;
 			default:
 				// unprocessed — step not yet reached
 				return <Circle className='h-5 w-5 text-slate-300' />;
@@ -56,14 +56,14 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 	const statusText = renderStepStatusText();
 	const statusColorClass =
 		status === 'found' || status === 'attributed'
-			? 'text-emerald-600'
+			? 'text-accent-emerald-strong'
 			: status === 'processing'
-				? 'text-blue-600'
+				? 'text-info'
 				: status === 'not_found'
-					? 'text-amber-600'
+					? 'text-warning'
 					: status === 'error'
-						? 'text-red-600'
-						: 'text-slate-500';
+						? 'text-danger'
+						: 'text-content-slate-muted';
 
 	const formatTimestamp = (ts?: string) => {
 		if (!ts) return null;
@@ -93,11 +93,11 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 	return (
 		<div className='grid grid-cols-[24px_1fr] gap-x-4'>
 			<div className='relative z-10 flex justify-center pt-0.5'>
-				<div className='bg-white rounded-full p-0.5'>{renderStepIcon()}</div>
+				<div className='bg-surface rounded-full p-0.5'>{renderStepIcon()}</div>
 			</div>
 			<div className='min-w-0'>
 				<p className='text-sm font-medium text-foreground'>{title}</p>
-				{formattedTimestamp && <p className='text-xs text-slate-500 mt-1'>{formattedTimestamp}</p>}
+				{formattedTimestamp && <p className='text-xs text-content-slate-muted mt-1'>{formattedTimestamp}</p>}
 				{statusText && <p className={cn('text-xs mt-1', statusColorClass)}>{statusText}</p>}
 			</div>
 		</div>

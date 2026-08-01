@@ -58,7 +58,7 @@ const EventTypePicker: FC<Props> = ({ selected, onChange, className }) => {
 	};
 
 	if (error && allEventTypes.length === 0) {
-		return <div className='p-4 text-sm text-red-600'>{t('webhooks.eventCatalog.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-danger'>{t('webhooks.eventCatalog.loadFailed')}</div>;
 	}
 
 	const isInitialLoading = loading && allEventTypes.length === 0;

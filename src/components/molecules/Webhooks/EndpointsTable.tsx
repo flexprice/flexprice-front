@@ -15,10 +15,10 @@ interface Props {
 const ErrorRateCell: FC<{ endpointId: string }> = ({ endpointId }) => {
 	const { t } = useTranslation('developers');
 	const { data, loading } = useEndpointStats(endpointId);
-	if (loading || !data) return <span className='text-sm text-gray-400'>{t('labels.missingValue')}</span>;
+	if (loading || !data) return <span className='text-sm text-content-subtle'>{t('labels.missingValue')}</span>;
 	const total = (data.success ?? 0) + (data.fail ?? 0);
 	const rate = total > 0 ? (((data.fail ?? 0) / total) * 100).toFixed(1) : '0.0';
-	return <span className='text-sm text-gray-600'>{rate}%</span>;
+	return <span className='text-sm text-content-tertiary'>{rate}%</span>;
 };
 
 const EndpointsTable: FC<Props> = ({ onViewEventCatalog }) => {
@@ -64,7 +64,7 @@ const EndpointsTable: FC<Props> = ({ onViewEventCatalog }) => {
 	}
 
 	if (endpoints.error) {
-		return <div className='p-4 text-sm text-red-600'>{t('webhooks.endpoints.loadFailed')}</div>;
+		return <div className='p-4 text-sm text-danger'>{t('webhooks.endpoints.loadFailed')}</div>;
 	}
 
 	const openDetail = (endpointId: string) => {
@@ -78,7 +78,7 @@ const EndpointsTable: FC<Props> = ({ onViewEventCatalog }) => {
 			render: (row) => (
 				<div className='min-w-0'>
 					<div className='truncate font-medium text-sm'>{row.url}</div>
-					{row.description && <div className='truncate text-xs text-gray-500'>{row.description}</div>}
+					{row.description && <div className='truncate text-xs text-content-muted'>{row.description}</div>}
 				</div>
 			),
 		},
@@ -103,19 +103,19 @@ const EndpointsTable: FC<Props> = ({ onViewEventCatalog }) => {
 			{hasEndpoints ? (
 				<FlexpriceTable columns={columns} data={endpoints.data!} onRowClick={(row) => openDetail(row.id)} />
 			) : (
-				<div className='flex flex-col items-center justify-center rounded-md border border-border bg-gray-50/50 py-16 px-6 text-center'>
-					<div className='mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-white border border-border'>
-						<Rss className='h-5 w-5 text-gray-500' />
+				<div className='flex flex-col items-center justify-center rounded-md border border-border bg-surface-subtle/50 py-16 px-6 text-center'>
+					<div className='mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-surface border border-border'>
+						<Rss className='h-5 w-5 text-content-muted' />
 					</div>
-					<h3 className='text-base font-medium text-gray-900'>{t('webhooks.endpoints.empty.title')}</h3>
-					<p className='mt-2 pb-5 max-w-md text-sm text-gray-500'>
+					<h3 className='text-base font-medium text-content'>{t('webhooks.endpoints.empty.title')}</h3>
+					<p className='mt-2 pb-5 max-w-md text-sm text-content-muted'>
 						<Trans
 							i18nKey='developers:webhooks.endpoints.empty.subtitle'
 							components={{
 								link: (
 									<button
 										type='button'
-										className='font-medium text-gray-900 underline underline-offset-2 hover:text-gray-700'
+										className='font-medium text-content underline underline-offset-2 hover:text-content-secondary'
 										onClick={onViewEventCatalog}
 									/>
 								),

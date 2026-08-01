@@ -1,3 +1,9 @@
 npm run format
 npx lint-staged
+
+# Dark-theme migration guards. verify:theme pins each token's light value to its Tailwind source;
+# verify:light proves each CLASS was mapped to the right token, which the token guard cannot see.
+npm run verify:theme
+npm run verify:light
+
 npm run build
