@@ -163,6 +163,8 @@ export const TOKEN_GROUPS = [
 			{ name: 'line-faint', light: '#bababa', dark: '#35353b', note: 'promo card hairline' },
 			{ name: 'content-slate-deep', light: 'slate.950', dark: '#eeeff1', note: 'active breadcrumb' },
 			{ name: 'brand-navy', light: '#092E44', dark: '#6db8e8', note: 'Flexprice navy — brightened so it reads on dark' },
+			{ name: 'surface-notch', light: 'zinc.300', dark: '#45454d', note: 'Card notch bar — zinc.300 as a fill, not a border' },
+			{ name: 'accent-yellow-muted', light: 'yellow.200', dark: '#3a2b12', note: 'Coming-soon badge fill' },
 		],
 	},
 	{

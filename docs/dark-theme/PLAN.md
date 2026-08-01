@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 6 (`components/ui`) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 7 (atoms A–F) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -14,7 +14,10 @@ Status: **Step 6 (`components/ui`) complete.** Branch `feat/dark_theme`, trackin
 | 4    | Settings → Appearance tab with the dark-mode toggle, 5 tests             | ✅      |
 | 5    | App shell tokenized (6 files); token generator; 93 tokens                | ✅      |
 | 6    | `components/ui/` shadcn primitives (9 files)                             | ✅      |
-| 7    | `components/atoms/` A–F                                                  | ⬜ next |
+| 7    | `components/atoms/` A–F, mechanical (15 files); 95 tokens                | ✅      |
+| 8    | `Chip` + `AppToaster` — the status/feedback colour system                | ⬜ next |
+| 9    | `ErrorBoundary` — migrates the legacy bare `blue` key to `brand-blue`    | ⬜      |
+| 10   | `components/atoms/` G–Z                                                  | ⬜      |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
@@ -103,6 +106,22 @@ It is now `content-inverse`: `#ffffff` in light (byte-identical to the `bg-white
 
 The lesson for the remaining steps: a colour's _role_ has to be read from what it sits on, not
 matched by hex. A purely mechanical `bg-white → bg-surface` sweep would have shipped a broken switch.
+
+### Permanently-dark surfaces must not be tokenized (found in Step 7)
+
+`CodeBlock` renders through Prism's `nightOwl` theme, which is dark in **light** mode too. Its copy
+button is `bg-gray-800/30 … text-white`, sitting on a surface that never changes. Tokenizing those
+to `surface`/`content` would invert the button in dark mode against a code block that stayed dark —
+making it unreadable. Left literal, with a comment saying why, so a later sweep does not "fix" it.
+
+Same family of trap as the switch thumb in Step 6: the question is never "what hex is this", it is
+"what does this sit on, and does _that_ change".
+
+### Colours reached through inline `style` still tokenize
+
+`CodePreview` and `Divider` pass colours as inline style values rather than classes. Those take
+`rgb(var(--fp-token))` directly, which resolves exactly like the utility class does — verified in
+the browser for all three. `Chip` uses the same mechanism and is handled in Step 8.
 
 ### `dark:`-scoped classes are not migration debt
 

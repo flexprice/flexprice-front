@@ -19,7 +19,7 @@ const CodePreview: FC<Props> = ({ code, language, className: styles, title }) =>
 	const { t } = useTranslation('common');
 	return (
 		<>
-			<div className={cn('bg-[#FAFAFA] border rounded-[6px]')} dir='ltr'>
+			<div className={cn('bg-surface-faint border rounded-[6px]')} dir='ltr'>
 				<div className='flex justify-between py-2 px-6 items-center w-full'>
 					<p className='font-semibold text-lg'>{title}</p>
 					<Button
@@ -30,17 +30,17 @@ const CodePreview: FC<Props> = ({ code, language, className: styles, title }) =>
 						className='text-muted-foreground cursor-pointer size-10'
 						variant={'ghost'}
 						dir='ltr'>
-						<Copy className='text-[#52525B]' />
+						<Copy className='text-content-zinc-tertiary' />
 					</Button>
 				</div>
-				<div className='p-3 bg-[#F4F4F5]' dir='ltr'>
+				<div className='p-3 bg-surface-muted' dir='ltr'>
 					<CodeHighlighter
 						theme={{
 							...themes.nightOwlLight,
 							plain: {
 								...themes.nightOwlLight.plain,
-								color: '#18181B',
-								backgroundColor: '#F4F4F5',
+								color: 'rgb(var(--fp-content-zinc-bold))',
+								backgroundColor: 'rgb(var(--fp-surface-muted))',
 							},
 						}}
 						code={code}

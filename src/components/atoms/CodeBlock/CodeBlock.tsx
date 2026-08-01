@@ -34,6 +34,12 @@ const CodeBlock: FC<CodeBlockProps> = ({ code, language, theme = themes.nightOwl
 					</pre>
 				)}
 			</Highlight>
+			{/*
+			 * Deliberately not tokenized. The default Prism theme is `nightOwl`, which renders a dark
+			 * code surface in light mode too, so this button always sits on dark and its colours are
+			 * theme-invariant. Swapping them for `surface`/`content` tokens would invert the button
+			 * in dark mode and make it unreadable against a code block that never changed.
+			 */}
 			<button
 				onClick={handleCopyCode}
 				className='absolute top-3 right-3 p-2 bg-gray-800/30 hover:bg-gray-800/50 rounded-md text-white transition-colors'

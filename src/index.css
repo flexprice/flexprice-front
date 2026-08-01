@@ -185,6 +185,8 @@
 		--fp-line-faint: 186 186 186; /* #bababa — promo card hairline */
 		--fp-content-slate-deep: 2 6 23; /* #020617 — active breadcrumb */
 		--fp-brand-navy: 9 46 68; /* #092e44 — Flexprice navy — brightened so it reads on dark */
+		--fp-surface-notch: 212 212 216; /* #d4d4d8 — Card notch bar — zinc.300 as a fill, not a border */
+		--fp-accent-yellow-muted: 254 240 138; /* #fef08a — Coming-soon badge fill */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
@@ -370,6 +372,8 @@
 		--fp-line-faint: 53 53 59; /* #35353b */
 		--fp-content-slate-deep: 238 239 241; /* #eeeff1 */
 		--fp-brand-navy: 109 184 232; /* #6db8e8 */
+		--fp-surface-notch: 69 69 77; /* #45454d */
+		--fp-accent-yellow-muted: 58 43 18; /* #3a2b12 */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

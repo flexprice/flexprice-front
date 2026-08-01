@@ -33,7 +33,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 
 		const getNotchColor = (color: string) => {
 			const colors: Record<string, string> = {
-				zinc: 'before:bg-zinc-300',
+				zinc: 'before:bg-surface-notch',
 				primary: 'before:bg-primary',
 				// warning: 'before:bg-red-500',
 				// Add more color options as needed
@@ -42,10 +42,10 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 		};
 
 		const variants = {
-			default: 'border border-gray-300',
+			default: 'border border-line-strong',
 			notched: cn(
 				'relative',
-				'border border-gray-200 shadow-sm',
+				'border border-line shadow-sm',
 				notchPosition === 'left' ? 'ps-8' : 'pe-8',
 				'before:absolute',
 				notchPosition === 'left' ? 'before:left-0' : 'before:right-0',
@@ -55,9 +55,9 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 				notchPosition === 'left' ? 'before:rounded-r' : 'before:rounded-l',
 				getNotchColor(notchColor),
 			),
-			bordered: 'border-2 border-gray-300',
-			elevated: 'border border-gray-200 shadow-lg',
-			warning: ' border border-red-200 text-red-600',
+			bordered: 'border-2 border-line-strong',
+			elevated: 'border border-line shadow-lg',
+			warning: ' border border-danger-line text-danger',
 		};
 
 		return (

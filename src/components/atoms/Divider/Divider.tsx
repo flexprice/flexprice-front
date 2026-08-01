@@ -7,7 +7,7 @@ interface DividerProps {
 	className?: string;
 }
 
-const Divider: FC<DividerProps> = ({ color = '#E4E4E7', width = '100%', alignment = 'center', className }) => {
+const Divider: FC<DividerProps> = ({ color = 'rgb(var(--fp-line-zinc))', width = '100%', alignment = 'center', className }) => {
 	const alignmentClass = alignment === 'left' ? 'justify-start' : alignment === 'right' ? 'justify-end' : 'justify-center';
 
 	return (

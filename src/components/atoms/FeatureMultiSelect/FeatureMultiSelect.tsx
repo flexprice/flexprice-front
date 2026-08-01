@@ -110,7 +110,7 @@ const FeatureMultiSelect: FC<Props> = ({
 
 	return (
 		<div className={cn('w-full')}>
-			{resolvedLabel && <label className={cn('block text-sm font-medium text-zinc-950 mb-1')}>{resolvedLabel}</label>}
+			{resolvedLabel && <label className={cn('block text-sm font-medium text-content-zinc mb-1')}>{resolvedLabel}</label>}
 			<MultiSelect
 				options={options}
 				onValueChange={(selectedValues) => {
@@ -132,14 +132,14 @@ const FeatureMultiSelect: FC<Props> = ({
 					if (count === 0) return null;
 					return (
 						<div className='flex items-center justify-between w-full'>
-							<span className='text-sm text-gray-900 font-normal'>{selectedSummary(count)}</span>
-							<ChevronDown className='h-4 w-4 text-gray-500 shrink-0' />
+							<span className='text-sm text-content font-normal'>{selectedSummary(count)}</span>
+							<ChevronDown className='h-4 w-4 text-content-muted shrink-0' />
 						</div>
 					);
 				}}
 			/>
 			{description && <p className='text-sm text-muted-foreground mt-1'>{description}</p>}
-			{error && <p className='text-sm text-red-500 mt-1'>{error}</p>}
+			{error && <p className='text-sm text-danger-bright mt-1'>{error}</p>}
 		</div>
 	);
 };

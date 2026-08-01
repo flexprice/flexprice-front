@@ -34,10 +34,10 @@ export const CopyIdButton: React.FC<CopyIdButtonProps> = ({ id, entityType, toas
 			variant='ghost'
 			size='icon'
 			onClick={handleCopy}
-			className={cn('h-6 w-6 p-0 hover:bg-gray-100', className)}
+			className={cn('h-6 w-6 p-0 hover:bg-surface-shell', className)}
 			title={t('copyId.titleWithType', { type: entityType ?? t('copyId.defaultEntityType') })}
 			{...buttonProps}>
-			<Copy className='w-4 h-4 text-gray-500' />
+			<Copy className='w-4 h-4 text-content-muted' />
 		</Button>
 	);
 };

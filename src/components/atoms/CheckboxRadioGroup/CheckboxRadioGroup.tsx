@@ -22,7 +22,7 @@ export interface Props {
 const CheckboxRadioGroup: FC<Props> = ({ error, checkboxItems, defaultValue, onChange, title, value }) => {
 	return (
 		<div>
-			{title && <p className='text-sm text-zinc-950 font-medium  mb-2'>{title}</p>}
+			{title && <p className='text-sm text-content-zinc font-medium  mb-2'>{title}</p>}
 			<RadioGroup defaultValue={defaultValue} value={value}>
 				{checkboxItems.map((item) => (
 					<div
@@ -36,11 +36,19 @@ const CheckboxRadioGroup: FC<Props> = ({ error, checkboxItems, defaultValue, onC
 						<RadioGroupItem id={item.value} value={item.value} className='peer' disabled={item.disabled} />
 
 						<label htmlFor={item.value} className='cursor-pointer s'>
-							<p className={cn('font-medium text-sm text-[#18181B] peer-checked:text-black', item.disabled && 'text-zinc-400')}>
+							<p
+								className={cn(
+									'font-medium text-sm text-content-zinc-bold peer-checked:text-content-black',
+									item.disabled && 'text-content-zinc-subtle',
+								)}>
 								{item.label}
 							</p>
 							{item.description && (
-								<p className={cn('text-sm text-[#71717A] peer-checked:text-gray-700', item.disabled && 'text-zinc-400')}>
+								<p
+									className={cn(
+										'text-sm text-content-zinc-muted peer-checked:text-content-secondary',
+										item.disabled && 'text-content-zinc-subtle',
+									)}>
 									{item.description}
 								</p>
 							)}

@@ -197,6 +197,8 @@ export default {
 				'line-faint': 'rgb(var(--fp-line-faint) / <alpha-value>)',
 				'content-slate-deep': 'rgb(var(--fp-content-slate-deep) / <alpha-value>)',
 				'brand-navy': 'rgb(var(--fp-brand-navy) / <alpha-value>)',
+				'surface-notch': 'rgb(var(--fp-surface-notch) / <alpha-value>)',
+				'accent-yellow-muted': 'rgb(var(--fp-accent-yellow-muted) / <alpha-value>)',
 
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',

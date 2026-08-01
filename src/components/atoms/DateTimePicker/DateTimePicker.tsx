@@ -100,7 +100,7 @@ export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, place
 
 	return (
 		<div className='space-y-1'>
-			{title && <div className='text-sm font-medium text-zinc-950'>{title}</div>}
+			{title && <div className='text-sm font-medium text-content-zinc'>{title}</div>}
 			<Popover open={isOpen} onOpenChange={setIsOpen}>
 				<PopoverTrigger asChild>
 					<button
@@ -111,7 +111,7 @@ export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, place
 							'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
 							'disabled:cursor-not-allowed disabled:opacity-50',
 							date && 'border-primary-foreground',
-							disabled && 'bg-gray-100',
+							disabled && 'bg-surface-shell',
 							!date && 'text-muted-foreground',
 						)}>
 						<CalendarIcon className='h-4 w-4 shrink-0 text-muted-foreground' />
