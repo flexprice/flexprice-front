@@ -181,12 +181,12 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 				{!connection && (
 					<>
 						{/* Flexprice Managed Switch */}
-						<div className='flex items-center justify-between p-4 border rounded-lg bg-gray-50'>
+						<div className='flex items-center justify-between p-4 border rounded-lg bg-surface-subtle'>
 							<div className='flex-1'>
-								<label htmlFor='flexprice-managed' className='text-sm font-medium text-gray-900 cursor-pointer'>
+								<label htmlFor='flexprice-managed' className='text-sm font-medium text-content cursor-pointer'>
 									{t('connection.s3.flexpriceManaged')}
 								</label>
-								<p className='text-xs text-gray-500 mt-1'>{t('connection.s3.flexpriceManagedHint')}</p>
+								<p className='text-xs text-content-muted mt-1'>{t('connection.s3.flexpriceManagedHint')}</p>
 							</div>
 							<Switch
 								id='flexprice-managed'
@@ -231,9 +231,9 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 				)}
 
 				{/* Security Note */}
-				<div className='bg-blue-50 border border-blue-200 rounded-lg p-4'>
-					<h4 className='font-medium text-blue-900 mb-2'>{t('connection.s3.securityNote')}</h4>
-					<p className='text-sm text-blue-800'>
+				<div className='bg-info-muted border border-info-line rounded-lg p-4'>
+					<h4 className='font-medium text-info-deepest mb-2'>{t('connection.s3.securityNote')}</h4>
+					<p className='text-sm text-info-deep'>
 						{formData.is_flexprice_managed ? t('connection.s3.securityFlexprice') : t('connection.s3.securityAws')}
 					</p>
 				</div>

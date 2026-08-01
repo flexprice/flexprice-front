@@ -154,6 +154,7 @@
 		--fp-warning-muted-strong: 254 243 199; /* #fef3c7 */
 		--fp-warning-line: 253 230 138; /* #fde68a */
 		--fp-warning-line-strong: 252 211 77; /* #fcd34d */
+		--fp-warning-deepest: 120 53 15; /* #78350f */
 		--fp-accent-orange: 234 88 12; /* #ea580c */
 		--fp-accent-yellow: 234 179 8; /* #eab308 */
 
@@ -361,6 +362,7 @@
 		--fp-warning-muted-strong: 58 43 18; /* #3a2b12 */
 		--fp-warning-line: 77 58 24; /* #4d3a18 */
 		--fp-warning-line-strong: 94 71 32; /* #5e4720 */
+		--fp-warning-deepest: 247 217 171; /* #f7d9ab */
 		--fp-accent-orange: 245 121 60; /* #f5793c */
 		--fp-accent-yellow: 239 198 74; /* #efc64a */
 

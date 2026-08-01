@@ -1,6 +1,6 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 9 (atoms G–Z) complete.** Branch `feat/dark_theme`, tracking
+Status: **Step 10 (connection drawers) complete.** Branch `feat/dark_theme`, tracking
 `origin/feat/dark_theme`.
 
 ## Progress log
@@ -17,7 +17,8 @@ Status: **Step 9 (atoms G–Z) complete.** Branch `feat/dark_theme`, tracking
 | 7    | `components/atoms/` A–F, mechanical (15 files); 95 tokens                | ✅      |
 | 8    | `Chip` + `AppToaster` status/feedback palette; 107 tokens                | ✅      |
 | 9    | `components/atoms/` G–Z (17 files); 113 tokens                           | ✅      |
-| 10   | `components/molecules/` — 157 files, split across ~15 commits            | ⬜ next |
+| 10   | 15 connection drawers (283 replacements); 114 tokens                     | ✅      |
+| 11+  | rest of `components/molecules/` — ~140 files, ~12 more commits           | ⬜ next |
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
@@ -159,6 +160,17 @@ Same story for a bare `text-zinc` in four atoms: `zinc` has no `DEFAULT`, so it 
 **Left untouched on purpose.** Making these classes work would make blue accents appear on the error
 page that are not there today — a visible light-mode change, which is exactly what this workstream
 promises not to do. It is a real bug worth fixing, but it needs its own PR and its own sign-off.
+
+### Batch migration is safe once the mapping is settled (Step 10)
+
+The 15 connection drawers share one visual language, so they were migrated in a single pass with a
+regex keyed on a fixed class→token map, applied with `(?<![\w-])…(?![\w-])` boundaries. The
+boundaries matter: without them `bg-blue-50` would clobber the `bg-blue-500` prefix and silently
+change a colour.
+
+283 replacements, zero leftovers, and every one of the 24 tokens involved verified byte-identical.
+This is the pattern for the remaining ~140 molecules: settle the map by reading the distinct classes
+first, then apply it mechanically, then verify the tokens rather than the files.
 
 ### `dark:`-scoped classes are not migration debt
 

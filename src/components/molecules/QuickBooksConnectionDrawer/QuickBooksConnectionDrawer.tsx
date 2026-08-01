@@ -365,10 +365,11 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 
 				{/* Environment Display (Read-only, auto-selected based on Flexprice environment) */}
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>{t('connection.labels.environment')}</label>
-					<div className='flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg'>
-						<div className={`w-3 h-3 rounded-full ${formData.environment === 'production' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-						<span className='text-sm font-medium text-gray-900 capitalize'>{formData.environment}</span>
+					<label className='block text-sm font-medium text-content-secondary mb-2'>{t('connection.labels.environment')}</label>
+					<div className='flex items-center gap-2 p-3 bg-surface-subtle border border-line rounded-lg'>
+						<div
+							className={`w-3 h-3 rounded-full ${formData.environment === 'production' ? 'bg-success-bright' : 'bg-accent-yellow'}`}></div>
+						<span className='text-sm font-medium text-content capitalize'>{formData.environment}</span>
 					</div>
 				</div>
 
@@ -383,25 +384,25 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 				/>
 
 				{/* Sync Configuration Section */}
-				<div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
-					<h3 className='text-sm font-medium text-gray-800 mb-3'>{t('connection.sync.title')}</h3>
-					<p className='text-xs text-gray-600 mb-4'>{t('connection.sync.description', { partner: 'QuickBooks' })}</p>
+				<div className='p-4 bg-surface-subtle border border-line rounded-lg'>
+					<h3 className='text-sm font-medium text-content-heading mb-3'>{t('connection.sync.title')}</h3>
+					<p className='text-xs text-content-tertiary mb-4'>{t('connection.sync.description', { partner: 'QuickBooks' })}</p>
 
 					<div className='space-y-4'>
 						{/* Invoices */}
-						<div className='flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg'>
+						<div className='flex items-center justify-between p-3 bg-surface border border-line rounded-lg'>
 							<div>
-								<label className='text-sm font-medium text-gray-700'>{t('connection.labels.invoices')}</label>
-								<p className='text-xs text-gray-500'>{t('connection.quickBooks.pushToQb')}</p>
+								<label className='text-sm font-medium text-content-secondary'>{t('connection.labels.invoices')}</label>
+								<p className='text-xs text-content-muted'>{t('connection.quickBooks.pushToQb')}</p>
 							</div>
 							<Switch checked={formData.sync_config.invoice} onCheckedChange={(checked) => handleSyncConfigChange('invoice', checked)} />
 						</div>
 
 						{/* Payments */}
-						<div className='flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg'>
+						<div className='flex items-center justify-between p-3 bg-surface border border-line rounded-lg'>
 							<div>
-								<label className='text-sm font-medium text-gray-700'>{t('connection.labels.payments')}</label>
-								<p className='text-xs text-gray-500'>{t('connection.sync.inboundWebhook')}</p>
+								<label className='text-sm font-medium text-content-secondary'>{t('connection.labels.payments')}</label>
+								<p className='text-xs text-content-muted'>{t('connection.sync.inboundWebhook')}</p>
 							</div>
 							<Switch checked={formData.sync_config.payment} onCheckedChange={(checked) => handleSyncConfigChange('payment', checked)} />
 						</div>
@@ -409,9 +410,9 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 				</div>
 
 				{/* Webhook Configuration (always shown, but token field only on create) */}
-				<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
-					<h3 className='text-sm font-medium text-blue-800 mb-3'>{t('connection.webhook.sectionTitle')}</h3>
-					<p className='text-xs text-blue-700 mb-4'>
+				<div className='p-4 bg-info-muted border border-info-line rounded-lg'>
+					<h3 className='text-sm font-medium text-info-deep mb-3'>{t('connection.webhook.sectionTitle')}</h3>
+					<p className='text-xs text-info-strong mb-4'>
 						{formData.sync_config.payment
 							? t('connection.quickBooks.webhookPaymentEnabled')
 							: t('connection.quickBooks.webhookPaymentDisabled')}
@@ -433,10 +434,10 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 
 					{/* Webhook URL - Always visible */}
 					<div className='mb-4'>
-						<label className='text-sm font-medium text-blue-800 mb-2 block'>{t('connection.webhook.url')}</label>
-						<p className='text-xs text-blue-700 mb-3'>{t('connection.quickBooks.qbWebhookIntro')}</p>
-						<div className='flex items-center gap-2 p-2 bg-white border border-blue-200 rounded-md'>
-							<code className='flex-1 text-xs text-gray-800 font-mono break-all'>{webhookUrl}</code>
+						<label className='text-sm font-medium text-info-deep mb-2 block'>{t('connection.webhook.url')}</label>
+						<p className='text-xs text-info-strong mb-3'>{t('connection.quickBooks.qbWebhookIntro')}</p>
+						<div className='flex items-center gap-2 p-2 bg-surface border border-info-line rounded-md'>
+							<code className='flex-1 text-xs text-content-heading font-mono break-all'>{webhookUrl}</code>
 							<Button size='xs' variant='outline' onClick={handleCopyWebhookUrl} className='flex items-center gap-1'>
 								{webhookCopied ? <CheckCircle className='w-3 h-3' /> : <Copy className='w-3 h-3' />}
 								{webhookCopied ? tc('actions.copied') : tc('actions.copy')}
@@ -446,9 +447,9 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 
 					{/* Webhook Instructions - Only show when payment sync enabled */}
 					{formData.sync_config.payment && (
-						<div className='p-3 bg-white border border-blue-200 rounded-md'>
-							<p className='text-xs text-blue-700 font-medium mb-2'>{t('connection.webhook.setupInstructions')}</p>
-							<ol className='text-xs text-blue-700 space-y-1 list-decimal list-inside'>
+						<div className='p-3 bg-surface border border-info-line rounded-md'>
+							<p className='text-xs text-info-strong font-medium mb-2'>{t('connection.webhook.setupInstructions')}</p>
+							<ol className='text-xs text-info-strong space-y-1 list-decimal list-inside'>
 								<li>{t('connection.quickBooks.qbSetupStep1')}</li>
 								<li>{t('connection.quickBooks.qbSetupStep2')}</li>
 								<li>{t('connection.quickBooks.qbSetupStep3')}</li>
@@ -463,18 +464,18 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 						<button
 							type='button'
 							onClick={() => setIsWebhookEventsExpanded(!isWebhookEventsExpanded)}
-							className='flex items-center gap-2 text-sm font-medium text-blue-800 hover:text-blue-900 mb-2'>
+							className='flex items-center gap-2 text-sm font-medium text-info-deep hover:text-info-deepest mb-2'>
 							{isWebhookEventsExpanded ? <ChevronDown className='w-4 h-4' /> : <ChevronRight className='w-4 h-4' />}
 							{t('connection.webhook.eventsToSubscribe')}
 						</button>
 
 						{isWebhookEventsExpanded && (
-							<div className='mt-2 p-3 bg-white border border-blue-200 rounded-md'>
-								<p className='text-xs text-blue-700 mb-3'>{t('connection.quickBooks.qbWebhookEventsIntro')}</p>
+							<div className='mt-2 p-3 bg-surface border border-info-line rounded-md'>
+								<p className='text-xs text-info-strong mb-3'>{t('connection.quickBooks.qbWebhookEventsIntro')}</p>
 								<div className='space-y-1'>
 									{getWebhookEvents().map((event, index) => (
-										<div key={index} className='flex items-center gap-2 text-xs text-blue-700'>
-											<div className='w-1.5 h-1.5 bg-blue-500 rounded-full'></div>
+										<div key={index} className='flex items-center gap-2 text-xs text-info-strong'>
+											<div className='w-1.5 h-1.5 bg-info-bright rounded-full'></div>
 											<code className='font-mono'>{event}</code>
 										</div>
 									))}
@@ -486,19 +487,19 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 
 				{/* OAuth Info Box */}
 				{!connection && (
-					<div className='p-4 bg-blue-50 border border-blue-200 rounded-lg'>
-						<h3 className='text-sm font-medium text-blue-800 mb-2'>{t('connection.quickBooks.oauthTitle')}</h3>
-						<p className='text-xs text-blue-700 mb-2'>{t('connection.quickBooks.oauthBody')}</p>
-						<p className='text-xs text-blue-700 mb-2'>{t('connection.quickBooks.oauthClientReady')}</p>
-						<p className='text-xs text-blue-700 mb-2'>
+					<div className='p-4 bg-info-muted border border-info-line rounded-lg'>
+						<h3 className='text-sm font-medium text-info-deep mb-2'>{t('connection.quickBooks.oauthTitle')}</h3>
+						<p className='text-xs text-info-strong mb-2'>{t('connection.quickBooks.oauthBody')}</p>
+						<p className='text-xs text-info-strong mb-2'>{t('connection.quickBooks.oauthClientReady')}</p>
+						<p className='text-xs text-info-strong mb-2'>
 							<Trans
 								ns='settings'
 								i18nKey='connection.quickBooks.oauthImportantRich'
-								components={{ important: <span className='text-yellow-500 font-bold' /> }}
+								components={{ important: <span className='text-accent-yellow font-bold' /> }}
 							/>
 						</p>
-						<div className='flex items-center gap-2 p-2 bg-white border border-blue-200 rounded-md mt-2'>
-							<code className='flex-1 text-xs text-gray-800 font-mono break-all'>{redirectUri}</code>
+						<div className='flex items-center gap-2 p-2 bg-surface border border-info-line rounded-md mt-2'>
+							<code className='flex-1 text-xs text-content-heading font-mono break-all'>{redirectUri}</code>
 							<Button size='xs' variant='outline' onClick={handleCopyRedirectUri} className='flex items-center gap-1'>
 								{redirectUriCopied ? <CheckCircle className='w-3 h-3' /> : <Copy className='w-3 h-3' />}
 								{redirectUriCopied ? tc('actions.copied') : tc('actions.copy')}
@@ -509,8 +510,8 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 
 				{/* Connection Info (when editing) */}
 				{connection && (
-					<div className='p-4 bg-gray-50 border border-gray-200 rounded-lg'>
-						<p className='text-xs text-gray-500'>{t('connection.quickBooks.noteEditing')}</p>
+					<div className='p-4 bg-surface-subtle border border-line rounded-lg'>
+						<p className='text-xs text-content-muted'>{t('connection.quickBooks.noteEditing')}</p>
 					</div>
 				)}
 

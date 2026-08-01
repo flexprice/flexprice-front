@@ -118,6 +118,7 @@ export const TOKEN_GROUPS = [
 			{ name: 'warning-muted-strong', light: 'amber.100', dark: '#3a2b12' },
 			{ name: 'warning-line', light: 'amber.200', dark: '#4d3a18' },
 			{ name: 'warning-line-strong', light: 'amber.300', dark: '#5e4720' },
+			{ name: 'warning-deepest', light: 'amber.900', dark: '#f7d9ab' },
 			{ name: 'accent-orange', light: 'orange.600', dark: '#f5793c' },
 			{ name: 'accent-yellow', light: 'yellow.500', dark: '#efc64a' },
 		],

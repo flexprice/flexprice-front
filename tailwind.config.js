@@ -166,6 +166,7 @@ export default {
 				'warning-muted-strong': 'rgb(var(--fp-warning-muted-strong) / <alpha-value>)',
 				'warning-line': 'rgb(var(--fp-warning-line) / <alpha-value>)',
 				'warning-line-strong': 'rgb(var(--fp-warning-line-strong) / <alpha-value>)',
+				'warning-deepest': 'rgb(var(--fp-warning-deepest) / <alpha-value>)',
 				'accent-orange': 'rgb(var(--fp-accent-orange) / <alpha-value>)',
 				'accent-yellow': 'rgb(var(--fp-accent-yellow) / <alpha-value>)',
 
