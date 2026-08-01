@@ -94,6 +94,7 @@ export default {
 				'surface-faint': 'rgb(var(--fp-surface-faint) / <alpha-value>)',
 				'surface-cool': 'rgb(var(--fp-surface-cool) / <alpha-value>)',
 				'surface-inverse': 'rgb(var(--fp-surface-inverse) / <alpha-value>)',
+				'surface-inverse-zinc': 'rgb(var(--fp-surface-inverse-zinc) / <alpha-value>)',
 				'surface-scrim': 'rgb(var(--fp-surface-scrim) / <alpha-value>)',
 
 				/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
@@ -169,11 +170,16 @@ export default {
 				'warning-deepest': 'rgb(var(--fp-warning-deepest) / <alpha-value>)',
 				'accent-orange': 'rgb(var(--fp-accent-orange) / <alpha-value>)',
 				'accent-yellow': 'rgb(var(--fp-accent-yellow) / <alpha-value>)',
+				'accent-yellow-bg': 'rgb(var(--fp-accent-yellow-bg) / <alpha-value>)',
+				'accent-yellow-line': 'rgb(var(--fp-accent-yellow-line) / <alpha-value>)',
+				'accent-yellow-strong': 'rgb(var(--fp-accent-yellow-strong) / <alpha-value>)',
+				'accent-yellow-deep': 'rgb(var(--fp-accent-yellow-deep) / <alpha-value>)',
 
 				/* Status — success (green / emerald). */
 				success: 'rgb(var(--fp-success) / <alpha-value>)',
 				'success-bright': 'rgb(var(--fp-success-bright) / <alpha-value>)',
 				'success-soft': 'rgb(var(--fp-success-soft) / <alpha-value>)',
+				'success-strong': 'rgb(var(--fp-success-strong) / <alpha-value>)',
 				'success-deep': 'rgb(var(--fp-success-deep) / <alpha-value>)',
 				'success-muted': 'rgb(var(--fp-success-muted) / <alpha-value>)',
 				'success-line': 'rgb(var(--fp-success-line) / <alpha-value>)',
@@ -200,6 +206,7 @@ export default {
 				'brand-navy': 'rgb(var(--fp-brand-navy) / <alpha-value>)',
 				'surface-notch': 'rgb(var(--fp-surface-notch) / <alpha-value>)',
 				'accent-yellow-muted': 'rgb(var(--fp-accent-yellow-muted) / <alpha-value>)',
+				'surface-avatar': 'rgb(var(--fp-surface-avatar) / <alpha-value>)',
 
 				/* Status chips + toasts. Applied through inline style, so these are consumed as rgb(var(--fp-x)). */
 				'chip-success-bg': 'rgb(var(--fp-chip-success-bg) / <alpha-value>)',

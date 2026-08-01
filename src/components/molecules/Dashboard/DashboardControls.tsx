@@ -47,7 +47,7 @@ export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod
 		<div className='flex flex-col sm:flex-row gap-4 sm:justify-end mb-6'>
 			<div className='flex flex-col sm:flex-row gap-4'>
 				<div className='flex flex-col gap-2'>
-					<label className={getTypographyClass('label-small', 'font-medium text-zinc-600')}>{t('labels.timePeriod')}</label>
+					<label className={getTypographyClass('label-small', 'font-medium text-content-zinc-tertiary')}>{t('labels.timePeriod')}</label>
 					<Select
 						value={timePeriod}
 						options={timePeriodOptions}
@@ -56,7 +56,7 @@ export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod
 					/>
 				</div>
 				<div className='flex flex-col gap-2'>
-					<label className={getTypographyClass('label-small', 'font-medium text-zinc-600')}>{t('labels.windowSize')}</label>
+					<label className={getTypographyClass('label-small', 'font-medium text-content-zinc-tertiary')}>{t('labels.windowSize')}</label>
 					<Select
 						value={windowSize}
 						options={windowSizeOptions}

@@ -92,8 +92,10 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 					</div>
 				) : error ? (
 					<div className='flex flex-col items-center justify-center py-8'>
-						<AlertCircle className='h-8 w-8 text-red-500 mb-3' />
-						<p className={getTypographyClass('body-small', 'text-center text-zinc-600')}>{t('dashboardHome.invoiceLoadError')}</p>
+						<AlertCircle className='h-8 w-8 text-danger-bright mb-3' />
+						<p className={getTypographyClass('body-small', 'text-center text-content-zinc-tertiary')}>
+							{t('dashboardHome.invoiceLoadError')}
+						</p>
 					</div>
 				) : (
 					<div className='space-y-3'>
@@ -101,15 +103,15 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 						<div
 							role='button'
 							tabIndex={0}
-							className='bg-white border border-zinc-200 rounded-lg p-4 cursor-pointer hover:bg-zinc-50 transition-colors'
+							className='bg-surface border border-line-zinc rounded-lg p-4 cursor-pointer hover:bg-surface-faint transition-colors'
 							onClick={() => handleStatusClick(PAYMENT_STATUS.SUCCEEDED)}
 							onKeyDown={(e) => e.key === 'Enter' && handleStatusClick(PAYMENT_STATUS.SUCCEEDED)}>
 							<div className='flex items-center justify-between'>
 								<div className='flex items-center gap-3'>
-									<CheckCircle className='w-5 h-5 text-green-600' />
-									<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>{t('status.paid')}</p>
+									<CheckCircle className='w-5 h-5 text-success' />
+									<p className={getTypographyClass('body-default', 'font-medium text-content-zinc-bold')}>{t('status.paid')}</p>
 								</div>
-								<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.paid?.length || 0}</span>
+								<span className='text-2xl font-bold text-content-zinc-bold'>{invoicesByStatus?.paid?.length || 0}</span>
 							</div>
 						</div>
 
@@ -117,15 +119,15 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 						<div
 							role='button'
 							tabIndex={0}
-							className='bg-white border border-zinc-200 rounded-lg p-4 cursor-pointer hover:bg-zinc-50 transition-colors'
+							className='bg-surface border border-line-zinc rounded-lg p-4 cursor-pointer hover:bg-surface-faint transition-colors'
 							onClick={() => handleStatusClick(PAYMENT_STATUS.PENDING)}
 							onKeyDown={(e) => e.key === 'Enter' && handleStatusClick(PAYMENT_STATUS.PENDING)}>
 							<div className='flex items-center justify-between'>
 								<div className='flex items-center gap-3'>
 									<Clock className='w-5 h-5 text-yellow-600' />
-									<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>{t('status.pending')}</p>
+									<p className={getTypographyClass('body-default', 'font-medium text-content-zinc-bold')}>{t('status.pending')}</p>
 								</div>
-								<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.pending?.length || 0}</span>
+								<span className='text-2xl font-bold text-content-zinc-bold'>{invoicesByStatus?.pending?.length || 0}</span>
 							</div>
 						</div>
 
@@ -133,29 +135,29 @@ export const InvoiceIssuesCard: React.FC<InvoiceIssuesCardProps> = ({ invoicesBy
 						<div
 							role='button'
 							tabIndex={0}
-							className='bg-white border border-zinc-200 rounded-lg p-4 cursor-pointer hover:bg-zinc-50 transition-colors'
+							className='bg-surface border border-line-zinc rounded-lg p-4 cursor-pointer hover:bg-surface-faint transition-colors'
 							onClick={() => handleStatusClick(PAYMENT_STATUS.FAILED)}
 							onKeyDown={(e) => e.key === 'Enter' && handleStatusClick(PAYMENT_STATUS.FAILED)}>
 							<div className='flex items-center justify-between'>
 								<div className='flex items-center gap-3'>
-									<AlertCircle className='w-5 h-5 text-red-600' />
-									<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>{t('status.failed')}</p>
+									<AlertCircle className='w-5 h-5 text-danger' />
+									<p className={getTypographyClass('body-default', 'font-medium text-content-zinc-bold')}>{t('status.failed')}</p>
 								</div>
-								<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.failed?.length || 0}</span>
+								<span className='text-2xl font-bold text-content-zinc-bold'>{invoicesByStatus?.failed?.length || 0}</span>
 							</div>
 						</div>
 
 						{/* Processing Payments */}
 						{(invoicesByStatus?.processing?.length || 0) > 0 && (
-							<div className='bg-white border border-zinc-200 rounded-lg p-4'>
+							<div className='bg-surface border border-line-zinc rounded-lg p-4'>
 								<div className='flex items-center justify-between'>
 									<div className='flex items-center gap-3'>
-										<RefreshCw className='w-5 h-5 text-blue-600' />
-										<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>
+										<RefreshCw className='w-5 h-5 text-info' />
+										<p className={getTypographyClass('body-default', 'font-medium text-content-zinc-bold')}>
 											{t('dashboardHome.invoiceStatusProcessing')}
 										</p>
 									</div>
-									<span className='text-2xl font-bold text-zinc-900'>{invoicesByStatus?.processing?.length || 0}</span>
+									<span className='text-2xl font-bold text-content-zinc-bold'>{invoicesByStatus?.processing?.length || 0}</span>
 								</div>
 							</div>
 						)}

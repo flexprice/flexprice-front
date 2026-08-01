@@ -87,8 +87,8 @@ const CustomerOverviewCard: React.FC<CustomerCardProps> = ({ customerId }) => {
 
 	if (isLoading) {
 		return (
-			<div className='py-6 px-4 rounded-xl border border-gray-300'>
-				<p className='text-gray-600'>{t('overview.loadingCustomerDetails')}</p>
+			<div className='py-6 px-4 rounded-xl border border-line-strong'>
+				<p className='text-content-tertiary'>{t('overview.loadingCustomerDetails')}</p>
 			</div>
 		);
 	}

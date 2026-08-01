@@ -79,9 +79,11 @@ export const RevenueTrendCard: React.FC<RevenueTrendCardProps> = ({ revenueData,
 						<TooltipProvider delayDuration={0}>
 							<Tooltip>
 								<TooltipTrigger className='cursor-pointer'>
-									<Info className='h-4 w-4 text-zinc-400 hover:text-zinc-600 transition-colors duration-150' />
+									<Info className='h-4 w-4 text-content-zinc-subtle hover:text-content-zinc-tertiary transition-colors duration-150' />
 								</TooltipTrigger>
-								<TooltipContent sideOffset={5} className='bg-zinc-900 text-xs text-white px-3 py-1.5 rounded-lg max-w-[250px]'>
+								<TooltipContent
+									sideOffset={5}
+									className='bg-surface-inverse-zinc text-xs text-content-inverse px-3 py-1.5 rounded-lg max-w-[250px]'>
 									{t('dashboardHome.revenueTrendTooltip')}
 								</TooltipContent>
 							</Tooltip>
@@ -110,13 +112,17 @@ export const RevenueTrendCard: React.FC<RevenueTrendCardProps> = ({ revenueData,
 					</div>
 				) : error ? (
 					<div className='flex flex-col items-center justify-center py-8 px-6'>
-						<AlertCircle className='h-8 w-8 text-red-500 mb-3' />
-						<p className={getTypographyClass('body-small', 'text-center text-zinc-600')}>{t('dashboardHome.revenueLoadError')}</p>
+						<AlertCircle className='h-8 w-8 text-danger-bright mb-3' />
+						<p className={getTypographyClass('body-small', 'text-center text-content-zinc-tertiary')}>
+							{t('dashboardHome.revenueLoadError')}
+						</p>
 					</div>
 				) : revenueData.length === 0 ? (
-					<p className={getTypographyClass('body-small', 'text-center text-zinc-500 py-6 px-6')}>{t('dashboardHome.revenueNoData')}</p>
+					<p className={getTypographyClass('body-small', 'text-center text-content-zinc-muted py-6 px-6')}>
+						{t('dashboardHome.revenueNoData')}
+					</p>
 				) : !selectedCurrency ? (
-					<p className={getTypographyClass('body-small', 'text-center text-zinc-500 py-6 px-6')}>
+					<p className={getTypographyClass('body-small', 'text-center text-content-zinc-muted py-6 px-6')}>
 						{t('dashboardHome.revenueSelectCurrencyPrompt')}
 					</p>
 				) : filteredRevenueData && filteredRevenueData.length > 0 ? (
@@ -128,19 +134,21 @@ export const RevenueTrendCard: React.FC<RevenueTrendCardProps> = ({ revenueData,
 							return (
 								<div
 									key={index}
-									className={`flex items-center justify-between px-6 ${isLast ? 'pt-3 pb-0' : 'py-3 border-b border-zinc-100'}`}>
+									className={`flex items-center justify-between px-6 ${isLast ? 'pt-3 pb-0' : 'py-3 border-b border-line-zinc-subtle'}`}>
 									<div className='flex-1'>
-										<p className={getTypographyClass('body-default', 'font-medium text-zinc-900')}>{month.month}</p>
+										<p className={getTypographyClass('body-default', 'font-medium text-content-zinc-bold')}>{month.month}</p>
 									</div>
 									<div className='text-end'>
-										<p className={`text-lg font-semibold ${month.revenue === 0 ? 'text-zinc-400' : 'text-zinc-900'}`}>{revenueFormatted}</p>
+										<p className={`text-lg font-semibold ${month.revenue === 0 ? 'text-content-zinc-subtle' : 'text-content-zinc-bold'}`}>
+											{revenueFormatted}
+										</p>
 									</div>
 								</div>
 							);
 						})}
 					</div>
 				) : (
-					<p className={getTypographyClass('body-small', 'text-center text-zinc-500 py-6 px-6')}>
+					<p className={getTypographyClass('body-small', 'text-center text-content-zinc-muted py-6 px-6')}>
 						{t('dashboardHome.revenueNoDataForCurrency')}
 					</p>
 				)}

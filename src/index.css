@@ -82,6 +82,7 @@
 		--fp-surface-faint: 250 250 250; /* #fafafa */
 		--fp-surface-cool: 248 250 252; /* #f8fafc */
 		--fp-surface-inverse: 17 24 39; /* #111827 — dark-on-light chips invert */
+		--fp-surface-inverse-zinc: 24 24 27; /* #18181b — inverted tooltips built on zinc rather than gray */
 		--fp-surface-scrim: 0 0 0; /* #000000 — modal scrim — black in both themes */
 
 		/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
@@ -90,8 +91,8 @@
 		--fp-content-secondary: 55 65 81; /* #374151 */
 		--fp-content-tertiary: 75 85 99; /* #4b5563 */
 		--fp-content-muted: 107 114 128; /* #6b7280 — Linear secondary text */
-		--fp-content-subtle: 156 163 175; /* #9ca3af */
-		--fp-content-disabled: 209 213 219; /* #d1d5db */
+		--fp-content-subtle: 156 163 175; /* #9ca3af — brightened from #6e727b — 3.25:1 failed AA on surface-subtle */
+		--fp-content-disabled: 209 213 219; /* #d1d5db — deliberately low contrast (2.2:1) — disabled text is exempt from AA and must read as disabled */
 		--fp-content-inverse: 255 255 255; /* #ffffff — text on a filled button — button goes light in dark mode */
 		--fp-content-black: 0 0 0; /* #000000 */
 
@@ -102,7 +103,7 @@
 		--fp-content-zinc-secondary: 63 63 70; /* #3f3f46 */
 		--fp-content-zinc-tertiary: 82 82 91; /* #52525b */
 		--fp-content-zinc-muted: 113 113 122; /* #71717a */
-		--fp-content-zinc-subtle: 161 161 170; /* #a1a1aa */
+		--fp-content-zinc-subtle: 161 161 170; /* #a1a1aa — brightened from #6e727b — same AA failure as content-subtle */
 
 		/* Content (slate ramp) — same rationale as the zinc ramp. */
 		--fp-content-slate: 15 23 42; /* #0f172a */
@@ -110,7 +111,7 @@
 		--fp-content-slate-secondary: 51 65 85; /* #334155 */
 		--fp-content-slate-tertiary: 71 85 105; /* #475569 */
 		--fp-content-slate-muted: 100 116 139; /* #64748b */
-		--fp-content-slate-subtle: 148 163 184; /* #94a3b8 */
+		--fp-content-slate-subtle: 148 163 184; /* #94a3b8 — brightened from #74787f — 3.53:1 failed AA */
 
 		/* Lines — borders, dividers, rings. Hairlines, not surfaces. */
 		--fp-line: 229 231 235; /* #e5e7eb — the workhorse border */
@@ -296,6 +297,7 @@
 		--fp-surface-faint: 31 31 34; /* #1f1f22 */
 		--fp-surface-cool: 26 26 29; /* #1a1a1d */
 		--fp-surface-inverse: 238 239 241; /* #eeeff1 */
+		--fp-surface-inverse-zinc: 238 239 241; /* #eeeff1 */
 		--fp-surface-scrim: 0 0 0; /* #000000 */
 
 		/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
@@ -304,7 +306,7 @@
 		--fp-content-secondary: 208 210 215; /* #d0d2d7 */
 		--fp-content-tertiary: 169 173 182; /* #a9adb6 */
 		--fp-content-muted: 138 143 152; /* #8a8f98 */
-		--fp-content-subtle: 110 114 123; /* #6e727b */
+		--fp-content-subtle: 135 140 149; /* #878c95 */
 		--fp-content-disabled: 85 88 95; /* #55585f */
 		--fp-content-inverse: 15 15 16; /* #0f0f10 */
 		--fp-content-black: 238 239 241; /* #eeeff1 */
@@ -316,7 +318,7 @@
 		--fp-content-zinc-secondary: 198 200 206; /* #c6c8ce */
 		--fp-content-zinc-tertiary: 162 166 175; /* #a2a6af */
 		--fp-content-zinc-muted: 138 143 152; /* #8a8f98 */
-		--fp-content-zinc-subtle: 110 114 123; /* #6e727b */
+		--fp-content-zinc-subtle: 135 140 149; /* #878c95 */
 
 		/* Content (slate ramp) — same rationale as the zinc ramp. */
 		--fp-content-slate: 238 239 241; /* #eeeff1 */
@@ -324,7 +326,7 @@
 		--fp-content-slate-secondary: 203 205 212; /* #cbcdd4 */
 		--fp-content-slate-tertiary: 165 169 179; /* #a5a9b3 */
 		--fp-content-slate-muted: 138 143 152; /* #8a8f98 */
-		--fp-content-slate-subtle: 116 120 127; /* #74787f */
+		--fp-content-slate-subtle: 133 139 150; /* #858b96 */
 
 		/* Lines — borders, dividers, rings. Hairlines, not surfaces. */
 		--fp-line: 41 41 46; /* #29292e */

@@ -5,5 +5,7 @@ npx lint-staged
 # verify:light proves each CLASS was mapped to the right token, which the token guard cannot see.
 npm run verify:theme
 npm run verify:light
+# Catches committing src/index.css without tailwind.config.js (or vice versa).
+npm run verify:tokens-staged
 
 npm run build

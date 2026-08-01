@@ -47,18 +47,18 @@ export const SnippetBlock: FC<SnippetBlockProps> = ({ snippet }) => {
 	return (
 		<div className='mb-8 last:mb-0'>
 			<h3 className='text-lg font-normal text-foreground'>{snippet.label}</h3>
-			{snippet.description && <p className='text-sm text-gray-400'>{snippet.description}</p>}
-			<div className='rounded-lg overflow-hidden border border-gray-200 mt-3'>
+			{snippet.description && <p className='text-sm text-content-subtle'>{snippet.description}</p>}
+			<div className='rounded-lg overflow-hidden border border-line mt-3'>
 				{/* Language Tabs */}
-				<div className='flex overflow-x-auto bg-gray-50 border-b border-gray-200'>
+				<div className='flex overflow-x-auto bg-surface-subtle border-b border-line'>
 					{availableLanguages.map((lang) => (
 						<button
 							key={lang}
 							onClick={() => setSelectedLanguage(lang)}
 							className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
 								selectedLanguage === lang
-									? 'text-blue-600 border-b-2 border-blue-600 bg-white'
-									: 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+									? 'text-info border-b-2 border-info bg-surface'
+									: 'text-content-tertiary hover:text-content hover:bg-surface-shell'
 							}`}>
 							{lang}
 						</button>
@@ -77,7 +77,7 @@ const DocsDrawer: FC<Props> = ({ isOpen, onOpenChange, snippets, trigger }) => {
 	return (
 		<Sheet isOpen={isOpen} onOpenChange={onOpenChange} title={t('labels.apiReference')} trigger={trigger} size='lg'>
 			<div className='flex flex-col h-full'>
-				{snippets.length === 0 && <p className='text-sm text-gray-400'>{t('labels.noDocumentationFound')}</p>}
+				{snippets.length === 0 && <p className='text-sm text-content-subtle'>{t('labels.noDocumentationFound')}</p>}
 
 				{/* Code Snippets Section */}
 				<div className='my-6 px-1 pb-8'>

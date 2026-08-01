@@ -11,6 +11,7 @@
     "generate-meta": "node scripts/generate-meta.js",
     "verify:theme": "node scripts/verify-theme-tokens.mjs",
     "verify:light": "node scripts/verify-light-unchanged.mjs",
+    "verify:tokens-staged": "node scripts/verify-tokens-staged.mjs",
     "build": "tsc -b && vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

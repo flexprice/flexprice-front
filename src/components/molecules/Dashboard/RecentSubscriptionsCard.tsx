@@ -61,16 +61,16 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 					</div>
 				) : error ? (
 					<div className='flex flex-col items-center justify-center py-8'>
-						<AlertCircle className='h-8 w-8 text-red-500 mb-3' />
-						<p className={getTypographyClass('body-small', 'text-center text-zinc-600')}>
+						<AlertCircle className='h-8 w-8 text-danger-bright mb-3' />
+						<p className={getTypographyClass('body-small', 'text-center text-content-zinc-tertiary')}>
 							{t('dashboardHome.recentSubscriptionsLoadError')}
 						</p>
 					</div>
 				) : (
 					<>
 						<div className='mb-8'>
-							<p className='text-4xl font-bold text-zinc-900'>{subscriptionsCount}</p>
-							<p className={getTypographyClass('body-small', 'text-zinc-600 mt-2')}>{t('dashboardHome.newSubscriptions')}</p>
+							<p className='text-4xl font-bold text-content-zinc-bold'>{subscriptionsCount}</p>
+							<p className={getTypographyClass('body-small', 'text-content-zinc-tertiary mt-2')}>{t('dashboardHome.newSubscriptions')}</p>
 						</div>
 						{subscriptionsByPlan.length > 0 ? (
 							<div>
@@ -113,7 +113,9 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 												className='h-2 w-2 shrink-0 rounded-full'
 												style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }}
 											/>
-											<span className={getTypographyClass('helper-text', 'min-w-0 truncate text-zinc-600')} title={item.plan_name}>
+											<span
+												className={getTypographyClass('helper-text', 'min-w-0 truncate text-content-zinc-tertiary')}
+												title={item.plan_name}>
 												{item.plan_name}
 											</span>
 										</div>
@@ -123,7 +125,7 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 						) : (
 							<div className='flex flex-col items-center py-6'>
 								<CalendarClock className='w-8 h-8 text-zinc-300 mb-3' />
-								<p className={getTypographyClass('body-small', 'text-center text-zinc-400')}>
+								<p className={getTypographyClass('body-small', 'text-center text-content-zinc-subtle')}>
 									{t('dashboardHome.noSubscriptionsLast24Hours')}
 								</p>
 							</div>

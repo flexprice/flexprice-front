@@ -98,7 +98,7 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 		<>
 			{/* Main Save Card Dialog */}
 			<Dialog open={isOpen} onOpenChange={onOpenChange}>
-				<DialogContent className='bg-white sm:max-w-[500px]'>
+				<DialogContent className='bg-surface sm:max-w-[500px]'>
 					<DialogHeader>
 						<DialogTitle className='text-lg font-semibold text-[#18181B] flex items-center gap-2'>
 							<CreditCard className='size-5' />
@@ -107,12 +107,12 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 					</DialogHeader>
 
 					<div className='space-y-6 py-4'>
-						<div className='text-sm text-gray-600'>{t('saveCardModal.intro')}</div>
+						<div className='text-sm text-content-tertiary'>{t('saveCardModal.intro')}</div>
 
-						<div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+						<div className='flex items-center justify-between p-4 bg-surface-subtle rounded-lg'>
 							<div className='flex-1'>
-								<h4 className='font-medium text-sm text-gray-900'>{t('saveCardModal.defaultMethodTitle')}</h4>
-								<p className='text-xs text-gray-500'>{t('saveCardModal.defaultMethodHint')}</p>
+								<h4 className='font-medium text-sm text-content'>{t('saveCardModal.defaultMethodTitle')}</h4>
+								<p className='text-xs text-content-muted'>{t('saveCardModal.defaultMethodHint')}</p>
 							</div>
 							<Switch checked={setAsDefault} onCheckedChange={setSetAsDefault} />
 						</div>
@@ -132,14 +132,14 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 
 			{/* Setup URL Success Dialog */}
 			<Dialog open={setupUrlPopup.isOpen} onOpenChange={handleCloseUrlPopup}>
-				<DialogContent className='bg-white sm:max-w-[500px]'>
+				<DialogContent className='bg-surface sm:max-w-[500px]'>
 					<DialogHeader>
 						<DialogTitle className='text-lg font-semibold text-[#18181B]'>{t('saveCardModal.successTitle')}</DialogTitle>
 					</DialogHeader>
 
 					<div className='space-y-4 py-4'>
-						<div className='p-4 bg-green-50 border border-green-200 rounded-lg'>
-							<div className='text-sm text-green-800 mb-2'>{t('saveCardModal.successBody')}</div>
+						<div className='p-4 bg-success-muted border border-success-line rounded-lg'>
+							<div className='text-sm text-success-deep mb-2'>{t('saveCardModal.successBody')}</div>
 						</div>
 
 						<div className='flex gap-3'>
