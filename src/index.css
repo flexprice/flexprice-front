@@ -242,6 +242,11 @@
 		--fp-banner-danger-line: 255 221 221; /* #ffdddd */
 		--fp-banner-danger-text: 200 27 27; /* #c81b1b */
 
+		/* Charts — axis, grid and series colours applied through Recharts props and inline style. */
+		--fp-chart-axis: 204 204 204; /* #cccccc — axis line */
+		--fp-chart-grid: 240 240 240; /* #f0f0f0 — cartesian grid */
+		--fp-accent-indigo-bright: 99 102 241; /* #6366f1 — series colour */
+
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
 		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
@@ -482,6 +487,11 @@
 		--fp-banner-danger-bg-mid: 58 26 28; /* #3a1a1c */
 		--fp-banner-danger-line: 74 34 36; /* #4a2224 */
 		--fp-banner-danger-text: 255 154 157; /* #ff9a9d */
+
+		/* Charts — axis, grid and series colours applied through Recharts props and inline style. */
+		--fp-chart-axis: 69 69 77; /* #45454d */
+		--fp-chart-grid: 41 41 46; /* #29292e */
+		--fp-accent-indigo-bright: 138 147 255; /* #8a93ff */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

@@ -551,15 +551,27 @@ const RevenueBarChart = ({ title, data, type }: { title: string; data: RevenueDa
 			<CardContent className='px-5 pb-5'>
 				<ResponsiveContainer width='100%' height={220}>
 					<BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 4 }}>
-						<CartesianGrid strokeDasharray='3 3' stroke='#f0f0f0' vertical={false} />
-						<XAxis dataKey='label' tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#71717a' }} tickMargin={8} />
-						<YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#71717a' }} tickFormatter={formatYAxis} width={64} />
+						<CartesianGrid strokeDasharray='3 3' stroke='rgb(var(--fp-chart-grid))' vertical={false} />
+						<XAxis
+							dataKey='label'
+							tickLine={false}
+							axisLine={false}
+							tick={{ fontSize: 12, fill: 'rgb(var(--fp-content-zinc-muted))' }}
+							tickMargin={8}
+						/>
+						<YAxis
+							tickLine={false}
+							axisLine={false}
+							tick={{ fontSize: 12, fill: 'rgb(var(--fp-content-zinc-muted))' }}
+							tickFormatter={formatYAxis}
+							width={64}
+						/>
 						<Tooltip
 							cursor={false}
 							formatter={formatTooltip}
 							contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 13 }}
 						/>
-						<Bar dataKey='value' fill='#22c55e' radius={[4, 4, 0, 0]} maxBarSize={48} />
+						<Bar dataKey='value' fill='rgb(var(--fp-success-bright))' radius={[4, 4, 0, 0]} maxBarSize={48} />
 					</BarChart>
 				</ResponsiveContainer>
 			</CardContent>

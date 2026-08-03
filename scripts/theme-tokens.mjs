@@ -254,6 +254,14 @@ export const TOKEN_GROUPS = [
 		],
 	},
 	{
+		group: 'Charts — axis, grid and series colours applied through Recharts props and inline style.',
+		tokens: [
+			{ name: 'chart-axis', light: '#cccccc', dark: '#45454d', note: 'axis line' },
+			{ name: 'chart-grid', light: '#f0f0f0', dark: '#29292e', note: 'cartesian grid' },
+			{ name: 'accent-indigo-bright', light: 'indigo.500', dark: '#8a93ff', note: 'series colour' },
+		],
+	},
+	{
 		group: 'Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged.',
 		tokens: [
 			{ name: 'brand-blue', light: '#3293D9', dark: '#4aa8e8', note: 'was colors.blue.DEFAULT' },

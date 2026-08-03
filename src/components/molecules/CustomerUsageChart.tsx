@@ -119,7 +119,14 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 		}
 	}, [chartData.length]);
 
-	// Create chart colors — portal primary first, then a teal/cyan palette for subsequent series
+	/*
+	 * Categorical series palette — deliberately literal, unlike the chart chrome.
+	 *
+	 * These are data colours: saturated mid-tones chosen to stay distinguishable from each other
+	 * on either canvas, and to keep the series-to-legend mapping stable. Inverting them per theme
+	 * would change which colour means which series. The chrome around them — axes, grid, ticks,
+	 * tooltip surface and text — IS tokenized and follows the theme.
+	 */
 	const getSeriesColor = (index: number) => {
 		if (index === 0 && primaryColor) return primaryColor;
 		const colors = [
@@ -224,15 +231,15 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 					background: transparent;
 				}
 				.custom-tooltip-scroll::-webkit-scrollbar-thumb {
-					background: rgba(156, 163, 175, 0.3);
+					background: rgb(var(--fp-content-subtle) / 0.3);
 					border-radius: 6px;
 				}
 				.custom-tooltip-scroll::-webkit-scrollbar-thumb:hover {
-					background: rgba(156, 163, 175, 0.5);
+					background: rgb(var(--fp-content-subtle) / 0.5);
 				}
 				.custom-tooltip-scroll {
 					scrollbar-width: thin;
-					scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+					scrollbar-color: rgb(var(--fp-content-subtle) / 0.3) transparent;
 				}
 			`}</style>
 			<Card className={`py-2 sm:py-0 shadow-none ${className || ''}`}>
@@ -249,7 +256,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 								display: zoomState.left !== 'dataMin' || zoomState.right !== 'dataMax' ? 'flex' : 'none',
 								alignItems: 'center',
 								gap: '4px',
-								backgroundColor: primaryColor ? `${primaryColor}1a` : 'rgba(238,242,255,1)',
+								backgroundColor: primaryColor ? `${primaryColor}1a` : 'rgb(var(--fp-accent-indigo-muted))',
 								border: `1px solid ${primaryColor ? `${primaryColor}33` : '#c7d2fe'}`,
 								color: primaryColor ?? '#6366f1',
 							}}>
@@ -281,12 +288,12 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 								onMouseDown={handleZoomStart}
 								onMouseMove={handleZoomMove}
 								onMouseUp={handleZoomEnd}>
-								<CartesianGrid vertical={false} stroke='rgba(243, 244, 246, 0.8)' />
+								<CartesianGrid vertical={false} stroke='rgb(var(--fp-surface-shell) / 0.8)' />
 								<XAxis
 									dataKey='date'
 									tickLine={false}
-									axisLine={{ stroke: 'rgba(229, 231, 235, 0.8)' }}
-									tick={{ fill: '#9ca3af', fontSize: 11 }}
+									axisLine={{ stroke: 'rgb(var(--fp-line) / 0.8)' }}
+									tick={{ fill: 'rgb(var(--fp-content-subtle))', fontSize: 11 }}
 									domain={[zoomState.left, zoomState.right]}
 									tickFormatter={(value) => {
 										const date = new Date(value);
@@ -301,7 +308,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 								<YAxis
 									tickLine={false}
 									axisLine={false}
-									tick={{ fill: '#9ca3af', fontSize: 11 }}
+									tick={{ fill: 'rgb(var(--fp-content-subtle))', fontSize: 11 }}
 									width={48}
 									tickCount={5}
 									dx={-5}
@@ -316,7 +323,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 										return (
 											<div
 												style={{
-													backgroundColor: 'rgba(255, 255, 255, 0.98)',
+													backgroundColor: 'rgb(var(--fp-surface) / 0.98)',
 													border: 'none',
 													borderRadius: '6px',
 													boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
@@ -339,7 +346,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 													<div
 														style={{
 															fontWeight: 600,
-															color: '#374151',
+															color: 'rgb(var(--fp-content-secondary))',
 															fontSize: '12px',
 															letterSpacing: '0.025em',
 														}}>
@@ -351,7 +358,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 													</div>
 													<div
 														style={{
-															color: '#6b7280',
+															color: 'rgb(var(--fp-content-muted))',
 															fontSize: '11px',
 															marginTop: '2px',
 														}}>
@@ -383,11 +390,11 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 																		backgroundColor: entry.color,
 																		display: 'inline-block',
 																	}}></span>
-																<span style={{ color: '#4b5563', fontSize: '11px' }}>
+																<span style={{ color: 'rgb(var(--fp-content-tertiary))', fontSize: '11px' }}>
 																	{(typeof entry.dataKey === 'string' && seriesConfig[entry.dataKey]?.label) || entry.name || entry.dataKey}
 																</span>
 															</div>
-															<span style={{ fontWeight: 500, color: '#111827' }}>
+															<span style={{ fontWeight: 500, color: 'rgb(var(--fp-content))' }}>
 																{typeof entry.value === 'number' ? entry.value.toLocaleString() : entry.value}
 															</span>
 														</div>
@@ -405,7 +412,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 											fontSize: '11px',
 											paddingTop: '15px',
 											paddingBottom: '5px',
-											color: '#6b7280',
+											color: 'rgb(var(--fp-content-muted))',
 										}}
 										onClick={(data) => {
 											// Could implement toggle visibility here
@@ -417,7 +424,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 									dataKey='date'
 									height={20}
 									stroke={primaryColor ? `${primaryColor}99` : 'rgba(99, 102, 241, 0.6)'}
-									fill={primaryColor ? `${primaryColor}22` : 'rgba(243, 244, 246, 0.2)'}
+									fill={primaryColor ? `${primaryColor}22` : 'rgb(var(--fp-surface-shell) / 0.2)'}
 									travellerWidth={8}
 									y={330} // Position at the bottom of the chart, below the data lines
 									tickFormatter={(value) => {
@@ -453,7 +460,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 									<ReferenceArea
 										x1={zoomState.refAreaLeft}
 										x2={zoomState.refAreaRight}
-										stroke={primaryColor ? `${primaryColor}cc` : 'rgba(99, 102, 241, 0.8)'}
+										stroke={primaryColor ? `${primaryColor}cc` : 'rgb(var(--fp-accent-indigo-bright) / 0.8)'}
 										strokeWidth={1}
 										strokeDasharray='3 3'
 										fill={primaryColor ? `${primaryColor}26` : 'rgba(99, 102, 241, 0.15)'}
@@ -471,7 +478,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 										dot={false}
 										activeDot={{
 											r: 3.5,
-											stroke: '#fff',
+											stroke: 'rgb(var(--fp-surface))',
 											strokeWidth: 1,
 											fill: getSeriesColor(index),
 										}}

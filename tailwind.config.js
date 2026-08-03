@@ -254,6 +254,11 @@ export default {
 				'banner-danger-line': 'rgb(var(--fp-banner-danger-line) / <alpha-value>)',
 				'banner-danger-text': 'rgb(var(--fp-banner-danger-text) / <alpha-value>)',
 
+				/* Charts — axis, grid and series colours applied through Recharts props and inline style. */
+				'chart-axis': 'rgb(var(--fp-chart-axis) / <alpha-value>)',
+				'chart-grid': 'rgb(var(--fp-chart-grid) / <alpha-value>)',
+				'accent-indigo-bright': 'rgb(var(--fp-accent-indigo-bright) / <alpha-value>)',
+
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',
 				'brand-blue-light': 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',

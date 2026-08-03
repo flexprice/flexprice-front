@@ -69,8 +69,13 @@ const ActivityOverview: FC = () => {
 								<XAxis dataKey='timestamp' />
 								<YAxis allowDecimals={false} />
 								<Tooltip />
-								<Area type='monotone' dataKey='successful' stroke='#22c55e' fill='#22c55e33' />
-								<Area type='monotone' dataKey='failed' stroke='#ef4444' fill='#ef444433' />
+								<Area
+									type='monotone'
+									dataKey='successful'
+									stroke='rgb(var(--fp-success-bright))'
+									fill='rgb(var(--fp-success-bright) / 0.2)'
+								/>
+								<Area type='monotone' dataKey='failed' stroke='rgb(var(--fp-danger-bright))' fill='rgb(var(--fp-danger-bright) / 0.2)' />
 							</AreaChart>
 						</ResponsiveContainer>
 					)}

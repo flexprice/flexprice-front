@@ -202,6 +202,9 @@
 	--fp-banner-danger-bg-mid: 255 234 234;
 	--fp-banner-danger-line: 255 221 221;
 	--fp-banner-danger-text: 200 27 27;
+	--fp-chart-axis: 204 204 204;
+	--fp-chart-grid: 240 240 240;
+	--fp-accent-indigo-bright: 99 102 241;
 	--fp-brand-blue: 50 147 217;
 	--fp-brand-blue-light: 229 240 255;
 	/* fp-tokens:end lib-light */
@@ -381,6 +384,9 @@
 	--fp-banner-danger-bg-mid: 58 26 28;
 	--fp-banner-danger-line: 74 34 36;
 	--fp-banner-danger-text: 255 154 157;
+	--fp-chart-axis: 69 69 77;
+	--fp-chart-grid: 41 41 46;
+	--fp-accent-indigo-bright: 138 147 255;
 	--fp-brand-blue: 74 168 232;
 	--fp-brand-blue-light: 22 40 63;
 	/* fp-tokens:end lib-dark */

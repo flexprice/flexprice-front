@@ -55,16 +55,16 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 			<AreaChart data={dataToShow} margin={CHART_MARGIN}>
 				<defs>
 					<linearGradient id='eventCountGradient' x1='0' y1='0' x2='0' y2='1'>
-						<stop offset='5%' stopColor='rgba(99, 102, 241, 0.8)' stopOpacity={0.8} />
+						<stop offset='5%' stopColor='rgb(var(--fp-accent-indigo-bright) / 0.8)' stopOpacity={0.8} />
 						<stop offset='95%' stopColor='rgba(99, 102, 241, 0.1)' stopOpacity={0.1} />
 					</linearGradient>
 				</defs>
-				<CartesianGrid vertical={false} stroke='rgba(243, 244, 246, 0.8)' strokeDasharray='3 3' />
+				<CartesianGrid vertical={false} stroke='rgb(var(--fp-surface-shell) / 0.8)' strokeDasharray='3 3' />
 				<XAxis
 					dataKey='timestamp'
 					tickLine={false}
-					axisLine={{ stroke: 'rgba(229, 231, 235, 0.8)' }}
-					tick={{ fill: '#9ca3af', fontSize: 11 }}
+					axisLine={{ stroke: 'rgb(var(--fp-line) / 0.8)' }}
+					tick={{ fill: 'rgb(var(--fp-content-subtle))', fontSize: 11 }}
 					tickFormatter={(value) => {
 						const date = new Date(value);
 						return date.toLocaleDateString(dateLocale, {
@@ -79,7 +79,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 				<YAxis
 					tickLine={false}
 					axisLine={false}
-					tick={{ fill: '#9ca3af', fontSize: 11 }}
+					tick={{ fill: 'rgb(var(--fp-content-subtle))', fontSize: 11 }}
 					width={50}
 					tickCount={6}
 					dx={-5}
@@ -98,7 +98,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 							return (
 								<div
 									style={{
-										backgroundColor: 'rgba(255, 255, 255, 0.98)',
+										backgroundColor: 'rgb(var(--fp-surface) / 0.98)',
 										border: 'none',
 										borderRadius: '6px',
 										boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -115,7 +115,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 										<div
 											style={{
 												fontWeight: 600,
-												color: '#374151',
+												color: 'rgb(var(--fp-content-secondary))',
 												fontSize: '13px',
 												letterSpacing: '0.025em',
 											}}>
@@ -127,7 +127,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 										</div>
 										<div
 											style={{
-												color: '#6b7280',
+												color: 'rgb(var(--fp-content-muted))',
 												fontSize: '11px',
 												marginTop: '2px',
 											}}>
@@ -144,11 +144,11 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 												width: '8px',
 												height: '8px',
 												borderRadius: '50%',
-												backgroundColor: 'rgba(99, 102, 241, 0.8)',
+												backgroundColor: 'rgb(var(--fp-accent-indigo-bright) / 0.8)',
 												display: 'inline-block',
 											}}></span>
-										<span style={{ color: '#4b5563', fontSize: '11px' }}>{eventCountLabel}</span>
-										<span style={{ fontWeight: 600, color: '#111827', marginLeft: 'auto' }}>
+										<span style={{ color: 'rgb(var(--fp-content-tertiary))', fontSize: '11px' }}>{eventCountLabel}</span>
+										<span style={{ fontWeight: 600, color: 'rgb(var(--fp-content))', marginLeft: 'auto' }}>
 											{formatCompactNumber(pointData.event_count)}
 										</span>
 									</div>
@@ -160,17 +160,17 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 				<Area
 					type='monotone'
 					dataKey='event_count'
-					stroke={hasData ? 'rgba(99, 102, 241, 0.8)' : 'rgba(156, 163, 175, 0.3)'}
+					stroke={hasData ? 'rgb(var(--fp-accent-indigo-bright) / 0.8)' : 'rgb(var(--fp-content-subtle) / 0.3)'}
 					strokeWidth={2}
-					fill={hasData ? 'url(#eventCountGradient)' : 'rgba(243, 244, 246, 0.2)'}
+					fill={hasData ? 'url(#eventCountGradient)' : 'rgb(var(--fp-surface-shell) / 0.2)'}
 					dot={false}
 					activeDot={
 						hasData
 							? {
 									r: 4,
-									stroke: '#fff',
+									stroke: 'rgb(var(--fp-surface))',
 									strokeWidth: 2,
-									fill: 'rgba(99, 102, 241, 0.8)',
+									fill: 'rgb(var(--fp-accent-indigo-bright) / 0.8)',
 								}
 							: false
 					}

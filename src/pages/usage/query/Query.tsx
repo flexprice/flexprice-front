@@ -281,26 +281,26 @@ const QueryPage: React.FC = () => {
 											]
 								}
 								margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
-								<CartesianGrid strokeDasharray='3 3' stroke='#e5e7eb' />
+								<CartesianGrid strokeDasharray='3 3' stroke='rgb(var(--fp-line))' />
 								<XAxis dataKey='date' tickLine={false} axisLine={false} tickMargin={10} className='text-content-muted' />
 								<YAxis tickLine={false} axisLine={false} className='text-content-muted' />
 
 								{(formattedData?.length ?? 0) > 0 ? (
 									<>
 										<RechartsTooltip
-											itemStyle={{ zIndex: 999, backgroundColor: '#fff' }}
+											itemStyle={{ zIndex: 999, backgroundColor: 'rgb(var(--fp-surface))' }}
 											labelFormatter={(value) => `${value}`}
 											content={<ChartTooltipContent />}
-											cursor={{ stroke: '#ccc' }}
-											contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', zIndex: 999 }}
+											cursor={{ stroke: 'rgb(var(--fp-chart-axis))' }}
+											contentStyle={{ backgroundColor: 'rgb(var(--fp-surface))', border: '1px solid #ccc', zIndex: 999 }}
 											wrapperStyle={{ backgroundColor: 'white', borderStyle: 'ridge', paddingLeft: '10px', paddingRight: '10px' }}
 										/>
 										<Line
 											type='monotone'
 											dataKey='value'
-											stroke='#18181B'
+											stroke='rgb(var(--fp-content-zinc-bold))'
 											strokeWidth={1}
-											dot={apiParams.window_size === 'DAY' ? { r: 2, fill: '#18181B' } : false}
+											dot={apiParams.window_size === 'DAY' ? { r: 2, fill: 'rgb(var(--fp-content-zinc-bold))' } : false}
 											activeDot={apiParams.window_size === 'DAY' ? { r: 3, strokeWidth: 1 } : false}
 										/>
 									</>
@@ -309,7 +309,7 @@ const QueryPage: React.FC = () => {
 										type='monotone'
 										dataKey='value'
 										strokeWidth={0}
-										dot={{ r: 0, fill: '#18181B' }}
+										dot={{ r: 0, fill: 'rgb(var(--fp-content-zinc-bold))' }}
 										activeDot={{ r: 0, strokeWidth: 0 }}
 									/>
 								)}
