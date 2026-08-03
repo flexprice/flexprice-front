@@ -56,20 +56,20 @@ const EmailVerification = () => {
 				backgroundSize: 'cover',
 				backgroundPosition: 'center',
 			}}>
-			<div className='absolute inset-0 bg-white/30' aria-hidden />
-			<div className='relative w-full max-w-[480px] rounded-2xl bg-white p-8 shadow-lg'>
+			<div className='absolute inset-0 bg-surface/30' aria-hidden />
+			<div className='relative w-full max-w-[480px] rounded-2xl bg-surface p-8 shadow-lg'>
 				<div className='mb-6 flex justify-center'>
 					<img src={logo} alt={name} className='h-12' />
 				</div>
 
-				<h2 className='text-center text-2xl font-semibold text-zinc-900'>
+				<h2 className='text-center text-2xl font-semibold text-content-zinc-bold'>
 					{isNewSignup ? t('verification.verifyHeading') : t('verification.verificationHeading')}
 				</h2>
 
 				<div className='mt-4 space-y-3 text-center'>
-					<p className='text-sm text-zinc-600'>{t('verification.sentTo')}</p>
-					<p className='break-all text-sm font-medium text-zinc-900'>{email}</p>
-					<p className='text-sm text-zinc-500'>{t('verification.clickLink')}</p>
+					<p className='text-sm text-content-zinc-tertiary'>{t('verification.sentTo')}</p>
+					<p className='break-all text-sm font-medium text-content-zinc-bold'>{email}</p>
+					<p className='text-sm text-content-zinc-muted'>{t('verification.clickLink')}</p>
 				</div>
 
 				<div className='mt-8 flex flex-col gap-4'>
@@ -81,9 +81,9 @@ const EmailVerification = () => {
 					</Button>
 				</div>
 
-				<p className='mt-5 text-center text-sm text-zinc-500'>
+				<p className='mt-5 text-center text-sm text-content-zinc-muted'>
 					{t('verification.needHelp')}{' '}
-					<a href={`mailto:${config.brand.supportEmail}`} className='font-medium text-blue-600 hover:text-blue-500'>
+					<a href={`mailto:${config.brand.supportEmail}`} className='font-medium text-info hover:text-info-bright'>
 						{config.brand.supportEmail}
 					</a>
 				</p>

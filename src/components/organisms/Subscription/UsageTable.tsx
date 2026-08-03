@@ -32,9 +32,9 @@ const UsageTable: FC<UsageTableProps> = ({ data }) => {
 	];
 
 	return (
-		<div className='rounded-[6px] border border-gray-300  mt-2 p-4'>
+		<div className='rounded-[6px] border border-line-strong  mt-2 p-4'>
 			<FormHeader title={t('organisms.usageTable.currentMeterUsage')} variant='sub-header' />
-			<div className='rounded-[6px] border border-gray-300  mt-2 '>
+			<div className='rounded-[6px] border border-line-strong  mt-2 '>
 				<FlexpriceTable columns={columns} data={mappedData} />
 			</div>
 		</div>

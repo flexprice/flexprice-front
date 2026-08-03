@@ -229,6 +229,11 @@
 		--fp-env-prod-line: 191 208 245; /* #bfd0f5 */
 		--fp-env-prod-text: 31 90 218; /* #1f5ada */
 
+		/* Auth / banner surfaces — inline gradients and avatar tiles that must invert with their text. */
+		--fp-banner-bg: 247 247 247; /* #f7f7f7 — Slack banner gradient edge */
+		--fp-banner-bg-mid: 237 237 237; /* #ededed — Slack banner gradient centre */
+		--fp-surface-avatar-navy: 11 17 33; /* #0b1121 — org initials tile — inverts with content-inverse */
+
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
 		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
@@ -456,6 +461,11 @@
 		--fp-env-prod-bg-mid: 27 39 69; /* #1b2745 */
 		--fp-env-prod-line: 47 74 128; /* #2f4a80 */
 		--fp-env-prod-text: 143 184 255; /* #8fb8ff */
+
+		/* Auth / banner surfaces — inline gradients and avatar tiles that must invert with their text. */
+		--fp-banner-bg: 31 31 34; /* #1f1f22 */
+		--fp-banner-bg-mid: 38 38 42; /* #26262a */
+		--fp-surface-avatar-navy: 238 239 241; /* #eeeff1 */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

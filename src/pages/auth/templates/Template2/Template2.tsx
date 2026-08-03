@@ -41,7 +41,7 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 		: { backgroundColor: '#0f0f0f' };
 
 	return (
-		<div className='flex w-full min-h-screen bg-white page !p-0 !flex-row'>
+		<div className='flex w-full min-h-screen bg-surface page !p-0 !flex-row'>
 			{/* Left — login form */}
 			<div className='w-[45%] flex flex-col'>
 				<div className='flex-1 flex justify-center items-center'>
@@ -51,8 +51,8 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 						</div>
 						{signupEnabled && currentTab === AuthTab.SIGNUP && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>{t('createAccount.heading')}</h2>
-								<p className='text-center text-gray-600 mb-10'>{t('createAccount.subheading', { brandName: name })}</p>
+								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('createAccount.heading')}</h2>
+								<p className='text-center text-content-tertiary mb-10'>{t('createAccount.subheading', { brandName: name })}</p>
 								<div className='mb-6'>
 									<RegionSelector />
 								</div>
@@ -60,8 +60,8 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 						)}
 						{(currentTab === AuthTab.LOGIN || (!signupEnabled && currentTab === AuthTab.SIGNUP)) && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-gray-800 mb-3'>{t('login.heading')}</h2>
-								<p className='text-center text-gray-600 mb-10'>{t('login.subheading')}</p>
+								<h2 className='text-3xl font-medium text-center text-content-heading mb-3'>{t('login.heading')}</h2>
+								<p className='text-center text-content-tertiary mb-10'>{t('login.subheading')}</p>
 								<div className='mb-6'>
 									<RegionSelector />
 								</div>
@@ -69,14 +69,14 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 						)}
 						{currentTab === AuthTab.FORGOT_PASSWORD && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>{t('forgotPassword.heading')}</h2>
-								<p className='text-center text-gray-600 mb-8'>{t('forgotPassword.subheading')}</p>
+								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('forgotPassword.heading')}</h2>
+								<p className='text-center text-content-tertiary mb-8'>{t('forgotPassword.subheading')}</p>
 							</>
 						)}
 						{currentTab === AuthTab.RESET_PASSWORD && (
 							<>
-								<h2 className='text-3xl font-medium text-center text-gray-800 mb-2'>{t('resetPassword.heading')}</h2>
-								<p className='text-center text-gray-600 mb-8'>{t('resetPassword.subheading')}</p>
+								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('resetPassword.heading')}</h2>
+								<p className='text-center text-content-tertiary mb-8'>{t('resetPassword.subheading')}</p>
 							</>
 						)}
 						{renderForm()}
@@ -92,7 +92,9 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 				<div className='absolute inset-0 flex flex-col justify-center items-start px-28'>
 					<img src={config.landingLogo || logo} alt={name} className='h-12 w-auto mb-6' />
 					{config.tagline && (
-						<p className='text-6xl font-medium text-white leading-tight' style={{ maxWidth: '36rem' }}>
+						<p /* On a background image, so literally white in both themes. */
+							className='text-6xl font-medium text-white leading-tight'
+							style={{ maxWidth: '36rem' }}>
 							{config.tagline}
 						</p>
 					)}

@@ -8,7 +8,7 @@ import { useThemeStore } from '@/store';
  * The only user-facing entry point into dark mode.
  *
  * Classes here use the `--fp-*` tokens rather than raw palette classes, since this file is new —
- * writing `bg-white` would just create work for a later migration step. Light values are identical
+ * writing `bg-surface` would just create work for a later migration step. Light values are identical
  * either way (`bg-surface` is #ffffff, `border-line` is #e5e7eb).
  */
 const ThemeSettings = () => {

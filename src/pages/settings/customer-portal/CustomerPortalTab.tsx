@@ -37,10 +37,10 @@ const CustomerPortalTab = () => {
 	const portalTitle = t('customerPortal.portal.title');
 
 	return (
-		<Card variant='default' className='rounded-xl border border-gray-200 bg-white shadow-sm'>
+		<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
 			<SettingsCardHeader
 				title={portalTitle}
-				titleClassName='text-lg font-medium text-zinc-800'
+				titleClassName='text-lg font-medium text-content-zinc-strong'
 				infoDescription={t('customerPortal.portal.description')}
 				infoAriaLabel={t('info.ariaLabel', { field: portalTitle })}
 			/>
@@ -48,7 +48,7 @@ const CustomerPortalTab = () => {
 				<Loader />
 			) : (
 				<>
-					<div className='mt-4 divide-y divide-gray-200'>
+					<div className='mt-4 divide-y divide-line'>
 						<SettingsToggleRow
 							label={t('customerPortal.portal.showInvoices')}
 							description={t('customerPortal.portal.showInvoicesDescription')}

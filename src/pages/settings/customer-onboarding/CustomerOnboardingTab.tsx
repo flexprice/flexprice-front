@@ -124,10 +124,10 @@ const CustomerOnboardingTab = () => {
 	const workflowTitle = t('customerOnboarding.workflow.title');
 
 	return (
-		<Card variant='default' className='rounded-xl border border-gray-200 bg-white shadow-sm'>
+		<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
 			<SettingsCardHeader
 				title={workflowTitle}
-				titleClassName='text-lg font-medium text-zinc-800'
+				titleClassName='text-lg font-medium text-content-zinc-strong'
 				infoDescription={t('customerOnboarding.workflow.description')}
 				infoAriaLabel={t('info.ariaLabel', { field: workflowTitle })}
 			/>
@@ -135,9 +135,11 @@ const CustomerOnboardingTab = () => {
 				<Loader />
 			) : (
 				<>
-					<div className='rounded-lg border border-gray-200 bg-gray-50 p-4'>
-						<p className='text-xs font-medium uppercase tracking-wide text-zinc-400'>{t('customerOnboarding.workflow.summaryLabel')}</p>
-						<p className='mt-2 text-sm text-zinc-700'>
+					<div className='rounded-lg border border-line bg-surface-subtle p-4'>
+						<p className='text-xs font-medium uppercase tracking-wide text-content-zinc-subtle'>
+							{t('customerOnboarding.workflow.summaryLabel')}
+						</p>
+						<p className='mt-2 text-sm text-content-zinc-secondary'>
 							{configuredActionCount === 0
 								? t('customerOnboarding.workflow.noActionsConfigured')
 								: t(
@@ -148,7 +150,7 @@ const CustomerOnboardingTab = () => {
 									)}
 						</p>
 						{hasAdvancedActions ? (
-							<p className='mt-2 text-sm text-amber-700'>{t('customerOnboarding.workflow.advancedActionsPreserved')}</p>
+							<p className='mt-2 text-sm text-warning-strong'>{t('customerOnboarding.workflow.advancedActionsPreserved')}</p>
 						) : null}
 					</div>
 
@@ -162,14 +164,14 @@ const CustomerOnboardingTab = () => {
 						/>
 					</div>
 
-					<div className='mt-6 flex flex-col gap-4 border-t border-gray-200 pt-6'>
+					<div className='mt-6 flex flex-col gap-4 border-t border-line pt-6'>
 						<div>
-							<p className='text-sm font-medium text-zinc-900'>{t('customerOnboarding.workflow.customWorkflows.title')}</p>
-							<p className='mt-1 text-sm text-zinc-500'>{t('customerOnboarding.workflow.customWorkflows.description')}</p>
+							<p className='text-sm font-medium text-content-zinc-bold'>{t('customerOnboarding.workflow.customWorkflows.title')}</p>
+							<p className='mt-1 text-sm text-content-zinc-muted'>{t('customerOnboarding.workflow.customWorkflows.description')}</p>
 						</div>
 
 						{draft.customWorkflows.length === 0 ? (
-							<p className='text-sm text-zinc-500'>{t('customerOnboarding.workflow.customWorkflows.empty')}</p>
+							<p className='text-sm text-content-zinc-muted'>{t('customerOnboarding.workflow.customWorkflows.empty')}</p>
 						) : (
 							<div className='flex flex-col gap-3'>
 								{draft.customWorkflows.map((workflow) => (

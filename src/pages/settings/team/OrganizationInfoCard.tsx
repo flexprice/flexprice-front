@@ -27,15 +27,15 @@ const OrganizationInfoCard = () => {
 	const isAdmin = user ? isAdminMember(user as SettingsMember) : false;
 
 	return (
-		<Card variant='default' noPadding className='rounded-lg border border-gray-200 bg-white p-5 shadow-none'>
+		<Card variant='default' noPadding className='rounded-lg border border-line bg-surface p-5 shadow-none'>
 			<div className='flex items-center justify-between gap-4'>
 				<div className='flex min-w-0 items-center gap-3'>
-					<span className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#0B1121] text-sm font-semibold text-white'>
+					<span className='flex size-10 shrink-0 items-center justify-center rounded-lg bg-surface-avatar-navy text-sm font-semibold text-content-inverse'>
 						{initials}
 					</span>
 					<div className='min-w-0'>
 						<div className='flex items-center gap-1.5'>
-							<h3 className='truncate text-base font-semibold text-zinc-900'>{tenantName}</h3>
+							<h3 className='truncate text-base font-semibold text-content-zinc-bold'>{tenantName}</h3>
 							{user ? (
 								<UpdateTenantDrawer
 									data={user}
@@ -45,7 +45,7 @@ const OrganizationInfoCard = () => {
 										<Button
 											variant='ghost'
 											size='icon'
-											className='h-6 w-6 shrink-0 text-zinc-400 hover:text-zinc-600'
+											className='h-6 w-6 shrink-0 text-content-zinc-subtle hover:text-content-zinc-tertiary'
 											aria-label={t('organization.editOrganization')}>
 											<Pencil className='h-4 w-4' />
 										</Button>
@@ -53,7 +53,7 @@ const OrganizationInfoCard = () => {
 								/>
 							) : null}
 						</div>
-						{loading ? <Loader /> : user?.email ? <p className='text-sm text-zinc-500'>{user.email}</p> : null}
+						{loading ? <Loader /> : user?.email ? <p className='text-sm text-content-zinc-muted'>{user.email}</p> : null}
 					</div>
 				</div>
 
@@ -64,7 +64,7 @@ const OrganizationInfoCard = () => {
 							variant={isAdmin ? 'success' : 'info'}
 							className='rounded-full px-2.5 text-xs'
 						/>
-						{isAdmin ? <p className='text-sm text-zinc-500'>{t('organization.workspaceOwner')}</p> : null}
+						{isAdmin ? <p className='text-sm text-content-zinc-muted'>{t('organization.workspaceOwner')}</p> : null}
 					</div>
 				) : null}
 			</div>

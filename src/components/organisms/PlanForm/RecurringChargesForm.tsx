@@ -402,7 +402,7 @@ const RecurringChargesForm = ({
 									<button
 										type='button'
 										aria-label={t('catalog:plans.organisms.recurringForm.calculatorAria')}
-										className='inline-flex items-center justify-center rounded p-0.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1'
+										className='inline-flex items-center justify-center rounded p-0.5 text-content-muted hover:bg-surface-shell hover:text-content-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1'
 										onClick={(e) => {
 											e.stopPropagation();
 											setCalculatorOpen(true);
@@ -460,7 +460,7 @@ const RecurringChargesForm = ({
 							suffix={`/ units / ${formatBillingPeriodForPrice(localPrice.billing_period || '')}`}
 						/>
 					</div>
-					{modelErrors.packagedModelError && <p className='text-red-500 text-sm'>{modelErrors.packagedModelError}</p>}
+					{modelErrors.packagedModelError && <p className='text-danger-bright text-sm'>{modelErrors.packagedModelError}</p>}
 				</div>
 			)}
 
@@ -472,7 +472,7 @@ const RecurringChargesForm = ({
 						currency={isCustomUnit ? localPrice.price_unit_config?.price_unit || localPrice.currency : localPrice.currency}
 						tierMode={billingModel === 'SLAB_TIERED' ? TIER_MODE.SLAB : TIER_MODE.VOLUME}
 					/>
-					{modelErrors.tieredModelError && <p className='text-red-500 text-sm'>{modelErrors.tieredModelError}</p>}
+					{modelErrors.tieredModelError && <p className='text-danger-bright text-sm'>{modelErrors.tieredModelError}</p>}
 				</div>
 			)}
 			<Spacer height={'8px'} />
@@ -551,11 +551,11 @@ const RecurringChargesForm = ({
 						}}
 					/>
 					<Label htmlFor='airplane-mode'>
-						<p className='font-medium text-sm text-[#18181B] peer-checked:text-black'>
+						<p className='font-medium text-sm text-[#18181B] peer-checked:text-content-black'>
 							{t('catalog:plans.organisms.recurringForm.trialToggleTitle')}
 						</p>
 						<Spacer height={'4px'} />
-						<p className='text-sm font-normal text-[#71717A] peer-checked:text-gray-700'>
+						<p className='text-sm font-normal text-[#71717A] peer-checked:text-content-secondary'>
 							{t('catalog:plans.organisms.recurringForm.trialToggleHint')}
 						</p>
 					</Label>
@@ -578,7 +578,7 @@ const RecurringChargesForm = ({
 			)}
 			<Spacer height={'16px'} />
 			<div className='flex justify-end'>
-				<Button onClick={onDeleteClicked} variant='secondary' className='me-4 text-zinc-900' disabled={isSaving}>
+				<Button onClick={onDeleteClicked} variant='secondary' className='me-4 text-content-zinc-bold' disabled={isSaving}>
 					{price.internal_state === PriceInternalState.EDIT ? t('common:actions.delete') : t('common:actions.cancel')}
 				</Button>
 				<Button onClick={handleSubmit} variant='default' className='me-4 font-normal' isLoading={isSaving} disabled={isSaving}>

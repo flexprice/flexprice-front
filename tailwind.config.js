@@ -241,6 +241,11 @@ export default {
 				'env-prod-line': 'rgb(var(--fp-env-prod-line) / <alpha-value>)',
 				'env-prod-text': 'rgb(var(--fp-env-prod-text) / <alpha-value>)',
 
+				/* Auth / banner surfaces — inline gradients and avatar tiles that must invert with their text. */
+				'banner-bg': 'rgb(var(--fp-banner-bg) / <alpha-value>)',
+				'banner-bg-mid': 'rgb(var(--fp-banner-bg-mid) / <alpha-value>)',
+				'surface-avatar-navy': 'rgb(var(--fp-surface-avatar-navy) / <alpha-value>)',
+
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',
 				'brand-blue-light': 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',

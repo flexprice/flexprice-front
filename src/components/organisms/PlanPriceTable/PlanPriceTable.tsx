@@ -186,7 +186,7 @@ const formatPriceDateTooltip = (price: Price & { start_date?: string; end_date?:
 			if (!isNaN(startDate.getTime())) {
 				dateItems.push(
 					<div key='start' className='flex items-center gap-2'>
-						<span className='text-xs font-medium text-gray-500'>{t('catalog:plans.organisms.planPriceTable.start')}</span>
+						<span className='text-xs font-medium text-content-muted'>{t('catalog:plans.organisms.planPriceTable.start')}</span>
 						<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(startDate)}</span>
 					</div>,
 				);
@@ -202,7 +202,7 @@ const formatPriceDateTooltip = (price: Price & { start_date?: string; end_date?:
 			if (!isNaN(endDate.getTime())) {
 				dateItems.push(
 					<div key='end' className='flex items-center gap-2'>
-						<span className='text-xs font-medium text-gray-500'>{t('catalog:plans.organisms.planPriceTable.end')}</span>
+						<span className='text-xs font-medium text-content-muted'>{t('catalog:plans.organisms.planPriceTable.end')}</span>
 						<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(endDate)}</span>
 					</div>,
 				);
@@ -453,7 +453,7 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 							content={tooltipContent}
 							delayDuration={0}
 							sideOffset={5}
-							className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 							<span>
 								<Chip label={label} variant={variant} />
 							</span>

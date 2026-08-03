@@ -224,7 +224,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 					}
 					setState((prev) => ({ ...prev, isCancelModalOpen: open }));
 				}}
-				className='card bg-white w-[560px] max-w-[90vw]'>
+				className='card bg-surface w-[560px] max-w-[90vw]'>
 				<div className='space-y-4'>
 					<FormHeader
 						title={t('customers:organisms.subscriptionAction.cancelTitle')}
@@ -327,7 +327,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			<Modal
 				isOpen={state.isActivateModalOpen}
 				onOpenChange={(open) => setState((prev) => ({ ...prev, isActivateModalOpen: open }))}
-				className='bg-white rounded-lg p-6 w-[560px] max-w-[90vw]'>
+				className='bg-surface rounded-lg p-6 w-[560px] max-w-[90vw]'>
 				<div className=''>
 					<FormHeader
 						title={t('customers:organisms.subscriptionAction.activateTitle')}

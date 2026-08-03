@@ -108,21 +108,21 @@ export const SubscriptionCalculatorContent: React.FC<SubscriptionCalculatorConte
 					contentClassName='z-[200]'
 				/>
 				{amountNum != null && amountNum > 0 && (
-					<div className='rounded-md border border-gray-200 bg-gray-50/80 p-4 space-y-2'>
+					<div className='rounded-md border border-line bg-surface-subtle/80 p-4 space-y-2'>
 						{displayValue != null && (
 							<p className='text-sm'>
-								<span className='font-medium text-gray-900'>{t('entityChargesPage.subscriptionCalculator.displayAmount')}</span>{' '}
-								<span className='font-semibold text-gray-900'>
+								<span className='font-medium text-content'>{t('entityChargesPage.subscriptionCalculator.displayAmount')}</span>{' '}
+								<span className='font-semibold text-content'>
 									{currencySymbol}
 									{displayValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
 								</span>
-								<span className='text-gray-600'>{planPeriodSuffix}</span>
+								<span className='text-content-tertiary'>{planPeriodSuffix}</span>
 							</p>
 						)}
 					</div>
 				)}
 				{amountNum == null && amountStr.trim() !== '' && (
-					<p className='text-sm text-amber-600'>{t('entityChargesPage.subscriptionCalculator.invalidAmountHint')}</p>
+					<p className='text-sm text-warning'>{t('entityChargesPage.subscriptionCalculator.invalidAmountHint')}</p>
 				)}
 				{onApply && displayValue != null && (
 					<div className='mt-4 flex justify-end'>

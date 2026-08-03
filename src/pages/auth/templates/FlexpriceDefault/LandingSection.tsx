@@ -113,7 +113,7 @@ const LandingSection: React.FC = () => {
 				backgroundPosition: 'center',
 				backgroundRepeat: 'no-repeat',
 			}}>
-			<h2 className='text-[28px] font-normal text-zinc-950 mb-[44px] text-center'>{t('landing.defaultTagline')}</h2>
+			<h2 className='text-[28px] font-normal text-content-zinc mb-[44px] text-center'>{t('landing.defaultTagline')}</h2>
 			<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-10'>
 				<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
 					<div className='flex gap-x-7 w-max'>
@@ -140,7 +140,7 @@ const LandingSection: React.FC = () => {
 				</div>
 			</div>
 			<div className='w-full flex flex-col items-center mt-8'>
-				<div className='text-center text-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
+				<div className='text-center text-content-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
 				<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-10 justify-items-center items-center'>
 					{customerLogos.map((logo) => (
 						<div key={logo.src} className='flex h-10 w-full max-w-[160px] items-center justify-center'>

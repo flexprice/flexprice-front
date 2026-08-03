@@ -99,7 +99,7 @@ const OnboardingActionSetEditor = ({
 	};
 
 	return (
-		<div className='divide-y divide-gray-200'>
+		<div className='divide-y divide-line'>
 			<div>
 				<SettingsToggleRow
 					label={walletTitle}

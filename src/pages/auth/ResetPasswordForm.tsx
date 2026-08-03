@@ -64,8 +64,8 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 	if (!sessionReady) {
 		return (
 			<div className='flex flex-col items-center justify-center py-10'>
-				<div className='h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-[#092E44]' />
-				<p className='mt-4 text-sm text-gray-500'>{t('resetLink.checking')}</p>
+				<div className='h-10 w-10 animate-spin rounded-full border-2 border-line border-t-[#092E44]' />
+				<p className='mt-4 text-sm text-content-muted'>{t('resetLink.checking')}</p>
 			</div>
 		);
 	}
@@ -73,17 +73,17 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 	if (!hasSession) {
 		return (
 			<>
-				<div className='rounded-xl border border-gray-200/80 bg-gray-50/50 p-6 text-center shadow-sm'>
-					<div className='mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100'>
-						<Link2Off className='h-6 w-6 text-amber-600' aria-hidden />
+				<div className='rounded-xl border border-line/80 bg-surface-subtle/50 p-6 text-center shadow-sm'>
+					<div className='mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-warning-muted-strong'>
+						<Link2Off className='h-6 w-6 text-warning' aria-hidden />
 					</div>
-					<h3 className='text-base font-medium text-gray-800'>{t('resetLink.expiredTitle')}</h3>
-					<p className='mt-1.5 text-sm text-gray-500'>{t('resetLink.expiredDescription')}</p>
+					<h3 className='text-base font-medium text-content-heading'>{t('resetLink.expiredTitle')}</h3>
+					<p className='mt-1.5 text-sm text-content-muted'>{t('resetLink.expiredDescription')}</p>
 					<Button type='button' onClick={() => switchTab(AuthTab.FORGOT_PASSWORD)} className='mt-5 w-full h-11'>
 						{t('buttons.requestNewResetLink')}
 					</Button>
 				</div>
-				<p className='mt-6 text-center text-sm text-gray-600'>
+				<p className='mt-6 text-center text-sm text-content-tertiary'>
 					{t('rememberPassword')}{' '}
 					<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium hover:no-underline'>
 						{t('links.backToLogin')}
@@ -97,7 +97,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 		<>
 			<form className='space-y-4' onSubmit={(e) => e.preventDefault()}>
 				<div>
-					<label htmlFor='new-password' className='block text-sm font-medium text-gray-700 mb-1'>
+					<label htmlFor='new-password' className='block text-sm font-medium text-content-secondary mb-1'>
 						{t('fields.newPassword')}
 					</label>
 					<Input
@@ -112,7 +112,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 							<button
 								type='button'
 								onClick={() => setShowPassword(!showPassword)}
-								className='cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none'
+								className='cursor-pointer text-content-muted hover:text-content-secondary focus:outline-none'
 								aria-label={showPassword ? 'Hide password' : 'Show password'}>
 								{showPassword ? <EyeOff className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
 							</button>
@@ -120,7 +120,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 					/>
 				</div>
 				<div>
-					<label htmlFor='confirm-password' className='block text-sm font-medium text-gray-700 mb-1'>
+					<label htmlFor='confirm-password' className='block text-sm font-medium text-content-secondary mb-1'>
 						{t('fields.confirmNewPassword')}
 					</label>
 					<Input
@@ -135,7 +135,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 							<button
 								type='button'
 								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-								className='cursor-pointer text-gray-500 hover:text-gray-700 focus:outline-none'
+								className='cursor-pointer text-content-muted hover:text-content-secondary focus:outline-none'
 								aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}>
 								{showConfirmPassword ? <EyeOff className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
 							</button>
@@ -147,7 +147,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 				</Button>
 			</form>
 
-			<p className='mt-6 text-center text-sm text-gray-600'>
+			<p className='mt-6 text-center text-sm text-content-tertiary'>
 				{t('rememberPassword')}{' '}
 				<button onClick={() => switchTab(AuthTab.LOGIN)} className='text-grey-600 underline font-medium hover:no-underline'>
 					{t('links.backToLogin')}

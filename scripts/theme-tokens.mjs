@@ -235,6 +235,14 @@ export const TOKEN_GROUPS = [
 		],
 	},
 	{
+		group: 'Auth / banner surfaces — inline gradients and avatar tiles that must invert with their text.',
+		tokens: [
+			{ name: 'banner-bg', light: '#F7F7F7', dark: '#1f1f22', note: 'Slack banner gradient edge' },
+			{ name: 'banner-bg-mid', light: '#EDEDED', dark: '#26262a', note: 'Slack banner gradient centre' },
+			{ name: 'surface-avatar-navy', light: '#0B1121', dark: '#eeeff1', note: 'org initials tile — inverts with content-inverse' },
+		],
+	},
+	{
 		group: 'Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged.',
 		tokens: [
 			{ name: 'brand-blue', light: '#3293D9', dark: '#4aa8e8', note: 'was colors.blue.DEFAULT' },
