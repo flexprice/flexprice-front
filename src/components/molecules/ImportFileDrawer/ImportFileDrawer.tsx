@@ -343,7 +343,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 													{/* Label */}
 													<label className={cn(' block text-sm font-medium', 'text-content-zinc')}>{t('import.importFileLabel')}</label>
 													<div aria-disabled={isLoading} className={cn(isLoading && 'text-content-zinc-muted')}>
-														<button className={'p-2 border border-[#E4E4E7] rounded-lg py-2 px-4 w-full'}>
+														<button className={'p-2 border border-line-zinc rounded-lg py-2 px-4 w-full'}>
 															<p className='font-medium text-sm flex gap-2 items-center justify-start'>{t('import.chooseFile')}</p>
 														</button>
 													</div>
@@ -394,7 +394,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 										</div>
 									))}
 								</div>
-								<div className='h-[1px] bg-[#E4E4E7] my-4'></div>
+								<div className='h-[1px] bg-surface-selected my-4'></div>
 								<div className='space-y-4 mt-4'>
 									{processedRows.map((detail, index) => (
 										<div key={index} className='flex justify-between'>

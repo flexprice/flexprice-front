@@ -41,10 +41,10 @@ const RectangleRadiogroup: FC<Props> = ({ onChange, options, value, description,
 								}}
 								className={cn(
 									'relative p-3 py-6 border-2 w-full flex flex-col justify-center items-center rounded-xl',
-									option.value === value ? 'border-[#0F172A]' : 'border-[#E2E8F0]',
+									option.value === value ? 'border-line-slate-deep' : 'border-line-slate',
 									option.disabled && !option.premium ? 'cursor-default text-content-zinc-muted ' : 'cursor-pointer',
 								)}>
-								{option.icon && <option.icon size={24} className={cn(option.disabled ? '  ' : 'text-[#020617]')} />}
+								{option.icon && <option.icon size={24} className={cn(option.disabled ? '  ' : 'text-content-slate-deep')} />}
 								{option.comingSoon && (
 									<div className='absolute top-2 right-2'>
 										<ComingSoonTag />
@@ -55,14 +55,14 @@ const RectangleRadiogroup: FC<Props> = ({ onChange, options, value, description,
 										<PremiumFeatureTag />
 									</div>
 								)}
-								<p className={cn(option.disabled ? '' : 'text-[#18181B] font-medium')}>{option.label}</p>
-								{option.description && <p className='text-sm text-[#64748B] font-sans '>{option.description}</p>}
+								<p className={cn(option.disabled ? '' : 'text-content-zinc-bold font-medium')}>{option.label}</p>
+								{option.description && <p className='text-sm text-content-slate-muted font-sans '>{option.description}</p>}
 							</button>
 						</PremiumFeature>
 					);
 				})}
 			</div>
-			{description && <p className='text-sm text-[#64748B] font-sans '>{description}</p>}
+			{description && <p className='text-sm text-content-slate-muted font-sans '>{description}</p>}
 		</div>
 	);
 };

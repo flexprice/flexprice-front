@@ -499,7 +499,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 							<div
 								key={`${entitlement.feature_id}-${index}`}
 								className='rounded-md border !p-2 !px-3 flex w-full justify-between items-center'>
-								<p className='text-[#18181B] text-sm font-medium'>{entitlement.feature?.name}</p>
+								<p className='text-content-zinc-bold text-sm font-medium'>{entitlement.feature?.name}</p>
 								<button
 									onClick={() => {
 										setEntitlements((prev) => prev.filter((_, i) => i !== index));
@@ -558,7 +558,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 										{/* {activeFeature.type === FeatureType.metered && activeFeature.meter_id && (
 										<div className='w-full flex justify-between items-center'>
 											<span className='text-muted-foreground text-sm font-sans'>Meter</span>
-											<span className='text-[#09090B] text-sm font-sans'>{activeFeature.meter?.name}</span>
+											<span className='text-content-zinc text-sm font-sans'>{activeFeature.meter?.name}</span>
 										</div>
 									)} */}
 										{/* <Spacer className='!my-6' /> */}

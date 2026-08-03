@@ -113,13 +113,13 @@ const ExportProviderCard = ({ provider, onClick, premiumBadge }: ExportProviderC
 				<div className='w-full mb-3'>
 					<h3 className='font-semibold text-lg flex items-center gap-2'>
 						{provider.name}
-						{provider.premium && <span className='text-[#c58e20] text-sm'>{premiumBadge}</span>}
+						{provider.premium && <span className='text-accent-amber-mid text-sm'>{premiumBadge}</span>}
 					</h3>
 				</div>
 				<p className='text-content-muted text-sm mb-3'>{provider.description}</p>
 				<div className='flex items-center gap-2'>
 					{provider.tags.map((tag, idx) => (
-						<span key={idx} className='text-xs bg-[#f4f4f4] text-[#5e5e5e] px-2 py-1 rounded-md'>
+						<span key={idx} className='text-xs bg-surface-thumb-alt text-content-grey px-2 py-1 rounded-md'>
 							{tag}
 						</span>
 					))}

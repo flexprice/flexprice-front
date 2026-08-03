@@ -56,18 +56,18 @@ const EmptyPage: FC<Props> = ({ onAddClick, tags, heading, children, addButtonLa
 					/>
 				)
 			}>
-			<div className='bg-[#fafafa] border border-[#E9E9E9] rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto '>
+			<div className='bg-surface-faint border border-line-hairline rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto '>
 				{card?.icon && <div className='mb-8'>{card?.icon}</div>}
 				{card?.heading && (
 					<div className=' font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>{card?.heading}</div>
 				)}
 				{card?.description && (
-					<div className=' font-normal bg-[#F9F9F9] text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
+					<div className=' font-normal bg-surface-sidebar text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
 						{card?.description}
 					</div>
 				)}
 				{card?.buttonAction && card?.buttonLabel && (
-					<Button variant={'outline'} onClick={card?.buttonAction} className='!p-5 !bg-[#fbfbfb] !border-[#CFCFCF]'>
+					<Button variant={'outline'} onClick={card?.buttonAction} className='!p-5 !bg-surface-panel !border-line-muted'>
 						{card?.buttonLabel}
 					</Button>
 				)}
@@ -85,11 +85,11 @@ const EmptyPage: FC<Props> = ({ onAddClick, tags, heading, children, addButtonLa
 							<Card
 								className={cn(
 									'h-full group bg-surface border border-line-slate-subtle rounded-[6px] shadow-sm hover:border-info-muted-strong hover:bg-surface-cool transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-info-bright/5 flex flex-col max-w-[280px] mx-auto p-4',
-									'!aspect-auto bg-gradient-to-r from-[#ffffff] to-[#fcfcfc]',
+									'!aspect-auto bg-gradient-to-r from-surface to-surface-panel-alt',
 								)}
 								onClick={item.onClick}>
 								{/* Image at the top */}
-								<div className='w-full h-[80px] aspect-video rounded-t-[6px] overflow-hidden bg-[#f5f5f5] flex items-center justify-center'>
+								<div className='w-full h-[80px] aspect-video rounded-t-[6px] overflow-hidden bg-surface-thumb flex items-center justify-center'>
 									<img src={imageUrl} loading='lazy' className='object-cover bg-surface-shell w-full h-full' alt={' '} />
 								</div>
 								{/* Content below image */}

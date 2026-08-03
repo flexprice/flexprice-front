@@ -275,7 +275,7 @@ const CustomerAnalyticsTab = () => {
 		<div className='pt-9'>
 			<div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
 				{[1, 2, 3, 4].map((i) => (
-					<div key={i} className='bg-surface border border-[#E5E7EB] p-[25px] rounded-md'>
+					<div key={i} className='bg-surface border border-line p-[25px] rounded-md'>
 						<Skeleton className='h-5 w-20 mb-3' />
 						<Skeleton className='h-7 w-24' />
 					</div>

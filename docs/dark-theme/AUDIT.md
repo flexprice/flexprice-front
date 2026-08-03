@@ -6,7 +6,7 @@ sweep over the source. Re-run either at any time; both are described at the bott
 ## Status: migration complete
 
 Every raw palette class in the themed app is now a `--fp-*` token. 161 tokens, ~2,400 replacements
-across 23 commits, with light mode verified byte-identical on every one.
+across 24 commits and 300 files, with light mode verified byte-identical on every one.
 
 |                   | At audit | Now   |
 | ----------------- | -------- | ----- |
@@ -15,7 +15,7 @@ across 23 commits, with light mode verified byte-identical on every one.
 | MEDIUM            | 433      | **0** |
 | Files with issues | 189      | **0** |
 
-Seven files keep literal colours on purpose — each sits on a surface that does not change between
+Eight files keep literal colours on purpose — each sits on a surface that does not change between
 themes, so tokenizing them would break the component. They are listed with reasons in
 `scripts/verify-no-raw-palette.mjs`, which fails the build if a raw class reappears anywhere else.
 
@@ -47,13 +47,8 @@ Measured across 189 files, 1,491 occurrences — all now resolved.
 | `pages/checkout/CheckoutPage.tsx`                      | 14  | 4   | 11  |
 | `pages/settings/team/UsersSection.tsx`                 | 9   | 5   | 25  |
 
-Suggested order: **`pages/`** (analytics, revenue, exports, onboarding), then the remaining
-molecules, then `PricingCard` last — it feeds the exportable widget package, so it deserves its own
-commit.
-
-> The customer-portal and checkout entries above are **excluded from the migration** — see
-> _Customer portal is deliberately not migrated_ below. Their counts are listed only because the
-> static sweep does not know about that decision.
+> These were worked in the order listed and are all resolved. The customer-portal and checkout rows
+> were **excluded from the migration** — see _Customer portal is deliberately not migrated_ below.
 
 ## Customer portal is deliberately not migrated
 

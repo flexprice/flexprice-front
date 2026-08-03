@@ -45,7 +45,7 @@ const CreditNoteLineItemTable: FC<Props> = ({ data, total_amount, currency, titl
 								return (
 									<tr key={item.id || index}>
 										<td className='py-3 px-2 text-content-heading'>{item.display_name ?? t('common:labels.na')}</td>
-										<td className='py-3 px-2 text-end text-[#2A9D90]'>{formatAmount(item.amount ?? 0, item.currency)}</td>
+										<td className='py-3 px-2 text-end text-accent-teal-brand'>{formatAmount(item.amount ?? 0, item.currency)}</td>
 									</tr>
 								);
 							})}
@@ -58,7 +58,7 @@ const CreditNoteLineItemTable: FC<Props> = ({ data, total_amount, currency, titl
 						{sub_total !== undefined && (
 							<div className='flex justify-between'>
 								<span>{t(`${li}.subtotal`)}</span>
-								<span className='text-[#2A9D90] '>{`${getCurrencySymbol(currency ?? '')}${sub_total}`}</span>
+								<span className='text-accent-teal-brand '>{`${getCurrencySymbol(currency ?? '')}${sub_total}`}</span>
 							</div>
 						)}
 						{tax !== undefined && (
@@ -70,7 +70,7 @@ const CreditNoteLineItemTable: FC<Props> = ({ data, total_amount, currency, titl
 						{(sub_total !== undefined || tax !== undefined) && <div className=' border-t '></div>}
 						<div className='flex justify-between font-semibold text-content '>
 							<span>{total_label || t('creditNotes.totalCreditAmount')}</span>
-							<span className=' text-[#2A9D90] '>{formatAmount(total_amount ?? 0, currency ?? '')}</span>
+							<span className=' text-accent-teal-brand '>{formatAmount(total_amount ?? 0, currency ?? '')}</span>
 						</div>
 					</div>
 				</div>

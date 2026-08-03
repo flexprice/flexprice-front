@@ -20,9 +20,9 @@ const AddButton = ({ onClick, label }: { onClick: () => void; label: string }) =
 	<div className='w-fit'>
 		<button
 			onClick={onClick}
-			className='px-3 py-1.5 h-8 cursor-pointer flex gap-2 items-center bg-[#F4F4F5] hover:bg-[#E4E4E7] rounded-md transition-colors'>
+			className='px-3 py-1.5 h-8 cursor-pointer flex gap-2 items-center bg-surface-muted hover:bg-surface-selected rounded-md transition-colors'>
 			<CirclePlus size={14} className='text-content-zinc-tertiary' />
-			<p className='text-[#18181B] text-sm font-medium'>{label}</p>
+			<p className='text-content-zinc-bold text-sm font-medium'>{label}</p>
 		</button>
 	</div>
 );

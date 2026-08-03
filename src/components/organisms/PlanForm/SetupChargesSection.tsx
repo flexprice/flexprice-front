@@ -37,11 +37,11 @@ export const AddChargesButton = ({ onClick, label, className }: AddChargesButton
 	<button
 		onClick={onClick}
 		className={cn(
-			'shrink-0 cursor-pointer flex gap-2 items-center justify-center bg-[#F4F4F5] rounded-[6px] px-2.5 h-9 w-fit text-start',
+			'shrink-0 cursor-pointer flex gap-2 items-center justify-center bg-surface-muted rounded-[6px] px-2.5 h-9 w-fit text-start',
 			className,
 		)}>
 		<Plus size={16} className='shrink-0' />
-		<span className='text-[#18181B] text-sm font-medium whitespace-nowrap'>{label}</span>
+		<span className='text-content-zinc-bold text-sm font-medium whitespace-nowrap'>{label}</span>
 	</button>
 );
 
@@ -133,7 +133,7 @@ const SetupChargesSection: React.FC<Props> = ({ plan, initialPrices, setPlanFiel
 	const canAddUsagePrices = showAddButtons;
 
 	return (
-		<div className='p-6 rounded-xl border border-[#E4E4E7]'>
+		<div className='p-6 rounded-xl border border-line-zinc'>
 			{/* Subscription Type Section */}
 			{!recurringCharges.length && !usageCharges.length && (
 				<div>
@@ -150,10 +150,10 @@ const SetupChargesSection: React.FC<Props> = ({ plan, initialPrices, setPlanFiel
 								onClick={() => handleSubscriptionTypeChange(type)}
 								className={cn(
 									'p-3 rounded-md border-2 w-full flex flex-col justify-center items-center',
-									subscriptionType === type.value ? 'border-[#0F172A]' : 'border-[#E2E8F0]',
+									subscriptionType === type.value ? 'border-line-slate-deep' : 'border-line-slate',
 								)}>
-								{type.icon && <type.icon size={24} className='text-[#020617]' />}
-								<p className='text-[#18181B] font-medium mt-2'>{type.label}</p>
+								{type.icon && <type.icon size={24} className='text-content-slate-deep' />}
+								<p className='text-content-zinc-bold font-medium mt-2'>{type.label}</p>
 								<p className='text-sm text-muted-foreground'>{type.description}</p>
 							</button>
 						))}

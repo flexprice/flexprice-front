@@ -392,7 +392,7 @@ const RecurringChargesForm = ({
 					inputPrefix={displayCurrencySymbol}
 					suffix={
 						<div className='flex items-center gap-1.5'>
-							<span className='text-[#64748B]'>
+							<span className='text-content-slate-muted'>
 								{t('catalog:plans.organisms.recurringForm.perBilling', {
 									period: formatBillingPeriodForPrice(localPrice.billing_period || ''),
 								})}
@@ -445,7 +445,7 @@ const RecurringChargesForm = ({
 							}}
 						/>
 						<div className='h-[50px] items-center flex gap-2'>
-							<p className='text-[#18181B] font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
+							<p className='text-content-zinc-bold font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
 						</div>
 						<Input
 							value={packagedFee.unit}
@@ -551,11 +551,11 @@ const RecurringChargesForm = ({
 						}}
 					/>
 					<Label htmlFor='airplane-mode'>
-						<p className='font-medium text-sm text-[#18181B] peer-checked:text-content-black'>
+						<p className='font-medium text-sm text-content-zinc-bold peer-checked:text-content-black'>
 							{t('catalog:plans.organisms.recurringForm.trialToggleTitle')}
 						</p>
 						<Spacer height={'4px'} />
-						<p className='text-sm font-normal text-[#71717A] peer-checked:text-content-secondary'>
+						<p className='text-sm font-normal text-content-zinc-muted peer-checked:text-content-secondary'>
 							{t('catalog:plans.organisms.recurringForm.trialToggleHint')}
 						</p>
 					</Label>

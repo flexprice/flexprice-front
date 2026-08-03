@@ -100,7 +100,7 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 			</PopoverTrigger>
 			<PopoverContent
 				align='start'
-				className={cn('w-screen border-border/70 shadow-lg bg-[#fbfbfb]', 'border-border/40', POPOVER_PADDING)}
+				className={cn('w-screen border-border/70 shadow-lg bg-surface-panel', 'border-border/40', POPOVER_PADDING)}
 				style={{ width: MIN_POPOVER_WIDTH }}>
 				<div className='flex flex-col gap-1.5'>
 					{value.length === 0 ? (

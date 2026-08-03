@@ -345,7 +345,7 @@ const PricingSetupPage = () => {
 									onClick={handleParseAndPreview}
 									disabled={!hasPromptText || isParsing}
 									className={cn(
-										'flex h-9 w-9 items-center justify-center rounded-xl bg-[#092E44] text-content-inverse transition-all',
+										'flex h-9 w-9 items-center justify-center rounded-xl bg-brand-navy text-content-inverse transition-all',
 										'hover:opacity-90 active:scale-95',
 										'disabled:cursor-not-allowed disabled:opacity-30',
 									)}

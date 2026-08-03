@@ -22,17 +22,17 @@ const EmptyState = ({ config }: EmptyStateProps) => {
 	// Default empty state
 	return (
 		<div className='space-y-6'>
-			<div className='bg-[#fafafa] border border-[#E9E9E9] rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto'>
+			<div className='bg-surface-faint border border-line-hairline rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto'>
 				{config.heading && (
 					<div className='font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>{config.heading}</div>
 				)}
 				{config.description && (
-					<div className='font-normal bg-[#F9F9F9] text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
+					<div className='font-normal bg-surface-sidebar text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
 						{config.description}
 					</div>
 				)}
 				{config.buttonAction && config.buttonLabel && (
-					<Button variant='outline' onClick={config.buttonAction} className='!p-5 !bg-[#fbfbfb] !border-[#CFCFCF]'>
+					<Button variant='outline' onClick={config.buttonAction} className='!p-5 !bg-surface-panel !border-line-muted'>
 						{config.buttonLabel}
 					</Button>
 				)}

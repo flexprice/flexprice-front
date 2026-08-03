@@ -1,27 +1,40 @@
 # Dark Theme — Rebuild Plan
 
-Status: **Step 13 (developer tooling + light-mode guard) ready to commit.** Branch `feat/dark_theme`, tracking
-`origin/feat/dark_theme`.
+Status: **Complete.** 24 commits on `feat/dark_theme`, all pushed.
 
 ## Progress log
 
-| Step | Scope                                                                    | State   |
-| ---- | ------------------------------------------------------------------------ | ------- |
-| 0    | Plan + measured inventory                                                | ✅      |
-| 1    | Token layer + byte-identity guard (86 tokens)                            | ✅      |
-| 2    | Theme store + `initTheme()` pre-paint, 11 tests                          | ✅      |
-| 3    | `.dark` retuned to Midnight; sidebar chrome defined; `:root` guard added | ✅      |
-| 4    | Settings → Appearance tab with the dark-mode toggle, 5 tests             | ✅      |
-| 5    | App shell tokenized (6 files); token generator; 93 tokens                | ✅      |
-| 6    | `components/ui/` shadcn primitives (9 files)                             | ✅      |
-| 7    | `components/atoms/` A–F, mechanical (15 files); 95 tokens                | ✅      |
-| 8    | `Chip` + `AppToaster` status/feedback palette; 107 tokens                | ✅      |
-| 9    | `components/atoms/` G–Z (17 files); 113 tokens                           | ✅      |
-| 10   | 15 connection drawers (283 replacements); 114 tokens                     | ✅      |
-| 11   | Invoice/subscription tables (13 files, 187 replacements); scripted map   | ✅      |
-| 12   | Subscription / entitlement / commitment group (17 files, 234 repl.)      | ✅      |
-| 13   | Developer/environment tooling (26 files); light-mode guard; 120 tokens   | ✅      |
-| 14+  | rest of `components/molecules/` — ~85 files, ~7 more commits             | ⬜ next |
+| Step | Scope                                                                    | State |
+| ---- | ------------------------------------------------------------------------ | ----- |
+| 0    | Plan + measured inventory                                                | ✅    |
+| 1    | Token layer + byte-identity guard (86 tokens)                            | ✅    |
+| 2    | Theme store + `initTheme()` pre-paint, 11 tests                          | ✅    |
+| 3    | `.dark` retuned to Midnight; sidebar chrome defined; `:root` guard added | ✅    |
+| 4    | Settings → Appearance tab with the dark-mode toggle, 5 tests             | ✅    |
+| 5    | App shell tokenized (6 files); token generator; 93 tokens                | ✅    |
+| 6    | `components/ui/` shadcn primitives (9 files)                             | ✅    |
+| 7    | `components/atoms/` A–F, mechanical (15 files); 95 tokens                | ✅    |
+| 8    | `Chip` + `AppToaster` status/feedback palette; 107 tokens                | ✅    |
+| 9    | `components/atoms/` G–Z (17 files); 113 tokens                           | ✅    |
+| 10   | 15 connection drawers (283 replacements); 114 tokens                     | ✅    |
+| 11   | Invoice/subscription tables (13 files, 187 replacements); scripted map   | ✅    |
+| 12   | Subscription / entitlement / commitment group (17 files, 234 repl.)      | ✅    |
+| 13   | Developer/environment tooling (26 files); light-mode guard; 120 tokens   | ✅    |
+| 14   | `lib/typography.ts` + shared surfaces; dark AA retune; 121 tokens        | ✅    |
+| 15   | Dark mode scoped to the authenticated app (portal/checkout stay light)   | ✅    |
+| 16   | Analytics / revenue / exports / onboarding pages; env badge fix          | ✅    |
+| 17   | `components/organisms/` + `pages/auth` + `pages/settings`                | ✅    |
+| 18   | Remaining molecules and pages                                            | ✅    |
+| 19   | Exportable widget repaired; `PricingCard`                                | ✅    |
+| 20   | Chart chrome (axes, grid, ticks, tooltips)                               | ✅    |
+| 21   | Decorative tail; `blue` config key re-pointed                            | ✅    |
+| 22   | `verify:no-raw-palette` guard                                            | ✅    |
+| 23   | Theme survives logout; login photo-panel text fixed                      | ✅    |
+
+### Outcome
+
+161 tokens, ~2,400 replacements across 300 files. Light mode byte-identical throughout, verified on
+every commit. Five guards run in the pre-commit hook — see `docs/dark-theme/AUDIT.md`.
 
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
@@ -38,15 +51,15 @@ New files use the `--fp-*` tokens directly (`bg-surface`, `text-content-muted`) 
 palette classes. Light values are identical either way, and writing `bg-white` in a new file just
 creates work for a later migration step.
 
-Both guards run in the pre-commit hook, and on demand with:
+Five guards run in the pre-commit hook, and on demand with:
 
 ```bash
-npm run verify:theme && npm run verify:light
+npm run verify:theme && npm run verify:light && npm run verify:tokens-staged \
+  && npm run verify:exportable && npm run verify:no-raw-palette
 ```
 
-`verify:theme` pins each token's light value to its Tailwind source. `verify:light` proves each
-CLASS was mapped to the RIGHT token — a mis-map like `text-gray-500` → `text-content-heading` passes
-the first and is caught only by the second.
+Each exists because something slipped past the others; what each one catches is tabulated in
+`docs/dark-theme/AUDIT.md`.
 
 **Restart the dev server after generating tokens** — see the finding below.
 
@@ -87,8 +100,9 @@ Fixed by pointing it at `--fp-content-slate-muted`, whose light value is slate.5
 byte-identical to the literal it replaces and pinned by the guard. Confirmed in the browser: light
 stays `rgb(100, 116, 139)`, dark becomes `rgb(138, 143, 152)`.
 
-Two literals remain in `tailwind.config.js` on purpose: `blue.DEFAULT` / `blue.light` (migrating to
-`brand-blue` at their call sites) and `sidebar['text-accent-foreground']` (zero usages).
+The same treatment was later applied to `blue.DEFAULT` / `blue.light`, which `ErrorBoundary` used 26
+times as `blue-DEFAULT` with alpha variants; they now point at `brand-blue` / `brand-blue-light`.
+`sidebar['text-accent-foreground']` is still a literal — it has zero usages.
 
 ### The shell used colours outside the Tailwind palette (found in Step 5)
 

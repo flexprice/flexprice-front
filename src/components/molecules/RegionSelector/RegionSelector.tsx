@@ -32,7 +32,7 @@ const RegionSelectorImpl: React.FC = () => {
 			<div className='flex items-center gap-1'>
 				<label className='block text-sm font-medium text-content-secondary'>{t('region.dataRegion')}</label>
 				<Tooltip content={t('region.tooltipLearnMore')}>
-					<button type='button' onClick={() => setIsDialogOpen(true)} className='text-sm text-[#0E5AC9] cursor-pointer'>
+					<button type='button' onClick={() => setIsDialogOpen(true)} className='text-sm text-accent-blue-deep cursor-pointer'>
 						<Info size={16} className='text-grey' />
 					</button>
 				</Tooltip>

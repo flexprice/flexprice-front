@@ -93,7 +93,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
 	<tr
 		ref={ref}
 		className={cn(
-			'border-b border-[#E2E8F0] h-[36px] transition-colors hover:bg-muted/50',
+			'border-b border-line-slate h-[36px] transition-colors hover:bg-muted/50',
 			'align-middle', // Vertically align middle
 			className,
 		)}
@@ -114,11 +114,11 @@ const TableHead = React.forwardRef<
 		ref={ref}
 		style={{ textAlign: alignStyle(align), width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined, ...style }}
 		className={cn(
-			'h-12 px-4 text-[14px] font-medium text-[#64748B]',
+			'h-12 px-4 text-[14px] font-medium text-content-slate-muted',
 			alignClass(align),
 			'align-middle',
 			className,
-			variant === 'default' && 'border-b border-[#E2E8F0]',
+			variant === 'default' && 'border-b border-line-slate',
 		)}
 		{...props}
 	/>
@@ -205,11 +205,14 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 	const renderTableHeader = () => (
 		<TableHeader
 			className={cn(
-				variant === 'default' ? 'h-8 bg-muted border-b border-[#E2E8F0] rounded-t-[6px]' : 'h-8',
+				variant === 'default' ? 'h-8 bg-muted border-b border-line-slate rounded-t-[6px]' : 'h-8',
 				variant === 'no-bordered' && 'bg-transparent',
 			)}>
 			<TableRow
-				className={cn(variant === 'default' ? 'rounded-t-[6px] border-b border-[#E2E8F0]' : '', variant === 'no-bordered' && 'border-b-0')}>
+				className={cn(
+					variant === 'default' ? 'rounded-t-[6px] border-b border-line-slate' : '',
+					variant === 'no-bordered' && 'border-b-0',
+				)}>
 				{columns.map(({ title, flex = 1, width, color = '#64748B', align = 'left', className, children }, index) => (
 					<TableHead
 						variant={variant}
@@ -240,7 +243,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 				onClick={(e) => handleRowClick(row, e)}
 				className={cn(
 					'transition-colors hover:bg-muted/50',
-					variant === 'default' && !lastRow && 'border-b border-[#E2E8F0]',
+					variant === 'default' && !lastRow && 'border-b border-line-slate',
 					onRowClick && 'cursor-pointer hover:bg-muted/50',
 					lastRow && hideBottomBorder && 'border-b-0',
 					'!py-1',
@@ -286,7 +289,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 						<TableCell
 							key={colIndex}
 							className={cn(
-								textColor ? `text-[${textColor}]` : 'text-[#09090B] w-full ',
+								textColor ? `text-[${textColor}]` : 'text-content-zinc w-full ',
 								'font-normal',
 								'!max-h-8 px-4 py-2 text-[14px]',
 								lastRow ? 'text-center' : '',
@@ -306,8 +309,8 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 		<div
 			className={cn(
 				'overflow-hidden',
-				variant === 'default' && 'rounded-[6px] border border-[#E2E8F0]',
-				variant === 'default' && !hideBottomBorder && 'border-b border-[#E2E8F0]',
+				variant === 'default' && 'rounded-[6px] border border-line-slate',
+				variant === 'default' && !hideBottomBorder && 'border-b border-line-slate',
 				variant === 'no-bordered' && 'border-0',
 			)}>
 			<Table className={tableClassName}>

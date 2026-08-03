@@ -140,16 +140,16 @@ const VolumeTieredPricingForm: FC<Props> = ({ setTieredPrices, tieredPrices, cur
 						</colgroup>
 						<thead>
 							<tr className='border-b bg-surface-shell text-start'>
-								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-content-zinc-muted'>
 									{t('plans.organisms.volumeTier.from')} {t('plans.organisms.volumeTier.fromSuffix')}
 								</th>
-								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-content-zinc-muted'>
 									{t('plans.organisms.volumeTier.upTo')} {t('plans.organisms.volumeTier.upToSuffix')}
 								</th>
-								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-content-zinc-muted'>
 									{t('plans.organisms.volumeTier.perUnitPrice')}
 								</th>
-								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-[#71717A]'>
+								<th className='bg-surface px-2 py-2 text-left text-xs font-normal whitespace-normal text-content-zinc-muted'>
 									{t('plans.organisms.volumeTier.flatFee')}
 								</th>
 								<th className='bg-surface px-1 py-2' />

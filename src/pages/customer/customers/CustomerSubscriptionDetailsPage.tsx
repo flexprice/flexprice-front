@@ -324,13 +324,13 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 					<SubscriptionActionButton subscription={subscriptionDetails!} />
 				</div>
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.subscriptionName')}</p>
-					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.plan.name ?? t('usageTable.featureTypes.dash')}</p>
+					<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.subscriptionName')}</p>
+					<p className='text-content-zinc text-sm'>{subscriptionDetails?.plan.name ?? t('usageTable.featureTypes.dash')}</p>
 				</div>
 				<Spacer className='!my-4' />
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.status')}</p>
-					<div className='text-[#09090B] text-sm flex items-center gap-2'>
+					<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.status')}</p>
+					<div className='text-content-zinc text-sm flex items-center gap-2'>
 						{getSubscriptionStatus(subscriptionDetails?.subscription_status ?? '', t)}
 						{showEndDateTag ? (
 							<Chip
@@ -353,28 +353,28 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.billingCycle')}</p>
-					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.billing_cycle || t('usageTable.featureTypes.dash')}</p>
+					<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.billingCycle')}</p>
+					<p className='text-content-zinc text-sm'>{subscriptionDetails?.billing_cycle || t('usageTable.featureTypes.dash')}</p>
 				</div>
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.commitmentPeriod')}</p>
-					<p className='text-[#09090B] text-sm'>{getCommitmentPeriodLabel(subscriptionDetails, t)}</p>
+					<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.commitmentPeriod')}</p>
+					<p className='text-content-zinc text-sm'>{getCommitmentPeriodLabel(subscriptionDetails, t)}</p>
 				</div>
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.paymentTerms')}</p>
-					<p className='text-[#09090B] text-sm'>{subscriptionDetails?.payment_terms ?? t('usageTable.featureTypes.dash')}</p>
+					<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.paymentTerms')}</p>
+					<p className='text-content-zinc text-sm'>{subscriptionDetails?.payment_terms ?? t('usageTable.featureTypes.dash')}</p>
 				</div>
 				<Spacer className='!my-4' />
 
 				{subscriptionDetails?.timezone?.trim() && (
 					<>
 						<div className='w-full flex justify-between items-center'>
-							<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.timezone')}</p>
-							<p className='text-[#09090B] text-sm'>{subscriptionDetails.timezone}</p>
+							<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.timezone')}</p>
+							<p className='text-content-zinc text-sm'>{subscriptionDetails.timezone}</p>
 						</div>
 						<Spacer className='!my-4' />
 					</>
@@ -383,7 +383,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				{subscriptionDetails?.invoicing_customer_id && (
 					<>
 						<div className='w-full flex justify-between items-center'>
-							<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.invoicingCustomer')}</p>
+							<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.invoicingCustomer')}</p>
 							<Link
 								to={`${RouteNames.customers}/${subscriptionDetails.invoicing_customer_id}`}
 								className='inline-flex items-center text-sm gap-1.5 hover:underline transition-colors'>
@@ -398,7 +398,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 				{subscriptionDetails?.parent_subscription_id && (
 					<>
 						<div className='w-full flex justify-between items-center'>
-							<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.parentCustomer')}</p>
+							<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.parentCustomer')}</p>
 							{isParentSubscriptionLoading || (parentCustomerId && isParentCustomerLoading) ? (
 								<Skeleton className='h-4 w-40' />
 							) : parentCustomerId ? (
@@ -409,7 +409,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 									<ExternalLink className='w-3.5 h-3.5' />
 								</Link>
 							) : (
-								<p className='text-[#09090B] text-sm'>{t('usageTable.featureTypes.dash')}</p>
+								<p className='text-content-zinc text-sm'>{t('usageTable.featureTypes.dash')}</p>
 							)}
 						</div>
 						<Spacer className='!my-4' />
@@ -418,8 +418,8 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 
 				{subscriptionDetails?.commitment_amount && (
 					<div className='w-full flex justify-between items-center'>
-						<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.commitmentLabel')}</p>
-						<p className='text-[#09090B] text-sm'>
+						<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.commitmentLabel')}</p>
+						<p className='text-content-zinc text-sm'>
 							{getCurrencySymbol(subscriptionDetails?.currency || '')} {subscriptionDetails?.commitment_amount || '0'}/{' '}
 							{getCommitmentPeriodLabel(subscriptionDetails, t)}
 						</p>
@@ -428,8 +428,8 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 
 				{subscriptionDetails?.auto_invoice_threshold != null && (
 					<div className='w-full flex justify-between items-center'>
-						<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.autoInvoiceThreshold')}</p>
-						<p className='text-[#09090B] text-sm'>
+						<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.autoInvoiceThreshold')}</p>
+						<p className='text-content-zinc text-sm'>
 							{getCurrencySymbol(subscriptionDetails?.currency || '')} {subscriptionDetails.auto_invoice_threshold}
 						</p>
 					</div>
@@ -438,15 +438,15 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 
 				{subscriptionDetails?.overage_factor && subscriptionDetails?.overage_factor > 1 && (
 					<div className='w-full flex justify-between items-center'>
-						<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.overageFactor')}</p>
-						<p className='text-[#09090B] text-sm'>{subscriptionDetails?.overage_factor}</p>
+						<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.overageFactor')}</p>
+						<p className='text-content-zinc text-sm'>{subscriptionDetails?.overage_factor}</p>
 					</div>
 				)}
 				<Spacer className='!my-4' />
 
 				<div className='w-full flex justify-between items-center'>
-					<p className='text-[#71717A] text-sm'>{t('subscriptionDetail.startDate')}</p>
-					<p className='text-[#09090B] text-sm'>{formatDateShort(subscriptionDetails?.start_date ?? '')}</p>
+					<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.startDate')}</p>
+					<p className='text-content-zinc text-sm'>{formatDateShort(subscriptionDetails?.start_date ?? '')}</p>
 				</div>
 				<Spacer className='!my-4' />
 			</Card>
@@ -476,7 +476,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 									</div>
 									{/* Phase Card */}
 									<div className='flex-1'>
-										<div className='rounded-2xl border border-line-subtle bg-[#FAFAFA] px-8 py-5 flex flex-col gap-1'>
+										<div className='rounded-2xl border border-line-subtle bg-surface-faint px-8 py-5 flex flex-col gap-1'>
 											<div className='text-sm font-medium text-content-subtle mb-2'>
 												{t('subscriptionDetail.phaseHeading', { index: idx + 1 })}
 											</div>
@@ -498,7 +498,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 								</div>
 							))
 						) : (
-							<span className='text-[#71717A] text-sm'>{t('subscriptionDetail.noPhases')}</span>
+							<span className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.noPhases')}</span>
 						)}
 					</div>
 				</Card>

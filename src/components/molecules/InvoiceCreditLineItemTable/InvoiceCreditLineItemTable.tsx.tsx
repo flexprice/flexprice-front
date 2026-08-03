@@ -52,7 +52,7 @@ const InvoiceCreditLineItemTable: FC<Props> = ({ data, total_amount, currency, t
 											{item.quantity != null && item.quantity !== '' ? item.quantity : t('common:labels.na')}
 										</td>
 										<td className='py-3 px-2 text-center text-content-heading'>{t('common:labels.na')}</td>
-										<td className='py-3 px-2 text-end text-[#2A9D90]'>{formatAmount(Number(item.amount ?? 0), item.currency)}</td>
+										<td className='py-3 px-2 text-end text-accent-teal-brand'>{formatAmount(Number(item.amount ?? 0), item.currency)}</td>
 									</tr>
 								);
 							})}
@@ -64,7 +64,7 @@ const InvoiceCreditLineItemTable: FC<Props> = ({ data, total_amount, currency, t
 					<div className='text-sm text-content-heading space-y-4 w-1/3'>
 						<div className='flex justify-between'>
 							<span>{t(`${li}.subtotal`)}</span>
-							<span className='text-[#2A9D90] '>{`${getCurrencySymbol(currency ?? '')}${sub_total}`}</span>
+							<span className='text-accent-teal-brand '>{`${getCurrencySymbol(currency ?? '')}${sub_total}`}</span>
 						</div>
 						<div className='flex justify-between'>
 							<span>{t(`${li}.tax`)}</span>
@@ -73,7 +73,7 @@ const InvoiceCreditLineItemTable: FC<Props> = ({ data, total_amount, currency, t
 						<div className=' border-t '></div>
 						<div className='flex justify-between font-bold text-content '>
 							<span>{total_label || t('invoices.details.creditOnCustomerWallet')}</span>
-							<span className=' text-[#2A9D90] '>{formatAmount(total_amount ?? 0, currency ?? '')}</span>
+							<span className=' text-accent-teal-brand '>{formatAmount(total_amount ?? 0, currency ?? '')}</span>
 						</div>
 					</div>
 				</div>

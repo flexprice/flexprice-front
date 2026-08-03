@@ -320,7 +320,9 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 						}}
 					/>
 					<Label htmlFor='generate-invoice'>
-						<p className='font-medium text-sm text-[#18181B] peer-checked:text-content-black'>{t('wallet.topup.generateInvoice')}</p>
+						<p className='font-medium text-sm text-content-zinc-bold peer-checked:text-content-black'>
+							{t('wallet.topup.generateInvoice')}
+						</p>
 					</Label>
 				</div>
 			)}

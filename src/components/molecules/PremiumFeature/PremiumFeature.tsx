@@ -39,7 +39,7 @@ export const PremiumFeatureIcon: React.FC<PremiumFeatureIconProps> = ({ classNam
 
 export const PremiumFeatureTag = () => {
 	return (
-		<div className='flex gap-2 top-2 right-2 items-center justify-center  text-[#ffbf76] text-xs !font-semibold px-2 py-1 rounded-2xl !opacity-80'>
+		<div className='flex gap-2 top-2 right-2 items-center justify-center  text-accent-amber-soft text-xs !font-semibold px-2 py-1 rounded-2xl !opacity-80'>
 			<Sparkles fill='#ffbf76' className='size-4 text-xs !font-bold' />
 		</div>
 	);

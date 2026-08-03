@@ -39,7 +39,7 @@ const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit,
 				</div>
 			</div>
 			{!disabled && (
-				<span className='text-[#18181B] flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity'>
+				<span className='text-content-zinc-bold flex gap-2 items-center opacity-0 group-hover:opacity-100 transition-opacity'>
 					<button
 						onClick={() => {
 							const newPrice = { ...price, isEdit: true };
@@ -48,7 +48,7 @@ const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit,
 						className='p-1 hover:bg-surface-shell rounded-md'>
 						<Pencil size={16} />
 					</button>
-					<div className='border-r h-[16px] border-[#E4E4E7]' />
+					<div className='border-r h-[16px] border-line-zinc' />
 					<button onClick={() => onDelete?.(index)} className='p-1 hover:bg-surface-shell rounded-md text-danger-bright'>
 						<Trash2 size={16} />
 					</button>

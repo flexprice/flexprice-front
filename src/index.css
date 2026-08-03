@@ -264,6 +264,23 @@
 		--fp-chart-grid: 240 240 240; /* #f0f0f0 — cartesian grid */
 		--fp-accent-indigo-bright: 99 102 241; /* #6366f1 — series colour */
 
+		/* Off-palette values that predate the token layer — greys and accents written as arbitrary hex. */
+		--fp-surface-panel: 251 251 251; /* #fbfbfb — filter popovers */
+		--fp-surface-panel-alt: 252 252 252; /* #fcfcfc — tutorial card gradient end */
+		--fp-surface-thumb: 245 245 245; /* #f5f5f5 — tutorial card thumbnail well */
+		--fp-surface-thumb-alt: 244 244 244; /* #f4f4f4 */
+		--fp-surface-cool-strong: 221 225 235; /* #dde1eb */
+		--fp-line-hairline: 233 233 233; /* #e9e9e9 — empty-state card border */
+		--fp-line-muted: 207 207 207; /* #cfcfcf */
+		--fp-line-slate-deep: 15 23 42; /* #0f172a — selected radio outline */
+		--fp-content-grey: 94 94 94; /* #5e5e5e */
+		--fp-accent-teal-brand: 42 157 144; /* #2a9d90 */
+		--fp-accent-yellow-brand: 245 197 11; /* #f5c50b */
+		--fp-accent-indigo-soft: 97 103 217; /* #6167d9 */
+		--fp-accent-amber-soft: 255 191 118; /* #ffbf76 */
+		--fp-accent-blue-deep: 14 90 201; /* #0e5ac9 */
+		--fp-accent-amber-mid: 197 142 32; /* #c58e20 */
+
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
 		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
@@ -526,6 +543,23 @@
 		--fp-chart-axis: 69 69 77; /* #45454d */
 		--fp-chart-grid: 41 41 46; /* #29292e */
 		--fp-accent-indigo-bright: 138 147 255; /* #8a93ff */
+
+		/* Off-palette values that predate the token layer — greys and accents written as arbitrary hex. */
+		--fp-surface-panel: 35 35 38; /* #232326 */
+		--fp-surface-panel-alt: 38 38 42; /* #26262a */
+		--fp-surface-thumb: 35 35 38; /* #232326 */
+		--fp-surface-thumb-alt: 35 35 38; /* #232326 */
+		--fp-surface-cool-strong: 38 38 46; /* #26262e */
+		--fp-line-hairline: 41 41 46; /* #29292e */
+		--fp-line-muted: 53 53 59; /* #35353b */
+		--fp-line-slate-deep: 69 69 77; /* #45454d */
+		--fp-content-grey: 169 173 182; /* #a9adb6 */
+		--fp-accent-teal-brand: 63 194 179; /* #3fc2b3 */
+		--fp-accent-yellow-brand: 240 207 90; /* #f0cf5a */
+		--fp-accent-indigo-soft: 138 144 240; /* #8a90f0 */
+		--fp-accent-amber-soft: 255 207 148; /* #ffcf94 */
+		--fp-accent-blue-deep: 107 165 255; /* #6ba5ff */
+		--fp-accent-amber-mid: 223 174 74; /* #dfae4a */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

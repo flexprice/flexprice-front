@@ -29,7 +29,7 @@ const WalletTransactionsTable: FC<Props> = ({ data }) => {
 			className?: string;
 		}) => {
 			return (
-				<span className={cn(type === 'credit' ? 'text-[#2A9D90] ' : 'text-[#18181B] ', className)}>
+				<span className={cn(type === 'credit' ? 'text-accent-teal-brand ' : 'text-content-zinc-bold ', className)}>
 					{type === 'credit' ? '+' : '-'}
 					{amount}
 					{currency ? ` ${getCurrencySymbol(currency)}` : ` ${t('payments.transactions.creditsSuffix')}`}

@@ -100,7 +100,7 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 			<Dialog open={isOpen} onOpenChange={onOpenChange}>
 				<DialogContent className='bg-surface sm:max-w-[500px]'>
 					<DialogHeader>
-						<DialogTitle className='text-lg font-semibold text-[#18181B] flex items-center gap-2'>
+						<DialogTitle className='text-lg font-semibold text-content-zinc-bold flex items-center gap-2'>
 							<CreditCard className='size-5' />
 							{t('saveCardModal.title')}
 						</DialogTitle>
@@ -134,7 +134,7 @@ const SaveCardModal: FC<SaveCardModalProps> = ({ isOpen, onOpenChange, customerI
 			<Dialog open={setupUrlPopup.isOpen} onOpenChange={handleCloseUrlPopup}>
 				<DialogContent className='bg-surface sm:max-w-[500px]'>
 					<DialogHeader>
-						<DialogTitle className='text-lg font-semibold text-[#18181B]'>{t('saveCardModal.successTitle')}</DialogTitle>
+						<DialogTitle className='text-lg font-semibold text-content-zinc-bold'>{t('saveCardModal.successTitle')}</DialogTitle>
 					</DialogHeader>
 
 					<div className='space-y-4 py-4'>

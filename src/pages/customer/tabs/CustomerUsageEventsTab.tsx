@@ -266,7 +266,7 @@ const CustomerUsageEventsTab = () => {
 	if (customerLoading) {
 		return (
 			<div className='space-y-6'>
-				<Card className='bg-surface border border-[#E9E9E9] rounded-xl p-6'>
+				<Card className='bg-surface border border-line-hairline rounded-xl p-6'>
 					<div className='animate-pulse space-y-4'>
 						<div className='h-10 bg-surface-muted rounded' />
 						<div className='h-12 bg-surface-muted rounded' />
@@ -279,7 +279,7 @@ const CustomerUsageEventsTab = () => {
 
 	if (!customer?.external_id) {
 		return (
-			<Card className='bg-surface border border-[#E9E9E9] rounded-xl p-6'>
+			<Card className='bg-surface border border-line-hairline rounded-xl p-6'>
 				<EmptyState title={t('tabPanels.usageEvents.loadErrorTitle')} description={t('tabPanels.usageEvents.loadErrorDescription')} />
 			</Card>
 		);
@@ -311,7 +311,7 @@ const CustomerUsageEventsTab = () => {
 					</div>
 				)}
 				{!hasMore && events.length === 0 && (
-					<p className=' text-[#64748B] text-xs font-normal font-sans mt-4'>{t('tabPanels.usageEvents.noEventsFound')}</p>
+					<p className=' text-content-slate-muted text-xs font-normal font-sans mt-4'>{t('tabPanels.usageEvents.noEventsFound')}</p>
 				)}
 			</div>
 		</>

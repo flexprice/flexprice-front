@@ -389,7 +389,7 @@ const FeatureDetailsSection = ({
 	const isMeteredType = data.type === FEATURE_TYPE.METERED;
 
 	return (
-		<Card className='p-6 rounded-[6px] border border-[#E4E4E7]'>
+		<Card className='p-6 rounded-[6px] border border-line-zinc'>
 			<Input
 				label={t('catalog:features.form.name')}
 				placeholder={t('catalog:features.form.namePlaceholder')}

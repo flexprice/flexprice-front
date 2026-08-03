@@ -124,7 +124,7 @@ const DetailsCard: FC<Props> = ({
 					if (variant === 'stacked') {
 						return (
 							<div key={index} className={cn('flex flex-col space-y-0', colSpanClass, detail.className)}>
-								<div className={cn(getValueClasses(detail), 'text-[#09090B] text-sm font-medium')}>{detail.label}</div>
+								<div className={cn(getValueClasses(detail), 'text-content-zinc text-sm font-medium')}>{detail.label}</div>
 								<div className={cn(labelClasses, 'text-muted-foreground text-sm')}>
 									<span>{detail.value || na}</span>
 									{detail.tag && <Tag tag={detail.tag} />}

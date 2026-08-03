@@ -240,7 +240,7 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 				description={data ? t('form.drawer.editDescription') : t('form.drawer.createDescription')}>
 				<div className='space-y-8 mt-4'>
 					<div className='relative card !p-4 !mb-6'>
-						<span className='absolute -top-4 left-2 text-[#18181B] text-sm bg-surface font-medium px-2 py-1'>
+						<span className='absolute -top-4 left-2 text-content-zinc-bold text-sm bg-surface font-medium px-2 py-1'>
 							{t('form.drawer.detailsSectionBadge')}
 						</span>
 						<div className='space-y-4'>
@@ -278,7 +278,7 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 
 					{uiState.showBillingDetails && (
 						<div className='relative card !p-4'>
-							<span className='absolute -top-4 left-2 text-[#18181B] text-sm bg-surface font-medium px-2 py-1'>
+							<span className='absolute -top-4 left-2 text-content-zinc-bold text-sm bg-surface font-medium px-2 py-1'>
 								{t('form.drawer.billingSectionBadge')}
 							</span>
 							<div className='space-y-4'>

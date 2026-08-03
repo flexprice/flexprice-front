@@ -44,7 +44,7 @@ const PlanEntitlementsTab = () => {
 				return (
 					<span className='flex items-end gap-1'>
 						{formatAmount(value || unlimited)}
-						<span className='text-[#64748B] text-sm font-normal font-sans'>
+						<span className='text-content-slate-muted text-sm font-normal font-sans'>
 							{value
 								? Number(value) > 0
 									? entitlement.feature?.unit_plural || unitsLabel

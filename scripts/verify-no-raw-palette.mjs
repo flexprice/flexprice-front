@@ -38,6 +38,11 @@ const EXEMPT_FILES = {
 	'src/components/molecules/DebugMenu/DebugMenu.tsx': 'tooltip is black in both themes via surface-scrim',
 	'src/components/molecules/Events/EventTrackerStep.tsx': 'step marker on a fixed brand circle',
 	'src/pages/auth/templates/FlexpriceDefault/LandingSection.tsx': 'text sits on a fixed light background photo, identical in both themes',
+	'src/components/molecules/ContactUsDialog/ContactUsDialog.tsx': 'Slack and Cal.com brand marks — fixed brand colours, not theme surfaces',
+	'src/components/molecules/EnvironmentCreator/EnvironmentCreator.tsx':
+		'Slack and Cal.com brand marks — fixed brand colours, not theme surfaces',
+	'src/components/molecules/InvoiceDownloadFormatDialog/InvoiceDownloadFormatDialog.tsx': 'Adobe PDF red and Excel green file-type marks',
+	'src/components/atoms/Stepper/Stepper.tsx': 'bg-[#00000005] is a 2% black wash used as a hairline shadow, not a surface',
 };
 
 const PREFIX = 'bg|text|border|ring|divide|fill|stroke|placeholder|from|to|via|shadow|outline|decoration|caret|accent|ring-offset';
@@ -46,6 +51,15 @@ const FAMILY =
 // A class is only a violation when it is NOT reached through a `dark:` variant — those are
 // dark-only overlays, which are legitimate styling rather than un-migrated light-mode colour.
 const CLASS_RE = new RegExp(`(?<![\\w-])((?:[a-z-]+:)*)(?:${PREFIX})-(?:${FAMILY})(?:-\\d{2,3})?(?![\\w-])`, 'g');
+
+/**
+ * Arbitrary hex values — `bg-[#fafafa]`, `from-[#ffffff]`, `border-[#E9E9E9]`.
+ *
+ * These are just as unthemable as a named palette class and were missed entirely at first: the
+ * empty-state card and its tutorial cards stayed white in dark mode because a
+ * `bg-gradient-to-r from-[#ffffff]` quietly overrode the `bg-surface` sitting right next to it.
+ */
+const ARBITRARY_RE = new RegExp(`(?<![\\w-])((?:[a-z-]+:)*)(?:${PREFIX})-\\[#[0-9a-fA-F]{3,8}\\]`, 'g');
 
 const stripComments = (src) => src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
 
@@ -65,10 +79,12 @@ for (const abs of files) {
 
 	const src = stripComments(readFileSync(abs, 'utf8'));
 	const found = [];
-	for (const m of src.matchAll(CLASS_RE)) {
-		const variants = m[1] || '';
-		if (variants.split(':').includes('dark')) continue;
-		found.push(m[0]);
+	for (const re of [CLASS_RE, ARBITRARY_RE]) {
+		for (const m of src.matchAll(re)) {
+			const variants = m[1] || '';
+			if (variants.split(':').includes('dark')) continue;
+			found.push(m[0]);
+		}
 	}
 	if (found.length) violations.push({ file: rel, classes: [...new Set(found)] });
 }

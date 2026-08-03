@@ -282,6 +282,23 @@ export default {
 				'chart-grid': 'rgb(var(--fp-chart-grid) / <alpha-value>)',
 				'accent-indigo-bright': 'rgb(var(--fp-accent-indigo-bright) / <alpha-value>)',
 
+				/* Off-palette values that predate the token layer — greys and accents written as arbitrary hex. */
+				'surface-panel': 'rgb(var(--fp-surface-panel) / <alpha-value>)',
+				'surface-panel-alt': 'rgb(var(--fp-surface-panel-alt) / <alpha-value>)',
+				'surface-thumb': 'rgb(var(--fp-surface-thumb) / <alpha-value>)',
+				'surface-thumb-alt': 'rgb(var(--fp-surface-thumb-alt) / <alpha-value>)',
+				'surface-cool-strong': 'rgb(var(--fp-surface-cool-strong) / <alpha-value>)',
+				'line-hairline': 'rgb(var(--fp-line-hairline) / <alpha-value>)',
+				'line-muted': 'rgb(var(--fp-line-muted) / <alpha-value>)',
+				'line-slate-deep': 'rgb(var(--fp-line-slate-deep) / <alpha-value>)',
+				'content-grey': 'rgb(var(--fp-content-grey) / <alpha-value>)',
+				'accent-teal-brand': 'rgb(var(--fp-accent-teal-brand) / <alpha-value>)',
+				'accent-yellow-brand': 'rgb(var(--fp-accent-yellow-brand) / <alpha-value>)',
+				'accent-indigo-soft': 'rgb(var(--fp-accent-indigo-soft) / <alpha-value>)',
+				'accent-amber-soft': 'rgb(var(--fp-accent-amber-soft) / <alpha-value>)',
+				'accent-blue-deep': 'rgb(var(--fp-accent-blue-deep) / <alpha-value>)',
+				'accent-amber-mid': 'rgb(var(--fp-accent-amber-mid) / <alpha-value>)',
+
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',
 				'brand-blue-light': 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',

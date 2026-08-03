@@ -134,7 +134,7 @@ const ExportManagement = () => {
 							onClick={() => {
 								setIsDrawerOpen(true);
 							}}
-							className='!p-5 !bg-[#fbfbfb] !border-[#CFCFCF] flex items-center gap-2 mx-auto'>
+							className='!p-5 !bg-surface-panel !border-line-muted flex items-center gap-2 mx-auto'>
 							<Plus className='w-4 h-4' />
 							{t('insightsTools.exports.addExportTask')}
 						</Button>

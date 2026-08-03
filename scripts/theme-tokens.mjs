@@ -279,6 +279,26 @@ export const TOKEN_GROUPS = [
 		],
 	},
 	{
+		group: 'Off-palette values that predate the token layer — greys and accents written as arbitrary hex.',
+		tokens: [
+			{ name: 'surface-panel', light: '#FBFBFB', dark: '#232326', note: 'filter popovers' },
+			{ name: 'surface-panel-alt', light: '#FCFCFC', dark: '#26262a', note: 'tutorial card gradient end' },
+			{ name: 'surface-thumb', light: '#F5F5F5', dark: '#232326', note: 'tutorial card thumbnail well' },
+			{ name: 'surface-thumb-alt', light: '#F4F4F4', dark: '#232326' },
+			{ name: 'surface-cool-strong', light: '#DDE1EB', dark: '#26262e' },
+			{ name: 'line-hairline', light: '#E9E9E9', dark: '#29292e', note: 'empty-state card border' },
+			{ name: 'line-muted', light: '#CFCFCF', dark: '#35353b' },
+			{ name: 'line-slate-deep', light: 'slate.900', dark: '#45454d', note: 'selected radio outline' },
+			{ name: 'content-grey', light: '#5E5E5E', dark: '#a9adb6' },
+			{ name: 'accent-teal-brand', light: '#2A9D90', dark: '#3fc2b3' },
+			{ name: 'accent-yellow-brand', light: '#F5C50B', dark: '#f0cf5a' },
+			{ name: 'accent-indigo-soft', light: '#6167D9', dark: '#8a90f0' },
+			{ name: 'accent-amber-soft', light: '#FFBF76', dark: '#ffcf94' },
+			{ name: 'accent-blue-deep', light: '#0E5AC9', dark: '#6ba5ff' },
+			{ name: 'accent-amber-mid', light: '#C58E20', dark: '#dfae4a' },
+		],
+	},
+	{
 		group: 'Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged.',
 		tokens: [
 			{ name: 'brand-blue', light: '#3293D9', dark: '#4aa8e8', note: 'was colors.blue.DEFAULT' },

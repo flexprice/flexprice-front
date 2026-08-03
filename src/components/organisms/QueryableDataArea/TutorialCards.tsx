@@ -24,9 +24,9 @@ const TutorialCards = ({ tutorials }: TutorialCardsProps) => {
 				return (
 					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} key={index}>
 						<Card
-							className='h-full group bg-surface border border-line-slate-subtle rounded-[6px] shadow-sm hover:border-info-muted-strong hover:bg-surface-cool transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-info-bright/5 flex flex-col max-w-[280px] mx-auto p-4 bg-gradient-to-r from-[#ffffff] to-[#fcfcfc]'
+							className='h-full group bg-surface border border-line-slate-subtle rounded-[6px] shadow-sm hover:border-info-muted-strong hover:bg-surface-cool transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-info-bright/5 flex flex-col max-w-[280px] mx-auto p-4 bg-gradient-to-r from-surface to-surface-panel-alt'
 							onClick={item.onClick}>
-							<div className='w-full h-[80px] aspect-video rounded-t-[6px] overflow-hidden bg-[#f5f5f5] flex items-center justify-center'>
+							<div className='w-full h-[80px] aspect-video rounded-t-[6px] overflow-hidden bg-surface-thumb flex items-center justify-center'>
 								<img src={imageUrl} loading='lazy' className='object-cover bg-surface-shell w-full h-full' alt=' ' />
 							</div>
 							<div className='flex-1 flex flex-col justify-between mt-4'>

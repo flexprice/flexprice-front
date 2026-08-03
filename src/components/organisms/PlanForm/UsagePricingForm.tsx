@@ -563,7 +563,7 @@ const UsagePricingForm: FC<Props> = ({
 								setFlatFee(e);
 							}
 						}}
-						suffix={<span className='text-[#64748B]'>{`/ unit / ${formatBillingPeriodForPrice(billingPeriod)}`}</span>}
+						suffix={<span className='text-content-slate-muted'>{`/ unit / ${formatBillingPeriodForPrice(billingPeriod)}`}</span>}
 					/>
 				</div>
 			)}
@@ -586,7 +586,7 @@ const UsagePricingForm: FC<Props> = ({
 							}}
 						/>
 						<div className='h-[50px] items-center flex gap-2'>
-							<p className='text-[#18181B] font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
+							<p className='text-content-zinc-bold font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
 						</div>
 						<Input
 							value={packagedFee.unit}

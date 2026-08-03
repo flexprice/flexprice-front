@@ -81,28 +81,28 @@ const CreditNoteDetails: FC<Props> = ({ credit_note_id, breadcrumb_index }) => {
 				<div className='p-4'>
 					<div className='flex items-center gap-2'>
 						<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('creditNotes.detailPage.title')}</h3>
-						<div className='text-[#09090B] text-sm'>{getStatusChip(data?.credit_note_status ?? CREDIT_NOTE_STATUS.DRAFT, t)}</div>
+						<div className='text-content-zinc text-sm'>{getStatusChip(data?.credit_note_status ?? CREDIT_NOTE_STATUS.DRAFT, t)}</div>
 					</div>
 					<Spacer className='!my-8' />
 
 					{/* Credit Note Information Grid */}
 					<div className='w-full grid grid-cols-4 gap-4 mb-4'>
-						<p className='text-[#71717A] text-sm'>{t('creditNotes.detailPage.creditNoteNumber')}</p>
-						<p className='text-[#71717A] text-sm'>{t('creditNotes.detailPage.dateCreated')}</p>
-						<p className='text-[#71717A] text-sm'>{t('creditNotes.detailPage.invoiceNumber')}</p>
-						<p className='text-[#71717A] text-sm'>{t('creditNotes.detailPage.typeLabel')}</p>
+						<p className='text-content-zinc-muted text-sm'>{t('creditNotes.detailPage.creditNoteNumber')}</p>
+						<p className='text-content-zinc-muted text-sm'>{t('creditNotes.detailPage.dateCreated')}</p>
+						<p className='text-content-zinc-muted text-sm'>{t('creditNotes.detailPage.invoiceNumber')}</p>
+						<p className='text-content-zinc-muted text-sm'>{t('creditNotes.detailPage.typeLabel')}</p>
 					</div>
 					<div className='w-full grid grid-cols-4 gap-4'>
-						<p className='text-[#09090B] text-sm font-medium'>{data?.credit_note_number || data?.id?.slice(0, 8)}</p>
-						<p className='text-[#09090B] text-sm font-medium'>{formatDate(data?.created_at ?? '')}</p>
-						<div className='text-[#09090B] text-sm'>
+						<p className='text-content-zinc text-sm font-medium'>{data?.credit_note_number || data?.id?.slice(0, 8)}</p>
+						<p className='text-content-zinc text-sm font-medium'>{formatDate(data?.created_at ?? '')}</p>
+						<div className='text-content-zinc text-sm'>
 							{data?.invoice && (
-								<Link to={`${RouteNames.invoices}/${data.invoice.id}`} className='text-[#09090B] text-sm font-medium hover:underline'>
+								<Link to={`${RouteNames.invoices}/${data.invoice.id}`} className='text-content-zinc text-sm font-medium hover:underline'>
 									{data.invoice.invoice_number || data.invoice.id.slice(0, 8)}
 								</Link>
 							)}
 						</div>
-						<div className='text-[#09090B] text-sm'>{getTypeChip(data?.credit_note_type ?? CREDIT_NOTE_TYPE.ADJUSTMENT, t)}</div>
+						<div className='text-content-zinc text-sm'>{getTypeChip(data?.credit_note_type ?? CREDIT_NOTE_TYPE.ADJUSTMENT, t)}</div>
 					</div>
 				</div>
 

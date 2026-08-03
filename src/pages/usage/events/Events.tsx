@@ -335,7 +335,7 @@ const EventsPage: React.FC = () => {
 					</div>
 				)}
 				{!hasMore && events.length === 0 && (
-					<p className=' text-[#64748B] text-xs font-normal font-sans mt-4'>{t('events.list.noEventsFound')}</p>
+					<p className=' text-content-slate-muted text-xs font-normal font-sans mt-4'>{t('events.list.noEventsFound')}</p>
 				)}
 			</div>
 		</Page>

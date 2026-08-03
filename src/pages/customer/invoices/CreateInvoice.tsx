@@ -218,9 +218,9 @@ const CreateInvoicePage: FC = () => {
 						<FormHeader title={t('createInvoice.invoiceDetails')} variant='sub-header' titleClassName='font-semibold' />
 						<Spacer className='!my-6' />
 						<div className='w-full grid grid-cols-3 gap-4'>
-							<p className='text-[#71717A] text-sm'>{t('createInvoice.issueDate')}</p>
+							<p className='text-content-zinc-muted text-sm'>{t('createInvoice.issueDate')}</p>
 							<p></p>
-							<p className='text-[#71717A] text-sm'>{t('createInvoice.currency')}</p>
+							<p className='text-content-zinc-muted text-sm'>{t('createInvoice.currency')}</p>
 						</div>
 						<div className='w-full grid grid-cols-3 gap-4'>
 							<DateTimePicker
@@ -239,16 +239,16 @@ const CreateInvoicePage: FC = () => {
 					<div className='grid grid-cols-2 p-4 gap-8'>
 						<div className='text-left'>
 							<FormHeader className='!mb-2' title={user?.tenant.name} variant='sub-header' titleClassName='font-semibold' />
-							<p className='text-sm text-[#71717A] mb-[2px]'>{user?.tenant.name}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{user?.email}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{tenantAddress}</p>
+							<p className='text-sm text-content-zinc-muted mb-[2px]'>{user?.tenant.name}</p>
+							<p className='text-sm text-content-zinc-muted mb-[2px]'>{user?.email}</p>
+							<p className='text-sm text-content-zinc-muted mb-[2px]'>{tenantAddress}</p>
 						</div>
 
 						<div>
 							<FormHeader className='!mb-2' title={t('createInvoice.billTo')} variant='sub-header' titleClassName='font-semibold' />
-							<p className='text-sm text-[#71717A] mb-[2px]'>{customer?.name || t('common:labels.na')}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{customer?.email || t('common:labels.na')}</p>
-							<p className='text-sm text-[#71717A] mb-[2px]'>{customerAddress}</p>
+							<p className='text-sm text-content-zinc-muted mb-[2px]'>{customer?.name || t('common:labels.na')}</p>
+							<p className='text-sm text-content-zinc-muted mb-[2px]'>{customer?.email || t('common:labels.na')}</p>
+							<p className='text-sm text-content-zinc-muted mb-[2px]'>{customerAddress}</p>
 						</div>
 					</div>
 
