@@ -15,13 +15,13 @@ const FundingStrip: React.FC = () => {
 
 	return (
 		<div className='w-full flex items-center justify-center px-4 py-1.5 shrink-0' style={{ background: '#092A3D' }}>
-			<p className='text-[13px] font-normal text-content-inverse'>
+			<p className='text-[13px] font-normal text-white'>
 				{t('announcement')} &nbsp;|&nbsp;{' '}
 				<a
 					href={FUNDING_URL}
 					target='_blank'
 					rel='noopener noreferrer'
-					className='text-content-inverse font-normal underline hover:opacity-80'
+					className='text-white font-normal underline hover:opacity-80'
 					style={{ textDecoration: 'underline' }}>
 					{t('knowMore')}
 				</a>

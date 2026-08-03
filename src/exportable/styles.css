@@ -237,6 +237,15 @@
 	--fp-accent-amber-soft: 255 191 118;
 	--fp-accent-blue-deep: 14 90 201;
 	--fp-accent-amber-mid: 197 142 32;
+	--fp-chip-teal-bg: 204 251 241;
+	--fp-chip-teal-text: 15 118 110;
+	--fp-chip-teal-line: 153 246 228;
+	--fp-chip-violet-bg: 245 243 255;
+	--fp-chip-violet-text: 109 40 217;
+	--fp-chip-violet-line: 221 214 254;
+	--fp-chip-indigo-bg: 238 242 255;
+	--fp-chip-indigo-text: 67 56 202;
+	--fp-chip-indigo-line: 224 231 255;
 	--fp-brand-blue: 50 147 217;
 	--fp-brand-blue-light: 229 240 255;
 	/* fp-tokens:end lib-light */
@@ -451,6 +460,15 @@
 	--fp-accent-amber-soft: 255 207 148;
 	--fp-accent-blue-deep: 107 165 255;
 	--fp-accent-amber-mid: 223 174 74;
+	--fp-chip-teal-bg: 15 47 43;
+	--fp-chip-teal-text: 79 214 196;
+	--fp-chip-teal-line: 27 74 68;
+	--fp-chip-violet-bg: 30 23 51;
+	--fp-chip-violet-text: 178 149 245;
+	--fp-chip-violet-line: 48 36 73;
+	--fp-chip-indigo-bg: 25 28 56;
+	--fp-chip-indigo-text: 154 162 245;
+	--fp-chip-indigo-line: 40 45 84;
 	--fp-brand-blue: 74 168 232;
 	--fp-brand-blue-light: 22 40 63;
 	/* fp-tokens:end lib-dark */

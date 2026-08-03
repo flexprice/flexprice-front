@@ -299,6 +299,20 @@ export const TOKEN_GROUPS = [
 		],
 	},
 	{
+		group: 'Subscription-type chips — teal / violet / indigo triples applied through Chip props.',
+		tokens: [
+			{ name: 'chip-teal-bg', light: '#CCFBF1', dark: '#0f2f2b' },
+			{ name: 'chip-teal-text', light: '#0F766E', dark: '#4fd6c4' },
+			{ name: 'chip-teal-line', light: '#99F6E4', dark: '#1b4a44' },
+			{ name: 'chip-violet-bg', light: '#F5F3FF', dark: '#1e1733' },
+			{ name: 'chip-violet-text', light: '#6D28D9', dark: '#b295f5' },
+			{ name: 'chip-violet-line', light: '#DDD6FE', dark: '#302449' },
+			{ name: 'chip-indigo-bg', light: '#EEF2FF', dark: '#191c38' },
+			{ name: 'chip-indigo-text', light: '#4338CA', dark: '#9aa2f5' },
+			{ name: 'chip-indigo-line', light: '#E0E7FF', dark: '#282d54' },
+		],
+	},
+	{
 		group: 'Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged.',
 		tokens: [
 			{ name: 'brand-blue', light: '#3293D9', dark: '#4aa8e8', note: 'was colors.blue.DEFAULT' },

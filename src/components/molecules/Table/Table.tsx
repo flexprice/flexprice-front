@@ -213,24 +213,26 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 					variant === 'default' ? 'rounded-t-[6px] border-b border-line-slate' : '',
 					variant === 'no-bordered' && 'border-b-0',
 				)}>
-				{columns.map(({ title, flex = 1, width, color = '#64748B', align = 'left', className, children }, index) => (
-					<TableHead
-						variant={variant}
-						key={index}
-						style={{ flex: width ? undefined : flex }}
-						width={width}
-						align={align}
-						className={cn(
-							color ? `text-[${color}] !text-content-black` : 'text-content-black',
-							'font-sans font-medium px-3',
-							variant === 'default' && index === 0 ? 'rounded-ss-[6px]' : '',
-							variant === 'default' && index === columns.length - 1 ? 'rounded-se-[6px]' : '',
-							variant === 'no-bordered' && 'border-b-0',
-							className,
-						)}>
-						<span className={cn(index === 0 && 'ps-2')}>{children ? children : title}</span>
-					</TableHead>
-				))}
+				{columns.map(
+					({ title, flex = 1, width, color = 'rgb(var(--fp-content-slate-muted))', align = 'left', className, children }, index) => (
+						<TableHead
+							variant={variant}
+							key={index}
+							style={{ flex: width ? undefined : flex }}
+							width={width}
+							align={align}
+							className={cn(
+								color ? `text-[${color}] !text-content-black` : 'text-content-black',
+								'font-sans font-medium px-3',
+								variant === 'default' && index === 0 ? 'rounded-ss-[6px]' : '',
+								variant === 'default' && index === columns.length - 1 ? 'rounded-se-[6px]' : '',
+								variant === 'no-bordered' && 'border-b-0',
+								className,
+							)}>
+							<span className={cn(index === 0 && 'ps-2')}>{children ? children : title}</span>
+						</TableHead>
+					),
+				)}
 			</TableRow>
 		</TableHeader>
 	);

@@ -41,7 +41,11 @@ function getSubscriptionTypeChipProps(raw: string | null | undefined): Subscript
 	const t = raw?.trim().toLowerCase();
 	switch (t) {
 		case SUBSCRIPTION_TYPE.STANDALONE:
-			return { textColor: '#0F766E', bgColor: '#CCFBF1', borderColor: '#99F6E4' };
+			return {
+				textColor: 'rgb(var(--fp-chip-teal-text))',
+				bgColor: 'rgb(var(--fp-chip-teal-bg))',
+				borderColor: 'rgb(var(--fp-chip-teal-line))',
+			};
 		case SUBSCRIPTION_TYPE.PARENT:
 			return { variant: 'success' };
 		case SUBSCRIPTION_TYPE.INHERITED:
@@ -49,9 +53,17 @@ function getSubscriptionTypeChipProps(raw: string | null | undefined): Subscript
 		case SUBSCRIPTION_TYPE.GROUPED_INVOICING:
 			return { variant: 'warning' };
 		case SUBSCRIPTION_TYPE.DELEGATED_INVOICING:
-			return { textColor: '#6D28D9', bgColor: '#F5F3FF', borderColor: '#DDD6FE' };
+			return {
+				textColor: 'rgb(var(--fp-chip-violet-text))',
+				bgColor: 'rgb(var(--fp-chip-violet-bg))',
+				borderColor: 'rgb(var(--fp-chip-violet-line))',
+			};
 		default:
-			return { textColor: '#4338CA', bgColor: '#EEF2FF', borderColor: '#E0E7FF' };
+			return {
+				textColor: 'rgb(var(--fp-chip-indigo-text))',
+				bgColor: 'rgb(var(--fp-chip-indigo-bg))',
+				borderColor: 'rgb(var(--fp-chip-indigo-line))',
+			};
 	}
 }
 

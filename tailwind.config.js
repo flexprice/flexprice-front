@@ -299,6 +299,17 @@ export default {
 				'accent-blue-deep': 'rgb(var(--fp-accent-blue-deep) / <alpha-value>)',
 				'accent-amber-mid': 'rgb(var(--fp-accent-amber-mid) / <alpha-value>)',
 
+				/* Subscription-type chips — teal / violet / indigo triples applied through Chip props. */
+				'chip-teal-bg': 'rgb(var(--fp-chip-teal-bg) / <alpha-value>)',
+				'chip-teal-text': 'rgb(var(--fp-chip-teal-text) / <alpha-value>)',
+				'chip-teal-line': 'rgb(var(--fp-chip-teal-line) / <alpha-value>)',
+				'chip-violet-bg': 'rgb(var(--fp-chip-violet-bg) / <alpha-value>)',
+				'chip-violet-text': 'rgb(var(--fp-chip-violet-text) / <alpha-value>)',
+				'chip-violet-line': 'rgb(var(--fp-chip-violet-line) / <alpha-value>)',
+				'chip-indigo-bg': 'rgb(var(--fp-chip-indigo-bg) / <alpha-value>)',
+				'chip-indigo-text': 'rgb(var(--fp-chip-indigo-text) / <alpha-value>)',
+				'chip-indigo-line': 'rgb(var(--fp-chip-indigo-line) / <alpha-value>)',
+
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',
 				'brand-blue-light': 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',

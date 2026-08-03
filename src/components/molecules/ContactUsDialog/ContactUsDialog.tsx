@@ -47,7 +47,7 @@ const ContactUsDialog: React.FC<ContactUsDialogProps> = ({ isOpen, onOpenChange,
 					aria-label={t('contactUs.emailAria')}>
 					<div
 						className='h-14 w-14 rounded-xl flex items-center justify-center shadow-sm transition-shadow duration-300 ease-in-out group-hover:shadow-md'
-						style={{ backgroundColor: '#E5E7EB' }}>
+						style={{ backgroundColor: 'rgb(var(--fp-surface-strong))' }}>
 						<Mail className='h-7 w-7 text-content-secondary' strokeWidth={1.5} />
 					</div>
 					<span className='text-xs font-medium text-content-secondary group-hover:text-content transition-colors duration-300 ease-in-out'>

@@ -281,6 +281,17 @@
 		--fp-accent-blue-deep: 14 90 201; /* #0e5ac9 */
 		--fp-accent-amber-mid: 197 142 32; /* #c58e20 */
 
+		/* Subscription-type chips — teal / violet / indigo triples applied through Chip props. */
+		--fp-chip-teal-bg: 204 251 241; /* #ccfbf1 */
+		--fp-chip-teal-text: 15 118 110; /* #0f766e */
+		--fp-chip-teal-line: 153 246 228; /* #99f6e4 */
+		--fp-chip-violet-bg: 245 243 255; /* #f5f3ff */
+		--fp-chip-violet-text: 109 40 217; /* #6d28d9 */
+		--fp-chip-violet-line: 221 214 254; /* #ddd6fe */
+		--fp-chip-indigo-bg: 238 242 255; /* #eef2ff */
+		--fp-chip-indigo-text: 67 56 202; /* #4338ca */
+		--fp-chip-indigo-line: 224 231 255; /* #e0e7ff */
+
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
 		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
@@ -561,6 +572,17 @@
 		--fp-accent-blue-deep: 107 165 255; /* #6ba5ff */
 		--fp-accent-amber-mid: 223 174 74; /* #dfae4a */
 
+		/* Subscription-type chips — teal / violet / indigo triples applied through Chip props. */
+		--fp-chip-teal-bg: 15 47 43; /* #0f2f2b */
+		--fp-chip-teal-text: 79 214 196; /* #4fd6c4 */
+		--fp-chip-teal-line: 27 74 68; /* #1b4a44 */
+		--fp-chip-violet-bg: 30 23 51; /* #1e1733 */
+		--fp-chip-violet-text: 178 149 245; /* #b295f5 */
+		--fp-chip-violet-line: 48 36 73; /* #302449 */
+		--fp-chip-indigo-bg: 25 28 56; /* #191c38 */
+		--fp-chip-indigo-text: 154 162 245; /* #9aa2f5 */
+		--fp-chip-indigo-line: 40 45 84; /* #282d54 */
+
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */
 		--fp-brand-blue-light: 22 40 63; /* #16283f */
@@ -747,5 +769,46 @@ div[data-hot-toast-container] {
 		background: none;
 		-webkit-background-clip: unset;
 		background-clip: unset;
+	}
+}
+
+/*
+ * Dark overrides for the hand-written utility classes above.
+ *
+ * These predate the token layer and were pure light-mode literals: a pale dotted canvas and a
+ * grey-to-indigo shimmer. Nothing in the migration tooling looks inside index.css's own rules, so
+ * they stayed light while everything around them themed.
+ */
+.dark .pricing-shimmer-overlay {
+	background:
+		radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 1.6px) 0 0 / 14px 14px,
+		linear-gradient(0deg, rgb(var(--fp-surface)), rgb(var(--fp-surface)));
+}
+.dark .pricing-shimmer-overlay::before {
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+}
+.dark .pricing-preview-canvas {
+	background:
+		radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 1.6px) 0 0 / 14px 14px,
+		linear-gradient(0deg, rgb(var(--fp-surface)), rgb(var(--fp-surface)));
+}
+.dark .analyzing-prompt-shimmer {
+	background: linear-gradient(
+		90deg,
+		rgb(var(--fp-content-secondary)) 0%,
+		rgb(var(--fp-content-secondary)) 35%,
+		rgb(var(--fp-accent-indigo-bright)) 50%,
+		rgb(var(--fp-content-secondary)) 65%,
+		rgb(var(--fp-content-secondary)) 100%
+	);
+	background-size: 200% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+@media (prefers-reduced-motion: reduce) {
+	.dark .analyzing-prompt-shimmer {
+		color: rgb(var(--fp-content-secondary));
+		background: none;
 	}
 }

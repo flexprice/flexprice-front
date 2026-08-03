@@ -43,6 +43,11 @@ const EXEMPT_FILES = {
 		'Slack and Cal.com brand marks — fixed brand colours, not theme surfaces',
 	'src/components/molecules/InvoiceDownloadFormatDialog/InvoiceDownloadFormatDialog.tsx': 'Adobe PDF red and Excel green file-type marks',
 	'src/components/atoms/Stepper/Stepper.tsx': 'bg-[#00000005] is a 2% black wash used as a hairline shadow, not a surface',
+	'src/components/molecules/FundingStrip/FundingStrip.tsx':
+		'fixed dark navy announcement strip — dark in both themes, so its text stays white',
+	'src/components/atoms/ErrorBoundary/ErrorBoundary.tsx': 'toast style is a dark snackbar, dark in both themes',
+	'src/pages/auth/GoogleSignin.tsx': 'Google logo — brand mark, must not be recoloured',
+	'src/core/services/posthog/PosthogErrorBoundary.tsx': 'pre-React crash fallback, rendered before any theme class exists',
 };
 
 const PREFIX = 'bg|text|border|ring|divide|fill|stroke|placeholder|from|to|via|shadow|outline|decoration|caret|accent|ring-offset';
@@ -60,6 +65,17 @@ const CLASS_RE = new RegExp(`(?<![\\w-])((?:[a-z-]+:)*)(?:${PREFIX})-(?:${FAMILY
  * `bg-gradient-to-r from-[#ffffff]` quietly overrode the `bg-surface` sitting right next to it.
  */
 const ARBITRARY_RE = new RegExp(`(?<![\\w-])((?:[a-z-]+:)*)(?:${PREFIX})-\\[#[0-9a-fA-F]{3,8}\\]`, 'g');
+
+/**
+ * Colour literals reached through inline `style` objects and SVG attributes.
+ *
+ * The class-based checks above cannot see these, which is how the environment badge, the login
+ * photo panel and the chart tooltips all shipped light-on-light. Anything here is either a brand
+ * mark (exempt below) or needs `rgb(var(--fp-token))`.
+ */
+const INLINE_RE =
+	/(?:color|background|backgroundColor|borderColor|outlineColor|fill|stroke|boxShadow)\s*[:=]\s*['"`]#[0-9a-fA-F]{3,8}['"`]/g;
+const SVG_ATTR_RE = /(?:fill|stroke)=['"]#[0-9a-fA-F]{3,8}['"]/g;
 
 const stripComments = (src) => src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
 
@@ -79,10 +95,11 @@ for (const abs of files) {
 
 	const src = stripComments(readFileSync(abs, 'utf8'));
 	const found = [];
-	for (const re of [CLASS_RE, ARBITRARY_RE]) {
+	for (const re of [CLASS_RE, ARBITRARY_RE, INLINE_RE, SVG_ATTR_RE]) {
 		for (const m of src.matchAll(re)) {
 			const variants = m[1] || '';
 			if (variants.split(':').includes('dark')) continue;
+
 			found.push(m[0]);
 		}
 	}

@@ -513,7 +513,7 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 						</div>
 					</div>
 				</div>
-				<Divider color='#f1f5f9' className='w-full' />
+				<Divider color='rgb(var(--fp-line-slate-subtle))' className='w-full' />
 				<div className='flex flex-row items-center justify-between px-6 py-4'>
 					<div className='flex items-center gap-2'>
 						{connected ? (
