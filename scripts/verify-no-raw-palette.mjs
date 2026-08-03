@@ -73,8 +73,12 @@ const ARBITRARY_RE = new RegExp(`(?<![\\w-])((?:[a-z-]+:)*)(?:${PREFIX})-\\[#[0-
  * photo panel and the chart tooltips all shipped light-on-light. Anything here is either a brand
  * mark (exempt below) or needs `rgb(var(--fp-token))`.
  */
-const INLINE_RE =
-	/(?:color|background|backgroundColor|borderColor|outlineColor|fill|stroke|boxShadow)\s*[:=]\s*['"`]#[0-9a-fA-F]{3,8}['"`]/g;
+const INLINE_PROP = 'color|background|backgroundColor|borderColor|outlineColor|fill|stroke|boxShadow';
+const INLINE_RE = new RegExp(`(?:${INLINE_PROP})\\s*[:=]\\s*['"\`]#[0-9a-fA-F]{3,8}['"\`]`, 'g');
+// `rgb()` / `rgba()` spelled out longhand is the same problem wearing a different hat — the chart
+// crosshair was a literal `rgba(99, 102, 241, 0.4)` sitting among otherwise tokenized chart chrome.
+// `rgb(var(--fp-*))` is the correct form and is excluded by requiring a digit first.
+const INLINE_RGB_RE = new RegExp(`(?:${INLINE_PROP})\\s*[:=]\\s*['"\`]\\s*rgba?\\(\\s*\\d`, 'g');
 const SVG_ATTR_RE = /(?:fill|stroke)=['"]#[0-9a-fA-F]{3,8}['"]/g;
 
 const stripComments = (src) => src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
@@ -95,7 +99,7 @@ for (const abs of files) {
 
 	const src = stripComments(readFileSync(abs, 'utf8'));
 	const found = [];
-	for (const re of [CLASS_RE, ARBITRARY_RE, INLINE_RE, SVG_ATTR_RE]) {
+	for (const re of [CLASS_RE, ARBITRARY_RE, INLINE_RE, INLINE_RGB_RE, SVG_ATTR_RE]) {
 		for (const m of src.matchAll(re)) {
 			const variants = m[1] || '';
 			if (variants.split(':').includes('dark')) continue;

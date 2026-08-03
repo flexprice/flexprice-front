@@ -87,7 +87,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 				/>
 				{showTooltip && (
 					<Tooltip
-						cursor={hasData ? { stroke: 'rgba(99, 102, 241, 0.4)', strokeWidth: 1, strokeDasharray: '3 3' } : false}
+						cursor={hasData ? { stroke: 'rgb(var(--fp-accent-indigo-bright) / 0.4)', strokeWidth: 1, strokeDasharray: '3 3' } : false}
 						content={(props) => {
 							const { active, payload, label } = props;
 							if (!active || !payload || !payload.length || !hasData) return null;
