@@ -501,7 +501,7 @@ const PricingSetupPage = () => {
 														isCompleted && 'bg-accent-emerald text-content-inverse shadow-sm shadow-accent-emerald/25',
 														!isCompleted &&
 															isActive &&
-															'bg-surface text-accent-emerald-strong ring-2 ring-accent-emerald-soft/60 ring-offset-2 ring-offset-white',
+															'bg-surface text-accent-emerald-strong ring-2 ring-accent-emerald-soft/60 ring-offset-2 ring-offset-surface',
 														!isCompleted && !isActive && 'border border-line bg-surface-subtle text-content-subtle',
 													)}
 													aria-current={isActive ? 'step' : undefined}>

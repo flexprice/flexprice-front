@@ -9,5 +9,7 @@ npm run verify:light
 npm run verify:tokens-staged
 # The widget ships its own stylesheet; tokens must be mirrored there too.
 npm run verify:exportable
+# Stops raw palette classes creeping back into themed code.
+npm run verify:no-raw-palette
 
 npm run build

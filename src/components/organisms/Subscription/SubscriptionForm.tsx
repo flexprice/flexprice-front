@@ -72,7 +72,7 @@ const BillingAccordionInfoTooltip = ({ description, ariaLabel }: { description: 
 		content={<span className='block max-w-xs text-xs font-normal leading-relaxed text-popover-foreground'>{description}</span>}
 		className='max-w-xs'>
 		<span
-			className='inline-flex size-[22px] shrink-0 items-center justify-center rounded-md text-content-zinc-subtle outline-none transition-colors hover:bg-surface-muted hover:text-content-zinc-tertiary focus-visible:ring-2 focus-visible:ring-line-zinc-bold/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white'
+			className='inline-flex size-[22px] shrink-0 items-center justify-center rounded-md text-content-zinc-subtle outline-none transition-colors hover:bg-surface-muted hover:text-content-zinc-tertiary focus-visible:ring-2 focus-visible:ring-line-zinc-bold/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface'
 			tabIndex={0}
 			aria-label={ariaLabel}
 			onPointerDown={(e) => e.stopPropagation()}
