@@ -51,6 +51,11 @@ const cssHeader = (variant) =>
 
 let light = cssHeader('light');
 let dark = cssHeader('dark');
+// The exportable widget ships its own stylesheet with tokens scoped under `.flexprice-ui`, so it
+// needs the same `--fp-*` values. Without them its utilities reference undefined variables and the
+// widget renders unstyled in a consumer's page.
+let libLight = '';
+let libDark = '';
 let tw = `\t\t\t\t/* ------------------------------------------------------------------
 \t\t\t\t * Dark-theme token layer. Light values are byte-identical to the Tailwind
 \t\t\t\t * palette colors they replace — see scripts/theme-tokens.mjs and the guard
@@ -68,6 +73,8 @@ for (const { group, tokens } of TOKEN_GROUPS) {
 		// Quote every key so the emitted config is stable regardless of hyphens; Prettier
 		// strips the quotes where they are unnecessary.
 		tw += `\t\t\t\t'${name}': 'rgb(var(--fp-${name}) / <alpha-value>)',\n`;
+		libLight += `\t--fp-${name}: ${hexToChannels(hex)};\n`;
+		libDark += `\t--fp-${name}: ${hexToChannels(d)};\n`;
 	}
 }
 
@@ -77,11 +84,17 @@ css = replaceRegion(css, 'light', light, 'src/index.css');
 css = replaceRegion(css, 'dark', dark, 'src/index.css');
 writeFileSync(cssPath, css);
 
+const libPath = join(root, 'src/exportable/styles.css');
+let libSrc = readFileSync(libPath, 'utf8');
+libSrc = replaceRegion(libSrc, 'lib-light', libLight, 'src/exportable/styles.css');
+libSrc = replaceRegion(libSrc, 'lib-dark', libDark, 'src/exportable/styles.css');
+writeFileSync(libPath, libSrc);
+
 const twPath = join(root, 'tailwind.config.js');
 let twSrc = readFileSync(twPath, 'utf8');
 twSrc = replaceRegion(twSrc, '', tw, 'tailwind.config.js');
 writeFileSync(twPath, twSrc);
 
 const count = TOKEN_GROUPS.reduce((n, g) => n + g.tokens.length, 0);
-console.log(`✓ regenerated ${count} tokens into src/index.css and tailwind.config.js`);
+console.log(`✓ regenerated ${count} tokens into src/index.css, tailwind.config.js and src/exportable/styles.css`);
 console.log('  next: npx prettier --write src/index.css tailwind.config.js && npm run verify:theme');

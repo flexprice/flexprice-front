@@ -7,5 +7,7 @@ npm run verify:theme
 npm run verify:light
 # Catches committing src/index.css without tailwind.config.js (or vice versa).
 npm run verify:tokens-staged
+# The widget ships its own stylesheet; tokens must be mirrored there too.
+npm run verify:exportable
 
 npm run build

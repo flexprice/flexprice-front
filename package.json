@@ -12,6 +12,7 @@
     "verify:theme": "node scripts/verify-theme-tokens.mjs",
     "verify:light": "node scripts/verify-light-unchanged.mjs",
     "verify:tokens-staged": "node scripts/verify-tokens-staged.mjs",
+    "verify:exportable": "node scripts/verify-exportable-tokens.mjs",
     "build": "tsc -b && vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
