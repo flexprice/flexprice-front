@@ -184,8 +184,12 @@ Things that look broken but are not:
 - **Sidebar promo card missing.** Renders only when the environment has no plans and no features.
 - **Light chips are below AA** (3.95–4.48). Pre-existing design, reproduced byte-for-byte. Fixing it
   is a visible light change and needs its own PR.
+- **Dark is measurably more legible than light.** Across the 22 token pairs the source states on a
+  single element, light fails AA on five and dark on none. The worst — `text-content-subtle` on
+  `bg-surface-sidebar` — reads 2.41:1 in light and 5.67:1 in dark. Worth knowing before anyone reads
+  a dark-mode contrast complaint as a regression.
 
-## The five guards
+## The six guards
 
 All run in the pre-commit hook. Each exists because something slipped past the others.
 
@@ -196,6 +200,16 @@ All run in the pre-commit hook. Each exists because something slipped past the o
 | `verify:tokens-staged`  | committing `src/index.css` without `tailwind.config.js`, which ships a variable with no utility class |
 | `verify:exportable`     | the widget package shipping `var(--fp-*)` it never defines                                            |
 | `verify:no-raw-palette` | a raw palette class reappearing in themed code                                                        |
+| `verify:dark-contrast`  | a token pair that passes AA in light but fails in dark                                                |
+
+`verify:dark-contrast` deliberately does **not** enforce absolute AA. Light is frozen and already
+fails AA on five of the 22 stated pairs, so an absolute bar could only be met by editing light. It
+asserts the invariant this migration can own — dark never breaks a pair that worked in light — and
+ignores headroom lost above the threshold, since 21:1 to 16.65:1 is arithmetic rather than a defect.
+
+Only same-element pairs are checked. Text inheriting a background from an ancestor is not resolvable
+statically, so a clean run is a claim about every pair the source states explicitly, not about the
+whole app.
 
 Every one was negative-tested — deliberately broken, confirmed to fail, restored. Three of them had
 bugs that only surfaced that way: `verify:light` counted class names inside comments,

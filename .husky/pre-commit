@@ -11,5 +11,7 @@ npm run verify:tokens-staged
 npm run verify:exportable
 # Stops raw palette classes creeping back into themed code.
 npm run verify:no-raw-palette
+# Catches a token pair that passes AA in light but fails in dark.
+npm run verify:dark-contrast
 
 npm run build

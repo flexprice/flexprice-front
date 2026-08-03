@@ -9,9 +9,13 @@ vi.mock('react-i18next', () => ({
 // Each test re-imports the component so the Zustand store starts clean, but the very first import
 // has to transform the whole `@/components/atoms` barrel. Pay that cost here, in a hook with a
 // longer budget, instead of inside the first test's 5s timeout.
+//
+// The explicit 30s is load-dependent, not machine-dependent: this file passes alone in ~6s but
+// overruns the default 10s hook budget when the other 49 test files are competing for the same
+// cores. Without it the whole suite fails intermittently — and it sits in the pre-commit hook.
 beforeAll(async () => {
 	await import('./ThemeSettings');
-});
+}, 30_000);
 
 beforeEach(() => {
 	vi.resetModules();
