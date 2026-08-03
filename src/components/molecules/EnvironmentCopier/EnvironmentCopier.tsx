@@ -131,7 +131,7 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 			}>
 			<div className='space-y-5'>
 				{/* Cleanup callout */}
-				<div className='rounded-lg border border-warning-line bg-gradient-to-br from-amber-50 to-orange-50 px-4 py-3.5'>
+				<div className='rounded-lg border border-warning-line bg-gradient-to-br from-warning-muted to-accent-orange-bg px-4 py-3.5'>
 					<div className='flex items-start gap-2.5'>
 						<AlertTriangle className='h-4 w-4 mt-0.5 flex-shrink-0 text-warning-bright' />
 						<div>

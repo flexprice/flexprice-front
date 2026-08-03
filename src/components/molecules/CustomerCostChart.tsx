@@ -33,13 +33,13 @@ export const CustomerCostChart: React.FC<CustomerCostChartProps> = ({ data, titl
 							<p className='text-2xl font-bold text-info-deepest'>{parseFloat(data.total_cost || '0').toFixed(2)}</p>
 							<p className='text-xs text-info-bright mt-1'>{data.currency}</p>
 						</div>
-						<div className='p-4 bg-success-muted rounded-lg border border-green-100'>
+						<div className='p-4 bg-success-muted rounded-lg border border-success-line-subtle'>
 							<p className='text-sm text-success font-medium mb-1'>{t('customerCharts.totalQuantity')}</p>
-							<p className='text-2xl font-bold text-green-900'>{parseFloat(data.total_quantity || '0').toLocaleString()}</p>
+							<p className='text-2xl font-bold text-success-deepest'>{parseFloat(data.total_quantity || '0').toLocaleString()}</p>
 						</div>
-						<div className='p-4 bg-purple-50 rounded-lg border border-purple-100'>
+						<div className='p-4 bg-accent-purple-muted rounded-lg border border-accent-purple-line'>
 							<p className='text-sm text-accent-purple font-medium mb-1'>{t('customerCharts.totalEvents')}</p>
-							<p className='text-2xl font-bold text-purple-900'>{data.total_events?.toLocaleString() || 0}</p>
+							<p className='text-2xl font-bold text-accent-purple-deep'>{data.total_events?.toLocaleString() || 0}</p>
 						</div>
 					</div>
 

@@ -54,13 +54,13 @@ const InvoiceDownloadFormatDialog: FC<InvoiceDownloadFormatDialogProps> = ({
 					disabled={busy}
 					onClick={() => void handlePdf()}
 					className={cn(
-						'flex flex-col items-center justify-center gap-3 rounded-xl border border-line-zinc/90 bg-gradient-to-b from-white to-rose-50/40 px-4 py-8 text-center transition-all',
-						'hover:border-rose-200 hover:from-rose-50/30 hover:to-rose-50/60 hover:shadow-sm',
+						'flex flex-col items-center justify-center gap-3 rounded-xl border border-line-zinc/90 bg-gradient-to-b from-surface to-accent-rose-muted/40 px-4 py-8 text-center transition-all',
+						'hover:border-accent-rose-line hover:from-accent-rose-muted/30 hover:to-accent-rose-muted/60 hover:shadow-sm',
 						'disabled:opacity-50 disabled:cursor-not-allowed',
 					)}>
 					<span
 						className={cn(
-							'flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-400/25 via-red-500/20 to-red-600/30 shadow-inner',
+							'flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-rose/25 via-danger-bright/20 to-danger/30 shadow-inner',
 							'ring-1 ring-inset ring-danger-bright/15',
 						)}>
 						{isPdfPending ? (
@@ -76,13 +76,13 @@ const InvoiceDownloadFormatDialog: FC<InvoiceDownloadFormatDialogProps> = ({
 					disabled={busy}
 					onClick={() => void handleCsv()}
 					className={cn(
-						'flex flex-col items-center justify-center gap-3 rounded-xl border border-line-zinc/90 bg-gradient-to-b from-white to-emerald-50/40 px-4 py-8 text-center transition-all',
-						'hover:border-emerald-200 hover:from-emerald-50/30 hover:to-emerald-50/60 hover:shadow-sm',
+						'flex flex-col items-center justify-center gap-3 rounded-xl border border-line-zinc/90 bg-gradient-to-b from-surface to-accent-emerald-bg/40 px-4 py-8 text-center transition-all',
+						'hover:border-accent-emerald-line hover:from-accent-emerald-bg/30 hover:to-accent-emerald-bg/60 hover:shadow-sm',
 						'disabled:opacity-50 disabled:cursor-not-allowed',
 					)}>
 					<span
 						className={cn(
-							'flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400/25 via-teal-500/20 to-teal-600/30 shadow-inner',
+							'flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-emerald-soft/25 via-accent-teal/20 to-accent-teal-deep/30 shadow-inner',
 							'ring-1 ring-inset ring-accent-emerald/15',
 						)}>
 						{isCsvPending ? (

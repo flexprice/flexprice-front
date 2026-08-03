@@ -444,7 +444,7 @@ function UsersSection() {
 							<span>{t('members.credentials.passwordResetNote')}</span>
 						</div>
 						<div className='flex items-center gap-2'>
-							<Info className='h-3.5 w-3.5 flex-shrink-0 text-sky-500' />
+							<Info className='h-3.5 w-3.5 flex-shrink-0 text-accent-sky-bright' />
 							<span>{t('members.credentials.signInMethodsNote')}</span>
 						</div>
 					</div>

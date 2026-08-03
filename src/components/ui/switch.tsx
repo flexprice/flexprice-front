@@ -20,7 +20,7 @@ const Switch = React.forwardRef<
 		{/*
 		 * The thumb is `content-inverse`, not `surface`. The checked track is `bg-primary`, which is
 		 * near-black in light but near-white in dark — a white thumb would disappear on it.
-		 * `content-inverse` is #ffffff in light (byte-identical to the `bg-white` it replaces) and
+		 * `content-inverse` is #ffffff in light (byte-identical to the `bg-white` it replaced) and
 		 * #0f0f10 in dark, so the thumb always contrasts with the track.
 		 */}
 		<SwitchPrimitives.Thumb

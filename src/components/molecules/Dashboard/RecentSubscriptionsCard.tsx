@@ -124,7 +124,7 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 							</div>
 						) : (
 							<div className='flex flex-col items-center py-6'>
-								<CalendarClock className='w-8 h-8 text-zinc-300 mb-3' />
+								<CalendarClock className='w-8 h-8 text-content-zinc-disabled mb-3' />
 								<p className={getTypographyClass('body-small', 'text-center text-content-zinc-subtle')}>
 									{t('dashboardHome.noSubscriptionsLast24Hours')}
 								</p>

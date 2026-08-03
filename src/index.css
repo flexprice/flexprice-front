@@ -105,6 +105,7 @@
 		--fp-content-zinc-secondary: 63 63 70; /* #3f3f46 */
 		--fp-content-zinc-tertiary: 82 82 91; /* #52525b */
 		--fp-content-zinc-muted: 113 113 122; /* #71717a */
+		--fp-content-zinc-disabled: 212 212 216; /* #d4d4d8 */
 		--fp-content-zinc-subtle: 161 161 170; /* #a1a1aa — brightened from #6e727b — same AA failure as content-subtle */
 
 		/* Content (slate ramp) — same rationale as the zinc ramp. */
@@ -114,6 +115,7 @@
 		--fp-content-slate-tertiary: 71 85 105; /* #475569 */
 		--fp-content-slate-muted: 100 116 139; /* #64748b */
 		--fp-content-slate-subtle: 148 163 184; /* #94a3b8 — brightened from #74787f — 3.53:1 failed AA */
+		--fp-content-slate-disabled: 203 213 225; /* #cbd5e1 — unselected step marker */
 
 		/* Lines — borders, dividers, rings. Hairlines, not surfaces. */
 		--fp-line: 229 231 235; /* #e5e7eb — the workhorse border */
@@ -160,7 +162,9 @@
 		--fp-warning-deepest: 120 53 15; /* #78350f */
 		--fp-accent-orange: 234 88 12; /* #ea580c */
 		--fp-accent-orange-muted: 255 237 213; /* #ffedd5 */
+		--fp-accent-orange-bg: 255 247 237; /* #fff7ed */
 		--fp-accent-yellow: 234 179 8; /* #eab308 */
+		--fp-accent-yellow-mid: 202 138 4; /* #ca8a04 */
 		--fp-accent-yellow-bg: 254 252 232; /* #fefce8 */
 		--fp-accent-yellow-line: 250 204 21; /* #facc15 */
 		--fp-accent-yellow-strong: 161 98 7; /* #a16207 */
@@ -172,6 +176,8 @@
 		--fp-success-soft: 74 222 128; /* #4ade80 */
 		--fp-success-strong: 21 128 61; /* #15803d */
 		--fp-success-deep: 22 101 52; /* #166534 */
+		--fp-success-deepest: 20 83 45; /* #14532d */
+		--fp-success-line-subtle: 220 252 231; /* #dcfce7 */
 		--fp-success-muted: 240 253 244; /* #f0fdf4 */
 		--fp-success-line: 187 247 208; /* #bbf7d0 */
 		--fp-accent-emerald: 16 185 129; /* #10b981 */
@@ -179,14 +185,25 @@
 		--fp-accent-emerald-soft: 52 211 153; /* #34d399 */
 		--fp-accent-emerald-deep: 4 120 87; /* #047857 */
 		--fp-accent-emerald-muted: 209 250 229; /* #d1fae5 */
+		--fp-accent-emerald-line: 167 243 208; /* #a7f3d0 */
+		--fp-accent-emerald-bg: 236 253 245; /* #ecfdf5 */
+		--fp-accent-teal: 20 184 166; /* #14b8a6 */
+		--fp-accent-teal-deep: 13 148 136; /* #0d9488 */
 
 		/* Accents — indigo / purple / sky / violet. */
 		--fp-accent-indigo: 79 70 229; /* #4f46e5 */
 		--fp-accent-indigo-strong: 67 56 202; /* #4338ca */
 		--fp-accent-indigo-muted: 238 242 255; /* #eef2ff */
 		--fp-accent-indigo-line: 199 210 254; /* #c7d2fe */
+		--fp-accent-rose: 251 113 133; /* #fb7185 */
+		--fp-accent-rose-line: 254 205 211; /* #fecdd3 */
+		--fp-accent-rose-muted: 255 241 242; /* #fff1f2 */
 		--fp-accent-purple: 147 51 234; /* #9333ea */
+		--fp-accent-purple-muted: 250 245 255; /* #faf5ff */
+		--fp-accent-purple-line: 243 232 255; /* #f3e8ff */
+		--fp-accent-purple-deep: 88 28 135; /* #581c87 */
 		--fp-accent-sky: 2 132 199; /* #0284c7 */
+		--fp-accent-sky-bright: 14 165 233; /* #0ea5e9 */
 		--fp-accent-violet: 124 58 237; /* #7c3aed */
 
 		/* App shell — sidebar chrome and nav states. Light values are the exact hexes the shell already used. */
@@ -351,6 +368,7 @@
 		--fp-content-zinc-secondary: 198 200 206; /* #c6c8ce */
 		--fp-content-zinc-tertiary: 162 166 175; /* #a2a6af */
 		--fp-content-zinc-muted: 138 143 152; /* #8a8f98 */
+		--fp-content-zinc-disabled: 85 88 95; /* #55585f */
 		--fp-content-zinc-subtle: 135 140 149; /* #878c95 */
 
 		/* Content (slate ramp) — same rationale as the zinc ramp. */
@@ -360,6 +378,7 @@
 		--fp-content-slate-tertiary: 165 169 179; /* #a5a9b3 */
 		--fp-content-slate-muted: 138 143 152; /* #8a8f98 */
 		--fp-content-slate-subtle: 133 139 150; /* #858b96 */
+		--fp-content-slate-disabled: 85 88 95; /* #55585f */
 
 		/* Lines — borders, dividers, rings. Hairlines, not surfaces. */
 		--fp-line: 41 41 46; /* #29292e */
@@ -406,7 +425,9 @@
 		--fp-warning-deepest: 247 217 171; /* #f7d9ab */
 		--fp-accent-orange: 245 121 60; /* #f5793c */
 		--fp-accent-orange-muted: 58 35 18; /* #3a2312 */
+		--fp-accent-orange-bg: 46 31 16; /* #2e1f10 */
 		--fp-accent-yellow: 239 198 74; /* #efc64a */
+		--fp-accent-yellow-mid: 224 184 67; /* #e0b843 */
 		--fp-accent-yellow-bg: 43 38 18; /* #2b2612 */
 		--fp-accent-yellow-line: 107 85 24; /* #6b5518 */
 		--fp-accent-yellow-strong: 232 189 82; /* #e8bd52 */
@@ -418,6 +439,8 @@
 		--fp-success-soft: 111 224 155; /* #6fe09b */
 		--fp-success-strong: 88 209 138; /* #58d18a */
 		--fp-success-deep: 125 224 165; /* #7de0a5 */
+		--fp-success-deepest: 154 232 189; /* #9ae8bd */
+		--fp-success-line-subtle: 21 53 36; /* #153524 */
 		--fp-success-muted: 16 38 26; /* #10261a */
 		--fp-success-line: 30 70 48; /* #1e4630 */
 		--fp-accent-emerald: 52 214 160; /* #34d6a0 */
@@ -425,14 +448,25 @@
 		--fp-accent-emerald-soft: 79 224 173; /* #4fe0ad */
 		--fp-accent-emerald-deep: 47 187 140; /* #2fbb8c */
 		--fp-accent-emerald-muted: 16 49 42; /* #10312a */
+		--fp-accent-emerald-line: 27 74 61; /* #1b4a3d */
+		--fp-accent-emerald-bg: 13 38 32; /* #0d2620 */
+		--fp-accent-teal: 46 211 192; /* #2ed3c0 */
+		--fp-accent-teal-deep: 38 191 174; /* #26bfae */
 
 		/* Accents — indigo / purple / sky / violet. */
 		--fp-accent-indigo: 138 130 255; /* #8a82ff */
 		--fp-accent-indigo-strong: 155 148 255; /* #9b94ff */
 		--fp-accent-indigo-muted: 27 27 58; /* #1b1b3a */
 		--fp-accent-indigo-line: 46 46 92; /* #2e2e5c */
+		--fp-accent-rose: 251 138 156; /* #fb8a9c */
+		--fp-accent-rose-line: 77 32 40; /* #4d2028 */
+		--fp-accent-rose-muted: 45 20 25; /* #2d1419 */
 		--fp-accent-purple: 180 120 245; /* #b478f5 */
+		--fp-accent-purple-muted: 36 22 51; /* #241633 */
+		--fp-accent-purple-line: 51 32 74; /* #33204a */
+		--fp-accent-purple-deep: 217 179 255; /* #d9b3ff */
 		--fp-accent-sky: 56 169 232; /* #38a9e8 */
+		--fp-accent-sky-bright: 79 184 245; /* #4fb8f5 */
 		--fp-accent-violet: 161 118 245; /* #a176f5 */
 
 		/* App shell — sidebar chrome and nav states. Light values are the exact hexes the shell already used. */

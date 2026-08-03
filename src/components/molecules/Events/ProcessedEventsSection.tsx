@@ -24,7 +24,7 @@ const ProcessedEventsSection: FC<ProcessedEventsSectionProps> = ({ events, onOpe
 				return (
 					<div
 						key={`${pe.subscription_id}-${pe.sub_line_item_id}-${idx}`}
-						className='group relative rounded-xl border border-line bg-gradient-to-br from-white to-gray-50/50 p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-line-strong'>
+						className='group relative rounded-xl border border-line bg-gradient-to-br from-surface to-surface-subtle/50 p-6 shadow-sm transition-all duration-200 hover:shadow-md hover:border-line-strong'>
 						<div className='flex items-center justify-between mb-5 pb-4 border-b border-line-subtle'>
 							<div className='flex items-center gap-2.5'>
 								<div className='flex items-center justify-center w-7 h-7 rounded-full bg-accent-emerald-muted'>

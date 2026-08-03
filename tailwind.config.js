@@ -36,8 +36,14 @@ export default {
 					foreground: 'hsl(var(--popover-foreground))',
 				},
 				blue: {
-					DEFAULT: '#3293D9',
-					light: '#E5F0FF',
+					/*
+					 * Re-pointed from the literals '#3293D9' / '#E5F0FF' at the byte-identical brand
+					 * tokens. ErrorBoundary uses blue-DEFAULT 26 times (with /5../80 alpha variants);
+					 * as literals none of them could theme. Light is unchanged — verify-theme-tokens
+					 * pins --fp-brand-blue to #3293d9 and --fp-brand-blue-light to #e5f0ff.
+					 */
+					DEFAULT: 'rgb(var(--fp-brand-blue) / <alpha-value>)',
+					light: 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',
 				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
@@ -117,6 +123,7 @@ export default {
 				'content-zinc-secondary': 'rgb(var(--fp-content-zinc-secondary) / <alpha-value>)',
 				'content-zinc-tertiary': 'rgb(var(--fp-content-zinc-tertiary) / <alpha-value>)',
 				'content-zinc-muted': 'rgb(var(--fp-content-zinc-muted) / <alpha-value>)',
+				'content-zinc-disabled': 'rgb(var(--fp-content-zinc-disabled) / <alpha-value>)',
 				'content-zinc-subtle': 'rgb(var(--fp-content-zinc-subtle) / <alpha-value>)',
 
 				/* Content (slate ramp) — same rationale as the zinc ramp. */
@@ -126,6 +133,7 @@ export default {
 				'content-slate-tertiary': 'rgb(var(--fp-content-slate-tertiary) / <alpha-value>)',
 				'content-slate-muted': 'rgb(var(--fp-content-slate-muted) / <alpha-value>)',
 				'content-slate-subtle': 'rgb(var(--fp-content-slate-subtle) / <alpha-value>)',
+				'content-slate-disabled': 'rgb(var(--fp-content-slate-disabled) / <alpha-value>)',
 
 				/* Lines — borders, dividers, rings. Hairlines, not surfaces. */
 				line: 'rgb(var(--fp-line) / <alpha-value>)',
@@ -172,7 +180,9 @@ export default {
 				'warning-deepest': 'rgb(var(--fp-warning-deepest) / <alpha-value>)',
 				'accent-orange': 'rgb(var(--fp-accent-orange) / <alpha-value>)',
 				'accent-orange-muted': 'rgb(var(--fp-accent-orange-muted) / <alpha-value>)',
+				'accent-orange-bg': 'rgb(var(--fp-accent-orange-bg) / <alpha-value>)',
 				'accent-yellow': 'rgb(var(--fp-accent-yellow) / <alpha-value>)',
+				'accent-yellow-mid': 'rgb(var(--fp-accent-yellow-mid) / <alpha-value>)',
 				'accent-yellow-bg': 'rgb(var(--fp-accent-yellow-bg) / <alpha-value>)',
 				'accent-yellow-line': 'rgb(var(--fp-accent-yellow-line) / <alpha-value>)',
 				'accent-yellow-strong': 'rgb(var(--fp-accent-yellow-strong) / <alpha-value>)',
@@ -184,6 +194,8 @@ export default {
 				'success-soft': 'rgb(var(--fp-success-soft) / <alpha-value>)',
 				'success-strong': 'rgb(var(--fp-success-strong) / <alpha-value>)',
 				'success-deep': 'rgb(var(--fp-success-deep) / <alpha-value>)',
+				'success-deepest': 'rgb(var(--fp-success-deepest) / <alpha-value>)',
+				'success-line-subtle': 'rgb(var(--fp-success-line-subtle) / <alpha-value>)',
 				'success-muted': 'rgb(var(--fp-success-muted) / <alpha-value>)',
 				'success-line': 'rgb(var(--fp-success-line) / <alpha-value>)',
 				'accent-emerald': 'rgb(var(--fp-accent-emerald) / <alpha-value>)',
@@ -191,14 +203,25 @@ export default {
 				'accent-emerald-soft': 'rgb(var(--fp-accent-emerald-soft) / <alpha-value>)',
 				'accent-emerald-deep': 'rgb(var(--fp-accent-emerald-deep) / <alpha-value>)',
 				'accent-emerald-muted': 'rgb(var(--fp-accent-emerald-muted) / <alpha-value>)',
+				'accent-emerald-line': 'rgb(var(--fp-accent-emerald-line) / <alpha-value>)',
+				'accent-emerald-bg': 'rgb(var(--fp-accent-emerald-bg) / <alpha-value>)',
+				'accent-teal': 'rgb(var(--fp-accent-teal) / <alpha-value>)',
+				'accent-teal-deep': 'rgb(var(--fp-accent-teal-deep) / <alpha-value>)',
 
 				/* Accents — indigo / purple / sky / violet. */
 				'accent-indigo': 'rgb(var(--fp-accent-indigo) / <alpha-value>)',
 				'accent-indigo-strong': 'rgb(var(--fp-accent-indigo-strong) / <alpha-value>)',
 				'accent-indigo-muted': 'rgb(var(--fp-accent-indigo-muted) / <alpha-value>)',
 				'accent-indigo-line': 'rgb(var(--fp-accent-indigo-line) / <alpha-value>)',
+				'accent-rose': 'rgb(var(--fp-accent-rose) / <alpha-value>)',
+				'accent-rose-line': 'rgb(var(--fp-accent-rose-line) / <alpha-value>)',
+				'accent-rose-muted': 'rgb(var(--fp-accent-rose-muted) / <alpha-value>)',
 				'accent-purple': 'rgb(var(--fp-accent-purple) / <alpha-value>)',
+				'accent-purple-muted': 'rgb(var(--fp-accent-purple-muted) / <alpha-value>)',
+				'accent-purple-line': 'rgb(var(--fp-accent-purple-line) / <alpha-value>)',
+				'accent-purple-deep': 'rgb(var(--fp-accent-purple-deep) / <alpha-value>)',
 				'accent-sky': 'rgb(var(--fp-accent-sky) / <alpha-value>)',
+				'accent-sky-bright': 'rgb(var(--fp-accent-sky-bright) / <alpha-value>)',
 				'accent-violet': 'rgb(var(--fp-accent-violet) / <alpha-value>)',
 
 				/* App shell — sidebar chrome and nav states. Light values are the exact hexes the shell already used. */

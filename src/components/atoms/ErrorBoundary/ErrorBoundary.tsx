@@ -153,7 +153,7 @@ export const ErrorFallback = ({ error, errorInfo, errorId, resetError }: ErrorFa
 				</div>
 
 				{/* Right Side - Support & Details */}
-				<div className='bg-white/5 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-muted/10 h-fit'>
+				<div className='bg-surface/5 backdrop-blur-sm p-8 rounded-2xl shadow-lg border border-muted/10 h-fit'>
 					<h2 className='text-xl font-medium mb-6 text-center'>{t('errorPage.getHelp')}</h2>
 
 					{/* Contact Support Section */}

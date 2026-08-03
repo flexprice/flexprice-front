@@ -32,7 +32,7 @@ const EventTrackerStep: FC<EventTrackerStepProps> = ({ title, status, timestamp,
 				return <XCircle className='h-5 w-5 text-danger-bright' />;
 			default:
 				// unprocessed — step not yet reached
-				return <Circle className='h-5 w-5 text-slate-300' />;
+				return <Circle className='h-5 w-5 text-content-slate-disabled' />;
 		}
 	};
 

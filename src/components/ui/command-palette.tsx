@@ -121,14 +121,14 @@ const CommandItem = React.forwardRef<
 		ref={ref}
 		className={cn(
 			'group relative flex cursor-default gap-2 select-none items-center rounded-md !px-3 !py-3 text-sm font-normal outline-none transition-colors',
-			'data-[disabled=true]:pointer-events-none data-[selected=true]:bg-surface-scrim/[0.03] dark:data-[selected=true]:bg-white/[0.08] data-[selected=true]:text-foreground data-[disabled=true]:opacity-50',
+			'data-[disabled=true]:pointer-events-none data-[selected=true]:bg-surface-scrim/[0.03] dark:data-[selected=true]:bg-surface/[0.08] data-[selected=true]:text-foreground data-[disabled=true]:opacity-50',
 			'[&_svg]:pointer-events-none [&_svg]:size-[18px] [&_svg]:shrink-0 [&_svg]:text-muted-foreground/80 [&_span:last-child_svg]:!h-4 [&_span:last-child_svg]:!w-4',
 			className,
 		)}
 		{...props}>
 		{children}
 		<span
-			className='ms-auto flex size-6 shrink-0 items-center justify-center rounded bg-surface p-1 shadow-sm dark:bg-white/10 text-muted-foreground/90 opacity-0 transition-opacity group-data-[selected=true]:opacity-100'
+			className='ms-auto flex size-6 shrink-0 items-center justify-center rounded bg-surface p-1 shadow-sm dark:bg-surface/10 text-muted-foreground/90 opacity-0 transition-opacity group-data-[selected=true]:opacity-100'
 			aria-hidden>
 			<CornerDownLeft className='size-4' />
 		</span>
