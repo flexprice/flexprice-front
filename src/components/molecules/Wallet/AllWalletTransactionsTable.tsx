@@ -83,7 +83,7 @@ const AllWalletTransactionsTable: FC<Props> = ({ data }) => {
 						const customerName = rowData.customer?.name || rowData.customer?.email || rowData.customer_id;
 						return <RedirectCell redirectUrl={`${RouteNames.customers}/${rowData.customer_id}`}>{customerName}</RedirectCell>;
 					}
-					return <span className='text-gray-400'>{emptyCell}</span>;
+					return <span className='text-content-subtle'>{emptyCell}</span>;
 				},
 			},
 			{
@@ -102,9 +102,9 @@ const AllWalletTransactionsTable: FC<Props> = ({ data }) => {
 						if (user) {
 							return <span>{user.email || user.name || rowData.created_by}</span>;
 						}
-						return <span className='text-gray-400 font-mono text-xs'>{rowData.created_by}</span>;
+						return <span className='text-content-subtle font-mono text-xs'>{rowData.created_by}</span>;
 					}
-					return <span className='text-gray-400'>{emptyCell}</span>;
+					return <span className='text-content-subtle'>{emptyCell}</span>;
 				},
 			},
 			{
@@ -121,7 +121,7 @@ const AllWalletTransactionsTable: FC<Props> = ({ data }) => {
 								status: rowData.transaction_status,
 							})}
 							{rowData.credit_amount > 0 && (
-								<span className='text-sm text-gray-500'>
+								<span className='text-sm text-content-muted'>
 									{formatAmountEl({
 										type: rowData.type,
 										amount: rowData.credit_amount,

@@ -47,7 +47,7 @@ const CancelCreditGrantModal: React.FC<Props> = ({ isOpen, onOpenChange, onConfi
 			title={t('creditGrant.cancelModal.title')}
 			className='sm:max-w-[500px]'>
 			<div className='space-y-4 mt-3'>
-				<p className='text-sm text-gray-600'>{t('creditGrant.cancelModal.body', { name: creditGrant?.name ?? '' })}</p>
+				<p className='text-sm text-content-tertiary'>{t('creditGrant.cancelModal.body', { name: creditGrant?.name ?? '' })}</p>
 
 				<div className='space-y-2'>
 					<Label label={t('creditGrant.cancelModal.effectiveDateLabel')} />
@@ -60,11 +60,11 @@ const CancelCreditGrantModal: React.FC<Props> = ({ isOpen, onOpenChange, onConfi
 						placeholder={t('creditGrant.cancelModal.datePlaceholder')}
 					/>
 					{error && <p className='text-sm text-destructive'>{error}</p>}
-					<p className='text-xs text-gray-500'>{t('creditGrant.cancelModal.dateHint')}</p>
+					<p className='text-xs text-content-muted'>{t('creditGrant.cancelModal.dateHint')}</p>
 				</div>
 
-				<div className='bg-amber-50 border border-amber-200 rounded-md p-3 mt-4'>
-					<p className='text-sm text-amber-800'>
+				<div className='bg-warning-muted border border-warning-line rounded-md p-3 mt-4'>
+					<p className='text-sm text-warning-deep'>
 						<strong>{t('creditGrant.cancelModal.noteBold')}</strong> {t('creditGrant.cancelModal.noteRest')}
 					</p>
 				</div>

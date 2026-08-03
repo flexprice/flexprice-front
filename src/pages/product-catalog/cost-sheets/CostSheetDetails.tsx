@@ -335,7 +335,7 @@ const CostSheetDetails = () => {
 				<DetailsCard variant='stacked' title={t('catalog:costSheets.details.title')} data={costSheetDetails} />
 
 				{showChargesSection ? (
-					<Card noPadding className='card bg-white overflow-hidden'>
+					<Card noPadding className='card bg-surface overflow-hidden'>
 						<CardHeader
 							title={t('catalog:costSheets.details.charges')}
 							cta={

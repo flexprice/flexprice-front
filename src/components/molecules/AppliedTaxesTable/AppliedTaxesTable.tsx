@@ -111,7 +111,7 @@ const AppliedTaxesTable: FC<Props> = ({ data }) => {
 	if (data?.length === 0) {
 		return (
 			<div className='my-6'>
-				<div className='text-center text-gray-500 py-8'>
+				<div className='text-center text-content-muted py-8'>
 					<p className='text-sm'>{t('labels.noTaxesApplied')}</p>
 				</div>
 			</div>

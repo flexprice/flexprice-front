@@ -42,8 +42,10 @@ const PaymentList = () => {
 		return (
 			<div className='space-y-6'>
 				<div className='bg-[#fafafa] border border-[#E9E9E9] rounded-[10px] w-full h-[360px] flex flex-col items-center justify-center mx-auto'>
-					<div className='font-medium text-[20px] leading-normal text-gray-700 mb-4 text-center'>{t('payments.recordFirstHeading')}</div>
-					<div className='font-normal bg-[#F9F9F9] text-[16px] leading-normal text-gray-400 mb-8 text-center max-w-[350px]'>
+					<div className='font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>
+						{t('payments.recordFirstHeading')}
+					</div>
+					<div className='font-normal bg-[#F9F9F9] text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
 						{t('payments.recordFirstDescription')}
 					</div>
 				</div>
@@ -55,20 +57,20 @@ const PaymentList = () => {
 								<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} key={index}>
 									<Card
 										className={cn(
-											'h-full group bg-white border border-slate-100 rounded-[10px] shadow-sm hover:border-blue-100 hover:bg-slate-50 transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-blue-500/5 flex flex-col max-w-[280px] mx-auto p-4',
+											'h-full group bg-surface border border-line-slate-subtle rounded-[10px] shadow-sm hover:border-info-muted-strong hover:bg-surface-cool transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-info-bright/5 flex flex-col max-w-[280px] mx-auto p-4',
 											'!aspect-auto bg-gradient-to-r from-[#ffffff] to-[#fcfcfc]',
 										)}
 										onClick={item.onClick}>
 										<div className='w-full h-[80px] aspect-video rounded-t-lg overflow-hidden bg-[#f5f5f5] flex items-center justify-center'>
-											<img src={imageUrl} loading='lazy' className='object-cover bg-gray-100 w-full h-full' alt='' />
+											<img src={imageUrl} loading='lazy' className='object-cover bg-surface-shell w-full h-full' alt='' />
 										</div>
 										<div className='flex-1 flex flex-col justify-between mt-4'>
 											<div>
-												<h3 className='text-slate-800 text-base font-medium group-hover:text-gray-600 transition-colors duration-200 text-left'>
+												<h3 className='text-content-slate-strong text-base font-medium group-hover:text-content-tertiary transition-colors duration-200 text-left'>
 													{item.title}
 												</h3>
 											</div>
-											<div className='flex items-center gap-1 mt-8 text-slate-400 group-hover:text-gray-500 transition-all duration-200 text-left'>
+											<div className='flex items-center gap-1 mt-8 text-content-slate-subtle group-hover:text-content-muted transition-all duration-200 text-left'>
 												<span className='text-xs font-regular'>{t('payments.learnMore')}</span>
 												<ArrowRight className='w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200' />
 											</div>

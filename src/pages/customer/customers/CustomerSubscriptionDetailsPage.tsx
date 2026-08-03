@@ -469,25 +469,25 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 									{/* Timeline Dot & Line */}
 									<div className='flex flex-col items-center mr-2'>
 										<div
-											className={`w-2.5 h-2.5 rounded-full ${idx === subscriptionDetails.schedule.current_phase_index ? 'bg-blue-600' : 'bg-gray-300'}`}></div>
+											className={`w-2.5 h-2.5 rounded-full ${idx === subscriptionDetails.schedule.current_phase_index ? 'bg-info' : 'bg-surface-bold'}`}></div>
 										{idx < subscriptionDetails.schedule.phases.length - 1 && (
-											<div className='w-0.5 flex-1 bg-gray-200' style={{ minHeight: 40 }}></div>
+											<div className='w-0.5 flex-1 bg-surface-strong' style={{ minHeight: 40 }}></div>
 										)}
 									</div>
 									{/* Phase Card */}
 									<div className='flex-1'>
-										<div className='rounded-2xl border border-gray-100 bg-[#FAFAFA] px-8 py-5 flex flex-col gap-1'>
-											<div className='text-sm font-medium text-gray-400 mb-2'>
+										<div className='rounded-2xl border border-line-subtle bg-[#FAFAFA] px-8 py-5 flex flex-col gap-1'>
+											<div className='text-sm font-medium text-content-subtle mb-2'>
 												{t('subscriptionDetail.phaseHeading', { index: idx + 1 })}
 											</div>
 											<div className='grid grid-cols-4 gap-8'>
 												<div>
-													<div className='text-xs text-gray-400'>{t('subscriptionDetail.phaseStart')}</div>
-													<div className='font-normal text-lg text-gray-900'>{formatDateShort(phase.start_date.toString())}</div>
+													<div className='text-xs text-content-subtle'>{t('subscriptionDetail.phaseStart')}</div>
+													<div className='font-normal text-lg text-content'>{formatDateShort(phase.start_date.toString())}</div>
 												</div>
 												<div>
-													<div className='text-xs text-gray-400'>{t('subscriptionDetail.phaseEnd')}</div>
-													<div className='font-normal text-lg text-gray-900'>
+													<div className='text-xs text-content-subtle'>{t('subscriptionDetail.phaseEnd')}</div>
+													<div className='font-normal text-lg text-content'>
 														{phase.end_date ? formatDateShort(phase.end_date.toString()) : t('usageTable.featureTypes.dash')}
 													</div>
 												</div>
@@ -512,8 +512,8 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 							<>
 								<FormHeader
 									variant='sub-header'
-									titleClassName='font-semibold text-gray-900'
-									subtitleClassName='text-sm text-gray-500 !mb-0 !mt-1'
+									titleClassName='font-semibold text-content'
+									subtitleClassName='text-sm text-content-muted !mb-0 !mt-1'
 									title={t('subscriptionDetail.upcomingInvoicesTitle')}
 									subtitle={t('subscriptionDetail.upcomingInvoicesSubtitle', {
 										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
@@ -547,7 +547,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 							<>
 								<FormHeader
 									variant='sub-header'
-									titleClassName='font-semibold text-gray-900'
+									titleClassName='font-semibold text-content'
 									title={t('subscriptionDetail.upcomingInvoicesTitle')}
 									subtitle={t('subscriptionDetail.upcomingInvoicesEmpty', {
 										date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
@@ -596,7 +596,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 						variant='sub-header'
 						titleClassName='font-semibold'
 					/>
-					<div className='mt-4 rounded-[6px] border border-gray-300'>
+					<div className='mt-4 rounded-[6px] border border-line-strong'>
 						<FlexpriceTable data={inheritedSubscriptionRows} columns={inheritedSubscriptionsColumns} />
 					</div>
 				</Card>

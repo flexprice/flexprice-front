@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const PREMIUM_TOOLTIP_CLASSNAME =
-	'max-w-[200px] border border-amber-300 bg-amber-50 dark:bg-amber-950 dark:border-amber-500 opacity-100 z-[190] py-1 px-2';
+	'max-w-[200px] border border-warning-line-strong bg-warning-muted dark:bg-amber-950 dark:border-amber-500 opacity-100 z-[190] py-1 px-2';
 
 interface PremiumFeatureIconProps {
 	className?: string;
@@ -31,7 +31,7 @@ export const PremiumFeatureIcon: React.FC<PremiumFeatureIconProps> = ({ classNam
 			sideOffset={sideOffset ?? 4}
 			className={cn(PREMIUM_TOOLTIP_CLASSNAME, className)}>
 			<span className={cn('inline-flex items-center justify-center', className)}>
-				<Sparkles className='size-4 text-amber-500' fill='currentColor' />
+				<Sparkles className='size-4 text-warning-bright' fill='currentColor' />
 			</span>
 		</Tooltip>
 	);

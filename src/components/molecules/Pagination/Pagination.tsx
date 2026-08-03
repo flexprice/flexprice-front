@@ -89,8 +89,8 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 						<PaginationPrevious
 							onClick={() => handlePageChange(currentPage - 1)}
 							className={cn(
-								currentPage === 1 && 'text-gray-500 select-none cursor-not-allowed hover:bg-white hover:text-gray-500',
-								'!font-normal !text-gray-500',
+								currentPage === 1 && 'text-content-muted select-none cursor-not-allowed hover:bg-surface hover:text-content-muted',
+								'!font-normal !text-content-muted',
 							)}
 							disabled={currentPage === 1}
 						/>
@@ -102,7 +102,7 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 							return (
 								<PaginationItem key={`ellipsis-${index}`}>
 									<PaginationEllipsis
-										className='cursor-pointer hover:bg-gray-100'
+										className='cursor-pointer hover:bg-surface-shell'
 										onClick={() => handleEllipsisClick(index < currentPage ? 'left' : 'right')}
 									/>
 								</PaginationItem>
@@ -114,7 +114,7 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 								<PaginationLink
 									isActive={currentPage === pageNumber}
 									onClick={() => handlePageChange(pageNumber)}
-									className={cn(currentPage === pageNumber && 'text-gray-500')}>
+									className={cn(currentPage === pageNumber && 'text-content-muted')}>
 									{pageNumber}
 								</PaginationLink>
 							</PaginationItem>
@@ -126,8 +126,8 @@ const FLexpricePagination = ({ totalPages, maxPagesBeforeTruncate = 10, siblingC
 						<PaginationNext
 							onClick={() => handlePageChange(currentPage + 1)}
 							className={cn(
-								currentPage === totalPages && 'text-gray-500 select-none cursor-not-allowed hover:bg-white hover:text-gray-500',
-								'!font-normal !text-gray-500',
+								currentPage === totalPages && 'text-content-muted select-none cursor-not-allowed hover:bg-surface hover:text-content-muted',
+								'!font-normal !text-content-muted',
 							)}
 							disabled={currentPage === totalPages}
 						/>

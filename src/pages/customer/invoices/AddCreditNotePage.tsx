@@ -207,21 +207,21 @@ const AddCreditNotePage = () => {
 			<Dialog isOpen={showConfirmModal} onOpenChange={setShowConfirmModal} title={t('creditNotes.confirmDialogTitle')}>
 				<div className='space-y-6 mt-6'>
 					{/* Summary */}
-					<div className='p-4 bg-gray-50 rounded-lg space-y-3'>
+					<div className='p-4 bg-surface-subtle rounded-lg space-y-3'>
 						<div className='flex justify-between items-center'>
-							<span className='text-sm text-gray-600'>{t('creditNotes.creditNoteType')}</span>
+							<span className='text-sm text-content-tertiary'>{t('creditNotes.creditNoteType')}</span>
 							<Chip
 								label={toSentenceCase(creditNotePreview.type)}
 								variant={creditNotePreview.type === CREDIT_NOTE_TYPE.REFUND ? 'success' : 'info'}
 							/>
 						</div>
 						<div className='flex justify-between items-center'>
-							<span className='text-sm text-gray-600'>{t('creditNotes.totalAmountLabel')}</span>
+							<span className='text-sm text-content-tertiary'>{t('creditNotes.totalAmountLabel')}</span>
 							<span className='text-sm font-medium'>{formatCurrency(creditNotePreview.totalAmount, invoiceCurrency)}</span>
 						</div>
 					</div>
-					<div className=' border border-blue-200 rounded-lg p-4'>
-						<p className='text-sm text-blue-800'>{creditNotePreview.effectDescription}</p>
+					<div className=' border border-info-line rounded-lg p-4'>
+						<p className='text-sm text-info-deep'>{creditNotePreview.effectDescription}</p>
 					</div>
 
 					{/* Actions */}
@@ -254,24 +254,24 @@ const AddCreditNotePage = () => {
 				</div>
 
 				{/* Invoice Summary */}
-				<div className='bg-white border rounded-lg p-6'>
+				<div className='bg-surface border rounded-lg p-6'>
 					<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
 						<div>
 							<div className='text-sm font-medium'>{invoice?.invoice_number}</div>
-							<div className='text-sm text-gray-500'>{t('creditNotes.invoiceNumberLabel')}</div>
+							<div className='text-sm text-content-muted'>{t('creditNotes.invoiceNumberLabel')}</div>
 						</div>
 						<div>
 							<div className='text-sm font-medium'>{formatCurrency(invoice?.amount_paid || 0, invoiceCurrency)}</div>
-							<div className='text-sm text-gray-500'>{t('creditNotes.amountPaid')}</div>
+							<div className='text-sm text-content-muted'>{t('creditNotes.amountPaid')}</div>
 						</div>
 						<div>
 							<div className='text-sm font-medium'>{formatCurrency(Number(invoice?.amount_remaining), invoiceCurrency)}</div>
-							<div className='text-sm text-gray-500'>{t('creditNotes.amountRemaining')}</div>
+							<div className='text-sm text-content-muted'>{t('creditNotes.amountRemaining')}</div>
 						</div>
 					</div>
 				</div>
 
-				<div className='flex flex-col gap-4 bg-white border rounded-lg p-6'>
+				<div className='flex flex-col gap-4 bg-surface border rounded-lg p-6'>
 					{/* Reason */}
 					<div className='flex flex-col gap-4'>
 						<h3 className='text-sm font-semibold'>{t('creditNotes.reasonSectionTitle')}</h3>
@@ -301,19 +301,19 @@ const AddCreditNotePage = () => {
 				</div>
 
 				{/* Form */}
-				<div className='bg-white border rounded-lg divide-y'>
+				<div className='bg-surface border rounded-lg divide-y'>
 					{/* Line Items */}
 					<div className='p-6'>
 						<div className='flex justify-between items-center mb-4'>
 							<h3 className='text-sm font-semibold'>{t('creditNotes.lineItemsToCredit')}</h3>
-							<span className='text-sm text-gray-500'>{t('creditNotes.creditAmount')}</span>
+							<span className='text-sm text-content-muted'>{t('creditNotes.creditAmount')}</span>
 						</div>
 						<div className='space-y-4'>
 							{lineItems.map((item) => (
 								<div key={item.id} className='flex items-center justify-between'>
 									<div className='flex-1'>
 										<div className='text-sm font-normal'>{item.display_name}</div>
-										<div className='text-sm text-gray-500'>{formatCurrency(item.unit_price, invoiceCurrency)}</div>
+										<div className='text-sm text-content-muted'>{formatCurrency(item.unit_price, invoiceCurrency)}</div>
 									</div>
 									<div className='ml-4'>
 										<Input
@@ -339,18 +339,18 @@ const AddCreditNotePage = () => {
 							<div className='w-80 space-y-2'>
 								{/* Total amount to credit */}
 								<div className='flex justify-between items-center py-1'>
-									<span className='text-sm text-gray-600'>{t('creditNotes.totalAmountToCredit')}</span>
-									<span className='text-sm text-gray-900 font-medium'>{formatCurrency(totalCreditAmount, invoiceCurrency)}</span>
+									<span className='text-sm text-content-tertiary'>{t('creditNotes.totalAmountToCredit')}</span>
+									<span className='text-sm text-content font-medium'>{formatCurrency(totalCreditAmount, invoiceCurrency)}</span>
 								</div>
 
 								{/* Final total with different styling */}
-								<div className='flex justify-between items-center py-3 border-t border-gray-200'>
-									<span className='text-base font-medium text-gray-900'>
+								<div className='flex justify-between items-center py-3 border-t border-line'>
+									<span className='text-base font-medium text-content'>
 										{creditNotePreview.type === CREDIT_NOTE_TYPE.REFUND
 											? t('creditNotes.amountToBeRefunded')
 											: t('creditNotes.amountToBeAdjusted')}
 									</span>
-									<span className='text-base font-semibold text-gray-900'>{formatCurrency(totalCreditAmount, invoiceCurrency)}</span>
+									<span className='text-base font-semibold text-content'>{formatCurrency(totalCreditAmount, invoiceCurrency)}</span>
 								</div>
 							</div>
 						</div>

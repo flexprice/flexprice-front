@@ -344,7 +344,7 @@ const AddonDetails = () => {
 					<Card variant='notched'>
 						<CardHeader title={t('catalog:addons.details.metadata')} />
 						<div className='p-4'>
-							<pre className='text-sm bg-gray-50 p-3 rounded overflow-auto'>{JSON.stringify(addonData.metadata, null, 2)}</pre>
+							<pre className='text-sm bg-surface-subtle p-3 rounded overflow-auto'>{JSON.stringify(addonData.metadata, null, 2)}</pre>
 						</div>
 					</Card>
 				)}

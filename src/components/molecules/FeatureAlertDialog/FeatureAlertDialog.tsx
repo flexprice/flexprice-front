@@ -190,11 +190,11 @@ const FeatureAlertDialog: React.FC<FeatureAlertDialogProps> = ({ open, alertSett
 		const conditionDisabled = isConditionDisabled(level);
 
 		return (
-			<div className='space-y-3 p-4 border rounded-lg bg-gray-50'>
+			<div className='space-y-3 p-4 border rounded-lg bg-surface-subtle'>
 				<div className='flex items-center justify-between'>
 					<div>
-						<label className='text-sm font-medium text-gray-900'>{label}</label>
-						<p className='text-xs text-gray-500 mt-0.5'>{description}</p>
+						<label className='text-sm font-medium text-content'>{label}</label>
+						<p className='text-xs text-content-muted mt-0.5'>{description}</p>
 					</div>
 					{threshold ? (
 						<Button variant='ghost' size='sm' onClick={() => handleRemoveThreshold(level)} disabled={isSaving}>
@@ -210,7 +210,7 @@ const FeatureAlertDialog: React.FC<FeatureAlertDialogProps> = ({ open, alertSett
 				{threshold && (
 					<div className='grid grid-cols-2 gap-3'>
 						<div className='space-y-1'>
-							<label className='text-xs font-medium text-gray-700'>{t('catalog:features.alerts.thresholdValue')}</label>
+							<label className='text-xs font-medium text-content-secondary'>{t('catalog:features.alerts.thresholdValue')}</label>
 							<Input
 								placeholder={t('catalog:features.alerts.thresholdPlaceholder')}
 								value={threshold.threshold}
@@ -221,7 +221,7 @@ const FeatureAlertDialog: React.FC<FeatureAlertDialogProps> = ({ open, alertSett
 							/>
 						</div>
 						<div className='space-y-1'>
-							<label className='text-xs font-medium text-gray-700'>{t('catalog:features.alerts.condition')}</label>
+							<label className='text-xs font-medium text-content-secondary'>{t('catalog:features.alerts.condition')}</label>
 							<Select
 								options={[
 									{ label: t('catalog:features.alerts.below'), value: 'below' },

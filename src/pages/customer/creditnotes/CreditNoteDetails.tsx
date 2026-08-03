@@ -77,7 +77,7 @@ const CreditNoteDetails: FC<Props> = ({ credit_note_id, breadcrumb_index }) => {
 		<Page className='space-y-6 '>
 			<ApiDocsContent tags={API_DOCS_TAGS.CreditNotesWithFeatures} />
 			{/* Main Credit Note Card */}
-			<div ref={creditNoteRef} className='rounded-xl border border-gray-300 p-6'>
+			<div ref={creditNoteRef} className='rounded-xl border border-line-strong p-6'>
 				<div className='p-4'>
 					<div className='flex items-center gap-2'>
 						<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('creditNotes.detailPage.title')}</h3>

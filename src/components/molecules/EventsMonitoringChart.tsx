@@ -206,12 +206,14 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 									{renderChart(displayData, { showTooltip: false })}
 								</ResponsiveContainer>
 							</div>
-							<div className='absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-white/30'>
+							<div className='absolute inset-0 flex items-center justify-center backdrop-blur-sm bg-surface/30'>
 								<div className='text-center max-w-sm px-4'>
-									<h3 className={getTypographyClass('section-title', 'font-semibold text-zinc-900')}>
+									<h3 className={getTypographyClass('section-title', 'font-semibold text-content-zinc-bold')}>
 										{t('events.monitoring.emptyRangeTitle')}
 									</h3>
-									<p className={getTypographyClass('body-default', 'text-zinc-600 mt-2')}>{t('events.monitoring.emptyRangeDescription')}</p>
+									<p className={getTypographyClass('body-default', 'text-content-zinc-tertiary mt-2')}>
+										{t('events.monitoring.emptyRangeDescription')}
+									</p>
 									{onViewLatestData && (
 										<Button onClick={onViewLatestData} className='mt-4'>
 											{t('events.monitoring.viewLatestData')}

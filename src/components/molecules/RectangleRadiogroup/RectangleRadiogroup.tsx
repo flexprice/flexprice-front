@@ -42,7 +42,7 @@ const RectangleRadiogroup: FC<Props> = ({ onChange, options, value, description,
 								className={cn(
 									'relative p-3 py-6 border-2 w-full flex flex-col justify-center items-center rounded-xl',
 									option.value === value ? 'border-[#0F172A]' : 'border-[#E2E8F0]',
-									option.disabled && !option.premium ? 'cursor-default text-zinc-500 ' : 'cursor-pointer',
+									option.disabled && !option.premium ? 'cursor-default text-content-zinc-muted ' : 'cursor-pointer',
 								)}>
 								{option.icon && <option.icon size={24} className={cn(option.disabled ? '  ' : 'text-[#020617]')} />}
 								{option.comingSoon && (

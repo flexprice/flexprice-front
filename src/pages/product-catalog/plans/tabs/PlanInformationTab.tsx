@@ -73,8 +73,8 @@ const PlanInformationTab = () => {
 
 	if (isLoading) {
 		return (
-			<div className='py-6 px-4 rounded-xl border border-gray-300'>
-				<p className='text-gray-600'>{t('catalog:plans.information.loading')}</p>
+			<div className='py-6 px-4 rounded-xl border border-line-strong'>
+				<p className='text-content-tertiary'>{t('catalog:plans.information.loading')}</p>
 			</div>
 		);
 	}

@@ -48,8 +48,8 @@ interface Props {
 const Tag: FC<{ tag: NonNullable<Detail['tag']> }> = ({ tag }) => {
 	const variantClasses = {
 		default: 'bg-primary-100 text-primary-700',
-		subtle: 'bg-gray-100 text-gray-600',
-		outline: 'border border-gray-300 text-gray-600',
+		subtle: 'bg-surface-shell text-content-tertiary',
+		outline: 'border border-line-strong text-content-tertiary',
 	};
 
 	return (
@@ -73,9 +73,9 @@ const DetailsCard: FC<Props> = ({
 	const { t } = useTranslation('common');
 	const na = t('labels.na');
 	const cardClasses = {
-		default: 'card bg-white border rounded-lg p-6',
-		borderless: 'bg-white',
-		compact: 'card bg-white border rounded-lg p-4',
+		default: 'card bg-surface border rounded-lg p-6',
+		borderless: 'bg-surface',
+		compact: 'card bg-surface border rounded-lg p-4',
 	};
 
 	const gridColsClass = {
@@ -115,7 +115,7 @@ const DetailsCard: FC<Props> = ({
 					}
 
 					if (detail.variant === 'divider') {
-						return <div key={index} className={cn('col-span-full h-[1px] bg-gray-200 my-6', detail.className)} />;
+						return <div key={index} className={cn('col-span-full h-[1px] bg-surface-strong my-6', detail.className)} />;
 					}
 
 					const labelClasses = getDetailLabelTypographyClass(detail.labelStyle);

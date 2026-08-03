@@ -213,7 +213,7 @@ const CreateInvoicePage: FC = () => {
 	return (
 		<Page heading={t('createInvoice.pageTitle')}>
 			<div className='space-y-6'>
-				<div className='rounded-xl border border-gray-300 p-6'>
+				<div className='rounded-xl border border-line-strong p-6'>
 					<div className='p-4'>
 						<FormHeader title={t('createInvoice.invoiceDetails')} variant='sub-header' titleClassName='font-semibold' />
 						<Spacer className='!my-6' />
@@ -328,13 +328,13 @@ const CreateInvoicePage: FC = () => {
 					</div>
 
 					<div className='flex justify-end mt-8'>
-						<div className='text-sm text-gray-800 space-y-4 w-1/3 px-2'>
+						<div className='text-sm text-content-heading space-y-4 w-1/3 px-2'>
 							<div className='flex justify-between'>
 								<span>{t('invoices.details.lineItemsTable.subtotal')}</span>
 								<span>{`${getCurrencySymbol(currency)}${calculateSubtotal().toFixed(2)}`}</span>
 							</div>
 							{calculatedDiscount > 0 && (
-								<div className='flex justify-between text-green-600'>
+								<div className='flex justify-between text-success'>
 									<span>{t('createInvoice.couponDiscount')}</span>
 									<span>-{`${getCurrencySymbol(currency)}${calculatedDiscount.toFixed(2)}`}</span>
 								</div>

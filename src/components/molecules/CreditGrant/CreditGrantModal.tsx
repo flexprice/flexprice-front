@@ -243,7 +243,7 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 						value={formData.cadence}
 						onChange={(value) => handleFieldChange('cadence', value as CREDIT_GRANT_CADENCE)}
 					/>
-					{selectedCadenceDescription && <p className='text-sm text-gray-500'>{selectedCadenceDescription}</p>}
+					{selectedCadenceDescription && <p className='text-sm text-content-muted'>{selectedCadenceDescription}</p>}
 				</div>
 
 				<div className='space-y-2'>
@@ -275,7 +275,7 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 
 				{/* Conversion Rate */}
 				<div className='flex flex-col items-start gap-2 w-full'>
-					<label className={cn('block text-sm font-medium', 'text-zinc-950')}>{t('creditGrant.modal.conversionRate')}</label>
+					<label className={cn('block text-sm font-medium', 'text-content-zinc')}>{t('creditGrant.modal.conversionRate')}</label>
 					<div className='flex items-center gap-2 w-full'>
 						<Input className='w-full' value={'1'} disabled suffix='credit' />
 						<span>=</span>
@@ -291,7 +291,7 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 
 				{/* Top-up Conversion Rate */}
 				<div className='flex flex-col items-start gap-2 w-full'>
-					<label className={cn('block text-sm font-medium', 'text-zinc-950')}>{t('creditGrant.modal.topupConversionRate')}</label>
+					<label className={cn('block text-sm font-medium', 'text-content-zinc')}>{t('creditGrant.modal.topupConversionRate')}</label>
 					<div className='flex items-center gap-2 w-full'>
 						<Input className='w-full' value={'1'} disabled suffix='credit' />
 						<span>=</span>

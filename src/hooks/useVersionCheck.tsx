@@ -37,22 +37,24 @@ export default function useVersionCheck(intervalMs = 5 * 60 * 1000) {
 					console.info(`[VersionCheck][${timestamp}] New version detected. Current: ${currentVersion}, Latest: ${latestVersion}`);
 					toast(
 						(toastCtx) => (
-							<div className='bg-white border-gray-200 w-80'>
+							<div className='bg-surface border-line w-80'>
 								{/* Header */}
 								<div className='flex items-center justify-between mb-3'>
 									<div className='flex items-center gap-3'>
-										<div className='w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center'>
-											<InfoIcon className='w-4 h-4 text-blue-600' />
+										<div className='w-8 h-8 bg-info-muted-strong rounded-full flex items-center justify-center'>
+											<InfoIcon className='w-4 h-4 text-info' />
 										</div>
-										<h3 className='text-lg font-regular text-gray-900'>{t('versionCheck.toastTitle')}</h3>
+										<h3 className='text-lg font-regular text-content'>{t('versionCheck.toastTitle')}</h3>
 									</div>
-									<button onClick={() => toast.dismiss(toastCtx.id)} className='text-gray-400 hover:text-gray-600 transition-colors'>
+									<button
+										onClick={() => toast.dismiss(toastCtx.id)}
+										className='text-content-subtle hover:text-content-tertiary transition-colors'>
 										<XIcon className='w-5 h-5' />
 									</button>
 								</div>
 
 								{/* Body */}
-								<p className='text-sm text-gray-600 mb-4'>{t('versionCheck.toastDescription')}</p>
+								<p className='text-sm text-content-tertiary mb-4'>{t('versionCheck.toastDescription')}</p>
 
 								{/* Action Buttons */}
 								<div className='flex gap-3 justify-end'>

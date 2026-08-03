@@ -155,8 +155,10 @@ const DashboardPage = () => {
 			</CardHeader>
 			<CardContent className='pt-0'>
 				<div className='flex flex-col items-center justify-center py-12'>
-					<AlertCircle className='h-10 w-10 text-red-500 mb-3' />
-					<p className={getTypographyClass('body-default', 'text-zinc-600 text-center')}>{t('dashboardHome.monitoringLoadFailed')}</p>
+					<AlertCircle className='h-10 w-10 text-danger-bright mb-3' />
+					<p className={getTypographyClass('body-default', 'text-content-zinc-tertiary text-center')}>
+						{t('dashboardHome.monitoringLoadFailed')}
+					</p>
 				</div>
 			</CardContent>
 		</Card>

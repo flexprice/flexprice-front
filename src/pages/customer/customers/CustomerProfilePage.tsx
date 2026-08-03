@@ -91,10 +91,10 @@ const CustomerProfilePage = () => {
 			<CustomerHeader customerId={customerId!} />
 
 			{isArchived && (
-				<div className='flex mt-4 items-center gap-2 py-3 px-4	 bg-yellow-50 border border-yellow-200 rounded-lg'>
-					<AlertCircle className='text-yellow-500 size-5' />
+				<div className='flex mt-4 items-center gap-2 py-3 px-4	 bg-accent-yellow-bg border border-accent-yellow-muted rounded-lg'>
+					<AlertCircle className='text-accent-yellow size-5' />
 					<div>
-						<p className='text-sm text-yellow-700'>{t('detail.inactiveBanner')}</p>
+						<p className='text-sm text-accent-yellow-strong'>{t('detail.inactiveBanner')}</p>
 					</div>
 				</div>
 			)}
@@ -116,7 +116,7 @@ const CustomerProfilePage = () => {
 								aria-selected={activeTab === tab.id}>
 								{t(tab.labelKey)}
 								{/* {isDisabled && (
-									<span className='ml-2 text-xs text-yellow-600'>(Archived)</span>
+									<span className='ml-2 text-xs text-accent-yellow'>(Archived)</span>
 								)} */}
 							</button>
 						);

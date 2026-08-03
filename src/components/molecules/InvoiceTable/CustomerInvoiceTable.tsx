@@ -40,7 +40,7 @@ const CustomerInvoiceTable: FC<Props> = ({ data, onRowClick }) => {
 				title: t('invoices.list.sort.invoiceNumber'),
 				render: (row) =>
 					row.invoice_status?.toUpperCase() === INVOICE_STATUS.DRAFT ? (
-						<span className='text-gray-400 italic text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
+						<span className='text-content-subtle italic text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
 					) : (
 						<>{row.invoice_number || naLabel}</>
 					),

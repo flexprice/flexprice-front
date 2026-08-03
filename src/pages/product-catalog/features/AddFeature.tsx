@@ -956,11 +956,11 @@ const AggregationSection = ({
 					{supportsBucketSize && formState.showBucketSize ? (
 						<div className='space-y-1'>
 							<div className='flex items-center justify-between gap-2'>
-								<label className='text-sm font-medium text-gray-700'>{t('catalog:features.form.bucketSize')}</label>
+								<label className='text-sm font-medium text-content-secondary'>{t('catalog:features.form.bucketSize')}</label>
 								<button
 									type='button'
 									onClick={handleClearBucketSize}
-									className='text-sm text-gray-500 hover:text-gray-800 underline-offset-2 hover:underline'>
+									className='text-sm text-content-muted hover:text-content-heading underline-offset-2 hover:underline'>
 									{t('common:form.remove')}
 								</button>
 							</div>

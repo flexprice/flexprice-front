@@ -28,12 +28,14 @@ const PricingPage = () => {
 				{[1, 2, 3].map((index) => (
 					<div
 						key={index}
-						className='min-h-[260px] w-full rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-b from-white to-slate-50/90 p-6 shadow-sm'
+						className='min-h-[260px] w-full rounded-2xl border-2 border-dashed border-line-slate-strong bg-gradient-to-b from-white to-slate-50/90 p-6 shadow-sm'
 					/>
 				))}
 			</div>
 			<div className='flex flex-col items-center'>
-				<h2 className='font-regular text-[16px] leading-normal text-gray-600 text-center mb-8'>{t('catalog:plans.pricing.noWidget')}</h2>
+				<h2 className='font-regular text-[16px] leading-normal text-content-tertiary text-center mb-8'>
+					{t('catalog:plans.pricing.noWidget')}
+				</h2>
 			</div>
 		</div>
 	);

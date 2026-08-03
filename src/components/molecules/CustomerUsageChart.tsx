@@ -238,7 +238,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 			<Card className={`py-2 sm:py-0 shadow-none ${className || ''}`}>
 				<CardHeader className='px-6 py-4'>
 					{title && <CardTitle className='text-base font-medium'>{title}</CardTitle>}
-					{description && <CardDescription className='text-xs text-gray-500'>{description}</CardDescription>}
+					{description && <CardDescription className='text-xs text-content-muted'>{description}</CardDescription>}
 				</CardHeader>
 				<CardContent className='px-2 sm:px-6 pt-0 pb-4'>
 					<div className='flex justify-end mb-3'>
@@ -270,7 +270,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 					</div>
 					<div className='relative' style={{ width: '100%', height: 400 }}>
 						{zoomState.refAreaLeft && zoomState.refAreaRight && (
-							<div className='absolute top-0 right-0 bg-indigo-50 text-xs text-indigo-600 py-1 px-2 rounded-md z-10 border border-indigo-200'>
+							<div className='absolute top-0 right-0 bg-accent-indigo-muted text-xs text-accent-indigo py-1 px-2 rounded-md z-10 border border-accent-indigo-line'>
 								{t('customerCharts.selectingArea')}
 							</div>
 						)}

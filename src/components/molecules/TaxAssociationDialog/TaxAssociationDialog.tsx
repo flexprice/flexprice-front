@@ -156,7 +156,7 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 							noOptionsText={t('taxAssociation.noTaxRatesFound')}
 							error={errors.tax_rate_code}
 						/>
-						{isLoadingTaxRates && <p className='text-sm text-gray-500 mt-1'>{t('taxAssociation.loadingTaxRates')}</p>}
+						{isLoadingTaxRates && <p className='text-sm text-content-muted mt-1'>{t('taxAssociation.loadingTaxRates')}</p>}
 					</div>
 
 					<div className='space-y-2'>
@@ -170,7 +170,7 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 							placeholder={t('taxAssociation.placeholderPriority')}
 							error={errors.priority}
 						/>
-						<p className='text-sm text-gray-500'>{t('taxAssociation.priorityHint')}</p>
+						<p className='text-sm text-content-muted'>{t('taxAssociation.priorityHint')}</p>
 					</div>
 
 					<div className='space-y-2'>
@@ -190,7 +190,7 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 							onChange={(checked: boolean) => handleFieldChange('auto_apply', checked)}
 							label={t('taxAssociation.labelAutoApply')}
 						/>
-						<p className='text-sm text-gray-500'>{t('taxAssociation.autoApplyHint')}</p>
+						<p className='text-sm text-content-muted'>{t('taxAssociation.autoApplyHint')}</p>
 					</div>
 				</div>
 

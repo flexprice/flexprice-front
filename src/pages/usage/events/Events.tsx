@@ -304,7 +304,7 @@ const EventsPage: React.FC = () => {
 	return (
 		<Page heading={t('events.listPage.title')}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Events} />
-			<div className='bg-white rounded-md flex items-start gap-4'>
+			<div className='bg-surface rounded-md flex items-start gap-4'>
 				<PropertyFilterQueryBuilder
 					filterOptions={filterOptions}
 					filters={filters}
@@ -324,7 +324,7 @@ const EventsPage: React.FC = () => {
 					<RefreshCw />
 				</Button>
 			</div>
-			<div className='bg-white rounded-md '>
+			<div className='bg-surface rounded-md '>
 				<EventsTable data={events} />
 				<div ref={lastElementRef} />
 				{loading && (

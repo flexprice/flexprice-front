@@ -173,7 +173,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 						}
 					}}
 				/>
-				<div ref={invoiceref} className=' rounded-xl border border-gray-300 p-6'>
+				<div ref={invoiceref} className=' rounded-xl border border-line-strong p-6'>
 					<div className='p-4'>
 						<div className='w-full flex justify-between items-center'>
 							<p className={cn(getTypographyClass('section-title'), 'text-xl mb-0')}>{t('createInvoice.invoiceDetails')}</p>
@@ -203,7 +203,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 						<Divider />
 					</div>
 
-					<div className={cn('grid p-4 border-b border-gray-200', hasSubscriptionCustomer ? 'grid-cols-3' : 'grid-cols-2')}>
+					<div className={cn('grid p-4 border-b border-line', hasSubscriptionCustomer ? 'grid-cols-3' : 'grid-cols-2')}>
 						<div className='text-left'>
 							<FormHeader className='!mb-2' title={user?.tenant.name} variant='sub-header' titleClassName='font-semibold' />
 							<p className={customerInfoClass}>{user?.tenant.name}</p>
@@ -295,14 +295,14 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 					<div className='p-4'>
 						<table className='w-full table-fixed'>
 							<thead>
-								<tr className='border-b border-gray-200'>
+								<tr className='border-b border-line'>
 									<th className='text-left py-3 px-4 text-sm font-large text-[#09090B] w-1/3'>{t('common:form.key')}</th>
 									<th className='text-left py-3 px-4 text-sm font-large text-[#09090B] w-2/3'>{t('common:form.value')}</th>
 								</tr>
 							</thead>
 							<tbody>
 								{Object.entries(metadata).map(([key, value], index) => (
-									<tr key={index} className='border-b border-gray-100 last:border-b-0'>
+									<tr key={index} className='border-b border-line-subtle last:border-b-0'>
 										<td className='py-3 px-4 text-sm font-medium text-[#09090B] break-words align-top' title={key}>
 											{key}
 										</td>

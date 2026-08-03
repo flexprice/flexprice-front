@@ -246,19 +246,21 @@ const TaskRunsTable: FC<TaskRunsTableProps> = ({ scheduledTaskId, taskType = 'EX
 		<div className='space-y-4'>
 			<div className='flex gap-4 items-end'>
 				<div className='w-64'>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>{t('taskRunsTable.statusLabel')}</label>
+					<label className='block text-sm font-medium text-content-secondary mb-2'>{t('taskRunsTable.statusLabel')}</label>
 					<Select value={statusFilter} onChange={(value) => setStatusFilter(value)} options={statusOptions} />
 				</div>
 
 				<div className='w-64'>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>{t('taskRunsTable.timeRangeLabel')}</label>
+					<label className='block text-sm font-medium text-content-secondary mb-2'>{t('taskRunsTable.timeRangeLabel')}</label>
 					<Select value={dateRangeFilter} onChange={(value) => setDateRangeFilter(value)} options={timeRangeOptions} />
 				</div>
 			</div>
 
 			<FlexpriceTable columns={columns} data={filteredRuns} showEmptyRow={filteredRuns.length === 0 && !isLoading} />
 
-			{filteredRuns.length === 0 && !isLoading && <div className='text-center py-8 text-gray-500'>{t('taskRunsTable.emptyFiltered')}</div>}
+			{filteredRuns.length === 0 && !isLoading && (
+				<div className='text-center py-8 text-content-muted'>{t('taskRunsTable.emptyFiltered')}</div>
+			)}
 
 			{totalItems > 0 && dateRangeFilter === 'all' && (
 				<>

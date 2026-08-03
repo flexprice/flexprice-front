@@ -79,7 +79,7 @@ const ForceRunDrawer: FC<ForceRunDrawerProps> = ({ isOpen, onOpenChange, onConfi
 
 	return (
 		<Dialog open={isOpen} onOpenChange={handleClose}>
-			<DialogContent className='w-full max-w-md bg-white'>
+			<DialogContent className='w-full max-w-md bg-surface'>
 				<DialogHeader>
 					<DialogTitle>{t('forceRun.title')}</DialogTitle>
 					<DialogDescription>{t('forceRun.description')}</DialogDescription>
@@ -102,7 +102,7 @@ const ForceRunDrawer: FC<ForceRunDrawerProps> = ({ isOpen, onOpenChange, onConfi
 					</RadioGroup>
 
 					{runType === RunType.CUSTOM && (
-						<div className='space-y-5 pt-3 ps-6 border-s-2 border-gray-200'>
+						<div className='space-y-5 pt-3 ps-6 border-s-2 border-line'>
 							<div className='space-y-1'>
 								<DateTimePicker
 									title={t('forceRun.startTimeLabel')}

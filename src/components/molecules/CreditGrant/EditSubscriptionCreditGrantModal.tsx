@@ -266,7 +266,7 @@ const EditSubscriptionCreditGrantModal: React.FC<Props> = ({
 						value={formData.cadence}
 						onChange={(value) => handleFieldChange('cadence', value as CREDIT_GRANT_CADENCE)}
 					/>
-					{selectedCadenceDescription && <p className='text-sm text-gray-500'>{selectedCadenceDescription}</p>}
+					{selectedCadenceDescription && <p className='text-sm text-content-muted'>{selectedCadenceDescription}</p>}
 				</div>
 
 				<div className='space-y-2'>
@@ -287,7 +287,7 @@ const EditSubscriptionCreditGrantModal: React.FC<Props> = ({
 								? new Date(subscriptionCurrentPeriodEnd).toLocaleDateString(undefined, SUBSCRIPTION_PERIOD_END_DATE_FORMAT)
 								: t('creditGrant.subscriptionModal.fallbackDash')}
 						</p>
-						<p className='text-xs text-gray-500'>{t('creditGrant.subscriptionModal.periodEndHint')}</p>
+						<p className='text-xs text-content-muted'>{t('creditGrant.subscriptionModal.periodEndHint')}</p>
 						{errors.start_date && <p className='text-sm text-destructive'>{errors.start_date}</p>}
 					</div>
 				) : (
@@ -325,7 +325,7 @@ const EditSubscriptionCreditGrantModal: React.FC<Props> = ({
 
 				{/* Conversion Rate */}
 				<div className='flex flex-col items-start gap-2 w-full'>
-					<label className={cn('block text-sm font-medium', 'text-zinc-950')}>{t('creditGrant.modal.conversionRate')}</label>
+					<label className={cn('block text-sm font-medium', 'text-content-zinc')}>{t('creditGrant.modal.conversionRate')}</label>
 					<div className='flex items-center gap-2 w-full'>
 						<Input className='w-full' value={'1'} disabled suffix='credit' />
 						<span>=</span>
@@ -344,7 +344,7 @@ const EditSubscriptionCreditGrantModal: React.FC<Props> = ({
 
 				{/* Top-up Conversion Rate */}
 				<div className='flex flex-col items-start gap-2 w-full'>
-					<label className={cn('block text-sm font-medium', 'text-zinc-950')}>{t('creditGrant.modal.topupConversionRate')}</label>
+					<label className={cn('block text-sm font-medium', 'text-content-zinc')}>{t('creditGrant.modal.topupConversionRate')}</label>
 					<div className='flex items-center gap-2 w-full'>
 						<Input className='w-full' value={'1'} disabled suffix='credit' />
 						<span>=</span>

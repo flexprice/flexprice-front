@@ -240,17 +240,17 @@ const PlansPage = () => {
 	const emptyStateCustom = useMemo(
 		() => (
 			<div className='mx-auto flex h-[360px] w-full flex-col items-center justify-center rounded-[6px] border border-[#E9E9E9] bg-[#fafafa] px-4'>
-				<div className='mb-4 text-center text-[20px] font-medium leading-normal text-gray-700'>
+				<div className='mb-4 text-center text-[20px] font-medium leading-normal text-content-secondary'>
 					{t('plans.listPage.emptyStateCustom.heading')}
 				</div>
-				<div className='mb-8 max-w-[350px] bg-[#F9F9F9] text-center text-[16px] font-normal leading-normal text-gray-400'>
+				<div className='mb-8 max-w-[350px] bg-[#F9F9F9] text-center text-[16px] font-normal leading-normal text-content-subtle'>
 					{t('plans.listPage.emptyStateCustom.description')}
 				</div>
 				<Button
 					variant='outline'
-					prefixIcon={<WandSparkles className='text-black' />}
+					prefixIcon={<WandSparkles className='text-content-black' />}
 					onClick={() => navigate(RouteNames.pricingSetup, { state: { from: 'plans' } })}
-					className='!border-indigo-200 !bg-white !p-5 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700'>
+					className='!border-accent-indigo-line !bg-surface !p-5 text-accent-indigo hover:bg-accent-indigo-muted hover:text-accent-indigo-strong'>
 					<span className='analyzing-prompt-shimmer text-sm font-medium'>{t('plans.listPage.createWithAi')}</span>
 				</Button>
 			</div>
@@ -266,9 +266,9 @@ const PlansPage = () => {
 					{hasAnyPlanInSystem ? (
 						<Button
 							variant='outline'
-							prefixIcon={<WandSparkles className='text-indigo-600' />}
+							prefixIcon={<WandSparkles className='text-accent-indigo' />}
 							onClick={() => navigate(RouteNames.pricingSetup, { state: { from: 'plans' } })}
-							className='border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:text-indigo-700'>
+							className='border-accent-indigo-line text-accent-indigo hover:bg-accent-indigo-muted hover:text-accent-indigo-strong'>
 							<span className='analyzing-prompt-shimmer font-medium'>{t('plans.listPage.createWithAi')}</span>
 						</Button>
 					) : null}

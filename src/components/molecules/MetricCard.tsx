@@ -32,7 +32,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 	};
 
 	return (
-		<div className='bg-white border border-[#E5E7EB] p-[25px] flex flex-col gap-3 rounded-md'>
+		<div className='bg-surface border border-[#E5E7EB] p-[25px] flex flex-col gap-3 rounded-md'>
 			<p className='text-[14px] leading-[21px] text-[#4B5563] font-normal'>{title}</p>
 			<p className='text-[24px] leading-[28px] font-medium text-[#111827] flex items-center'>
 				{renderValue()}

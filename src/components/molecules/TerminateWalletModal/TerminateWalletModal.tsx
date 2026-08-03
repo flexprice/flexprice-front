@@ -32,7 +32,7 @@ const TerminateWalletModal: FC<WalletTerminalProps> = ({ isOpen, onOpenChange, w
 
 	return (
 		<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-			<div className='card bg-white max-w-lg'>
+			<div className='card bg-surface max-w-lg'>
 				<FormHeader title={t('wallet.terminate.title')} variant='sub-header' subtitle={t('wallet.terminate.subtitle')} />
 				<Spacer className='!my-6' />
 				<div className='flex justify-end gap-4'>

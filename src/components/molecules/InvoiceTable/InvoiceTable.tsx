@@ -59,7 +59,7 @@ const InvoiceTable: FC<Props> = ({ data }) => {
 				title: t('invoices.list.columns.invoiceNumber'),
 				render: (row: Invoice) =>
 					row.invoice_status?.toUpperCase() === INVOICE_STATUS.DRAFT ? (
-						<span className='text-gray-400 italic text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
+						<span className='text-content-subtle italic text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
 					) : (
 						<span>{row.invoice_number || t('common:labels.na')}</span>
 					),

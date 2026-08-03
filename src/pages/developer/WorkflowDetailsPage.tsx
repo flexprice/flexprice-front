@@ -107,7 +107,7 @@ const WorkflowDetailsPage = () => {
 		return (
 			<Page heading={t('workflowDetail.headingShort')}>
 				<div className='text-center py-12'>
-					<h3 className='text-lg font-medium text-gray-900 mb-2'>{t('workflowDetail.notFoundTitle')}</h3>
+					<h3 className='text-lg font-medium text-content mb-2'>{t('workflowDetail.notFoundTitle')}</h3>
 					<p className='text-muted-foreground mb-4'>{t('workflowDetail.notFoundDescription')}</p>
 					<Button variant='outline' prefixIcon={<ArrowLeft className='h-4 w-4' />} onClick={() => navigate(RouteNames.workflows)}>
 						{t('workflowDetail.backToWorkflows')}

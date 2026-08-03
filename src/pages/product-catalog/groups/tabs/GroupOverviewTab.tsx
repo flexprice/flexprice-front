@@ -161,7 +161,7 @@ const GroupOverviewTab = () => {
 					if (!isNaN(d.getTime()))
 						items.push(
 							<div key='start' className='flex items-center gap-2'>
-								<span className='text-xs font-medium text-gray-500'>{t('common:labels.start')}</span>
+								<span className='text-xs font-medium text-content-muted'>{t('common:labels.start')}</span>
 								<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(d)}</span>
 							</div>,
 						);
@@ -175,7 +175,7 @@ const GroupOverviewTab = () => {
 					if (!isNaN(d.getTime()))
 						items.push(
 							<div key='end' className='flex items-center gap-2'>
-								<span className='text-xs font-medium text-gray-500'>{t('common:labels.end')}</span>
+								<span className='text-xs font-medium text-content-muted'>{t('common:labels.end')}</span>
 								<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(d)}</span>
 							</div>,
 						);
@@ -411,7 +411,7 @@ const GroupOverviewTab = () => {
 							content={tooltipContent}
 							delayDuration={0}
 							sideOffset={5}
-							className='bg-white border border-gray-200 shadow-lg text-sm text-gray-900 px-4 py-3 rounded-[6px] max-w-[320px]'>
+							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 							<span>
 								<Chip label={label} variant={variant} />
 							</span>

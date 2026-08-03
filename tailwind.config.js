@@ -246,6 +246,14 @@ export default {
 				'banner-bg-mid': 'rgb(var(--fp-banner-bg-mid) / <alpha-value>)',
 				'surface-avatar-navy': 'rgb(var(--fp-surface-avatar-navy) / <alpha-value>)',
 
+				/* Restricted-environment banner — full-width inline gradients that must move with their text. */
+				'banner-info-line': 'rgb(var(--fp-banner-info-line) / <alpha-value>)',
+				'banner-info-text': 'rgb(var(--fp-banner-info-text) / <alpha-value>)',
+				'banner-danger-bg': 'rgb(var(--fp-banner-danger-bg) / <alpha-value>)',
+				'banner-danger-bg-mid': 'rgb(var(--fp-banner-danger-bg-mid) / <alpha-value>)',
+				'banner-danger-line': 'rgb(var(--fp-banner-danger-line) / <alpha-value>)',
+				'banner-danger-text': 'rgb(var(--fp-banner-danger-text) / <alpha-value>)',
+
 				/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 				'brand-blue': 'rgb(var(--fp-brand-blue) / <alpha-value>)',
 				'brand-blue-light': 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',

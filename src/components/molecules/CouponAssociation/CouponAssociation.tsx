@@ -52,7 +52,7 @@ const CouponAssociation: FC<Props> = ({ data, onChange, currency, disabled }) =>
 			render: (row) => (
 				<div>
 					<div className='text-sm font-medium'>{row.name}</div>
-					<div className='text-xs text-gray-500'>{formatCouponName(row)}</div>
+					<div className='text-xs text-content-muted'>{formatCouponName(row)}</div>
 				</div>
 			),
 		},
@@ -66,7 +66,7 @@ const CouponAssociation: FC<Props> = ({ data, onChange, currency, disabled }) =>
 				<Button
 					variant='ghost'
 					size='sm'
-					className='h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600'
+					className='h-8 w-8 p-0 hover:bg-danger-muted hover:text-danger'
 					onClick={() => handleDelete(row.id)}
 					disabled={disabled}
 					aria-label={`Remove coupon ${row.name}`}>
@@ -83,7 +83,7 @@ const CouponAssociation: FC<Props> = ({ data, onChange, currency, disabled }) =>
 				<AddButton onClick={() => setIsOpen(true)} disabled={disabled} />
 			</div>
 
-			<div className='rounded-xl border border-gray-300 space-y-6 mt-2'>
+			<div className='rounded-xl border border-line-strong space-y-6 mt-2'>
 				<FlexpriceTable data={data} columns={columns} showEmptyRow />
 			</div>
 

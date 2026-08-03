@@ -192,7 +192,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	}, []);
 
 	return (
-		<DialogContent className='bg-white sm:max-w-[600px]'>
+		<DialogContent className='bg-surface sm:max-w-[600px]'>
 			<DialogHeader>
 				<DialogTitle>{t('wallet.topup.dialogTitle')}</DialogTitle>
 			</DialogHeader>
@@ -217,7 +217,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 						});
 					}}
 				/>
-				<p className='text-sm text-gray-500 -my-2'>
+				<p className='text-sm text-content-muted -my-2'>
 					{topupPayload.credits_type === CreditsType.PurchasedCredits
 						? t('wallet.topup.typeHintPurchased')
 						: t('wallet.topup.typeHintFree')}
@@ -320,7 +320,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 						}}
 					/>
 					<Label htmlFor='generate-invoice'>
-						<p className='font-medium text-sm text-[#18181B] peer-checked:text-black'>{t('wallet.topup.generateInvoice')}</p>
+						<p className='font-medium text-sm text-[#18181B] peer-checked:text-content-black'>{t('wallet.topup.generateInvoice')}</p>
 					</Label>
 				</div>
 			)}

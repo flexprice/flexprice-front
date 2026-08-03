@@ -102,7 +102,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 					if (row?.type === 'fixed') {
 						const symbol = getCurrencySymbol(row.currency?.trim() ? row.currency : '');
 						return (
-							<div className='text-green-600 font-medium'>
+							<div className='text-success font-medium'>
 								{t('subscriptions.discountFixedOff', {
 									symbol,
 									amount: formatAmount(row.amount_off ?? '0'),
@@ -111,9 +111,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 						);
 					} else if (row?.type === 'percentage') {
 						return (
-							<div className='text-green-600 font-medium'>
-								{t('subscriptions.discountPercentOff', { percent: row.percentage_off ?? 0 })}
-							</div>
+							<div className='text-success font-medium'>{t('subscriptions.discountPercentOff', { percent: row.percentage_off ?? 0 })}</div>
 						);
 					}
 					return t('common:labels.na');
@@ -175,7 +173,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 					<FormHeader className='mb-0' title={t('subscriptions.discounts')} variant='sub-header' />
 					{!coupon && <AddButton onClick={() => setIsModalOpen(true)} disabled={disabled} label={t('common:actions.add')} />}
 				</div>
-				<div className='rounded-[6px] border border-gray-300'>
+				<div className='rounded-[6px] border border-line-strong'>
 					<FlexpriceTable data={tableData} columns={columns} showEmptyRow />
 				</div>
 			</div>

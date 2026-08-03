@@ -234,6 +234,14 @@
 		--fp-banner-bg-mid: 237 237 237; /* #ededed — Slack banner gradient centre */
 		--fp-surface-avatar-navy: 11 17 33; /* #0b1121 — org initials tile — inverts with content-inverse */
 
+		/* Restricted-environment banner — full-width inline gradients that must move with their text. */
+		--fp-banner-info-line: 227 236 255; /* #e3ecff */
+		--fp-banner-info-text: 24 79 199; /* #184fc7 */
+		--fp-banner-danger-bg: 255 238 238; /* #ffeeee — gradient edge */
+		--fp-banner-danger-bg-mid: 255 234 234; /* #ffeaea — gradient centre */
+		--fp-banner-danger-line: 255 221 221; /* #ffdddd */
+		--fp-banner-danger-text: 200 27 27; /* #c81b1b */
+
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
 		--fp-brand-blue-light: 229 240 255; /* #e5f0ff — was colors.blue.light */
@@ -466,6 +474,14 @@
 		--fp-banner-bg: 31 31 34; /* #1f1f22 */
 		--fp-banner-bg-mid: 38 38 42; /* #26262a */
 		--fp-surface-avatar-navy: 238 239 241; /* #eeeff1 */
+
+		/* Restricted-environment banner — full-width inline gradients that must move with their text. */
+		--fp-banner-info-line: 47 74 128; /* #2f4a80 */
+		--fp-banner-info-text: 143 184 255; /* #8fb8ff */
+		--fp-banner-danger-bg: 46 21 22; /* #2e1516 */
+		--fp-banner-danger-bg-mid: 58 26 28; /* #3a1a1c */
+		--fp-banner-danger-line: 74 34 36; /* #4a2224 */
+		--fp-banner-danger-text: 255 154 157; /* #ff9a9d */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */

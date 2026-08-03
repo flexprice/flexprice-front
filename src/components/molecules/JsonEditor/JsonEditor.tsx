@@ -219,7 +219,7 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 	return (
 		<div className='rounded-lg overflow-hidden border border-line' style={{ background: themes.nightOwl.plain.backgroundColor }}>
 			{/* Header sits on the nightOwl background set above, which is dark in light mode too, so
-			    its border-white/10, text-slate-300 and hover:bg-white/10 stay literal. Only the outer
+			    its border-white/10, text-slate-300 and hover:bg-surface/10 stay literal. Only the outer
 			    ring above is on the page and tokenized. */}
 			{/* Header — title + copy only */}
 			<div className='px-4 py-2 border-b border-white/10 flex items-center justify-between'>
@@ -228,8 +228,11 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 					onClick={handleCopy}
 					variant='ghost'
 					size='sm'
-					className={cn('h-7 text-slate-300 hover:text-white hover:bg-white/10', copied && 'text-green-400 hover:text-green-400')}>
-					{copied ? <Check size={12} className='me-1 text-green-400' /> : <Copy size={12} className='me-1' />}
+					className={cn(
+						'h-7 text-slate-300 hover:text-content-inverse hover:bg-surface/10',
+						copied && 'text-success-soft hover:text-success-soft',
+					)}>
+					{copied ? <Check size={12} className='me-1 text-success-soft' /> : <Copy size={12} className='me-1' />}
 					<span className='text-xs'>{copied ? t('common:actions.copied') : t('common:actions.copy')}</span>
 				</Button>
 			</div>
@@ -251,8 +254,10 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 
 			{/* Status bar — error or valid + line count */}
 			<div className='px-4 py-1.5 border-t border-white/10 flex items-center justify-between'>
-				<span className={error ? 'text-xs text-red-400' : 'text-xs text-slate-400'}>{error || t('catalog:jsonEditor.validJson')}</span>
-				<span className='text-xs text-slate-500'>
+				<span className={error ? 'text-xs text-danger-soft' : 'text-xs text-content-slate-subtle'}>
+					{error || t('catalog:jsonEditor.validJson')}
+				</span>
+				<span className='text-xs text-content-slate-muted'>
 					{lineCount} {t('catalog:jsonEditor.lines')}
 				</span>
 			</div>

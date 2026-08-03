@@ -55,7 +55,7 @@ const TerminateLineItemModal: FC<TerminateLineItemModalProps> = ({ isOpen, onOpe
 						setDate={setEndDate}
 						className='w-full'
 					/>
-					<p className='text-xs text-gray-500'>{t('termination.lineItem.hint')}</p>
+					<p className='text-xs text-content-muted'>{t('termination.lineItem.hint')}</p>
 				</div>
 
 				<div className='flex justify-end space-x-3 pt-4'>

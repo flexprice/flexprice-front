@@ -243,6 +243,17 @@ export const TOKEN_GROUPS = [
 		],
 	},
 	{
+		group: 'Restricted-environment banner — full-width inline gradients that must move with their text.',
+		tokens: [
+			{ name: 'banner-info-line', light: '#E3ECFF', dark: '#2f4a80' },
+			{ name: 'banner-info-text', light: '#184FC7', dark: '#8fb8ff' },
+			{ name: 'banner-danger-bg', light: '#FFEEEE', dark: '#2e1516', note: 'gradient edge' },
+			{ name: 'banner-danger-bg-mid', light: '#FFEAEA', dark: '#3a1a1c', note: 'gradient centre' },
+			{ name: 'banner-danger-line', light: '#FFDDDD', dark: '#4a2224' },
+			{ name: 'banner-danger-text', light: '#C81B1B', dark: '#ff9a9d' },
+		],
+	},
+	{
 		group: 'Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged.',
 		tokens: [
 			{ name: 'brand-blue', light: '#3293D9', dark: '#4aa8e8', note: 'was colors.blue.DEFAULT' },
