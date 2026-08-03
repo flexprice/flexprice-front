@@ -37,6 +37,7 @@ const EXEMPT_FILES = {
 	'src/pages/product-catalog/groups/GroupHeader.tsx': 'avatar tile stays mid-grey; white beats content-inverse 7.5:1 to 2.4:1',
 	'src/components/molecules/DebugMenu/DebugMenu.tsx': 'tooltip is black in both themes via surface-scrim',
 	'src/components/molecules/Events/EventTrackerStep.tsx': 'step marker on a fixed brand circle',
+	'src/pages/auth/templates/FlexpriceDefault/LandingSection.tsx': 'text sits on a fixed light background photo, identical in both themes',
 };
 
 const PREFIX = 'bg|text|border|ring|divide|fill|stroke|placeholder|from|to|via|shadow|outline|decoration|caret|accent|ring-offset';

@@ -142,6 +142,25 @@ Six tokens now carry the badge (`env-dev-bg`, `env-dev-bg-mid`, `env-prod-bg`, `
 | sandbox text on badge    | 8.43 / 8.19       | light-on-light → **11.79 / 10.60** |
 | production text on badge | 5.38 / 4.80       | light-on-light → **8.35 / 7.36**   |
 
+### Text over a background photo (found in final review)
+
+The login page's right panel sets a `backgroundImage` — a light sky photograph, identical in both
+themes. Its tagline and "Trusted by" heading had been tokenized to `content-zinc` / `content-black`,
+which correctly flip to near-white in dark. On a pale photo that is invisible.
+
+Every earlier trap scan looked for `style={{ background` and `text-white`; none looked for a
+`backgroundImage` on an **ancestor**, so this survived to the final visual pass. It was found by
+looking at the screen, not by any tool.
+
+Swept every file containing `backgroundImage`, `bg-cover` or `bg-[url(` afterwards. The rest are
+safe for a reason worth stating: they use the photo as a _backdrop_ and put content inside a nested
+`bg-surface` card, so text and its surface invert together. `LandingSection` was the only place text
+sat directly on the image.
+
+This is the fifth instance of the one rule that governs the whole migration: **a token that inverts
+must not be paired with a surface that does not.** Its forms so far — a switch thumb on an inverting
+track, a permanently-dark code surface, an inline gradient, a scrim, and now a photograph.
+
 ## Known non-issues
 
 Things that look broken but are not:

@@ -39,11 +39,29 @@ class AuthService {
 		}
 	}
 
+	/**
+	 * Keys that survive logout.
+	 *
+	 * Theme is a per-device display preference, not user data — it holds only the string 'light' or
+	 * 'dark'. Wiping it means someone who picks dark mode is thrown back to light every time they
+	 * sign out, which reads as the setting being broken.
+	 *
+	 * Anything holding user or session data must NOT be listed here; the blanket clear below is what
+	 * keeps that guarantee.
+	 */
+	private static readonly PRESERVED_KEYS = ['flexprice_theme'];
+
 	public static async logout() {
 		if (config.app.env !== APP_ENV.SelfHosted) {
 			await supabase.auth.signOut();
 		}
+
+		const preserved = AuthService.PRESERVED_KEYS.map((key) => [key, localStorage.getItem(key)] as const);
 		localStorage.clear();
+		for (const [key, value] of preserved) {
+			if (value !== null) localStorage.setItem(key, value);
+		}
+
 		window.location.href = RouteNames.login;
 	}
 }
