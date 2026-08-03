@@ -184,8 +184,8 @@ Things that look broken but are not:
 - **Sidebar promo card missing.** Renders only when the environment has no plans and no features.
 - **Light chips are below AA** (3.95–4.48). Pre-existing design, reproduced byte-for-byte. Fixing it
   is a visible light change and needs its own PR.
-- **Dark is measurably more legible than light.** Across the 22 token pairs the source states on a
-  single element, light fails AA on five and dark on none. The worst — `text-content-subtle` on
+- **Dark is measurably more legible than light.** Across the 84 resolvable token pairs, light fails
+  AA on several and dark on none. The worst — `text-content-subtle` on
   `bg-surface-sidebar` — reads 2.41:1 in light and 5.67:1 in dark. Worth knowing before anyone reads
   a dark-mode contrast complaint as a regression.
 
@@ -207,9 +207,14 @@ fails AA on five of the 22 stated pairs, so an absolute bar could only be met by
 asserts the invariant this migration can own — dark never breaks a pair that worked in light — and
 ignores headroom lost above the threshold, since 21:1 to 16.65:1 is arithmetic rather than a defect.
 
-Only same-element pairs are checked. Text inheriting a background from an ancestor is not resolvable
-statically, so a clean run is a claim about every pair the source states explicitly, not about the
-whole app.
+Pairs come from a real TypeScript parse of the JSX, not a regex over `className` strings, so text
+three levels inside a `bg-surface` card is paired with that card. An element whose background is set
+by an inline `style` or a `bg-[#hex]` poisons the stack downward as UNKNOWN — its descendants are
+skipped rather than judged against a background that is not theirs.
+
+Still not exhaustive, and worth stating plainly: only nesting **within one file** is followed, and
+backgrounds arriving through a prop, a `cn()` argument or a variant map are not resolved. Elements
+with no ancestor background in their own file are judged against the page.
 
 Every one was negative-tested — deliberately broken, confirmed to fail, restored. Three of them had
 bugs that only surfaced that way: `verify:light` counted class names inside comments,

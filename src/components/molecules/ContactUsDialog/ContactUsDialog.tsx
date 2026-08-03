@@ -62,7 +62,7 @@ const ContactUsDialog: React.FC<ContactUsDialogProps> = ({ isOpen, onOpenChange,
 					<div
 						className='h-14 w-14 rounded-xl flex items-center justify-center shadow-sm transition-shadow duration-300 ease-in-out group-hover:shadow-md'
 						style={{ backgroundColor: '#0069FF' }}>
-						<CalendarDays className='h-7 w-7 text-content-inverse' strokeWidth={1.5} />
+						<CalendarDays className='h-7 w-7 text-white' strokeWidth={1.5} />
 					</div>
 					<span className='text-xs font-medium text-content-secondary group-hover:text-[#0069FF] transition-colors duration-300 ease-in-out'>
 						{t('contactUs.bookCallLabel')}
