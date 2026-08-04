@@ -38,9 +38,18 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 		}
 	};
 
+	/*
+	 * Below `lg` this is a single column: the form takes the full width and the marketing panel is
+	 * dropped entirely. It was previously forced to `!flex-row` at every size, which left the form
+	 * 45% x 55% = ~25% of the viewport — a 77px-wide email field on a phone.
+	 *
+	 * The panel is hidden rather than stacked underneath. It is decorative social proof with an
+	 * auto-scrolling carousel, and `hidden` also means a phone never downloads the 1.5MB background
+	 * photograph it would never see.
+	 */
 	return (
-		<div className='flex w-full min-h-screen bg-surface page !p-0 !flex-row'>
-			<div className='w-[45%] flex flex-col'>
+		<div className='flex w-full min-h-screen bg-surface page !p-0 !flex-col lg:!flex-row'>
+			<div className='w-full lg:w-[45%] flex flex-col'>
 				<a
 					href={SLACK_COMMUNITY_URL}
 					target='_blank'
@@ -53,7 +62,7 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 					<img src='/assets/logo/slack-logo.png' alt={t('images.slackLogoAlt')} className='h-4 w-auto' />
 				</a>
 				<div className='flex-1 flex justify-center items-center pt-[10px]'>
-					<div className='flex flex-col justify-center max-w-xl w-[55%] mx-auto'>
+					<div className='flex flex-col justify-center max-w-xl w-[88%] sm:w-[70%] lg:w-[55%] mx-auto py-10 lg:py-0'>
 						<div className='flex justify-center mb-4'>
 							<img src={logo} alt={`${name} Logo`} className='h-12' />
 						</div>
@@ -94,7 +103,7 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 					</div>
 				</div>
 			</div>
-			<div className='w-[55%] min-h-screen flex'>
+			<div className='hidden lg:flex w-[55%] min-h-screen'>
 				<LandingSection />
 			</div>
 		</div>

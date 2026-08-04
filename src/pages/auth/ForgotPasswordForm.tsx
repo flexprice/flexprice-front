@@ -56,6 +56,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ switchTab }) =>
 						id='email'
 						name='email'
 						type='email'
+						autoComplete='email'
 						placeholder={t('fields.emailPlaceholder')}
 						required
 						onChange={(s) => setEmail(s)}

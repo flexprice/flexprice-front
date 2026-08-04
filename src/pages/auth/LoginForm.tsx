@@ -103,6 +103,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 					id='email'
 					name='email'
 					type='email'
+					autoComplete='username'
 					label={t('fields.email')}
 					placeholder={t('fields.emailPlaceholder')}
 					required
@@ -122,6 +123,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 					<Input
 						id='password'
 						name='password'
+						autoComplete='current-password'
 						type={showPassword ? 'text' : 'password'}
 						suffix={
 							<span onClick={() => setShowPassword(!showPassword)} className='cursor-pointer'>

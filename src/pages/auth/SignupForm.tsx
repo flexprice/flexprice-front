@@ -154,6 +154,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 					id='email'
 					name='email'
 					type='email'
+					autoComplete='email'
 					label={t('fields.email')}
 					placeholder={t('fields.emailPlaceholder')}
 					required
@@ -165,6 +166,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				<Input
 					id='password'
 					name='password'
+					autoComplete='new-password'
 					label={t('fields.password')}
 					placeholder={t('fields.passwordPlaceholder')}
 					required
@@ -182,6 +184,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				<Input
 					id='confirmPassword'
 					name='confirmPassword'
+					autoComplete='new-password'
 					label={t('fields.confirmPassword')}
 					placeholder={t('fields.confirmPasswordPlaceholder')}
 					required
