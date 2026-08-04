@@ -285,6 +285,20 @@ export const TOKEN_GROUPS = [
 			{ name: 'surface-panel-alt', light: '#FCFCFC', dark: '#26262a', note: 'tutorial card gradient end' },
 			{ name: 'surface-thumb', light: '#F5F5F5', dark: '#232326', note: 'tutorial card thumbnail well' },
 			{ name: 'surface-thumb-alt', light: '#F4F4F4', dark: '#232326' },
+
+			/*
+			 * Two backgrounds that exist only inside another surface and were never meant to be seen.
+			 *
+			 * In light each sits a single step from its parent — #F9F9F9 on #fafafa, #f3f4f6 on #F5F5F5 —
+			 * so the pair has always read as one flat surface. Mapping them by ROLE sent them to sidebar
+			 * chrome and app shell, which in Midnight are the darkest layer of all, and the empty state
+			 * grew a near-black block behind its description.
+			 *
+			 * Light keeps the exact original value; dark matches the parent so the fill disappears again.
+			 * Do not "simplify" these to their parent token — that would change light.
+			 */
+			{ name: 'surface-faint-inner', light: '#f9f9f9', dark: '#1f1f22', note: 'redundant fill inside surface-faint — must vanish' },
+			{ name: 'surface-thumb-inner', light: 'gray.100', dark: '#232326', note: 'img placeholder inside surface-thumb — must vanish' },
 			{ name: 'surface-cool-strong', light: '#DDE1EB', dark: '#26262e' },
 			{ name: 'line-hairline', light: '#E9E9E9', dark: '#29292e', note: 'empty-state card border' },
 			{ name: 'line-muted', light: '#CFCFCF', dark: '#35353b' },

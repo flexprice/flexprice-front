@@ -27,7 +27,7 @@ const EmptyState = ({ config }: EmptyStateProps) => {
 					<div className='font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>{config.heading}</div>
 				)}
 				{config.description && (
-					<div className='font-normal bg-surface-sidebar text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
+					<div className='font-normal bg-surface-faint-inner text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
 						{config.description}
 					</div>
 				)}

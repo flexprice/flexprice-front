@@ -287,6 +287,8 @@ export default {
 				'surface-panel-alt': 'rgb(var(--fp-surface-panel-alt) / <alpha-value>)',
 				'surface-thumb': 'rgb(var(--fp-surface-thumb) / <alpha-value>)',
 				'surface-thumb-alt': 'rgb(var(--fp-surface-thumb-alt) / <alpha-value>)',
+				'surface-faint-inner': 'rgb(var(--fp-surface-faint-inner) / <alpha-value>)',
+				'surface-thumb-inner': 'rgb(var(--fp-surface-thumb-inner) / <alpha-value>)',
 				'surface-cool-strong': 'rgb(var(--fp-surface-cool-strong) / <alpha-value>)',
 				'line-hairline': 'rgb(var(--fp-line-hairline) / <alpha-value>)',
 				'line-muted': 'rgb(var(--fp-line-muted) / <alpha-value>)',

@@ -243,7 +243,7 @@ const PlansPage = () => {
 				<div className='mb-4 text-center text-[20px] font-medium leading-normal text-content-secondary'>
 					{t('plans.listPage.emptyStateCustom.heading')}
 				</div>
-				<div className='mb-8 max-w-[350px] bg-surface-sidebar text-center text-[16px] font-normal leading-normal text-content-subtle'>
+				<div className='mb-8 max-w-[350px] bg-surface-faint-inner text-center text-[16px] font-normal leading-normal text-content-subtle'>
 					{t('plans.listPage.emptyStateCustom.description')}
 				</div>
 				<Button

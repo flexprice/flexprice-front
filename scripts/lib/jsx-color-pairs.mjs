@@ -101,6 +101,38 @@ export function walkColorPairs(source, fileName, emit) {
 }
 
 /**
+ * Yields `{ child, parent }` for every nested background pair — a `bg-*` element inside another.
+ *
+ * This exists to catch backgrounds that are INVISIBLE in light and loud in dark. Two greys a single
+ * step apart (#fafafa and #F9F9F9) look like one surface in light, so a redundant background on a
+ * text span goes unnoticed for years. Tokenizing maps them by ROLE rather than by value, and roles
+ * diverge in dark — panel #1f1f22 versus sidebar chrome #0f0f10 — so the same markup renders a
+ * near-black rectangle inside a lighter card.
+ */
+export function walkNestedBackgrounds(source, fileName, emit) {
+	const sf = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+
+	const visit = (node, parent) => {
+		let next = parent;
+
+		if (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node)) {
+			const opening = ts.isJsxElement(node) ? node.openingElement : node;
+			const words = classWords(opening);
+			const bg = tokenFrom(words, 'bg-');
+
+			if (bg) {
+				if (parent && parent !== bg) emit({ child: bg, parent });
+				next = bg;
+			} else if (hasOpaqueBackground(opening, words)) next = null;
+		}
+
+		node.forEachChild((child) => visit(child, next));
+	};
+
+	visit(sf, null);
+}
+
+/**
  * Yields `{ fg, bg }` for each variant string inside a `cva(...)` call.
  *
  * These never appear in JSX, so walkColorPairs cannot see them — yet they carry the app's most-used

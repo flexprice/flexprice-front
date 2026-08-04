@@ -226,6 +226,8 @@
 	--fp-surface-panel-alt: 252 252 252;
 	--fp-surface-thumb: 245 245 245;
 	--fp-surface-thumb-alt: 244 244 244;
+	--fp-surface-faint-inner: 249 249 249;
+	--fp-surface-thumb-inner: 243 244 246;
 	--fp-surface-cool-strong: 221 225 235;
 	--fp-line-hairline: 233 233 233;
 	--fp-line-muted: 207 207 207;
@@ -449,6 +451,8 @@
 	--fp-surface-panel-alt: 38 38 42;
 	--fp-surface-thumb: 35 35 38;
 	--fp-surface-thumb-alt: 35 35 38;
+	--fp-surface-faint-inner: 31 31 34;
+	--fp-surface-thumb-inner: 35 35 38;
 	--fp-surface-cool-strong: 38 38 46;
 	--fp-line-hairline: 41 41 46;
 	--fp-line-muted: 53 53 59;

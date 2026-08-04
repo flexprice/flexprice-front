@@ -27,7 +27,7 @@ const TutorialCards = ({ tutorials }: TutorialCardsProps) => {
 							className='h-full group bg-surface border border-line-slate-subtle rounded-[6px] shadow-sm hover:border-info-muted-strong hover:bg-surface-cool transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-info-bright/5 flex flex-col max-w-[280px] mx-auto p-4 bg-gradient-to-r from-surface to-surface-panel-alt'
 							onClick={item.onClick}>
 							<div className='w-full h-[80px] aspect-video rounded-t-[6px] overflow-hidden bg-surface-thumb flex items-center justify-center'>
-								<img src={imageUrl} loading='lazy' className='object-cover bg-surface-shell w-full h-full' alt=' ' />
+								<img src={imageUrl} loading='lazy' className='object-cover bg-surface-thumb-inner w-full h-full' alt=' ' />
 							</div>
 							<div className='flex-1 flex flex-col justify-between mt-4'>
 								<div>

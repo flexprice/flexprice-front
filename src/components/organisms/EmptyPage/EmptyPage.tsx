@@ -62,7 +62,7 @@ const EmptyPage: FC<Props> = ({ onAddClick, tags, heading, children, addButtonLa
 					<div className=' font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>{card?.heading}</div>
 				)}
 				{card?.description && (
-					<div className=' font-normal bg-surface-sidebar text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
+					<div className=' font-normal bg-surface-faint-inner text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
 						{card?.description}
 					</div>
 				)}
@@ -90,7 +90,7 @@ const EmptyPage: FC<Props> = ({ onAddClick, tags, heading, children, addButtonLa
 								onClick={item.onClick}>
 								{/* Image at the top */}
 								<div className='w-full h-[80px] aspect-video rounded-t-[6px] overflow-hidden bg-surface-thumb flex items-center justify-center'>
-									<img src={imageUrl} loading='lazy' className='object-cover bg-surface-shell w-full h-full' alt={' '} />
+									<img src={imageUrl} loading='lazy' className='object-cover bg-surface-thumb-inner w-full h-full' alt={' '} />
 								</div>
 								{/* Content below image */}
 								<div className='flex-1 flex flex-col justify-between mt-4'>

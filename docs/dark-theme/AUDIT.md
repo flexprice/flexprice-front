@@ -5,7 +5,7 @@ sweep over the source. Re-run either at any time; both are described at the bott
 
 ## Status
 
-186 tokens, ~2,600 replacements across 300 files, light mode verified byte-identical on every commit.
+187 tokens, ~2,600 replacements across 300 files, light mode verified byte-identical on every commit.
 
 |                   | At audit | Now   |
 | ----------------- | -------- | ----- |
@@ -174,6 +174,39 @@ This is the fifth instance of the one rule that governs the whole migration: **a
 must not be paired with a surface that does not.** Its forms so far — a switch thumb on an inverting
 track, a permanently-dark code surface, an inline gradient, a scrim, and now a photograph.
 
+### The empty states — a bug class light could never show
+
+Reported as "the empty states don't look good". The description block carried
+`bg-[#F9F9F9]` inside a `bg-[#fafafa]` card — **one step apart out of 255**. For years that read as
+one flat surface, so nobody noticed the inner background was pure decoration. The tutorial-card
+image had the same shape: `#f3f4f6` inside `#F5F5F5`, two steps apart.
+
+Tokenizing maps colours by **role**, not by value, and roles diverge in dark. `#F9F9F9` went to
+`surface-sidebar` (sidebar chrome, `#0f0f10`) and `#f3f4f6` to `surface-shell` (app chrome,
+`#0f0f10`) — the two darkest layers in Midnight. Both landed inside much lighter cards, so the empty
+state grew a near-black block behind its description and a black slab behind each thumbnail.
+
+No existing guard could see it. `verify:light` passes because light really is byte-identical.
+`verify:dark-contrast` passes because the text is legible on either. The defect is neither contrast
+nor drift — it is a **relationship between two surfaces that light happened to hide**.
+
+Fixed with two tokens that keep the exact light value and take their parent's dark value, so the
+fill disappears again: `surface-faint-inner` and `surface-thumb-inner`. Four files carried the same
+copy-pasted markup. Resulting dark stack:
+
+| Layer                | Dark      | Δ vs parent          |
+| -------------------- | --------- | -------------------- |
+| page                 | `#161617` | —                    |
+| empty card           | `#1f1f22` | 11 — reads as raised |
+| · description fill   | `#1f1f22` | **0 — invisible**    |
+| · card border        | `#29292e` | 12                   |
+| tutorial card        | `#1d1d1f` | 7                    |
+| · thumbnail well     | `#232326` | 7                    |
+| · image placeholder  | `#232326` | **0 — invisible**    |
+
+`verify:nested-surfaces` now fails any nested background within 3/255 of its parent in light that
+opens to 8/255 or more in dark.
+
 ## Known non-issues
 
 Things that look broken but are not:
@@ -189,7 +222,7 @@ Things that look broken but are not:
   `bg-surface-sidebar` — reads 2.41:1 in light and 5.67:1 in dark. Worth knowing before anyone reads
   a dark-mode contrast complaint as a regression.
 
-## The six guards
+## The seven guards
 
 All run in the pre-commit hook. Each exists because something slipped past the others.
 
@@ -201,6 +234,7 @@ All run in the pre-commit hook. Each exists because something slipped past the o
 | `verify:exportable`     | the widget package shipping `var(--fp-*)` it never defines                                            |
 | `verify:no-raw-palette` | a raw palette class reappearing in themed code                                                        |
 | `verify:dark-contrast`  | a token pair that passes AA in light but fails in dark                                                |
+| `verify:nested-surfaces`| a background light hides against its parent and dark reveals                                          |
 
 `verify:dark-contrast` deliberately does **not** enforce absolute AA. Light is frozen and already
 fails AA on five of the 22 stated pairs, so an absolute bar could only be met by editing light. It

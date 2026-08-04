@@ -15,6 +15,7 @@
     "verify:exportable": "node scripts/verify-exportable-tokens.mjs",
     "verify:no-raw-palette": "node scripts/verify-no-raw-palette.mjs",
     "verify:dark-contrast": "node scripts/verify-dark-contrast.mjs",
+    "verify:nested-surfaces": "node scripts/verify-nested-surfaces.mjs",
     "build": "tsc -b && vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
