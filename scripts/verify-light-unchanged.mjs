@@ -20,12 +20,34 @@ import { execSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import palette from 'tailwindcss/colors.js';
 
-/** Commit immediately before the dark-theme rebuild started (the #984 revert). */
-const BASE = process.argv[2] || '002ff4b2';
+const sh = (cmd) => execSync(cmd, { maxBuffer: 1 << 28 }).toString();
+
+/**
+ * The point this branch forks from, resolved dynamically rather than pinned.
+ *
+ * It used to be the literal `002ff4b2` — the #984 revert this rebuild started from. That worked
+ * until the branch was rebased onto a newer `upstream/develop`, at which point the guard began
+ * reporting UPSTREAM's own light-mode edits as regressions of ours: the date-picker commits added a
+ * slate-500 usage in DatePicker.tsx and it showed up as `rgb(100,116,139): 1 -> 2`.
+ *
+ * The invariant this guard is really asserting is "the commits on this branch do not change light",
+ * not "nothing anywhere has changed light since some fixed point in the past". So the base is the
+ * merge-base with the integration branch, which survives any future rebase.
+ */
+const resolveBase = () => {
+	for (const ref of ['upstream/develop', 'origin/develop', 'origin/main']) {
+		try {
+			return sh(`git merge-base ${ref} HEAD`).trim();
+		} catch {
+			/* remote not configured in this clone — try the next one */
+		}
+	}
+	throw new Error('no upstream/develop, origin/develop or origin/main to diff against');
+};
+const BASE = process.argv[2] || resolveBase();
 /** Omit to audit the working tree. */
 const REF = process.argv[3] || null;
 
-const sh = (cmd) => execSync(cmd, { maxBuffer: 1 << 28 }).toString();
 const readRef = (path) => (REF ? sh(`git show ${REF}:${path}`) : readFileSync(path, 'utf8'));
 const hex3 = (h) => {
 	const s = h.replace('#', '');
