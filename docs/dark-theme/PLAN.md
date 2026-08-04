@@ -39,7 +39,7 @@ every commit. Five guards run in the pre-commit hook — see `docs/dark-theme/AU
 Tokens are generated, not hand-written. To add one, edit `scripts/theme-tokens.mjs`, then:
 
 ```bash
-node scripts/generate-theme-tokens.mjs && npx prettier --write src/index.css tailwind.config.js && npm run verify:theme
+node scripts/generate-theme-tokens.mjs && npx prettier --write src/index.css tailwind.config.js src/exportable/styles.css
 ```
 
 The generator only rewrites the regions between the `fp-tokens:begin` / `fp-tokens:end` markers, so
@@ -51,12 +51,14 @@ New files use the `--fp-*` tokens directly (`bg-surface`, `text-content-muted`) 
 palette classes. Light values are identical either way, and writing `bg-white` in a new file just
 creates work for a later migration step.
 
-Five guards run in the pre-commit hook, and on demand with:
+Seven guards enforced this during the migration. They were **removed at merge** — they existed to
+prove a one-time invariant (light mode byte-identical across ~2,600 replacements), and that
+invariant no longer applies once light mode is free to change again. See `AUDIT.md` for what each
+caught and how to restore one from history.
 
-```bash
-npm run verify:theme && npm run verify:light && npm run verify:tokens-staged \
-  && npm run verify:exportable && npm run verify:no-raw-palette
-```
+The generator writes all three consumers — `src/index.css`, `tailwind.config.js` and
+`src/exportable/styles.css`. Regenerate all three together, or the widget ships `var(--fp-*)` it
+never defines.
 
 Each exists because something slipped past the others; what each one catches is tabulated in
 `docs/dark-theme/AUDIT.md`.

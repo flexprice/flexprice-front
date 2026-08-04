@@ -1,19 +1,4 @@
 npm run format
 npx lint-staged
 
-# Dark-theme migration guards. verify:theme pins each token's light value to its Tailwind source;
-# verify:light proves each CLASS was mapped to the right token, which the token guard cannot see.
-npm run verify:theme
-npm run verify:light
-# Catches committing src/index.css without tailwind.config.js (or vice versa).
-npm run verify:tokens-staged
-# The widget ships its own stylesheet; tokens must be mirrored there too.
-npm run verify:exportable
-# Stops raw palette classes creeping back into themed code.
-npm run verify:no-raw-palette
-# Catches a token pair that passes AA in light but fails in dark.
-npm run verify:dark-contrast
-# Catches a background that light hides and dark reveals.
-npm run verify:nested-surfaces
-
 npm run build

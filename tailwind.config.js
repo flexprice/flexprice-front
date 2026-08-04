@@ -39,8 +39,8 @@ export default {
 					/*
 					 * Re-pointed from the literals '#3293D9' / '#E5F0FF' at the byte-identical brand
 					 * tokens. ErrorBoundary uses blue-DEFAULT 26 times (with /5../80 alpha variants);
-					 * as literals none of them could theme. Light is unchanged — verify-theme-tokens
-					 * pins --fp-brand-blue to #3293d9 and --fp-brand-blue-light to #e5f0ff.
+					 * as literals none of them could theme. Light is unchanged: --fp-brand-blue is
+					 * #3293d9 and --fp-brand-blue-light is #e5f0ff, the exact values they replaced.
 					 */
 					DEFAULT: 'rgb(var(--fp-brand-blue) / <alpha-value>)',
 					light: 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',
@@ -61,7 +61,7 @@ export default {
 					 * CSS variable was dead, so retuning it for dark did nothing.
 					 *
 					 * `--fp-content-slate-muted` resolves to slate.500 = #64748b, byte-identical to the
-					 * literal it replaces, and scripts/verify-theme-tokens.mjs pins it there.
+					 * literal it replaces.
 					 */
 					foreground: 'rgb(var(--fp-content-slate-muted) / <alpha-value>)',
 				},

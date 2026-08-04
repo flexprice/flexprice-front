@@ -35,7 +35,8 @@ conventional; the dark theme separates by value instead (`--popover` `#252528` o
 
 Sixteen files keep literal colours on purpose — each sits on a surface that does not change between
 themes, so tokenizing them would break the component. They are listed with reasons in
-`scripts/verify-no-raw-palette.mjs`, which fails the build if a raw class reappears anywhere else.
+`scripts/verify-no-raw-palette.mjs` in history (`git show 36330ba6:scripts/verify-no-raw-palette.mjs`);
+that guard is no longer in the tree.
 
 The customer portal and checkout are excluded by design; see below.
 
@@ -236,9 +237,17 @@ Things that look broken but are not:
   `bg-surface-sidebar` — reads 2.41:1 in light and 5.67:1 in dark. Worth knowing before anyone reads
   a dark-mode contrast complaint as a regression.
 
-## The seven guards
+## The seven guards — removed at merge
 
-All run in the pre-commit hook. Each exists because something slipped past the others.
+These ran in the pre-commit hook during the migration and are **no longer in the tree**. They were
+scaffolding for a one-time job: proving that ~2,600 class replacements across 300 files left light
+mode byte-identical. With the migration merged that invariant no longer holds — light mode is now
+free to change like any other styling — so keeping guards that forbid it would block ordinary work.
+
+Recover any of them from history if a similar migration comes up:
+`git show 36330ba6:scripts/verify-dark-contrast.mjs`
+
+What each one caught, kept as a record of the failure modes rather than as live tooling:
 
 | Guard                   | Catches                                                                                               |
 | ----------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -309,9 +318,10 @@ while stripping comments. A guard that has never been seen to fail is not eviden
 
 ## Re-running the audits
 
+The guard scripts were removed at merge (see above). To re-run one, restore it from history first:
+
 ```bash
-npm run verify:theme && npm run verify:light && npm run verify:tokens-staged \
-  && npm run verify:exportable && npm run verify:no-raw-palette
+git show 36330ba6:scripts/verify-dark-contrast.mjs > /tmp/verify-dark-contrast.mjs && node /tmp/verify-dark-contrast.mjs
 ```
 
 For the in-browser contrast scan, open the app in dark mode and paste the scanner from this

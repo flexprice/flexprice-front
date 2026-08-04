@@ -7,7 +7,7 @@
  * regions between the `fp-tokens:begin` / `fp-tokens:end` markers and leaves everything else —
  * including every pre-existing `:root` value — untouched.
  *
- * Run: node scripts/generate-theme-tokens.mjs && npm run verify:theme
+ * Run: node scripts/generate-theme-tokens.mjs && npx prettier --write src/index.css tailwind.config.js src/exportable/styles.css
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -97,4 +97,4 @@ writeFileSync(twPath, twSrc);
 
 const count = TOKEN_GROUPS.reduce((n, g) => n + g.tokens.length, 0);
 console.log(`✓ regenerated ${count} tokens into src/index.css, tailwind.config.js and src/exportable/styles.css`);
-console.log('  next: npx prettier --write src/index.css tailwind.config.js && npm run verify:theme');
+console.log('  next: npx prettier --write src/index.css tailwind.config.js src/exportable/styles.css');
