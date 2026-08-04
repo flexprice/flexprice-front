@@ -46,3 +46,24 @@ export function getMemberJoinedDate(user: SettingsMember): string | null {
 export function canDeleteUser(user: SettingsMember): boolean {
 	return user.type === 'service_account';
 }
+
+/**
+ * Whether Remove is allowed for this row.
+ * - Disable all when the org has ≤1 human user
+ * - Disable for the signed-in user (API also returns 400)
+ */
+export function canRemoveMember(user: SettingsMember, totalMembers: number, currentUserId?: string): boolean {
+	const canRemoveUsers = totalMembers > 1;
+	return canRemoveUsers && user.id !== currentUserId;
+}
+
+export function getRemoveMemberDisabledReason(
+	user: SettingsMember,
+	totalMembers: number,
+	currentUserId: string | undefined,
+	labels: { lastUser: string; self: string },
+): string | null {
+	if (totalMembers <= 1) return labels.lastUser;
+	if (currentUserId && user.id === currentUserId) return labels.self;
+	return null;
+}

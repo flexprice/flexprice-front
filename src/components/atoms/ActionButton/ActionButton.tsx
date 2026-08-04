@@ -20,8 +20,12 @@ interface EditActionConfig {
 
 interface ArchiveActionConfig {
 	enabled?: boolean;
+	/** When true, the menu item is visible but not clickable. */
+	disabled?: boolean;
 	text?: string;
 	icon?: React.ReactNode;
+	/** Optional title/tooltip when disabled */
+	disabledReason?: string;
 }
 
 interface CustomAction {
@@ -41,7 +45,7 @@ interface CopyIdActionConfig {
 interface ActionProps {
 	id: string;
 	deleteMutationFn: (id: string) => Promise<void>;
-	refetchQueryKey: string;
+	refetchQueryKey: string | string[];
 	entityName: string;
 	triggerIcon?: React.ReactNode;
 	edit?: EditActionConfig;
@@ -183,8 +187,11 @@ const ActionButton: FC<ActionProps> = ({
 						)}
 						{archiveConfig.enabled !== false && (
 							<DropdownMenuItem
+								disabled={archiveConfig.disabled}
+								title={archiveConfig.disabled ? archiveConfig.disabledReason : undefined}
 								onSelect={(event) => {
 									event.preventDefault();
+									if (archiveConfig.disabled) return;
 									setIsOpen(false);
 									setIsDialogOpen(true);
 								}}

@@ -112,9 +112,14 @@ export class UserApi {
 		return await AxiosClient.put<User, typeof data>(`${this.baseUrl}/${id}`, data);
 	}
 
-	// Delete a user
+	// Delete a user (service accounts only — human users use removeUserFromTenant)
 	public static async deleteUser(userId: string): Promise<void> {
 		return await AxiosClient.delete<void>(`${this.baseUrl}/${userId}`);
+	}
+
+	/** Remove a human user from the current tenant. POST /users/{id}/remove → 204. */
+	public static async removeUserFromTenant(userId: string): Promise<void> {
+		await AxiosClient.post<void>(`${this.baseUrl}/${userId}/remove`);
 	}
 
 	public static async me(): Promise<User> {

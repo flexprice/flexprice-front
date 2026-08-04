@@ -1,17 +1,32 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { ColumnData } from '@/components/molecules/Table/Table';
-import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Link2, Lock, Mail } from 'lucide-react';
+import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Link2, Lock, Mail, Trash2 } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import type { HttpRejectedError } from '@/core/axios/types';
 import { formatDateShort } from '@/utils/common/helper_functions';
-import { Card, CardHeader, Loader, Button, Input, Dialog, Chip, ShortPaginationControls, AddButton } from '@/components/atoms';
+import {
+	Card,
+	CardHeader,
+	Loader,
+	Button,
+	Input,
+	Dialog,
+	Chip,
+	ShortPaginationControls,
+	AddButton,
+	ActionButton,
+} from '@/components/atoms';
 import { FlexpriceTable, OptionFilterPopover, type OptionFilterGroup } from '@/components/molecules';
 import { useTranslation } from 'react-i18next';
+import useUser from '@/hooks/useUser';
+import { UserApi } from '@/api/UserApi';
 import { useTenantMembers } from './useTenantMembers';
 import {
+	canRemoveMember,
 	filterMembers,
 	getMemberJoinedDate,
+	getRemoveMemberDisabledReason,
 	isAdminMember,
 	isPendingMember,
 	membersHaveStatus,
@@ -19,10 +34,12 @@ import {
 	type MemberStatusFilter,
 	type SettingsMember,
 } from './memberUtils';
+import { settingsQueryKeys } from '../queryKeys';
 
 function UsersSection() {
 	const { t } = useTranslation(['settings', 'common']);
-	const { members, isLoading, isError, refetch, pageSize, createUser } = useTenantMembers();
+	const { user: currentUser } = useUser();
+	const { members, totalMembers, isLoading, isError, refetch, pageSize, createUser } = useTenantMembers();
 
 	const [roleFilter, setRoleFilter] = useState<MemberRoleFilter>('all');
 	const [statusFilter, setStatusFilter] = useState<MemberStatusFilter>('all');
@@ -246,6 +263,46 @@ function UsersSection() {
 				}
 				const joinedDate = getMemberJoinedDate(row);
 				return <span className='text-sm text-zinc-600'>{joinedDate ? formatDateShort(joinedDate) : '—'}</span>;
+			},
+		},
+		{
+			fieldVariant: 'interactive',
+			width: 48,
+			align: 'right',
+			render: (row) => {
+				const removeAllowed = canRemoveMember(row, totalMembers, currentUser?.id);
+				const disabledReason = getRemoveMemberDisabledReason(row, totalMembers, currentUser?.id, {
+					lastUser: t('members.remove.disabledLastUser'),
+					self: t('members.remove.disabledSelf'),
+				});
+
+				return (
+					<ActionButton
+						id={row.id}
+						entityName={row.email || row.name || row.id}
+						disableToast
+						deleteMutationFn={async (id) => {
+							try {
+								await UserApi.removeUserFromTenant(id);
+								toast.success(t('members.remove.success'));
+							} catch (err) {
+								const message = (err as Error)?.message || t('members.remove.failed');
+								toast.error(message);
+								throw err;
+							}
+						}}
+						refetchQueryKey={[...settingsQueryKeys.teamMembersRoot()]}
+						edit={{ enabled: false }}
+						copyId={{ entityType: 'User' }}
+						archive={{
+							enabled: true,
+							disabled: !removeAllowed,
+							disabledReason: disabledReason ?? undefined,
+							text: t('members.actions.remove'),
+							icon: <Trash2 className='h-4 w-4' />,
+						}}
+					/>
+				);
 			},
 		},
 	];

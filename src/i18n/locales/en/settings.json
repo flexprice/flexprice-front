@@ -35,6 +35,13 @@
 			"invite": "Invite",
 			"remove": "Remove"
 		},
+		"remove": {
+			"confirmTitle": "Remove member",
+			"success": "User removed from organization",
+			"failed": "Failed to remove user",
+			"disabledLastUser": "Cannot remove the last user in the organization",
+			"disabledSelf": "You cannot remove yourself"
+		},
 		"filters": {
 			"title": "Filter users",
 			"role": "Role",
