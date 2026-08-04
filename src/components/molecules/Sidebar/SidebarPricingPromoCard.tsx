@@ -9,6 +9,8 @@ import { Wand2 } from 'lucide-react';
 
 /** Figma export: sidebar “Create with AI” promo (grid art on the right). */
 import promoFrameUrl from '../../../../assets/Frame 1400002331.png';
+/** Same grid art re-rendered dark — the light PNG is near-white and glared on the Midnight card. */
+import promoFrameDarkUrl from '../../../../assets/promptoplanbg.png';
 
 export interface SidebarPricingPromoCardProps {
 	onCreateWithAI: () => void;
@@ -25,9 +27,19 @@ const SidebarPricingPromoCard: FC<SidebarPricingPromoCardProps> = ({ onCreateWit
 				'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
 				className,
 			)}>
+			{/*
+			 * The art is baked into a PNG, so it cannot follow a token — the light export is near-white
+			 * and read as a bright glare patch on the Midnight card. Two layers, one per theme, with
+			 * `hidden` on the unused one so only the shown image is fetched.
+			 */}
 			<div
-				className='pointer-events-none absolute inset-0 bg-surface-faint bg-cover bg-right bg-no-repeat'
+				className='pointer-events-none absolute inset-0 bg-surface-faint bg-cover bg-right bg-no-repeat dark:hidden'
 				style={{ backgroundImage: `url("${promoFrameUrl}")` }}
+				aria-hidden
+			/>
+			<div
+				className='pointer-events-none absolute inset-0 hidden bg-cover bg-right bg-no-repeat dark:block'
+				style={{ backgroundImage: `url("${promoFrameDarkUrl}")` }}
 				aria-hidden
 			/>
 			<div className='pointer-events-none absolute inset-0 bg-gradient-to-r from-surface via-surface/65 to-transparent' aria-hidden />
