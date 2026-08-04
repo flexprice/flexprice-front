@@ -212,9 +212,47 @@ three levels inside a `bg-surface` card is paired with that card. An element who
 by an inline `style` or a `bg-[#hex]` poisons the stack downward as UNKNOWN — its descendants are
 skipped rather than judged against a background that is not theirs.
 
+Variant maps are covered separately: `cva(...)` strings never appear in JSX, yet they carry the
+app's single most-used pairing — every filled button is `bg-primary` over `text-primary-foreground`.
+The shadcn semantic layer they use is stored as HSL channels rather than RGB, so it gets its own
+parse, validated against the intended hex recorded in each var's comment.
+
 Still not exhaustive, and worth stating plainly: only nesting **within one file** is followed, and
-backgrounds arriving through a prop, a `cn()` argument or a variant map are not resolved. Elements
-with no ancestor background in their own file are judged against the page.
+backgrounds arriving through a prop or a `cn()` argument are not resolved. Elements with no ancestor
+background in their own file are judged against the page.
+
+### Three light shadcn vars are malformed
+
+Pre-existing on `main` and reproduced byte-for-byte, so out of scope here, but they should be fixed
+in a light-mode PR:
+
+| Var                  | Light value  | Problem                                    |
+| -------------------- | ------------ | ------------------------------------------ |
+| `--background`       | `#f8fafc`    | hex where `hsl()` expects channels         |
+| `--accent-foreground`| `#f4f4f5`    | same                                       |
+| `--muted-foreground` | `'#64748B'`  | same, and **quoted** — doubly invalid      |
+
+Each is consumed as `hsl(var(--x))`, so in light the declaration is invalid at computed-value time.
+Measured in a browser rather than reasoned about:
+
+| Expression                       | Light                       | Dark        |
+| -------------------------------- | --------------------------- | ----------- |
+| `hsl(var(--background))`         | `rgba(0,0,0,0)` transparent | `#161617` ✓ |
+| `hsl(var(--card))` (valid HSL)   | `#ffffff` ✓                 | —           |
+| `hsl(var(--accent-foreground))`  | `rgb(0,0,0)` inherited      | `#eeeff1` ✓ |
+
+On a near-white page transparent is invisible, which is why this has shipped unnoticed.
+
+**None of it needs fixing on this branch, and dark is not the broken side.** Where `bg-background`
+paints in dark it paints the page colour, which is exactly what those call sites want: the sidebar
+content wrapper, select input wells, and the active tab. `text-accent-foreground` falls back to
+inherited black in light and resolves to near-white in dark — correct in both by luck.
+`--muted-foreground` is already dead; this migration re-pointed Tailwind's `muted.foreground` at
+`--fp-content-slate-muted`.
+
+Seven of the eight `DialogContent` call sites pass `bg-surface`, which wins through tailwind-merge.
+The eighth is `ui/command.tsx`'s `CommandDialog`, which nothing imports — the real command palette
+handles it explicitly with `bg-surface dark:bg-background/90`.
 
 Every one was negative-tested — deliberately broken, confirmed to fail, restored. Three of them had
 bugs that only surfaced that way: `verify:light` counted class names inside comments,

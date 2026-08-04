@@ -99,3 +99,35 @@ export function walkColorPairs(source, fileName, emit) {
 
 	visit(sf, []);
 }
+
+/**
+ * Yields `{ fg, bg }` for each variant string inside a `cva(...)` call.
+ *
+ * These never appear in JSX, so walkColorPairs cannot see them — yet they carry the app's most-used
+ * pairing by far: every filled button is `bg-primary` with `text-primary-foreground`. One variant
+ * string is one element's worth of classes, so a `bg-` and a `text-` inside it are a real pair.
+ */
+export function walkVariantPairs(source, fileName, emit) {
+	const sf = ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+
+	const visit = (node) => {
+		if (ts.isCallExpression(node) && node.expression.getText() === 'cva') {
+			const strings = [];
+			const gather = (n) => {
+				if (ts.isStringLiteral(n) || ts.isNoSubstitutionTemplateLiteral(n)) strings.push(n.text);
+				else n.forEachChild(gather);
+			};
+			node.arguments.forEach(gather);
+
+			for (const s of strings) {
+				const words = s.split(/\s+/).filter((w) => w && !w.includes(':'));
+				const bg = words.find((w) => w.startsWith('bg-'))?.slice(3);
+				const fg = words.find((w) => w.startsWith('text-'))?.slice(5);
+				if (bg && fg) emit({ fg, bg });
+			}
+		}
+		node.forEachChild(visit);
+	};
+
+	visit(sf);
+}
