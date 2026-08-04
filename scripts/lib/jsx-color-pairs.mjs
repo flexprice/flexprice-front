@@ -20,9 +20,18 @@ export const ROOT_SURFACES = ['background', 'surface-shell'];
 /** Sentinel for a background that exists but cannot be resolved statically. */
 const UNKNOWN = Symbol('unknown-background');
 
+/**
+ * The `/NN` opacity modifier is stripped, so `bg-surface-scrim/90` resolves as `surface-scrim`.
+ *
+ * Without this the whole class was silently skipped for not matching any token name, which is how
+ * `text-content-inverse` on `bg-surface-scrim/90` survived: an always-black tooltip whose text
+ * inverted to near-black in dark. Treating the alpha form as its base colour is an approximation —
+ * the true blend depends on whatever sits behind — but it is far better than not checking at all,
+ * and for a near-opaque scrim it is almost exact.
+ */
 const tokenFrom = (words, prefix) => {
 	for (const w of words) {
-		if (w.startsWith(prefix) && !w.includes(':')) return w.slice(prefix.length);
+		if (w.startsWith(prefix) && !w.includes(':')) return w.slice(prefix.length).split('/')[0];
 	}
 	return null;
 };

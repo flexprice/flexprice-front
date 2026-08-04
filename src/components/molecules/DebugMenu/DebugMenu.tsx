@@ -165,8 +165,8 @@ const DebugMenu = () => {
 						sideOffset={8}
 						/* Always-dark tooltip: surface-scrim is black in both themes, so the text stays literal
 						   white — content-inverse would render it near-black on black in dark mode. */
-						className='flex flex-col gap-1 bg-surface-scrim/90 text-content-inverse px-4 py-2 rounded-lg max-w-[240px]'>
-						<div className='text-[13px] text-content-inverse'>{t('debug.tooltipTitle')}</div>
+						className='flex flex-col gap-1 bg-surface-scrim/90 text-white px-4 py-2 rounded-lg max-w-[240px]'>
+						<div className='text-[13px] text-white'>{t('debug.tooltipTitle')}</div>
 					</TooltipContent>
 				</Tooltip>
 			</TooltipProvider>

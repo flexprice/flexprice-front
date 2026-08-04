@@ -170,9 +170,23 @@ safe for a reason worth stating: they use the photo as a _backdrop_ and put cont
 `bg-surface` card, so text and its surface invert together. `LandingSection` was the only place text
 sat directly on the image.
 
-This is the fifth instance of the one rule that governs the whole migration: **a token that inverts
-must not be paired with a surface that does not.** Its forms so far — a switch thumb on an inverting
-track, a permanently-dark code surface, an inline gradient, a scrim, and now a photograph.
+This is one instance of the rule that governs the whole migration: **a token that inverts must not
+be paired with a surface that does not.** Its forms so far — a switch thumb on an inverting track, a
+permanently-dark code surface, an inline gradient, a scrim, a photograph, a fixed navy strip, a
+brand-blue tile, and the debug tooltip below.
+
+### The debug tooltip, and the guard gap it exposed
+
+`text-content-inverse` on `bg-surface-scrim/90` — an always-black tooltip whose text inverted to
+near-black. **21.00:1 in light, 1.10:1 in dark.** Reported by the user, not by any guard.
+
+The reason no guard caught it is the more useful finding. `bg-surface-scrim/90` carries an opacity
+modifier, so the walker read the token name as `surface-scrim/90`, matched nothing, and skipped the
+class in silence. Stripping `/NN` fixed it and took coverage from 94 to 99 pairs — every
+alpha-modified class in the app had been invisible to the contrast check.
+
+Treating the alpha form as its base colour is an approximation, since the real blend depends on
+what sits behind. For a near-opaque scrim it is almost exact, and it beats not checking at all.
 
 ### The empty states — a bug class light could never show
 
