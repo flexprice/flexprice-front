@@ -202,11 +202,13 @@ translucent-white elevation overlays that only apply in dark mode — a standard
 light-mode literal. They are left alone, and a future lint rule banning raw palette classes must
 exempt `dark:`-prefixed ones.
 
-### The migration is now scripted (Step 11)
+### The migration was scripted (Step 11) — script since removed
 
-`scripts/migrate-theme-classes.mjs` holds the canonical class → token map and applies it to any set
-of paths (`--dry` to preview). Each remaining step is: dry-run a batch, scan it for role traps, apply,
-verify, commit.
+`scripts/migrate-theme-classes.mjs` held the canonical class → token map and applied it to any set of
+paths. It was one-shot tooling: with the migration finished it had no callers, so it was deleted
+rather than left to rot into a stale map that disagrees with `scripts/theme-tokens.mjs`. Recover it
+from history if a similar sweep is ever needed:
+`git show 201ec047:scripts/migrate-theme-classes.mjs`.
 
 The map was **derived, not authored**. For each of the 160 distinct raw palette classes left in the
 app, the class's Tailwind hex was matched against tokens whose light value is byte-identical, then

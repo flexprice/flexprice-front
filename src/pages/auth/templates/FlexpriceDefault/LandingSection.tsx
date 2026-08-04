@@ -5,6 +5,7 @@ import { TestimonialCard } from '@/components/molecules';
 import { Testimonial, CustomerLogo } from '@/types';
 import { cn } from '@/lib/utils';
 import authBg from '../../../../../assets/toolright.jpg';
+import authBgDark from '../../../../../assets/onboardingdark.jpg';
 
 const testimonials: Testimonial[] = [
 	{
@@ -105,17 +106,31 @@ const LandingSection: React.FC = () => {
 	const cards = testimonials.concat(testimonials);
 
 	return (
-		<section
-			className='w-full min-h-full flex-1 pt-14 pb-12 flex flex-col items-center justify-center'
-			style={{
-				backgroundImage: `url(${authBg})`,
-				backgroundSize: 'cover',
-				backgroundPosition: 'center',
-				backgroundRepeat: 'no-repeat',
-			}}>
-			{/* On the background photo below, which is the same light image in both themes — literal
-			    colours, not tokens, or this goes near-white on a pale sky. */}
-			<h2 className='text-[28px] font-normal text-zinc-950 mb-[44px] text-center'>{t('landing.defaultTagline')}</h2>
+		<section className='relative w-full min-h-full flex-1 pt-14 pb-12 flex flex-col items-center justify-center'>
+			{/*
+			 * Two photo layers rather than one image swapped in JS: `hidden` keeps the browser from
+			 * fetching the layer it will not show, so each theme pays for exactly one of these — which
+			 * matters, because the dark photo is ~6x the weight of the light one. It also means the
+			 * correct photo is there on first paint, with no flash while a store rehydrates.
+			 */}
+			<div
+				aria-hidden
+				className='absolute inset-0 bg-cover bg-center bg-no-repeat dark:hidden'
+				style={{ backgroundImage: `url(${authBg})` }}
+			/>
+			<div
+				aria-hidden
+				className='absolute inset-0 hidden bg-cover bg-center bg-no-repeat dark:block'
+				style={{ backgroundImage: `url(${authBgDark})` }}
+			/>
+
+			{/* Literal colours, not tokens: the tagline sits on a photograph rather than on a token
+			    surface, so it has to track which PHOTO is showing — near-black on the pale light shot,
+			    near-white on the dark one. A content token would resolve against a surface that is not
+			    there. */}
+			<h2 className='relative text-[28px] font-normal text-zinc-950 dark:text-zinc-50 mb-[44px] text-center'>
+				{t('landing.defaultTagline')}
+			</h2>
 			<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-10'>
 				<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
 					<div className='flex gap-x-7 w-max'>
@@ -141,15 +156,22 @@ const LandingSection: React.FC = () => {
 					</div>
 				</div>
 			</div>
-			<div className='w-full flex flex-col items-center mt-8'>
-				<div className='text-center text-black font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
+			<div className='relative w-full flex flex-col items-center mt-8'>
+				<div className='text-center text-black dark:text-zinc-50 font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
 				<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-10 justify-items-center items-center'>
 					{customerLogos.map((logo) => (
 						<div key={logo.src} className='flex h-10 w-full max-w-[160px] items-center justify-center'>
+							{/*
+							 * These are dark-ink logos drawn for a pale background — one is literally named
+							 * "vapidarklogo". The night photo is close to black exactly where this row sits, so
+							 * unfiltered they vanish. brightness-0 flattens each to solid black and invert flips
+							 * it to solid white: the usual partner-strip treatment, trading brand colour for
+							 * being visible at all.
+							 */}
 							<img
 								src={logo.src}
 								alt={t('landing.customerLogoAlt')}
-								className={cn('w-auto max-w-full object-contain object-center', logo.heightClass ?? 'h-full')}
+								className={cn('w-auto max-w-full object-contain object-center dark:brightness-0 dark:invert', logo.heightClass ?? 'h-full')}
 							/>
 						</div>
 					))}

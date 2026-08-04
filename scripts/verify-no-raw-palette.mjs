@@ -35,10 +35,12 @@ const EXEMPT_FILES = {
 	'src/pages/onboarding/onboarding.tsx': 'close button sits on a scrim that is black in both themes',
 	'src/pages/auth/templates/Template2/Template2.tsx': 'tagline sits on a background photo',
 	'src/pages/product-catalog/groups/GroupHeader.tsx': 'avatar tile stays mid-grey; white beats content-inverse 7.5:1 to 2.4:1',
-	'src/components/molecules/Customer/CustomerHeader.tsx': 'same avatar tile as GroupHeader — mid-grey in both themes, so its initial stays white',
+	'src/components/molecules/Customer/CustomerHeader.tsx':
+		'same avatar tile as GroupHeader — mid-grey in both themes, so its initial stays white',
 	'src/components/molecules/DebugMenu/DebugMenu.tsx': 'tooltip is black in both themes via surface-scrim',
 	'src/components/molecules/Events/EventTrackerStep.tsx': 'step marker on a fixed brand circle',
-	'src/pages/auth/templates/FlexpriceDefault/LandingSection.tsx': 'text sits on a fixed light background photo, identical in both themes',
+	'src/pages/auth/templates/FlexpriceDefault/LandingSection.tsx':
+		'text sits on a background photograph, not a token surface — light shot in light, night shot in dark, so it pairs literal near-black with literal near-white',
 	'src/components/molecules/ContactUsDialog/ContactUsDialog.tsx': 'Slack and Cal.com brand marks — fixed brand colours, not theme surfaces',
 	'src/components/molecules/EnvironmentCreator/EnvironmentCreator.tsx':
 		'Slack and Cal.com brand marks — fixed brand colours, not theme surfaces',
