@@ -1,7 +1,7 @@
-import { config, APP_ENV } from '@/config/config';
+import { config, usesBackendAuth } from '@/config/config';
 import { createClient } from '@supabase/supabase-js';
 
-const isSelfHosted = config.app.env === APP_ENV.SelfHosted;
+const isBackendAuth = usesBackendAuth(config.app.env, config.auth.provider);
 
 const createMockClient = () => {
 	return {
@@ -21,7 +21,7 @@ const createMockClient = () => {
 };
 
 const supabase =
-	isSelfHosted || !config.auth.url || !config.auth.anonKey
+	isBackendAuth || !config.auth.url || !config.auth.anonKey
 		? (createMockClient() as any)
 		: createClient(config.auth.url, config.auth.anonKey);
 

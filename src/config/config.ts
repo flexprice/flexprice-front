@@ -291,7 +291,19 @@ function parseAppEnv(): APP_ENV {
 	return raw as APP_ENV;
 }
 
+/**
+ * Local and self-hosted frontends authenticate against the Flexprice backend `/auth`
+ * APIs. Cloud envs use Supabase unless VITE_AUTH_PROVIDER=flexprice.
+ */
+export function usesBackendAuth(env: APP_ENV, provider: AUTH_PROVIDER = AUTH_PROVIDER.Supabase): boolean {
+	if (env === APP_ENV.Local || env === APP_ENV.SelfHosted) return true;
+	return provider === AUTH_PROVIDER.Flexprice;
+}
+
 const appEnv = parseAppEnv();
+
+const authProvider = (import.meta.env.VITE_AUTH_PROVIDER ??
+	(appEnv === APP_ENV.Local || appEnv === APP_ENV.SelfHosted ? AUTH_PROVIDER.Flexprice : AUTH_PROVIDER.Supabase)) as AUTH_PROVIDER;
 
 const svixUrl = import.meta.env.VITE_SVIX_URL ?? '';
 
@@ -305,7 +317,7 @@ export const config: Config = {
 	},
 	auth: {
 		enabled: import.meta.env.VITE_AUTH_ENABLED === 'true' || import.meta.env.VITE_SUPABASE_ENABLED === 'true',
-		provider: (import.meta.env.VITE_AUTH_PROVIDER ?? AUTH_PROVIDER.Supabase) as AUTH_PROVIDER,
+		provider: authProvider,
 		url: import.meta.env.VITE_SUPABASE_URL ?? '',
 		anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY ?? '',
 	},

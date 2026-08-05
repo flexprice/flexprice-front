@@ -7,7 +7,7 @@ import { Button, Input } from '@/components/atoms';
 import { EyeIcon, EyeOff } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import AuthApi from '@/api/AuthApi';
-import { config, APP_ENV } from '@/config/config';
+import { config, usesBackendAuth } from '@/config/config';
 import { RouteNames } from '@/core/routes/Routes';
 import GoogleSignin from './GoogleSignin';
 import { AuthTab } from './authTabs';
@@ -26,6 +26,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const isBackendAuth = usesBackendAuth(config.app.env, config.auth.provider);
 
 	// Prefill from query params (e.g. shared login link); then strip params from URL
 	useEffect(() => {
@@ -75,7 +76,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 
 		setLoading(true);
 
-		if (config.app.env !== APP_ENV.SelfHosted) {
+		if (!isBackendAuth) {
 			const { error } = await supabase.auth.signInWithPassword({
 				email,
 				password,
@@ -142,7 +143,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 			</form>
 
 			{/* Google Sign-in Button - Only show on login and signup tabs */}
-			{config.app.env !== APP_ENV.SelfHosted && (
+			{!isBackendAuth && (
 				<>
 					<div className='flex items-center justify-center my-6'>
 						<div className='flex-1 h-px bg-surface-strong'></div>

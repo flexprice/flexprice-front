@@ -1,10 +1,12 @@
-import { config, APP_ENV } from '@/config/config';
+import { config, usesBackendAuth } from '@/config/config';
 import supabase from '../services/supbase/config';
 import { RouteNames } from '../routes/Routes';
 
+const isBackendAuth = () => usesBackendAuth(config.app.env, config.auth.provider);
+
 class AuthService {
 	public static async getAcessToken() {
-		if (config.app.env !== APP_ENV.SelfHosted) {
+		if (!isBackendAuth()) {
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
@@ -23,7 +25,7 @@ class AuthService {
 	}
 
 	public static async getUser() {
-		if (config.app.env !== APP_ENV.SelfHosted) {
+		if (!isBackendAuth()) {
 			const { data } = await supabase.auth.getUser();
 			return data.user;
 		} else {
@@ -52,7 +54,7 @@ class AuthService {
 	private static readonly PRESERVED_KEYS = ['flexprice_theme'];
 
 	public static async logout() {
-		if (config.app.env !== APP_ENV.SelfHosted) {
+		if (!isBackendAuth()) {
 			await supabase.auth.signOut();
 		}
 

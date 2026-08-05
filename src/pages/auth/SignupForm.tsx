@@ -8,7 +8,7 @@ import { EyeOff } from 'lucide-react';
 import { EyeIcon } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate, useSearchParams } from 'react-router';
-import { config, APP_ENV } from '@/config/config';
+import { config, usesBackendAuth } from '@/config/config';
 import GoogleSignin from './GoogleSignin';
 import { AuthTab } from './authTabs';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,7 @@ interface SignupData {
 const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 	const { t } = useTranslation('auth');
 	const navigate = useNavigate();
+	const isBackendAuth = usesBackendAuth(config.app.env, config.auth.provider);
 
 	const [searchParams] = useSearchParams();
 	const queryEmail = searchParams.get('email') || '';
@@ -62,7 +63,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 			});
 		},
 		onSuccess: (data) => {
-			if (config.app.env !== APP_ENV.SelfHosted) {
+			if (!isBackendAuth) {
 				toast.success('Account created successfully! Please check your email to confirm your account.');
 				switchTab(AuthTab.LOGIN);
 			} else {
@@ -125,7 +126,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 		if (!validateForm()) {
 			return;
 		}
-		if (config.app.env !== APP_ENV.SelfHosted) {
+		if (!isBackendAuth) {
 			persistSignupMetadata(buildSignupMetadata({ signup_method: 'email' }));
 			setIsLoading(true);
 			const { error } = await supabase.auth.signUp({
@@ -204,7 +205,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 			</div>
 
 			{/* Google Sign-in Button - Only show on login and signup tabs */}
-			{config.app.env !== APP_ENV.SelfHosted && (
+			{!isBackendAuth && (
 				<>
 					<div className='flex items-center justify-center my-6'>
 						<div className='flex-1 h-px bg-surface-strong'></div>
