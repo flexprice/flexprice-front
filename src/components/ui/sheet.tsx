@@ -14,20 +14,28 @@ const SheetClose = SheetPrimitive.Close;
 
 const SheetPortal = SheetPrimitive.Portal;
 
-const SheetOverlay = React.forwardRef<
-	React.ElementRef<typeof SheetPrimitive.Overlay>,
-	React.ComponentPropsWithoutRef<typeof SheetPrimitive.Overlay>
->(({ className, ...props }, ref) => (
-	<SheetPrimitive.Overlay
-		className={cn(
-			'fixed inset-0 z-50 bg-surface-scrim/30 backdrop-blur-[3px] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-			className,
-		)}
-		{...props}
+/**
+ * A plain div, deliberately NOT `SheetPrimitive.Overlay`.
+ *
+ * Every sheet in this app is `modal={false}`, which is what keeps portaled comboboxes inside a sheet
+ * clickable. But Radix's own overlay is written as `context.modal ? <Presence>… : null` — in
+ * non-modal mode it renders NOTHING. So the scrim and its blur silently vanished from every side
+ * sheet, in both themes, and stayed missing.
+ *
+ * Rendering it ourselves restores the look without giving up non-modal behaviour. `pointer-events-none`
+ * is load-bearing: the overlay must not swallow clicks, or it would re-break the very dropdowns
+ * `modal={false}` exists to fix. Dismiss-on-outside-click still comes from Radix's dismissable layer,
+ * not from the overlay.
+ */
+const SheetOverlay = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+	<div
 		ref={ref}
+		aria-hidden
+		className={cn('pointer-events-none fixed inset-0 z-40 bg-surface-scrim/30 backdrop-blur-[3px] animate-in fade-in-0', className)}
+		{...props}
 	/>
 ));
-SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
+SheetOverlay.displayName = 'SheetOverlay';
 
 const sheetVariants = cva(
 	'fixed z-50 gap-4 bg-surface p-6 shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out',

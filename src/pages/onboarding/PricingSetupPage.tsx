@@ -16,6 +16,8 @@ import { cn } from '@/lib/utils';
 import { getErrorMessage } from '@/utils/errorMessage';
 import { PricingCard } from '@/components/molecules';
 import { Button } from '@/components/ui';
+/** Dark counterpart of /assets/v4bgagentic.png — the light grid glared on a dark page. */
+import promptToPlanDarkBg from '../../../assets/promptoplanbg.png';
 
 // ============================================
 // Progress step labels
@@ -251,13 +253,19 @@ const PricingSetupPage = () => {
 
 	return (
 		<div className='fixed inset-0 z-50 overflow-y-auto overflow-x-hidden'>
+			{/*
+			 * One layer per theme. The grid art is a baked PNG so it cannot follow a token, and the light
+			 * export read as a near-white sheet behind a dark page. `hidden` also keeps the browser from
+			 * fetching the layer it will not show.
+			 */}
 			<div
-				className='pointer-events-none absolute inset-0 z-0'
-				style={{
-					backgroundImage: `url("/assets/v4bgagentic.png")`,
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-				}}
+				className='pointer-events-none absolute inset-0 z-0 bg-cover bg-center dark:hidden'
+				style={{ backgroundImage: `url("/assets/v4bgagentic.png")` }}
+				aria-hidden
+			/>
+			<div
+				className='pointer-events-none absolute inset-0 z-0 hidden bg-cover bg-center dark:block'
+				style={{ backgroundImage: `url(${promptToPlanDarkBg})` }}
 				aria-hidden
 			/>
 
@@ -307,7 +315,7 @@ const PricingSetupPage = () => {
 										<img
 											src={selectedTemplate.iconSrc}
 											alt={t('pricingSetupPage.templateLogoAlt', { label: selectedTemplate.label })}
-											className='mr-2 inline-block h-4 w-4 object-contain align-[-2px]'
+											className='mr-2 inline-block h-4 w-4 object-contain align-[-2px] dark:brightness-0 dark:invert'
 										/>
 									) : (
 										<span className='mr-1.5 text-base'>{selectedTemplate.icon}</span>
@@ -345,7 +353,7 @@ const PricingSetupPage = () => {
 									onClick={handleParseAndPreview}
 									disabled={!hasPromptText || isParsing}
 									className={cn(
-										'flex h-9 w-9 items-center justify-center rounded-xl bg-brand-navy text-content-inverse transition-all',
+										'flex h-9 w-9 items-center justify-center rounded-xl bg-brand-fill text-content-on-brand transition-all',
 										'hover:opacity-90 active:scale-95',
 										'disabled:cursor-not-allowed disabled:opacity-30',
 									)}
@@ -383,7 +391,10 @@ const PricingSetupPage = () => {
 											<img
 												src={tpl.iconSrc}
 												alt={t('pricingSetupPage.templateLogoAlt', { label: tpl.label })}
-												className={cn('h-4 w-4 object-contain', selectedTemplate?.label === tpl.label ? 'opacity-100' : 'opacity-70')}
+												className={cn(
+													'h-4 w-4 object-contain dark:brightness-0 dark:invert',
+													selectedTemplate?.label === tpl.label ? 'opacity-100' : 'opacity-70',
+												)}
 											/>
 										) : (
 											<span

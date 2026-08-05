@@ -81,6 +81,7 @@
 		--fp-surface-strong: 229 231 235; /* #e5e7eb */
 		--fp-surface-heavy: 156 163 175; /* #9ca3af */
 		--fp-surface-faint: 250 250 250; /* #fafafa */
+		--fp-surface-canvas: 255 255 255; /* #ffffff — main content area — stays darker than surface */
 		--fp-surface-cool: 248 250 252; /* #f8fafc */
 		--fp-surface-inverse: 17 24 39; /* #111827 — dark-on-light chips invert */
 		--fp-surface-inverse-zinc: 24 24 27; /* #18181b — inverted tooltips built on zinc rather than gray */
@@ -214,6 +215,8 @@
 		--fp-line-faint: 186 186 186; /* #bababa — promo card hairline */
 		--fp-content-slate-deep: 2 6 23; /* #020617 — active breadcrumb */
 		--fp-brand-navy: 9 46 68; /* #092e44 — Flexprice navy — brightened so it reads on dark */
+		--fp-brand-fill: 9 46 68; /* #092e44 — primary button fill */
+		--fp-content-on-brand: 255 255 255; /* #ffffff — label on brand-fill — white in both themes */
 		--fp-surface-notch: 212 212 216; /* #d4d4d8 — Card notch bar — zinc.300 as a fill, not a border */
 		--fp-accent-yellow-muted: 254 240 138; /* #fef08a — Coming-soon badge fill */
 		--fp-surface-avatar: 0 0 0; /* #000000 — tenant initials tile — inverts, unlike surface-scrim which stays black */
@@ -293,6 +296,16 @@
 		--fp-chip-indigo-bg: 238 242 255; /* #eef2ff */
 		--fp-chip-indigo-text: 67 56 202; /* #4338ca */
 		--fp-chip-indigo-line: 224 231 255; /* #e0e7ff */
+		--fp-chip-type-static-bg: 243 244 246; /* #f3f4f6 */
+		--fp-chip-type-static-text: 75 85 99; /* #4b5563 */
+		--fp-chip-type-metered-bg: 219 234 254; /* #dbeafe */
+		--fp-chip-type-metered-text: 30 64 175; /* #1e40af */
+		--fp-chip-type-boolean-bg: 220 252 231; /* #dcfce7 */
+		--fp-chip-type-boolean-text: 22 101 52; /* #166534 */
+		--fp-chip-type-config-bg: 245 243 255; /* #f5f3ff */
+		--fp-chip-type-config-text: 91 33 182; /* #5b21b6 */
+		--fp-chip-type-default-bg: 249 250 251; /* #f9fafb */
+		--fp-chip-type-default-text: 107 114 128; /* #6b7280 */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 50 147 217; /* #3293d9 — was colors.blue.DEFAULT */
@@ -312,9 +325,9 @@
 
 		--popover-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 
-		--primary: 220 9.7% 93.9%; /* #eeeff1 — filled buttons invert to light in dark mode */
+		--primary: 202.1 72.3% 36.9%; /* #1a70a2 — brand blue fill in dark */
 
-		--primary-foreground: 240 3.2% 6.1%; /* #0f0f10 — matches --fp-content-inverse */
+		--primary-foreground: 0 0% 100%; /* #ffffff — near-black on #1a70a2 is 3.54:1, so the label goes white (5.41:1) */
 
 		--secondary: 240 5.2% 19%; /* #2e2e33 — matches --fp-surface-strong */
 
@@ -374,6 +387,7 @@
 		--fp-surface-strong: 46 46 51; /* #2e2e33 */
 		--fp-surface-heavy: 79 79 87; /* #4f4f57 */
 		--fp-surface-faint: 31 31 34; /* #1f1f22 */
+		--fp-surface-canvas: 24 24 24; /* #181818 */
 		--fp-surface-cool: 26 26 29; /* #1a1a1d */
 		--fp-surface-inverse: 238 239 241; /* #eeeff1 */
 		--fp-surface-inverse-zinc: 238 239 241; /* #eeeff1 */
@@ -507,6 +521,8 @@
 		--fp-line-faint: 53 53 59; /* #35353b */
 		--fp-content-slate-deep: 238 239 241; /* #eeeff1 */
 		--fp-brand-navy: 109 184 232; /* #6db8e8 */
+		--fp-brand-fill: 26 112 162; /* #1a70a2 */
+		--fp-content-on-brand: 255 255 255; /* #ffffff */
 		--fp-surface-notch: 69 69 77; /* #45454d */
 		--fp-accent-yellow-muted: 58 43 18; /* #3a2b12 */
 		--fp-surface-avatar: 238 239 241; /* #eeeff1 */
@@ -586,6 +602,16 @@
 		--fp-chip-indigo-bg: 25 28 56; /* #191c38 */
 		--fp-chip-indigo-text: 154 162 245; /* #9aa2f5 */
 		--fp-chip-indigo-line: 40 45 84; /* #282d54 */
+		--fp-chip-type-static-bg: 32 32 36; /* #202024 */
+		--fp-chip-type-static-text: 169 173 182; /* #a9adb6 */
+		--fp-chip-type-metered-bg: 22 36 60; /* #16243c */
+		--fp-chip-type-metered-text: 127 179 245; /* #7fb3f5 */
+		--fp-chip-type-boolean-bg: 22 48 31; /* #16301f */
+		--fp-chip-type-boolean-text: 116 217 159; /* #74d99f */
+		--fp-chip-type-config-bg: 30 23 51; /* #1e1733 */
+		--fp-chip-type-config-text: 185 166 245; /* #b9a6f5 */
+		--fp-chip-type-default-bg: 31 31 34; /* #1f1f22 */
+		--fp-chip-type-default-text: 138 143 152; /* #8a8f98 */
 
 		/* Brand blue — pre-existing literals from tailwind.config.js, now themable. Light unchanged. */
 		--fp-brand-blue: 74 168 232; /* #4aa8e8 */
@@ -610,7 +636,17 @@ html {
 
 @layer utilities {
 	.card {
-		@apply rounded-[6px] border border-gray-300 p-6;
+		/*
+		 * border-gray-300 is #d1d5db — a near-white hairline. It sits in a hand-written utility with no
+		 * dark override, so every summary box on Exports, Wallet and friends kept a bright border on a
+		 * dark page while the Tailwind-classed cards around them went subtle. line-strong IS gray.300,
+		 * so light is byte-identical; dark drops to `line` to match those neighbouring cards.
+		 */
+		@apply rounded-[6px] border border-line-strong p-6;
+	}
+
+	.dark .card {
+		@apply border-line;
 	}
 	.page {
 		@apply flex flex-col px-4 py-12 h-screen;

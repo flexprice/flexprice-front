@@ -31,7 +31,7 @@ const OrgTypeMetadataFilter = ({ value, onChange }: OrgTypeMetadataFilterProps) 
 						aria-pressed={isSelected}
 						className={cn(
 							'h-7 rounded-[6px] px-3 text-sm font-medium transition-colors',
-							isSelected ? 'bg-brand-navy text-content-inverse' : 'text-foreground hover:bg-accent hover:text-accent-foreground',
+							isSelected ? 'bg-brand-fill text-content-on-brand' : 'text-foreground hover:bg-accent hover:text-accent-foreground',
 						)}>
 						{t(`list.orgTypeFilter.${option}`)}
 					</button>

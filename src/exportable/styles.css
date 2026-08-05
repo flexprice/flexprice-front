@@ -70,6 +70,7 @@
 	--fp-surface-strong: 229 231 235;
 	--fp-surface-heavy: 156 163 175;
 	--fp-surface-faint: 250 250 250;
+	--fp-surface-canvas: 255 255 255;
 	--fp-surface-cool: 248 250 252;
 	--fp-surface-inverse: 17 24 39;
 	--fp-surface-inverse-zinc: 24 24 27;
@@ -183,6 +184,8 @@
 	--fp-line-faint: 186 186 186;
 	--fp-content-slate-deep: 2 6 23;
 	--fp-brand-navy: 9 46 68;
+	--fp-brand-fill: 9 46 68;
+	--fp-content-on-brand: 255 255 255;
 	--fp-surface-notch: 212 212 216;
 	--fp-accent-yellow-muted: 254 240 138;
 	--fp-surface-avatar: 0 0 0;
@@ -248,6 +251,16 @@
 	--fp-chip-indigo-bg: 238 242 255;
 	--fp-chip-indigo-text: 67 56 202;
 	--fp-chip-indigo-line: 224 231 255;
+	--fp-chip-type-static-bg: 243 244 246;
+	--fp-chip-type-static-text: 75 85 99;
+	--fp-chip-type-metered-bg: 219 234 254;
+	--fp-chip-type-metered-text: 30 64 175;
+	--fp-chip-type-boolean-bg: 220 252 231;
+	--fp-chip-type-boolean-text: 22 101 52;
+	--fp-chip-type-config-bg: 245 243 255;
+	--fp-chip-type-config-text: 91 33 182;
+	--fp-chip-type-default-bg: 249 250 251;
+	--fp-chip-type-default-text: 107 114 128;
 	--fp-brand-blue: 50 147 217;
 	--fp-brand-blue-light: 229 240 255;
 	/* fp-tokens:end lib-light */
@@ -295,6 +308,7 @@
 	--fp-surface-strong: 46 46 51;
 	--fp-surface-heavy: 79 79 87;
 	--fp-surface-faint: 31 31 34;
+	--fp-surface-canvas: 24 24 24;
 	--fp-surface-cool: 26 26 29;
 	--fp-surface-inverse: 238 239 241;
 	--fp-surface-inverse-zinc: 238 239 241;
@@ -408,6 +422,8 @@
 	--fp-line-faint: 53 53 59;
 	--fp-content-slate-deep: 238 239 241;
 	--fp-brand-navy: 109 184 232;
+	--fp-brand-fill: 26 112 162;
+	--fp-content-on-brand: 255 255 255;
 	--fp-surface-notch: 69 69 77;
 	--fp-accent-yellow-muted: 58 43 18;
 	--fp-surface-avatar: 238 239 241;
@@ -473,6 +489,16 @@
 	--fp-chip-indigo-bg: 25 28 56;
 	--fp-chip-indigo-text: 154 162 245;
 	--fp-chip-indigo-line: 40 45 84;
+	--fp-chip-type-static-bg: 32 32 36;
+	--fp-chip-type-static-text: 169 173 182;
+	--fp-chip-type-metered-bg: 22 36 60;
+	--fp-chip-type-metered-text: 127 179 245;
+	--fp-chip-type-boolean-bg: 22 48 31;
+	--fp-chip-type-boolean-text: 116 217 159;
+	--fp-chip-type-config-bg: 30 23 51;
+	--fp-chip-type-config-text: 185 166 245;
+	--fp-chip-type-default-bg: 31 31 34;
+	--fp-chip-type-default-text: 138 143 152;
 	--fp-brand-blue: 74 168 232;
 	--fp-brand-blue-light: 22 40 63;
 	/* fp-tokens:end lib-dark */

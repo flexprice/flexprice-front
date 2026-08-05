@@ -160,16 +160,56 @@ const FeaturesPage = () => {
 			const label = getFeatureTypeChipLabel(type);
 			switch (type.toLocaleLowerCase()) {
 				case FEATURE_TYPE.STATIC: {
-					return <Chip textColor='#4B5563' bgColor='#F3F4F6' icon={addIcon ? icon : null} label={label} className='text-xs' />;
+					return (
+						<Chip
+							textColor='rgb(var(--fp-chip-type-static-text))'
+							bgColor='rgb(var(--fp-chip-type-static-bg))'
+							icon={addIcon ? icon : null}
+							label={label}
+							className='text-xs'
+						/>
+					);
 				}
 				case FEATURE_TYPE.METERED:
-					return <Chip textColor='#1E40AF' bgColor='#DBEAFE' icon={addIcon ? icon : null} label={label} className='text-xs' />;
+					return (
+						<Chip
+							textColor='rgb(var(--fp-chip-type-metered-text))'
+							bgColor='rgb(var(--fp-chip-type-metered-bg))'
+							icon={addIcon ? icon : null}
+							label={label}
+							className='text-xs'
+						/>
+					);
 				case FEATURE_TYPE.BOOLEAN:
-					return <Chip textColor='#166534' bgColor='#DCFCE7' icon={addIcon ? icon : null} label={label} className='text-xs' />;
+					return (
+						<Chip
+							textColor='rgb(var(--fp-chip-type-boolean-text))'
+							bgColor='rgb(var(--fp-chip-type-boolean-bg))'
+							icon={addIcon ? icon : null}
+							label={label}
+							className='text-xs'
+						/>
+					);
 				case FEATURE_TYPE.CONFIG:
-					return <Chip textColor='#5B21B6' bgColor='#F5F3FF' icon={addIcon ? icon : null} label={label} className='text-xs' />;
+					return (
+						<Chip
+							textColor='rgb(var(--fp-chip-type-config-text))'
+							bgColor='rgb(var(--fp-chip-type-config-bg))'
+							icon={addIcon ? icon : null}
+							label={label}
+							className='text-xs'
+						/>
+					);
 				default:
-					return <Chip textColor='#6B7280' bgColor='#F9FAFB' icon={addIcon ? icon : null} label={label} className='text-xs' />;
+					return (
+						<Chip
+							textColor='rgb(var(--fp-chip-type-default-text))'
+							bgColor='rgb(var(--fp-chip-type-default-bg))'
+							icon={addIcon ? icon : null}
+							label={label}
+							className='text-xs'
+						/>
+					);
 			}
 		},
 		[getFeatureTypeChipLabel],

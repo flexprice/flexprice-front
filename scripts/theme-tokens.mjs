@@ -24,6 +24,14 @@ export const TOKEN_GROUPS = [
 			{ name: 'surface-strong', light: 'gray.200', dark: '#2e2e33' },
 			{ name: 'surface-heavy', light: 'gray.400', dark: '#4f4f57' },
 			{ name: 'surface-faint', light: 'zinc.50', dark: '#1f1f22' },
+
+			/*
+			 * The app canvas behind every card. It used to share `surface` with the cards themselves, so
+			 * in dark the page and the panels on it were both #1d1d1f and nothing read as raised.
+			 * Dropping the canvas to #181818 puts real separation back. Light is untouched — both are
+			 * still #ffffff, exactly as before.
+			 */
+			{ name: 'surface-canvas', light: 'white', dark: '#181818', note: 'main content area — stays darker than surface' },
 			{ name: 'surface-cool', light: 'slate.50', dark: '#1a1a1d' },
 			{ name: 'surface-inverse', light: 'gray.900', dark: '#eeeff1', note: 'dark-on-light chips invert' },
 			{ name: 'surface-inverse-zinc', light: 'zinc.900', dark: '#eeeff1', note: 'inverted tooltips built on zinc rather than gray' },
@@ -207,6 +215,19 @@ export const TOKEN_GROUPS = [
 			{ name: 'line-faint', light: '#bababa', dark: '#35353b', note: 'promo card hairline' },
 			{ name: 'content-slate-deep', light: 'slate.950', dark: '#eeeff1', note: 'active breadcrumb' },
 			{ name: 'brand-navy', light: '#092E44', dark: '#6db8e8', note: 'Flexprice navy — brightened so it reads on dark' },
+
+			/*
+			 * The primary button FILL, split from `brand-navy` on purpose.
+			 *
+			 * brand-navy has to serve two jobs that pull opposite ways in dark: as a fill it wants to stay
+			 * a deep brand blue, and as TEXT on a dark card it has to be bright enough to read — which is
+			 * why it was lifted to #6db8e8. One token cannot be both, so the fill gets its own.
+			 *
+			 * `content-on-brand` stays white in both themes because this button no longer inverts:
+			 * content-inverse would land near-black on #1a70a2 at 3.54:1, while white reads 5.41:1.
+			 */
+			{ name: 'brand-fill', light: '#092E44', dark: '#1a70a2', note: 'primary button fill' },
+			{ name: 'content-on-brand', light: 'white', dark: '#ffffff', note: 'label on brand-fill — white in both themes' },
 			{ name: 'surface-notch', light: 'zinc.300', dark: '#45454d', note: 'Card notch bar — zinc.300 as a fill, not a border' },
 			{ name: 'accent-yellow-muted', light: 'yellow.200', dark: '#3a2b12', note: 'Coming-soon badge fill' },
 			{
@@ -324,6 +345,23 @@ export const TOKEN_GROUPS = [
 			{ name: 'chip-indigo-bg', light: '#EEF2FF', dark: '#191c38' },
 			{ name: 'chip-indigo-text', light: '#4338CA', dark: '#9aa2f5' },
 			{ name: 'chip-indigo-line', light: '#E0E7FF', dark: '#282d54' },
+
+			/*
+			 * Feature-type chips (Static / Metered / Boolean / Config). Features.tsx passed these as raw
+			 * hex into Chip's textColor/bgColor PROPS — a JSX prop rather than a class or a style, so no
+			 * check ever saw them and they stayed pastel on a dark page. Light values are those exact
+			 * hexes; dark follows the deep, desaturated fills the other chips already use.
+			 */
+			{ name: 'chip-type-static-bg', light: 'gray.100', dark: '#202024' },
+			{ name: 'chip-type-static-text', light: 'gray.600', dark: '#a9adb6' },
+			{ name: 'chip-type-metered-bg', light: 'blue.100', dark: '#16243c' },
+			{ name: 'chip-type-metered-text', light: 'blue.800', dark: '#7fb3f5' },
+			{ name: 'chip-type-boolean-bg', light: 'green.100', dark: '#16301f' },
+			{ name: 'chip-type-boolean-text', light: 'green.800', dark: '#74d99f' },
+			{ name: 'chip-type-config-bg', light: 'violet.50', dark: '#1e1733' },
+			{ name: 'chip-type-config-text', light: 'violet.800', dark: '#b9a6f5' },
+			{ name: 'chip-type-default-bg', light: 'gray.50', dark: '#1f1f22' },
+			{ name: 'chip-type-default-text', light: 'gray.500', dark: '#8a8f98' },
 		],
 	},
 	{

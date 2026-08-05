@@ -47,7 +47,7 @@ const MainLayout: React.FC = () => {
 			{/* Sidebar */}
 			<Sidebar />
 			{/* Right Layout */}
-			<SidebarInset className='flex flex-col flex-1 bg-surface h-screen relative'>
+			<SidebarInset className='flex flex-col flex-1 bg-surface-canvas h-screen relative'>
 				<FundingStrip />
 				<BreadCrumbs />
 				<RestrictedEnvBanner />
