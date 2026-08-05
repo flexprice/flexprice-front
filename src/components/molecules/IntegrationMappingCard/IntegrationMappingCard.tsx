@@ -11,6 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import IntegrationMappingApi, { IntegrationConfigItem, IntegrationMappingItem } from '@/api/IntegrationMappingApi';
 import { integrationCatalogSpecs } from '@/pages/insights-tools/integrations/integrationsData';
 import formatDate from '@/utils/common/format_date';
+import { cn } from '@/lib/utils';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 import PaymentApi from '@/api/PaymentApi';
 import ConnectionApi from '@/api/ConnectionApi';
@@ -25,9 +26,10 @@ const CONNECTION_DRIVEN_PROVIDERS: Record<string, IntegrationEntityType[]> = {
 	[CONNECTION_PROVIDER_TYPE.AZURE_MARKETPLACE]: ['customer', 'subscription', 'plan'],
 };
 
-const providerLogoMap = new Map(integrationCatalogSpecs.map((spec) => [spec.id, spec.logo]));
+/** Both marks per provider — a few brands draw in a deep navy that vanishes on a dark surface. */
+const providerLogoMap = new Map(integrationCatalogSpecs.map((spec) => [spec.id, { logo: spec.logo, logoDark: spec.logoDark }]));
 
-const getProviderLogo = (providerType: string): string | undefined => {
+const getProviderLogo = (providerType: string): { logo: string; logoDark?: string } | undefined => {
 	const mappedId = PROVIDER_ID_MAP[providerType] ?? providerType;
 	return providerLogoMap.get(mappedId);
 };
@@ -232,10 +234,17 @@ const IntegrationMappingCard: FC<IntegrationMappingCardProps> = ({
 			{
 				title: 'Integration',
 				render: (row: IntegrationRow) => {
-					const logo = getProviderLogo(row.provider_type);
+					const marks = getProviderLogo(row.provider_type);
 					return (
 						<div className='flex items-center gap-2'>
-							{logo && <img src={logo} alt={row.provider_type} className='size-5 object-contain' />}
+							{marks && (
+								<>
+									<img src={marks.logo} alt={row.provider_type} className={cn('size-5 object-contain', marks.logoDark && 'dark:hidden')} />
+									{marks.logoDark && (
+										<img src={marks.logoDark} alt={row.provider_type} className='size-5 hidden object-contain dark:block' />
+									)}
+								</>
+							)}
 							<span className='font-medium text-foreground'>{formatProviderName(row.provider_type)}</span>
 						</div>
 					);

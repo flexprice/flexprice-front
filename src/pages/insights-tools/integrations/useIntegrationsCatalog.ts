@@ -33,6 +33,7 @@ function mapSpecToIntegration(
 		name,
 		description,
 		logo: spec.logo,
+		logoDark: spec.logoDark,
 		tags,
 		tagKeys: [...spec.tagKeys],
 		websiteUrl: spec.websiteUrl,
