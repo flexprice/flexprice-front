@@ -469,7 +469,16 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 				<div className='min-w-0 overflow-hidden p-6 flex-1'>
 					<div className='flex gap-5'>
 						<div className='flex size-14 shrink-0 items-center justify-center rounded-lg bg-surface-slate-subtle'>
-							<img src={integration.logo} alt={integration.name} className='size-8 object-contain' />
+							{/* Brands whose mark is a deep navy ship a dark variant; the rest read fine on either
+					    surface and reuse the one logo. `hidden` means only the shown image is fetched. */}
+							<img
+								src={integration.logo}
+								alt={integration.name}
+								className={cn('size-8 object-contain', integration.logoDark && 'dark:hidden')}
+							/>
+							{integration.logoDark && (
+								<img src={integration.logoDark} alt={integration.name} className='size-8 hidden object-contain dark:block' />
+							)}
 						</div>
 						<div className='min-w-0 flex-1 space-y-2'>
 							<div className='flex items-center gap-2'>

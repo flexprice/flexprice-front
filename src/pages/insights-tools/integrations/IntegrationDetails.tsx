@@ -109,7 +109,16 @@ const IntegrationDetails = () => {
 			<ApiDocsContent tags={API_DOCS_TAGS.Integrations} />
 			<div className={cn('border rounded-[6px] p-4 flex items-center shadow-sm', !integration.premium && 'cursor-pointer')}>
 				<div className='size-20 flex items-center justify-center bg-surface-shell rounded-[6px]'>
-					<img src={integration.logo} alt={integration.name} className='size-10 object-contain' />
+					{/* Brands whose mark is a deep navy ship a dark variant; the rest read fine on either
+					    surface and reuse the one logo. `hidden` means only the shown image is fetched. */}
+					<img
+						src={integration.logo}
+						alt={integration.name}
+						className={cn('size-10 object-contain', integration.logoDark && 'dark:hidden')}
+					/>
+					{integration.logoDark && (
+						<img src={integration.logoDark} alt={integration.name} className='size-10 hidden object-contain dark:block' />
+					)}
 				</div>
 				<div className='ml-4 flex-1'>
 					<div className='flex items-center justify-between w-full'>
