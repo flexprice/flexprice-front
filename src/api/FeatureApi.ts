@@ -10,6 +10,7 @@ import {
 	GetFeaturesResponse,
 	GetFeatureByFilterPayload,
 	UpdateFeaturePayload,
+	CloneFeatureRequest,
 } from '@/types/dto';
 
 class FeatureApi {
@@ -99,6 +100,16 @@ class FeatureApi {
 	 */
 	public static async updateFeatureLegacy(id: string, data: UpdateFeaturePayload): Promise<FeatureResponse> {
 		return await AxiosClient.put<FeatureResponse, UpdateFeaturePayload>(`${this.baseUrl}/${id}`, data);
+	}
+
+	/**
+	 * Clone a Feature
+	 * @param id Source feature ID
+	 * @param data Clone payload
+	 * @returns Newly created feature
+	 */
+	public static async cloneFeature(id: string, data: CloneFeatureRequest): Promise<FeatureResponse> {
+		return await AxiosClient.post<FeatureResponse, CloneFeatureRequest>(`${this.baseUrl}/${id}/clone`, data);
 	}
 }
 

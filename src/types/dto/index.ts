@@ -19,6 +19,7 @@ export type {
 	GetFeatureByFilterPayload,
 	UpdateFeaturePayload,
 	ReportingUnit,
+	CloneFeatureRequest,
 } from './Feature';
 
 export type { GetConnectionsPayload, GetConnectionsResponse, CreateConnectionPayload, UpdateConnectionPayload } from './Connection';

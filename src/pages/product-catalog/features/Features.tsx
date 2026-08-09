@@ -1,5 +1,5 @@
 import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
-import { ApiDocsContent, FeatureDrawer, RedirectCell } from '@/components/molecules';
+import { ApiDocsContent, DuplicateFeatureDialog, FeatureDrawer, RedirectCell } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
 import { RouteNames } from '@/core/routes/Routes';
@@ -25,6 +25,7 @@ import { toSentenceCase } from '@/utils/common/helper_functions';
 import formatDate from '@/utils/common/format_date';
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { searchGroupsForFilter } from '@/utils/filterSearchHelpers';
+import { Copy } from 'lucide-react';
 
 const initialFilters: FilterCondition[] = [
 	{
@@ -50,6 +51,8 @@ const FeaturesPage = () => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
 	const navigate = useNavigate();
+	const [isDuplicateOpen, setIsDuplicateOpen] = useState(false);
+	const [selectedFeatureForClone, setSelectedFeatureForClone] = useState<Feature | null>(null);
 
 	const handleEdit = useCallback((feature: Feature) => {
 		setSelectedFeature(feature);
@@ -269,6 +272,17 @@ const FeaturesPage = () => {
 								enabled: true,
 								onClick: () => handleEdit(row),
 							}}
+							customActions={[
+								{
+									text: t('features.duplicate.duplicate'),
+									icon: <Copy size={16} />,
+									enabled: true,
+									onClick: () => {
+										setSelectedFeatureForClone(row);
+										setIsDuplicateOpen(true);
+									},
+								},
+							]}
 						/>
 					);
 				},
@@ -329,6 +343,16 @@ const FeaturesPage = () => {
 			/>
 			{selectedFeature && (
 				<FeatureDrawer data={selectedFeature} open={isDrawerOpen} onOpenChange={setIsDrawerOpen} refetchQueryKeys={['fetchFeatures']} />
+			)}
+
+			{selectedFeatureForClone && (
+				<DuplicateFeatureDialog
+					open={isDuplicateOpen}
+					onOpenChange={setIsDuplicateOpen}
+					featureId={selectedFeatureForClone.id}
+					feature={selectedFeatureForClone}
+					refetchQueryKeys={['fetchFeatures']}
+				/>
 			)}
 		</Page>
 	);

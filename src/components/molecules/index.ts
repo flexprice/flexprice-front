@@ -111,6 +111,7 @@ export { default as CurrencyPriceUnitSelector } from './CurrencyPriceUnitSelecto
 export { AddonTable, AddonModal } from './AddonTable';
 export { default as AddonDrawer } from './AddonDrawer';
 export { default as FeatureTable } from './FeatureTable';
+export { default as DuplicateFeatureDialog } from './DuplicateFeatureDialog';
 export { FeatureAlertDialog } from './FeatureAlertDialog';
 export { FeatureDrawer } from './FeatureDrawer';
 
