@@ -52,7 +52,7 @@ const InvoiceLineItemTable: FC<Props> = ({
 		.sort((a, b) => Number(b.amount ?? 0) - Number(a.amount ?? 0));
 
 	return (
-		<div className='bg-surface'>
+		<div className='bg-transparent'>
 			<div className='w-full p-6'>
 				<div className='flex justify-between items-center mb-6'>
 					<FormHeader

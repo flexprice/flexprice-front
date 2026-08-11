@@ -48,7 +48,7 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 	 * photograph it would never see.
 	 */
 	return (
-		<div className='flex w-full min-h-screen bg-surface page !p-0 !flex-col lg:!flex-row'>
+		<div className='flex w-full min-h-screen bg-surface-canvas page !p-0 !flex-col lg:!flex-row'>
 			<div className='w-full lg:w-[45%] flex flex-col'>
 				<a
 					href={SLACK_COMMUNITY_URL}

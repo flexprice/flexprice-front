@@ -183,7 +183,7 @@ const DebugMenu = () => {
 							damping: 25,
 							duration: 0.3,
 						}}
-						className={`fixed bottom-6 ${anchorClass} w-[300px] bg-surface/95 dark:bg-gray-900/95 rounded-lg shadow-lg z-[100] border border-line/50 dark:border-gray-800/50 backdrop-blur-sm`}
+						className={`fixed bottom-6 ${anchorClass} w-[300px] bg-surface/95 rounded-lg shadow-lg z-[100] border border-line/50 backdrop-blur-sm`}
 						drag
 						dragConstraints={{
 							top: -400,

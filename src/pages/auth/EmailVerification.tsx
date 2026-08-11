@@ -7,6 +7,8 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
 import { config } from '@/config/config';
+import sideBg from '../../../assets/side.png';
+import sideBgDark from '../../../assets/sidedark.png';
 
 const EmailVerification = () => {
 	const navigate = useNavigate();
@@ -49,13 +51,17 @@ const EmailVerification = () => {
 	};
 
 	return (
-		<div
-			className='fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto p-4'
-			style={{
-				backgroundImage: `url('/assets/onboarding.png')`,
-				backgroundSize: 'cover',
-				backgroundPosition: 'center',
-			}}>
+		<div className='fixed inset-0 z-50 flex min-h-screen items-center justify-center overflow-y-auto p-4'>
+			<div
+				aria-hidden
+				className='absolute inset-0 bg-cover bg-center bg-no-repeat dark:hidden'
+				style={{ backgroundImage: `url(${sideBg})` }}
+			/>
+			<div
+				aria-hidden
+				className='absolute inset-0 hidden bg-cover bg-center bg-no-repeat dark:block'
+				style={{ backgroundImage: `url(${sideBgDark})` }}
+			/>
 			<div className='absolute inset-0 bg-surface/30' aria-hidden />
 			<div className='relative w-full max-w-[480px] rounded-2xl bg-surface p-8 shadow-lg'>
 				<div className='mb-6 flex justify-center'>

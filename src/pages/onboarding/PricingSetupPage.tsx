@@ -17,7 +17,7 @@ import { getErrorMessage } from '@/utils/errorMessage';
 import { PricingCard } from '@/components/molecules';
 import { Button } from '@/components/ui';
 /** Dark counterpart of /assets/v4bgagentic.png — the light grid glared on a dark page. */
-import promptToPlanDarkBg from '../../../assets/promptoplanbg.png';
+import promptToPlanDarkBg from '../../../assets/ptpdark.png';
 
 // ============================================
 // Progress step labels

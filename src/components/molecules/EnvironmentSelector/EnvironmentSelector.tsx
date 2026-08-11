@@ -196,7 +196,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 						<ChevronsUpDown className='h-4 w-4 opacity-60 shrink-0' />
 					</div>
 				</SelectTrigger>
-				<SelectContent className='mt-2 w-[calc(var(--radix-select-trigger-width)+8px)] max-w-[calc(var(--radix-select-trigger-width)+8px)]'>
+				<SelectContent className='mt-2 w-[calc(var(--radix-select-trigger-width)+8px)] max-w-[calc(var(--radix-select-trigger-width)+8px)] border-line bg-surface text-content'>
 					{options.map((option, idx) => {
 						const env = environments[idx];
 						return (

@@ -26,7 +26,7 @@ const BreadCrumbsSearchTrigger: React.FC = () => {
 			onClick={handleClick}
 			variant='outline'
 			size='sm'
-			className='flex w-auto min-w-0 sm:min-w-[180px] md:min-w-[220px] items-center border-line bg-surface hover:bg-surface-subtle hover:border-line !ps-2 sm:!ps-3 !pe-2 [&>div]:w-full [&>div]:min-w-0 [&>div]:gap-2'
+			className='flex w-auto min-w-0 sm:min-w-[180px] md:min-w-[220px] items-center border-line bg-surface hover:bg-surface-subtle hover:border-line !ps-2 sm:!ps-3 !pe-1 [&>div]:w-full [&>div]:min-w-0 [&>div]:gap-2'
 			aria-label={t('commandPalette.searchAriaLabel')}>
 			<Search className='h-4 w-4 shrink-0 text-content-subtle order-first' />
 			<span className='hidden sm:block flex-1 min-w-0 truncate text-start text-muted-foreground order-2'>

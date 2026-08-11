@@ -9,8 +9,8 @@ import { Wand2 } from 'lucide-react';
 
 /** Figma export: sidebar “Create with AI” promo (grid art on the right). */
 import promoFrameUrl from '../../../../assets/Frame 1400002331.png';
-/** Same grid art re-rendered dark — the light PNG is near-white and glared on the Midnight card. */
-import promoFrameDarkUrl from '../../../../assets/promptoplanbg.png';
+/** Dark textured backdrop for the prompt-to-plan nudge. */
+import promoFrameDarkUrl from '../../../../assets/ptpdark.png';
 
 export interface SidebarPricingPromoCardProps {
 	onCreateWithAI: () => void;
@@ -38,7 +38,7 @@ const SidebarPricingPromoCard: FC<SidebarPricingPromoCardProps> = ({ onCreateWit
 				aria-hidden
 			/>
 			<div
-				className='pointer-events-none absolute inset-0 hidden bg-cover bg-right bg-no-repeat dark:block'
+				className='pointer-events-none absolute inset-0 hidden bg-cover bg-center bg-no-repeat dark:block'
 				style={{ backgroundImage: `url("${promoFrameDarkUrl}")` }}
 				aria-hidden
 			/>

@@ -313,15 +313,15 @@
 		/* fp-tokens:end light */
 	}
 	.dark {
-		--background: 240 2.2% 8.8%; /* #161617 — content well — the page behind the cards */
+		--background: 0 0% 7.5%; /* #131313 — matches --fp-surface-canvas */
 
 		--foreground: 220 9.7% 93.9%; /* #eeeff1 — matches --fp-content */
 
-		--card: 240 3.3% 11.8%; /* #1d1d1f — elevated panel — matches --fp-surface */
+		--card: 0 0% 9.4%; /* #181818 — elevated panel — matches --fp-surface */
 
 		--card-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 
-		--popover: 240 3.9% 15.1%; /* #252528 — floats above cards */
+		--popover: 240 4.1% 14.3%; /* #232326 — floats above surface #181818; matches --fp-surface-subtle */
 
 		--popover-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 
@@ -368,7 +368,7 @@
 		--sidebar-foreground: 222.9 8% 82.9%; /* #d0d2d7 */
 		--sidebar-primary: 220 9.7% 93.9%; /* #eeeff1 */
 		--sidebar-primary-foreground: 240 3.2% 6.1%; /* #0f0f10 */
-		--sidebar-accent: 240 3.3% 11.8%; /* #1d1d1f — selected / hovered nav item */
+		--sidebar-accent: 0 0% 9.4%; /* #181818 — selected / hovered nav item */
 		--sidebar-accent-foreground: 220 9.7% 93.9%; /* #eeeff1 */
 		--sidebar-border: 240 5.7% 17.1%; /* #29292e */
 		--sidebar-ring: 221.5 5.6% 45.7%; /* #6e727b */
@@ -380,18 +380,18 @@
 		 * ------------------------------------------------------------------ */
 
 		/* Surfaces — backgrounds. Midnight layers chrome (darkest) under panels (lighter). */
-		--fp-surface: 29 29 31; /* #1d1d1f */
+		--fp-surface: 24 24 24; /* #181818 */
 		--fp-surface-subtle: 35 35 38; /* #232326 */
 		--fp-surface-muted: 37 37 40; /* #252528 */
 		--fp-surface-shell: 15 15 16; /* #0f0f10 */
 		--fp-surface-strong: 46 46 51; /* #2e2e33 */
 		--fp-surface-heavy: 79 79 87; /* #4f4f57 */
-		--fp-surface-faint: 31 31 34; /* #1f1f22 */
-		--fp-surface-canvas: 24 24 24; /* #181818 */
+		--fp-surface-faint: 31 31 34; /* #1f1f22 — recessed / hover well (slightly above surface) */
+		--fp-surface-canvas: 19 19 19; /* #131313 */
 		--fp-surface-cool: 26 26 29; /* #1a1a1d */
 		--fp-surface-inverse: 238 239 241; /* #eeeff1 */
 		--fp-surface-inverse-zinc: 238 239 241; /* #eeeff1 */
-		--fp-surface-track: 69 69 77; /* #45454d */
+		--fp-surface-track: 232 232 234; /* #e8e8ea — switch track when off (light track on dark UI) */
 		--fp-surface-scrim: 0 0 0; /* #000000 */
 
 		/* Content — text, icons, fills. The light ramp inverts to the Midnight text ramp. */
@@ -575,11 +575,11 @@
 
 		/* Off-palette values that predate the token layer — greys and accents written as arbitrary hex. */
 		--fp-surface-panel: 35 35 38; /* #232326 */
-		--fp-surface-panel-alt: 38 38 42; /* #26262a */
-		--fp-surface-thumb: 35 35 38; /* #232326 */
-		--fp-surface-thumb-alt: 35 35 38; /* #232326 */
-		--fp-surface-faint-inner: 31 31 34; /* #1f1f22 */
-		--fp-surface-thumb-inner: 35 35 38; /* #232326 */
+		--fp-surface-panel-alt: 27 27 29; /* #1b1b1d — tutorial card gradient end (subtle lift from surface #181818) */
+		--fp-surface-thumb: 24 24 24; /* #181818 — tutorial card thumbnail well matches surface in dark */
+		--fp-surface-thumb-alt: 24 24 24; /* #181818 */
+		--fp-surface-faint-inner: 31 31 34; /* #1f1f22 — vanish into surface-faint */
+		--fp-surface-thumb-inner: 24 24 24; /* #181818 — img placeholder inside surface-thumb — must vanish */
 		--fp-surface-cool-strong: 38 38 46; /* #26262e */
 		--fp-line-hairline: 41 41 46; /* #29292e */
 		--fp-line-muted: 53 53 59; /* #35353b */

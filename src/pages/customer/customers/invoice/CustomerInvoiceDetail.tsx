@@ -173,7 +173,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 						}
 					}}
 				/>
-				<div ref={invoiceref} className=' rounded-xl border border-line-strong p-6'>
+				<div ref={invoiceref} className='rounded-xl border border-line bg-transparent p-6'>
 					<div className='p-4'>
 						<div className='w-full flex justify-between items-center'>
 							<p className={cn(getTypographyClass('section-title'), 'text-xl mb-0')}>{t('createInvoice.invoiceDetails')}</p>
@@ -274,7 +274,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 
 			{/* applied taxes if exists */}
 			{data?.taxes?.length && data?.taxes?.length > 0 && (
-				<Card>
+				<Card className='bg-transparent border-line'>
 					<CardHeader title={t('invoices.detailLabels.appliedTaxes')} />
 					<div className='p-4'>
 						<AppliedTaxesTable data={data.taxes} />
@@ -290,7 +290,7 @@ const CustomerInvoiceDetail: FC<Props> = ({ invoice_id, breadcrumb_index }) => {
 
 			{/* metadata section - only show if metadata exists */}
 			{metadata && Object.keys(metadata).length > 0 && (
-				<Card>
+				<Card className='bg-transparent border-line'>
 					<CardHeader title={t('taxes.metadata')} />
 					<div className='p-4'>
 						<table className='w-full table-fixed'>

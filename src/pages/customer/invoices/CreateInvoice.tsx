@@ -213,7 +213,7 @@ const CreateInvoicePage: FC = () => {
 	return (
 		<Page heading={t('createInvoice.pageTitle')}>
 			<div className='space-y-6'>
-				<div className='rounded-xl border border-line-strong p-6'>
+				<div className='rounded-xl border border-line bg-transparent p-6'>
 					<div className='p-4'>
 						<FormHeader title={t('createInvoice.invoiceDetails')} variant='sub-header' titleClassName='font-semibold' />
 						<Spacer className='!my-6' />

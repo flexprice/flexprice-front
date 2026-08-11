@@ -382,7 +382,7 @@ const IntegrationMappingCard: FC<IntegrationMappingCardProps> = ({
 
 	return (
 		<>
-			<Card variant='notched'>
+			<Card variant='notched' className='bg-transparent'>
 				<CardHeader title={t('integrations.title')} titleClassName='font-semibold' />
 				<FlexpriceTable data={integrationRows} columns={integrationColumns} showEmptyRow variant='no-bordered' />
 			</Card>

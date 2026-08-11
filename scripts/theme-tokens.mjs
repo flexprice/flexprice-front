@@ -17,29 +17,29 @@ export const TOKEN_GROUPS = [
 	{
 		group: 'Surfaces — backgrounds. Midnight layers chrome (darkest) under panels (lighter).',
 		tokens: [
-			{ name: 'surface', light: 'white', dark: '#1d1d1f', note: 'bg-white — the elevated panel' },
+			{ name: 'surface', light: 'white', dark: '#181818', note: 'bg-white — the elevated panel' },
 			{ name: 'surface-subtle', light: 'gray.50', dark: '#232326', note: 'recessed wells, table headers, hover rows' },
 			{ name: 'surface-muted', light: 'zinc.100', dark: '#252528' },
 			{ name: 'surface-shell', light: 'gray.100', dark: '#0f0f10', note: 'app chrome behind every panel — darkest layer' },
 			{ name: 'surface-strong', light: 'gray.200', dark: '#2e2e33' },
 			{ name: 'surface-heavy', light: 'gray.400', dark: '#4f4f57' },
-			{ name: 'surface-faint', light: 'zinc.50', dark: '#1f1f22' },
+			{ name: 'surface-faint', light: 'zinc.50', dark: '#1f1f22', note: 'recessed / hover well — slight lift above surface' },
 
 			/*
 			 * The app canvas behind every card. It used to share `surface` with the cards themselves, so
-			 * in dark the page and the panels on it were both #1d1d1f and nothing read as raised.
-			 * Dropping the canvas to #181818 puts real separation back. Light is untouched — both are
+			 * in dark the page and the panels on it collapsed together. Canvas stays at #131313 and
+			 * panels/header use #181818 so blocks still read as raised. Light is untouched — both are
 			 * still #ffffff, exactly as before.
 			 */
-			{ name: 'surface-canvas', light: 'white', dark: '#181818', note: 'main content area — stays darker than surface' },
+			{ name: 'surface-canvas', light: 'white', dark: '#131313', note: 'main content area — stays darker than surface' },
 			{ name: 'surface-cool', light: 'slate.50', dark: '#1a1a1d' },
 			{ name: 'surface-inverse', light: 'gray.900', dark: '#eeeff1', note: 'dark-on-light chips invert' },
 			{ name: 'surface-inverse-zinc', light: 'zinc.900', dark: '#eeeff1', note: 'inverted tooltips built on zinc rather than gray' },
 			{
 				name: 'surface-track',
 				light: 'slate.800',
-				dark: '#45454d',
-				note: 'switch track when off — dark on light cards, must lighten on dark ones',
+				dark: '#e8e8ea',
+				note: 'switch track when off — dark on light cards, light on dark cards',
 			},
 			{ name: 'surface-scrim', light: 'black', dark: '#000000', note: 'modal scrim — black in both themes' },
 		],
@@ -303,9 +303,9 @@ export const TOKEN_GROUPS = [
 		group: 'Off-palette values that predate the token layer — greys and accents written as arbitrary hex.',
 		tokens: [
 			{ name: 'surface-panel', light: '#FBFBFB', dark: '#232326', note: 'filter popovers' },
-			{ name: 'surface-panel-alt', light: '#FCFCFC', dark: '#26262a', note: 'tutorial card gradient end' },
-			{ name: 'surface-thumb', light: '#F5F5F5', dark: '#232326', note: 'tutorial card thumbnail well' },
-			{ name: 'surface-thumb-alt', light: '#F4F4F4', dark: '#232326' },
+			{ name: 'surface-panel-alt', light: '#FCFCFC', dark: '#1b1b1d', note: 'tutorial card gradient end' },
+			{ name: 'surface-thumb', light: '#F5F5F5', dark: '#181818', note: 'tutorial card thumbnail well' },
+			{ name: 'surface-thumb-alt', light: '#F4F4F4', dark: '#181818' },
 
 			/*
 			 * Two backgrounds that exist only inside another surface and were never meant to be seen.
@@ -319,9 +319,9 @@ export const TOKEN_GROUPS = [
 			 * Do not "simplify" these to their parent token — that would change light.
 			 */
 			{ name: 'surface-faint-inner', light: '#f9f9f9', dark: '#1f1f22', note: 'redundant fill inside surface-faint — must vanish' },
-			{ name: 'surface-thumb-inner', light: 'gray.100', dark: '#232326', note: 'img placeholder inside surface-thumb — must vanish' },
+			{ name: 'surface-thumb-inner', light: 'gray.100', dark: '#181818', note: 'img placeholder inside surface-thumb — must vanish' },
 			{ name: 'surface-cool-strong', light: '#DDE1EB', dark: '#26262e' },
-			{ name: 'line-hairline', light: '#E9E9E9', dark: '#29292e', note: 'empty-state card border' },
+			{ name: 'line-hairline', light: '#E9E9E9', dark: '#29292e', note: 'empty-state card border — matches line in dark' },
 			{ name: 'line-muted', light: '#CFCFCF', dark: '#35353b' },
 			{ name: 'line-slate-deep', light: 'slate.900', dark: '#45454d', note: 'selected radio outline' },
 			{ name: 'content-grey', light: '#5E5E5E', dark: '#a9adb6' },

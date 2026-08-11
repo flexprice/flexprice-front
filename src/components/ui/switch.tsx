@@ -13,15 +13,14 @@ const Switch = React.forwardRef<
 			'peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 border-2 border-transparent',
 			'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 			'disabled:cursor-not-allowed disabled:opacity-50',
-			'data-[state=checked]:bg-primary data-[state=unchecked]:bg-input',
+			// Track: primary when on; surface-track when off (dark track in light, light track in dark — token-driven).
+			'data-[state=checked]:bg-primary data-[state=unchecked]:bg-surface-track',
 			className,
 		)}
 		{...props}>
 		{/*
-		 * The thumb is `content-inverse`, not `surface`. The checked track is `bg-primary`, which is
-		 * near-black in light but near-white in dark — a white thumb would disappear on it.
-		 * `content-inverse` is #ffffff in light (byte-identical to the `bg-white` it replaced) and
-		 * #0f0f10 in dark, so the thumb always contrasts with the track.
+		 * Thumb is always content-inverse so it contrasts the track in both themes:
+		 * white on dark track/primary (light), dark on light track/primary (dark).
 		 */}
 		<SwitchPrimitives.Thumb
 			className={cn(

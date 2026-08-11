@@ -74,7 +74,8 @@ const DetailsCard: FC<Props> = ({
 	const na = t('labels.na');
 	const cardClasses = {
 		default: 'card bg-surface border rounded-lg p-6',
-		borderless: 'bg-surface',
+		// Inline on page canvas — no fill, or it reads as a floating box against surface-canvas in dark.
+		borderless: 'bg-transparent',
 		compact: 'card bg-surface border rounded-lg p-4',
 	};
 

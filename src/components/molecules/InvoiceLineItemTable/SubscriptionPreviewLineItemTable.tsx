@@ -45,7 +45,7 @@ const SubscriptionPreviewLineItemTable: FC<Props> = ({
 	const li = 'invoices.details.lineItemsTable';
 
 	return (
-		<div className='bg-surface'>
+		<div className='bg-transparent'>
 			<div className='flex justify-between items-center mb-6'>
 				<FormHeader
 					variant='sub-header'
