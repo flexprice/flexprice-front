@@ -1,3 +1,4 @@
+import { useRef, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { referralSourceOptions } from '../onboardingConstants';
@@ -9,13 +10,48 @@ type OnboardingReferralStepProps = {
 	onReferralSourceChange: (value: string) => void;
 };
 
-const OnboardingReferralStep = ({
-	referralSource,
-	error,
-	disabled,
-	onReferralSourceChange,
-}: OnboardingReferralStepProps) => {
+const OnboardingReferralStep = ({ referralSource, error, disabled, onReferralSourceChange }: OnboardingReferralStepProps) => {
 	const { t } = useTranslation('common');
+	const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+	const focusOption = (index: number) => {
+		const option = referralSourceOptions[index];
+		if (!option) return;
+		onReferralSourceChange(option.value);
+		buttonRefs.current[index]?.focus();
+	};
+
+	const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+		if (disabled || referralSourceOptions.length === 0) return;
+
+		const currentIndex = Math.max(
+			0,
+			referralSourceOptions.findIndex((option) => option.value === referralSource),
+		);
+
+		if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+			event.preventDefault();
+			focusOption((currentIndex + 1) % referralSourceOptions.length);
+			return;
+		}
+
+		if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+			event.preventDefault();
+			focusOption((currentIndex - 1 + referralSourceOptions.length) % referralSourceOptions.length);
+			return;
+		}
+
+		if (event.key === 'Home') {
+			event.preventDefault();
+			focusOption(0);
+			return;
+		}
+
+		if (event.key === 'End') {
+			event.preventDefault();
+			focusOption(referralSourceOptions.length - 1);
+		}
+	};
 
 	return (
 		<div className='space-y-3'>
@@ -27,15 +63,20 @@ const OnboardingReferralStep = ({
 				aria-labelledby='onboarding-referral-label'
 				aria-required='true'
 				aria-invalid={!!error}
+				onKeyDown={handleKeyDown}
 				className='flex flex-wrap gap-x-3 gap-y-3'>
-				{referralSourceOptions.map((option) => {
+				{referralSourceOptions.map((option, index) => {
 					const isSelected = referralSource === option.value;
 					return (
 						<button
 							key={option.value}
+							ref={(node) => {
+								buttonRefs.current[index] = node;
+							}}
 							type='button'
 							role='radio'
 							aria-checked={isSelected}
+							tabIndex={isSelected || (!referralSource && index === 0) ? 0 : -1}
 							disabled={disabled}
 							onClick={() => onReferralSourceChange(option.value)}
 							className={cn(
@@ -46,7 +87,7 @@ const OnboardingReferralStep = ({
 									? 'border-line-zinc-tertiary bg-surface text-content-zinc-bold shadow-sm'
 									: 'border-line-zinc bg-surface text-content-zinc-bold hover:bg-surface-subtle',
 							)}>
-							{option.label}
+							{t(option.labelKey)}
 						</button>
 					);
 				})}

@@ -552,10 +552,7 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 						checked={connected}
 						onCheckedChange={handleToggle}
 						disabled={integration.premium}
-						className={cn(
-							'data-[state=checked]:bg-accent-emerald data-[state=checked]:border-accent-emerald',
-							'data-[state=checked]:[&>span]:!bg-white',
-						)}
+						className='data-[state=checked]:bg-accent-emerald data-[state=checked]:border-accent-emerald'
 					/>
 				</div>
 			</Card>

@@ -149,6 +149,8 @@
 		"footerSelect": "اختيار",
 		"footerClose": "إغلاق",
 		"footerOpenAnytime": "للفتح في أي وقت",
+		"keyEnter": "Enter",
+		"keyEscape": "Esc",
 		"shortcutToast": "اضغط {{shortcut}} لفتح لوحة الأوامر في أي وقت",
 		"keyboardShortcutTitle": "أمر + K",
 		"kbdDisplay": "⌘ + K"
@@ -667,7 +669,23 @@
 		"orgNameLabel": "اسم المنظمة",
 		"orgNamePlaceholder": "أدخل اسم منظمتك",
 		"referralQuestion": "كيف عرفت عنا؟",
-		"referralPlaceholder": "من أين سمعت بنا؟"
+		"referralPlaceholder": "من أين سمعت بنا؟",
+		"referralRequired": "يرجى اختيار كيف عرفت عنا",
+		"orgNameRequired": "اسم المنظمة مطلوب",
+		"orgNameIsFlexprice": "هذه نحن! يرجى إدخال اسم منظمتك بدلاً من ذلك.",
+		"orgNameIsFlexpriceToast": "هذه نحن، يرجى إدخال اسم منظمتك.",
+		"orgNameBannedWord": "لا يمكن أن يتضمن اسم المنظمة الكلمة «{{word}}». يرجى اختيار اسم آخر.",
+		"successToast": "أصبحت جاهزاً!",
+		"completeFailed": "تعذّر إكمال الإعداد. يرجى المحاولة مجدداً.",
+		"referralSources": {
+			"linkedin": "LinkedIn",
+			"x": "X (Formerly Twitter)",
+			"reddit": "Reddit",
+			"blogs": "المدونات",
+			"aiSearch": "ChatGPT / Perplexity / Gemini",
+			"hackerNews": "HackerNews",
+			"productHunt": "Product Hunt"
+		}
 	},
 	"pricingSetupPage": {
 		"closeReturnDashboardAria": "إغلاق والعودة إلى لوحة التحكم",

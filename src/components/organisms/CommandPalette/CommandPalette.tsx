@@ -158,11 +158,7 @@ const CommandPalette = () => {
 								const Icon = command.icon;
 								const searchValue = [command.label, command.group, ...(command.keywords ?? [])].join(' ');
 								return (
-									<CommandItem
-										key={command.id}
-										value={searchValue}
-										onSelect={() => handleSelect(command)}
-										className='my-0.5 !rounded-xl'>
+									<CommandItem key={command.id} value={searchValue} onSelect={() => handleSelect(command)} className='my-0.5 !rounded-xl'>
 										{Icon && <Icon className='!size-4 shrink-0 text-muted-foreground' />}
 										<span className='!text-[13px] text-content-black/70 !font-normal'>{command.label}</span>
 									</CommandItem>
@@ -183,11 +179,11 @@ const CommandPalette = () => {
 						<span>{t('commandPalette.footerNavigate')}</span>
 					</span>
 					<span className='inline-flex items-center gap-1.5'>
-						<kbd className={kbdClass}>Enter</kbd>
+						<kbd className={kbdClass}>{t('commandPalette.keyEnter')}</kbd>
 						<span>{t('commandPalette.footerSelect')}</span>
 					</span>
 					<span className='inline-flex items-center gap-1.5'>
-						<kbd className={kbdClass}>Esc</kbd>
+						<kbd className={kbdClass}>{t('commandPalette.keyEscape')}</kbd>
 						<span>{t('commandPalette.footerClose')}</span>
 					</span>
 				</div>

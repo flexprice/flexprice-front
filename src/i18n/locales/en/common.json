@@ -163,6 +163,8 @@
 		"footerSelect": "Select",
 		"footerClose": "Close",
 		"footerOpenAnytime": "to open anytime",
+		"keyEnter": "Enter",
+		"keyEscape": "Esc",
 		"shortcutToast": "Press {{shortcut}} to open the command palette anytime",
 		"keyboardShortcutTitle": "Command + K",
 		"kbdDisplay": "⌘ + K"
@@ -672,7 +674,23 @@
 		"orgNameLabel": "Organization name",
 		"orgNamePlaceholder": "Enter your organization name",
 		"referralQuestion": "How did you find us?",
-		"referralPlaceholder": "Where did you hear about us?"
+		"referralPlaceholder": "Where did you hear about us?",
+		"referralRequired": "Please select how you found us",
+		"orgNameRequired": "Organization name is required",
+		"orgNameIsFlexprice": "Oops! That's us. Please enter your organization name instead.",
+		"orgNameIsFlexpriceToast": "That's us, please enter your organization name.",
+		"orgNameBannedWord": "Organization name cannot include the word “{{word}}”. Please choose another name.",
+		"successToast": "You're all set!",
+		"completeFailed": "Failed to complete onboarding. Please try again.",
+		"referralSources": {
+			"linkedin": "LinkedIn",
+			"x": "X (Formerly Twitter)",
+			"reddit": "Reddit",
+			"blogs": "Blogs",
+			"aiSearch": "ChatGPT / Perplexity / Gemini",
+			"hackerNews": "HackerNews",
+			"productHunt": "Product Hunt"
+		}
 	},
 	"pricingSetupPage": {
 		"closeReturnDashboardAria": "Close and return to dashboard",

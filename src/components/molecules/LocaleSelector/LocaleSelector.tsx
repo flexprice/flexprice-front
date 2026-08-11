@@ -20,7 +20,7 @@ const LocaleSelector: React.FC = () => {
 
 	return (
 		<Select value={locale} onValueChange={(v) => setLocale(v as Locale)}>
-			<SelectTrigger className='h-auto w-auto gap-1.5 border-none bg-transparent px-0 py-0 shadow-none focus:ring-0 focus:ring-offset-0 text-sm text-content-muted hover:text-content-secondary'>
+			<SelectTrigger className='h-auto w-auto gap-1.5 border-none bg-transparent px-0 py-0 shadow-none text-sm text-content-muted hover:text-content-secondary'>
 				<Globe size={14} />
 				<SelectValue />
 			</SelectTrigger>
