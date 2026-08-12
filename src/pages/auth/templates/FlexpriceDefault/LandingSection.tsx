@@ -5,7 +5,7 @@ import { TestimonialCard } from '@/components/molecules';
 import { Testimonial, CustomerLogo } from '@/types';
 import { cn } from '@/lib/utils';
 import authBg from '../../../../../assets/fortoolfinal.jpg';
-import authBgDark from '../../../../../assets/authdark.jpg';
+import authBgDark from '../../../../../assets/authdark.png';
 
 const testimonials: Testimonial[] = [
 	{
