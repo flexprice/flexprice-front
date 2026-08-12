@@ -39,11 +39,12 @@ const MetricCards = ({ metrics: rawMetrics, isLoading = false, className }: Metr
 
 	return (
 		<div
-			className={cn('flexprice-ui', 'grid gap-3', className)}
-			style={{
-				gridTemplateColumns: metrics.length === 1 ? 'auto' : `repeat(${metrics.length}, 1fr)`,
-				width: metrics.length === 1 ? '25%' : '100%',
-			}}>
+			className={cn(
+				'flexprice-ui',
+				'grid gap-3',
+				metrics.length === 1 ? 'grid-cols-1 w-1/4' : 'grid-cols-2 md:grid-cols-4 w-full',
+				className,
+			)}>
 			{metrics.map((item) => (
 				<MetricCard
 					key={item.id}

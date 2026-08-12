@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,12 @@ export const ShortPaginationControls = ({
 	const effectivePageSize = Math.max(1, pageSize);
 	const totalPages = Math.max(1, Math.ceil(totalItems / effectivePageSize));
 	const clampedPage = Math.min(Math.max(1, page), totalPages);
+
+	// The controlled `page` can go stale (e.g. the total shrinks below it after a delete/filter) —
+	// resync the parent to the clamped value so it doesn't keep requesting an out-of-range page.
+	useEffect(() => {
+		if (page !== clampedPage) onPageChange(clampedPage);
+	}, [page, clampedPage, onPageChange]);
 
 	const handlePageChange = (newPage: number) => {
 		if (newPage < 1 || newPage > totalPages) return;

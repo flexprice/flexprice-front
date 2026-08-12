@@ -1,48 +1,108 @@
 import { describe, it, expect } from 'vitest';
-import { FEATURE_TYPE } from '@/models/Feature';
+import { FEATURE_TYPE, type Feature } from '@/models/Feature';
+import { ENTITY_STATUS } from '@/models/base';
+import type { CustomerUsage, UsageAnalyticItem } from '@/models';
+import type { Group } from '@/models/Group';
+import { GROUP_ENTITY_TYPE } from '@/models/Group';
 import { adaptUsageQuotaItems, adaptMetricCards, adaptUsageTrendSeries, adaptUsageBreakdownRows } from './adapters';
+
+function makeFeature(overrides: Partial<Feature> = {}): Feature {
+	return {
+		id: 'feat_x',
+		created_at: '',
+		updated_at: '',
+		created_by: '',
+		updated_by: '',
+		tenant_id: '',
+		status: ENTITY_STATUS.PUBLISHED,
+		environment_id: '',
+		name: '',
+		description: '',
+		meter_id: '',
+		metadata: {},
+		type: FEATURE_TYPE.METERED,
+		unit_plural: '',
+		unit_singular: '',
+		...overrides,
+	};
+}
+
+function makeCustomerUsage(overrides: Partial<CustomerUsage> = {}): CustomerUsage {
+	return {
+		id: 'ent_x',
+		created_at: '',
+		updated_at: '',
+		created_by: '',
+		updated_by: '',
+		tenant_id: '',
+		status: ENTITY_STATUS.PUBLISHED,
+		environment_id: '',
+		feature: makeFeature(),
+		total_limit: null,
+		is_unlimited: false,
+		current_usage: 0,
+		usage_percent: 0,
+		is_enabled: true,
+		is_soft_limit: false,
+		next_usage_reset_at: null,
+		sources: [],
+		...overrides,
+	};
+}
+
+function makeGroup(overrides: Partial<Group> = {}): Group {
+	return {
+		id: 'grp_x',
+		created_at: '',
+		updated_at: '',
+		created_by: '',
+		updated_by: '',
+		tenant_id: '',
+		status: ENTITY_STATUS.PUBLISHED,
+		environment_id: '',
+		name: '',
+		lookup_key: '',
+		entity_type: GROUP_ENTITY_TYPE.FEATURE,
+		entity_ids: [],
+		metadata: null,
+		...overrides,
+	};
+}
+
+function makeUsageAnalyticItem(overrides: Partial<UsageAnalyticItem> = {}): UsageAnalyticItem {
+	return {
+		feature_id: 'feat_x',
+		total_usage: 0,
+		total_cost: 0,
+		event_count: 0,
+		...overrides,
+	};
+}
 
 describe('adaptUsageQuotaItems', () => {
 	it('keeps only metered entitlements and maps limit/unlimited', () => {
 		const result = adaptUsageQuotaItems([
-			{
+			makeCustomerUsage({
 				id: 'ent_1',
-				feature: { id: 'feat_1', name: 'API Calls', type: FEATURE_TYPE.METERED },
+				feature: makeFeature({ id: 'feat_1', name: 'API Calls', type: FEATURE_TYPE.METERED }),
 				total_limit: 1000,
 				is_unlimited: false,
 				current_usage: 250,
 				usage_percent: 25,
-				is_enabled: true,
-				is_soft_limit: false,
-				next_usage_reset_at: null,
-				sources: [],
-			},
-			{
+			}),
+			makeCustomerUsage({
 				id: 'ent_2',
-				feature: { id: 'feat_2', name: 'Seats', type: FEATURE_TYPE.STATIC },
+				feature: makeFeature({ id: 'feat_2', name: 'Seats', type: FEATURE_TYPE.STATIC }),
 				total_limit: null,
-				is_unlimited: false,
-				current_usage: 0,
-				usage_percent: 0,
-				is_enabled: true,
-				is_soft_limit: false,
-				next_usage_reset_at: null,
-				sources: [],
-			},
-			{
+			}),
+			makeCustomerUsage({
 				id: 'ent_3',
-				feature: { id: 'feat_3', name: 'Storage', type: FEATURE_TYPE.METERED },
+				feature: makeFeature({ id: 'feat_3', name: 'Storage', type: FEATURE_TYPE.METERED }),
 				total_limit: null,
 				is_unlimited: true,
 				current_usage: 42,
-				usage_percent: 0,
-				is_enabled: true,
-				is_soft_limit: false,
-				next_usage_reset_at: null,
-				sources: [],
-			},
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		] as any);
+			}),
+		]);
 
 		expect(result).toEqual([
 			{ id: 'feat_1', name: 'API Calls', currentUsage: 250, limit: 1000, isUnlimited: false },
@@ -110,16 +170,15 @@ describe('adaptMetricCards', () => {
 });
 
 describe('adaptUsageTrendSeries', () => {
-	const items = [
-		{
+	const items: UsageAnalyticItem[] = [
+		makeUsageAnalyticItem({
 			feature_id: 'feat_1',
 			source: 'feat_1',
 			name: 'API Calls',
 			points: [{ timestamp: '2026-01-01T00:00:00Z', usage: 10, cost: 1, event_count: 5 }],
-		},
-		{ feature_id: 'feat_2', source: 'feat_2', name: 'Storage', points: [] },
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	] as any;
+		}),
+		makeUsageAnalyticItem({ feature_id: 'feat_2', source: 'feat_2', name: 'Storage', points: [] }),
+	];
 
 	it('maps items to series with no filtering when mode is all', () => {
 		const result = adaptUsageTrendSeries(items, { feature_filter_mode: 'all' });
@@ -143,19 +202,18 @@ describe('adaptUsageTrendSeries', () => {
 describe('adaptUsageBreakdownRows', () => {
 	it('maps group, usage display, and cost fields', () => {
 		const result = adaptUsageBreakdownRows([
-			{
+			makeUsageAnalyticItem({
 				feature_id: 'feat_1',
 				name: 'API Calls',
-				group: { id: 'grp_1', name: 'Core' },
+				group: makeGroup({ id: 'grp_1', name: 'Core' }),
 				total_usage: 1234,
 				total_usage_display: '1,234',
 				unit: 'call',
 				unit_plural: 'calls',
 				total_cost: 12.5,
 				currency: 'USD',
-			},
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		] as any);
+			}),
+		]);
 		expect(result).toEqual([
 			{
 				id: 'feat_1',
@@ -172,8 +230,9 @@ describe('adaptUsageBreakdownRows', () => {
 	});
 
 	it('leaves group fields undefined when the row has no group', () => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const result = adaptUsageBreakdownRows([{ feature_id: 'feat_2', name: 'Storage', total_usage: 0, total_cost: 0 }] as any);
+		const result = adaptUsageBreakdownRows([
+			makeUsageAnalyticItem({ feature_id: 'feat_2', name: 'Storage', total_usage: 0, total_cost: 0 }),
+		]);
 		expect(result[0].groupId).toBeUndefined();
 		expect(result[0].groupName).toBeUndefined();
 	});
@@ -182,16 +241,15 @@ describe('adaptUsageBreakdownRows', () => {
 		// A conversion_rate can make raw total_usage=1000 display as "1" — the unit shown must
 		// agree with what's on screen, not the underlying raw count.
 		const result = adaptUsageBreakdownRows([
-			{
+			makeUsageAnalyticItem({
 				feature_id: 'feat_1',
 				name: 'Storage',
 				total_usage: 1000,
 				total_usage_display: '1',
 				reporting_unit: { unit_singular: 'GB', unit_plural: 'GBs' },
 				total_cost: 5,
-			},
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		] as any);
+			}),
+		]);
 		expect(result[0].unit).toBe('GB');
 	});
 });

@@ -57,7 +57,20 @@ describe('UsageQuota', () => {
 			fallbackLng: 'en',
 			ns: ['common'],
 			defaultNS: 'common',
-			resources: { en: { common: enCommon } },
+			// Override the title with a value distinct from both the bundled fallback ("Usage Quota")
+			// and the real dashboard copy — proves the host instance's own resources actually won,
+			// rather than the test passing because both sources happen to agree.
+			resources: {
+				en: {
+					common: {
+						...enCommon,
+						usageWidgets: {
+							...enCommon.usageWidgets,
+							quotaTitle: 'HOST-QUOTA-TITLE',
+						},
+					},
+				},
+			},
 			interpolation: { escapeValue: false },
 		});
 
@@ -67,7 +80,7 @@ describe('UsageQuota', () => {
 			</I18nextProvider>,
 		);
 
-		expect(screen.getByText('Usage Quota')).toBeInTheDocument();
+		expect(screen.getByText('HOST-QUOTA-TITLE')).toBeInTheDocument();
 		expect(screen.queryByText('usageWidgets.quotaTitle')).not.toBeInTheDocument();
 	});
 });

@@ -182,7 +182,9 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className }: 
 							{groupedBuckets.map((bucket) => {
 								const isExpanded = expandedGroupIds.has(bucket.groupKey);
 								const aggregateCost = bucket.items.reduce((s, i) => s + i.totalCost, 0);
-								const firstCurrency = bucket.items[0]?.currency;
+								const currencies = new Set(bucket.items.map((i) => i.currency).filter(Boolean));
+								// A mixed-currency bucket has no single valid symbol for the summed total.
+								const firstCurrency = currencies.size === 1 ? bucket.items.find((i) => i.currency)?.currency : undefined;
 								return (
 									<React.Fragment key={bucket.groupKey}>
 										<TableRow

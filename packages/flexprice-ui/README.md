@@ -1,8 +1,8 @@
 # @flexprice/ui
 
-Drop-in **React** components for pricing pages, extracted from the Flexprice dashboard so your
-app renders the exact same pricing UI. **Bring your own data** — the components are purely
-presentational (no fetching, no auth, no routing).
+Drop-in **React** components extracted from the Flexprice dashboard, so your app renders the
+exact same UI: pricing, usage, and credits widgets. **Bring your own data** — the components are
+purely presentational (no fetching, no auth, no routing).
 
 ## Install
 
@@ -10,7 +10,7 @@ presentational (no fetching, no auth, no routing).
 npm install @flexprice/ui
 ```
 
-`react` and `react-dom` (v18) are peer dependencies.
+`react` and `react-dom` (v18 or v19) are peer dependencies.
 
 ## Usage
 
@@ -59,6 +59,34 @@ const cards = filterAndSortPlans(plansWithData, 'USD', 'MONTHLY').map((p) => ada
 ```
 
 Or build the `Plan` objects yourself — see the exported `Plan` / `Feature` types.
+
+## Usage widgets
+
+`UsageQuota`, `MetricCards`, `UsageTrendChart`, and `UsageBreakdown` render usage/cost analytics.
+Each takes a presentational prop shape (`UsageQuotaItem`, `MetricCardItem`, `UsageTrendSeries`,
+`UsageBreakdownRow`) — map your own data to these, or use the exported adapters
+(`adaptUsageQuotaItems`, `adaptMetricCards`, `adaptUsageTrendSeries`, `adaptUsageBreakdownRows`)
+against raw Flexprice API responses. `normalizeUsageQuotaItems` and friends are a runtime safety
+net you can call on untrusted/BYO data before rendering.
+
+```tsx
+import { UsageQuota, adaptUsageQuotaItems } from '@flexprice/ui';
+
+<UsageQuota items={adaptUsageQuotaItems(customerUsageFromApi)} />;
+```
+
+## Credits widgets
+
+`CreditBalance` and `CreditHistory` render wallet balance and transaction history. They take
+`CreditBalanceData` / `CreditTransaction[]` — map your own data, or use `adaptCreditBalance`,
+`adaptCreditTransactions`, and `adaptWalletOptions` against raw Flexprice wallet responses.
+`normalizeCreditBalanceData` and `normalizeCreditTransactions` are the same runtime safety net.
+
+```tsx
+import { CreditBalance, adaptCreditBalance } from '@flexprice/ui';
+
+<CreditBalance wallet={adaptCreditBalance(walletFromApi)} />;
+```
 
 ## Theming
 

@@ -41,4 +41,18 @@ describe('ShortPaginationControls', () => {
 		render(<ShortPaginationControls page={1} pageSize={10} totalItems={25} onPageChange={vi.fn()} unit='items' />);
 		expect(screen.getByText('Showing 1 to 10 of 25 items')).toBeInTheDocument();
 	});
+
+	it('resyncs the controlled page to 1 when the total shrinks below the current page (page 2 -> page 1)', () => {
+		const onPageChange = vi.fn();
+		// page=2 with pageSize=10 was valid when totalItems was e.g. 15; after a delete/filter drops
+		// totalItems to 5, page 2 no longer exists — the component must clamp and notify the parent.
+		render(<ShortPaginationControls page={2} pageSize={10} totalItems={5} onPageChange={onPageChange} unit='items' />);
+		expect(onPageChange).toHaveBeenCalledWith(1);
+	});
+
+	it('does not call onPageChange when the current page is already in range', () => {
+		const onPageChange = vi.fn();
+		render(<ShortPaginationControls page={1} pageSize={10} totalItems={25} onPageChange={onPageChange} unit='items' />);
+		expect(onPageChange).not.toHaveBeenCalled();
+	});
 });

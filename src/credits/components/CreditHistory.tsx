@@ -98,21 +98,24 @@ const CreditHistory = ({
 				</div>
 				<div className='p-6'>
 					{transactions.length > 0 ? (
-						<>
-							<WalletTransactionsTable data={tableData} />
-							<ShortPaginationControls
-								page={page}
-								onPageChange={onPageChange}
-								totalItems={totalItems}
-								pageSize={pageSize}
-								unit={t('creditWidgets.transactionsUnit')}
-							/>
-						</>
+						<WalletTransactionsTable data={tableData} />
 					) : (
 						<div className='flex flex-col items-center justify-center py-16 px-4'>
 							<p className='text-sm font-medium text-content-secondary mb-1'>{t('creditWidgets.noTransactionsTitle')}</p>
 							<p className='text-xs text-content-muted text-center max-w-sm mt-1'>{t('creditWidgets.noTransactionsDescription')}</p>
 						</div>
+					)}
+					{/* Rendered on totalItems, not the current page's row count, so a stale out-of-range
+					    page (e.g. after a delete/filter shrinks the total) still shows pagination and
+					    lets ShortPaginationControls' own resync effect clamp `page` back into range. */}
+					{totalItems > 0 && (
+						<ShortPaginationControls
+							page={page}
+							onPageChange={onPageChange}
+							totalItems={totalItems}
+							pageSize={pageSize}
+							unit={t('creditWidgets.transactionsUnit')}
+						/>
 					)}
 				</div>
 			</Card>

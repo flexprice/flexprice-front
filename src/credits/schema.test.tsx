@@ -16,8 +16,7 @@ describe('normalizeCreditBalanceData', () => {
 			creditBalance: 1,
 			balance: 1,
 			currency: 'USD',
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} as any);
+		});
 		expect(result.status).toBe('active');
 	});
 
@@ -29,15 +28,13 @@ describe('normalizeCreditBalanceData', () => {
 			creditBalance: 'oops',
 			balance: null,
 			currency: 'USD',
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		} as any);
+		});
 		expect(result.creditBalance).toBe(0);
 		expect(result.balance).toBe(0);
 	});
 
 	it('repairs a missing id to empty string rather than throwing (single-object path never drops)', () => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const result = normalizeCreditBalanceData({ name: 'X', status: 'active', creditBalance: 1, balance: 1, currency: 'USD' } as any);
+		const result = normalizeCreditBalanceData({ name: 'X', status: 'active', creditBalance: 1, balance: 1, currency: 'USD' });
 		expect(result.id).toBe('');
 	});
 });
@@ -51,16 +48,12 @@ describe('normalizeCreditTransactions', () => {
 	it('normalizes a null currency to undefined, not the string "null"', () => {
 		const result = normalizeCreditTransactions([
 			{ id: 't1', type: 'credit', amount: 1, creditAmount: 1, reason: 'X', createdAt: '', currency: null },
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		] as any);
+		]);
 		expect(result[0].currency).toBeUndefined();
 	});
 
 	it('falls back an invalid type to credit', () => {
-		const result = normalizeCreditTransactions([
-			{ id: 't1', type: 'bogus', amount: 1, creditAmount: 1, reason: 'X', createdAt: '' },
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		] as any);
+		const result = normalizeCreditTransactions([{ id: 't1', type: 'bogus', amount: 1, creditAmount: 1, reason: 'X', createdAt: '' }]);
 		expect(result[0].type).toBe('credit');
 	});
 });

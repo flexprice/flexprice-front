@@ -32,7 +32,7 @@ The target UI already exists as dashboard-internal widgets in `src/components/cu
 
 Four new top-level feature directories, each mirroring `src/pricing/`'s shape (this is also what the placeholder comments in `src/exportable/index.ts` already anticipate — `@/usage/lib`, etc.):
 
-```
+```text
 src/usage/
   types.ts / adapters.ts / schema.ts / i18n.ts / lib.ts
   components/
@@ -72,7 +72,7 @@ All new components use Tailwind utility classes bound to the existing `--brand` 
 
 ## Data flow & validation boundary
 
-```
+```text
 Internal (dashboard) path:
   API DTO → adapter (validates + normalizes + maps to Presentational Model) → Container → Component → normalize() safety-net (no-op on already-valid data) → render
 

@@ -56,10 +56,10 @@ jobs:
           NAME=$(node -p "require('./package.json').name")
           VER=$(node -p "require('./package.json').version")
           # Only main (prod) publishes — guards workflow_dispatch runs triggered from any other
-          # branch too, not just the push trigger above. $GITHUB_REF_NAME is a built-in env var —
-          # read it here instead of interpolating ${{ github.ref_name }} into the script (avoids
-          # a shell-injection surface).
-          if [ "$GITHUB_REF_NAME" != "main" ]; then
+          # ref too, not just the push trigger above. Compare the full ref so a tag named "main"
+          # can't slip through, and read it via the built-in GITHUB_REF env var instead of an
+          # inline expression (avoids a shell-injection surface).
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
             echo "Not on main ($GITHUB_REF_NAME) — skipping publish."
             exit 0
           fi
