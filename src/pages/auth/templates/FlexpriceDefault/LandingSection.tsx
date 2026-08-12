@@ -5,7 +5,7 @@ import { TestimonialCard } from '@/components/molecules';
 import { Testimonial, CustomerLogo } from '@/types';
 import { cn } from '@/lib/utils';
 import authBg from '../../../../../assets/fortoolfinal.jpg';
-import sideBgDark from '../../../../../assets/sidedark.png';
+import authBgDark from '../../../../../assets/authdark.jpg';
 
 const testimonials: Testimonial[] = [
 	{
@@ -109,9 +109,8 @@ const LandingSection: React.FC = () => {
 		<section className='relative w-full min-h-full flex-1 pt-14 pb-12 flex flex-col items-center justify-center'>
 			{/*
 			 * Two photo layers rather than one image swapped in JS: `hidden` keeps the browser from
-			 * fetching the layer it will not show, so each theme pays for exactly one of these — which
-			 * matters, because the dark photo is heavier. Light auth uses fortoolfinal; dark keeps
-			 * sidedark. Onboarding uses side.png / sidedark separately.
+			 * fetching the layer it will not show, so each theme pays for exactly one of these.
+			 * Light auth uses fortoolfinal; dark uses authdark. Onboarding keeps side.png / sidedark.
 			 */}
 			<div
 				aria-hidden
@@ -121,7 +120,7 @@ const LandingSection: React.FC = () => {
 			<div
 				aria-hidden
 				className='absolute inset-0 hidden bg-cover bg-center bg-no-repeat dark:block'
-				style={{ backgroundImage: `url(${sideBgDark})` }}
+				style={{ backgroundImage: `url(${authBgDark})` }}
 			/>
 
 			{/* Literal colours, not tokens: the tagline sits on a photograph rather than on a token
