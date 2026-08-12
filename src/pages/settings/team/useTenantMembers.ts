@@ -3,6 +3,7 @@ import { UserApi } from '@/api/UserApi';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { SETTINGS_MEMBERS_PAGE_SIZE } from '../constants';
 import { settingsQueryKeys } from '../queryKeys';
+import { CreateTenantUserRequest } from '@/types/dto/UserApi';
 
 const TEAM_MEMBERS_REFETCH_INTERVAL_MS = 30_000;
 
@@ -20,7 +21,7 @@ export function useTenantMembers() {
 	});
 
 	const createUser = useMutation({
-		mutationFn: (payload: { type: 'user'; email: string }) => UserApi.addUserToTenant(payload),
+		mutationFn: (payload: CreateTenantUserRequest) => UserApi.addUserToTenant(payload),
 		onSuccess: () => {
 			refetchQueries([...settingsQueryKeys.teamMembersRoot()]);
 		},

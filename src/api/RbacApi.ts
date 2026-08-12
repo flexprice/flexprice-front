@@ -14,6 +14,10 @@ export interface GetRolesResponse {
 	roles: RbacRole[];
 }
 
+// The only role ID given special handling in UI (exclusive selection, full-access semantics).
+// All other role IDs are treated as opaque, server-driven data.
+export const SUPER_ADMIN_ROLE_ID = 'super_admin';
+
 class RbacApi {
 	private static baseUrl = '/rbac';
 

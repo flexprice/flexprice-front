@@ -19,6 +19,8 @@ export interface CreateServiceAccountPayload {
 export interface CreateTenantUserRequest {
 	type: 'user';
 	email: string;
+	/** At least one role ID must be selected in the UI; sent as-is to the backend. */
+	roles: string[];
 }
 
 /** Response includes one-time password (view once, not stored). */

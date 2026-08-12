@@ -7,8 +7,11 @@ import type { HttpRejectedError } from '@/core/axios/types';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import { Card, CardHeader, Loader, Button, Input, Dialog, Chip, ShortPaginationControls, AddButton } from '@/components/atoms';
 import { FlexpriceTable, OptionFilterPopover, type OptionFilterGroup } from '@/components/molecules';
+import RolePicker from '@/components/molecules/RolePicker/RolePicker';
 import { useTranslation } from 'react-i18next';
 import { useTenantMembers } from './useTenantMembers';
+import { useRbacRoles } from '@/hooks/useRbacRoles';
+import { SUPER_ADMIN_ROLE_ID } from '@/api/RbacApi';
 import {
 	filterMembers,
 	getMemberJoinedDate,
@@ -34,6 +37,36 @@ function UsersSection() {
 	const [addedUserEmail, setAddedUserEmail] = useState<string | null>(null);
 	const [showPassword, setShowPassword] = useState(false);
 	const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+	const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
+
+	const {
+		data: userRoles,
+		isLoading: isLoadingRoles,
+		isError: isRolesError,
+		refetch: refetchRoles,
+	} = useRbacRoles('user', { enabled: userDialogOpen });
+
+	// Default-select a safe non-super_admin role once the role list is available, but
+	// only if nothing has been picked yet — never overwrite a choice the admin already
+	// made. Re-runs on every dialog open (not just when the roles query first resolves)
+	// so a *cached* role list — same array reference, so this effect wouldn't otherwise
+	// re-fire — still gets a fresh default applied after openInviteDialog resets
+	// selectedRoleIds to []. Falls back gracefully if 'writer' doesn't exist in the
+	// server-driven role set, instead of assuming a hardcoded id is always present.
+	useEffect(() => {
+		if (!userDialogOpen || !userRoles || userRoles.length === 0 || selectedRoleIds.length > 0) return;
+		const defaultRole = userRoles.find((role) => role.id === 'writer') ?? userRoles.find((role) => role.id !== SUPER_ADMIN_ROLE_ID);
+		if (defaultRole) setSelectedRoleIds([defaultRole.id]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [userRoles, userDialogOpen]);
+
+	const toggleRole = (roleId: string) => {
+		setSelectedRoleIds((prev) => {
+			if (prev.includes(roleId)) return prev.filter((id) => id !== roleId);
+			if (roleId === SUPER_ADMIN_ROLE_ID) return [SUPER_ADMIN_ROLE_ID];
+			return [...prev, roleId];
+		});
+	};
 
 	const showMemberStatus = useMemo(() => membersHaveStatus(members as SettingsMember[]), [members]);
 
@@ -122,6 +155,7 @@ function UsersSection() {
 	const openInviteDialog = () => {
 		setAddError(null);
 		setEmail('');
+		setSelectedRoleIds([]);
 		setUserDialogOpen(true);
 	};
 
@@ -143,8 +177,12 @@ function UsersSection() {
 			setAddError(t('members.errors.emailInvalid'));
 			return;
 		}
+		if (selectedRoleIds.length === 0) {
+			toast.error(t('members.addMember.rolesRequired'));
+			return;
+		}
 		createUser.mutate(
-			{ type: 'user', email: trimmed },
+			{ type: 'user', email: trimmed, roles: selectedRoleIds },
 			{
 				onSuccess: (res, variables) => {
 					closeUserDialog();
@@ -341,8 +379,28 @@ function UsersSection() {
 							/>
 						</div>
 					</div>
+
+					<RolePicker
+						title={t('members.addMember.rolesLabel')}
+						hint={t('members.addMember.rolesHint')}
+						roles={userRoles ?? []}
+						selectedRoleIds={selectedRoleIds}
+						onToggle={toggleRole}
+						isLoading={isLoadingRoles}
+						isError={isRolesError}
+						onRetry={() => refetchRoles()}
+						error={selectedRoleIds.length === 0 ? t('members.addMember.rolesRequired') : undefined}
+						loadingLabel={t('members.addMember.rolesLoading')}
+						errorLabel={t('members.addMember.rolesUnavailable')}
+						retryLabel={t('members.addMember.rolesRetry')}
+						ariaLabel={t('members.addMember.rolesLabel')}
+					/>
+
 					<div className='flex justify-end'>
-						<Button onClick={handleAddUser} disabled={createUser.isPending} isLoading={createUser.isPending}>
+						<Button
+							onClick={handleAddUser}
+							disabled={createUser.isPending || selectedRoleIds.length === 0 || isLoadingRoles || isRolesError}
+							isLoading={createUser.isPending}>
 							{t('members.addMember.addUser')}
 						</Button>
 					</div>

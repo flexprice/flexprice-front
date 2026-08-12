@@ -28,12 +28,13 @@ interface Props {
 	onCheckedChange?: (checked: boolean) => void;
 	label?: string;
 	description?: string;
+	disabled?: boolean;
 }
 
-const Checkbox: React.FC<Props> = ({ checked, label, onCheckedChange, description, id }) => {
+const Checkbox: React.FC<Props> = ({ checked, label, onCheckedChange, description, id, disabled }) => {
 	return (
 		<div className='items-top flex space-x-2'>
-			<ShadcnCheckbox checked={checked} onCheckedChange={onCheckedChange} id={id} />
+			<ShadcnCheckbox checked={checked} onCheckedChange={onCheckedChange} id={id} disabled={disabled} />
 			<div className='grid gap-1.5 leading-none'>
 				{label && (
 					<label htmlFor={id} className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'>
