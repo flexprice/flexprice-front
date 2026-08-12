@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router';
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 
 interface UsePaginationProps {
 	initialLimit?: number;
@@ -25,12 +25,13 @@ const usePagination = ({ initialLimit = 10, prefix }: UsePaginationProps = {}) =
 	const page = Number(searchParams.get(pageKey) || '1');
 
 	const reset = useCallback(() => {
+		if (page === 1) return;
 		setSearchParams((prev) => {
 			const next = new URLSearchParams(prev);
 			next.set(pageKey, '1');
 			return next;
 		});
-	}, [setSearchParams, pageKey]);
+	}, [setSearchParams, pageKey, page]);
 
 	const setPage = useCallback(
 		(newPage: number) => {
@@ -42,20 +43,6 @@ const usePagination = ({ initialLimit = 10, prefix }: UsePaginationProps = {}) =
 		},
 		[setSearchParams, pageKey],
 	);
-
-	// Ensure `page` is set in the query parameters
-	useEffect(() => {
-		if (!searchParams.get(pageKey)) {
-			setSearchParams(
-				(prev) => {
-					const next = new URLSearchParams(prev);
-					next.set(pageKey, '1');
-					return next;
-				},
-				{ replace: true },
-			);
-		}
-	}, [searchParams, setSearchParams, pageKey]);
 
 	const limit = initialLimit;
 	const offset = limit > 0 ? Math.max((page - 1) * limit, 0) : 0;
