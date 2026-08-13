@@ -175,7 +175,7 @@ describe('EditUserRolesDialog', () => {
 		fireEvent.click(screen.getByRole('checkbox', { name: 'Writer' }));
 		fireEvent.click(screen.getByRole('button', { name: 'Save roles' }));
 
-		expect(await screen.findByText(/active API key\(s\)/)).toBeInTheDocument();
+		expect(await screen.findByText(/active API key/)).toBeInTheDocument();
 		expect(screen.getByText(/Production/)).toBeInTheDocument();
 		expect(screen.getByText(/prod-key/)).toBeInTheDocument();
 	});
@@ -199,7 +199,7 @@ describe('EditUserRolesDialog', () => {
 		fireEvent.click(screen.getByRole('checkbox', { name: 'Writer' }));
 		fireEvent.click(screen.getByRole('button', { name: 'Save roles' }));
 
-		expect(await screen.findByText(/active API key\(s\)/)).toBeInTheDocument();
+		expect(await screen.findByText(/active API key/)).toBeInTheDocument();
 		expect(screen.getByText(/prod-key/)).toBeInTheDocument();
 	});
 

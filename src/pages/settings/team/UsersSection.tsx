@@ -78,7 +78,7 @@ function UsersSection() {
 		if (!userDialogOpen || !userRoles || userRoles.length === 0 || selectedRoleIds.length > 0) return;
 		const nonSuperAdminRoles = userRoles.filter((role) => role.id !== SUPER_ADMIN_ROLE_ID);
 		const grantsWrite = (role: (typeof userRoles)[number]) =>
-			Object.values(role.permissions).some((actions) => actions.includes('write') || actions.includes('*'));
+			Object.values(role.permissions ?? {}).some((actions) => actions?.includes('write') || actions?.includes('*'));
 		const defaultRole = nonSuperAdminRoles.find(grantsWrite) ?? nonSuperAdminRoles[0];
 		if (defaultRole) setSelectedRoleIds([defaultRole.id]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
