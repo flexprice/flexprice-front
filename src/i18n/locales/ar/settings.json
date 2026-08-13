@@ -36,7 +36,20 @@
 		"actions": {
 			"add": "إضافة",
 			"invite": "دعوة",
-			"remove": "إزالة"
+			"remove": "إزالة",
+			"editRoles": "تعديل الأدوار"
+		},
+		"editRoles": {
+			"title": "تعديل الأدوار",
+			"description": "إدارة صلاحيات هذا المستخدم.",
+			"submit": "حفظ الأدوار",
+			"success": "تم تحديث الأدوار لـ {{email}}.",
+			"failedGeneric": "فشل تحديث الأدوار.",
+			"activeKeysBody": "لدى هذا المستخدم {{count}} مفتاح (مفاتيح) API نشط يجب إلغاؤها قبل تغيير أدواره:",
+			"typeUser": "مستخدم",
+			"typeServiceAccount": "حساب خدمة",
+			"noRoles": "لا توجد أدوار",
+			"userFetchFailed": "تعذّر تحديث أحدث بيانات هذا المستخدم — يتم عرض آخر تفاصيل معروفة."
 		},
 		"filters": {
 			"title": "تصفية المستخدمين",

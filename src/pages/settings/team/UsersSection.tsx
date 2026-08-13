@@ -5,12 +5,26 @@ import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Link2, Lock, Mail } f
 import { RouteNames } from '@/core/routes/Routes';
 import type { HttpRejectedError } from '@/core/axios/types';
 import { formatDateShort } from '@/utils/common/helper_functions';
-import { Card, CardHeader, Loader, Button, Input, Dialog, Chip, ShortPaginationControls, AddButton } from '@/components/atoms';
+import {
+	Card,
+	CardHeader,
+	Loader,
+	Button,
+	Input,
+	Dialog,
+	Chip,
+	ShortPaginationControls,
+	AddButton,
+	ActionButton,
+} from '@/components/atoms';
 import { FlexpriceTable, OptionFilterPopover, type OptionFilterGroup } from '@/components/molecules';
 import RolePicker from '@/components/molecules/RolePicker/RolePicker';
+import EditUserRolesDialog from '@/components/molecules/EditUserRolesDialog';
 import { useTranslation } from 'react-i18next';
 import { useTenantMembers } from './useTenantMembers';
 import { useRbacRoles } from '@/hooks/useRbacRoles';
+import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
+import useUser from '@/hooks/useUser';
 import { SUPER_ADMIN_ROLE_ID } from '@/api/RbacApi';
 import {
 	filterMembers,
@@ -18,6 +32,7 @@ import {
 	isAdminMember,
 	isPendingMember,
 	membersHaveStatus,
+	canEditRoles,
 	type MemberRoleFilter,
 	type MemberStatusFilter,
 	type SettingsMember,
@@ -38,6 +53,10 @@ function UsersSection() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 	const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
+	const [editingUser, setEditingUser] = useState<SettingsMember | null>(null);
+
+	const { isSuperAdmin } = useCurrentUserPermissions();
+	const { user: currentUser } = useUser();
 
 	const {
 		data: userRoles,
@@ -51,11 +70,16 @@ function UsersSection() {
 	// made. Re-runs on every dialog open (not just when the roles query first resolves)
 	// so a *cached* role list — same array reference, so this effect wouldn't otherwise
 	// re-fire — still gets a fresh default applied after openInviteDialog resets
-	// selectedRoleIds to []. Falls back gracefully if 'writer' doesn't exist in the
-	// server-driven role set, instead of assuming a hardcoded id is always present.
+	// selectedRoleIds to []. Picks by inspecting actual granted permissions (any 'write'
+	// or '*' action) rather than matching a hardcoded role id/name — role ids are
+	// backend-driven and can be renamed (e.g. 'writer' -> 'all_writer' happened mid-way
+	// through this project), so string-matching a specific id is fragile by nature.
 	useEffect(() => {
 		if (!userDialogOpen || !userRoles || userRoles.length === 0 || selectedRoleIds.length > 0) return;
-		const defaultRole = userRoles.find((role) => role.id === 'writer') ?? userRoles.find((role) => role.id !== SUPER_ADMIN_ROLE_ID);
+		const nonSuperAdminRoles = userRoles.filter((role) => role.id !== SUPER_ADMIN_ROLE_ID);
+		const grantsWrite = (role: (typeof userRoles)[number]) =>
+			Object.values(role.permissions).some((actions) => actions.includes('write') || actions.includes('*'));
+		const defaultRole = nonSuperAdminRoles.find(grantsWrite) ?? nonSuperAdminRoles[0];
 		if (defaultRole) setSelectedRoleIds([defaultRole.id]);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [userRoles, userDialogOpen]);
@@ -288,6 +312,27 @@ function UsersSection() {
 		},
 	];
 
+	// Only super_admins can reach PUT /users/{id}/roles at all, so the whole
+	// action column is omitted rather than shown-but-disabled for anyone else.
+	if (isSuperAdmin) {
+		columns.push({
+			fieldVariant: 'interactive',
+			render: (row) => {
+				if (!canEditRoles(row, currentUser?.id ?? '', isSuperAdmin)) return null;
+				return (
+					<ActionButton
+						id={row.id}
+						entityName={row.email}
+						deleteMutationFn={async () => {}}
+						refetchQueryKey='team-members'
+						archive={{ enabled: false }}
+						edit={{ enabled: true, text: t('members.actions.editRoles'), onClick: () => setEditingUser(row) }}
+					/>
+				);
+			},
+		});
+	}
+
 	return (
 		<>
 			<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
@@ -348,7 +393,7 @@ function UsersSection() {
 				description={t('members.addMember.description')}
 				titleClassName='text-lg font-semibold text-content-zinc-bold'
 				descriptionClassName='text-sm text-content-zinc-muted'
-				className='rounded-xl border border-line-subtle shadow-lg sm:max-w-[425px]'>
+				className='rounded-xl border border-line-subtle shadow-lg sm:max-w-[560px]'>
 				<div className='mt-3 space-y-3'>
 					{addError && (
 						<div className='flex w-full items-center gap-2.5 rounded-md border border-danger-line bg-danger-muted px-3 py-2' role='alert'>
@@ -512,6 +557,8 @@ function UsersSection() {
 					</div>
 				</div>
 			</Dialog>
+
+			<EditUserRolesDialog user={editingUser} isOpen={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)} />
 		</>
 	);
 }

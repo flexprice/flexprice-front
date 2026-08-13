@@ -6,6 +6,7 @@ import {
 	CreateTenantUserRequest,
 	CreateTenantUserResponse,
 	GetServiceAccountsResponse,
+	UpdateUserRolesRequest,
 } from '@/types/dto/UserApi';
 import { DataType } from '@/types/common/QueryBuilder';
 import { FilterOperator } from '@/types/common/QueryBuilder';
@@ -61,9 +62,18 @@ export class UserApi {
 		return response;
 	}
 
-	// Fetch user by ID
-	public static async getUserById(userId: string): Promise<User> {
-		return await AxiosClient.get<User>(`${this.baseUrl}/${userId}`);
+	/**
+	 * Fetch a single user's current, non-stale data by ID. There's no GET /users/{id} on
+	 * the backend — /users/search's `user_ids` filter is the only way to look up one user
+	 * fresh (see internal/types/user.go UserFilter.UserIDs).
+	 */
+	public static async getUserById(userId: string): Promise<User | undefined> {
+		const response = await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/search`, {
+			user_ids: [userId],
+			type: 'user',
+			limit: 1,
+		});
+		return response.items[0];
 	}
 
 	// Fetch service accounts only
@@ -115,6 +125,11 @@ export class UserApi {
 	// Delete a user
 	public static async deleteUser(userId: string): Promise<void> {
 		return await AxiosClient.delete<void>(`${this.baseUrl}/${userId}`);
+	}
+
+	/** Change an existing human user's roles (super_admin only; not supported for service accounts). */
+	public static async updateUserRoles(id: string, roles: string[]): Promise<User> {
+		return await AxiosClient.put<User, UpdateUserRolesRequest>(`${this.baseUrl}/${id}/roles`, { roles });
 	}
 
 	public static async me(): Promise<User> {

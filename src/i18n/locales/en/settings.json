@@ -33,7 +33,20 @@
 		"actions": {
 			"add": "Add",
 			"invite": "Invite",
-			"remove": "Remove"
+			"remove": "Remove",
+			"editRoles": "Edit roles"
+		},
+		"editRoles": {
+			"title": "Edit roles",
+			"description": "Manage access for this user.",
+			"submit": "Save roles",
+			"success": "Roles updated for {{email}}.",
+			"failedGeneric": "Failed to update roles.",
+			"activeKeysBody": "This user has {{count}} active API key(s) that must be expired before their roles can change:",
+			"typeUser": "User",
+			"typeServiceAccount": "Service Account",
+			"noRoles": "No roles",
+			"userFetchFailed": "Couldn't refresh this user's latest data — showing the last known details."
 		},
 		"filters": {
 			"title": "Filter users",

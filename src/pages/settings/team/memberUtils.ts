@@ -46,3 +46,8 @@ export function getMemberJoinedDate(user: SettingsMember): string | null {
 export function canDeleteUser(user: SettingsMember): boolean {
 	return user.type === 'service_account';
 }
+
+/** PUT /users/{id}/roles is super_admin-only and rejects editing your own roles. */
+export function canEditRoles(user: SettingsMember, currentUserId: string, isSuperAdmin: boolean): boolean {
+	return isSuperAdmin && user.id !== currentUserId;
+}
