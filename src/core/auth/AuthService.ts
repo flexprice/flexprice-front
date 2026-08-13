@@ -5,10 +5,16 @@ import { RouteNames } from '../routes/Routes';
 class AuthService {
 	public static async getAcessToken() {
 		if (config.app.env !== APP_ENV.SelfHosted) {
-			const {
-				data: { session },
-			} = await supabase.auth.getSession();
-			return session?.access_token;
+			try {
+				const { data } = await supabase.auth.getSession();
+				return data?.session?.access_token;
+			} catch (error) {
+				// Runs on every outgoing request via the axios interceptor — a network failure or a
+				// misconfigured/unavailable Supabase client must not crash every API call. Falling
+				// through to an unauthenticated request lets the backend reject it with a normal 401.
+				console.error('Error getting access token:', error);
+				return null;
+			}
 		} else {
 			try {
 				const tokenData = localStorage.getItem('token');
@@ -24,8 +30,13 @@ class AuthService {
 
 	public static async getUser() {
 		if (config.app.env !== APP_ENV.SelfHosted) {
-			const { data } = await supabase.auth.getUser();
-			return data.user;
+			try {
+				const { data } = await supabase.auth.getUser();
+				return data?.user ?? null;
+			} catch (error) {
+				console.error('Error getting user:', error);
+				return null;
+			}
 		} else {
 			try {
 				const tokenData = localStorage.getItem('token');
