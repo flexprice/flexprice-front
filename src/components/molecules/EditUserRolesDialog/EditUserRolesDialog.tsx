@@ -87,9 +87,15 @@ const EditUserRolesDialog: FC<EditUserRolesDialogProps> = ({ user, isOpen, onOpe
 			onOpenChange(false);
 		},
 		onError: (err: Error) => {
-			const cause = (err as HttpRejectedError).cause as { details?: UpdateUserRolesErrorDetails } | undefined;
-			if (cause?.details?.active_api_keys) {
-				setActiveKeysDetails(cause.details);
+			// The API error envelope has been observed both flat ({details}) and nested
+			// under "error" ({error: {details}}, see FailedApiEnvelope) — check both
+			// rather than assume one, matching getAddUserErrorMessage's existing pattern.
+			const cause = (err as HttpRejectedError).cause as
+				| { details?: UpdateUserRolesErrorDetails; error?: { details?: UpdateUserRolesErrorDetails } }
+				| undefined;
+			const details = cause?.error?.details ?? cause?.details;
+			if (details?.active_api_keys) {
+				setActiveKeysDetails(details);
 				setGenericError(null);
 			} else {
 				setGenericError(err.message || t('members.editRoles.failedGeneric'));

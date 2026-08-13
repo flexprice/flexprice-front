@@ -180,6 +180,29 @@ describe('EditUserRolesDialog', () => {
 		expect(screen.getByText(/prod-key/)).toBeInTheDocument();
 	});
 
+	it('also finds the active-API-keys details when the error envelope nests them under "error" instead of flat', async () => {
+		mockUpdateUserRoles.mockRejectedValue(
+			Object.assign(new Error('user has active API keys'), {
+				cause: {
+					error: {
+						message: 'user has active API keys',
+						details: {
+							active_api_key_count: 1,
+							active_api_keys: { env_1: { env_name: 'Production', api_keys: [{ id: 'key_1', key_name: 'prod-key' }] } },
+						},
+					},
+				},
+			}),
+		);
+		renderDialog();
+
+		fireEvent.click(screen.getByRole('checkbox', { name: 'Writer' }));
+		fireEvent.click(screen.getByRole('button', { name: 'Save roles' }));
+
+		expect(await screen.findByText(/active API key\(s\)/)).toBeInTheDocument();
+		expect(screen.getByText(/prod-key/)).toBeInTheDocument();
+	});
+
 	it('falls back to the raw message for a plain (non-active-keys) error', async () => {
 		mockUpdateUserRoles.mockRejectedValue(
 			Object.assign(new Error('cannot update your own roles'), { cause: { message: 'cannot update your own roles' } }),
