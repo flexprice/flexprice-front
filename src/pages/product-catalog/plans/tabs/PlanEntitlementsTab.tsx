@@ -1,8 +1,8 @@
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Button, Card, CardHeader, NoDataCard, Loader, Sheet } from '@/components/atoms';
-import { Plus } from 'lucide-react';
+import { ActionButton, Button, Card, CardHeader, NoDataCard, Loader, Sheet } from '@/components/atoms';
+import { Plus, Trash2 } from 'lucide-react';
 import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import { EntitlementApi } from '@/api';
 import { FlexpriceTable, ColumnData, RedirectCell, AddEntitlementDrawer } from '@/components/molecules';
@@ -11,8 +11,6 @@ import { formatAmount } from '@/components/atoms/Input/Input';
 import { Entitlement, ENTITY_STATUS, FEATURE_TYPE, ENTITLEMENT_ENTITY_TYPE, EXPAND, ENTITLEMENT_USAGE_RESET_PERIOD } from '@/models';
 import { EntitlementResponse } from '@/types';
 import { RouteNames } from '@/core/routes/Routes';
-import { ActionButton } from '@/components/atoms';
-import { Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { generateExpandQueryParams } from '@/utils/common/api_helper';
 import { useTranslation } from 'react-i18next';
@@ -118,7 +116,7 @@ const PlanEntitlementsTab = () => {
 		},
 		{
 			fieldVariant: 'interactive',
-			width: '30px',
+			width: 56,
 			hideOnEmpty: true,
 			render(row) {
 				return (
@@ -186,7 +184,7 @@ const PlanEntitlementsTab = () => {
 								</Button>
 							}
 						/>
-						<FlexpriceTable showEmptyRow data={entitlements} columns={columnData} />
+						<FlexpriceTable tableClassName='table-fixed' data={entitlements} columns={columnData} />
 					</Card>
 				) : (
 					<NoDataCard

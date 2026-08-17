@@ -31,6 +31,8 @@
 			"refunded": "مستردة",
 			"partiallyRefunded": "مستردة جزئياً",
 			"overpaid": "مدفوعة زيادة",
+			"paid": "مدفوعة",
+			"overdue": "متأخرة",
 			"unknown": "غير معروف"
 		},
 		"list": {
@@ -64,9 +66,13 @@
 				"credit": "ائتمان"
 			},
 			"columns": {
-				"invoiceNumber": "رقم الفاتورة",
-				"subscriptionCustomer": "عميل الاشتراك",
+				"invoiceNumber": "الفاتورة",
+				"customer": "العميل",
+				"plan": "الخطة",
+				"status": "الحالة",
 				"amount": "المبلغ",
+				"issued": "تاريخ الإصدار",
+				"subscriptionCustomer": "عميل الاشتراك",
 				"invoiceStatus": "حالة الفاتورة",
 				"billingEntity": "كيان الفوترة",
 				"paymentStatus": "حالة الدفع",
@@ -244,9 +250,14 @@
 			"columns": {
 				"customer": "العميل",
 				"plan": "الخطة",
+				"integrations": "التكاملات",
 				"status": "الحالة",
-				"startDate": "تاريخ البدء",
-				"renewalDate": "تاريخ التجديد"
+				"billing": "الفوترة",
+				"startDate": "البدء",
+				"renewalDate": "التجديد"
+			},
+			"statusChips": {
+				"trial": "تجريبي"
 			},
 			"paginationUnit": "اشتراكات",
 			"emptyState": {

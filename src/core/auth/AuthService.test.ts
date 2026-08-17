@@ -55,6 +55,17 @@ describe('AuthService.logout', () => {
 		expect(localStorage.getItem('flexprice_theme')).toBeNull();
 	});
 
+	it('preserves whats-new dismissal across logout', async () => {
+		localStorage.setItem('fp-whats-new-dismissals', JSON.stringify({ 'user-123': { 'ui-revamp-2026-08': true } }));
+		localStorage.setItem('token', 'secret-token');
+
+		const AuthService = await importService();
+		await AuthService.logout();
+
+		expect(localStorage.getItem('fp-whats-new-dismissals')).toContain('user-123');
+		expect(localStorage.getItem('token')).toBeNull();
+	});
+
 	it('redirects to login', async () => {
 		const AuthService = await importService();
 		await AuthService.logout();

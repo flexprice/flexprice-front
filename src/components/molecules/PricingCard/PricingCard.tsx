@@ -310,8 +310,8 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 				'flexprice-ui',
 				'border transition-all shadow-md',
 				visualModern
-					? 'rounded-2xl border-line-slate/90 bg-gradient-to-b from-surface to-surface-cool/90 p-5 shadow-sm ring-1 ring-line-slate-subtle hover:border-line-slate-strong/90'
-					: 'border-line bg-surface hover:border-line-strong rounded-3xl p-7',
+					? 'rounded-[var(--fp-radius-lg)] border-line-slate/90 bg-gradient-to-b from-surface to-surface-cool/90 p-5 shadow-sm ring-1 ring-line-slate-subtle hover:border-line-slate-strong/90'
+					: 'rounded-[var(--fp-radius-lg)] border-line bg-surface p-7 hover:border-line-strong',
 				className,
 			)}>
 			{/* Header */}
@@ -429,8 +429,8 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 						className={cn(
 							'w-full py-3 text-sm font-medium transition-colors',
 							visualModern
-								? 'rounded-xl border border-line-slate bg-surface text-content-slate shadow-sm hover:bg-surface-cool'
-								: 'rounded-2xl bg-surface-subtle text-content hover:bg-surface-shell',
+								? 'rounded-[var(--fp-radius-md)] border border-line-slate bg-surface text-content-slate shadow-sm hover:bg-surface-cool'
+								: 'rounded-[var(--fp-radius-md)] bg-surface-subtle text-content hover:bg-surface-shell',
 						)}
 						variant='outline'>
 						{t('pricingCard.viewPlan')}

@@ -3,11 +3,13 @@ import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOv
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ArrowUpDown, GripVertical, Trash2, X } from 'lucide-react';
+import { ArrowUpDownIcon } from '@hugeicons/core-free-icons';
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Combobox, Button, Select } from '@/components/atoms';
 import { SortOption, SortDirection } from '@/types/common/QueryBuilder';
 import { sanitizeSortConditions } from '@/types/formatters/QueryBuilder';
+import QueryControlTrigger from './QueryControlTrigger';
 interface Props {
 	options: SortOption[];
 	value: SortOption[];
@@ -15,16 +17,30 @@ interface Props {
 	className?: string;
 	maxSorts?: number;
 	disabled?: boolean;
+	/** Icon-only trigger with a count coin when sorts are active. */
+	variant?: 'labeled' | 'icon';
+	/** Popover horizontal alignment relative to the trigger. */
+	popoverAlign?: 'start' | 'center' | 'end';
 }
 
 const MIN_POPOVER_WIDTH = 400;
 const MIN_FIELD_WIDTH = 160;
 const MIN_DIRECTION_WIDTH = 100;
-const POPOVER_PADDING = 'px-3 py-2';
+const POPOVER_SURFACE =
+	'w-[min(400px,calc(100vw-2rem))] rounded-[var(--fp-radius-lg)] border border-line-hairline bg-surface p-4 text-content shadow-[0_10px_40px_rgb(15_23_42/0.14),0_2px_8px_rgb(15_23_42/0.06)] dark:shadow-[0_12px_40px_rgb(0_0_0/0.45)]';
 const GRID_GAP = 'gap-2';
 const ITEM_PADDING = 'py-2 px-2';
 
-const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, className, disabled = false, maxSorts = 10 }) => {
+const SortDropdown: React.FC<Props> = ({
+	options,
+	value = [],
+	onChange,
+	className,
+	disabled = false,
+	maxSorts = 10,
+	variant = 'icon',
+	popoverAlign = 'start',
+}) => {
 	const { t } = useTranslation('common');
 	const [isOpen, setIsOpen] = useState(false);
 	const allFieldsAdded = useMemo(() => {
@@ -87,44 +103,47 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 
 	return (
 		<Popover open={isOpen} onOpenChange={handleOpenChange}>
-			<PopoverTrigger disabled={disabled} asChild>
-				<Button variant='outline' size='default' className={cn('flex items-center gap-2 text-xs', className)}>
-					<ArrowUpDown className='size-5' />
-					<span>{t('queryBuilder.sort')}</span>
-					{appliedSorts > 0 && (
-						<Badge variant='secondary' className='ms-1 h-5 rounded px-1.5 font-mono text-xs'>
-							{appliedSorts}
-						</Badge>
-					)}
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent
-				align='start'
-				className={cn('w-screen border-border/70 shadow-lg bg-surface-panel', 'border-border/40', POPOVER_PADDING)}
-				style={{ width: MIN_POPOVER_WIDTH }}>
-				<div className='flex flex-col gap-1.5'>
+			{variant === 'icon' ? (
+				<PopoverTrigger disabled={disabled} asChild>
+					<QueryControlTrigger icon={ArrowUpDownIcon} label={t('queryBuilder.sort')} count={appliedSorts} className={className} />
+				</PopoverTrigger>
+			) : (
+				<PopoverTrigger disabled={disabled} asChild>
+					<Button variant='outline' size='default' className={cn('flex items-center gap-2 text-xs', className)}>
+						<ArrowUpDown className='size-5' />
+						<span>{t('queryBuilder.sort')}</span>
+						{appliedSorts > 0 && (
+							<Badge variant='secondary' className='ms-1 h-5 rounded px-1.5 font-mono text-xs'>
+								{appliedSorts}
+							</Badge>
+						)}
+					</Button>
+				</PopoverTrigger>
+			)}
+			<PopoverContent align={popoverAlign} collisionPadding={24} className={POPOVER_SURFACE} style={{ minWidth: MIN_POPOVER_WIDTH }}>
+				<div className='flex flex-col gap-3'>
 					{value.length === 0 ? (
-						<div className='flex flex-col gap-2 p-2'>
-							<div className='flex justify-between items-start'>
+						<div className='flex flex-col gap-4'>
+							<div className='flex items-start justify-between gap-3'>
 								<div className='flex flex-col gap-1'>
-									<h4 className='text-base font-medium leading-none'>{t('queryBuilder.noSortingTitle')}</h4>
-									<p className='text-muted-foreground text-sm'>{t('queryBuilder.noSortingDescription')}</p>
+									<h4 className='text-sm font-medium leading-none text-content'>{t('queryBuilder.noSortingTitle')}</h4>
+									<p className='text-sm text-content-muted'>{t('queryBuilder.noSortingDescription')}</p>
 								</div>
-								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1' onClick={() => setIsOpen(false)}>
+								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1 shrink-0' onClick={() => setIsOpen(false)}>
 									<X className='h-3.5 w-3.5' />
 								</Button>
 							</div>
-							<div className='mt-2'>
-								<Button size='sm' onClick={handleSortAdd} className='w-fit h-9 text-sm px-2.5'>
+							<div className='flex justify-end'>
+								<Button size='sm' onClick={handleSortAdd} className='h-9 px-3 text-sm'>
 									{t('queryBuilder.addSort')}
 								</Button>
 							</div>
 						</div>
 					) : (
-						<div className='flex flex-col gap-1.5'>
-							<div className='flex justify-between items-center'>
-								<h4 className='text-sm font-medium leading-none'>{t('queryBuilder.sortBy')}</h4>
-								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1' onClick={() => setIsOpen(false)}>
+						<div className='flex flex-col gap-3'>
+							<div className='flex items-center justify-between gap-3'>
+								<h4 className='text-sm font-medium leading-none text-content'>{t('queryBuilder.sortBy')}</h4>
+								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1 shrink-0' onClick={() => setIsOpen(false)}>
 									<X className='h-3.5 w-3.5' />
 								</Button>
 							</div>
@@ -199,16 +218,16 @@ const SortDropdown: React.FC<Props> = ({ options, value = [], onChange, classNam
 								</SortableOverlay>
 							</Sortable>
 
-							<div className='flex items-center gap-2 pt-1.5 px-2'>
+							<div className='mt-1 flex items-center justify-end gap-2 border-t border-line-hairline pt-3'>
+								<Button variant='outline' size='sm' onClick={handleSortingReset} className='h-9 px-3 text-sm'>
+									{t('queryBuilder.resetSorting')}
+								</Button>
 								<Button
 									size='sm'
 									onClick={handleSortAdd}
 									disabled={value.length >= maxSorts || allFieldsAdded}
-									className='h-9 text-sm px-2.5 flex items-center gap-1'>
+									className='h-9 px-3 text-sm'>
 									{t('queryBuilder.addSort')}
-								</Button>
-								<Button variant='outline' size='sm' onClick={handleSortingReset} className='h-9 text-sm px-2.5'>
-									{t('queryBuilder.resetSorting')}
 								</Button>
 							</div>
 						</div>

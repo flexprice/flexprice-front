@@ -62,7 +62,6 @@ const TaxPage = () => {
 				heading={t('taxes.list.pageHeading')}
 				tags={API_DOCS_TAGS.TaxRates}
 				emptyStateCard={{
-					heading: t('taxes.list.emptyHeading'),
 					description: t('taxes.list.emptyDescription'),
 					buttonLabel: t('taxes.list.createTaxRate'),
 					buttonAction: handleCreateNew,

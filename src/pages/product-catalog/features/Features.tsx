@@ -1,5 +1,5 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
-import { ApiDocsContent, FeatureDrawer, RedirectCell } from '@/components/molecules';
+import { AddButton, ActionButton, StatusChip, Page } from '@/components/atoms';
+import { ApiDocsContent, FeatureDrawer } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
 import { RouteNames } from '@/core/routes/Routes';
@@ -23,8 +23,8 @@ import {
 import { ENTITY_STATUS } from '@/models';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import formatDate from '@/utils/common/format_date';
-import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { searchGroupsForFilter } from '@/utils/filterSearchHelpers';
+import { getFeatureListStatus, getFeatureTypeTone } from './featureListDisplay';
 
 const initialFilters: FilterCondition[] = [
 	{
@@ -154,104 +154,52 @@ const FeaturesPage = () => {
 		[t],
 	);
 
-	const getFeatureTypeChips = useCallback(
-		(type: string, addIcon: boolean = false) => {
-			const icon = getFeatureIcon(type);
-			const label = getFeatureTypeChipLabel(type);
-			switch (type.toLocaleLowerCase()) {
-				case FEATURE_TYPE.STATIC: {
-					return (
-						<Chip
-							textColor='rgb(var(--fp-chip-type-static-text))'
-							bgColor='rgb(var(--fp-chip-type-static-bg))'
-							icon={addIcon ? icon : null}
-							label={label}
-							className='text-xs'
-						/>
-					);
-				}
-				case FEATURE_TYPE.METERED:
-					return (
-						<Chip
-							textColor='rgb(var(--fp-chip-type-metered-text))'
-							bgColor='rgb(var(--fp-chip-type-metered-bg))'
-							icon={addIcon ? icon : null}
-							label={label}
-							className='text-xs'
-						/>
-					);
-				case FEATURE_TYPE.BOOLEAN:
-					return (
-						<Chip
-							textColor='rgb(var(--fp-chip-type-boolean-text))'
-							bgColor='rgb(var(--fp-chip-type-boolean-bg))'
-							icon={addIcon ? icon : null}
-							label={label}
-							className='text-xs'
-						/>
-					);
-				case FEATURE_TYPE.CONFIG:
-					return (
-						<Chip
-							textColor='rgb(var(--fp-chip-type-config-text))'
-							bgColor='rgb(var(--fp-chip-type-config-bg))'
-							icon={addIcon ? icon : null}
-							label={label}
-							className='text-xs'
-						/>
-					);
-				default:
-					return (
-						<Chip
-							textColor='rgb(var(--fp-chip-type-default-text))'
-							bgColor='rgb(var(--fp-chip-type-default-bg))'
-							icon={addIcon ? icon : null}
-							label={label}
-							className='text-xs'
-						/>
-					);
-			}
-		},
-		[getFeatureTypeChipLabel],
-	);
-
 	const columns: ColumnData<Feature>[] = useMemo(
 		() => [
 			{
 				fieldName: 'name',
 				title: t('features.listPage.columns.featureName'),
+				fieldVariant: 'title',
+				width: '16%',
 			},
 			{
-				title: t('features.listPage.columns.group'),
-				render: (row) =>
-					row?.group?.id ? (
-						<RedirectCell redirectUrl={`${RouteNames.groups}/${row.group.id}`}>{row.group.name}</RedirectCell>
-					) : (
-						t('features.listPage.emptyCell')
-					),
+				title: t('features.listPage.columns.key'),
+				width: '16%',
+				render: (row) => <span className='block truncate'>{row.lookup_key || t('features.listPage.emptyCell')}</span>,
 			},
 			{
 				title: t('features.listPage.columns.type'),
+				width: '16%',
 				render(row) {
-					return getFeatureTypeChips(row?.type || '', true);
+					return <StatusChip tone={getFeatureTypeTone(row?.type || '')} label={getFeatureTypeChipLabel(row?.type || '')} />;
 				},
 			},
 			{
 				title: t('features.listPage.columns.status'),
+				width: '16%',
 				render: (row) => {
-					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
-					const label = isActive ? t('features.listPage.filterStatus.active') : t('features.listPage.filterStatus.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					const status = getFeatureListStatus(row?.status);
+					const label = status === 'Active' ? t('features.listPage.filterStatus.active') : t('features.listPage.filterStatus.inactive');
+					return <StatusChip status={status} label={label} />;
+				},
+			},
+			{
+				title: t('features.listPage.columns.createdAt'),
+				width: '16%',
+				render: (row) => {
+					return formatDate(row?.created_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 				},
 			},
 			{
 				title: t('features.listPage.columns.updatedAt'),
+				width: '16%',
 				render: (row) => {
-					return formatDate(row?.updated_at);
+					return formatDate(row?.updated_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 				},
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render(row) {
 					return (
 						<ActionButton
@@ -274,18 +222,17 @@ const FeaturesPage = () => {
 				},
 			},
 		],
-		[t, getFeatureTypeChips, handleEdit],
+		[t, getFeatureTypeChipLabel, handleEdit],
 	);
 
 	return (
 		<Page
+			className='max-w-none'
 			heading={t('features.listPage.title')}
 			headingCTA={
-				<div className='flex justify-between items-center gap-2'>
-					<Link to={RouteNames.createFeature}>
-						<AddButton />
-					</Link>
-				</div>
+				<Link to={RouteNames.createFeature}>
+					<AddButton />
+				</Link>
 			}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Features} />
 			<QueryableDataArea<Feature>
@@ -310,6 +257,8 @@ const FeaturesPage = () => {
 				}}
 				tableConfig={{
 					columns,
+					variant: 'card',
+					tableClassName: 'table-fixed',
 					onRowClick: (row) => {
 						navigate(RouteNames.featureDetails + `/${row?.id}`);
 					},

@@ -1,7 +1,8 @@
 import { cn } from '@/lib/utils';
 import { SectionHeader } from '@/components/atoms';
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { useBrand } from '@/config/branding';
+import { PageToolbarSlotContext } from '@/context/PageToolbarSlotContext';
 
 interface Props {
 	children?: React.ReactNode;
@@ -14,8 +15,12 @@ interface Props {
 	documentTitle?: string;
 }
 
-const Page: FC<Props> = ({ children, className, type = 'default', header, heading, headingClassName, headingCTA, documentTitle }) => {
+const Page: FC<Props> = ({ children, className, header, heading, headingClassName, headingCTA, documentTitle }) => {
 	const { name } = useBrand();
+	const [toolbarSlotEl, setToolbarSlotEl] = useState<HTMLDivElement | null>(null);
+	const toolbarSlotRef = useCallback((node: HTMLDivElement | null) => {
+		setToolbarSlotEl(node);
+	}, []);
 
 	if (heading && header) {
 		throw new Error('You cannot pass both heading and header props');
@@ -31,24 +36,29 @@ const Page: FC<Props> = ({ children, className, type = 'default', header, headin
 		}
 	}, [heading, documentTitle, name]);
 
-	return (
-		<div className='min-h-screen flex flex-col'>
-			<div
-				className={cn(
-					'flex-1 page w-full p-0!',
-					type === 'left-aligned' && '!px-12',
-					type === 'default' && 'mx-auto max-w-screen-lg',
-					className,
-				)}>
-				{header && header}
-				{heading && (
-					<SectionHeader title={heading} titleClassName={cn(headingClassName, 'text-3xl font-medium')}>
-						{headingCTA}
-					</SectionHeader>
-				)}
-				<div className='pb-12 mt-2'>{children}</div>
-			</div>
+	const headingActions = heading ? (
+		<div className='flex flex-wrap items-center justify-end'>
+			<div ref={toolbarSlotRef} className='flex flex-wrap items-center gap-2.5 empty:hidden' />
+			{headingCTA ? <div className='ml-6 flex items-center'>{headingCTA}</div> : null}
 		</div>
+	) : (
+		headingCTA
+	);
+
+	return (
+		<PageToolbarSlotContext.Provider value={toolbarSlotEl}>
+			<div className='flex min-h-0 w-full flex-col'>
+				<div className={cn('page w-full !h-auto min-h-0 !px-12', className)}>
+					{header && header}
+					{heading && (
+						<SectionHeader title={heading} titleClassName={cn(headingClassName, 'text-3xl font-medium')}>
+							{headingActions}
+						</SectionHeader>
+					)}
+					<div className='pb-12 mt-2'>{children}</div>
+				</div>
+			</div>
+		</PageToolbarSlotContext.Provider>
 	);
 };
 

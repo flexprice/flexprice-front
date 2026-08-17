@@ -1,4 +1,5 @@
 import { config, APP_ENV } from '@/config/config';
+import { WHATS_NEW_DISMISSALS_STORAGE_KEY } from '@/utils/whatsNew/whatsNewDismissal';
 import supabase from '../services/supbase/config';
 import { RouteNames } from '../routes/Routes';
 
@@ -49,7 +50,7 @@ class AuthService {
 	 * Anything holding user or session data must NOT be listed here; the blanket clear below is what
 	 * keeps that guarantee.
 	 */
-	private static readonly PRESERVED_KEYS = ['flexprice_theme'];
+	private static readonly PRESERVED_KEYS = ['flexprice_theme', WHATS_NEW_DISMISSALS_STORAGE_KEY];
 
 	public static async logout() {
 		if (config.app.env !== APP_ENV.SelfHosted) {

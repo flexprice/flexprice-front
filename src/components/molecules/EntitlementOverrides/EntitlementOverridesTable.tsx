@@ -1,5 +1,6 @@
 import { FC, useState, useMemo } from 'react';
-import { Chip, Sheet } from '@/components/atoms';
+import { Sheet } from '@/components/atoms';
+import StatusChip, { getFeatureTypeTone } from '@/components/atoms/StatusChip';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
 import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import { FEATURE_TYPE } from '@/models';
@@ -88,18 +89,17 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 
 	const getFeatureTypeChip = (featureType: string) => {
 		const type = featureType?.toLowerCase();
-		switch (type) {
-			case 'metered':
-				return <Chip label={t('entitlements.overridesTable.featureTypeMetered')} variant='info' />;
-			case 'boolean':
-				return <Chip label={t('entitlements.overridesTable.featureTypeBoolean')} variant='success' />;
-			case 'static':
-				return <Chip label={t('entitlements.overridesTable.featureTypeStatic')} variant='warning' />;
-			case 'config':
-				return <Chip label={tc('labels.config')} variant='default' />;
-			default:
-				return <Chip label={featureType} variant='info' />;
-		}
+		const label =
+			type === 'metered'
+				? t('entitlements.overridesTable.featureTypeMetered')
+				: type === 'boolean'
+					? t('entitlements.overridesTable.featureTypeBoolean')
+					: type === 'static'
+						? t('entitlements.overridesTable.featureTypeStatic')
+						: type === 'config'
+							? tc('labels.config')
+							: featureType;
+		return <StatusChip tone={getFeatureTypeTone(featureType)} label={label} />;
 	};
 
 	const getEntitlementValue = (entitlement: EnrichedEntitlementRow) => {

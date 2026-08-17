@@ -9,8 +9,12 @@
 		"createCustomer": "Create Customer",
 		"columns": {
 			"name": "Name",
+			"email": "Email",
+			"timezone": "Timezone",
 			"externalId": "External ID",
+			"integrations": "Integrations",
 			"status": "Status",
+			"createdAt": "Created",
 			"updatedAt": "Updated at",
 			"actions": "Actions"
 		},

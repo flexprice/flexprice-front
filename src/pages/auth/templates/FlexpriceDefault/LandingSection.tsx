@@ -106,7 +106,7 @@ const LandingSection: React.FC = () => {
 	const cards = testimonials.concat(testimonials);
 
 	return (
-		<section className='relative w-full min-h-full flex-1 pt-14 pb-12 flex flex-col items-center justify-center'>
+		<section className='absolute inset-0 flex flex-col items-center justify-center overflow-hidden pt-14 pb-12'>
 			{/*
 			 * Two photo layers rather than one image swapped in JS: `hidden` keeps the browser from
 			 * fetching the layer it will not show, so each theme pays for exactly one of these.
@@ -130,7 +130,7 @@ const LandingSection: React.FC = () => {
 			<h2 className='relative text-[28px] font-normal text-zinc-950 dark:text-zinc-50 mb-[44px] text-center'>
 				{t('landing.defaultTagline')}
 			</h2>
-			<div className='relative flex justify-center items-center w-full max-w-7xl h-[340px] mb-6'>
+			<div className='relative flex h-[340px] w-full items-center justify-center mb-6'>
 				<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
 					<div className='flex gap-x-7 w-max'>
 						{cards.map((card, idx) => (

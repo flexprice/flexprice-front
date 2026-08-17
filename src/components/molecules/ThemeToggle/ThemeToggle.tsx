@@ -1,6 +1,7 @@
 import { useRef, type FC } from 'react';
 import { flushSync } from 'react-dom';
-import { Moon, Sun } from 'lucide-react';
+import { Moon02Icon, Sun03Icon } from '@hugeicons/core-free-icons';
+import { HugeIcon } from '@/components/atoms';
 import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/utils';
@@ -88,18 +89,22 @@ const ThemeToggle: FC<{ className?: string }> = ({ className }) => {
 			 * motion-reduce drops the rotation and scale but keeps the fade, so the control still reads
 			 * as changing state without any spin.
 			 */}
-			<Sun
+			<HugeIcon
+				icon={Sun03Icon}
 				aria-hidden
+				size={18}
 				className={cn(
-					'absolute size-[18px] transition-all duration-300 ease-out motion-reduce:transition-opacity',
+					'absolute transition-all duration-300 ease-out motion-reduce:transition-opacity',
 					isDark ? 'rotate-90 scale-0 opacity-0' : 'rotate-0 scale-100 opacity-100',
 					'group-hover:rotate-45 motion-reduce:group-hover:rotate-0',
 				)}
 			/>
-			<Moon
+			<HugeIcon
+				icon={Moon02Icon}
 				aria-hidden
+				size={18}
 				className={cn(
-					'absolute size-[18px] transition-all duration-300 ease-out motion-reduce:transition-opacity',
+					'absolute transition-all duration-300 ease-out motion-reduce:transition-opacity',
 					isDark ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0',
 					'group-hover:-rotate-12 motion-reduce:group-hover:rotate-0',
 				)}

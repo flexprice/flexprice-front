@@ -17,7 +17,7 @@ export { default as PricingCard, type PricingCardProps, type UsageCharge } from 
 export { default as PricingContainer, type PricingContainerProps, type PricingContainerView } from './containers/PricingContainer';
 
 // Data hook (swap-point for an injected client when published externally)
-export { usePricingData, type UsePricingDataArgs, type UsePricingDataResult } from './hooks/usePricingData';
+export { usePricingData, type UsePricingDataResult } from './hooks/usePricingData';
 
 // Presentational types
 export type { Plan, Feature, CreditGrantLine, PricingOption, PricingTableProps, PlanType } from './types';

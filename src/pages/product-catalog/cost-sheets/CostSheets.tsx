@@ -1,4 +1,4 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
+import { AddButton, ActionButton, StatusChip, Page } from '@/components/atoms';
 import { ApiDocsContent, CostSheetDrawer } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
@@ -133,6 +133,7 @@ const CostSheetsPage = () => {
 			{
 				fieldName: 'name',
 				title: t('costSheets.table.costSheetName'),
+				fieldVariant: 'title',
 			},
 			{
 				fieldName: 'lookup_key',
@@ -143,7 +144,7 @@ const CostSheetsPage = () => {
 				render: (row) => {
 					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('costSheets.listPage.filterStatus.active') : t('costSheets.listPage.filterStatus.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
@@ -154,6 +155,7 @@ const CostSheetsPage = () => {
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render(row) {
 					return (
 						<ActionButton
@@ -180,7 +182,7 @@ const CostSheetsPage = () => {
 	);
 
 	return (
-		<Page heading={t('costSheets.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
+		<Page className='max-w-none' heading={t('costSheets.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
 			<CostSheetDrawer
 				data={activeCostSheet}
 				open={costSheetDrawerOpen}
@@ -211,6 +213,8 @@ const CostSheetsPage = () => {
 					}}
 					tableConfig={{
 						columns,
+						variant: 'card',
+						tableClassName: 'table-fixed',
 						onRowClick: (row) => {
 							navigate(RouteNames.costSheetDetails + `/${row?.id}`);
 						},

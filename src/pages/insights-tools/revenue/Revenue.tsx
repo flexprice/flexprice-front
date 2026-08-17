@@ -212,7 +212,7 @@ const Revenue = () => {
 						{selectedCurrency === '' ? (
 							// No currency selected yet (or no data) — show per-currency summaries from the "summaries" map.
 							isLoading || showGlobalEmpty ? (
-								<div className='rounded-xl border border-line bg-surface overflow-hidden'>
+								<div className='overflow-hidden rounded-[var(--fp-radius-lg)] border border-line bg-surface'>
 									<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
 										<MetricTile
 											title={t('insightsTools.revenue.metricNetRevenue')}
@@ -242,7 +242,7 @@ const Revenue = () => {
 										.map(([cur, sum]) => (
 											<div key={cur}>
 												<p className='text-xs font-medium text-content-subtle uppercase tracking-wide px-1 mb-1'>{cur}</p>
-												<div className='rounded-xl border border-line bg-surface overflow-hidden'>
+												<div className='overflow-hidden rounded-[var(--fp-radius-lg)] border border-line bg-surface'>
 													<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'>
 														<MetricTile
 															title={t('insightsTools.revenue.metricNetRevenue')}
@@ -271,7 +271,7 @@ const Revenue = () => {
 							)
 						) : (
 							// Single currency selected — show summary tiles for that currency.
-							<div className='rounded-xl border border-line bg-surface overflow-hidden'>
+							<div className='overflow-hidden rounded-[var(--fp-radius-lg)] border border-line bg-surface'>
 								<div className={`grid grid-cols-1 sm:grid-cols-2 ${showVoiceColumns ? 'lg:grid-cols-5' : 'lg:grid-cols-3'}`}>
 									<MetricTile
 										title={t('insightsTools.revenue.metricNetRevenue')}
@@ -315,7 +315,7 @@ const Revenue = () => {
 					</div>
 
 					{showGlobalEmpty && (
-						<div className='absolute inset-0 flex items-center justify-center rounded-lg backdrop-blur-md bg-surface/45'>
+						<div className='absolute inset-0 flex items-center justify-center rounded-[var(--fp-radius-lg)] bg-surface/45 backdrop-blur-md'>
 							<div className='text-center max-w-sm px-4'>
 								<h3 className='text-xl font-semibold text-content-zinc-bold'>{t('insightsTools.revenue.emptyRangeTitle')}</h3>
 								<p className='text-sm text-content-zinc-tertiary mt-2'>{t('insightsTools.revenue.emptyRangeBody')}</p>
@@ -349,7 +349,7 @@ const Revenue = () => {
 				)}
 
 				<div className='pt-8'>
-					<div className='rounded-md border border-line bg-surface overflow-hidden shadow-sm'>
+					<div className='overflow-hidden rounded-[var(--fp-radius-lg)] border border-line bg-surface shadow-sm'>
 						<div className='flex items-center justify-between px-4 py-2.5 border-b border-line bg-surface'>
 							<div className='relative flex items-center w-64'>
 								<Search className='absolute left-2.5 h-3.5 w-3.5 text-content-subtle pointer-events-none' />
@@ -376,9 +376,9 @@ const Revenue = () => {
 							</div>
 						</div>
 						<Table>
-							<TableHeader className='h-10 bg-surface-subtle border-b border-line rounded-t-md'>
-								<TableRow className='rounded-t-md border-b border-line'>
-									<TableHead className='rounded-tl-md pl-4 font-semibold text-content-secondary text-[13px]'>
+							<TableHeader className='h-10 rounded-t-[var(--fp-radius-lg)] border-b border-line bg-surface-subtle'>
+								<TableRow className='rounded-t-[var(--fp-radius-lg)] border-b border-line'>
+									<TableHead className='rounded-ss-[var(--fp-radius-lg)] pl-4 font-semibold text-[13px] text-content-secondary'>
 										{t('insightsTools.revenue.colCustomer')}
 									</TableHead>
 									{selectedCurrency === '' && (
@@ -392,7 +392,8 @@ const Revenue = () => {
 									<TableHead className='font-semibold text-content-secondary text-[13px]'>
 										{t('insightsTools.revenue.metricContractRevenue')}
 									</TableHead>
-									<TableHead className={`font-semibold text-content-secondary text-[13px] ${!showVoiceColumns ? 'rounded-tr-md' : ''}`}>
+									<TableHead
+										className={`font-semibold text-[13px] text-content-secondary ${!showVoiceColumns ? 'rounded-se-[var(--fp-radius-lg)]' : ''}`}>
 										{t('insightsTools.revenue.metricUsageRevenue')}
 									</TableHead>
 									{showVoiceColumns && (
@@ -401,7 +402,7 @@ const Revenue = () => {
 										</TableHead>
 									)}
 									{showVoiceColumns && (
-										<TableHead className='rounded-tr-md font-semibold text-content-secondary text-[13px]'>
+										<TableHead className='rounded-se-[var(--fp-radius-lg)] font-semibold text-[13px] text-content-secondary'>
 											{t('insightsTools.revenue.metricCostPerMinute')}
 										</TableHead>
 									)}
@@ -413,13 +414,13 @@ const Revenue = () => {
 									return (
 										<TableRow
 											key={`${row.customer_id}:${row.currency}`}
-											className='h-10 align-middle border-b border-line bg-surface hover:bg-surface-subtle/50 transition-colors'>
-											<TableCell className='py-2.5 pl-4 font-normal text-content-secondary text-[13px] align-middle'>
+											className='h-[var(--fp-table-row-height)] align-middle border-b border-line bg-surface hover:bg-surface-subtle/50 transition-colors'>
+											<TableCell className='py-4 pl-4 font-normal text-content-secondary text-[13px] align-middle'>
 												<RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer_id}`} allowRedirect={Boolean(row.customer_id)}>
 													{row.customer_name || row.external_customer_id || unknownLabel}
 												</RedirectCell>
 											</TableCell>
-											<TableCell className='py-2.5 font-semibold text-content-secondary text-[13px]'>
+											<TableCell className='py-4 font-semibold text-content-secondary text-[13px]'>
 												{formatCurrency(
 													toNumberOrNull(row.total_revenue) ??
 														(toNumberOrNull(row.total_usage_revenue) ?? 0) + (toNumberOrNull(row.total_fixed_revenue) ?? 0),
@@ -427,19 +428,19 @@ const Revenue = () => {
 													naLabel,
 												)}
 											</TableCell>
-											<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>
+											<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
 												{formatCurrency(toNumberOrNull(row.total_fixed_revenue), rowCurrency, naLabel)}
 											</TableCell>
-											<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>
+											<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
 												{formatCurrency(toNumberOrNull(row.total_usage_revenue), rowCurrency, naLabel)}
 											</TableCell>
 											{showVoiceColumns && (
-												<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>
+												<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
 													{formatInteger(toNumberOrNull(row.voice_minutes), naLabel)}
 												</TableCell>
 											)}
 											{showVoiceColumns && (
-												<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>
+												<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
 													{formatDecimal(toNumberOrNull(row.cpm), naLabel)}
 												</TableCell>
 											)}

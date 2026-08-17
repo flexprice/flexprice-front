@@ -9,8 +9,12 @@
 		"createCustomer": "إنشاء عميل",
 		"columns": {
 			"name": "الاسم",
+			"email": "البريد الإلكتروني",
+			"timezone": "المنطقة الزمنية",
 			"externalId": "المعرّف الخارجي",
+			"integrations": "التكاملات",
 			"status": "الحالة",
+			"createdAt": "تاريخ الإنشاء",
 			"updatedAt": "تاريخ التحديث",
 			"actions": "إجراءات"
 		},

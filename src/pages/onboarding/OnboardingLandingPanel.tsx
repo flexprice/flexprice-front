@@ -24,7 +24,7 @@ const OnboardingLandingPanel = () => {
 	const review = FEATURED_REVIEW;
 
 	return (
-		<section className='relative flex min-h-full w-full flex-1 items-center justify-center overflow-hidden px-12 py-16 lg:px-16'>
+		<section className='absolute inset-0 flex items-center justify-center overflow-hidden px-12 py-16 lg:px-16'>
 			<div
 				aria-hidden
 				className='absolute inset-0 bg-cover bg-center bg-no-repeat dark:hidden'

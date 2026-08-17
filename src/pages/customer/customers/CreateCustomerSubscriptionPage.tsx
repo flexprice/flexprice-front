@@ -812,7 +812,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 	const navigateBack = navigateAfterAction;
 
 	return (
-		<div className={cn('flex gap-8 mt-5 relative mb-12')}>
+		<div className={cn('relative mb-12 flex gap-8 px-12 pt-2')}>
 			<ApiDocsContent tags={API_DOCS_TAGS.SubscriptionsOnly} />
 			<div className='flex-[6] space-y-6 mb-12 overflow-y-auto pr-4'>
 				{subscriptionData?.usage?.charges && subscriptionData.usage.charges.length > 0 && (

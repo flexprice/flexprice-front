@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { data, useNavigate, useSearchParams } from 'react-router';
 import { useUser } from '@/hooks/UserContext';
-import { Button, Input } from '@/components/atoms';
-import { EyeIcon, EyeOff } from 'lucide-react';
+import { Button, HugeIcon, Input } from '@/components/atoms';
+import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons';
 import { useMutation } from '@tanstack/react-query';
 import AuthApi from '@/api/AuthApi';
 import { config, APP_ENV } from '@/config/config';
@@ -127,7 +127,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 						type={showPassword ? 'text' : 'password'}
 						suffix={
 							<span onClick={() => setShowPassword(!showPassword)} className='cursor-pointer'>
-								{showPassword ? <EyeIcon className='w-5 h-5' /> : <EyeOff className='w-5 h-5' />}
+								{showPassword ? <HugeIcon icon={ViewIcon} size={20} /> : <HugeIcon icon={ViewOffSlashIcon} size={20} />}
 							</span>
 						}
 						placeholder={t('fields.passwordPlaceholder')}

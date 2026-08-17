@@ -1,4 +1,5 @@
-import { Card, FormHeader, Page, Spacer, Chip } from '@/components/atoms';
+import { Card, FormHeader, Page, Spacer, StatusChip } from '@/components/atoms';
+import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import { IntegrationMappingCard, SubscriptionAddonsSection, UpcomingCreditGrantApplicationsTable } from '@/components/molecules';
 import SubscriptionDetailChargesSection from '@/components/molecules/Subscription/SubscriptionDetailChargesSection';
 import FlexpriceTable, { ColumnData, RedirectCell } from '@/components/molecules/Table';
@@ -32,38 +33,19 @@ import { formatSubscriptionTypeDisplayLabel } from '@/utils/subscription/formatS
 
 const DATE_NO_YEAR_FORMAT: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
 
-type SubscriptionTypeChipProps =
-	| { variant: 'default' | 'success' | 'warning' | 'failed' | 'info' }
-	| { textColor: string; bgColor: string; borderColor: string };
-
-/** Distinct palettes per API `subscription_type` (avoids dull grey for the common cases). */
-function getSubscriptionTypeChipProps(raw: string | null | undefined): SubscriptionTypeChipProps {
+function getSubscriptionTypeTone(raw: string | null | undefined): StatusChipTone {
 	const t = raw?.trim().toLowerCase();
 	switch (t) {
-		case SUBSCRIPTION_TYPE.STANDALONE:
-			return {
-				textColor: 'rgb(var(--fp-chip-teal-text))',
-				bgColor: 'rgb(var(--fp-chip-teal-bg))',
-				borderColor: 'rgb(var(--fp-chip-teal-line))',
-			};
 		case SUBSCRIPTION_TYPE.PARENT:
-			return { variant: 'success' };
-		case SUBSCRIPTION_TYPE.INHERITED:
-			return { variant: 'info' };
+			return 'success';
 		case SUBSCRIPTION_TYPE.GROUPED_INVOICING:
-			return { variant: 'warning' };
+			return 'warning';
+		case SUBSCRIPTION_TYPE.INHERITED:
 		case SUBSCRIPTION_TYPE.DELEGATED_INVOICING:
-			return {
-				textColor: 'rgb(var(--fp-chip-violet-text))',
-				bgColor: 'rgb(var(--fp-chip-violet-bg))',
-				borderColor: 'rgb(var(--fp-chip-violet-line))',
-			};
+		case SUBSCRIPTION_TYPE.STANDALONE:
+			return 'info';
 		default:
-			return {
-				textColor: 'rgb(var(--fp-chip-indigo-text))',
-				bgColor: 'rgb(var(--fp-chip-indigo-bg))',
-				borderColor: 'rgb(var(--fp-chip-indigo-line))',
-			};
+			return 'neutral';
 	}
 }
 
@@ -221,18 +203,12 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 			},
 			{
 				title: t('subscriptionDetail.columns.type'),
-				render: (row) => {
-					const chip = getSubscriptionTypeChipProps(row.subscription_type);
-					return (
-						<Chip
-							label={formatSubscriptionTypeDisplayLabel(row.subscription_type)}
-							className='shrink-0'
-							{...('variant' in chip
-								? { variant: chip.variant }
-								: { textColor: chip.textColor, bgColor: chip.bgColor, borderColor: chip.borderColor })}
-						/>
-					);
-				},
+				render: (row) => (
+					<StatusChip
+						tone={getSubscriptionTypeTone(row.subscription_type)}
+						label={formatSubscriptionTypeDisplayLabel(row.subscription_type)}
+					/>
+				),
 			},
 			{
 				title: t('subscriptionDetail.columns.plan'),
@@ -345,15 +321,15 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 					<div className='text-content-zinc text-sm flex items-center gap-2'>
 						{getSubscriptionStatus(subscriptionDetails?.subscription_status ?? '', t)}
 						{showEndDateTag ? (
-							<Chip
-								variant='default'
+							<StatusChip
+								tone='neutral'
 								label={t('subscriptionDetail.cancelsOnDate', { date: formatDateNoYear(subscriptionDetails!.end_date) })}
 							/>
 						) : (
 							showCancelsByTag &&
 							cancellationEffectiveDate && (
-								<Chip
-									variant='default'
+								<StatusChip
+									tone='neutral'
 									label={t('subscriptionDetail.cancelsByDate', {
 										date: formatDateShort(cancellationEffectiveDate.toISOString()),
 									})}

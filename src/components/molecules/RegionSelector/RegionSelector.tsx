@@ -10,21 +10,27 @@ import { getFlagComponent } from '@/utils/region/flagMap';
 import { Info } from 'lucide-react';
 import { config } from '@/config/config';
 
+const LIVE_PREVIEW_REGIONS: RegionOption[] = [
+	{ key: 'us', label: 'United States', url: 'https://app.flexprice.io', countryCode: 'US' },
+	{ key: 'india', label: 'India', url: 'https://in.flexprice.io', countryCode: 'IN' },
+];
+
 const RegionSelectorImpl: React.FC = () => {
 	const { t } = useTranslation('settings');
-	const { regions } = config.regions;
+	const isPreview = !config.regions.enabled || config.regions.regions.length === 0;
+	const regions = isPreview ? LIVE_PREVIEW_REGIONS : config.regions.regions;
 	const [selectedRegion, setSelectedRegion] = useState<RegionOption | null>(null);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 	useEffect(() => {
-		setSelectedRegion(detectCurrentRegion(regions));
+		setSelectedRegion(detectCurrentRegion(regions) ?? regions[0] ?? null);
 	}, [regions]);
 
 	const handleRegionChange = (key: string) => {
 		const region = regions.find((r) => r.key === key);
 		if (!region) return;
 		setSelectedRegion(region);
-		switchRegion(region);
+		if (!isPreview) switchRegion(region);
 	};
 
 	return (
@@ -73,7 +79,6 @@ const RegionSelectorImpl: React.FC = () => {
 };
 
 const RegionSelector: React.FC = () => {
-	if (!config.regions.enabled) return null;
 	return <RegionSelectorImpl />;
 };
 

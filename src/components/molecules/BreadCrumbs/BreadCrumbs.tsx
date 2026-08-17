@@ -8,8 +8,8 @@ import ApiDocs from '../ApiDocs';
 import LocaleSelector from '@/components/molecules/LocaleSelector/LocaleSelector';
 import ThemeToggle from '@/components/molecules/ThemeToggle';
 import IntercomMessenger from '@/core/services/intercom/IntercomMessenger';
-import { Search } from 'lucide-react';
-import { Button } from '@/components/atoms';
+import { HugeIcon, Button } from '@/components/atoms';
+import { Search01Icon } from '@hugeicons/core-free-icons';
 import { useLocaleStore } from '@/store/useLocaleStore';
 import { Direction } from '@/config/branding';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ const BreadCrumbsSearchTrigger: React.FC = () => {
 			size='sm'
 			className='flex w-auto min-w-0 sm:min-w-[180px] md:min-w-[220px] items-center border-line bg-surface hover:bg-surface-subtle hover:border-line !ps-2 sm:!ps-3 !pe-1 [&>div]:w-full [&>div]:min-w-0 [&>div]:gap-2'
 			aria-label={t('commandPalette.searchAriaLabel')}>
-			<Search className='h-4 w-4 shrink-0 text-content-subtle order-first' />
+			<HugeIcon icon={Search01Icon} size={16} className='text-content-subtle order-first' />
 			<span className='hidden sm:block flex-1 min-w-0 truncate text-start text-muted-foreground order-2'>
 				{t('commandPalette.searchPlaceholder')}
 			</span>
@@ -49,7 +49,7 @@ const BreadCrumbs: FC = () => {
 
 	if (isLoading) {
 		return (
-			<header className='bg-surface sticky top-0 z-10 border-b-[1.5px] border-line-strong overflow-x-hidden'>
+			<header className='sticky top-0 z-10 shrink-0 overflow-x-hidden border-b border-line bg-surface-canvas'>
 				<div className='px-4 sm:px-6 py-4'>
 					<div className='h-6 animate-pulse bg-surface-strong rounded w-48'></div>
 				</div>
@@ -58,7 +58,7 @@ const BreadCrumbs: FC = () => {
 	}
 
 	return (
-		<header className='bg-surface sticky top-0 z-10 border-b-[1.5px] border-line overflow-x-hidden'>
+		<header className='sticky top-0 z-10 shrink-0 overflow-x-hidden border-b border-line bg-surface-canvas'>
 			<div className='px-4 sm:px-6 py-4 flex items-center justify-between gap-2 min-w-0'>
 				{/* Breadcrumbs */}
 				<nav className='flex min-w-0 flex-1 items-center space-x-2 overflow-hidden text-sm text-content-muted'>

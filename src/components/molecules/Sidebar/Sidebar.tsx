@@ -5,7 +5,16 @@ import SidebarNav, { NavItem } from './SidebarMenu';
 import FlexpriceSidebarFooter from './SidebarFooter';
 import { RouteNames } from '@/core/routes/Routes';
 import { EnvironmentSelector } from '@/components/molecules';
-import { Settings, Landmark, Layers2, CodeXml, Puzzle, GalleryHorizontalEnd, Home, BarChart3 } from 'lucide-react';
+import {
+	Home01Icon,
+	Layers01Icon,
+	LandmarkIcon,
+	ChartLineData02Icon,
+	SourceCodeIcon,
+	PuzzleIcon,
+	GalleryHorizontalEndIcon,
+	UserMultipleIcon,
+} from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { useLocaleStore } from '@/store/useLocaleStore';
 import { Direction } from '@/config/branding';
@@ -22,12 +31,12 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 			{
 				title: t('sidebar.nav.home'),
 				url: RouteNames.homeDashboard,
-				icon: Home,
+				icon: Home01Icon,
 			},
 			{
 				title: t('sidebar.nav.productCatalog'),
 				url: RouteNames.features,
-				icon: Layers2,
+				icon: Layers01Icon,
 				items: [
 					{
 						title: t('sidebar.nav.features'),
@@ -60,25 +69,26 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 				],
 			},
 			{
-				title: t('sidebar.nav.billing'),
+				title: t('sidebar.nav.customers'),
 				url: RouteNames.customers,
-				icon: Landmark,
+				icon: UserMultipleIcon,
+			},
+			{
+				title: t('sidebar.nav.billing'),
+				url: RouteNames.subscriptions,
+				icon: LandmarkIcon,
 				items: [
-					{
-						title: t('sidebar.nav.customers'),
-						url: RouteNames.customers,
-					},
 					{
 						title: t('sidebar.nav.subscriptions'),
 						url: RouteNames.subscriptions,
 					},
 					{
-						title: t('sidebar.nav.taxes'),
-						url: RouteNames.taxes,
-					},
-					{
 						title: t('sidebar.nav.invoices'),
 						url: RouteNames.invoices,
+					},
+					{
+						title: t('sidebar.nav.taxes'),
+						url: RouteNames.taxes,
 					},
 					{
 						title: t('sidebar.nav.creditNotes'),
@@ -93,34 +103,16 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 			...(config.platform.revenue.enabled
 				? [
 						{
-							title: t('sidebar.nav.revenue'),
+							title: t('sidebar.nav.analytics'),
 							url: RouteNames.revenue,
-							icon: BarChart3,
+							icon: ChartLineData02Icon,
 						},
 					]
 				: []),
-
-			{
-				title: t('sidebar.nav.tools'),
-				url: RouteNames.exports,
-				icon: Settings,
-				items: [
-					// Imports tab hidden from the sidebar for now — keep the entry (and its route)
-					// around so it's a one-line uncomment to bring back.
-					// {
-					// 	title: t('sidebar.nav.imports'),
-					// 	url: RouteNames.bulkImports,
-					// },
-					{
-						title: t('sidebar.nav.exports'),
-						url: RouteNames.exports,
-					},
-				],
-			},
 			{
 				title: t('sidebar.nav.developers'),
 				url: RouteNames.events,
-				icon: CodeXml,
+				icon: SourceCodeIcon,
 				items: [
 					{
 						title: t('sidebar.nav.eventsDebugger'),
@@ -142,17 +134,21 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 						title: t('sidebar.nav.workflows'),
 						url: RouteNames.workflows,
 					},
+					{
+						title: t('sidebar.nav.exports'),
+						url: RouteNames.exports,
+					},
 				],
 			},
 			{
 				title: t('sidebar.nav.integrations'),
 				url: RouteNames.integrations,
-				icon: Puzzle,
+				icon: PuzzleIcon,
 			},
 			{
 				title: t('sidebar.nav.pricingWidget'),
 				url: RouteNames.pricing,
-				icon: GalleryHorizontalEnd,
+				icon: GalleryHorizontalEndIcon,
 			},
 		],
 		[t],
@@ -163,7 +159,7 @@ const AppSidebar: React.FC<React.ComponentProps<typeof Sidebar>> = ({ ...props }
 			collapsible='icon'
 			side={side}
 			{...props}
-			className={cn('border-line-strong py-1 bg-surface-sidebar', sidebarOpen ? 'px-3' : 'px-2')}>
+			className={cn('border-r-0 group-data-[side=left]:border-r-0 bg-transparent py-1', sidebarOpen ? 'px-3' : 'px-2')}>
 			<SidebarHeader>
 				<EnvironmentSelector />
 			</SidebarHeader>

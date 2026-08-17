@@ -54,8 +54,10 @@ const PaymentList = () => {
 
 	return (
 		<>
-			<InvoicePaymentsTable data={payments?.items ?? []} />
-			<ShortPagination unit={t('payments.paginationUnit')} totalItems={payments?.pagination.total ?? 0} />
+			<InvoicePaymentsTable
+				data={payments?.items ?? []}
+				footer={<ShortPagination unit={t('payments.paginationUnit')} totalItems={payments?.pagination.total ?? 0} variant='embedded' />}
+			/>
 		</>
 	);
 };

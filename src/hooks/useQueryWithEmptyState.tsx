@@ -38,6 +38,7 @@ export function useQueryWithEmptyState<TMain = unknown, TProbe = unknown, TError
 	const {
 		data: mainData,
 		isLoading: loadingMain,
+		isSuccess: mainSuccess,
 		isError: errorMain,
 		error: mainError,
 	} = useQuery<TMain, TError>({
@@ -58,7 +59,7 @@ export function useQueryWithEmptyState<TMain = unknown, TProbe = unknown, TError
 	} = useQuery<TProbe, TError>({
 		queryKey: probe.queryKey,
 		queryFn: probe.queryFn,
-		enabled: runProbe && !loadingMain,
+		enabled: runProbe && mainSuccess,
 		...probe.options,
 	});
 

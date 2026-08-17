@@ -1,4 +1,5 @@
-import { Page, Chip, Button } from '@/components/atoms';
+import { StatusChip, Button, Page } from '@/components/atoms';
+import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import { ApiDocsContent } from '@/components/molecules';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { ColumnData, TooltipCell } from '@/components/molecules/Table';
@@ -33,6 +34,13 @@ const WORKFLOW_STATUS_TO_FILTER_KEY: Record<string, string> = {
 	ContinuedAsNew: 'continuedAsNew',
 	TimedOut: 'timedOut',
 };
+
+function getWorkflowStatusTone(status: string): StatusChipTone {
+	if (status === 'Completed') return 'success';
+	if (status === 'Running' || status === 'ContinuedAsNew') return 'warning';
+	if (status === 'Failed' || status === 'TimedOut') return 'danger';
+	return 'neutral';
+}
 
 function translateWorkflowStatus(status: string, t: TFunction<'developers'>): string {
 	const suffix = WORKFLOW_STATUS_TO_FILTER_KEY[status];
@@ -135,20 +143,30 @@ const WorkflowsPage = () => {
 		() => [
 			{
 				title: t('workflows.columns.workflowId'),
-				width: 200,
+				width: '15%',
+				fieldVariant: 'title',
 				render: (row) => <TooltipCell tooltipContent={row.workflow_id} tooltipText={row.workflow_id} />,
 			},
 			{
 				title: t('workflows.columns.runId'),
-				width: 200,
+				width: '15%',
 				render: (row) => <TooltipCell tooltipContent={row.run_id} tooltipText={row.run_id} />,
 			},
 			{
 				title: t('workflows.columns.workflowType'),
-				render: (row) => WORKFLOW_TYPE_DISPLAY_NAMES[row.workflow_type] ?? row.workflow_type,
+				width: '16%',
+				render: (row) => {
+					const label = WORKFLOW_TYPE_DISPLAY_NAMES[row.workflow_type] ?? row.workflow_type;
+					return (
+						<span className='block truncate' title={label}>
+							{label}
+						</span>
+					);
+				},
 			},
 			{
 				title: t('workflows.columns.status'),
+				width: '12%',
 				render: (row) => {
 					const status = row.status ?? t('labels.missingValue');
 					const label =
@@ -157,19 +175,26 @@ const WorkflowsPage = () => {
 							: status === 'Failed'
 								? t('workflows.statusChip.failed')
 								: translateWorkflowStatus(status, t);
-					return <Chip variant={status === 'Completed' ? 'success' : status === 'Failed' ? 'failed' : 'default'} label={label} />;
+					return <StatusChip tone={getWorkflowStatusTone(status)} label={label} />;
 				},
 			},
 			{
 				title: t('workflows.columns.startTime'),
-				render: (row) => <span>{row.start_time ? formatDateWithMilliseconds(row.start_time) : t('labels.missingValue')}</span>,
+				width: '16%',
+				render: (row) => (
+					<span className='block truncate'>{row.start_time ? formatDateWithMilliseconds(row.start_time) : t('labels.missingValue')}</span>
+				),
 			},
 			{
 				title: t('workflows.columns.endTime'),
-				render: (row) => <span>{row.close_time ? formatDateWithMilliseconds(row.close_time) : t('labels.missingValue')}</span>,
+				width: '16%',
+				render: (row) => (
+					<span className='block truncate'>{row.close_time ? formatDateWithMilliseconds(row.close_time) : t('labels.missingValue')}</span>
+				),
 			},
 			{
 				title: t('workflows.columns.duration'),
+				width: '10%',
 				render: (row) => {
 					const formatted = formatWorkflowDuration(row.duration_ms, t);
 					return <TooltipCell tooltipContent={formatted} tooltipText={formatted} />;
@@ -180,7 +205,7 @@ const WorkflowsPage = () => {
 	);
 
 	return (
-		<Page heading={t('common:nav.workflows')}>
+		<Page className='max-w-none' heading={t('common:nav.workflows')}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Workflows} />
 			<QueryableDataArea<WorkflowExecutionDTO>
 				queryConfig={{
@@ -209,6 +234,8 @@ const WorkflowsPage = () => {
 				}}
 				tableConfig={{
 					columns,
+					variant: 'card',
+					tableClassName: 'table-fixed',
 					showEmptyRow: true,
 				}}
 				paginationConfig={{

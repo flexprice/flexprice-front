@@ -4,19 +4,20 @@ import { FC, useState, useEffect } from 'react';
 import { SidebarGroup, SidebarMenu, useSidebar } from '@/components/ui/sidebar';
 import SidebarItem from './SidebarItem';
 import { useLocation } from 'react-router';
-import { LucideIcon } from 'lucide-react';
+import type { HugeIconData } from '@/components/atoms';
 import { cn } from '@/lib/utils';
+import { RouteNames } from '@/core/routes/Routes';
 
 export type NavItem = {
 	title: string;
 	url: string;
-	icon?: LucideIcon;
+	icon?: HugeIconData;
 	isActive?: boolean;
 	disabled?: boolean;
 	items?: {
 		title: string;
 		url: string;
-		icon?: LucideIcon;
+		icon?: HugeIconData;
 	}[];
 	isOpen?: boolean;
 	onToggle?: (isOpen: boolean) => void;
@@ -50,7 +51,7 @@ const SidebarNav: FC<{ items: NavItem[] }> = ({ items }) => {
 				// Special case: If we're on any product catalog route, open Product Catalog section
 				// But exclude standalone items that might share the same prefix
 				const isProductCatalogRoute = location.pathname.startsWith('/product-catalog');
-				const isProductCatalog = item.title === 'Product Catalog';
+				const isProductCatalog = item.url === RouteNames.features;
 				// Only apply special case if we're not on a standalone item
 				const shouldOpen = isActive || (isProductCatalogRoute && isProductCatalog && !isOnStandaloneItem);
 
@@ -63,16 +64,11 @@ const SidebarNav: FC<{ items: NavItem[] }> = ({ items }) => {
 	}, [location.pathname, items]);
 
 	const handleToggle = (itemTitle: string, isOpen: boolean) => {
-		// Use requestAnimationFrame for smoother state updates
-		requestAnimationFrame(() => {
-			if (isOpen) {
-				// If opening, set this as the open item (closing others)
-				setOpenItemTitle(itemTitle);
-			} else {
-				// If closing, clear the open item
-				setOpenItemTitle(null);
-			}
-		});
+		if (isOpen) {
+			setOpenItemTitle(itemTitle);
+		} else {
+			setOpenItemTitle(null);
+		}
 	};
 
 	return (

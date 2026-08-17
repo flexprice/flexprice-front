@@ -14,7 +14,7 @@ export const COMMAND_PALETTE_ACTION_URLS = {
 	documentation: 'https://docs.flexprice.io',
 	contactEmail: 'mailto:support@flexprice.io',
 	bookCall: 'https://calendly.com/nikhil-flexprice/30min',
-	slackCommunity: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
+	slackCommunity: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-3lglk6d7l-MNuKTOhxLyphYHEGOcnVmg',
 } as const;
 
 /** All executable action IDs. Add new ones here and keep in sync with command config. */

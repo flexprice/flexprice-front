@@ -9,9 +9,10 @@ interface ShortPaginationProps {
 	showPages?: boolean;
 	unit?: string;
 	prefix?: PAGINATION_PREFIX | string;
+	variant?: 'default' | 'embedded';
 }
 
-const ShortPagination = ({ totalItems, pageSize, unit, showPages = false, prefix }: ShortPaginationProps) => {
+const ShortPagination = ({ totalItems, pageSize, unit, showPages = false, prefix, variant = 'default' }: ShortPaginationProps) => {
 	const { page, setPage, limit } = usePagination({
 		initialLimit: pageSize,
 		prefix,
@@ -27,6 +28,7 @@ const ShortPagination = ({ totalItems, pageSize, unit, showPages = false, prefix
 			pageSize={effectivePageSize}
 			unit={unit}
 			showPages={showPages}
+			variant={variant}
 		/>
 	);
 };

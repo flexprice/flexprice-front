@@ -61,7 +61,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 		};
 
 		return (
-			<div ref={ref} className={cn('rounded-[6px]', !noPadding && 'p-6', variants[variant], className)} {...props}>
+			<div ref={ref} className={cn('rounded-[var(--fp-radius-lg)]', !noPadding && 'p-6', variants[variant], className)} {...props}>
 				{children}
 			</div>
 		);

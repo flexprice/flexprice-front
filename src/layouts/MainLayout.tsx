@@ -2,12 +2,13 @@ import { config } from '@/config/config';
 import { Outlet, useNavigate } from 'react-router';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Sidebar } from '@/components/molecules/Sidebar';
-import { BreadCrumbs, DebugMenu, RestrictedEnvBanner } from '@/components/molecules';
+import { BreadCrumbs, DebugMenu, RestrictedEnvBanner, WhatsNewModal } from '@/components/molecules';
 import { CommandPalette } from '@/components/organisms';
 import AppPrefetcher from '@/components/organisms/AppPrefetcher';
 import useUser from '@/hooks/useUser';
 import posthog from 'posthog-js';
 import { useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 const MainLayout: React.FC = () => {
 	const { user } = useUser();
@@ -41,21 +42,26 @@ const MainLayout: React.FC = () => {
 	}, [user]);
 
 	return (
-		<SidebarProvider className='flex h-screen bg-surface-shell relative'>
+		<SidebarProvider className='relative flex h-svh max-h-svh overflow-hidden bg-surface-shell'>
 			<AppPrefetcher />
 			<CommandPalette />
-			{/* Sidebar */}
 			<Sidebar />
-			{/* Right Layout */}
-			<SidebarInset className='flex flex-col flex-1 bg-surface-canvas h-screen relative'>
-				<BreadCrumbs />
-				<RestrictedEnvBanner />
-				{/* Main Content */}
-				<main className='flex-1 px-4 relative overflow-y-auto '>
-					<Outlet />
-					<DebugMenu />
-				</main>
-			</SidebarInset>
+			<div className='flex min-h-0 min-w-0 flex-1 flex-col p-[var(--fp-shell-inset)] md:ps-0'>
+				<SidebarInset
+					className={cn(
+						'relative flex min-h-0 flex-1 flex-col overflow-hidden bg-surface-canvas shadow-[var(--fp-shell-shadow)]',
+						'rounded-[var(--fp-radius-shell)] border border-line-zinc-strong',
+						'!min-h-0',
+					)}>
+					<BreadCrumbs />
+					<RestrictedEnvBanner />
+					<div className='fp-shell-scroll relative min-h-0 flex-1 overflow-y-auto'>
+						<Outlet />
+						<DebugMenu />
+					</div>
+				</SidebarInset>
+			</div>
+			<WhatsNewModal />
 		</SidebarProvider>
 	);
 };
