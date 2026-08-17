@@ -2,12 +2,11 @@ import { FC, useMemo } from 'react';
 import FlexpriceTable, { ColumnData } from '../Table';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
 import { ENTITY_STATUS } from '@/models';
-import { ActionButton, Chip } from '@/components/atoms';
+import { ActionButton, StatusChip, getFeatureTypeTone } from '@/components/atoms';
 import formatDate from '@/utils/common/format_date';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
 import FeatureApi from '@/api/FeatureApi';
-import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 
@@ -16,8 +15,7 @@ interface Props {
 	onEdit?: (feature: Feature) => void;
 }
 
-const renderFeatureTypeChip = (type: string, t: TFunction<'catalog'>, addIcon: boolean) => {
-	const icon = getFeatureIcon(type);
+const renderFeatureTypeChip = (type: string, t: TFunction<'catalog'>) => {
 	const key = type?.toLowerCase();
 	const label =
 		key === FEATURE_TYPE.STATIC
@@ -26,49 +24,10 @@ const renderFeatureTypeChip = (type: string, t: TFunction<'catalog'>, addIcon: b
 				? t('features.listPage.typeChips.metered')
 				: key === FEATURE_TYPE.BOOLEAN
 					? t('features.listPage.typeChips.boolean')
-					: t('features.listPage.typeChips.unknown');
-	switch (key) {
-		case FEATURE_TYPE.STATIC:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-static-text))'
-					bgColor='rgb(var(--fp-chip-type-static-bg))'
-					icon={addIcon ? icon : null}
-					label={label}
-					className='text-xs'
-				/>
-			);
-		case FEATURE_TYPE.METERED:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-metered-text))'
-					bgColor='rgb(var(--fp-chip-type-metered-bg))'
-					icon={addIcon ? icon : null}
-					label={label}
-					className='text-xs'
-				/>
-			);
-		case FEATURE_TYPE.BOOLEAN:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-boolean-text))'
-					bgColor='rgb(var(--fp-chip-type-boolean-bg))'
-					icon={addIcon ? icon : null}
-					label={label}
-					className='text-xs'
-				/>
-			);
-		default:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-default-text))'
-					bgColor='rgb(var(--fp-chip-type-default-bg))'
-					icon={addIcon ? icon : null}
-					label={label}
-					className='text-xs'
-				/>
-			);
-	}
+					: key === FEATURE_TYPE.CONFIG
+						? t('features.listPage.typeChips.config')
+						: t('features.listPage.typeChips.unknown');
+	return <StatusChip tone={getFeatureTypeTone(type)} label={label} />;
 };
 
 const FeatureTable: FC<Props> = ({ data, onEdit }) => {
@@ -84,7 +43,7 @@ const FeatureTable: FC<Props> = ({ data, onEdit }) => {
 			{
 				title: t('features.listPage.columns.type'),
 				render(row) {
-					return renderFeatureTypeChip(row?.type || '', t, true);
+					return renderFeatureTypeChip(row?.type || '', t);
 				},
 			},
 			{
@@ -92,7 +51,7 @@ const FeatureTable: FC<Props> = ({ data, onEdit }) => {
 				render: (row) => {
 					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('features.listPage.filterStatus.active') : t('features.listPage.filterStatus.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{

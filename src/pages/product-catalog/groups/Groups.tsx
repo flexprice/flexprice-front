@@ -1,4 +1,4 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
+import { AddButton, ActionButton, StatusChip, Page } from '@/components/atoms';
 import { ApiDocsContent, GroupDrawer } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
@@ -48,7 +48,7 @@ const GroupsPage = () => {
 
 	const columns: ColumnData<Group>[] = useMemo(
 		() => [
-			{ fieldName: 'name', title: t('groups.table.name') },
+			{ fieldName: 'name', title: t('groups.table.name'), fieldVariant: 'title' },
 			{
 				title: t('groups.table.type'),
 				render: (row) => {
@@ -67,7 +67,7 @@ const GroupsPage = () => {
 				render: (row) => {
 					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('common:status.active') : t('common:status.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
@@ -76,6 +76,7 @@ const GroupsPage = () => {
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render: (row) => (
 					<ActionButton
 						id={row.id}
@@ -96,7 +97,7 @@ const GroupsPage = () => {
 	);
 
 	return (
-		<Page heading={t('groups.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
+		<Page className='max-w-none' heading={t('groups.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
 			<GroupDrawer data={activeGroup} open={groupDrawerOpen} onOpenChange={setGroupDrawerOpen} refetchQueryKeys={['fetchGroups']} />
 			<ApiDocsContent tags={API_DOCS_TAGS.Groups} />
 			<div className='space-y-6'>
@@ -137,6 +138,8 @@ const GroupsPage = () => {
 					}}
 					tableConfig={{
 						columns,
+						variant: 'card',
+						tableClassName: 'table-fixed',
 						showEmptyRow: true,
 						onRowClick: (row) => navigate(`${RouteNames.groups}/${row.id}`),
 					}}

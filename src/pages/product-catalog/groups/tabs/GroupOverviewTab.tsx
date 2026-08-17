@@ -4,7 +4,8 @@ import { useMemo, useRef, useEffect, useCallback } from 'react';
 import { GroupApi } from '@/api/GroupApi';
 import FeatureApi from '@/api/FeatureApi';
 import { PriceApi } from '@/api/PriceApi';
-import { Card, CardHeader, Loader, NoDataCard, ShortPagination } from '@/components/atoms';
+import { Card, CardHeader, Loader, NoDataCard, ShortPagination, StatusChip, Tooltip } from '@/components/atoms';
+import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import { FlexpriceTable, ColumnData, QueryBuilder } from '@/components/molecules';
 import { ChargeValueCell } from '@/components/molecules';
 import { Price, PRICE_STATUS, PRICE_TYPE, PRICE_ENTITY_TYPE } from '@/models';
@@ -19,9 +20,7 @@ import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate } from 'react-router';
 import RedirectCell from '@/components/molecules/Table/RedirectCell';
-import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
-import { toSentenceCase } from '@/utils/common/helper_functions';
-import { Chip, Tooltip } from '@/components/atoms';
+import { getFeatureTypeChips } from '@/components/molecules/CustomerUsageTable/CustomerUsageTable';
 import {
 	FilterField,
 	FilterFieldType,
@@ -54,12 +53,12 @@ const getPriceStatus = (price: Price): PRICE_STATUS => {
 	return PRICE_STATUS.ACTIVE;
 };
 
-const getStatusChipVariant = (status: PRICE_STATUS): 'info' | 'default' | 'success' => {
+const getStatusChipTone = (status: PRICE_STATUS): StatusChipTone => {
 	switch (status) {
 		case PRICE_STATUS.UPCOMING:
 			return 'info';
 		case PRICE_STATUS.INACTIVE:
-			return 'default';
+			return 'neutral';
 		default:
 			return 'success';
 	}
@@ -131,53 +130,6 @@ const initialFeatureFilters: FilterCondition[] = [
 ];
 
 const initialFeatureSorts: SortOption[] = [{ field: 'updated_at', label: 'Updated At', direction: SortDirection.DESC }];
-
-// ----- Feature type chip (mirror Features page) -----
-const getFeatureTypeChips = (type: string, addIcon = false) => {
-	const icon = getFeatureIcon(type);
-	switch (type.toLocaleLowerCase()) {
-		case FEATURE_TYPE.STATIC:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-static-text))'
-					bgColor='rgb(var(--fp-chip-type-static-bg))'
-					icon={addIcon ? icon : null}
-					label={toSentenceCase(type)}
-					className='text-xs'
-				/>
-			);
-		case FEATURE_TYPE.METERED:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-metered-text))'
-					bgColor='rgb(var(--fp-chip-type-metered-bg))'
-					icon={addIcon ? icon : null}
-					label={toSentenceCase(type)}
-					className='text-xs'
-				/>
-			);
-		case FEATURE_TYPE.BOOLEAN:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-boolean-text))'
-					bgColor='rgb(var(--fp-chip-type-boolean-bg))'
-					icon={addIcon ? icon : null}
-					label={toSentenceCase(type)}
-					className='text-xs'
-				/>
-			);
-		default:
-			return (
-				<Chip
-					textColor='rgb(var(--fp-chip-type-default-text))'
-					bgColor='rgb(var(--fp-chip-type-default-bg))'
-					icon={addIcon ? icon : null}
-					label={toSentenceCase(type)}
-					className='text-xs'
-				/>
-			);
-	}
-};
 
 const GroupOverviewTab = () => {
 	const { id: groupId } = useParams();
@@ -428,14 +380,25 @@ const GroupOverviewTab = () => {
 					return url ? <RedirectCell redirectUrl={url}>{label}</RedirectCell> : <span>{label}</span>;
 				},
 			},
-			{ title: 'Charge Type', render: (row) => <span>{getPriceTypeLabel(row.type)}</span> },
+			{
+				title: 'Charge Type',
+				render: (row) => {
+					if (row.type === PRICE_TYPE.USAGE) {
+						return <StatusChip tone='warning' label={getPriceTypeLabel(row.type)} />;
+					}
+					if (row.type === PRICE_TYPE.FIXED) {
+						return <StatusChip status='Recurring' label={t('plans.organisms.planPriceTable.recurring')} />;
+					}
+					return <span>{getPriceTypeLabel(row.type)}</span>;
+				},
+			},
 			{ title: 'Billing Timing', render: (row) => <span>{formatInvoiceCadence(row.invoice_cadence as string)}</span> },
 			{ title: 'Billing Period', render: (row) => <span>{formatBillingPeriodForDisplay(row.billing_period as string)}</span> },
 			{
 				title: 'Status',
 				render: (row) => {
 					const status = getPriceStatus(row);
-					const variant = getStatusChipVariant(status);
+					const tone = getStatusChipTone(status);
 					const label = status.charAt(0).toUpperCase() + status.slice(1);
 					const tooltipContent = formatPriceDateTooltip(row);
 					return (
@@ -445,7 +408,7 @@ const GroupOverviewTab = () => {
 							sideOffset={5}
 							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 							<span>
-								<Chip label={label} variant={variant} />
+								<StatusChip tone={tone} label={label} />
 							</span>
 						</Tooltip>
 					);
@@ -472,10 +435,13 @@ const GroupOverviewTab = () => {
 						<span>{row?.name ?? '—'}</span>
 					),
 			},
-			{ title: 'Type', render: (row) => getFeatureTypeChips(row?.type ?? '', true) },
+			{ title: 'Type', render: (row) => getFeatureTypeChips({ type: row?.type ?? '' }) },
 			{
 				title: 'Status',
-				render: (row) => <Chip variant={formatChips(row?.status) === 'Active' ? 'success' : 'default'} label={formatChips(row?.status)} />,
+				render: (row) => {
+					const label = formatChips(row?.status);
+					return <StatusChip status={label === 'Active' ? 'Active' : 'Inactive'} label={label} />;
+				},
 			},
 			{ title: 'Updated At', render: (row) => formatDate(row?.updated_at) },
 		],

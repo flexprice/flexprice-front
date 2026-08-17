@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Input } from '@/components/atoms';
+import { Button, HugeIcon, Input } from '@/components/atoms';
+import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons';
 import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import AuthApi from '@/api/AuthApi';
 import { useMutation } from '@tanstack/react-query';
-import { EyeOff } from 'lucide-react';
-import { EyeIcon } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate, useSearchParams } from 'react-router';
 import { config, APP_ENV } from '@/config/config';
@@ -176,7 +175,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 					type={showPassword ? 'text' : 'password'}
 					suffix={
 						<span onClick={() => setShowPassword(!showPassword)} className='cursor-pointer'>
-							{showPassword ? <EyeIcon className='w-5 h-5' /> : <EyeOff className='w-5 h-5' />}
+							{showPassword ? <HugeIcon icon={ViewIcon} size={20} /> : <HugeIcon icon={ViewOffSlashIcon} size={20} />}
 						</span>
 					}
 				/>
@@ -194,7 +193,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 					type={showPassword ? 'text' : 'password'}
 					suffix={
 						<span onClick={() => setShowPassword(!showPassword)} className='cursor-pointer'>
-							{showPassword ? <EyeIcon className='w-5 h-5' /> : <EyeOff className='w-5 h-5' />}
+							{showPassword ? <HugeIcon icon={ViewIcon} size={20} /> : <HugeIcon icon={ViewOffSlashIcon} size={20} />}
 						</span>
 					}
 				/>

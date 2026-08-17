@@ -57,6 +57,7 @@
 	"apiKeys": {
 		"toastFetchError": "Error fetching secret keys",
 		"paginationUnit": "Secret Keys",
+		"scopeAll": "All Keys",
 		"emptyCard": {
 			"heading": "Generate A Secret Key",
 			"description": "Generate a secret key to authenticate API requests and secure access.",
@@ -80,6 +81,7 @@
 	"serviceAccounts": {
 		"toastFetchError": "Error fetching service accounts",
 		"paginationUnit": "Service Accounts",
+		"scopeAll": "All Accounts",
 		"noRoles": "No Roles",
 		"emptyCard": {
 			"heading": "Create A Service Account",

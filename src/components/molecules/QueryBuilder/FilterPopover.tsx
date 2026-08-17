@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Trash2, GripVertical, ListFilter, X, Plus } from 'lucide-react';
+import { FilterIcon } from '@hugeicons/core-free-icons';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Combobox, DatePicker, Toggle, Button, Select } from '@/components/atoms';
@@ -13,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { FilterField, FilterCondition, FilterOperator, FilterFieldType } from '@/types/common/QueryBuilder';
 import { sanitizeFilterConditions } from '@/types/formatters/QueryBuilder';
 
+import QueryControlTrigger from './QueryControlTrigger';
 import FilterMultiSelect from './FilterMultiSelect';
 import FilterAsyncSelect from './FilterAsyncSelect';
 import FilterAsyncMultiSelect from './FilterAsyncMultiSelect';
@@ -24,13 +26,18 @@ interface Props {
 	onChange: (filters: FilterCondition[]) => void;
 	className?: string;
 	sortable?: boolean;
+	/** Icon-only trigger with a count coin when filters are active. */
+	variant?: 'labeled' | 'icon';
+	/** Popover horizontal alignment relative to the trigger. */
+	popoverAlign?: 'start' | 'center' | 'end';
 }
 
 const MIN_POPOVER_WIDTH = 400;
 const MIN_FIELD_WIDTH = 160;
 const MIN_OPERATOR_WIDTH = 120;
 const MIN_VALUE_WIDTH = 160;
-const POPOVER_PADDING = 'px-4 py-3';
+const POPOVER_SURFACE =
+	'w-[min(600px,calc(100vw-2rem))] rounded-[var(--fp-radius-lg)] border border-line-hairline bg-surface p-4 text-content shadow-[0_10px_40px_rgb(15_23_42/0.14),0_2px_8px_rgb(15_23_42/0.06)] dark:shadow-[0_12px_40px_rgb(0_0_0/0.45)]';
 const GRID_GAP = 'gap-1.5';
 const ITEM_PADDING = 'py-1.5 px-2';
 
@@ -90,7 +97,15 @@ const getNewFilterWithDefaultValues = (field: FilterField): FilterCondition => (
 	...getDefaultValueByFieldType(field),
 });
 
-const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, className, sortable = false }) => {
+const FilterPopover: React.FC<Props> = ({
+	fields,
+	value = [],
+	onChange,
+	className,
+	sortable = false,
+	variant = 'icon',
+	popoverAlign = 'start',
+}) => {
 	const { t } = useTranslation('common');
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -298,44 +313,47 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 
 	return (
 		<Popover open={isOpen} onOpenChange={setIsOpen}>
-			<PopoverTrigger asChild>
-				<Button variant='outline' size='default' className={cn('flex items-center gap-2', className)}>
-					<ListFilter className='size-5' />
-					<span>{t('queryBuilder.filter')}</span>
-					{appliedFilters > 0 && (
-						<Badge variant='secondary' className='ms-1 h-5 rounded px-1.5 font-mono text-xs'>
-							{appliedFilters}
-						</Badge>
-					)}
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent
-				align='start'
-				className={cn('w-screen border-border/70 shadow-lg bg-surface-panel', POPOVER_PADDING)}
-				style={{ maxWidth: '600px', minWidth: MIN_POPOVER_WIDTH }}>
-				<div className='flex flex-col gap-1.5'>
+			{variant === 'icon' ? (
+				<PopoverTrigger asChild>
+					<QueryControlTrigger icon={FilterIcon} label={t('queryBuilder.filter')} count={appliedFilters} className={className} />
+				</PopoverTrigger>
+			) : (
+				<PopoverTrigger asChild>
+					<Button variant='outline' size='default' className={cn('flex items-center gap-2', className)}>
+						<ListFilter className='size-5' />
+						<span>{t('queryBuilder.filter')}</span>
+						{appliedFilters > 0 && (
+							<Badge variant='secondary' className='ms-1 h-5 rounded px-1.5 font-mono text-xs'>
+								{appliedFilters}
+							</Badge>
+						)}
+					</Button>
+				</PopoverTrigger>
+			)}
+			<PopoverContent align={popoverAlign} collisionPadding={24} className={POPOVER_SURFACE} style={{ minWidth: MIN_POPOVER_WIDTH }}>
+				<div className='flex flex-col gap-3'>
 					{value.length === 0 ? (
-						<div className='flex flex-col gap-2 p-2'>
-							<div className='flex justify-between items-start'>
+						<div className='flex flex-col gap-4'>
+							<div className='flex items-start justify-between gap-3'>
 								<div className='flex flex-col gap-1'>
-									<h4 className='text-base font-medium leading-none'>{t('queryBuilder.noFiltersTitle')}</h4>
-									<p className='text-muted-foreground text-sm'>{t('queryBuilder.noFiltersDescription')}</p>
+									<h4 className='text-sm font-medium leading-none text-content'>{t('queryBuilder.noFiltersTitle')}</h4>
+									<p className='text-sm text-content-muted'>{t('queryBuilder.noFiltersDescription')}</p>
 								</div>
-								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1' onClick={() => setIsOpen(false)}>
+								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1 shrink-0' onClick={() => setIsOpen(false)}>
 									<X className='h-3.5 w-3.5' />
 								</Button>
 							</div>
-							<div className='mt-2'>
-								<Button size='sm' onClick={handleAddFilter} className='w-fit h-9 text-sm px-2.5'>
+							<div className='flex justify-end'>
+								<Button size='sm' onClick={handleAddFilter} className='h-9 px-3 text-sm'>
 									{t('queryBuilder.addFilter')}
 								</Button>
 							</div>
 						</div>
 					) : (
-						<div className='flex flex-col gap-1.5 !z-50'>
-							<div className='flex justify-between items-center'>
-								<h4 className='text-sm font-medium leading-none'>{t('queryBuilder.filterBy')}</h4>
-								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1' onClick={() => setIsOpen(false)}>
+						<div className='flex flex-col gap-3 !z-50'>
+							<div className='flex items-center justify-between gap-3'>
+								<h4 className='text-sm font-medium leading-none text-content'>{t('queryBuilder.filterBy')}</h4>
+								<Button variant='ghost' size='icon' className='h-7 w-7 -me-1 shrink-0' onClick={() => setIsOpen(false)}>
 									<X className='h-3.5 w-3.5' />
 								</Button>
 							</div>
@@ -533,12 +551,12 @@ const FilterPopover: React.FC<Props> = ({ fields, value = [], onChange, classNam
 								</SortableOverlay>
 							</Sortable>
 
-							<div className='flex items-center gap-2 pt-1.5 px-2'>
-								<Button size='sm' onClick={handleAddFilter} className='h-9 text-sm px-2.5 flex items-center gap-1'>
-									{t('queryBuilder.addShort')}
-								</Button>
-								<Button variant='outline' size='sm' onClick={() => onChange([])} className='h-9 text-sm px-2.5'>
+							<div className='mt-1 flex items-center justify-end gap-2 border-t border-line-hairline pt-3'>
+								<Button variant='outline' size='sm' onClick={() => onChange([])} className='h-9 px-3 text-sm'>
 									{t('queryBuilder.reset')}
+								</Button>
+								<Button size='sm' onClick={handleAddFilter} className='h-9 px-3 text-sm'>
+									{t('queryBuilder.addShort')}
 								</Button>
 							</div>
 						</div>

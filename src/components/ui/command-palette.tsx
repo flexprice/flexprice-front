@@ -2,7 +2,8 @@ import * as React from 'react';
 import { type DialogProps } from '@radix-ui/react-dialog';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Command as CommandPrimitive } from 'cmdk';
-import { Search, CornerDownLeft } from 'lucide-react';
+import { Search01Icon, CornerDownLeftIcon } from '@hugeicons/core-free-icons';
+import { HugeIcon } from '@/components/atoms/HugeIcon';
 import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/utils';
@@ -12,7 +13,10 @@ const Command = React.forwardRef<React.ElementRef<typeof CommandPrimitive>, Reac
 	({ className, ...props }, ref) => (
 		<CommandPrimitive
 			ref={ref}
-			className={cn('flex h-full w-full flex-col overflow-hidden rounded-xl bg-transparent text-popover-foreground', className)}
+			className={cn(
+				'flex h-full w-full flex-col overflow-hidden rounded-[var(--fp-radius-shell)] bg-transparent text-popover-foreground',
+				className,
+			)}
 			{...props}
 		/>
 	),
@@ -34,7 +38,7 @@ const CommandPaletteDialog = ({ children, value, onValueChange, filter, open, ..
 			<DialogPrimitive.Portal>
 				<DialogPrimitive.Overlay
 					className={cn(
-						'fixed inset-0 z-50 bg-surface-scrim/25',
+						'fixed inset-0 z-50 bg-surface-scrim/30 backdrop-blur-[3px]',
 						'data-[state=open]:animate-in data-[state=closed]:animate-out',
 						'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
 						'duration-200 ease-out',
@@ -48,7 +52,7 @@ const CommandPaletteDialog = ({ children, value, onValueChange, filter, open, ..
 						'fixed left-[50%] top-[18%] z-50 w-full max-w-[720px] translate-x-[-50%]',
 						'bg-surface dark:bg-background/90 backdrop-blur-xl',
 						'shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_4px_6px_rgba(0,0,0,0.04),0_16px_32px_rgba(0,0,0,0.08)]',
-						'overflow-hidden p-0 rounded-xl origin-center',
+						'overflow-hidden p-0 rounded-[var(--fp-radius-shell)] origin-center',
 						open && 'animate-command-palette-in',
 					)}>
 					<Command
@@ -71,7 +75,7 @@ const CommandInput = React.forwardRef<
 	React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
 	<div className='flex items-center border-b border-border/80 !p-2' cmdk-input-wrapper=''>
-		<Search className='mx-3 h-5 w-5 shrink-0 text-muted-foreground' />
+		<HugeIcon icon={Search01Icon} size={20} className='mx-3 text-muted-foreground' />
 		<CommandPrimitive.Input
 			ref={ref}
 			className={cn(
@@ -130,7 +134,7 @@ const CommandItem = React.forwardRef<
 		<span
 			className='ms-auto flex size-6 shrink-0 items-center justify-center rounded bg-surface p-1 shadow-sm dark:bg-surface/10 text-muted-foreground/90 opacity-0 transition-opacity group-data-[selected=true]:opacity-100'
 			aria-hidden>
-			<CornerDownLeft className='size-4' />
+			<HugeIcon icon={CornerDownLeftIcon} size={16} />
 		</span>
 	</CommandPrimitive.Item>
 ));

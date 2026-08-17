@@ -89,6 +89,7 @@
 	"queryBuilder": {
 		"filter": "تصفية",
 		"sort": "فرز",
+		"filterCountMax": "99+",
 		"noFiltersTitle": "لا توجد عوامل تصفية مطبقة",
 		"noFiltersDescription": "أضف عوامل تصفية لتحسين بياناتك.",
 		"filterBy": "تصفية حسب",
@@ -286,6 +287,8 @@
 			"invoices": "الفواتير",
 			"creditNotes": "إشعارات دائنة",
 			"payments": "المدفوعات",
+			"analytics": "التحليلات",
+			"more": "المزيد",
 			"revenue": "الإيرادات",
 			"tools": "الأدوات",
 			"imports": "الاستيراد",
@@ -426,6 +429,8 @@
 		"payments": "المدفوعات",
 		"tabs": "التبويبات",
 		"documentation": "التوثيق",
+		"contactUs": "مجتمع Slack",
+		"contactUsReplyHint": "نرد خلال ٣٠ دقيقة",
 		"customerDetails": "تفاصيل العميل",
 		"loadingCustomerDetails": "جارٍ تحميل تفاصيل العميل...",
 		"timePeriod": "الفترة الزمنية",
@@ -783,5 +788,15 @@
 	"queryableDataArea": {
 		"errorFetching": "خطأ في جلب البيانات",
 		"defaultPromoImageUrl": "https://mintlify.s3.us-west-1.amazonaws.com/flexprice/UsageBaseMetering(1).jpg"
+	},
+	"whatsNew": {
+		"title": "رتّبنا Flexprice.",
+		"subtitle": "تغيّرت بعض الأمور هنا. هذا ملخص سريع لما أطلقناه.",
+		"highlightUiTitle": "مساحة عمل أنظف",
+		"highlightUiBody": "ازدحام أقل ونصوص أوضح، فتبقى الواجهة بعيدة عن طريقك أثناء العمل.",
+		"highlightFiltersTitle": "فلاتر تبقى بعيدة عن النظر إلى أن تحتاجها",
+		"highlightFiltersBody": "التصفية والترتيب أصبحا عناصر تحكم مدمجة، مع عدّاد كلما كان شيء نشطًا.",
+		"highlightSpaceTitle": "مساحة أكبر لبياناتك",
+		"highlightSpaceBody": "الجداول والصفحات تستخدم العرض بالكامل الآن، فيسهل مسح القوائم الطويلة والتفاصيل."
 	}
 }

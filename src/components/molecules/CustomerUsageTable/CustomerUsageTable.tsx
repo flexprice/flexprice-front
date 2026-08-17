@@ -77,13 +77,12 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 
 				render(row) {
 					return (
-						<RedirectCell allowRedirect={allowRedirect} redirectUrl={`${RouteNames.featureDetails}/${row?.feature?.id}`}>
-							{getFeatureTypeChips({
-								type: row?.feature?.type || '',
-								showIcon: true,
-							})}
-							{row?.feature?.name}
-						</RedirectCell>
+						<div className='flex min-w-0 items-center gap-2'>
+							{getFeatureTypeChips({ type: row?.feature?.type || '' })}
+							<RedirectCell allowRedirect={allowRedirect} redirectUrl={`${RouteNames.featureDetails}/${row?.feature?.id}`}>
+								{row?.feature?.name}
+							</RedirectCell>
+						</div>
 					);
 				},
 			},

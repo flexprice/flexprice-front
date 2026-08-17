@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import S3ConnectionDrawer from '@/components/molecules/S3ConnectionDrawer/S3ConnectionDrawer';
 import { ApiDocsContent } from '@/components/molecules';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
+import { EmptyPage } from '@/components/organisms';
 
 const S3Exports = () => {
 	const { t } = useTranslation('settings');
@@ -79,8 +80,37 @@ const S3Exports = () => {
 		navigate(`/tools/exports/s3/${connectionId}/export`);
 	};
 
+	const connectionDrawer = (
+		<S3ConnectionDrawer
+			isOpen={isDrawerOpen}
+			onOpenChange={(open) => {
+				setIsDrawerOpen(open);
+			}}
+			connection={null}
+			onSave={handleSaveConnection}
+		/>
+	);
+
 	if (isLoading) {
 		return <Loader />;
+	}
+
+	if (connections.length === 0) {
+		return (
+			<EmptyPage
+				heading={t('insightsTools.exports.s3PageHeading')}
+				tags={API_DOCS_TAGS.Tasks}
+				onAddClick={() => setIsDrawerOpen(true)}
+				addButtonLabel={t('insightsTools.exports.addS3Connection')}
+				emptyStateCard={{
+					heading: t('insightsTools.exports.noS3Connections'),
+					description: t('insightsTools.exports.noS3ConnectionsHint'),
+					buttonLabel: t('insightsTools.exports.addS3Connection'),
+					buttonAction: () => setIsDrawerOpen(true),
+				}}>
+				{connectionDrawer}
+			</EmptyPage>
+		);
 	}
 
 	return (
@@ -103,110 +133,56 @@ const S3Exports = () => {
 				</Button>
 			</div>
 
-			{/* Connections List */}
-			{connections.length > 0 ? (
-				<div className='mb-8'>
-					<FormHeader variant='form-component-title' title={t('insightsTools.exports.connectionsTitle')} />
-					<div className='card'>
-						{connections.map((connection, idx) => (
-							<div key={idx} className='flex items-center justify-between text-sm p-4 border-b last:border-b-0'>
-								<div className='flex-1'>
-									<div className='flex items-center gap-3'>
-										<div className='w-10 h-10 bg-accent-orange-muted rounded-lg flex items-center justify-center'>
-											<Settings className='w-5 h-5 text-accent-orange' />
-										</div>
-										<div>
-											<p className='text-content font-medium'>{connection.name}</p>
-											<p className='text-xs text-content-muted capitalize'>
-												{connection.connection_status} • {t('insightsTools.exports.providerS3Suffix')}
-											</p>
-										</div>
+			<div className='mb-8'>
+				<FormHeader variant='form-component-title' title={t('insightsTools.exports.connectionsTitle')} />
+				<div className='card'>
+					{connections.map((connection, idx) => (
+						<div key={idx} className='flex items-center justify-between text-sm p-4 border-b last:border-b-0'>
+							<div className='flex-1'>
+								<div className='flex items-center gap-3'>
+									<div className='w-10 h-10 bg-accent-orange-muted rounded-lg flex items-center justify-center'>
+										<Settings className='w-5 h-5 text-accent-orange' />
 									</div>
-								</div>
-								<div className='flex items-center gap-10'>
-									{/* Export Count */}
-									<div className='flex items-center gap-2 text-sm text-content-tertiary'>
-										<BarChart3 className='w-4 h-4' />
-										<span>
-											{(exportCounts?.[connection.id] ?? 0) === 1
-												? t('insightsTools.exports.exportCountSingular', { count: 1 })
-												: t('insightsTools.exports.exportCountPlural', { count: exportCounts?.[connection.id] ?? 0 })}
-										</span>
-									</div>
-									{/* Action Buttons */}
-									<div className='flex items-center gap-2'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => handleViewExports(connection.id)}
-											className='flex items-center gap-1'>
-											<Eye className='w-3 h-3' />
-											{t('insightsTools.exports.viewExports')}
-										</Button>
-										<Button
-											variant='outline'
-											size='icon'
-											onClick={() => handleDeleteConnection(connection.id, connection.name)}
-											disabled={isDeletingConnection}
-											isLoading={isDeletingConnection}>
-											<Trash2 className='size-4' />
-										</Button>
+									<div>
+										<p className='text-content font-medium'>{connection.name}</p>
+										<p className='text-xs text-content-muted capitalize'>
+											{connection.connection_status} • {t('insightsTools.exports.providerS3Suffix')}
+										</p>
 									</div>
 								</div>
 							</div>
-						))}
-					</div>
-				</div>
-			) : (
-				<div className='card text-center !py-12'>
-					<div className='text-content-muted mb-4'>
-						<h3 className='text-lg font-medium text-content mb-2'>{t('insightsTools.exports.noS3Connections')}</h3>
-						<p className='text-content-muted mb-6'>{t('insightsTools.exports.noS3ConnectionsHint')}</p>
-						<Button
-							variant='outline'
-							onClick={() => {
-								setIsDrawerOpen(true);
-							}}
-							className='flex items-center gap-2 mx-auto'>
-							<Plus className='w-4 h-4' />
-							{t('insightsTools.exports.addS3Connection')}
-						</Button>
-					</div>
-				</div>
-			)}
-
-			{/* Overview Section */}
-			<div className='card space-y-6 mt-8'>
-				<h3 className='text-xl font-semibold text-content'>{t('insightsTools.exports.s3FeaturesTitle')}</h3>
-				<div className='space-y-4'>
-					<div>
-						<h4 className='text-sm font-semibold text-content mb-1'>{t('insightsTools.exports.s3FeatureDataExportTitle')}</h4>
-						<p className='text-xs text-content-tertiary'>{t('insightsTools.exports.s3FeatureDataExportBody')}</p>
-					</div>
-					<div>
-						<h4 className='text-sm font-semibold text-content mb-1'>{t('insightsTools.exports.s3FeatureSchedulingTitle')}</h4>
-						<p className='text-xs text-content-tertiary'>{t('insightsTools.exports.s3FeatureSchedulingBody')}</p>
-					</div>
-					<div>
-						<h4 className='text-sm font-semibold text-content mb-1'>{t('insightsTools.exports.s3FeatureSecureTitle')}</h4>
-						<p className='text-xs text-content-tertiary'>{t('insightsTools.exports.s3FeatureSecureBody')}</p>
-					</div>
-					<div>
-						<h4 className='text-sm font-semibold text-content mb-1'>{t('insightsTools.exports.s3FeatureFormatsTitle')}</h4>
-						<p className='text-xs text-content-tertiary'>{t('insightsTools.exports.s3FeatureFormatsBody')}</p>
-					</div>
+							<div className='flex items-center gap-10'>
+								{/* Export Count */}
+								<div className='flex items-center gap-2 text-sm text-content-tertiary'>
+									<BarChart3 className='w-4 h-4' />
+									<span>
+										{(exportCounts?.[connection.id] ?? 0) === 1
+											? t('insightsTools.exports.exportCountSingular', { count: 1 })
+											: t('insightsTools.exports.exportCountPlural', { count: exportCounts?.[connection.id] ?? 0 })}
+									</span>
+								</div>
+								{/* Action Buttons */}
+								<div className='flex items-center gap-2'>
+									<Button variant='outline' size='sm' onClick={() => handleViewExports(connection.id)} className='flex items-center gap-1'>
+										<Eye className='w-3 h-3' />
+										{t('insightsTools.exports.viewExports')}
+									</Button>
+									<Button
+										variant='outline'
+										size='icon'
+										onClick={() => handleDeleteConnection(connection.id, connection.name)}
+										disabled={isDeletingConnection}
+										isLoading={isDeletingConnection}>
+										<Trash2 className='size-4' />
+									</Button>
+								</div>
+							</div>
+						</div>
+					))}
 				</div>
 			</div>
 
-			{/* S3 Connection Drawer */}
-			<S3ConnectionDrawer
-				isOpen={isDrawerOpen}
-				onOpenChange={(open) => {
-					setIsDrawerOpen(open);
-				}}
-				connection={null}
-				onSave={handleSaveConnection}
-			/>
+			{connectionDrawer}
 		</Page>
 	);
 };

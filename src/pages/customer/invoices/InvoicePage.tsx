@@ -1,4 +1,4 @@
-import { Page, Chip } from '@/components/atoms';
+import { StatusChip, TableAvatar, Page } from '@/components/atoms';
 import { ApiDocsContent, RedirectCell } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import InvoiceTableMenu from '@/components/molecules/InvoiceTable/InvoiceTableMenu';
@@ -21,13 +21,19 @@ import { searchCustomersForFilter } from '@/utils/filterSearchHelpers';
 import { ENTITY_STATUS } from '@/models';
 import Customer from '@/models/Customer';
 import { Invoice, INVOICE_STATUS, INVOICE_TYPE } from '@/models/Invoice';
+import { EXPAND } from '@/models/expand';
 import { PAYMENT_STATUS } from '@/constants';
+import { BILLING_PERIOD } from '@/constants/constants';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
-import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
+import { getCurrencySymbol } from '@/utils/common/helper_functions';
+import formatDate, { TABLE_SHORT_DATE_FORMAT } from '@/utils/common/format_date';
+import { generateExpandQueryParams } from '@/utils/common/api_helper';
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
+import type { InvoiceFilter } from '@/types/dto';
+import { getInvoiceIssuedAt, getInvoiceListStatus, getInvoicePlanLabel } from './invoiceListDisplay';
+import type { InvoiceListStatusKind } from './invoiceListDisplay';
 
 const initialFilters: FilterCondition[] = [
 	{
@@ -46,41 +52,32 @@ const initialFilters: FilterCondition[] = [
 	},
 ];
 
-const getStatusChip = (status: string, t: TFunction) => {
-	switch (status.toUpperCase()) {
-		case INVOICE_STATUS.VOIDED:
-			return <Chip variant='default' label={t('invoices.status.void')} />;
-		case INVOICE_STATUS.FINALIZED:
-			return <Chip variant='success' label={t('invoices.status.finalized')} />;
-		case INVOICE_STATUS.DRAFT:
-			return <Chip variant='default' label={t('common:status.draft')} />;
-		case INVOICE_STATUS.SKIPPED:
-			return <Chip variant='default' label={t('invoices.status.skipped')} />;
-		default:
-			return <Chip variant='default' label={status || t('invoices.status.unknown')} />;
-	}
+const INVOICE_STATUS_I18N: Record<InvoiceListStatusKind, string> = {
+	paid: 'invoices.status.paid',
+	pending: 'invoices.status.pending',
+	overdue: 'invoices.status.overdue',
+	draft: 'common:status.draft',
+	void: 'invoices.status.void',
+	refunded: 'invoices.status.refunded',
+	failed: 'invoices.status.failed',
 };
 
-const getPaymentStatusChip = (status: string, t: TFunction) => {
-	switch (status.toUpperCase()) {
-		case PAYMENT_STATUS.PENDING:
-			return <Chip variant='warning' label={t('invoices.status.pending')} />;
-		case PAYMENT_STATUS.INITIATED:
-			return <Chip variant='warning' label={t('invoices.status.initiated')} />;
-		case PAYMENT_STATUS.SUCCEEDED:
-			return <Chip variant='success' label={t('invoices.status.succeeded')} />;
-		case PAYMENT_STATUS.FAILED:
-			return <Chip variant='failed' label={t('invoices.status.failed')} />;
-		case PAYMENT_STATUS.REFUNDED:
-			return <Chip variant='default' label={t('invoices.status.refunded')} />;
-		case PAYMENT_STATUS.PARTIALLY_REFUNDED:
-			return <Chip variant='default' label={t('invoices.status.partiallyRefunded')} />;
-		case PAYMENT_STATUS.OVERPAID:
-			return <Chip variant='warning' label={t('invoices.status.overpaid')} />;
-		default:
-			return <Chip variant='default' label={t('invoices.status.unknown')} />;
-	}
+const INVOICE_TYPE_I18N: Record<INVOICE_TYPE, string> = {
+	[INVOICE_TYPE.SUBSCRIPTION]: 'invoices.list.invoiceTypes.subscription',
+	[INVOICE_TYPE.ONE_OFF]: 'invoices.list.invoiceTypes.oneOff',
+	[INVOICE_TYPE.CREDIT]: 'invoices.list.invoiceTypes.credit',
 };
+
+const BILLING_PERIOD_I18N_KEYS: Record<BILLING_PERIOD, 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'halfYearly' | 'annual' | 'onetime'> =
+	{
+		[BILLING_PERIOD.DAILY]: 'daily',
+		[BILLING_PERIOD.WEEKLY]: 'weekly',
+		[BILLING_PERIOD.MONTHLY]: 'monthly',
+		[BILLING_PERIOD.QUARTERLY]: 'quarterly',
+		[BILLING_PERIOD.HALF_YEARLY]: 'halfYearly',
+		[BILLING_PERIOD.ANNUAL]: 'annual',
+		[BILLING_PERIOD.ONETIME]: 'onetime',
+	};
 
 /** Invoice enriched with subscription customer data (client-side only) */
 type EnrichedInvoice = Invoice & { subscription_customer?: Customer };
@@ -134,11 +131,12 @@ const InvoicesPage = () => {
 		setShowSubscriptionCustomerColumn(items.some(invoiceHasDistinctSubscriptionCustomer));
 	}, []);
 
-	const enrichedFetchFn = useCallback(async (params: any) => {
+	const enrichedFetchFn = useCallback(async (params: InvoiceFilter) => {
 		const result = await InvoiceApi.listInvoices({
 			...params,
 			invoice_status: Object.values(INVOICE_STATUS),
 			skip_line_items: true,
+			expand: generateExpandQueryParams([EXPAND.CUSTOMER, EXPAND.SUBSCRIPTION, EXPAND.PLAN]),
 		});
 		const rawItems = result.items ?? [];
 		const hasMismatchOnPage = rawItems.some(invoiceHasDistinctSubscriptionCustomer);
@@ -296,42 +294,61 @@ const InvoicesPage = () => {
 		return [
 			{
 				title: t('invoices.list.columns.invoiceNumber'),
+				fieldVariant: 'title',
 				render: (row: EnrichedInvoice) =>
 					row.invoice_status?.toUpperCase() === INVOICE_STATUS.DRAFT ? (
-						<span className='text-content-subtle italic text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
+						<span className='text-content-subtle text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
 					) : (
 						<span>{row.invoice_number || t('common:labels.na')}</span>
 					),
 			},
 			{
+				title: t('invoices.list.columns.customer'),
+				render: (row: EnrichedInvoice) => {
+					const name = row.customer?.name;
+					if (!name || !row.customer?.id) {
+						return t('common:labels.na');
+					}
+					return (
+						<div className='flex min-w-0 items-center gap-2'>
+							<TableAvatar name={name} />
+							<RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer.id}`}>{name}</RedirectCell>
+						</div>
+					);
+				},
+			},
+			{
+				title: t('invoices.list.columns.plan'),
+				render: (row: EnrichedInvoice) =>
+					getInvoicePlanLabel(
+						row,
+						(period) => t(`subscriptions.listPage.billingPeriod.${BILLING_PERIOD_I18N_KEYS[period]}`),
+						(type) => t(INVOICE_TYPE_I18N[type] ?? 'invoices.list.invoiceTypes.oneOff'),
+					),
+			},
+			{
+				title: t('invoices.list.columns.status'),
+				render: (row: EnrichedInvoice) => {
+					const { status, kind } = getInvoiceListStatus(row);
+					return <StatusChip status={status} label={t(INVOICE_STATUS_I18N[kind])} />;
+				},
+			},
+			{
 				title: t('invoices.list.columns.amount'),
 				render: (row) => <span>{`${getCurrencySymbol(row.currency)}${row.amount_due}`}</span>,
 			},
-			{
-				title: t('invoices.list.columns.invoiceStatus'),
-				render: (row: EnrichedInvoice) => getStatusChip(row.invoice_status, t),
-			},
-			{
-				title: t('invoices.list.columns.billingEntity'),
-				render: (row: EnrichedInvoice) => {
-					if (!row.customer?.name || !row.customer?.id) {
-						return t('common:labels.na');
-					}
-					return <RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer.id}`}>{row.customer.name}</RedirectCell>;
-				},
-			},
 			...(showSubscriptionCustomerColumn ? [subscriptionCustomerColumn] : []),
 			{
-				title: t('invoices.list.columns.paymentStatus'),
-				render: (row: EnrichedInvoice) => getPaymentStatusChip(row.payment_status, t),
-			},
-			{
-				title: t('invoices.list.columns.dueDate'),
-				render: (row: EnrichedInvoice) => <span>{row.due_date ? formatDateShort(row.due_date) : t('common:labels.na')}</span>,
+				title: t('invoices.list.columns.issued'),
+				render: (row: EnrichedInvoice) => {
+					const issuedAt = getInvoiceIssuedAt(row);
+					return <span>{issuedAt ? formatDate(issuedAt, undefined, TABLE_SHORT_DATE_FORMAT) : t('common:labels.na')}</span>;
+				},
 			},
 			{
 				fieldVariant: 'interactive',
 				hideOnEmpty: true,
+				width: 56,
 				render: (row: EnrichedInvoice) => {
 					return <InvoiceTableMenu data={row} />;
 				},
@@ -340,7 +357,7 @@ const InvoicesPage = () => {
 	}, [showSubscriptionCustomerColumn, t]);
 
 	return (
-		<Page heading={t('invoices.title')}>
+		<Page className='max-w-none' heading={t('invoices.title')}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Invoices} />
 			<QueryableDataArea<EnrichedInvoice>
 				queryConfig={{
@@ -366,6 +383,8 @@ const InvoicesPage = () => {
 				}}
 				tableConfig={{
 					columns,
+					variant: 'card',
+					tableClassName: 'table-fixed',
 					onRowClick: (row) => {
 						navigate(`/billing/invoices/${row.id}`);
 					},

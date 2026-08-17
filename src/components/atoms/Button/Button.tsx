@@ -7,7 +7,7 @@ import { LoaderCircleIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 
 const buttonVariants = cva(
-	'inline-flex !py-0 !my-0 items-center justify-center gap-2 whitespace-nowrap rounded-[7px] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+	'inline-flex !py-0 !my-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--fp-radius-md)] text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
 	{
 		variants: {
 			variant: {
@@ -20,11 +20,11 @@ const buttonVariants = cva(
 				link: 'text-primary dark:text-info underline-offset-4 hover:underline',
 			},
 			size: {
-				default: 'h-8 p-[10px] !py-[15px] !px-[12px] border  rounded-[7px]',
-				sm: 'h-8 rounded-[7px] px-3 text-xs',
-				lg: 'h-10 rounded-[7px] px-3',
-				icon: 'h-9 w-9',
-				xs: 'h-6 rounded-[7px] px-3 text-xs',
+				default: 'h-[var(--fp-control-height)] px-3 border rounded-[var(--fp-radius-md)]',
+				sm: 'h-8 rounded-[var(--fp-radius-md)] px-3 text-xs',
+				lg: 'h-10 rounded-[var(--fp-radius-md)] px-3',
+				icon: 'size-[var(--fp-control-height)] rounded-[var(--fp-radius-md)]',
+				xs: 'h-6 rounded-[var(--fp-radius-md)] px-3 text-xs',
 			},
 		},
 		defaultVariants: {

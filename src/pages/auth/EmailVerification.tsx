@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
-import { useBrand } from '@/config/branding';
 import { config } from '@/config/config';
 import sideBg from '../../../assets/side.png';
 import sideBgDark from '../../../assets/sidedark.png';
@@ -14,7 +13,6 @@ const EmailVerification = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { t } = useTranslation('auth');
-	const { logo, name } = useBrand();
 
 	const searchParams = new URLSearchParams(location.search);
 	const email = searchParams.get('email') || '';
@@ -63,31 +61,27 @@ const EmailVerification = () => {
 				style={{ backgroundImage: `url(${sideBgDark})` }}
 			/>
 			<div className='absolute inset-0 bg-surface/30' aria-hidden />
-			<div className='relative w-full max-w-[480px] rounded-2xl bg-surface p-8 shadow-lg'>
-				<div className='mb-6 flex justify-center'>
-					<img src={logo} alt={name} className='h-12' />
-				</div>
-
+			<div className='relative w-full max-w-[480px] rounded-[var(--fp-radius-shell)] border border-line-zinc-strong bg-surface px-10 py-12 shadow-lg'>
 				<h2 className='text-center text-2xl font-semibold text-content-zinc-bold'>
 					{isNewSignup ? t('verification.verifyHeading') : t('verification.verificationHeading')}
 				</h2>
 
-				<div className='mt-4 space-y-3 text-center'>
+				<div className='mt-8 space-y-4 text-center'>
 					<p className='text-sm text-content-zinc-tertiary'>{t('verification.sentTo')}</p>
-					<p className='break-all text-sm font-medium text-content-zinc-bold'>{email}</p>
+					<p className='break-all text-lg font-medium text-content-zinc-bold'>{email}</p>
 					<p className='text-sm text-content-zinc-muted'>{t('verification.clickLink')}</p>
 				</div>
 
-				<div className='mt-8 flex flex-col gap-4'>
-					<Button onClick={handleResend} className='h-10 w-full rounded-lg' isLoading={isPending}>
+				<div className='mt-10 flex flex-col gap-4'>
+					<Button onClick={handleResend} className='h-10 w-full' isLoading={isPending}>
 						{t('buttons.resendVerification')}
 					</Button>
-					<Button onClick={handleGoToLogin} variant='outline' className='h-10 w-full rounded-lg'>
+					<Button onClick={handleGoToLogin} variant='outline' className='h-10 w-full'>
 						{t('buttons.backToLogin')}
 					</Button>
 				</div>
 
-				<p className='mt-5 text-center text-sm text-content-zinc-muted'>
+				<p className='mt-8 text-center text-sm text-content-zinc-muted'>
 					{t('verification.needHelp')}{' '}
 					<a href={`mailto:${config.brand.supportEmail}`} className='font-medium text-info hover:text-info-bright'>
 						{config.brand.supportEmail}

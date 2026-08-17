@@ -11,6 +11,7 @@ import { Progress } from '@/components/ui';
 import { RouteNames } from '@/core/routes/Routes';
 import EventsApi from '@/api/EventsApi';
 import { getCommandPaletteActionEventName, CommandPaletteActionId } from '@/core/actions';
+import { WHATS_NEW_PREVIEW_EVENT } from '@/utils/whatsNew/whatsNewDismissal';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { AddButton } from '@/components/atoms';
 import { useLocaleStore } from '@/store/useLocaleStore';
@@ -113,6 +114,11 @@ const DebugMenu = () => {
 		return () => window.removeEventListener(eventName, handler);
 	}, []);
 
+	const handlePreviewWhatsNew = () => {
+		window.dispatchEvent(new CustomEvent(WHATS_NEW_PREVIEW_EVENT));
+		setIsOpen(false);
+	};
+
 	const handleClose = () => {
 		setIsOpen(false);
 	};
@@ -202,6 +208,10 @@ const DebugMenu = () => {
 									<X className='size-3' />
 								</Button>
 							</div>
+
+							<Button variant='outline' size='sm' className='mb-4 w-full' onClick={handlePreviewWhatsNew}>
+								{t('debug.previewWhatsNew', { defaultValue: "Preview What's New modal" })}
+							</Button>
 
 							{isLoading ? (
 								<div className='flex items-center justify-center py-4'>

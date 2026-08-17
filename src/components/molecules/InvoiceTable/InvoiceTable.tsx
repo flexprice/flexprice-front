@@ -2,7 +2,7 @@ import { Invoice, INVOICE_STATUS } from '@/models/Invoice';
 import { FC, useMemo } from 'react';
 import FlexpriceTable, { ColumnData, RedirectCell } from '../Table';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { Chip } from '@/components/atoms';
+import { StatusChip } from '@/components/atoms';
 import { useNavigate } from 'react-router';
 import InvoiceTableMenu from './InvoiceTableMenu';
 import { RouteNames } from '@/core/routes/Routes';
@@ -16,36 +16,36 @@ export interface Props {
 export const getStatusChip = (status: string, t: TFunction) => {
 	switch (status.toUpperCase()) {
 		case INVOICE_STATUS.VOIDED:
-			return <Chip variant='default' label={t('invoices.status.void')} />;
+			return <StatusChip status='Cancelled' label={t('invoices.status.void')} />;
 		case INVOICE_STATUS.FINALIZED:
-			return <Chip variant='success' label={t('invoices.status.finalized')} />;
+			return <StatusChip tone='success' label={t('invoices.status.finalized')} />;
 		case INVOICE_STATUS.DRAFT:
-			return <Chip variant='default' label={t('common:status.draft')} />;
+			return <StatusChip status='Draft' label={t('common:status.draft')} />;
 		case INVOICE_STATUS.SKIPPED:
-			return <Chip variant='default' label={t('invoices.status.skipped')} />;
+			return <StatusChip status='Inactive' label={t('invoices.status.skipped')} />;
 		default:
-			return <Chip variant='default' label={status || t('invoices.status.unknown')} />;
+			return <StatusChip status='Inactive' label={status || t('invoices.status.unknown')} />;
 	}
 };
 
 export const getPaymentStatusChip = (status: string, t: TFunction) => {
 	switch (status.toUpperCase()) {
 		case PAYMENT_STATUS.PENDING:
-			return <Chip variant='warning' label={t('invoices.status.pending')} />;
+			return <StatusChip status='Pending' label={t('invoices.status.pending')} />;
 		case PAYMENT_STATUS.INITIATED:
-			return <Chip variant='warning' label={t('invoices.status.initiated')} />;
+			return <StatusChip status='Pending' label={t('invoices.status.initiated')} />;
 		case PAYMENT_STATUS.SUCCEEDED:
-			return <Chip variant='success' label={t('invoices.status.succeeded')} />;
+			return <StatusChip status='Paid' label={t('invoices.status.succeeded')} />;
 		case PAYMENT_STATUS.FAILED:
-			return <Chip variant='failed' label={t('invoices.status.failed')} />;
+			return <StatusChip status='Failed' label={t('invoices.status.failed')} />;
 		case PAYMENT_STATUS.REFUNDED:
-			return <Chip variant='default' label={t('invoices.status.refunded')} />;
+			return <StatusChip status='Cancelled' label={t('invoices.status.refunded')} />;
 		case PAYMENT_STATUS.PARTIALLY_REFUNDED:
-			return <Chip variant='default' label={t('invoices.status.partiallyRefunded')} />;
+			return <StatusChip status='Cancelled' label={t('invoices.status.partiallyRefunded')} />;
 		case PAYMENT_STATUS.OVERPAID:
-			return <Chip variant='warning' label={t('invoices.status.overpaid')} />;
+			return <StatusChip tone='warning' label={t('invoices.status.overpaid')} />;
 		default:
-			return <Chip variant='default' label={t('invoices.status.unknown')} />;
+			return <StatusChip status='Inactive' label={t('invoices.status.unknown')} />;
 	}
 };
 
@@ -59,7 +59,7 @@ const InvoiceTable: FC<Props> = ({ data }) => {
 				title: t('invoices.list.columns.invoiceNumber'),
 				render: (row: Invoice) =>
 					row.invoice_status?.toUpperCase() === INVOICE_STATUS.DRAFT ? (
-						<span className='text-content-subtle italic text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
+						<span className='text-content-subtle text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
 					) : (
 						<span>{row.invoice_number || t('common:labels.na')}</span>
 					),

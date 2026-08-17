@@ -91,7 +91,7 @@ const Integrations = () => {
 			<ApiDocsContent tags={API_DOCS_TAGS.Integrations} />
 			<div className='mt-6'>
 				<h2 className='mb-4 font-medium text-xl'>{t('insightsTools.integrations.availableSection')}</h2>
-				<div className='grid grid-cols-2 gap-4'>
+				<div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
 					{availableNonPremium.map((integration, index) => {
 						const previewConnected = !!PREVIEW_CONNECTED_PROVIDER && integration.id === previewProvider.toLowerCase();
 						const connected = hasConnection(integration) || previewConnected;
@@ -121,7 +121,7 @@ const Integrations = () => {
 			</div>
 			<div className='mt-16'>
 				<p className='mb-4 font-medium text-xl'>{t('insightsTools.integrations.premiumAddonsSection')}</p>
-				<div className='grid grid-cols-2 gap-4'>
+				<div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
 					{availablePremium.map((integration, index) => (
 						<div key={`${integration.id}-${index}`} className='min-w-0 h-full'>
 							<IntegrationCard integration={integration} connected={false} connection={null} />
@@ -465,8 +465,10 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 
 	return (
 		<PremiumFeature isPremiumFeature={integration.premium}>
-			<Card className={cn('min-w-0 overflow-hidden border-line-slate shadow-sm rounded-xl h-full flex flex-col')} noPadding>
-				<div className='min-w-0 overflow-hidden p-6 flex-1'>
+			<Card
+				className={cn('flex h-full min-w-0 flex-col overflow-hidden rounded-[var(--fp-radius-lg)] border-line-slate shadow-sm')}
+				noPadding>
+				<div className='min-w-0 flex-1 overflow-hidden p-8'>
 					<div className='flex gap-5'>
 						<div className='flex size-14 shrink-0 items-center justify-center rounded-lg bg-surface-slate-subtle'>
 							{/* Brands whose mark is a deep navy ship a dark variant; the rest read fine on either
@@ -523,7 +525,7 @@ const IntegrationCard = ({ integration, connected, connection, isPreviewConnecti
 					</div>
 				</div>
 				<Divider color='rgb(var(--fp-line-slate-subtle))' className='w-full' />
-				<div className='flex flex-row items-center justify-between px-6 py-4'>
+				<div className='flex flex-row items-center justify-between px-8 py-5'>
 					<div className='flex items-center gap-2'>
 						{connected ? (
 							<>

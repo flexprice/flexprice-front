@@ -1,6 +1,5 @@
 import { Page, Spacer, Loader, ShortPagination } from '@/components/atoms';
-import { CreditNoteTable } from '@/components/molecules/CreditNoteTable';
-import { ApiDocsContent } from '@/components/molecules';
+import { CreditNoteTable, ApiDocsContent } from '@/components/molecules';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import usePagination from '@/hooks/usePagination';

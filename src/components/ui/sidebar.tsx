@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
-import { PanelLeft } from 'lucide-react';
+import { PanelLeftIcon } from '@hugeicons/core-free-icons';
+import { HugeIcon } from '@/components/atoms/HugeIcon';
 import { useTranslation } from 'react-i18next';
 
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -176,7 +177,7 @@ const Sidebar = React.forwardRef<
 			{/* This is what handles the sidebar gap on desktop */}
 			<div
 				className={cn(
-					'duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear',
+					'duration-300 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-flow',
 					'group-data-[collapsible=offcanvas]:w-0',
 					'group-data-[side=right]:rotate-180',
 					variant === 'floating' || variant === 'inset'
@@ -186,14 +187,14 @@ const Sidebar = React.forwardRef<
 			/>
 			<div
 				className={cn(
-					'duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex',
+					'duration-300 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width,padding] ease-flow md:flex',
 					side === 'left'
 						? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
 						: 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
 					// Adjust the padding for floating and inset variants.
 					variant === 'floating' || variant === 'inset'
 						? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]'
-						: 'group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l',
+						: 'group-data-[collapsible=icon]:w-[--sidebar-width-icon]',
 					className,
 				)}
 				{...props}>
@@ -226,7 +227,7 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
 					toggleSidebar();
 				}}
 				{...props}>
-				<PanelLeft />
+				<HugeIcon icon={PanelLeftIcon} size={16} />
 				<span className='sr-only'>{toggleLabel}</span>
 			</Button>
 		);
@@ -248,7 +249,7 @@ const SidebarRail = React.forwardRef<HTMLButtonElement, React.ComponentProps<'bu
 			onClick={toggleSidebar}
 			title={toggleLabel}
 			className={cn(
-				'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex',
+				'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all duration-300 ease-flow after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex',
 				'[[data-side=left]_&]:cursor-w-resize [[data-side=right]_&]:cursor-e-resize',
 				'[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
 				'group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full group-data-[collapsible=offcanvas]:hover:bg-sidebar',
@@ -334,7 +335,7 @@ const SidebarGroupLabel = React.forwardRef<HTMLDivElement, React.ComponentProps<
 				ref={ref}
 				data-sidebar='group-label'
 				className={cn(
-					'duration-200 flex h-8 shrink-0 items-center rounded-[6px] px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
+					'duration-300 flex h-8 shrink-0 items-center rounded-[6px] px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-flow focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
 					'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
 					className,
 				)}
@@ -383,7 +384,7 @@ const SidebarMenuItem = React.forwardRef<HTMLLIElement, React.ComponentProps<'li
 SidebarMenuItem.displayName = 'SidebarMenuItem';
 
 const sidebarMenuButtonVariants = cva(
-	'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-[6px] py-0 px-2 text-start text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pe-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:!stroke-[1.5px]',
+	'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-[var(--fp-radius-md)] py-0 px-2 text-start text-sm outline-none ring-sidebar-ring transition-[width,height,padding] duration-300 ease-flow hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pe-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-surface data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[active=true]:hover:bg-surface data-[active=true]:hover:text-sidebar-accent-foreground data-[active=true]:active:bg-surface data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground data-[active=true]:data-[state=open]:hover:bg-surface group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:!stroke-[1.5px]',
 	{
 		variants: {
 			variant: {
@@ -579,7 +580,7 @@ const SidebarMenuSubButton = React.forwardRef<
 				'disabled:pointer-events-none disabled:opacity-50',
 				'aria-disabled:pointer-events-none aria-disabled:opacity-50',
 				// Active state matching the reference UI
-				'data-[active=true]:bg-surface-selected-alt data-[active=true]:text-content-zinc-bold',
+				'data-[active=true]:bg-surface-selected-alt data-[active=true]:text-content-zinc-bold data-[active=true]:hover:bg-surface-selected-alt data-[active=true]:active:bg-surface-selected-alt',
 				// Content styling
 				'[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
 				// Size variants with proper heights

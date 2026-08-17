@@ -1,5 +1,5 @@
 import { Page, AddButton } from '@/components/atoms';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
 import toast from 'react-hot-toast';
@@ -10,6 +10,14 @@ import { PricingContainer } from '@/pricing';
 import { PlanType } from '@/constants/planTypes';
 
 export { PlanType };
+
+function PricingWidgetCanvas({ children }: { children: ReactNode }) {
+	return (
+		<div className='pricing-preview-canvas w-full overflow-x-hidden rounded-[var(--fp-radius-lg)] border border-line'>
+			<div className='px-6 py-10 sm:px-8 sm:py-12 md:px-10 md:py-16'>{children}</div>
+		</div>
+	);
+}
 
 /**
  * Dashboard pricing page — thin wrapper around the shared, exportable pricing widget
@@ -23,19 +31,12 @@ const PricingPage = () => {
 	const [planDrawerOpen, setPlanDrawerOpen] = useState(false);
 
 	const renderEmpty = () => (
-		<div className='flex flex-col items-center mt-6'>
-			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 w-full mb-16'>
-				{[1, 2, 3].map((index) => (
-					<div
-						key={index}
-						className='min-h-[260px] w-full rounded-2xl border-2 border-dashed border-line-slate-strong bg-gradient-to-b from-surface to-surface-cool/90 p-6 shadow-sm'
-					/>
-				))}
-			</div>
-			<div className='flex flex-col items-center'>
-				<h2 className='font-regular text-[16px] leading-normal text-content-tertiary text-center mb-8'>
-					{t('catalog:plans.pricing.noWidget')}
-				</h2>
+		<div className='pricing-preview-canvas flex min-h-[min(56vh,36rem)] w-full flex-col overflow-x-hidden rounded-[var(--fp-radius-lg)] border border-line'>
+			<div className='flex flex-1 flex-col items-center justify-center px-6 py-10 text-center sm:px-8 sm:py-12 md:px-10 md:py-16'>
+				<p className='text-[20px] font-medium leading-normal text-content-secondary'>{t('catalog:plans.pricing.noWidget')}</p>
+				<p className='mt-2 max-w-md text-[16px] font-normal leading-normal text-content-subtle'>
+					{t('catalog:plans.pricing.noWidgetHint')}
+				</p>
 			</div>
 		</div>
 	);
@@ -53,7 +54,7 @@ const PricingPage = () => {
 						heading={t('plans.pricing.widgetsPageTitle')}
 						headingCTA={status === 'empty' ? <AddButton onClick={() => setPlanDrawerOpen(true)} /> : filters}>
 						<ApiDocsContent tags={API_DOCS_TAGS.PlansAndPrices} />
-						{content}
+						{status === 'empty' ? content : <PricingWidgetCanvas>{content}</PricingWidgetCanvas>}
 					</Page>
 				)}
 			</PricingContainer>

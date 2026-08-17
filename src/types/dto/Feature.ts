@@ -112,6 +112,7 @@ export interface GetFeaturesResponse {
 export interface GetFeatureByFilterPayload extends Pagination {
 	filters: TypedBackendFilter[];
 	sort: TypedBackendSort[];
+	expand?: string;
 }
 
 // Legacy update payload

@@ -107,8 +107,8 @@ const IntegrationDetails = () => {
 	return (
 		<Page>
 			<ApiDocsContent tags={API_DOCS_TAGS.Integrations} />
-			<div className={cn('border rounded-[6px] p-4 flex items-center shadow-sm', !integration.premium && 'cursor-pointer')}>
-				<div className='size-20 flex items-center justify-center bg-surface-shell rounded-[6px]'>
+			<div className={cn('flex items-center rounded-[var(--fp-radius-lg)] border p-4 shadow-sm', !integration.premium && 'cursor-pointer')}>
+				<div className='flex size-20 items-center justify-center rounded-[var(--fp-radius-md)] bg-surface-shell'>
 					{/* Brands whose mark is a deep navy ship a dark variant; the rest read fine on either
 					    surface and reuse the one logo. `hidden` means only the shown image is fetched. */}
 					<img
