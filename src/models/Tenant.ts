@@ -26,3 +26,9 @@ export interface Tenant {
 export enum TenantMetadataKey {
 	ONBOARDING_COMPLETED = 'onboarding_completed',
 }
+
+/** Values stored against a `TenantMetadataKey`. Metadata is a string map, so `'true'` is a string. */
+export enum TenantMetadataFlag {
+	True = 'true',
+	False = 'false',
+}
