@@ -70,11 +70,7 @@ function createFakeAdapter() {
 	return adapter;
 }
 
-/**
- * Renders the hook and hands back the QueryClient, so a test can wait for the
- * tenant query to actually SETTLE. Waiting on `mockGetTenantById` alone only
- * proves the request was issued — the hook's close handler needs the data.
- */
+/** Hands back the QueryClient so tests can wait for the tenant query to settle, not just fire. */
 function renderSupportChat(adapter: SupportChatAdapter) {
 	const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 	const Wrapper = ({ children }: PropsWithChildren) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
@@ -82,7 +78,7 @@ function renderSupportChat(adapter: SupportChatAdapter) {
 	return { ...rendered, queryClient };
 }
 
-/** Resolves once the tenant query has data, i.e. the hook has re-rendered with it. */
+/** Resolves once the tenant query has data. */
 async function waitForTenantLoaded(queryClient: QueryClient) {
 	await waitFor(() => expect(queryClient.getQueryData(['tenant'])).toBeDefined());
 }
@@ -290,15 +286,12 @@ describe('useSupportChat', () => {
 	});
 
 	it('auto-opens after the inactivity delay while onboarding is incomplete', async () => {
-		// Fake timers must be installed BEFORE render: the inactivity setTimeout is
-		// scheduled by an effect, and a timer scheduled under real timers cannot be
-		// advanced afterwards.
+		// Fake timers must be installed BEFORE render; a real-timer setTimeout cannot be advanced later.
 		vi.useFakeTimers();
 		const adapter = createFakeAdapter();
 		const { queryClient } = renderSupportChat(adapter);
 
-		// advanceTimersByTimeAsync flushes microtasks, letting init() and the tenant
-		// query settle so the effect gets far enough to schedule the timer.
+		// advanceTimersByTimeAsync flushes microtasks so init() and the query settle first.
 		await act(async () => {
 			await vi.advanceTimersByTimeAsync(0);
 		});

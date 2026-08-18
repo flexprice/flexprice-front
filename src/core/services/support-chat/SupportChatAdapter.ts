@@ -14,24 +14,11 @@ export interface SupportChatVisibilityHandlers {
 }
 
 /**
- * The only thing `useSupportChat` knows about a provider.
- *
- * Lifecycle ownership is deliberately non-overlapping:
- * - the function returned by `subscribe()` removes everything `subscribe()` registered;
- * - `dispose()` marks the adapter dead so no late callback fires, and releases
- *   anything `init()` created. It is idempotent and safe to call after unsubscribe.
- *
- * `init()` and `subscribe()` may be called in either order.
+ * The only thing `useSupportChat` knows about a provider. `subscribe()`'s return value
+ * undoes `subscribe()`; `dispose()` kills the instance. Either may be called first.
  */
 export interface SupportChatAdapter {
-	/**
-	 * Load the SDK and identify the user.
-	 *
-	 * Async by design: this is the seam where a signed identity token is fetched
-	 * once a backend endpoint exists (`chat_settings.jwt = await fetchIdentityToken()`).
-	 *
-	 * Rejects when the SDK cannot be loaded or the provider is misconfigured.
-	 */
+	/** Load the SDK and identify the user. Rejects if the SDK cannot load or config is invalid. */
 	init(user: SupportChatUser): Promise<void>;
 
 	/** Open the messenger. Never throws — a no-op if init failed or has not completed. */

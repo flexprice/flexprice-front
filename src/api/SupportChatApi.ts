@@ -6,19 +6,16 @@ export interface SupportChatTokenRequest {
 }
 
 export interface SupportChatTokenResponse {
-	/** Short-lived signed JWT for the provider's identity verification. Never log or persist this. */
+	/** Short-lived signed JWT. Never log or persist. */
 	token: string;
-	/** RFC3339 UTC. Informational — the token is re-fetched on every widget init. */
+	/** RFC3339 UTC. Informational; the token is re-fetched on every init. */
 	expires_at: string;
 	provider: SupportChatProvider;
 }
 
 /**
- * Mints a support-chat identity token for the authenticated user.
- *
- * Contract: `docs/support-chat-identity-token-contract.md`.
- * The endpoint does not exist yet — callers must treat failure as non-fatal and
- * fall back to an unverified session.
+ * Mints a support-chat identity token. Contract: `docs/support-chat-identity-token-contract.md`.
+ * Endpoint not built yet — callers must treat failure as non-fatal.
  */
 class SupportChatApi {
 	private static baseUrl = '/users/me/support-chat';

@@ -7,7 +7,7 @@ import type { SupportChatProvider } from '@/models/SupportChat';
 import { createSupportChatAdapter } from './adapters';
 import { useSupportChat } from './useSupportChat';
 
-/** Mounted only when a provider is configured; owns SDK init and onboarding/help behavior. */
+/** Mounted only when a provider is configured. */
 const SupportChatImpl = ({ provider }: { provider: SupportChatProvider }) => {
 	const { t } = useTranslation('common');
 	const flow = SUPPORT_CHAT_FLOW[provider];
@@ -22,7 +22,7 @@ const SupportChatImpl = ({ provider }: { provider: SupportChatProvider }) => {
 	);
 };
 
-/** Renders nothing when no provider is enabled or its app id is missing (see `@/config/support-chat`). */
+/** Renders nothing when no provider is enabled or its app id is missing. */
 const SupportChat = () => {
 	const provider = getActiveSupportChatProvider();
 	if (!provider) return null;

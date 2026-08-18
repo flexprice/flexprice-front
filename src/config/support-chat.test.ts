@@ -4,9 +4,7 @@ import { SupportChatProvider } from '@/models/SupportChat';
 describe('support chat config', () => {
 	beforeEach(() => {
 		vi.resetModules();
-		// A developer's local .env is loaded by Vite during tests, so pin an explicit
-		// baseline. Without this the suite passes or fails depending on whose machine
-		// it runs on. Individual tests stub over these.
+		// Vite loads a local .env during tests, so pin a baseline. Individual tests stub over these.
 		vi.stubEnv('VITE_APP_ENV', 'development');
 		vi.stubEnv('VITE_INTERCOM_ENABLED', 'false');
 		vi.stubEnv('VITE_INTERCOM_APP_ID', '');

@@ -184,7 +184,6 @@ describe('pylon adapter', () => {
 		it('sends only the app id and the jwt, so nothing can contradict the claims', async () => {
 			const adapter = createPylonAdapter('app-123', async () => 'signed.jwt.token');
 			const pending = adapter.init(USER);
-			// The token is awaited, so settings land a microtask later.
 			await vi.waitFor(() => expect(globals().pylon?.chat_settings).toHaveProperty('jwt'));
 
 			expect(globals().pylon?.chat_settings).toEqual({

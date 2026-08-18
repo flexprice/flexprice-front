@@ -14,7 +14,7 @@ export function createSupportChatAdapter(provider: SupportChatProvider, flow: Su
 		case SupportChatProvider.Pylon:
 			return createPylonAdapter(
 				config.pylon.appId,
-				// Undefined when the flag is off, so no request is made at all.
+				// Undefined when the flag is off, so no request is made.
 				config.pylon.identityVerificationEnabled
 					? async () => (await SupportChatApi.getIdentityToken(SupportChatProvider.Pylon)).token
 					: undefined,

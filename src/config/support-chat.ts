@@ -2,22 +2,18 @@ import { config } from './config';
 import { SupportChatAnalyticsEvent, SupportChatProvider, SupportChatStorageKey } from '@/models/SupportChat';
 import { UserActivityEvent } from '@/types/enums/dom';
 
-/**
- * Behaviour knobs for the support-chat messenger. Tune here instead of scattering
- * literals through the hook. String fields are enum-typed so a typo is a compile
- * error rather than a silently dead analytics event.
- */
+/** Behaviour knobs for the messenger. String fields are enum-typed so a typo is a compile error. */
 export interface SupportChatFlowConfig {
-	/** Hide the provider's floating launcher; we use the header Help button and command palette. */
+	/** Hide the provider's floating launcher; we use the header Help button. */
 	hideDefaultLauncher: boolean;
 	/** Idle time before auto-opening the messenger for non-onboarded tenants (ms). */
 	inactivityOpenDelayMs: number;
-	/** How often the Intercom adapter polls for visibility (ms). Unused by Pylon, which has native events. */
+	/** Intercom visibility poll interval (ms). Unused by Pylon. */
 	statePollIntervalMs: number;
 	activityEvents: readonly UserActivityEvent[];
 	/** After idle, open the messenger if onboarding is incomplete. */
 	autoOpenOnInactivity: boolean;
-	/** PATCH tenant metadata when the messenger closes and onboarding was incomplete. */
+	/** PATCH tenant metadata on close when onboarding was incomplete. */
 	markCompletedOnClose: boolean;
 	trackGtagEvents: boolean;
 	persistMessengerSeenToStorage: boolean;
@@ -45,10 +41,7 @@ const SHARED_FLOW = {
 	toastErrorMarkOnboarded: 'Failed to update onboarding status. Please try again.',
 } satisfies Partial<SupportChatFlowConfig>;
 
-/**
- * Total by construction: adding a provider to `SupportChatProvider` is a compile
- * error until its flow config is supplied here.
- */
+/** Total by construction: a new provider will not compile until its config is added here. */
 export const SUPPORT_CHAT_FLOW: Record<SupportChatProvider, SupportChatFlowConfig> = {
 	[SupportChatProvider.Intercom]: {
 		...SHARED_FLOW,
@@ -68,7 +61,7 @@ function isProviderConfigured(enabled: boolean, appId: string): boolean {
 	return enabled && appId.trim().length > 0;
 }
 
-/** True when Intercom specifically is configured. Backs the deprecated `isIntercomMessengerAvailable`. */
+/** True when Intercom specifically is configured. */
 export function isIntercomProviderConfigured(): boolean {
 	return isProviderConfigured(config.intercom.enabled, config.intercom.appId);
 }
@@ -78,16 +71,13 @@ export function isPylonProviderConfigured(): boolean {
 	return isProviderConfigured(config.pylon.enabled, config.pylon.appId);
 }
 
-/**
- * Resolves the single active provider. Intercom wins when both are configured,
- * preserving pre-Pylon behaviour for any environment that later enables both.
- */
+/** Resolves the active provider. Intercom wins when both are configured, preserving pre-Pylon behaviour. */
 export function getActiveSupportChatProvider(): SupportChatProvider | null {
 	const intercomReady = isIntercomProviderConfigured();
 	const pylonReady = isPylonProviderConfigured();
 
 	if (intercomReady && pylonReady && !config.app.isProd) {
-		// A configuration mistake, not a runtime error — deliberately not routed through ErrorLoggingService.
+		// A config mistake, not a runtime error, so deliberately not routed through ErrorLoggingService.
 		console.warn(
 			'[support-chat] Intercom and Pylon are both enabled. Using Intercom and ignoring Pylon. Set VITE_INTERCOM_ENABLED=false to use Pylon.',
 		);
@@ -108,12 +98,7 @@ const SUPPORT_CHAT_COMMAND_LABEL: Record<SupportChatProvider, string> = {
 	[SupportChatProvider.Pylon]: 'Open Pylon',
 };
 
-/**
- * Command-palette label for the active provider. A pure env read with no side
- * effects, so it is safe to evaluate at module load in `commands.ts`.
- * Falls back to the Intercom label so the command reads identically to today
- * when no provider is configured (the command is hidden in that case anyway).
- */
+/** Command-palette label for the active provider. A pure env read, safe at module load. */
 export function getSupportChatCommandLabel(): string {
 	const provider = getActiveSupportChatProvider();
 	return SUPPORT_CHAT_COMMAND_LABEL[provider ?? SupportChatProvider.Intercom];

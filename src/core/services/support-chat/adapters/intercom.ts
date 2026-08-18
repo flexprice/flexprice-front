@@ -1,11 +1,6 @@
 /**
- * Intercom messenger adapter.
- *
- * Docs: https://developers.intercom.com/installing-intercom/web/methods
- *
- * A faithful port of the SDK calls previously inline in IntercomMessenger.tsx.
- * Intercom fires no reliable close event, so visibility is synthesised by polling
- * `isVisible` and by listening for the embed's postMessage events where supported.
+ * Intercom messenger adapter. Intercom fires no reliable close event, so visibility is
+ * synthesised by polling `isVisible` plus the embed's postMessage events.
  */
 import Intercom from '@intercom/messenger-js-sdk';
 import '../../intercom/index.css';
@@ -93,9 +88,7 @@ export function createIntercomAdapter(appId: string, pollIntervalMs: number, hid
 
 			pollTimer = setInterval(() => {
 				if (disposed) return;
-				// Capture the previous value BEFORE reassigning: reading `lastVisible`
-				// afterwards would make the null guard below always true and emit a
-				// spurious close on the first tick.
+				// Capture before reassigning, or the null guard below emits a spurious first close.
 				const previous = lastVisible;
 				const visible = isMessengerVisible();
 				if (visible === previous) return;

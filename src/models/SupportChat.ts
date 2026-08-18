@@ -19,10 +19,7 @@ export enum SupportChatStatus {
 	Failed = 'failed',
 }
 
-/**
- * gtag event names. The Intercom values are pre-existing and MUST NOT change —
- * downstream analytics dashboards key off them.
- */
+/** gtag event names. The Intercom values are pre-existing and MUST NOT change. */
 export enum SupportChatAnalyticsEvent {
 	IntercomOpened = 'intercom_messenger_opened',
 	IntercomClosed = 'intercom_messenger_closed',

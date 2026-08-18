@@ -1,19 +1,12 @@
 /**
- * Pylon chat widget adapter.
- *
+ * Pylon chat widget adapter. Unlike Intercom it has native onShow/onHide, so no polling.
  * Docs: https://docs.usepylon.com/pylon-docs/chat-widget/chat-setup
- *       https://docs.usepylon.com/pylon-docs/chat-widget/javascript-api
- *
- * Emulates the same behaviour as the Intercom adapter: launcher hidden, opened
- * programmatically from the header Help button and the command palette, and
- * visibility reported to the hook. Unlike Intercom, Pylon exposes native
- * onShow/onHide callbacks, so no polling is needed.
  */
 import { errorLogger } from '@/core/services/error/ErrorLoggingService';
 import { DocumentReadyState } from '@/types/enums/dom';
 import type { SupportChatAdapter, SupportChatUser, SupportChatVisibilityHandlers } from '../SupportChatAdapter';
 
-/** Pylon JS API commands. See the javascript-api doc linked above. */
+/** Pylon JS API commands. */
 enum PylonCommand {
 	Show = 'show',
 	Hide = 'hide',
@@ -24,11 +17,7 @@ enum PylonCommand {
 
 const PYLON_WIDGET_BASE_URL = 'https://widget.usepylon.com/widget';
 
-/**
- * App ids are opaque tokens from the Pylon dashboard. Validating before
- * interpolating into a <script src> stops a mis-set env var from becoming
- * URL injection.
- */
+/** Validated before interpolation into a <script src>, so a mis-set env var cannot inject a URL. */
 const PYLON_APP_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 
 type PylonFn = ((...args: unknown[]) => void) & { q?: unknown[] };
@@ -38,7 +27,7 @@ interface PylonWindow {
 	pylon?: { chat_settings: Record<string, unknown> };
 }
 
-/** One in-flight/settled load promise per app id, so repeated inits inject one script. */
+/** One load promise per app id, so repeated inits inject a single script. */
 const scriptLoads = new Map<string, Promise<void>>();
 
 /** @internal Test-only: clears the module-level injection cache between tests. */
@@ -50,10 +39,7 @@ function pylonWindow(): PylonWindow {
 	return window as unknown as PylonWindow;
 }
 
-/**
- * Reimplements Pylon's own queue stub: calls made before the widget script loads
- * are pushed onto `Pylon.q` and replayed by the widget once it initialises.
- */
+/** Pylon's own queue stub: calls made before the script loads are replayed by the widget. */
 function installQueueStub(target: PylonWindow): void {
 	if (target.Pylon) return;
 
@@ -93,10 +79,7 @@ function loadWidgetScript(appId: string): Promise<void> {
 	return load;
 }
 
-/**
- * Fetches a signed identity token. Injected rather than imported so the adapter
- * stays testable and the API module is only reached when the flag is on.
- */
+/** Injected, not imported, so the API module is only reached when the flag is on. */
 export type FetchPylonIdentityToken = () => Promise<string>;
 
 export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylonIdentityToken): SupportChatAdapter {
@@ -113,10 +96,7 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 
 			const target = pylonWindow();
 
-			// A signed token is best-effort: if the endpoint is down or not deployed yet,
-			// log it and boot unverified so the Help button keeps working. Note that once
-			// the Pylon dashboard's Identity Verification toggle is on, Pylon rejects the
-			// unverified session anyway — the log is how you find out, not the UI.
+			// Best-effort: on failure, log and boot unverified so the Help button keeps working.
 			let identityToken: string | null = null;
 			if (fetchIdentityToken) {
 				try {
@@ -129,30 +109,21 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 				}
 			}
 
-			// Settings must exist before the widget boots, per the Pylon setup docs.
-			//
-			// Pylon: "Any identity values supplied to the widget must match those signed
-			// into the JWT." Rather than keep two independently-derived copies of the same
-			// identity in sync across two codebases, the token carries ALL of it and we send
-			// nothing else — a mismatch then cannot happen. `email_hash` is never sent
-			// either; Pylon documents it as mutually exclusive with `jwt`.
-			//
-			// Unverified mode keeps the plain fields. `contact_external_id` is absent there
-			// because Pylon accepts it only as a JWT claim, never in chat_settings.
+			// Pylon requires any identity sent to the widget to match the JWT claims, so the
+			// token carries all of it and nothing else ships alongside it.
 			const chatSettings: Record<string, unknown> = identityToken
 				? { app_id: appId, jwt: identityToken }
 				: {
 						app_id: appId,
 						email: user.email ?? '',
 						name: user.name ?? '',
-						// Groups every member of a tenant under one Pylon account.
+						// Groups a tenant's users under one Pylon account.
 						...(user.tenantId ? { account_external_id: user.tenantId } : {}),
 					};
 			target.pylon = { chat_settings: chatSettings };
 			installQueueStub(target);
 
-			// Insert synchronously when the document is already complete, so callers can
-			// observe the script element immediately. Only defer when it genuinely is not.
+			// Insert synchronously when the document is already complete; only defer if not.
 			if (document.readyState !== DocumentReadyState.Complete) {
 				await whenDocumentReady();
 			}
@@ -172,11 +143,10 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 
 			if (!registered && typeof window !== 'undefined') {
 				const target = pylonWindow();
-				// subscribe() may run before init(); make sure the queue exists either way.
+				// subscribe() may run before init(), so ensure the queue exists.
 				installQueueStub(target);
 				registered = true;
-				// Pylon documents no way to UNregister these, so route through a mutable
-				// ref and gate on `disposed` instead.
+				// Pylon cannot unregister these, so gate on `disposed` instead.
 				target.Pylon?.(PylonCommand.OnShow, () => {
 					if (!disposed) handlers?.onShow();
 				});

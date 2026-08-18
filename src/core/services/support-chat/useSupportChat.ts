@@ -19,15 +19,11 @@ function getGtag(): GtagFn | null {
 	return typeof candidate === 'function' ? candidate : null;
 }
 
-/**
- * Every behaviour the support-chat messenger has, independent of provider.
- * The adapter supplies only: identify, open, and open/close events.
- */
+/** Every provider-independent messenger behaviour. The adapter only identifies, opens, and reports visibility. */
 export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlowConfig) {
 	const { user } = useUser();
 
-	// Primitives, not the `user` object: TanStack Query hands back a fresh reference
-	// on every refetch, and depending on that would re-init the SDK on each one.
+	// Primitives, not the `user` object: a refetch returns a fresh reference and would re-init the SDK.
 	const userId = user?.id;
 	const userEmail = user?.email;
 	const userName = user?.name;
@@ -35,9 +31,7 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 	const tenantName = user?.tenant?.name;
 	const tenantCreatedAt = user?.tenant?.created_at;
 
-	// The person's name, falling back to the tenant name. Before Pylon this only
-	// ever sent `tenant.name`, so every member of a tenant showed up in the support
-	// inbox as the company. The fallback keeps that behaviour when `user.name` is absent.
+	// Falls back to the tenant name, which was the only name sent before Pylon.
 	const displayName = userName ?? tenantName;
 
 	const visibility = useRef<SupportChatVisibility>(SupportChatVisibility.Unknown);
@@ -88,8 +82,7 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 	}, [flow.trackGtagEvents, flow.gtagOpenedEvent, userId, tenantId]);
 
 	const handleHide = useCallback(() => {
-		// A close only counts if we saw the messenger open. Also collapses repeated
-		// hide events (poll edge + postMessage) into a single close.
+		// Only counts if we saw it open; also collapses repeated hide events into one close.
 		if (visibility.current !== SupportChatVisibility.Open) return;
 		visibility.current = SupportChatVisibility.Closed;
 
@@ -123,10 +116,7 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 		tenantId,
 	]);
 
-	// Stable indirection so the init effect below does not re-run when the
-	// handlers' identity changes (they depend on tenant + user). Assigned in an
-	// effect rather than during render; the adapter only invokes these from its
-	// own events, which always fire after commit.
+	// Stable indirection so the init effect does not re-run when the handlers' identity changes.
 	const handleShowRef = useRef(handleShow);
 	const handleHideRef = useRef(handleHide);
 	useEffect(() => {

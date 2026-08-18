@@ -4,8 +4,7 @@ import { SupportChatProvider } from '@/models/SupportChat';
 describe('deprecated intercom config shim', () => {
 	beforeEach(() => {
 		vi.resetModules();
-		// A developer's local .env is loaded by Vite during tests, so pin an explicit
-		// baseline. Individual tests stub over these.
+		// Vite loads a local .env during tests, so pin a baseline. Individual tests stub over these.
 		vi.stubEnv('VITE_APP_ENV', 'development');
 		vi.stubEnv('VITE_INTERCOM_ENABLED', 'false');
 		vi.stubEnv('VITE_INTERCOM_APP_ID', '');
