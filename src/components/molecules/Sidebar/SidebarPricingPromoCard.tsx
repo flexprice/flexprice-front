@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Wand2 } from 'lucide-react';
+import { WandSparkles } from 'lucide-react';
 
 /** Figma export: sidebar “Create with AI” promo (grid art on the right). */
 import promoFrameUrl from '../../../../assets/Frame 1400002331.png';
@@ -22,8 +22,8 @@ const SidebarPricingPromoCard: FC<SidebarPricingPromoCardProps> = ({ onCreateWit
 	return (
 		<div
 			className={cn(
-				'group-data-[collapsible=icon]:hidden',
-				'relative w-full overflow-hidden rounded-lg border border-line-faint bg-surface',
+				'group-data-[collapsible=icon]:hidden group-data-[reveal=closed]:hidden',
+				'relative w-full overflow-hidden rounded-[var(--fp-radius-shell)] border border-line-faint bg-surface',
 				'shadow-[0_1px_2px_0_rgba(0,0,0,0.05)]',
 				className,
 			)}>
@@ -55,11 +55,11 @@ const SidebarPricingPromoCard: FC<SidebarPricingPromoCardProps> = ({ onCreateWit
 					size='sm'
 					onClick={onCreateWithAI}
 					className={cn(
-						'h-10 w-full rounded-md border-line-strong bg-surface px-3.5 text-xs font-medium text-brand-navy',
-						'shadow-none hover:bg-surface-subtle hover:text-brand-navy',
+						'h-10 w-full rounded-md border-accent-indigo-line bg-surface px-3.5 text-xs font-medium text-accent-indigo',
+						'shadow-none hover:bg-accent-indigo-muted hover:text-accent-indigo-strong',
 						'inline-flex items-center justify-center gap-1.5',
 					)}>
-					<Wand2 className='size-3.5 shrink-0 text-brand-navy opacity-90' strokeWidth={1.75} aria-hidden />
+					<WandSparkles className='size-3.5 text-accent-indigo' aria-hidden />
 					<span className='analyzing-prompt-shimmer text-xs font-medium'>{t('labels.createPlan')}</span>
 				</Button>
 			</div>

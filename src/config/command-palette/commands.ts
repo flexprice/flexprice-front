@@ -1,31 +1,31 @@
-import type { LucideIcon } from 'lucide-react';
+import type { HugeIconData } from '@/components/atoms/HugeIcon';
 import {
-	Home,
-	Layers2,
-	Landmark,
-	Settings,
-	CodeXml,
-	Puzzle,
-	GalleryHorizontalEnd,
-	BarChart3,
-	Plus,
-	CreditCard,
-	Receipt,
-	FileText,
-	Wallet,
-	Key,
-	UserCog,
-	Webhook,
-	Rocket,
-	BookOpen,
-	Mail,
-	CalendarDays,
-	MessageCircle,
-	BotMessageSquare,
-	LogOut,
-	Keyboard,
-	Workflow,
-} from 'lucide-react';
+	Home01Icon,
+	Layers01Icon,
+	LandmarkIcon,
+	Settings01Icon,
+	SourceCodeIcon,
+	PuzzleIcon,
+	GalleryHorizontalEndIcon,
+	ChartLineData02Icon,
+	PlusSignIcon,
+	CreditCardIcon,
+	Invoice01Icon,
+	File01Icon,
+	Wallet01Icon,
+	Key01Icon,
+	UserSettings01Icon,
+	WebhookIcon,
+	RocketIcon,
+	BookOpen01Icon,
+	Mail01Icon,
+	Calendar03Icon,
+	Message01Icon,
+	AiChat01Icon,
+	Logout01Icon,
+	KeyboardIcon,
+	WorkflowSquare01Icon,
+} from '@hugeicons/core-free-icons';
 import type { CommandPaletteActionIdType } from '@/core/actions';
 import { CommandPaletteActionId } from '@/core/actions';
 import { getSupportChatCommandLabel } from '@/config/support-chat';
@@ -45,7 +45,7 @@ export interface CommandPaletteCommand {
 	/** When set, the organism will look up and run a handler for this id (in addition to optional path). */
 	actionId?: CommandPaletteActionIdType;
 	keywords?: string[];
-	icon?: LucideIcon;
+	icon?: HugeIconData;
 }
 
 const P = commandPalettePaths;
@@ -58,7 +58,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Actions,
 		path: P['create-feature'],
 		keywords: ['new', 'add', 'feature', 'product'],
-		icon: Plus,
+		icon: PlusSignIcon,
 	},
 	{
 		id: CommandPaletteCommandId.actionSimulateIngestEvents,
@@ -66,7 +66,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Actions,
 		actionId: CommandPaletteActionId.DebugSimulateIngestEvents,
 		keywords: ['debug', 'events', 'stream', 'ingest'],
-		icon: Rocket,
+		icon: RocketIcon,
 	},
 	// Help (documentation, contact, community)
 	{
@@ -75,7 +75,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.OpenDocumentation,
 		keywords: ['docs', 'help', 'api', 'developer', 'readme'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.actionKeyboardShortcuts,
@@ -83,7 +83,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.ShowKeyboardShortcutsHint,
 		keywords: ['shortcuts', 'keys', '⌘K', 'Ctrl+K', 'command palette'],
-		icon: Keyboard,
+		icon: KeyboardIcon,
 	},
 	{
 		id: CommandPaletteCommandId.actionContactUs,
@@ -91,7 +91,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.ContactUs,
 		keywords: ['support', 'email', 'help', 'contact'],
-		icon: Mail,
+		icon: Mail01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.actionBookCall,
@@ -99,7 +99,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.BookCall,
 		keywords: ['demo', 'calendly', 'schedule', 'meeting'],
-		icon: CalendarDays,
+		icon: Calendar03Icon,
 	},
 	{
 		id: CommandPaletteCommandId.actionJoinSlack,
@@ -107,7 +107,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.JoinSlackCommunity,
 		keywords: ['slack', 'community', 'chat', 'support'],
-		icon: MessageCircle,
+		icon: Message01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.actionOpenIntercom,
@@ -115,7 +115,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.OpenIntercom,
 		keywords: ['chat', 'support', 'messenger', 'help', 'intercom', 'pylon'],
-		icon: BotMessageSquare,
+		icon: AiChat01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.actionLogout,
@@ -123,7 +123,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.Logout,
 		keywords: ['sign out', 'signout', 'account', 'exit'],
-		icon: LogOut,
+		icon: Logout01Icon,
 	},
 	// Documentation (product‑helpful doc links; open in new tab)
 	{
@@ -132,7 +132,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/welcome-to-flexprice`,
 		keywords: ['docs', 'welcome', 'intro', 'overview', 'getting started'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docCreatingMeteredFeature,
@@ -140,7 +140,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/event-ingestion/creating-a-metered-feature`,
 		keywords: ['docs', 'metered', 'feature', 'events', 'usage'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docSendingEvents,
@@ -148,7 +148,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/event-ingestion/sending-events`,
 		keywords: ['docs', 'events', 'ingest', 'usage', 'api'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docCreatingPlan,
@@ -156,7 +156,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/product-catalogue/plans/create`,
 		keywords: ['docs', 'plan', 'pricing', 'product catalog'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docCreatingFeature,
@@ -164,7 +164,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/product-catalogue/features/create`,
 		keywords: ['docs', 'feature', 'product catalog'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docCreatingCustomer,
@@ -172,7 +172,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/customers/create`,
 		keywords: ['docs', 'customer', 'billing'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docCreateSubscription,
@@ -180,7 +180,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/subscriptions/customers-create-subscription`,
 		keywords: ['docs', 'subscription', 'billing', 'customer'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docCreatingWallet,
@@ -188,7 +188,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/wallet/create`,
 		keywords: ['docs', 'wallet', 'credits', 'prepaid'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docInvoicesOverview,
@@ -196,7 +196,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/invoices/overview`,
 		keywords: ['docs', 'invoices', 'billing'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docApiReference,
@@ -204,7 +204,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/api-reference/introduction`,
 		keywords: ['docs', 'api', 'reference', 'developer'],
-		icon: CodeXml,
+		icon: SourceCodeIcon,
 	},
 	{
 		id: CommandPaletteCommandId.docWebhooks,
@@ -212,7 +212,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/webhook/webhooks`,
 		keywords: ['docs', 'webhooks', 'developer'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.docApiKeys,
@@ -220,7 +220,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.Documentation,
 		externalUrl: `${DOCS_BASE}/docs/rbac/api`,
 		keywords: ['docs', 'api keys', 'rbac', 'developer'],
-		icon: BookOpen,
+		icon: BookOpen01Icon,
 	},
 	// Go to - Home
 	{
@@ -229,7 +229,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['home-dashboard'],
 		keywords: ['dashboard', 'overview'],
-		icon: Home,
+		icon: Home01Icon,
 	},
 	// Go to - Product Catalog
 	{
@@ -238,7 +238,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-features'],
 		keywords: ['features', 'product', 'catalog'],
-		icon: Layers2,
+		icon: Layers01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navProductCatalogPlans,
@@ -246,7 +246,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-plan'],
 		keywords: ['plans', 'pricing', 'product', 'catalog'],
-		icon: Layers2,
+		icon: Layers01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navProductCatalogCoupons,
@@ -254,7 +254,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-coupons'],
 		keywords: ['coupons', 'discounts', 'product', 'catalog'],
-		icon: Layers2,
+		icon: Layers01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navProductCatalogAddons,
@@ -262,7 +262,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-addons'],
 		keywords: ['addons', 'add-ons', 'product', 'catalog'],
-		icon: Layers2,
+		icon: Layers01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navProductCatalogCostSheets,
@@ -270,7 +270,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-cost-sheets'],
 		keywords: ['cost sheets', 'costs', 'product', 'catalog'],
-		icon: Layers2,
+		icon: Layers01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navProductCatalogPriceUnits,
@@ -278,7 +278,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-price-units'],
 		keywords: ['price units', 'units', 'product', 'catalog'],
-		icon: Layers2,
+		icon: Layers01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navProductCatalogGroups,
@@ -286,7 +286,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-groups'],
 		keywords: ['groups', 'product', 'catalog'],
-		icon: Layers2,
+		icon: Layers01Icon,
 	},
 	// Go to - Billing
 	{
@@ -295,7 +295,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['billing-customers'],
 		keywords: ['customers', 'billing', 'accounts'],
-		icon: Landmark,
+		icon: LandmarkIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navBillingSubscriptions,
@@ -303,7 +303,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['billing-subscriptions'],
 		keywords: ['subscriptions', 'billing'],
-		icon: CreditCard,
+		icon: CreditCardIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navBillingTaxes,
@@ -311,7 +311,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['billing-taxes'],
 		keywords: ['taxes', 'tax rates', 'billing'],
-		icon: Landmark,
+		icon: LandmarkIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navBillingInvoices,
@@ -319,7 +319,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['billing-invoices'],
 		keywords: ['invoices', 'billing'],
-		icon: Receipt,
+		icon: Invoice01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navBillingCreditNotes,
@@ -327,7 +327,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['billing-credit-notes'],
 		keywords: ['credit notes', 'credits', 'billing'],
-		icon: FileText,
+		icon: File01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navBillingPayments,
@@ -335,7 +335,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['billing-payments'],
 		keywords: ['payments', 'billing', 'wallet'],
-		icon: Wallet,
+		icon: Wallet01Icon,
 	},
 	// Go to - Settings
 	{
@@ -344,7 +344,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['settings-billing'],
 		keywords: ['settings', 'billing', 'payment'],
-		icon: Landmark,
+		icon: LandmarkIcon,
 	},
 	// Go to - Tools
 	{
@@ -353,7 +353,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-bulk-imports'],
 		keywords: ['imports', 'bulk import', 'tools'],
-		icon: Settings,
+		icon: Settings01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navToolsRevenue,
@@ -361,7 +361,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-revenue'],
 		keywords: ['revenue', 'dashboard', 'tools'],
-		icon: BarChart3,
+		icon: ChartLineData02Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navToolsExports,
@@ -369,7 +369,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-exports'],
 		keywords: ['exports', 'tools'],
-		icon: Settings,
+		icon: Settings01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navToolsS3Exports,
@@ -377,7 +377,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-exports-s3'],
 		keywords: ['s3', 'exports', 'tools'],
-		icon: Settings,
+		icon: Settings01Icon,
 	},
 	// Go to - Developers / Usage
 	{
@@ -386,7 +386,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['usage-tracking-events'],
 		keywords: ['events', 'debugger', 'usage', 'developers'],
-		icon: CodeXml,
+		icon: SourceCodeIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navUsageTrackingQuery,
@@ -394,7 +394,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['usage-tracking-query'],
 		keywords: ['query', 'usage', 'tracking', 'metrics'],
-		icon: CodeXml,
+		icon: SourceCodeIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navDevelopersApiKeys,
@@ -402,7 +402,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['developers-api-keys'],
 		keywords: ['api keys', 'keys', 'developers'],
-		icon: Key,
+		icon: Key01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navDevelopersServiceAccounts,
@@ -410,7 +410,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['developers-service-accounts'],
 		keywords: ['service accounts', 'developers'],
-		icon: UserCog,
+		icon: UserSettings01Icon,
 	},
 	{
 		id: CommandPaletteCommandId.navDevelopersWebhooks,
@@ -418,7 +418,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['developers-webhooks'],
 		keywords: ['webhooks', 'developers'],
-		icon: Webhook,
+		icon: WebhookIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navDevelopersWorkflows,
@@ -426,7 +426,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['developers-workflows'],
 		keywords: ['workflows', 'temporal', 'runs', 'developers'],
-		icon: Workflow,
+		icon: WorkflowSquare01Icon,
 	},
 	// Go to - Integrations & Pricing Widget
 	{
@@ -435,7 +435,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations'],
 		keywords: ['integrations', 'tools', 'quickbooks'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationStripe,
@@ -443,7 +443,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-stripe'],
 		keywords: ['stripe', 'payments', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationRazorpay,
@@ -451,7 +451,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-razorpay'],
 		keywords: ['razorpay', 'payments', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationChargebee,
@@ -459,7 +459,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-chargebee'],
 		keywords: ['chargebee', 'payments', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationHubspot,
@@ -467,7 +467,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-hubspot'],
 		keywords: ['hubspot', 'crm', 'sales', 'marketing', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationQuickbooks,
@@ -475,7 +475,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-quickbooks'],
 		keywords: ['quickbooks', 'accounting', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationZoho,
@@ -483,7 +483,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-zoho'],
 		keywords: ['zoho', 'zoho books', 'accounting', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationNomod,
@@ -491,7 +491,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-nomod'],
 		keywords: ['nomod', 'payments', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationMoyasar,
@@ -499,7 +499,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-moyasar'],
 		keywords: ['moyasar', 'payments', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navIntegrationPaddle,
@@ -507,7 +507,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-integrations-paddle'],
 		keywords: ['paddle', 'payments', 'invoices', 'integrations'],
-		icon: Puzzle,
+		icon: PuzzleIcon,
 	},
 	{
 		id: CommandPaletteCommandId.navPricingWidget,
@@ -515,6 +515,6 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		group: CommandPaletteGroup.GoTo,
 		path: P['product-catalog-pricing-widget'],
 		keywords: ['pricing', 'widget', 'embed'],
-		icon: GalleryHorizontalEnd,
+		icon: GalleryHorizontalEndIcon,
 	},
 ];

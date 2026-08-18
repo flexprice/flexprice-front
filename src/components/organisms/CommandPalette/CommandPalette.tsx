@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { defaultFilter } from 'cmdk';
 import { CommandPaletteDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command-palette';
+import { HugeIcon } from '@/components/atoms/HugeIcon';
 
 import {
 	commandPaletteCommands,
@@ -159,7 +160,7 @@ const CommandPalette = () => {
 								const searchValue = [command.label, command.group, ...(command.keywords ?? [])].join(' ');
 								return (
 									<CommandItem key={command.id} value={searchValue} onSelect={() => handleSelect(command)} className='my-0.5 !rounded-xl'>
-										{Icon && <Icon className='!size-4 shrink-0 text-muted-foreground' />}
+										{Icon && <HugeIcon icon={Icon} size={16} className='text-muted-foreground' />}
 										<span className='!text-[13px] text-content-black/70 !font-normal'>{command.label}</span>
 									</CommandItem>
 								);
