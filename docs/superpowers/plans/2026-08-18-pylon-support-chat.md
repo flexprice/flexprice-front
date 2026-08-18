@@ -24,7 +24,7 @@
 
 **Two things about this repo you will hit:**
 
-1. **The `husky` pre-commit hook runs `npm run build`, which currently fails** on pre-existing TypeScript errors in `src/components/ui/calendar.tsx`, `DatePicker.tsx`, `DateRangePicker.tsx`, `DateTimePicker.tsx` and `SortDropdown.stories.tsx` (a `react-day-picker` version drift and a Storybook types issue). These are **not caused by this work**. Every commit in this plan therefore uses `--no-verify`. Do not attempt to fix those errors — they are out of scope.
+1. **The `husky` pre-commit hook runs `npm run format` then `npm run build`.** During this plan's authoring, `npm run build` failed with `react-day-picker` and Storybook type errors — that turned out to be a **stale `tsc -b` incremental build cache**, not a real defect. After a clean rebuild the hook passes. Commit normally; only reach for `--no-verify` if the hook fails for a reason you have actually diagnosed, and say so if you do. Note the hook's `npm run format` step may reformat unrelated files it finds unformatted — check `git status` and do not sweep those into your commit.
 
 2. **Config modules read `import.meta.env` at module load.** To test them, use the established pattern from `src/config/contact.test.ts`: `vi.resetModules()` in `beforeEach`, `vi.stubEnv(...)`, then `await import('./module')` **inside** the test.
 

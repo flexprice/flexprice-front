@@ -5,8 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SupportChatProvider } from '@/models/SupportChat';
 import type { SupportChatAdapter, SupportChatVisibilityHandlers } from './SupportChatAdapter';
 
-const { mockGetTenantById, mockUpdateTenant, mockUseUser, mockToastSuccess, mockToastError, mockLogError, mockRefetchQueries } =
-	vi.hoisted(() => ({
+const { mockGetTenantById, mockUpdateTenant, mockUseUser, mockToastSuccess, mockToastError, mockLogError, mockRefetchQueries } = vi.hoisted(
+	() => ({
 		mockGetTenantById: vi.fn(),
 		mockUpdateTenant: vi.fn(),
 		mockUseUser: vi.fn(),
@@ -14,7 +14,8 @@ const { mockGetTenantById, mockUpdateTenant, mockUseUser, mockToastSuccess, mock
 		mockToastError: vi.fn(),
 		mockLogError: vi.fn(),
 		mockRefetchQueries: vi.fn().mockResolvedValue(undefined),
-	}));
+	}),
+);
 
 vi.mock('@/api/TenantApi', () => ({
 	default: { getTenantById: mockGetTenantById, updateTenant: mockUpdateTenant },
