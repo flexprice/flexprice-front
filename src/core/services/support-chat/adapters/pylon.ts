@@ -9,6 +9,7 @@
  * visibility reported to the hook. Unlike Intercom, Pylon exposes native
  * onShow/onHide callbacks, so no polling is needed.
  */
+import { errorLogger } from '@/core/services/error/ErrorLoggingService';
 import { DocumentReadyState } from '@/types/enums/dom';
 import type { SupportChatAdapter, SupportChatUser, SupportChatVisibilityHandlers } from '../SupportChatAdapter';
 
@@ -92,7 +93,13 @@ function loadWidgetScript(appId: string): Promise<void> {
 	return load;
 }
 
-export function createPylonAdapter(appId: string): SupportChatAdapter {
+/**
+ * Fetches a signed identity token. Injected rather than imported so the adapter
+ * stays testable and the API module is only reached when the flag is on.
+ */
+export type FetchPylonIdentityToken = () => Promise<string>;
+
+export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylonIdentityToken): SupportChatAdapter {
 	let disposed = false;
 	let handlers: SupportChatVisibilityHandlers | null = null;
 	let registered = false;
@@ -105,19 +112,42 @@ export function createPylonAdapter(appId: string): SupportChatAdapter {
 			}
 
 			const target = pylonWindow();
-			// Settings must exist before the widget boots, per the Pylon setup docs.
-			// `contact_external_id` is deliberately absent: Pylon accepts it only as a
-			// JWT claim, not in chat_settings, so the user id cannot be attached to the
-			// contact until identity verification ships. The contact key is `email`.
-			const chatSettings: Record<string, unknown> = {
-				app_id: appId,
-				email: user.email ?? '',
-				name: user.name ?? '',
-			};
-			// Groups every member of a tenant under one Pylon account.
-			if (user.tenantId) {
-				chatSettings.account_external_id = user.tenantId;
+
+			// A signed token is best-effort: if the endpoint is down or not deployed yet,
+			// log it and boot unverified so the Help button keeps working. Note that once
+			// the Pylon dashboard's Identity Verification toggle is on, Pylon rejects the
+			// unverified session anyway — the log is how you find out, not the UI.
+			let identityToken: string | null = null;
+			if (fetchIdentityToken) {
+				try {
+					identityToken = await fetchIdentityToken();
+				} catch (error) {
+					errorLogger.logError(error instanceof Error ? error : new Error(String(error)), undefined, {
+						scope: 'support-chat',
+						action: 'fetch-pylon-identity-token',
+					});
+				}
 			}
+
+			// Settings must exist before the widget boots, per the Pylon setup docs.
+			//
+			// Pylon: "Any identity values supplied to the widget must match those signed
+			// into the JWT." Rather than keep two independently-derived copies of the same
+			// identity in sync across two codebases, the token carries ALL of it and we send
+			// nothing else — a mismatch then cannot happen. `email_hash` is never sent
+			// either; Pylon documents it as mutually exclusive with `jwt`.
+			//
+			// Unverified mode keeps the plain fields. `contact_external_id` is absent there
+			// because Pylon accepts it only as a JWT claim, never in chat_settings.
+			const chatSettings: Record<string, unknown> = identityToken
+				? { app_id: appId, jwt: identityToken }
+				: {
+						app_id: appId,
+						email: user.email ?? '',
+						name: user.name ?? '',
+						// Groups every member of a tenant under one Pylon account.
+						...(user.tenantId ? { account_external_id: user.tenantId } : {}),
+					};
 			target.pylon = { chat_settings: chatSettings };
 			installQueueStub(target);
 

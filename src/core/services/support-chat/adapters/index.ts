@@ -1,4 +1,5 @@
 import { config } from '@/config/config';
+import SupportChatApi from '@/api/SupportChatApi';
 import type { SupportChatFlowConfig } from '@/config/support-chat';
 import { SupportChatProvider } from '@/models/SupportChat';
 import type { SupportChatAdapter } from '../SupportChatAdapter';
@@ -11,6 +12,12 @@ export function createSupportChatAdapter(provider: SupportChatProvider, flow: Su
 		case SupportChatProvider.Intercom:
 			return createIntercomAdapter(config.intercom.appId, flow.statePollIntervalMs, flow.hideDefaultLauncher);
 		case SupportChatProvider.Pylon:
-			return createPylonAdapter(config.pylon.appId);
+			return createPylonAdapter(
+				config.pylon.appId,
+				// Undefined when the flag is off, so no request is made at all.
+				config.pylon.identityVerificationEnabled
+					? async () => (await SupportChatApi.getIdentityToken(SupportChatProvider.Pylon)).token
+					: undefined,
+			);
 	}
 }

@@ -1,4 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+const { mockLogError } = vi.hoisted(() => ({ mockLogError: vi.fn() }));
+vi.mock('@/core/services/error/ErrorLoggingService', () => ({
+	default: { logError: mockLogError },
+	errorLogger: { logError: mockLogError },
+}));
+
 import { __resetPylonLoaderForTests, createPylonAdapter } from './pylon';
 import type { SupportChatUser } from '../SupportChatAdapter';
 
@@ -40,6 +47,7 @@ describe('pylon adapter', () => {
 
 	afterEach(() => {
 		vi.restoreAllMocks();
+		mockLogError.mockClear();
 	});
 
 	it('sets chat_settings before inserting the widget script', async () => {
@@ -170,5 +178,79 @@ describe('pylon adapter', () => {
 
 		expect(onShow).not.toHaveBeenCalled();
 		expect(onHide).not.toHaveBeenCalled();
+	});
+
+	describe('identity verification', () => {
+		it('sends only the app id and the jwt, so nothing can contradict the claims', async () => {
+			const adapter = createPylonAdapter('app-123', async () => 'signed.jwt.token');
+			const pending = adapter.init(USER);
+			// The token is awaited, so settings land a microtask later.
+			await vi.waitFor(() => expect(globals().pylon?.chat_settings).toHaveProperty('jwt'));
+
+			expect(globals().pylon?.chat_settings).toEqual({
+				app_id: 'app-123',
+				jwt: 'signed.jwt.token',
+			});
+
+			completeScriptLoad();
+			await pending;
+		});
+
+		it('never ships email, name or account_external_id alongside a jwt', async () => {
+			const adapter = createPylonAdapter('app-123', async () => 'signed.jwt.token');
+			const pending = adapter.init(USER);
+			await vi.waitFor(() => expect(globals().pylon?.chat_settings).toHaveProperty('jwt'));
+
+			const settings = globals().pylon?.chat_settings ?? {};
+			expect(settings).not.toHaveProperty('email');
+			expect(settings).not.toHaveProperty('name');
+			expect(settings).not.toHaveProperty('account_external_id');
+			expect(settings).not.toHaveProperty('email_hash');
+
+			completeScriptLoad();
+			await pending;
+		});
+
+		it('falls back to an unverified session and logs when the token fetch fails', async () => {
+			const adapter = createPylonAdapter('app-123', async () => {
+				throw new Error('token endpoint unavailable');
+			});
+			const pending = adapter.init(USER);
+			await vi.waitFor(() => expect(globals().pylon?.chat_settings).toHaveProperty('email'));
+
+			expect(globals().pylon?.chat_settings).toEqual({
+				app_id: 'app-123',
+				email: 'ada@example.com',
+				name: 'Ada Tenant',
+				account_external_id: 'tenant_1',
+			});
+			expect(mockLogError).toHaveBeenCalledOnce();
+			expect(mockLogError.mock.calls[0][2]).toMatchObject({ action: 'fetch-pylon-identity-token' });
+
+			completeScriptLoad();
+			await pending;
+		});
+
+		it('still boots the widget when the token fetch fails', async () => {
+			const adapter = createPylonAdapter('app-123', async () => {
+				throw new Error('token endpoint unavailable');
+			});
+			const pending = adapter.init(USER);
+			await vi.waitFor(() => expect(document.querySelector('script[src*="widget.usepylon.com"]')).not.toBeNull());
+			completeScriptLoad();
+
+			await expect(pending).resolves.toBeUndefined();
+		});
+
+		it('makes no token request at all when no fetcher is injected', async () => {
+			const adapter = createPylonAdapter('app-123');
+			const pending = adapter.init(USER);
+
+			expect(globals().pylon?.chat_settings).not.toHaveProperty('jwt');
+			expect(mockLogError).not.toHaveBeenCalled();
+
+			completeScriptLoad();
+			await pending;
+		});
 	});
 });
