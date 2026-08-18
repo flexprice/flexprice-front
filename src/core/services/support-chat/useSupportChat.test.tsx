@@ -38,7 +38,8 @@ const FLOW = SUPPORT_CHAT_FLOW[SupportChatProvider.Intercom];
 const USER = {
 	id: 'user_1',
 	email: 'ada@example.com',
-	tenant: { id: 'tenant_1', name: 'Ada Tenant', created_at: '2024-01-01T00:00:00Z' },
+	name: 'Ada Lovelace',
+	tenant: { id: 'tenant_1', name: 'Acme Inc', created_at: '2024-01-01T00:00:00Z' },
 };
 
 /** Adapter double that lets the test drive onShow/onHide directly. */
@@ -98,7 +99,7 @@ describe('useSupportChat', () => {
 		localStorage.clear();
 		delete (window as unknown as { gtag?: unknown }).gtag;
 		mockUseUser.mockReturnValue({ user: USER, loading: false, error: null, refetch: vi.fn() });
-		mockGetTenantById.mockResolvedValue({ id: 'tenant_1', name: 'Ada Tenant', metadata: {} });
+		mockGetTenantById.mockResolvedValue({ id: 'tenant_1', name: 'Acme Inc', metadata: {} });
 		mockUpdateTenant.mockResolvedValue({ id: 'tenant_1' });
 	});
 
@@ -114,10 +115,32 @@ describe('useSupportChat', () => {
 		expect(adapter.initMock).toHaveBeenCalledWith({
 			id: 'user_1',
 			email: 'ada@example.com',
-			name: 'Ada Tenant',
+			name: 'Ada Lovelace',
 			createdAt: new Date('2024-01-01T00:00:00Z').getTime(),
 			tenantId: 'tenant_1',
 		});
+	});
+
+	it('falls back to the tenant name when the user has no name of their own', async () => {
+		mockUseUser.mockReturnValue({
+			user: { ...USER, name: undefined },
+			loading: false,
+			error: null,
+			refetch: vi.fn(),
+		});
+		const adapter = createFakeAdapter();
+		renderSupportChat(adapter);
+
+		await waitFor(() => expect(adapter.initMock).toHaveBeenCalledOnce());
+		expect(adapter.initMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'Acme Inc' }));
+	});
+
+	it('identifies the person, not the company, when a user name exists', async () => {
+		const adapter = createFakeAdapter();
+		renderSupportChat(adapter);
+
+		await waitFor(() => expect(adapter.initMock).toHaveBeenCalledOnce());
+		expect(adapter.initMock).toHaveBeenCalledWith(expect.objectContaining({ name: 'Ada Lovelace' }));
 	});
 
 	it('opens the messenger through the adapter', async () => {
@@ -168,7 +191,7 @@ describe('useSupportChat', () => {
 
 		await waitFor(() => expect(mockUpdateTenant).toHaveBeenCalledOnce());
 		expect(mockUpdateTenant).toHaveBeenCalledWith({
-			name: 'Ada Tenant',
+			name: 'Acme Inc',
 			metadata: { onboarding_completed: 'true' },
 		});
 		await waitFor(() => expect(mockToastSuccess).toHaveBeenCalledWith(FLOW.toastSuccessMarkOnboarded));
@@ -177,7 +200,7 @@ describe('useSupportChat', () => {
 	it('does not mark the tenant onboarded when onboarding is already complete', async () => {
 		mockGetTenantById.mockResolvedValue({
 			id: 'tenant_1',
-			name: 'Ada Tenant',
+			name: 'Acme Inc',
 			metadata: { onboarding_completed: 'true' },
 		});
 		const adapter = createFakeAdapter();
@@ -226,7 +249,8 @@ describe('useSupportChat', () => {
 
 		const serialised = JSON.stringify(gtag.mock.calls);
 		expect(serialised).not.toContain('ada@example.com');
-		expect(serialised).not.toContain('Ada Tenant');
+		expect(serialised).not.toContain('Ada Lovelace');
+		expect(serialised).not.toContain('Acme Inc');
 	});
 
 	it('records the messenger as seen in localStorage on close', async () => {

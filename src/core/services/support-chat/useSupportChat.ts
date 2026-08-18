@@ -30,9 +30,15 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 	// on every refetch, and depending on that would re-init the SDK on each one.
 	const userId = user?.id;
 	const userEmail = user?.email;
+	const userName = user?.name;
 	const tenantId = user?.tenant?.id;
 	const tenantName = user?.tenant?.name;
 	const tenantCreatedAt = user?.tenant?.created_at;
+
+	// The person's name, falling back to the tenant name. Before Pylon this only
+	// ever sent `tenant.name`, so every member of a tenant showed up in the support
+	// inbox as the company. The fallback keeps that behaviour when `user.name` is absent.
+	const displayName = userName ?? tenantName;
 
 	const visibility = useRef<SupportChatVisibility>(SupportChatVisibility.Unknown);
 	const status = useRef<SupportChatStatus>(SupportChatStatus.Idle);
@@ -149,7 +155,7 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 			.init({
 				id: userId,
 				email: userEmail,
-				name: tenantName,
+				name: displayName,
 				createdAt: tenantCreatedAt ? new Date(tenantCreatedAt).getTime() : undefined,
 				tenantId,
 			})
@@ -170,7 +176,7 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 			unsubscribe();
 			adapter.dispose();
 		};
-	}, [adapter, userId, userEmail, tenantName, tenantCreatedAt, tenantId]);
+	}, [adapter, userId, userEmail, displayName, tenantCreatedAt, tenantId]);
 
 	// Open from the command palette (Cmd+K → Open <provider>).
 	useEffect(() => {

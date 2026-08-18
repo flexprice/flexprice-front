@@ -50,7 +50,29 @@ describe('pylon adapter', () => {
 			app_id: 'app-123',
 			email: 'ada@example.com',
 			name: 'Ada Tenant',
+			account_external_id: 'tenant_1',
 		});
+
+		completeScriptLoad();
+		await pending;
+	});
+
+	it('omits account_external_id when the user has no tenant', async () => {
+		const adapter = createPylonAdapter('app-123');
+		const pending = adapter.init({ id: 'user_1', email: 'ada@example.com', name: 'Ada' });
+
+		expect(globals().pylon?.chat_settings).not.toHaveProperty('account_external_id');
+
+		completeScriptLoad();
+		await pending;
+	});
+
+	it('never sends contact_external_id, which Pylon accepts only as a JWT claim', async () => {
+		const adapter = createPylonAdapter('app-123');
+		const pending = adapter.init(USER);
+
+		expect(globals().pylon?.chat_settings).not.toHaveProperty('contact_external_id');
+		expect(globals().pylon?.chat_settings).not.toHaveProperty('contact_id');
 
 		completeScriptLoad();
 		await pending;

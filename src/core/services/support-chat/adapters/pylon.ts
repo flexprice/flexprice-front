@@ -106,13 +106,19 @@ export function createPylonAdapter(appId: string): SupportChatAdapter {
 
 			const target = pylonWindow();
 			// Settings must exist before the widget boots, per the Pylon setup docs.
-			target.pylon = {
-				chat_settings: {
-					app_id: appId,
-					email: user.email ?? '',
-					name: user.name ?? '',
-				},
+			// `contact_external_id` is deliberately absent: Pylon accepts it only as a
+			// JWT claim, not in chat_settings, so the user id cannot be attached to the
+			// contact until identity verification ships. The contact key is `email`.
+			const chatSettings: Record<string, unknown> = {
+				app_id: appId,
+				email: user.email ?? '',
+				name: user.name ?? '',
 			};
+			// Groups every member of a tenant under one Pylon account.
+			if (user.tenantId) {
+				chatSettings.account_external_id = user.tenantId;
+			}
+			target.pylon = { chat_settings: chatSettings };
 			installQueueStub(target);
 
 			// Insert synchronously when the document is already complete, so callers can
