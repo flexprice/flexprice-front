@@ -677,7 +677,7 @@ describe('deprecated intercom config shim', () => {
 
 Run: `npx vitest run src/config/intercom.test.ts`
 
-Expected: FAIL — the second test fails because the current implementation is unrelated to `support-chat.ts`, and the third fails because `INTERCOM_MESSENGER_FLOW` is a separate object literal, not the same reference.
+Expected: FAIL — the third test fails because `INTERCOM_MESSENGER_FLOW` is currently a separate object literal, not the same reference as `SUPPORT_CHAT_FLOW[SupportChatProvider.Intercom]`. The first two already pass: the old implementation checks Intercom specifically, which is exactly the semantics the shim must preserve.
 
 - [ ] **Step 3: Replace the file with re-exports**
 
