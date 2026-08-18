@@ -11,6 +11,7 @@ import {
 	Locale,
 } from './branding';
 import { RegionsConfig } from './authTemplates';
+import { EnvFlag } from '@/types/enums/env';
 
 export type { BrandConfig, AuthPageConfig, I18nConfig };
 
@@ -54,6 +55,10 @@ interface PaddleConfig {
 	clientToken: string;
 }
 interface IntercomConfig {
+	enabled: boolean;
+	appId: string;
+}
+interface PylonConfig {
 	enabled: boolean;
 	appId: string;
 }
@@ -254,6 +259,7 @@ export interface Config {
 	posthog: PosthogConfig;
 	paddle: PaddleConfig;
 	intercom: IntercomConfig;
+	pylon: PylonConfig;
 	reo: ReoConfig;
 	region: RegionConfig;
 	integrations: IntegrationsConfig;
@@ -321,6 +327,10 @@ export const config: Config = {
 	intercom: {
 		enabled: import.meta.env.VITE_INTERCOM_ENABLED === 'true',
 		appId: import.meta.env.VITE_INTERCOM_APP_ID ?? import.meta.env.VITE_APP_INTERCOM_APP_ID ?? '',
+	},
+	pylon: {
+		enabled: import.meta.env.VITE_PYLON_ENABLED === EnvFlag.True,
+		appId: import.meta.env.VITE_PYLON_APP_ID ?? '',
 	},
 	reo: {
 		enabled: import.meta.env.VITE_REO_ENABLED === 'true',
