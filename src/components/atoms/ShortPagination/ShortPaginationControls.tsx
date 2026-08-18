@@ -11,6 +11,7 @@ export interface ShortPaginationControlsProps {
 	pageSize: number;
 	unit?: string;
 	showPages?: boolean;
+	variant?: 'default' | 'embedded';
 }
 
 export const ShortPaginationControls = ({
@@ -20,9 +21,11 @@ export const ShortPaginationControls = ({
 	pageSize,
 	unit: unitProp,
 	showPages = false,
+	variant = 'default',
 }: ShortPaginationControlsProps) => {
 	const t = usePaginationT();
 	const unit = unitProp ?? t('pagination.unitItems');
+	const isEmbedded = variant === 'embedded';
 
 	const effectivePageSize = Math.max(1, pageSize);
 	const totalPages = Math.max(1, Math.ceil(totalItems / effectivePageSize));
@@ -39,17 +42,18 @@ export const ShortPaginationControls = ({
 		onPageChange(newPage);
 	};
 
-	if (totalPages <= 1 && clampedPage <= 1) return null;
+	if (!isEmbedded && totalPages <= 1 && clampedPage <= 1) return null;
 
-	const startItem = (clampedPage - 1) * effectivePageSize + 1;
+	const startItem = totalItems === 0 ? 0 : (clampedPage - 1) * effectivePageSize + 1;
 	const endItem = Math.min(clampedPage * effectivePageSize, totalItems);
+	const rangeLabel = isEmbedded
+		? t('pagination.showingRangeCompact', { start: startItem, end: endItem, total: totalItems, unit })
+		: t('pagination.showingRange', { start: startItem, end: endItem, total: totalItems, unit });
 
 	return (
-		<div className='flex items-center justify-between py-4'>
-			<div className='text-sm font-light text-content-muted'>
-				{t('pagination.showingRange', { start: startItem, end: endItem, total: totalItems, unit })}
-			</div>
-			<div className='flex items-center space-x-2'>
+		<div className={cn('flex items-center justify-between', isEmbedded ? 'h-[var(--fp-table-pager-height)] bg-surface px-4 py-2' : 'py-4')}>
+			<div className={cn('text-sm text-content-muted', isEmbedded ? 'font-normal' : 'font-light')}>{rangeLabel}</div>
+			<div className={cn('flex items-center', isEmbedded ? 'gap-1.5' : 'space-x-2')}>
 				<Button
 					type='button'
 					variant='outline'
@@ -57,8 +61,11 @@ export const ShortPaginationControls = ({
 					aria-label={t('pagination.previous')}
 					onClick={() => handlePageChange(clampedPage - 1)}
 					disabled={clampedPage === 1}
-					className={cn('size-8', clampedPage === 1 && 'cursor-not-allowed text-content-disabled')}>
-					<ChevronLeft className='h-4 w-4' />
+					className={cn(
+						clampedPage === 1 && 'cursor-not-allowed text-content-disabled',
+						isEmbedded ? 'size-8 rounded-[var(--fp-radius-md)] border-line-zinc bg-surface shadow-none [&_svg]:size-3.5' : 'size-8',
+					)}>
+					<ChevronLeft className={isEmbedded ? 'size-3.5' : 'h-4 w-4'} />
 				</Button>
 				{showPages && (
 					<div className='text-sm font-light text-content-muted'>{t('pagination.page', { current: clampedPage, total: totalPages })}</div>
@@ -70,8 +77,11 @@ export const ShortPaginationControls = ({
 					aria-label={t('pagination.next')}
 					onClick={() => handlePageChange(clampedPage + 1)}
 					disabled={clampedPage === totalPages}
-					className={cn('size-8', clampedPage === totalPages && 'cursor-not-allowed text-content-disabled')}>
-					<ChevronRight className='h-4 w-4' />
+					className={cn(
+						clampedPage === totalPages && 'cursor-not-allowed text-content-disabled',
+						isEmbedded ? 'size-8 rounded-[var(--fp-radius-md)] border-line-zinc bg-surface shadow-none [&_svg]:size-3.5' : 'size-8',
+					)}>
+					<ChevronRight className={isEmbedded ? 'size-3.5' : 'h-4 w-4'} />
 				</Button>
 			</div>
 		</div>
