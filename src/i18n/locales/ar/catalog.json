@@ -400,11 +400,15 @@
 			},
 			"columns": {
 				"name": "الاسم",
+				"lookupKey": "المفتاح",
+				"billingPeriod": "فترة الفوترة",
+				"currency": "العملة",
 				"status": "الحالة",
+				"createdAt": "تاريخ الإنشاء",
 				"updatedAt": "تاريخ التحديث"
 			},
 			"entityName": "خطة",
-			"paginationUnit": "خطط التسعير",
+			"paginationUnit": "خطط",
 			"rowActions": {
 				"edit": "تعديل",
 				"duplicate": "نسخ",
@@ -437,6 +441,7 @@
 		},
 		"pricing": {
 			"noWidget": "لا يوجد عنصر واجهة للتسعير",
+			"noWidgetHint": "أنشئ خطتك الأولى للبدء.",
 			"widgetsPageTitle": "عناصر التسعير",
 			"selectBillingPeriod": "اختر فترة الفوترة",
 			"selectCurrency": "اختر العملة",
@@ -633,11 +638,14 @@
 		"listPage": {
 			"title": "الميزات",
 			"columns": {
-				"featureName": "اسم الميزة",
+				"featureName": "الاسم",
+				"key": "المفتاح",
+				"usage": "الاستخدام",
 				"group": "المجموعة",
 				"type": "النوع",
 				"status": "الحالة",
-				"updatedAt": "تاريخ التحديث"
+				"updatedAt": "التحديث",
+				"createdAt": "تاريخ الإنشاء"
 			},
 			"sortLabels": {
 				"name": "الاسم",
@@ -667,6 +675,11 @@
 				"static": "ثابت",
 				"config": "إعداد",
 				"unknown": "غير معروف"
+			},
+			"usage": {
+				"boolean": "تشغيل / إيقاف",
+				"static": "قيمة ثابتة",
+				"config": "إعداد"
 			},
 			"emptyCell": "—",
 			"paginationUnit": "ميزات",

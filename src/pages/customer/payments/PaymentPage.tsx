@@ -9,7 +9,7 @@ const PaymentPage = () => {
 	const { t } = useTranslation('billing');
 
 	return (
-		<Page heading={t('payments.title')}>
+		<Page className='max-w-none' heading={t('payments.title')}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Payments} />
 			<div className='space-y-6'>
 				<FlatTabs

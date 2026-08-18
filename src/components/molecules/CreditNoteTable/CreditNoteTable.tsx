@@ -1,6 +1,6 @@
 import { CreditNote } from '@/models';
 import { CREDIT_NOTE_STATUS, CREDIT_NOTE_TYPE } from '@/types/dto';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import FlexpriceTable, { ColumnData, RedirectCell } from '../Table';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { Chip } from '@/components/atoms';
@@ -11,6 +11,7 @@ import { TFunction } from 'i18next';
 
 export interface Props {
 	data: CreditNote[];
+	footer?: ReactNode;
 }
 
 const getStatusChip = (status: CREDIT_NOTE_STATUS, t: TFunction) => {
@@ -37,13 +38,14 @@ const getTypeChip = (type: CREDIT_NOTE_TYPE, t: TFunction) => {
 	}
 };
 
-const CreditNoteTable: FC<Props> = ({ data }) => {
+const CreditNoteTable: FC<Props> = ({ data, footer }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation('billing');
 
 	const columns: ColumnData<CreditNote>[] = [
 		{
 			title: t('creditNotes.table.creditNoteId'),
+			fieldVariant: 'title',
 
 			render: (row: CreditNote) => row.credit_note_number || row.id.slice(0, 8),
 		},
@@ -90,16 +92,18 @@ const CreditNoteTable: FC<Props> = ({ data }) => {
 	];
 
 	return (
-		<div>
-			<FlexpriceTable
-				showEmptyRow={true}
-				onRowClick={(row) => {
-					navigate(`${RouteNames.creditNotes}/${row.id}`);
-				}}
-				columns={columns}
-				data={data}
-			/>
-		</div>
+		<FlexpriceTable
+			variant='card'
+			tableClassName='table-fixed'
+			showEmptyRow={true}
+			hideBottomBorder={false}
+			onRowClick={(row) => {
+				navigate(`${RouteNames.creditNotes}/${row.id}`);
+			}}
+			columns={columns}
+			data={data}
+			footer={footer}
+		/>
 	);
 };
 

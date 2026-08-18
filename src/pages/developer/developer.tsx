@@ -97,6 +97,8 @@ const DeveloperPage = () => {
 		() => [
 			{
 				title: t('labels.name'),
+				width: '18%',
+				fieldVariant: 'title',
 				render(rowData: SecretKey) {
 					return (
 						<div className='flex flex-col gap-0.5'>
@@ -110,6 +112,7 @@ const DeveloperPage = () => {
 			},
 			{
 				title: t('labels.token'),
+				width: '18%',
 				render(rowData: SecretKey) {
 					const prefix = rowData.display_id.slice(0, 6);
 					const suffix = rowData.display_id.slice(-4);
@@ -124,6 +127,7 @@ const DeveloperPage = () => {
 			},
 			{
 				title: t('labels.type'),
+				width: '16%',
 				render(rowData: SecretKey) {
 					const isServiceAccount = rowData.user_type === 'service_account';
 					return (
@@ -145,6 +149,7 @@ const DeveloperPage = () => {
 			},
 			{
 				title: t('labels.roles'),
+				width: '14%',
 				render(rowData: SecretKey) {
 					if (!rowData.roles || rowData.roles.length === 0) {
 						return <span className='text-sm text-content-muted'>{t('apiKeys.roles.fullAccess')}</span>;
@@ -164,10 +169,19 @@ const DeveloperPage = () => {
 			},
 			{
 				title: t('labels.createdAt'),
-				width: 150,
-				align: 'right',
+				width: '12%',
 				render(rowData) {
-					return <span className='text-content-tertiary'>{formatDateShort(rowData.created_at)}</span>;
+					return <span>{formatDateShort(rowData.created_at)}</span>;
+				},
+			},
+			{
+				title: t('labels.expiration'),
+				width: '12%',
+				render(rowData) {
+					if (!rowData.expires_at) {
+						return <span>{t('secretKeyDrawer.expiration.never')}</span>;
+					}
+					return <span>{formatDateShort(rowData.expires_at)}</span>;
 				},
 			},
 		],
@@ -179,6 +193,7 @@ const DeveloperPage = () => {
 			...baseColumns,
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render(rowData: SecretKey) {
 					return (
 						<div className='flex justify-end'>
@@ -227,7 +242,6 @@ const DeveloperPage = () => {
 					heading={t('common:nav.apiKeys')}
 					onAddClick={handleAddSecretKey}
 					emptyStateCard={{
-						heading: t('apiKeys.emptyCard.heading'),
 						description: t('apiKeys.emptyCard.description'),
 						buttonLabel: t('apiKeys.emptyCard.button'),
 						buttonAction: handleAddSecretKey,
@@ -244,7 +258,7 @@ const DeveloperPage = () => {
 						</Button>
 					</SectionHeader>
 					<div className='pb-12 mt-2'>
-						<FlexpriceTable showEmptyRow columns={columns} data={secretKeys?.items || []} />
+						<FlexpriceTable variant='card' tableClassName='table-fixed' showEmptyRow columns={columns} data={secretKeys?.items || []} />
 						<ShortPagination unit={t('apiKeys.paginationUnit')} totalItems={secretKeys?.pagination.total || 0} />
 					</div>
 				</Page>

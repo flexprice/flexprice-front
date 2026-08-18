@@ -1,7 +1,7 @@
 import { config } from '@/config/config';
 import { ApiDocsSnippet } from '@/store/useApiDocsStore';
 
-const API_DOCS_URL = 'https://raw.githubusercontent.com/flexprice/flexprice-docs/main/api-reference/openapi.json';
+const API_DOCS_URL = 'https://docs.flexprice.io/api-reference/openapi.json';
 
 const resolveSchema = (schema: any, schemas: any): any => {
 	if (!schema) return {};

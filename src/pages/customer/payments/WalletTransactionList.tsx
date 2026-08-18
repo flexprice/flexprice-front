@@ -265,6 +265,8 @@ const WalletTransactionList = () => {
 			}}
 			tableConfig={{
 				columns,
+				variant: 'card',
+				tableClassName: 'table-fixed',
 				showEmptyRow: true,
 			}}
 			paginationConfig={{

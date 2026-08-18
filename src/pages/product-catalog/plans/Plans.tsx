@@ -1,4 +1,4 @@
-import { AddButton, Button, Dialog, Page, Chip } from '@/components/atoms';
+import { AddButton, Button, Dialog, Page, StatusChip } from '@/components/atoms';
 import { ApiDocsContent, DropdownMenu, DuplicatePlanDialog, PlanDrawer, getCopyIdOption } from '@/components/molecules';
 import type { DropdownMenuOption } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
@@ -28,6 +28,7 @@ import { Copy, EyeOff, Pencil, WandSparkles } from 'lucide-react';
 import { BsThreeDots } from 'react-icons/bs';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { useTranslation } from 'react-i18next';
+import { getPlanBillingPeriodLabel, getPlanCurrencyLabel, getPlanListStatus } from './planListDisplay';
 
 const initialFilters: FilterCondition[] = [
 	{
@@ -204,25 +205,43 @@ const PlansPage = () => {
 	const columns: ColumnData<Plan>[] = useMemo(
 		() => [
 			{
-				fieldName: 'name',
 				title: t('plans.listPage.columns.name'),
+				fieldVariant: 'title',
+				width: '20%',
+				render: (row) => <span className='block truncate'>{row.name}</span>,
+			},
+			{
+				title: t('plans.listPage.columns.billingPeriod'),
+				width: '16%',
+				render: (row) => getPlanBillingPeriodLabel(row, tc('labels.na')),
+			},
+			{
+				title: t('plans.listPage.columns.currency'),
+				width: '12%',
+				render: (row) => getPlanCurrencyLabel(row, tc('labels.na')),
 			},
 			{
 				title: t('plans.listPage.columns.status'),
+				width: '14%',
 				render: (row) => {
-					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
-					const label = isActive ? t('plans.listPage.filterStatus.active') : t('plans.listPage.filterStatus.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					const status = getPlanListStatus(row);
+					const label = status === 'Active' ? t('plans.listPage.filterStatus.active') : t('plans.listPage.filterStatus.inactive');
+					return <StatusChip status={status} label={label} />;
 				},
+			},
+			{
+				title: t('plans.listPage.columns.createdAt'),
+				width: '14%',
+				render: (row) => formatDate(row.created_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
 				title: t('plans.listPage.columns.updatedAt'),
-				render: (row) => {
-					return formatDate(row.updated_at);
-				},
+				width: '14%',
+				render: (row) => formatDate(row.updated_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render: (row) => (
 					<DropdownMenu
 						options={getRowDropdownOptions(row)}
@@ -235,16 +254,13 @@ const PlansPage = () => {
 				),
 			},
 		],
-		[t, getRowDropdownOptions],
+		[t, tc, getRowDropdownOptions],
 	);
 
 	const emptyStateCustom = useMemo(
 		() => (
-			<div className='mx-auto flex h-[360px] w-full flex-col items-center justify-center rounded-[6px] border border-line-hairline bg-surface-faint px-4 dark:border-line dark:bg-surface'>
-				<div className='mb-4 text-center text-[20px] font-medium leading-normal text-content-secondary'>
-					{t('plans.listPage.emptyStateCustom.heading')}
-				</div>
-				<div className='mb-8 max-w-[350px] bg-surface-faint-inner text-center text-[16px] font-normal leading-normal text-content-subtle dark:bg-transparent'>
+			<div className='mx-auto flex h-[280px] w-full flex-col items-center justify-center rounded-[var(--fp-radius-lg)] border border-line-hairline bg-surface-faint px-6 dark:border-line dark:bg-surface'>
+				<div className='mb-8 max-w-xl bg-surface-faint-inner text-center text-[16px] font-normal leading-normal text-content-subtle dark:bg-transparent'>
 					{t('plans.listPage.emptyStateCustom.description')}
 				</div>
 				<Button
@@ -259,23 +275,26 @@ const PlansPage = () => {
 		[t, navigate],
 	);
 
+	const listToolbarActions = useMemo(
+		() => (
+			<div className='flex items-center gap-2'>
+				{hasAnyPlanInSystem ? (
+					<Button
+						variant='outline'
+						prefixIcon={<WandSparkles className='text-accent-indigo' />}
+						onClick={() => navigate(RouteNames.pricingSetup, { state: { from: 'plans' } })}
+						className='border-accent-indigo-line text-accent-indigo hover:bg-accent-indigo-muted hover:text-accent-indigo-strong'>
+						<span className='analyzing-prompt-shimmer font-medium'>{t('plans.listPage.createWithAi')}</span>
+					</Button>
+				) : null}
+				<AddButton onClick={handleOnAdd} />
+			</div>
+		),
+		[hasAnyPlanInSystem, handleOnAdd, navigate, t],
+	);
+
 	return (
-		<Page
-			heading={t('plans.listPage.title')}
-			headingCTA={
-				<div className='flex items-center gap-2'>
-					{hasAnyPlanInSystem ? (
-						<Button
-							variant='outline'
-							prefixIcon={<WandSparkles className='text-accent-indigo' />}
-							onClick={() => navigate(RouteNames.pricingSetup, { state: { from: 'plans' } })}
-							className='border-accent-indigo-line text-accent-indigo hover:bg-accent-indigo-muted hover:text-accent-indigo-strong'>
-							<span className='analyzing-prompt-shimmer font-medium'>{t('plans.listPage.createWithAi')}</span>
-						</Button>
-					) : null}
-					<AddButton onClick={handleOnAdd} />
-				</div>
-			}>
+		<Page className='max-w-none' heading={t('plans.listPage.title')} headingCTA={listToolbarActions}>
 			<PlanDrawer data={activePlan} open={planDrawerOpen} onOpenChange={setPlanDrawerOpen} refetchQueryKeys={['fetchPlans']} />
 			<DuplicatePlanDialog
 				planId={planToDuplicate?.id ?? ''}
@@ -314,7 +333,7 @@ const PlansPage = () => {
 					dataConfig={{
 						queryKey: 'fetchPlans',
 						fetchFn: async (params) => {
-							const response = await PlanApi.getPlansByFilter(params);
+							const response = await PlanApi.getPlansByFilter({ ...params, expand: 'prices' });
 							return {
 								items: response.items as Plan[],
 								pagination: response.pagination,
@@ -336,6 +355,8 @@ const PlansPage = () => {
 					}}
 					tableConfig={{
 						columns,
+						variant: 'card',
+						tableClassName: 'table-fixed',
 						onRowClick: (row) => {
 							navigate(RouteNames.plan + `/${row.id}`);
 						},

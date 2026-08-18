@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState, useMemo, useEffect } from 'react';
-import { Button, Card, CardHeader, Chip, Tooltip, Loader } from '@/components/atoms';
+import { Button, Card, CardHeader, Tooltip, Loader, StatusChip } from '@/components/atoms';
+import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import {
 	FlexpriceTable,
 	ColumnData,
@@ -168,12 +169,12 @@ const getPriceStatus = (price: Price): PRICE_STATUS => {
 	return PRICE_STATUS.ACTIVE;
 };
 
-const getStatusChipVariant = (status: PRICE_STATUS): 'info' | 'default' | 'success' => {
+const getStatusChipTone = (status: PRICE_STATUS): StatusChipTone => {
 	switch (status) {
 		case PRICE_STATUS.UPCOMING:
 			return 'info';
 		case PRICE_STATUS.INACTIVE:
-			return 'default';
+			return 'neutral';
 		case PRICE_STATUS.ACTIVE:
 			return 'success';
 		default:
@@ -428,7 +429,7 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 									delayDuration={0}
 									sideOffset={5}>
 									<span>
-										<Chip label={t('catalog:plans.organisms.planPriceTable.recurring')} variant='default' />
+										<StatusChip status='Recurring' label={t('catalog:plans.organisms.planPriceTable.recurring')} />
 									</span>
 								</Tooltip>
 								<Tooltip
@@ -436,9 +437,9 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 									delayDuration={0}
 									sideOffset={5}>
 									<span>
-										<Chip
+										<StatusChip
+											tone={isAdvance ? 'success' : 'warning'}
 											label={t(`catalog:plans.organisms.planPriceTable.${billingTimingKey}`)}
-											variant={isAdvance ? 'success' : 'warning'}
 										/>
 									</span>
 								</Tooltip>
@@ -451,7 +452,7 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 						return (
 							<Tooltip content={t('catalog:plans.organisms.planPriceTable.chargeTypeTooltips.usageBased')} delayDuration={0} sideOffset={5}>
 								<span>
-									<Chip label={t('catalog:plans.organisms.planPriceTable.usageBased')} variant='info' />
+									<StatusChip status='Usage Based' label={t('catalog:plans.organisms.planPriceTable.usageBased')} />
 								</span>
 							</Tooltip>
 						);
@@ -469,7 +470,7 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 				title: 'Status',
 				render: (row) => {
 					const status = getPriceStatus(row);
-					const variant = getStatusChipVariant(status);
+					const tone = getStatusChipTone(status);
 					const label = status.charAt(0).toUpperCase() + status.slice(1);
 					const tooltipContent = formatPriceDateTooltip(row, t);
 					return (
@@ -479,7 +480,7 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 							sideOffset={5}
 							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 							<span>
-								<Chip label={label} variant={variant} />
+								<StatusChip tone={tone} label={label} />
 							</span>
 						</Tooltip>
 					);

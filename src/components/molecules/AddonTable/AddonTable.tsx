@@ -2,7 +2,7 @@ import { FC } from 'react';
 import FlexpriceTable, { ColumnData } from '../Table';
 import Addon from '@/models/Addon';
 import { ENTITY_STATUS } from '@/models';
-import { ActionButton, Chip } from '@/components/atoms';
+import { ActionButton, StatusChip } from '@/components/atoms';
 import formatDate from '@/utils/common/format_date';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
@@ -32,7 +32,7 @@ const AddonTable: FC<Props> = ({ data, onEdit }) => {
 			render: (row) => {
 				const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 				const label = isActive ? t('addons.table.statusActive') : t('addons.table.statusInactive');
-				return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+				return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 			},
 		},
 		{

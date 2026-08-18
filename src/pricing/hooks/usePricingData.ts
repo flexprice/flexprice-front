@@ -29,12 +29,6 @@ const PLAN_CREDIT_GRANT_LIST_LIMIT = 500;
 /** Hard cap on paginated page requests so a misbehaving backend can't loop forever. */
 const MAX_PAGES = 40;
 
-export interface UsePricingDataArgs {
-	limit: number;
-	offset: number;
-	page: number;
-}
-
 export interface UsePricingDataResult {
 	plansData?: GetAllPlansResponse;
 	allPrices: PriceResponse[];
@@ -44,20 +38,33 @@ export interface UsePricingDataResult {
 	isError: boolean;
 }
 
-export function usePricingData({ limit, offset, page }: UsePricingDataArgs): UsePricingDataResult {
+export function usePricingData(): UsePricingDataResult {
 	const {
 		data: plansData,
 		isLoading: isLoadingPlans,
 		isError: isErrorPlans,
 	} = useQuery<GetAllPlansResponse>({
-		queryKey: ['fetchPlansPricingCard', page],
-		queryFn: async () =>
-			await PlanApi.getPlansByFilter({
-				limit,
-				offset,
-				filters: [{ field: 'status', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: 'published' } }],
-				sort: [],
-			}),
+		queryKey: ['fetchPlansPricingCard'],
+		queryFn: async () => {
+			const items: GetAllPlansResponse['items'] = [];
+			let pageOffset = 0;
+			let pagination: GetAllPlansResponse['pagination'] | undefined;
+			for (let p = 0; p < MAX_PAGES; p++) {
+				const response = await PlanApi.getPlansByFilter({
+					limit: PAGE_SIZE,
+					offset: pageOffset,
+					filters: [{ field: 'status', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: 'published' } }],
+					sort: [],
+				});
+				items.push(...(response.items ?? []));
+				pagination = response.pagination;
+				if ((response.items ?? []).length < PAGE_SIZE) break;
+				const total = response.pagination?.total;
+				if (total != null && pageOffset + response.items.length >= total) break;
+				pageOffset += PAGE_SIZE;
+			}
+			return { items, pagination: pagination ?? {} };
+		},
 	});
 
 	const planIds = plansData?.items?.map((p) => p.id) ?? [];

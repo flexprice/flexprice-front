@@ -1,4 +1,5 @@
-import { Card, CardHeader, NoDataCard, Chip, Tooltip } from '@/components/atoms';
+import { Card, CardHeader, NoDataCard, StatusChip, Tooltip } from '@/components/atoms';
+import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import type { SubscriptionCommitmentInfo } from '@/models/Subscription';
@@ -55,7 +56,7 @@ export function getQuantityDisplayForLineItem(row: Pick<LineItem, 'price_type' |
 
 interface LineItemWithStatus extends LineItem {
 	precomputedStatus: PRICE_STATUS;
-	statusVariant: 'info' | 'default' | 'success';
+	statusTone: StatusChipTone;
 	statusLabel: string;
 	tooltipContent: React.ReactNode;
 }
@@ -278,10 +279,8 @@ const getEntityLabel = (entityType?: string): string => {
 	}
 };
 
-type EntityChipVariant = 'default' | 'info' | 'success' | 'warning';
-
-const getEntityChipVariant = (entityType?: string): EntityChipVariant => {
-	if (!entityType) return 'default';
+const getEntityTone = (entityType?: string): StatusChipTone => {
+	if (!entityType) return 'neutral';
 	switch (entityType.toLowerCase()) {
 		case SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE.PLAN:
 			return 'info';
@@ -290,16 +289,16 @@ const getEntityChipVariant = (entityType?: string): EntityChipVariant => {
 		case SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE.ADDON:
 			return 'warning';
 		default:
-			return 'default';
+			return 'neutral';
 	}
 };
 
-const getStatusChipVariant = (status: PRICE_STATUS): 'info' | 'default' | 'success' => {
+const getStatusChipTone = (status: PRICE_STATUS): StatusChipTone => {
 	switch (status) {
 		case PRICE_STATUS.UPCOMING:
 			return 'info';
 		case PRICE_STATUS.INACTIVE:
-			return 'default';
+			return 'neutral';
 		case PRICE_STATUS.ACTIVE:
 			return 'success';
 		default:
@@ -453,7 +452,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 			return {
 				...lineItem,
 				precomputedStatus: status,
-				statusVariant: getStatusChipVariant(status),
+				statusTone: getStatusChipTone(status),
 				statusLabel: status.charAt(0).toUpperCase() + status.slice(1),
 				tooltipContent: formatLineItemDateTooltip(lineItem, t),
 			};
@@ -525,7 +524,15 @@ const SubscriptionLineItemTable: FC<Props> = ({
 				: []),
 			{
 				title: 'Price Type',
-				render: (row) => <span>{getPriceTypeLabel(row.price_type)}</span>,
+				render: (row) => {
+					if (row.price_type === PRICE_TYPE.USAGE) {
+						return <StatusChip tone='warning' label={getPriceTypeLabel(row.price_type)} />;
+					}
+					if (row.price_type === PRICE_TYPE.FIXED) {
+						return <StatusChip status='Recurring' label={t('catalog:plans.organisms.planPriceTable.recurring')} />;
+					}
+					return <span>{getPriceTypeLabel(row.price_type)}</span>;
+				},
 			},
 			{
 				title: 'Billing Period',
@@ -536,7 +543,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 						{
 							title: 'Source',
 							render: (row: LineItemWithStatus) => (
-								<Chip label={getEntityLabel(row.entity_type)} variant={getEntityChipVariant(row.entity_type)} />
+								<StatusChip label={getEntityLabel(row.entity_type)} tone={getEntityTone(row.entity_type)} />
 							),
 						},
 					]
@@ -551,7 +558,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 							sideOffset={5}
 							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
 							<span>
-								<Chip label={rowData.statusLabel} variant={rowData.statusVariant} />
+								<StatusChip label={rowData.statusLabel} tone={rowData.statusTone} />
 							</span>
 						</Tooltip>
 					);

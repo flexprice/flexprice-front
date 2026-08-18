@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { ActionButton, Chip } from '@/components/atoms';
+import { ActionButton, StatusChip } from '@/components/atoms';
 import FlexpriceTable, { ColumnData } from '../Table';
 import { Plan } from '@/models/Plan';
 import { ENTITY_STATUS } from '@/models';
@@ -32,7 +32,7 @@ const PlansTable: FC<PlansTableProps> = ({ data, onEdit }) => {
 				render: (row) => {
 					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('common:status.active') : t('common:status.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{

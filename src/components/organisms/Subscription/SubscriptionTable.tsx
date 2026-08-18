@@ -1,7 +1,7 @@
 import { FC, useMemo, type ReactElement } from 'react';
 import { Subscription, SUBSCRIPTION_HIERARCHY_DISPLAY_KIND, SUBSCRIPTION_STATUS, SUBSCRIPTION_TYPE } from '@/models/Subscription';
 import { ColumnData, FlexpriceTable } from '@/components/molecules';
-import { Chip, Tooltip } from '@/components/atoms';
+import { StatusChip, Tooltip } from '@/components/atoms';
 import { formatBillingPeriodForDisplay } from '@/utils/common/helper_functions';
 import formatDate from '@/utils/common/format_date';
 import SubscriptionActionButton from './SubscriptionActionButton';
@@ -28,17 +28,17 @@ function subscriptionHierarchyKind(row: Subscription): SUBSCRIPTION_HIERARCHY_DI
 export const getSubscriptionStatus = (status: string, t: TFunction) => {
 	switch (status) {
 		case SUBSCRIPTION_STATUS.ACTIVE:
-			return <Chip variant='success' label={t('common:status.active')} />;
+			return <StatusChip status='Active' label={t('common:status.active')} />;
 		case SUBSCRIPTION_STATUS.CANCELLED:
-			return <Chip variant='failed' label={t('common:status.cancelled')} />;
+			return <StatusChip status='Cancelled' label={t('common:status.cancelled')} />;
 		case SUBSCRIPTION_STATUS.INCOMPLETE:
-			return <Chip variant='warning' label={t('common:status.incomplete')} />;
+			return <StatusChip status='Pending' label={t('common:status.incomplete')} />;
 		case SUBSCRIPTION_STATUS.TRIALING:
-			return <Chip variant='warning' label={t('common:status.trialing')} />;
+			return <StatusChip status='Trial' label={t('common:status.trialing')} />;
 		case SUBSCRIPTION_STATUS.DRAFT:
-			return <Chip variant='warning' label={t('common:status.draft')} />;
+			return <StatusChip status='Draft' label={t('common:status.draft')} />;
 		default:
-			return <Chip variant='default' label={t('common:status.inactive')} />;
+			return <StatusChip status='Inactive' label={t('common:status.inactive')} />;
 	}
 };
 
@@ -69,7 +69,7 @@ const SubscriptionTable: FC<SubscriptionTableProps> = ({ data, onRowClick, allow
 			render: (row) => {
 				const kind = subscriptionHierarchyKind(row);
 				if (kind === SUBSCRIPTION_HIERARCHY_DISPLAY_KIND.INHERITED) {
-					const chip = <Chip variant='info' label={t('customers:organisms.subscriptionTable.chipInherited')} />;
+					const chip = <StatusChip tone='info' label={t('customers:organisms.subscriptionTable.chipInherited')} />;
 					return (
 						<Tooltip
 							delayDuration={0}
@@ -96,7 +96,7 @@ const SubscriptionTable: FC<SubscriptionTableProps> = ({ data, onRowClick, allow
 							}
 							delayDuration={0}>
 							<span className='inline-flex cursor-default'>
-								<Chip variant='default' label={t('customers:organisms.subscriptionTable.chipParent')} />
+								<StatusChip tone='success' label={t('customers:organisms.subscriptionTable.chipParent')} />
 							</span>
 						</Tooltip>
 					);
@@ -113,7 +113,7 @@ const SubscriptionTable: FC<SubscriptionTableProps> = ({ data, onRowClick, allow
 								</div>
 							}>
 							<span className='inline-flex cursor-default'>
-								<Chip variant='default' label={t('customers:organisms.subscriptionTable.chipGrouped')} />
+								<StatusChip tone='warning' label={t('customers:organisms.subscriptionTable.chipGrouped')} />
 							</span>
 						</Tooltip>
 					);
@@ -130,7 +130,7 @@ const SubscriptionTable: FC<SubscriptionTableProps> = ({ data, onRowClick, allow
 								</div>
 							}>
 							<span className='inline-flex cursor-default'>
-								<Chip variant='default' label={t('customers:organisms.subscriptionTable.chipDelegated')} />
+								<StatusChip tone='info' label={t('customers:organisms.subscriptionTable.chipDelegated')} />
 							</span>
 						</Tooltip>
 					);

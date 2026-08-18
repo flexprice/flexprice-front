@@ -52,13 +52,13 @@ const EmptyPage: FC<Props> = ({ onAddClick, tags, heading, children, addButtonLa
 					/>
 				)
 			}>
-			<div className='bg-surface-faint border border-line-hairline dark:bg-surface dark:border-line rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto '>
+			<div className='flex h-[280px] w-full flex-col items-center justify-center rounded-[var(--fp-radius-lg)] border border-line-hairline bg-surface-faint px-6 dark:border-line dark:bg-surface'>
 				{card?.icon && <div className='mb-8'>{card?.icon}</div>}
 				{card?.heading && (
-					<div className=' font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>{card?.heading}</div>
+					<div className='mb-3 text-center text-[20px] font-medium leading-normal text-content-secondary'>{card?.heading}</div>
 				)}
 				{card?.description && (
-					<div className=' font-normal bg-surface-faint-inner dark:bg-transparent text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
+					<div className='mb-8 max-w-xl bg-surface-faint-inner text-center text-[16px] font-normal leading-normal text-content-subtle dark:bg-transparent'>
 						{card?.description}
 					</div>
 				)}

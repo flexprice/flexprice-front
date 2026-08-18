@@ -1,57 +1,101 @@
-import { Card } from '@/components/atoms';
+import { Card, HugeIcon } from '@/components/atoms';
+import type { HugeIconData } from '@/components/atoms';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import {
+	Archive02Icon,
+	BookOpen01Icon,
+	Copy01Icon,
+	CouponPercentIcon,
+	CreditCardIcon,
+	Delete02Icon,
+	File01Icon,
+	FileImportIcon,
+	FileSpreadsheetIcon,
+	Invoice01Icon,
+	Key01Icon,
+	Layers01Icon,
+	Link01Icon,
+	PencilEdit01Icon,
+	PercentCircleIcon,
+	PlayCircleIcon,
+	PlusSignIcon,
+	PuzzleIcon,
+	User03Icon,
+	UserGroupIcon,
+} from '@hugeicons/core-free-icons';
 
 export interface TutorialCardItem {
 	title: string;
+	description?: string;
 	imageUrl?: string;
 	onClick?: () => void;
+	icon?: HugeIconData;
 }
 
 interface TutorialCardsProps {
 	tutorials: TutorialCardItem[];
-	/** Optional fallback when a card has no imageUrl */
 	fallbackImageUrl?: string;
 }
 
-const TutorialCards = ({ tutorials, fallbackImageUrl }: TutorialCardsProps) => {
+/** Last-resort guess from English titles when a card has no explicit icon. */
+export const iconForTutorial = (title: string): HugeIconData => {
+	const t = title.toLowerCase();
+	if (/link|associat/.test(t)) return Link01Icon;
+	if (/list all|list addons|spreadsheet|sheet/.test(t)) return FileSpreadsheetIcon;
+	if (/clone|copy|duplicat/.test(t)) return Copy01Icon;
+	if (/import/.test(t)) return FileImportIcon;
+	if (/archive/.test(t)) return Archive02Icon;
+	if (/delete|void|trash/.test(t)) return Delete02Icon;
+	if (/process/.test(t)) return PlayCircleIcon;
+	if (/api key/.test(t)) return Key01Icon;
+	if (/subscription/.test(t)) return File01Icon;
+	if (/customer/.test(t)) return User03Icon;
+	if (/coupon/.test(t)) return CouponPercentIcon;
+	if (/group/.test(t)) return UserGroupIcon;
+	if (/feature/.test(t)) return PuzzleIcon;
+	if (/billing|charge|advance|arrear/.test(t)) return Invoice01Icon;
+	if (/plan/.test(t)) return Layers01Icon;
+	if (/payment/.test(t)) return CreditCardIcon;
+	if (/invoice/.test(t)) return Invoice01Icon;
+	if (/tax/.test(t)) return PercentCircleIcon;
+	if (/create|add|new|generate/.test(t)) return PlusSignIcon;
+	if (/update|edit|manage/.test(t)) return PencilEdit01Icon;
+	if (/list|overview|understanding|how .* work/.test(t)) return BookOpen01Icon;
+	return BookOpen01Icon;
+};
+
+export const resolveTutorialIcon = (item: TutorialCardItem): HugeIconData => item.icon ?? iconForTutorial(item.title);
+
+const TutorialCards = ({ tutorials }: TutorialCardsProps) => {
 	const { t } = useTranslation('common');
 	if (!tutorials || tutorials.length === 0) return null;
 
-	const defaultImage = fallbackImageUrl ?? t('queryableDataArea.defaultPromoImageUrl');
-
 	return (
-		<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mt-10'>
-			{tutorials.map((item, index) => {
-				const imageUrl = item.imageUrl && item.imageUrl.trim() !== '' ? item.imageUrl : defaultImage;
-				return (
-					<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} key={index}>
-						<Card
-							className='h-full group bg-surface border border-line-slate-subtle rounded-[6px] shadow-sm hover:border-info-muted-strong hover:bg-surface-cool transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-info-bright/5 flex flex-col max-w-[280px] mx-auto p-4 bg-gradient-to-r from-surface to-surface-panel-alt'
-							onClick={item.onClick}>
-							{/*
-							 * Thumbnail well uses surface-thumb (token matches surface in dark).
-							 * Do not filter/tint the image artwork — baked-in SVG fills are asset-level.
-							 */}
-							<div className='w-full h-[80px] aspect-video rounded-t-[6px] overflow-hidden bg-surface-thumb flex items-center justify-center'>
-								<img src={imageUrl} loading='lazy' className='object-cover w-full h-full bg-surface-thumb-inner' alt=' ' />
+		<div className='mt-8 grid grid-cols-1 gap-4 md:grid-cols-3'>
+			{tutorials.map((item, index) => (
+				<motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} key={index}>
+					<Card
+						noPadding
+						className='group flex h-full cursor-pointer flex-col rounded-[var(--fp-radius-lg)] border border-line-hairline bg-surface p-5 shadow-none transition-colors duration-200 hover:border-line-zinc-strong hover:bg-surface-subtle'
+						onClick={item.onClick}>
+						<div className='flex size-9 items-center justify-center rounded-[var(--fp-radius-md)] border border-line-hairline bg-surface-subtle'>
+							<HugeIcon icon={resolveTutorialIcon(item)} size={18} />
+						</div>
+						<div className='mt-4 flex flex-1 flex-col'>
+							<h3 className='text-start text-base font-medium text-content'>{item.title}</h3>
+							{item.description ? (
+								<p className='mt-1.5 text-start text-sm font-normal leading-5 text-content-muted'>{item.description}</p>
+							) : null}
+							<div className='mt-auto flex items-center gap-1 pt-6 text-content-secondary transition-colors duration-200 group-hover:text-content'>
+								<span className='text-xs font-medium'>{t('emptyPage.learnMore')}</span>
+								<ArrowRight className='h-4 w-4 transition-transform duration-200 group-hover:translate-x-1' />
 							</div>
-							<div className='flex-1 flex flex-col justify-between mt-4'>
-								<div>
-									<h3 className='text-content-slate-strong text-base font-medium group-hover:text-content-tertiary transition-colors duration-200 text-start'>
-										{item.title}
-									</h3>
-								</div>
-								<div className='flex items-center gap-1 mt-8 text-content-slate-subtle group-hover:text-content-muted transition-all duration-200 text-start'>
-									<span className='text-xs font-regular'>{t('emptyPage.learnMore')}</span>
-									<ArrowRight className='w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-200' />
-								</div>
-							</div>
-						</Card>
-					</motion.div>
-				);
-			})}
+						</div>
+					</Card>
+				</motion.div>
+			))}
 		</div>
 	);
 };

@@ -9,29 +9,18 @@ import Label from '@/components/atoms/Label';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import IntegrationMappingApi, { IntegrationConfigItem, IntegrationMappingItem } from '@/api/IntegrationMappingApi';
-import { integrationCatalogSpecs } from '@/utils/integrations/integrationCatalog';
 import formatDate from '@/utils/common/format_date';
 import { cn } from '@/lib/utils';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 import PaymentApi from '@/api/PaymentApi';
 import ConnectionApi from '@/api/ConnectionApi';
 import { IntegrationEntityType } from '@/types/dto';
+import { formatProviderName, getProviderLogo } from '@/utils/integrations/providerMarks';
 
-const PROVIDER_ID_MAP: Record<string, string> = {
-	zoho_books: 'zoho',
-};
 const CONNECTION_DRIVEN_PROVIDERS: Record<string, IntegrationEntityType[]> = {
 	[CONNECTION_PROVIDER_TYPE.AWS_MARKETPLACE]: ['customer', 'subscription', 'plan'],
 	[CONNECTION_PROVIDER_TYPE.GCP_MARKETPLACE]: ['customer', 'subscription', 'plan'],
 	[CONNECTION_PROVIDER_TYPE.AZURE_MARKETPLACE]: ['customer', 'subscription', 'plan'],
-};
-
-/** Both marks per provider — a few brands draw in a deep navy that vanishes on a dark surface. */
-const providerLogoMap = new Map(integrationCatalogSpecs.map((spec) => [spec.id, { logo: spec.logo, logoDark: spec.logoDark }]));
-
-const getProviderLogo = (providerType: string): { logo: string; logoDark?: string } | undefined => {
-	const mappedId = PROVIDER_ID_MAP[providerType] ?? providerType;
-	return providerLogoMap.get(mappedId);
 };
 
 const isSafeExternalUrl = (value: string): boolean => {
@@ -41,13 +30,6 @@ const isSafeExternalUrl = (value: string): boolean => {
 	} catch {
 		return false;
 	}
-};
-
-const formatProviderName = (providerType: string): string => {
-	return providerType
-		.split('_')
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(' ');
 };
 
 interface IntegrationRow {

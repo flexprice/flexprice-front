@@ -51,11 +51,11 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 						</div>
 						<div className='space-y-3'>
 							<Skeleton className='h-[140px] w-full rounded-lg' />
-							<div className='mt-4 grid grid-cols-2 gap-x-4 gap-y-2'>
-								<Skeleton className='h-4 w-full' />
-								<Skeleton className='h-4 w-full' />
-								<Skeleton className='h-4 w-full' />
-								<Skeleton className='h-4 w-full' />
+							<div className='mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2'>
+								<Skeleton className='h-4 w-16' />
+								<Skeleton className='h-4 w-16' />
+								<Skeleton className='h-4 w-16' />
+								<Skeleton className='h-4 w-16' />
 							</div>
 						</div>
 					</div>
@@ -106,9 +106,9 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 										/>
 									</PieChart>
 								</ResponsiveContainer>
-								<div className='mt-4 grid grid-cols-2 gap-x-4 gap-y-2'>
+								<div className='mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2'>
 									{subscriptionsByPlan.map((item, idx) => (
-										<div key={item.plan_id} className='flex min-w-0 items-center gap-2'>
+										<div key={item.plan_id} className='flex max-w-[140px] items-center gap-2'>
 											<span
 												className='h-2 w-2 shrink-0 rounded-full'
 												style={{ backgroundColor: CHART_COLORS[idx % CHART_COLORS.length] }}

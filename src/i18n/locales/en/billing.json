@@ -31,6 +31,8 @@
 			"refunded": "Refunded",
 			"partiallyRefunded": "Partially Refunded",
 			"overpaid": "Overpaid",
+			"paid": "Paid",
+			"overdue": "Overdue",
 			"unknown": "Unknown"
 		},
 		"list": {
@@ -64,9 +66,13 @@
 				"credit": "Credit"
 			},
 			"columns": {
-				"invoiceNumber": "Invoice Number",
-				"subscriptionCustomer": "Subscription Customer",
+				"invoiceNumber": "Invoice",
+				"customer": "Customer",
+				"plan": "Plan",
+				"status": "Status",
 				"amount": "Amount",
+				"issued": "Issued",
+				"subscriptionCustomer": "Subscription Customer",
 				"invoiceStatus": "Invoice Status",
 				"billingEntity": "Billing Entity",
 				"paymentStatus": "Payment Status",
@@ -142,6 +148,7 @@
 		},
 		"list": {
 			"paginationUnit": "Credit Notes",
+			"scopeAll": "All Credit Notes",
 			"emptyHeading": "Issue a credit note",
 			"emptyDescription": "Add a credit note to adjust or refund customer invoices."
 		},
@@ -244,9 +251,14 @@
 			"columns": {
 				"customer": "Customer",
 				"plan": "Plan",
+				"integrations": "Integrations",
 				"status": "Status",
-				"startDate": "Start Date",
-				"renewalDate": "Renewal Date"
+				"billing": "Billing",
+				"startDate": "Start",
+				"renewalDate": "Renewal"
+			},
+			"statusChips": {
+				"trial": "Trial"
 			},
 			"paginationUnit": "Subscriptions",
 			"emptyState": {
@@ -565,6 +577,7 @@
 		},
 		"list": {
 			"pageHeading": "Tax Rates",
+			"scopeAll": "All Tax Rates",
 			"paginationUnit": "Tax Rates",
 			"emptyHeading": "Create Your First Tax Rate",
 			"emptyDescription": "Set up tax rates to automatically calculate taxes on invoices and ensure compliance with local regulations.",

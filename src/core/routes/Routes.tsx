@@ -12,7 +12,6 @@ import {
 	SignupConfirmation,
 	ResendVerification,
 	EmailVerification,
-	SamlCallback,
 	// Customer pages
 	CustomerListPage as CustomerPage,
 	Subscriptions as SubscriptionsPage,
@@ -108,9 +107,6 @@ export const RouteNames = {
 	signupConfirmation: '/auth/signup/confirmation',
 	resendVerification: '/auth/resend-verification',
 	verifyEmail: '/auth/verify-email',
-	// Where the backend sends the browser after it validates a SAML assertion.
-	// Must match auth.saml.dashboard_url in the backend configuration.
-	samlCallback: '/auth/callback',
 
 	// Dashboard routes
 	homeDashboard: '/home',
@@ -226,12 +222,6 @@ export const MainRouter: any = createBrowserRouter([
 	{
 		path: RouteNames.verifyEmail,
 		element: <EmailVerification />,
-	},
-	{
-		// Public: the browser arrives here straight from the identity provider
-		// round trip, before any session exists.
-		path: RouteNames.samlCallback,
-		element: <SamlCallback />,
 	},
 	{
 		path: RouteNames.customerPortal,

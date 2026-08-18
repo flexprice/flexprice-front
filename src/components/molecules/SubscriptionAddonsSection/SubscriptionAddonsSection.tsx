@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Trash2, Copy } from 'lucide-react';
-import { Button, Card, CardHeader, Chip, DatePicker, Dialog, AddButton, Select, Tooltip, NoDataCard } from '@/components/atoms';
+import { Button, Card, CardHeader, DatePicker, Dialog, AddButton, Select, Tooltip, NoDataCard, StatusChip } from '@/components/atoms';
+import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BsThreeDots } from 'react-icons/bs';
@@ -59,7 +60,7 @@ const formatAddonCharges = (prices: Price[] = []): string => {
 
 type AddonStatus = `${ADDON_ASSOCIATION_STATUS}`;
 
-const getStatusVariant = (status: AddonStatus): 'info' | 'default' | 'success' => {
+const getStatusTone = (status: AddonStatus): StatusChipTone => {
 	switch (status) {
 		case 'upcoming':
 		case 'pending':
@@ -67,7 +68,7 @@ const getStatusVariant = (status: AddonStatus): 'info' | 'default' | 'success' =
 			return 'info';
 		case 'inactive':
 		case 'cancelled':
-			return 'default';
+			return 'neutral';
 		case 'active':
 		default:
 			return 'success';
@@ -111,7 +112,7 @@ const formatAddonAssociationTooltip = (association: AddonAssociationResponse, t:
 
 interface AddonAssociationWithStatus extends AddonAssociationResponse {
 	precomputedStatus: AddonStatus;
-	statusVariant: 'info' | 'default' | 'success';
+	statusTone: StatusChipTone;
 	statusLabel: string;
 	tooltipContent: ReactNode;
 }
@@ -206,14 +207,14 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 	const processedAddonAssociations = useMemo<AddonAssociationWithStatus[]>(() => {
 		return addonAssociations.map((association) => {
 			const status = computeAssociationStatus(association);
-			const statusVariant = getStatusVariant(status);
+			const statusTone = getStatusTone(status);
 			const statusLabel = toSentenceCase(status || 'active');
 			const tooltipContent = formatAddonAssociationTooltip(association, t);
 
 			return {
 				...association,
 				precomputedStatus: status,
-				statusVariant,
+				statusTone,
 				statusLabel,
 				tooltipContent,
 			};
@@ -293,7 +294,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 						sideOffset={5}
 						className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
 						<span>
-							<Chip label={row.statusLabel} variant={row.statusVariant} />
+							<StatusChip label={row.statusLabel} tone={row.statusTone} />
 						</span>
 					</Tooltip>
 				),

@@ -2,7 +2,6 @@ import { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Loader from '@/components/atoms/Loader/Loader';
 import Select from '@/components/atoms/Select/Select';
-import usePagination from '@/hooks/usePagination';
 import type { CreditGrant } from '@/models';
 import { usePricingData } from '../hooks/usePricingData';
 import {
@@ -49,11 +48,10 @@ export interface PricingContainerProps {
  */
 const PricingContainer: FC<PricingContainerProps> = ({ onSelectPlan, getFeatureHref, renderEmpty, onError, className, children }) => {
 	const { t } = useTranslation(['catalog']);
-	const { limit, offset, page } = usePagination();
 	const [selectedBillingPeriod, setSelectedBillingPeriod] = useState('');
 	const [selectedCurrency, setSelectedCurrency] = useState('');
 
-	const { plansData, allPrices, allEntitlements, creditGrants, isLoading, isError } = usePricingData({ limit, offset, page });
+	const { plansData, allPrices, allEntitlements, creditGrants, isLoading, isError } = usePricingData();
 
 	// Merge each plan with its prices + entitlements.
 	const plansWithData: PlanWithData[] = useMemo(() => {

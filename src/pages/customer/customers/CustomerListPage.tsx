@@ -1,5 +1,5 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
-import { CreateCustomerDrawer, ApiDocsContent } from '@/components/molecules';
+import { AddButton, ActionButton, StatusChip, TableAvatar, ProviderLogoStack, Page } from '@/components/atoms';
+import { CreateCustomerDrawer, ApiDocsContent, TooltipCell } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
 import { buildGuides } from '@/constants/guides';
@@ -7,6 +7,7 @@ import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { CustomerOrgTypeFilterValue } from '@/constants/customerOrgTypeFilter';
 import Customer from '@/models/Customer';
 import CustomerApi from '@/api/CustomerApi';
+import IntegrationMappingApi, { IntegrationMappingItem } from '@/api/IntegrationMappingApi';
 import { useState, useMemo, useCallback, FC } from 'react';
 import {
 	FilterField,
@@ -22,12 +23,13 @@ import { extractMetadataFromTypedFilters, METADATA_TYPED_FILTER_FIELD } from '@/
 import { ENTITY_STATUS } from '@/models';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
-import formatDate from '@/utils/common/format_date';
 import { ExternalLink } from 'lucide-react';
 import { useCustomerPortalUrl } from '@/hooks/useCustomerPortalUrl';
 import { useTenantFeatureAllowlist } from '@/hooks/useTenantFeatureAllowlist';
 import { useTranslation } from 'react-i18next';
 import { mergeCustomerSearchMetadata } from '@/utils/customer/mergeCustomerSearchMetadata';
+import formatDate from '@/utils/common/format_date';
+import { CustomerListRow, getCustomerIntegrationProviders } from './customerListDisplay';
 
 const ActionButtonWithPortal: FC<{ customer: Customer; onEdit: (customer: Customer) => void }> = ({ customer, onEdit }) => {
 	const { t } = useTranslation(['customers', 'common']);
@@ -194,26 +196,57 @@ const CustomerListPage = () => {
 		[t],
 	);
 
-	const columns: ColumnData<Customer>[] = useMemo(
+	const columns: ColumnData<CustomerListRow>[] = useMemo(
 		() => [
-			{ fieldName: 'name', title: t('list.columns.name'), width: '400px' },
-			{ fieldName: 'external_id', title: t('list.columns.externalId') },
+			{
+				title: t('list.columns.name'),
+				fieldVariant: 'title',
+				width: '16%',
+				render: (row) => (
+					<div className='flex min-w-0 items-center gap-2'>
+						<TableAvatar name={row.name || row.external_id} size='md' />
+						<span className='truncate'>{row.name || t('common:labels.na')}</span>
+					</div>
+				),
+			},
+			{
+				title: t('list.columns.externalId'),
+				width: '20%',
+				render: (row) => <span className='block truncate'>{row.external_id}</span>,
+			},
+			{
+				title: t('list.columns.email'),
+				width: '20%',
+				render: (row) => {
+					const email = row.email?.trim();
+					if (!email) {
+						return <span className='text-content-zinc-subtle'>{t('common:labels.na')}</span>;
+					}
+					return <TooltipCell tooltipContent={email} tooltipText={email} />;
+				},
+			},
+			{
+				title: t('list.columns.integrations'),
+				width: 156,
+				render: (row) => <ProviderLogoStack providers={row.integrationProviders} emptyLabel={t('common:labels.na')} />,
+			},
 			{
 				title: t('list.columns.status'),
+				width: 128,
 				render: (row) => {
-					const label = row.status === ENTITY_STATUS.PUBLISHED ? t('common:status.active') : t('common:status.inactive');
-					return <Chip variant={row.status === ENTITY_STATUS.PUBLISHED ? 'success' : 'default'} label={label} />;
+					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
+					const label = isActive ? t('common:status.active') : t('common:status.inactive');
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
-				title: t('list.columns.updatedAt'),
-				render: (row) => {
-					return <>{formatDate(row.updated_at)}</>;
-				},
+				title: t('list.columns.createdAt'),
+				width: '16%',
+				render: (row) => formatDate(row.created_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
-				title: t('list.columns.actions'),
 				fieldVariant: 'interactive',
+				width: 56,
 				render: (row) => <ActionButtonWithPortal customer={row} onEdit={handleEdit} />,
 			},
 		],
@@ -222,27 +255,28 @@ const CustomerListPage = () => {
 
 	const additionalQueryParams = useMemo(() => ({ orgTypeFilter }), [orgTypeFilter]);
 
-	return (
-		<Page
-			heading={t('list.title')}
-			headingCTA={
-				<div className='flex justify-between gap-2 items-center'>
-					<CreateCustomerDrawer
-						trigger={
-							<AddButton
-								onClick={() => {
-									setactiveCustomer(undefined);
-								}}
-							/>
-						}
-						open={customerDrawerOpen}
-						onOpenChange={setcustomerDrawerOpen}
-						data={activeCustomer}
+	const customerToolbarActions = useMemo(
+		() => (
+			<CreateCustomerDrawer
+				trigger={
+					<AddButton
+						onClick={() => {
+							setactiveCustomer(undefined);
+						}}
 					/>
-				</div>
-			}>
+				}
+				open={customerDrawerOpen}
+				onOpenChange={setcustomerDrawerOpen}
+				data={activeCustomer}
+			/>
+		),
+		[activeCustomer, customerDrawerOpen],
+	);
+
+	return (
+		<Page className='max-w-none' heading={t('list.title')} headingCTA={customerToolbarActions}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Customers} />
-			<QueryableDataArea<Customer>
+			<QueryableDataArea<CustomerListRow>
 				queryConfig={{
 					filterOptions,
 					sortOptions: sortingOptions,
@@ -265,25 +299,58 @@ const CustomerListPage = () => {
 						const { orgTypeFilter, filters: rawFilters, sort, limit, offset } = params;
 						const { filters, metadata } = extractMetadataFromTypedFilters(rawFilters);
 						const mergedMetadata = mergeCustomerSearchMetadata(metadata, orgTypeFilter);
-						return CustomerApi.getCustomersByFilters({
+						const response = await CustomerApi.getCustomersByFilters({
 							limit,
 							offset,
 							sort,
 							filters,
+							expand: 'integrations',
 							...(mergedMetadata ? { metadata: mergedMetadata } : {}),
 						});
+						const items = response.items ?? [];
+						const needsMappingFetch = items.some((item) => item.integrations === undefined);
+						const mappings: Map<string, IntegrationMappingItem[]> = needsMappingFetch
+							? await IntegrationMappingApi.listMappingsByEntityIds(
+									'customer',
+									items.map((item) => item.id),
+								)
+							: new Map();
+						return {
+							...response,
+							items: items.map(
+								(item): CustomerListRow => ({
+									...item,
+									integrationProviders: getCustomerIntegrationProviders(
+										item,
+										(mappings.get(item.id) ?? []).map((mapping) => mapping.provider_type),
+									),
+								}),
+							),
+						};
 					},
-					probeFetchFn: async (params) =>
-						CustomerApi.getCustomersByFilters({
+					probeFetchFn: async (params) => {
+						const response = await CustomerApi.getCustomersByFilters({
 							...params,
 							limit: 1,
 							offset: 0,
 							filters: [],
 							sort: [],
-						}),
+						});
+						return {
+							...response,
+							items: (response.items ?? []).map(
+								(item): CustomerListRow => ({
+									...item,
+									integrationProviders: [],
+								}),
+							),
+						};
+					},
 				}}
 				tableConfig={{
 					columns,
+					variant: 'card',
+					tableClassName: 'table-fixed',
 					onRowClick: (row) => {
 						navigate(RouteNames.customers + `/${row?.id}`);
 					},

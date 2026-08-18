@@ -9,6 +9,16 @@ interface TableAreaProps<T> {
 }
 
 const TableArea = <T,>({ data, tableConfig, paginationConfig }: TableAreaProps<T>) => {
+	const isCard = tableConfig.variant === 'card';
+	const pagination = paginationConfig?.unit ? (
+		<ShortPagination
+			unit={paginationConfig.unit}
+			totalItems={data?.pagination.total ?? 0}
+			prefix={paginationConfig.prefix}
+			variant={isCard ? 'embedded' : 'default'}
+		/>
+	) : null;
+
 	return (
 		<>
 			<FlexpriceTable
@@ -16,13 +26,15 @@ const TableArea = <T,>({ data, tableConfig, paginationConfig }: TableAreaProps<T
 				data={data?.items || []}
 				onRowClick={tableConfig.onRowClick}
 				showEmptyRow={tableConfig.showEmptyRow}
-				hideBottomBorder={tableConfig.hideBottomBorder}
+				hideBottomBorder={tableConfig.hideBottomBorder ?? !isCard}
 				variant={tableConfig.variant}
+				tableClassName={tableConfig.tableClassName}
+				footer={isCard ? pagination : undefined}
 			/>
-			{paginationConfig?.unit && (
+			{!isCard && pagination && (
 				<>
 					<Spacer className='!h-4' />
-					<ShortPagination unit={paginationConfig.unit} totalItems={data?.pagination.total ?? 0} prefix={paginationConfig.prefix as any} />
+					{pagination}
 				</>
 			)}
 		</>

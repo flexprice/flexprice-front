@@ -1,7 +1,7 @@
-import { FC, useMemo } from 'react';
+import { FC, ReactNode, useMemo } from 'react';
 import FlexpriceTable, { ColumnData, TooltipCell } from '../Table';
 import { TaxRateResponse } from '@/types/dto/tax';
-import { Chip, ActionButton } from '@/components/atoms';
+import { ActionButton, StatusChip } from '@/components/atoms';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import { TAX_RATE_TYPE, TaxRate } from '@/models/Tax';
 import TaxApi from '@/api/TaxApi';
@@ -13,9 +13,10 @@ import { ENTITY_STATUS } from '@/models';
 interface Props {
 	data: TaxRateResponse[];
 	onEdit?: (tax: TaxRateResponse) => void;
+	footer?: ReactNode;
 }
 
-const TaxTable: FC<Props> = ({ data, onEdit }) => {
+const TaxTable: FC<Props> = ({ data, onEdit, footer }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation('billing');
 	const naLabel = t('taxes.table.na');
@@ -57,6 +58,7 @@ const TaxTable: FC<Props> = ({ data, onEdit }) => {
 			{
 				title: t('taxes.table.name'),
 				fieldName: 'name',
+				fieldVariant: 'title',
 			},
 			{
 				title: t('taxes.table.code'),
@@ -74,7 +76,7 @@ const TaxTable: FC<Props> = ({ data, onEdit }) => {
 				title: t('taxes.table.status'),
 				render: (row) => {
 					const label = statusLabel(row.status);
-					return <Chip variant={row.status === ENTITY_STATUS.PUBLISHED ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={row.status === ENTITY_STATUS.PUBLISHED ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
@@ -83,6 +85,7 @@ const TaxTable: FC<Props> = ({ data, onEdit }) => {
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render(row) {
 					return (
 						<ActionButton
@@ -108,9 +111,16 @@ const TaxTable: FC<Props> = ({ data, onEdit }) => {
 	}, [t, naLabel, onEdit]);
 
 	return (
-		<div>
-			<FlexpriceTable onRowClick={(row) => navigate(`${RouteNames.taxes}/${row.id}`)} showEmptyRow={true} columns={columns} data={data} />
-		</div>
+		<FlexpriceTable
+			variant='card'
+			tableClassName='table-fixed'
+			onRowClick={(row) => navigate(`${RouteNames.taxes}/${row.id}`)}
+			showEmptyRow={true}
+			columns={columns}
+			data={data}
+			footer={footer}
+			hideBottomBorder={false}
+		/>
 	);
 };
 
