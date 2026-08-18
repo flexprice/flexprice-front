@@ -7,13 +7,9 @@ import { CustomerPortalTab } from './customer-portal';
 import { CustomerOnboardingTab } from './customer-onboarding';
 import { AlertsTab } from './alerts';
 import { AppearanceTab } from './appearance';
-import { SamlSsoTab, useSamlConfig } from './saml-sso';
 
 const SettingsDashboard = () => {
 	const { t } = useTranslation(['settings', 'common']);
-	// Drives whether the SAML tab exists at all: it is hidden on deployments
-	// that do not offer SSO, and from users who may not administer it.
-	const { isAvailable: isSamlAvailable } = useSamlConfig();
 
 	return (
 		<Page heading={t('page.settings')} documentTitle={t('page.settings')} headingClassName='font-semibold text-2xl text-content-zinc-bold'>
@@ -50,15 +46,6 @@ const SettingsDashboard = () => {
 						label: t('appearance.tabs.appearance'),
 						content: <AppearanceTab />,
 					},
-					...(isSamlAvailable
-						? [
-								{
-									value: 'saml-sso',
-									label: t('saml.tabs.saml'),
-									content: <SamlSsoTab />,
-								},
-							]
-						: []),
 				]}
 				defaultValue='team'
 			/>

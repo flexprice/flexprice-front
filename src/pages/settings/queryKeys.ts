@@ -10,5 +10,4 @@ export const settingsQueryKeys = {
 	walletBalanceAlertConfig: [...SETTINGS_ROOT, 'wallet-balance-alert-config'] as const,
 	invoiceConfig: [...SETTINGS_ROOT, 'invoice-config'] as const,
 	subscriptionConfig: [...SETTINGS_ROOT, 'subscription-config'] as const,
-	samlConfig: [...SETTINGS_ROOT, 'saml-config'] as const,
 };

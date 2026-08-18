@@ -6,7 +6,5 @@ export { default as GoogleSignin } from './GoogleSignin';
 export { default as LoginForm } from './LoginForm';
 export { default as ResendVerification } from './ResendVerification';
 export { default as ResetPasswordForm } from './ResetPasswordForm';
-export { default as SamlCallback } from './SamlCallback';
-export { default as SamlSignin, SSO_TENANT_PARAM } from './SamlSignin';
 export { default as SignupConfirmation } from './SignupConfirmation';
 export { default as SignupForm } from './SignupForm';

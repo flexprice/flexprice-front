@@ -38,23 +38,6 @@ export function isHttpNotFoundError(error: unknown): boolean {
 	return message.includes('not found') || /\b404\b/.test(error.message);
 }
 
-/** Extracts the HTTP status code the shared axios client attached to a rejected error, if any. */
-export function getHttpStatus(error: unknown): number | undefined {
-	if (!(error instanceof Error)) return undefined;
-	const cause = (error as HttpRejectedError).cause;
-	if (cause && typeof cause === 'object') {
-		return (cause as FlatApiError).http_status_code;
-	}
-	return undefined;
-}
-
-/** True when the shared axios client rejected a 403 (e.g. a super_admin API key, not a user session). */
-export function isHttpForbiddenError(error: unknown): boolean {
-	if (getHttpStatus(error) === 403) return true;
-	if (!(error instanceof Error)) return false;
-	return /\b403\b/.test(error.message);
-}
-
 function pickMessage(value: unknown): string | undefined {
 	if (typeof value === 'string' && value.trim()) {
 		return value.trim();
