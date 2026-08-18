@@ -1,0 +1,132 @@
+/**
+ * Intercom messenger adapter.
+ *
+ * Docs: https://developers.intercom.com/installing-intercom/web/methods
+ *
+ * A faithful port of the SDK calls previously inline in IntercomMessenger.tsx.
+ * Intercom fires no reliable close event, so visibility is synthesised by polling
+ * `isVisible` and by listening for the embed's postMessage events where supported.
+ */
+import Intercom from '@intercom/messenger-js-sdk';
+import '../../intercom/index.css';
+import type { SupportChatAdapter, SupportChatUser, SupportChatVisibilityHandlers } from '../SupportChatAdapter';
+
+enum IntercomCommand {
+	Show = 'show',
+	Hide = 'hide',
+	IsVisible = 'isVisible',
+}
+
+enum IntercomPostMessageType {
+	Hide = 'intercom:hide',
+	Show = 'intercom:show',
+	BareHide = 'hide',
+	BareShow = 'show',
+}
+
+type IntercomFn = (command: IntercomCommand) => unknown;
+
+interface IntercomWindow {
+	Intercom?: IntercomFn;
+}
+
+function intercomWindow(): IntercomWindow {
+	return window as unknown as IntercomWindow;
+}
+
+function isMessengerVisible(): boolean {
+	try {
+		return intercomWindow().Intercom?.(IntercomCommand.IsVisible) === true;
+	} catch {
+		// The SDK may not be ready yet; treat as not visible.
+		return false;
+	}
+}
+
+export function createIntercomAdapter(appId: string, pollIntervalMs: number, hideDefaultLauncher: boolean): SupportChatAdapter {
+	let disposed = false;
+	let handlers: SupportChatVisibilityHandlers | null = null;
+	let pollTimer: ReturnType<typeof setInterval> | null = null;
+	let messageListener: ((event: MessageEvent) => void) | null = null;
+	let lastVisible: boolean | null = null;
+
+	const stopPolling = () => {
+		if (pollTimer !== null) {
+			clearInterval(pollTimer);
+			pollTimer = null;
+		}
+		if (messageListener) {
+			window.removeEventListener('message', messageListener);
+			messageListener = null;
+		}
+	};
+
+	return {
+		async init(user: SupportChatUser): Promise<void> {
+			if (typeof window === 'undefined') return;
+
+			Intercom({
+				app_id: appId,
+				user_id: user.id,
+				name: user.name,
+				email: user.email,
+				created_at: user.createdAt,
+				hide_default_launcher: hideDefaultLauncher,
+			});
+		},
+
+		show(): void {
+			if (disposed || typeof window === 'undefined') return;
+			try {
+				intercomWindow().Intercom?.(IntercomCommand.Show);
+			} catch {
+				// The SDK may not be ready yet; opening is best-effort.
+			}
+		},
+
+		subscribe(next: SupportChatVisibilityHandlers): () => void {
+			handlers = next;
+			if (typeof window === 'undefined') return () => undefined;
+
+			stopPolling();
+			lastVisible = null;
+
+			pollTimer = setInterval(() => {
+				if (disposed) return;
+				// Capture the previous value BEFORE reassigning: reading `lastVisible`
+				// afterwards would make the null guard below always true and emit a
+				// spurious close on the first tick.
+				const previous = lastVisible;
+				const visible = isMessengerVisible();
+				if (visible === previous) return;
+				lastVisible = visible;
+				if (visible) handlers?.onShow();
+				else if (previous !== null) handlers?.onHide();
+			}, pollIntervalMs);
+
+			messageListener = (event: MessageEvent) => {
+				if (disposed || !event.data || typeof event.data !== 'object') return;
+				const type = (event.data as { type?: string }).type;
+				if (type === IntercomPostMessageType.Hide || type === IntercomPostMessageType.BareHide) {
+					lastVisible = false;
+					handlers?.onHide();
+				} else if (type === IntercomPostMessageType.Show || type === IntercomPostMessageType.BareShow) {
+					lastVisible = true;
+					handlers?.onShow();
+				}
+			};
+			window.addEventListener('message', messageListener);
+
+			return () => {
+				handlers = null;
+				stopPolling();
+			};
+		},
+
+		dispose(): void {
+			disposed = true;
+			handlers = null;
+			stopPolling();
+		},
+	};
+}

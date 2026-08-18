@@ -1462,7 +1462,7 @@ Note on the poll's first tick: `lastVisible` starts as `null` and the previous v
 
 Run: `npx vitest run src/core/services/support-chat/adapters/intercom.test.ts`
 
-Expected: PASS — 7 tests.
+Expected: PASS — 8 tests (the 8th, `does not fire a close before the messenger has ever been seen open`, is the regression guard for the poll-edge bug described above).
 
 - [ ] **Step 5: Commit**
 
@@ -1638,7 +1638,7 @@ export function createSupportChatAdapter(provider: SupportChatProvider, flow: Su
 
 Run: `npx vitest run src/core/services/support-chat/adapters/`
 
-Expected: PASS — 30 tests (9 Pylon + 7 Intercom + 14 conformance).
+Expected: PASS — 31 tests (9 Pylon + 8 Intercom + 14 conformance).
 
 - [ ] **Step 6: Commit**
 
