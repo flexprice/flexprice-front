@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import type { CommandPaletteActionIdType } from '@/core/actions';
 import { CommandPaletteActionId } from '@/core/actions';
+import { getSupportChatCommandLabel } from '@/config/support-chat';
 
 import { CommandPaletteCommandId, type CommandPaletteCommandIdType, CommandPaletteGroup, type CommandPaletteGroupType } from './ids';
 import { commandPalettePaths } from './paths';
@@ -110,10 +111,10 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 	},
 	{
 		id: CommandPaletteCommandId.actionOpenIntercom,
-		label: 'Open Intercom',
+		label: getSupportChatCommandLabel(),
 		group: CommandPaletteGroup.Help,
 		actionId: CommandPaletteActionId.OpenIntercom,
-		keywords: ['chat', 'support', 'messenger', 'help'],
+		keywords: ['chat', 'support', 'messenger', 'help', 'intercom', 'pylon'],
 		icon: BotMessageSquare,
 	},
 	{

@@ -24,7 +24,11 @@ export const CommandPaletteActionId = {
 	ContactUs: 'contact-us',
 	BookCall: 'book-call',
 	JoinSlackCommunity: 'join-slack-community',
-	/** Open Intercom messenger (IntercomMessenger subscribes). */
+	/**
+	 * Open the support-chat messenger (`useSupportChat` subscribes).
+	 * The id value stays `open-intercom` for backward compatibility — it is the
+	 * event name on the bus and predates Pylon support.
+	 */
 	OpenIntercom: 'open-intercom',
 	/** Log out (SidebarFooter subscribes). */
 	Logout: 'logout',

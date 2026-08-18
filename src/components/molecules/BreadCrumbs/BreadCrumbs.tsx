@@ -7,7 +7,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar';
 import ApiDocs from '../ApiDocs';
 import LocaleSelector from '@/components/molecules/LocaleSelector/LocaleSelector';
 import ThemeToggle from '@/components/molecules/ThemeToggle';
-import IntercomMessenger from '@/core/services/intercom/IntercomMessenger';
+import SupportChat from '@/core/services/support-chat/SupportChat';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/atoms';
 import { useLocaleStore } from '@/store/useLocaleStore';
@@ -99,7 +99,7 @@ const BreadCrumbs: FC = () => {
 					<ThemeToggle />
 					<LocaleSelector />
 					<BreadCrumbsSearchTrigger />
-					<IntercomMessenger />
+					<SupportChat />
 					<ApiDocs />
 				</div>
 			</div>

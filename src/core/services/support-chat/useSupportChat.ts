@@ -118,11 +118,15 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 	]);
 
 	// Stable indirection so the init effect below does not re-run when the
-	// handlers' identity changes (they depend on tenant + user).
+	// handlers' identity changes (they depend on tenant + user). Assigned in an
+	// effect rather than during render; the adapter only invokes these from its
+	// own events, which always fire after commit.
 	const handleShowRef = useRef(handleShow);
 	const handleHideRef = useRef(handleHide);
-	handleShowRef.current = handleShow;
-	handleHideRef.current = handleHide;
+	useEffect(() => {
+		handleShowRef.current = handleShow;
+		handleHideRef.current = handleHide;
+	}, [handleShow, handleHide]);
 
 	const open = useCallback(() => {
 		if (status.current !== SupportChatStatus.Ready) return;

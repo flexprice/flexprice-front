@@ -11,7 +11,7 @@ import {
 	CommandPaletteCommandId,
 	CommandPaletteGroup,
 } from '@/config/command-palette';
-import { isIntercomMessengerAvailable } from '@/config/intercom';
+import { isSupportChatAvailable } from '@/config/support-chat';
 import { config } from '@/config/config';
 import {
 	dispatchCommandPaletteAction,
@@ -73,7 +73,7 @@ const CommandPalette = () => {
 	const visibleCommands = useMemo(() => {
 		return commandPaletteCommands.filter((cmd) => {
 			if (cmd.actionId && isCommandPaletteActionDevOnly(cmd.actionId)) return isDevelopment;
-			if (cmd.actionId === CommandPaletteActionId.OpenIntercom && !isIntercomMessengerAvailable()) {
+			if (cmd.actionId === CommandPaletteActionId.OpenIntercom && !isSupportChatAvailable()) {
 				return false;
 			}
 			if (cmd.id === CommandPaletteCommandId.navToolsRevenue && !config.platform.revenue.enabled) {
