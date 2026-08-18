@@ -80,7 +80,7 @@ function renderSupportChat(adapter: SupportChatAdapter) {
 
 /** Resolves once the tenant query has data. */
 async function waitForTenantLoaded(queryClient: QueryClient) {
-	await waitFor(() => expect(queryClient.getQueryData(['tenant'])).toBeDefined());
+	await waitFor(() => expect(queryClient.getQueryData(['tenant', 'tenant_1'])).toBeDefined());
 }
 
 function gtagSpy() {
@@ -295,7 +295,7 @@ describe('useSupportChat', () => {
 		await act(async () => {
 			await vi.advanceTimersByTimeAsync(0);
 		});
-		expect(queryClient.getQueryData(['tenant'])).toBeDefined();
+		expect(queryClient.getQueryData(['tenant', 'tenant_1'])).toBeDefined();
 		expect(adapter.showMock).not.toHaveBeenCalled();
 
 		await act(async () => {
@@ -312,6 +312,55 @@ describe('useSupportChat', () => {
 		await waitFor(() => expect(adapter.initMock).toHaveBeenCalledOnce());
 		unmount();
 
+		expect(adapter.disposeMock).toHaveBeenCalledOnce();
+	});
+
+	it('caches tenant data per tenant id, not globally, so a tenant switch cannot read stale data', async () => {
+		const adapter = createFakeAdapter();
+		mockGetTenantById.mockResolvedValue({ id: 'tenant_1', name: 'Acme Inc', metadata: { onboarding_completed: 'true' } });
+		const { queryClient } = renderSupportChat(adapter);
+
+		await waitForTenantLoaded(queryClient);
+
+		expect(queryClient.getQueryData(['tenant', 'tenant_1'])).toMatchObject({ id: 'tenant_1' });
+		expect(queryClient.getQueryData(['tenant'])).toBeUndefined();
+	});
+
+	it('re-identifies without disposing when identity changes without unmounting', async () => {
+		const adapter = createFakeAdapter();
+		const { rerender, result } = renderSupportChat(adapter);
+
+		await waitFor(() => expect(adapter.initMock).toHaveBeenCalledTimes(1));
+		await act(async () => undefined);
+
+		mockUseUser.mockReturnValue({
+			user: { ...USER, id: 'user_2', tenant: { ...USER.tenant, id: 'tenant_2', name: 'Other Co' } },
+			loading: false,
+			error: null,
+			refetch: vi.fn(),
+		});
+		mockGetTenantById.mockResolvedValue({ id: 'tenant_2', name: 'Other Co', metadata: {} });
+		rerender();
+
+		await waitFor(() => expect(adapter.initMock).toHaveBeenCalledTimes(2));
+		expect(adapter.disposeMock).not.toHaveBeenCalled();
+
+		await act(async () => undefined);
+		act(() => result.current.open());
+		expect(adapter.showMock).toHaveBeenCalledOnce();
+	});
+
+	it('disposes exactly once, on unmount, even after an identity change', async () => {
+		const adapter = createFakeAdapter();
+		const { rerender, unmount } = renderSupportChat(adapter);
+
+		await waitFor(() => expect(adapter.initMock).toHaveBeenCalledTimes(1));
+
+		mockUseUser.mockReturnValue({ user: { ...USER, id: 'user_2' }, loading: false, error: null, refetch: vi.fn() });
+		rerender();
+		await waitFor(() => expect(adapter.initMock).toHaveBeenCalledTimes(2));
+
+		unmount();
 		expect(adapter.disposeMock).toHaveBeenCalledOnce();
 	});
 });

@@ -43,7 +43,7 @@ describe('intercom adapter', () => {
 			user_id: 'user_1',
 			name: 'Ada Tenant',
 			email: 'ada@example.com',
-			created_at: 1_700_000_000_000,
+			created_at: 1_700_000_000, // Unix seconds, not the epoch-ms USER.createdAt
 			hide_default_launcher: true,
 		});
 	});
@@ -118,11 +118,42 @@ describe('intercom adapter', () => {
 		await adapter.init(USER);
 		adapter.subscribe({ onShow, onHide });
 
-		window.dispatchEvent(new MessageEvent('message', { data: { type: 'intercom:show' } }));
-		window.dispatchEvent(new MessageEvent('message', { data: { type: 'intercom:hide' } }));
+		window.dispatchEvent(new MessageEvent('message', { data: { type: 'intercom:show' }, origin: 'https://widget.intercom.io' }));
+		window.dispatchEvent(new MessageEvent('message', { data: { type: 'intercom:hide' }, origin: 'https://widget.intercom.io' }));
 
 		expect(onShow).toHaveBeenCalledOnce();
 		expect(onHide).toHaveBeenCalledOnce();
+	});
+
+	it('ignores postMessage events from an untrusted origin', async () => {
+		globals().Intercom = vi.fn(() => false);
+		const { createIntercomAdapter } = await import('./intercom');
+		const adapter = createIntercomAdapter('abc123', 1000, true);
+		const onShow = vi.fn();
+		const onHide = vi.fn();
+
+		await adapter.init(USER);
+		adapter.subscribe({ onShow, onHide });
+
+		window.dispatchEvent(new MessageEvent('message', { data: { type: 'intercom:show' }, origin: 'https://evil.example.com' }));
+		window.dispatchEvent(new MessageEvent('message', { data: { type: 'intercom:show' }, origin: 'https://notintercom.io.evil.com' }));
+
+		expect(onShow).not.toHaveBeenCalled();
+		expect(onHide).not.toHaveBeenCalled();
+	});
+
+	it('trusts any subdomain of intercom.io', async () => {
+		globals().Intercom = vi.fn(() => false);
+		const { createIntercomAdapter } = await import('./intercom');
+		const adapter = createIntercomAdapter('abc123', 1000, true);
+		const onShow = vi.fn();
+
+		await adapter.init(USER);
+		adapter.subscribe({ onShow, onHide: vi.fn() });
+
+		window.dispatchEvent(new MessageEvent('message', { data: { type: 'intercom:show' }, origin: 'https://api-iam.eu.intercom.io' }));
+
+		expect(onShow).toHaveBeenCalledOnce();
 	});
 
 	it('stops polling after unsubscribe', async () => {

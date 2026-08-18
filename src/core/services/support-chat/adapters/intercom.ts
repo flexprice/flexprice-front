@@ -29,6 +29,16 @@ function intercomWindow(): IntercomWindow {
 	return window as unknown as IntercomWindow;
 }
 
+/** Intercom's widget iframe is always served from an *.intercom.io host, across all regions. */
+function isTrustedIntercomOrigin(origin: string): boolean {
+	try {
+		const { protocol, hostname } = new URL(origin);
+		return protocol === 'https:' && (hostname === 'intercom.io' || hostname.endsWith('.intercom.io'));
+	} catch {
+		return false;
+	}
+}
+
 function isMessengerVisible(): boolean {
 	try {
 		return intercomWindow().Intercom?.(IntercomCommand.IsVisible) === true;
@@ -65,7 +75,8 @@ export function createIntercomAdapter(appId: string, pollIntervalMs: number, hid
 				user_id: user.id,
 				name: user.name,
 				email: user.email,
-				created_at: user.createdAt,
+				// Intercom expects Unix seconds; SupportChatUser.createdAt is epoch ms.
+				created_at: user.createdAt ? Math.floor(user.createdAt / 1000) : undefined,
 				hide_default_launcher: hideDefaultLauncher,
 			});
 		},
@@ -98,7 +109,7 @@ export function createIntercomAdapter(appId: string, pollIntervalMs: number, hid
 			}, pollIntervalMs);
 
 			messageListener = (event: MessageEvent) => {
-				if (disposed || !event.data || typeof event.data !== 'object') return;
+				if (disposed || !isTrustedIntercomOrigin(event.origin) || !event.data || typeof event.data !== 'object') return;
 				const type = (event.data as { type?: string }).type;
 				if (type === IntercomPostMessageType.Hide || type === IntercomPostMessageType.BareHide) {
 					lastVisible = false;

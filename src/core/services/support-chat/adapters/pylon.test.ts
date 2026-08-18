@@ -28,8 +28,8 @@ function globals(): PylonGlobals {
 
 /** Resolve the pending script by firing its onload, mimicking a successful widget fetch. */
 function completeScriptLoad(): void {
-	const script = document.querySelector<HTMLScriptElement>('script[src*="widget.usepylon.com"]');
-	script?.dispatchEvent(new Event('load'));
+	const scripts = document.querySelectorAll<HTMLScriptElement>('script[src*="widget.usepylon.com"]');
+	scripts[scripts.length - 1]?.dispatchEvent(new Event('load'));
 }
 
 function failScriptLoad(): void {
@@ -134,6 +134,20 @@ describe('pylon adapter', () => {
 		failScriptLoad();
 
 		await expect(pending).rejects.toThrow(/Failed to load Pylon widget script/);
+	});
+
+	it('retries after a failed load instead of replaying the same rejection forever', async () => {
+		const first = createPylonAdapter('app-123');
+		const firstPending = first.init(USER);
+		failScriptLoad();
+		await expect(firstPending).rejects.toThrow(/Failed to load Pylon widget script/);
+
+		const second = createPylonAdapter('app-123');
+		const secondPending = second.init(USER);
+		completeScriptLoad();
+
+		await expect(secondPending).resolves.toBeUndefined();
+		expect(document.querySelectorAll('script[src*="widget.usepylon.com"]')).toHaveLength(2);
 	});
 
 	it('queues show() through the stub before the widget loads', () => {

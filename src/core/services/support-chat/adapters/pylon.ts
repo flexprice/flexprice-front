@@ -20,6 +20,11 @@ const PYLON_WIDGET_BASE_URL = 'https://widget.usepylon.com/widget';
 /** Validated before interpolation into a <script src>, so a mis-set env var cannot inject a URL. */
 const PYLON_APP_ID_PATTERN = /^[A-Za-z0-9_-]+$/;
 
+/** Shared with `isPylonProviderConfigured` so config resolution and init() agree. */
+export function isValidPylonAppId(appId: string): boolean {
+	return PYLON_APP_ID_PATTERN.test(appId);
+}
+
 type PylonFn = ((...args: unknown[]) => void) & { q?: unknown[] };
 
 interface PylonWindow {
@@ -76,6 +81,10 @@ function loadWidgetScript(appId: string): Promise<void> {
 	});
 
 	scriptLoads.set(appId, load);
+	// Evict on failure so a later init() can retry instead of replaying the same rejection.
+	load.catch(() => {
+		if (scriptLoads.get(appId) === load) scriptLoads.delete(appId);
+	});
 	return load;
 }
 
@@ -90,7 +99,7 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 	return {
 		async init(user: SupportChatUser): Promise<void> {
 			if (typeof window === 'undefined') return;
-			if (!PYLON_APP_ID_PATTERN.test(appId)) {
+			if (!isValidPylonAppId(appId)) {
 				throw new Error('Invalid Pylon app id: expected only letters, digits, hyphens and underscores');
 			}
 
@@ -120,6 +129,8 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 						// Groups a tenant's users under one Pylon account.
 						...(user.tenantId ? { account_external_id: user.tenantId } : {}),
 					};
+			// Pylon documents no re-identify call, so updating this after the widget has
+			// already loaded is best-effort: it is confirmed to apply on first boot only.
 			target.pylon = { chat_settings: chatSettings };
 			installQueueStub(target);
 

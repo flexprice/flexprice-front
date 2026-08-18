@@ -42,6 +42,15 @@ describe('support chat config', () => {
 		expect(getActiveSupportChatProvider()).toBe(SupportChatProvider.Pylon);
 	});
 
+	it('treats a malformed Pylon app id as unconfigured, so no dead button renders', async () => {
+		vi.stubEnv('VITE_PYLON_ENABLED', 'true');
+		vi.stubEnv('VITE_PYLON_APP_ID', 'app-123/../evil');
+		const { getActiveSupportChatProvider, isPylonProviderConfigured } = await import('./support-chat');
+
+		expect(isPylonProviderConfigured()).toBe(false);
+		expect(getActiveSupportChatProvider()).toBeNull();
+	});
+
 	it('prefers Intercom and warns when both are configured', async () => {
 		const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 		vi.stubEnv('VITE_INTERCOM_ENABLED', 'true');

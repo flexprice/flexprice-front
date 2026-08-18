@@ -1,5 +1,6 @@
 import { config } from './config';
 import { SupportChatAnalyticsEvent, SupportChatProvider, SupportChatStorageKey } from '@/models/SupportChat';
+import { isValidPylonAppId } from '@/core/services/support-chat/adapters/pylon';
 import { UserActivityEvent } from '@/types/enums/dom';
 
 /** Behaviour knobs for the messenger. String fields are enum-typed so a typo is a compile error. */
@@ -66,9 +67,9 @@ export function isIntercomProviderConfigured(): boolean {
 	return isProviderConfigured(config.intercom.enabled, config.intercom.appId);
 }
 
-/** True when Pylon specifically is configured. */
+/** True when Pylon specifically is configured, with an app id `init()` will accept. */
 export function isPylonProviderConfigured(): boolean {
-	return isProviderConfigured(config.pylon.enabled, config.pylon.appId);
+	return isProviderConfigured(config.pylon.enabled, config.pylon.appId) && isValidPylonAppId(config.pylon.appId);
 }
 
 /** Resolves the active provider. Intercom wins when both are configured, preserving pre-Pylon behaviour. */

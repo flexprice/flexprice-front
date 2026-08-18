@@ -61,7 +61,7 @@ interface IntercomConfig {
 interface PylonConfig {
 	enabled: boolean;
 	appId: string;
-	/** Fetch a signed JWT from the backend and let it carry identity. See docs/support-chat-identity-token-contract.md. */
+	/** Fetch a signed JWT from POST /users/chat/verify and let it carry identity. */
 	identityVerificationEnabled: boolean;
 }
 interface ReoConfig {

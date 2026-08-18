@@ -39,7 +39,7 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 	const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const { data: tenant, isLoading: isTenantLoading } = useQuery({
-		queryKey: ['tenant'],
+		queryKey: ['tenant', tenantId],
 		queryFn: async () => {
 			return await TenantApi.getTenantById(tenantId ?? '');
 		},
@@ -129,7 +129,8 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 		adapter.show();
 	}, [adapter]);
 
-	// Boot the provider and wire visibility events.
+	// Boot the provider and wire visibility events. Rebinds on identity change without
+	// disposing the adapter — dispose() is terminal (see effect below) and must fire once.
 	useEffect(() => {
 		if (!userId) return;
 
@@ -164,9 +165,16 @@ export function useSupportChat(adapter: SupportChatAdapter, flow: SupportChatFlo
 		return () => {
 			cancelled = true;
 			unsubscribe();
-			adapter.dispose();
 		};
 	}, [adapter, userId, userEmail, displayName, tenantCreatedAt, tenantId]);
+
+	// Tied only to the adapter instance, so this fires once — on unmount, or if the
+	// memoized adapter is ever replaced — never on an identity-only re-run above.
+	useEffect(() => {
+		return () => {
+			adapter.dispose();
+		};
+	}, [adapter]);
 
 	// Open from the command palette (Cmd+K → Open <provider>).
 	useEffect(() => {
