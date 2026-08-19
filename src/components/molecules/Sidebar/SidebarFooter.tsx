@@ -11,7 +11,7 @@ import AuthService from '@/core/auth/AuthService';
 import { getCommandPaletteActionEventName, CommandPaletteActionId } from '@/core/actions';
 import useUser from '@/hooks/useUser';
 import { useShouldShowSidebarPricingPromo } from '@/hooks/useShouldShowSidebarPricingPromo';
-import { getContactDetails } from '@/config/contact';
+import { getContactDetails, isContactEnabled } from '@/config/contact';
 import SidebarPricingPromoCard from './SidebarPricingPromoCard';
 
 const ContactUsHoverLabel = ({ className }: { className?: string }) => {
@@ -52,9 +52,10 @@ const SidebarFooter = () => {
 	const { loading, user } = useUser();
 	const { open } = useSidebar();
 	const showPricingPromo = useShouldShowSidebarPricingPromo();
+	const contactEnabled = isContactEnabled();
 	const slackUrl = getContactDetails().slackUrl;
-	const showContactInFooter = Boolean(slackUrl) && !showPricingPromo;
-	const showContactInMenu = Boolean(slackUrl) && showPricingPromo;
+	const showContactInFooter = contactEnabled && Boolean(slackUrl) && !showPricingPromo;
+	const showContactInMenu = contactEnabled && Boolean(slackUrl) && showPricingPromo;
 
 	if (loading) return <Skeleton className='w-full h-12' />;
 
@@ -101,7 +102,7 @@ const SidebarFooter = () => {
 
 			<SidebarMenuButton
 				onClick={() => {
-					window.open('https://docs.flexprice.io', '_blank');
+					window.open('https://docs.flexprice.io', '_blank', 'noopener,noreferrer');
 				}}
 				tooltip={t('labels.documentation')}
 				className={cn(

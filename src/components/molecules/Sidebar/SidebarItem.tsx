@@ -75,7 +75,7 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 			const willOpen = !isOpen;
 			item.onToggle?.(willOpen);
 
-			if (willOpen && item.url && item.url !== '#') {
+			if (item.url && item.url !== '#') {
 				navigate(item.url);
 			}
 		}

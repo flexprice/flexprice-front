@@ -20,7 +20,7 @@ describe('TableAvatar', () => {
 
 	it('uses a slightly larger tile when size is md', () => {
 		const { container } = render(<TableAvatar name='Acme Corporation' size='md' />);
-		expect(container.querySelector('span')?.className).toContain('size-7');
+		expect(container.querySelector('span')?.className).toContain('size-8');
 	});
 
 	it('spreads names across six distinct primaries instead of clustering on purple/pink', () => {

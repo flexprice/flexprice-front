@@ -40,7 +40,7 @@ const ProviderLogoStack: FC<ProviderLogoStackProps> = ({ providers, emptyLabel }
 
 	return (
 		<Tooltip content={names} delayDuration={200}>
-			<div className='inline-flex max-w-full items-center gap-2' aria-label={names}>
+			<div className='inline-flex max-w-full items-center gap-2' role='img' aria-label={names}>
 				{visible.map((provider) => (
 					<ProviderMark key={provider} provider={provider} />
 				))}

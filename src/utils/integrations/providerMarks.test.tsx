@@ -7,7 +7,11 @@ describe('providerMarks', () => {
 	});
 
 	it('resolves zoho_books to the zoho catalog mark', () => {
-		expect(getProviderLogo('zoho_books')?.logo).toBe(getProviderLogo('zoho')?.logo);
+		const zohoBooks = getProviderLogo('zoho_books');
+		const zoho = getProviderLogo('zoho');
+		expect(zohoBooks).toBeTruthy();
+		expect(zoho).toBeTruthy();
+		expect(zohoBooks?.logo).toBe(zoho?.logo);
 		expect(getProviderLogo('stripe')?.logo).toBeTruthy();
 	});
 });

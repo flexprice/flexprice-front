@@ -43,7 +43,7 @@ const RegionSelectorImpl: React.FC = () => {
 					</button>
 				</Tooltip>
 			</div>
-			<Select value={selectedRegion?.key ?? ''} onValueChange={handleRegionChange} disabled={regions.length === 0}>
+			<Select value={selectedRegion?.key ?? ''} onValueChange={handleRegionChange} disabled={isPreview || regions.length === 0}>
 				<SelectTrigger className='w-full'>
 					{selectedRegion ? (
 						(() => {

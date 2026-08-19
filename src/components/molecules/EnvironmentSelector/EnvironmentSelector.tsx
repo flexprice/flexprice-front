@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@/components/ui';
 import {
@@ -89,6 +89,10 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 	const [isEditorOpen, setIsEditorOpen] = useState(false);
 	const [editingEnvironment, setEditingEnvironment] = useState<Environment | null>(null);
 	const [isSuspendedDialogOpen, setIsSuspendedDialogOpen] = useState(false);
+
+	useEffect(() => {
+		if (!open) setIsOpen(false);
+	}, [open]);
 
 	if (loading)
 		return (
@@ -184,10 +188,11 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 
 			{/* Environment picker (colored box) */}
 			<Select open={isOpen} onOpenChange={setIsOpen} value={activeEnvironment?.id} onValueChange={handleChange} disabled={disabled}>
-				<SelectTrigger className={cn(open ? '' : 'hidden')}>
+				<SelectTrigger className='w-full'>
 					<div
 						className={cn(
-							'w-full mt-3.5 flex items-center justify-between h-10 px-2 py-[10px] rounded-[var(--fp-radius-md)] border',
+							'mt-3.5 flex items-center rounded-[var(--fp-radius-md)] border',
+							open ? 'h-10 w-full justify-between px-2 py-[10px]' : 'size-10 justify-center p-0',
 							isDevelopment && 'border-accent-yellow-line text-accent-yellow-deep',
 							isProduction && 'border-env-prod-line text-env-prod-text',
 						)}
@@ -201,15 +206,15 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 								? 'linear-gradient(to right, rgb(var(--fp-env-prod-bg)), rgb(var(--fp-env-prod-bg-mid)), rgb(var(--fp-env-prod-bg)))'
 								: 'linear-gradient(to right, rgb(var(--fp-env-dev-bg)), rgb(var(--fp-env-dev-bg-mid)), rgb(var(--fp-env-dev-bg)))',
 						}}>
-						<div className='flex items-center gap-2 min-w-0'>
+						<div className={cn('flex items-center min-w-0', open ? 'gap-2' : 'justify-center')}>
 							{isDevelopment ? (
 								<HugeIcon icon={BlocksIcon} size={20} className='text-current' />
 							) : (
 								<HugeIcon icon={RocketIcon} size={20} className='text-current' />
 							)}
-							<span className='block text-[14px] font-normal truncate max-w-[120px]'>{environmentName}</span>
+							<span className={cn('block text-[14px] font-normal truncate max-w-[120px]', !open && 'hidden')}>{environmentName}</span>
 						</div>
-						<HugeIcon icon={UnfoldMoreIcon} size={16} className='opacity-60' />
+						<HugeIcon icon={UnfoldMoreIcon} size={16} className={cn('opacity-60', !open && 'hidden')} />
 					</div>
 				</SelectTrigger>
 				<SelectContent className='mt-2 w-[calc(var(--radix-select-trigger-width)+8px)] max-w-[calc(var(--radix-select-trigger-width)+8px)] rounded-[var(--fp-radius-lg)] border-line bg-surface text-content'>
