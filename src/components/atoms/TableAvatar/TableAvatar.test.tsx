@@ -12,10 +12,10 @@ describe('TableAvatar', () => {
 		expect(getTableAvatarInitials('Globex')).toBe('GL');
 	});
 
-	it('applies a Figma hex fill so the tile is never transparent', () => {
+	it('uses the avatar token classes so dark-mode overrides can affect the tile', () => {
 		const { container } = render(<TableAvatar name='Acme Corporation' />);
 		const tile = container.querySelector('span');
-		expect(tile?.className).toMatch(/bg-\[#[0-9a-f]{6}\]/);
+		expect(tile?.className).toMatch(/bg-\[rgb\(var\(--fp-avatar-\d\)\)\]/);
 	});
 
 	it('uses a slightly larger tile when size is md', () => {

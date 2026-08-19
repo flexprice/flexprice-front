@@ -61,7 +61,7 @@
 		/*
 		 * Revamp geometry — additive. Existing --radius and Tailwind rounded-{sm,md,lg,xl}
 		 * stay 6px so legacy surfaces do not shift. Named tokens map Figma:
-		 * sm 6 avatar · md 8 control · lg 10 table card · chip-dot 8 status pill · page-pad-top 36.
+		 * sm 6 avatar · md 8 control · lg 10 table card · chip-dot 8 status pill · page-pad-top 28.
 		 */
 		--fp-radius-sm: 6px;
 		--fp-radius-md: 8px;

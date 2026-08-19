@@ -13,25 +13,24 @@ const TONE_DOT: Record<StatusChipTone, string> = {
 
 /** Named Figma statuses map onto the semantic tones. The label stays neutral. */
 const STATUS_TONE: Record<string, StatusChipTone> = {
-	Active: 'success',
-	Paid: 'success',
-	Boolean: 'success',
-	Advance: 'success',
-	Draft: 'warning',
-	Trial: 'warning',
-	Pending: 'warning',
-	Metered: 'warning',
-	Arrear: 'warning',
-	'Usage Based': 'warning',
-	'Usage based': 'warning',
-	Inactive: 'neutral',
-	Cancelled: 'neutral',
-	Overdue: 'neutral',
-	Static: 'neutral',
-	Failed: 'danger',
-	Upcoming: 'info',
-	Recurring: 'info',
-	Config: 'info',
+	active: 'success',
+	paid: 'success',
+	boolean: 'success',
+	advance: 'success',
+	draft: 'warning',
+	trial: 'warning',
+	pending: 'warning',
+	metered: 'warning',
+	arrear: 'warning',
+	'usage based': 'warning',
+	inactive: 'neutral',
+	cancelled: 'neutral',
+	overdue: 'neutral',
+	static: 'neutral',
+	failed: 'danger',
+	upcoming: 'info',
+	recurring: 'info',
+	config: 'info',
 };
 
 export type StatusChipStatus = keyof typeof STATUS_TONE;
@@ -61,7 +60,7 @@ export function getFeatureTypeTone(type: string): StatusChipTone {
  * Dot size is `--fp-chip-dot` so list and inner-table pills stay in lockstep.
  */
 const StatusChip: FC<StatusChipProps> = ({ tone, status, label, className }) => {
-	const resolvedTone = tone ?? (status ? STATUS_TONE[status] : undefined) ?? 'neutral';
+	const resolvedTone = tone ?? (status ? STATUS_TONE[status.toLowerCase()] : undefined) ?? 'neutral';
 	const resolvedLabel = label ?? status ?? '';
 
 	return (

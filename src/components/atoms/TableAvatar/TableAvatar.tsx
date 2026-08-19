@@ -1,8 +1,15 @@
 import { cn } from '@/lib/utils';
 import { FC } from 'react';
 
-/** Six separated primaries — one hue each, then the hash wraps. */
-const AVATAR_TONES = ['bg-[#2563eb]', 'bg-[#059669]', 'bg-[#d97706]', 'bg-[#e11d48]', 'bg-[#7c3aed]', 'bg-[#0891b2]'] as const;
+/** Six separated avatar tokens — one hue each, then the hash wraps. */
+const AVATAR_TONES = [
+	'bg-[rgb(var(--fp-avatar-1))]',
+	'bg-[rgb(var(--fp-avatar-2))]',
+	'bg-[rgb(var(--fp-avatar-3))]',
+	'bg-[rgb(var(--fp-avatar-4))]',
+	'bg-[rgb(var(--fp-avatar-5))]',
+	'bg-[rgb(var(--fp-avatar-6))]',
+] as const;
 
 const AVATAR_SIZE = {
 	sm: 'size-6 text-[10px] leading-3',
