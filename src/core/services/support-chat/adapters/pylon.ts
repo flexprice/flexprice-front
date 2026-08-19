@@ -118,10 +118,22 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 				}
 			}
 
-			// Pylon requires any identity sent to the widget to match the JWT claims, so the
-			// token carries all of it and nothing else ships alongside it.
+			// The widget both (a) gates rendering on chat_settings.email/name being present,
+			// regardless of JWT mode, and (b) sends chat_settings.account_external_id /
+			// contact_external_id verbatim to Pylon's jwt-auth endpoint alongside the JWT — any
+			// mismatch against the JWT's own signed claims gets the auth call rejected. These are
+			// sent here to exactly mirror what the backend (userService.CreateSupportChatToken)
+			// signs into the token: email, name (falls back to tenant name), contact_external_id
+			// (always the user id), and account_external_id (the tenant id, when present).
 			const chatSettings: Record<string, unknown> = identityToken
-				? { app_id: appId, jwt: identityToken }
+				? {
+						app_id: appId,
+						jwt: identityToken,
+						email: user.email ?? '',
+						name: user.name ?? '',
+						contact_external_id: user.id,
+						...(user.tenantId ? { account_external_id: user.tenantId } : {}),
+					}
 				: {
 						app_id: appId,
 						email: user.email ?? '',
