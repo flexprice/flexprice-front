@@ -195,30 +195,37 @@ describe('pylon adapter', () => {
 	});
 
 	describe('identity verification', () => {
-		it('sends only the app id and the jwt, so nothing can contradict the claims', async () => {
+		it('sends identity fields mirroring exactly what the backend signs into the JWT', async () => {
 			const adapter = createPylonAdapter('app-123', async () => 'signed.jwt.token');
 			const pending = adapter.init(USER);
 			await vi.waitFor(() => expect(globals().pylon?.chat_settings).toHaveProperty('jwt'));
 
+			// The shipped widget (a) gates rendering on chat_settings.email/name being present
+			// regardless of JWT mode, and (b) forwards account_external_id/contact_external_id
+			// to Pylon's jwt-auth endpoint verbatim — any mismatch against the JWT's own claims
+			// gets the auth call rejected. These must mirror userService.CreateSupportChatToken.
 			expect(globals().pylon?.chat_settings).toEqual({
 				app_id: 'app-123',
 				jwt: 'signed.jwt.token',
+				email: 'ada@example.com',
+				name: 'Ada Tenant',
+				contact_external_id: 'user_1',
+				account_external_id: 'tenant_1',
 			});
 
 			completeScriptLoad();
 			await pending;
 		});
 
-		it('never ships email, name or account_external_id alongside a jwt', async () => {
+		it('omits account_external_id alongside a jwt when the user has no tenant', async () => {
 			const adapter = createPylonAdapter('app-123', async () => 'signed.jwt.token');
-			const pending = adapter.init(USER);
+			const pending = adapter.init({ id: 'user_1', email: 'ada@example.com', name: 'Ada' });
 			await vi.waitFor(() => expect(globals().pylon?.chat_settings).toHaveProperty('jwt'));
 
 			const settings = globals().pylon?.chat_settings ?? {};
-			expect(settings).not.toHaveProperty('email');
-			expect(settings).not.toHaveProperty('name');
 			expect(settings).not.toHaveProperty('account_external_id');
 			expect(settings).not.toHaveProperty('email_hash');
+			expect(settings).toHaveProperty('contact_external_id', 'user_1');
 
 			completeScriptLoad();
 			await pending;
