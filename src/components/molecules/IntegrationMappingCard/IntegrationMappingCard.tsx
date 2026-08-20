@@ -9,7 +9,7 @@ import Label from '@/components/atoms/Label';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import IntegrationMappingApi, { IntegrationConfigItem, IntegrationMappingItem } from '@/api/IntegrationMappingApi';
-import { integrationCatalogSpecs } from '@/pages/insights-tools/integrations/integrationsData';
+import { integrationCatalogSpecs } from '@/utils/integrations/integrationCatalog';
 import formatDate from '@/utils/common/format_date';
 import { cn } from '@/lib/utils';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';

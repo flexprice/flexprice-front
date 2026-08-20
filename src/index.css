@@ -682,6 +682,7 @@ html {
 	}
 	.page {
 		@apply flex h-screen flex-col px-4 pb-12;
+
 		padding-top: var(--fp-page-pad-top);
 	}
 	.scrollbar-hide {

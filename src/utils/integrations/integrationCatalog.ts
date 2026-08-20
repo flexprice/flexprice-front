@@ -3,9 +3,9 @@
  * Moyasar all draw in ~#213343, which disappears against a Midnight surface; the rest of the
  * catalogue is either full-colour or already legible on dark, so only these three need a variant.
  */
-import razorpayDark from '../../../../assets/logodark/whiterazorpay.png';
-import hubspotDark from '../../../../assets/logodark/hubspot.png';
-import moyasarDark from '../../../../assets/logodark/moyasarwhite.png';
+import razorpayDark from '../../../assets/logodark/whiterazorpay.png';
+import hubspotDark from '../../../assets/logodark/hubspot.png';
+import moyasarDark from '../../../assets/logodark/moyasarwhite.png';
 
 /** Tag key for integrations hidden from main grids (none in catalog today). */
 export const INTEGRATION_TAG_DATA_PIPELINES = 'dataPipelines';

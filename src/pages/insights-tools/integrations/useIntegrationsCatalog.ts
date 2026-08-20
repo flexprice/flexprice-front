@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { integrationCatalogSpecs, type Integration, type IntegrationCatalogSpec } from './integrationsData';
+import { integrationCatalogSpecs, type Integration, type IntegrationCatalogSpec } from '@/utils/integrations/integrationCatalog';
 
 const CATALOG = 'insightsTools.integrations.catalog';
 

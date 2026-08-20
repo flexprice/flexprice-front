@@ -1,4 +1,4 @@
-import { integrationCatalogSpecs } from '@/pages/insights-tools/integrations/integrationsData';
+import { integrationCatalogSpecs } from '@/utils/integrations/integrationCatalog';
 
 const PROVIDER_ID_MAP: Record<string, string> = {
 	zoho_books: 'zoho',

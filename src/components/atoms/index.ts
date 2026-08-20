@@ -4,7 +4,7 @@ export { default as SectionHeader } from './SectionHeader';
 export { default as Chip } from './Chip';
 export { default as StatusChip, getFeatureTypeTone } from './StatusChip';
 export type { StatusChipProps, StatusChipStatus, StatusChipTone } from './StatusChip';
-export { default as TableAvatar } from './TableAvatar';
+export { default as TableAvatar, getTableAvatarInitials, getTableAvatarToneIndex } from './TableAvatar';
 export type { TableAvatarProps } from './TableAvatar';
 export { default as HugeIcon } from './HugeIcon';
 export type { HugeIconProps, HugeIconData } from './HugeIcon';

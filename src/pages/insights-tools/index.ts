@@ -2,7 +2,7 @@
 export { default as IntegrationDetails } from './integrations/IntegrationDetails';
 export { default as Integrations } from './integrations/Integrations';
 export { useIntegrationsCatalog } from './integrations/useIntegrationsCatalog';
-export type { Integration } from './integrations/integrationsData';
+export type { Integration } from '@/utils/integrations/integrationCatalog';
 export { default as QuickBooksOAuthCallback } from './integrations/QuickBooksOAuthCallback';
 
 // Exports
