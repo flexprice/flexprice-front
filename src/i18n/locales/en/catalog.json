@@ -481,7 +481,11 @@
 				"billingModelPlaceholder": "Billing Model",
 				"selectBillingPeriod": "Select The Billing Period",
 				"per": "per",
-				"amountPlaceholder": "0.00"
+				"amountPlaceholder": "0.00",
+				"bucketSize": "Bucket Size (Optional)",
+				"bucketSizeNone": "No bucketing",
+				"bucketSizePlaceholder": "No bucketing",
+				"bucketSizeDescription": "Window usage into fixed-size buckets before aggregation, e.g. per-hour totals"
 			},
 			"priceForm": {
 				"displayName": "Display Name",
@@ -768,10 +772,7 @@
 			"aggregationMultiplier": "Aggregation Multiplier*",
 			"aggregationMultiplierPh": "1",
 			"aggregationMultiplierHelp": "Specify the multiplier for the aggregation. e.g. 1.5, 0.25, or 1000.",
-			"bucketSizeButton": "Bucket size",
 			"groupByButton": "Group by",
-			"bucketSize": "Bucket Size",
-			"bucketSizeHelp": "The size of the window to aggregate over. eg. 15MIN, 30MIN, HOUR, etc.",
 			"groupBy": "Group by",
 			"groupByPlaceholder": "e.g. user_id, tenant_id",
 			"groupByHelp": "Field to group aggregation by. Must be a string (e.g. event property name).",

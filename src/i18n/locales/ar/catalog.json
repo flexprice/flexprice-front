@@ -481,7 +481,11 @@
 				"billingModelPlaceholder": "نموذج الفوترة",
 				"selectBillingPeriod": "اختر فترة الفوترة",
 				"per": "لكل",
-				"amountPlaceholder": "0.00"
+				"amountPlaceholder": "0.00",
+				"bucketSize": "حجم الدفعة (اختياري)",
+				"bucketSizeNone": "بدون تجميع",
+				"bucketSizePlaceholder": "بدون تجميع",
+				"bucketSizeDescription": "قسّم الاستخدام إلى دفعات ثابتة الحجم قبل التجميع، مثل الإجماليات لكل ساعة"
 			},
 			"priceForm": {
 				"displayName": "اسم العرض",
@@ -768,10 +772,7 @@
 			"customExpressionHelp": "اكتب صيغة CEL تُحسب لكل حدث لحساب الكمية. المتغيرات هي أسماء الخصائص ذات المستوى الأعلى في الأحداث (مثل duration_ms وtokens).\n\nالدوال المتاحة: max(a, b)، min(a, b)، abs(x)، ceil(x)، floor(x)، round(x)، pow(x, y)، sqrt(x)، log(x).\n\nأمثلة:\n• input_tokens + output_tokens\n• ceil(duration_ms / 1000)\n• min(usage, quota)\n• max(cores * hours * rate, 0.01)\n\nمتاح فقط لـ SUM وAVG وMAX وLATEST.",
 			"aggregationMultiplierPh": "1",
 			"aggregationMultiplierHelp": "حدد المضاعف للتجميع، مثل 1.5 أو 0.25 أو 1000.",
-			"bucketSizeButton": "حجم الدفعة",
 			"groupByButton": "تجميع حسب",
-			"bucketSize": "حجم الدفعة",
-			"bucketSizeHelp": "حجم النافذة للتجميع عليها، مثل 15MIN و30MIN وHOUR وغيرها.",
 			"groupBy": "تجميع حسب",
 			"groupByPlaceholder": "مثل user_id، tenant_id",
 			"groupByHelp": "الحقل لتجميع النتائج حسبه. يجب أن يكون نصًا (مثل اسم خاصية الحدث).",
