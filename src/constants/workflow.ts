@@ -2,9 +2,9 @@ import type { TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 
 /** Workflow type for plan price sync (POST /plans/:id/sync/subscriptions). */
-export const PRICE_SYNC_WORKFLOW_TYPE = 'PriceSyncWorkflow';
+export const PRICE_SYNC_WORKFLOW_TYPE = 'PriceSyncV2Workflow';
 
-/** Filter for workflows/search: workflow_type eq PriceSyncWorkflow. */
+/** Filter for workflows/search: workflow_type eq PriceSyncV2Workflow. */
 export const PRICE_SYNC_WORKFLOW_FILTER: TypedBackendFilter = {
 	field: 'workflow_type',
 	operator: FilterOperator.EQUAL,
@@ -13,7 +13,7 @@ export const PRICE_SYNC_WORKFLOW_FILTER: TypedBackendFilter = {
 };
 
 /**
- * Filters for plan price sync workflow search: workflow_type eq PriceSyncWorkflow and entity_id eq planId.
+ * Filters for plan price sync workflow search: workflow_type eq PriceSyncV2Workflow and entity_id eq planId.
  * Use with POST /workflows/search. Response should be sorted by start_time desc so first item is latest.
  */
 export function getPlanPriceSyncWorkflowFilters(planId: string): TypedBackendFilter[] {
@@ -25,7 +25,7 @@ export function getPlanPriceSyncWorkflowFilters(planId: string): TypedBackendFil
 
 /** API workflow_type → display name for UI. Usage: display = WORKFLOW_TYPE_DISPLAY_NAMES[workflow_type] ?? workflow_type */
 export const WORKFLOW_TYPE_DISPLAY_NAMES: Record<string, string> = {
-	PriceSyncWorkflow: 'Price sync',
+	PriceSyncV2Workflow: 'Price sync',
 	QuickBooksPriceSyncWorkflow: 'QuickBooks price sync',
 	TaskProcessingWorkflow: 'Task processing',
 	SubscriptionChangeWorkflow: 'Subscription change',

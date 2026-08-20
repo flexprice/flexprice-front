@@ -158,7 +158,7 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 			label: 'Recalculate Invoice',
 			group: 'Actions',
 			disabled:
-				data?.invoice_status !== INVOICE_STATUS.VOIDED ||
+				data?.invoice_status === INVOICE_STATUS.DRAFT ||
 				data?.invoice_type !== INVOICE_TYPE.SUBSCRIPTION ||
 				!!data?.recalculated_invoice_id ||
 				isRecalculating,
