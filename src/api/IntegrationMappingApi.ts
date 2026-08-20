@@ -70,6 +70,18 @@ class IntegrationMappingApi {
 		return await AxiosClient.get<IntegrationMappingsResponse>(url);
 	}
 
+	/** ponytail: page-sized Promise.all until mappings accept entity_ids */
+	public static async listMappingsByEntityIds(entityType: string, entityIds: string[]): Promise<Map<string, IntegrationMappingItem[]>> {
+		const unique = [...new Set(entityIds.filter(Boolean))];
+		const entries = await Promise.all(
+			unique.map(async (entityId) => {
+				const res = await this.getIntegrationMappings(entityType, entityId);
+				return [entityId, res.items ?? []] as const;
+			}),
+		);
+		return new Map(entries);
+	}
+
 	public static async syncIntegration(request: IntegrationSyncRequest): Promise<{ message: string }> {
 		return await AxiosClient.post<{ message: string }>(`${this.baseUrl}/sync`, request);
 	}

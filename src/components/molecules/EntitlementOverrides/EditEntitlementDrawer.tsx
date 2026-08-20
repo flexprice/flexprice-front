@@ -1,5 +1,6 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Sheet, Label, Input, Button, Checkbox, Chip } from '@/components/atoms';
+import { Sheet, Label, Input, Button, Checkbox } from '@/components/atoms';
+import StatusChip, { getFeatureTypeTone } from '@/components/atoms/StatusChip';
 import { Switch } from '@/components/ui/switch';
 import { FEATURE_TYPE } from '@/models';
 import { EntitlementOverrideRequest } from '@/types/dto/Subscription';
@@ -123,18 +124,17 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 
 	const getFeatureTypeChip = (featureType: string) => {
 		const type = featureType?.toLowerCase();
-		switch (type) {
-			case 'metered':
-				return <Chip label={t('entitlements.overridesTable.featureTypeMetered')} variant='info' />;
-			case 'boolean':
-				return <Chip label={t('entitlements.overridesTable.featureTypeBoolean')} variant='success' />;
-			case 'static':
-				return <Chip label={t('entitlements.overridesTable.featureTypeStatic')} variant='warning' />;
-			case 'config':
-				return <Chip label={tc('labels.config')} variant='default' />;
-			default:
-				return <Chip label={featureType} variant='info' />;
-		}
+		const label =
+			type === 'metered'
+				? t('entitlements.overridesTable.featureTypeMetered')
+				: type === 'boolean'
+					? t('entitlements.overridesTable.featureTypeBoolean')
+					: type === 'static'
+						? t('entitlements.overridesTable.featureTypeStatic')
+						: type === 'config'
+							? tc('labels.config')
+							: featureType;
+		return <StatusChip tone={getFeatureTypeTone(featureType)} label={label} />;
 	};
 
 	const originalUsageLabel =

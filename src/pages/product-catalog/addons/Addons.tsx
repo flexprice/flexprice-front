@@ -1,4 +1,4 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
+import { AddButton, ActionButton, StatusChip, Page } from '@/components/atoms';
 import { ApiDocsContent, AddonDrawer } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
@@ -133,6 +133,7 @@ const AddonsPage = () => {
 			{
 				fieldName: 'name',
 				title: t('addons.listPage.columns.addonName'),
+				fieldVariant: 'title',
 			},
 			{
 				fieldName: 'lookup_key',
@@ -143,7 +144,7 @@ const AddonsPage = () => {
 				render: (row) => {
 					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('addons.listPage.filterStatus.active') : t('addons.listPage.filterStatus.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
@@ -154,6 +155,7 @@ const AddonsPage = () => {
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render(row) {
 					return (
 						<ActionButton
@@ -180,7 +182,7 @@ const AddonsPage = () => {
 	);
 
 	return (
-		<Page heading={t('addons.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
+		<Page className='max-w-none' heading={t('addons.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
 			<AddonDrawer data={activeAddon} open={addonDrawerOpen} onOpenChange={setAddonDrawerOpen} refetchQueryKeys={['fetchAddons']} />
 			<ApiDocsContent tags={API_DOCS_TAGS.Addons} />
 			<div className='space-y-6'>
@@ -206,6 +208,8 @@ const AddonsPage = () => {
 					}}
 					tableConfig={{
 						columns,
+						variant: 'card',
+						tableClassName: 'table-fixed',
 						onRowClick: (row) => {
 							navigate(RouteNames.addonDetails + `/${row?.id}`);
 						},

@@ -14,6 +14,13 @@ const formatDate = (date: string | Date, locale: string = 'en-US', options?: Int
 	return parsedDate.toLocaleDateString(locale, { ...defaultOptions, ...options });
 };
 
+/** Shared table/list date shape — keep in one place for eslint + consistency. */
+export const TABLE_SHORT_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+	day: 'numeric',
+	month: 'short',
+	year: 'numeric',
+};
+
 export default formatDate;
 
 export const formatDateTime = (dateString: string): string => {

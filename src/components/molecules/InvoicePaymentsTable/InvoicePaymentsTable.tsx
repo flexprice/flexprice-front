@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { FC, useMemo, useCallback } from 'react';
+import { FC, ReactNode, useMemo, useCallback } from 'react';
 import { Payment } from '@/models/Payment';
 import FlexpriceTable, { ColumnData, TooltipCell } from '../Table';
 import { formatDateShort, toSentenceCase, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { Chip, NoDataCard } from '@/components/atoms';
+import { StatusChip, NoDataCard } from '@/components/atoms';
+import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import { CreditCard, Banknote, Receipt, CircleDollarSign, ExternalLink, Copy, Eye } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { RedirectCell } from '../Table';
@@ -14,6 +15,7 @@ import { useNavigate } from 'react-router';
 
 interface Props {
 	data: Payment[];
+	footer?: ReactNode;
 }
 
 interface PaymentTableMenuProps {
@@ -45,13 +47,13 @@ const PAYMENT_METHOD_CONFIG = {
 } as const;
 
 // Payment status configuration for consistent styling
-const PAYMENT_STATUS_CONFIG = {
-	PENDING: { variant: 'warning' as const },
-	PROCESSING: { variant: 'warning' as const },
-	INITIATED: { variant: 'warning' as const },
-	SUCCEEDED: { variant: 'success' as const },
-	FAILED: { variant: 'failed' as const },
-} as const;
+const PAYMENT_STATUS_TONE: Record<string, StatusChipTone> = {
+	PENDING: 'warning',
+	PROCESSING: 'warning',
+	INITIATED: 'warning',
+	SUCCEEDED: 'success',
+	FAILED: 'danger',
+};
 
 const PaymentTableMenu: FC<PaymentTableMenuProps> = ({ payment }) => {
 	const navigate = useNavigate();
@@ -109,7 +111,7 @@ const PaymentTableMenu: FC<PaymentTableMenuProps> = ({ payment }) => {
 	return <DropdownMenu options={menuOptions} />;
 };
 
-const InvoicePaymentsTable: FC<Props> = ({ data }) => {
+const InvoicePaymentsTable: FC<Props> = ({ data, footer }) => {
 	const { t } = useTranslation('common');
 	const getPaymentMethodIcon = useCallback((method: string) => {
 		const config = PAYMENT_METHOD_CONFIG[method.toUpperCase() as keyof typeof PAYMENT_METHOD_CONFIG];
@@ -122,9 +124,8 @@ const InvoicePaymentsTable: FC<Props> = ({ data }) => {
 		return config?.label || method;
 	}, []);
 
-	const getPaymentStatusVariant = useCallback((status: string) => {
-		const statusConfig = PAYMENT_STATUS_CONFIG[status.toUpperCase() as keyof typeof PAYMENT_STATUS_CONFIG];
-		return statusConfig?.variant || 'default';
+	const getPaymentStatusTone = useCallback((status: string): StatusChipTone => {
+		return PAYMENT_STATUS_TONE[status.toUpperCase()] ?? 'neutral';
 	}, []);
 	const columns = useMemo(
 		(): ColumnData<Payment>[] => [
@@ -153,8 +154,8 @@ const InvoicePaymentsTable: FC<Props> = ({ data }) => {
 			{
 				title: 'Status',
 				render: (payment) => {
-					const variant = getPaymentStatusVariant(payment.payment_status);
-					return <Chip label={toSentenceCase(payment.payment_status)} variant={variant} />;
+					const tone = getPaymentStatusTone(payment.payment_status);
+					return <StatusChip label={toSentenceCase(payment.payment_status)} tone={tone} />;
 				},
 			},
 			{
@@ -177,7 +178,7 @@ const InvoicePaymentsTable: FC<Props> = ({ data }) => {
 				render: (payment) => <PaymentTableMenu payment={payment} />,
 			},
 		],
-		[getPaymentMethodIcon, getPaymentMethodLabel, getPaymentStatusVariant],
+		[getPaymentMethodIcon, getPaymentMethodLabel, getPaymentStatusTone],
 	);
 
 	// Early return for empty data
@@ -191,7 +192,15 @@ const InvoicePaymentsTable: FC<Props> = ({ data }) => {
 
 	return (
 		<div>
-			<FlexpriceTable showEmptyRow columns={columns} data={data} />
+			<FlexpriceTable
+				variant='card'
+				tableClassName='table-fixed'
+				showEmptyRow
+				hideBottomBorder={false}
+				columns={columns}
+				data={data}
+				footer={footer}
+			/>
 		</div>
 	);
 };

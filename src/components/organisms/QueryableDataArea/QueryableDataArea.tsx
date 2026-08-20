@@ -1,4 +1,5 @@
 import { memo, useCallback, useMemo, useRef, useState, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { QueryBuilder } from '@/components/molecules';
 import OrgTypeMetadataFilter from '@/components/molecules/Customer/OrgTypeMetadataFilter';
 import { ColumnData } from '@/components/molecules/Table';
@@ -6,6 +7,7 @@ import usePagination from '@/hooks/usePagination';
 import { usePaginationReset } from '@/hooks/usePaginationReset';
 import useFilterSortingWithPersistence from '@/hooks/useFilterSortingWithPersistence';
 import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
+import { usePageToolbarSlot } from '@/context/PageToolbarSlotContext';
 import { CustomerOrgTypeFilterValue } from '@/constants/customerOrgTypeFilter';
 import { hasOrgTypeInMetadataFilters, removeOrgTypeFromMetadataFilters } from '@/utils/customer/orgTypeMetadataFilterSync';
 import { FilterField, FilterCondition, SortOption } from '@/types/common/QueryBuilder';
@@ -40,6 +42,8 @@ export interface QueryConfig {
 		value: CustomerOrgTypeFilterValue | null;
 		onChange: (value: CustomerOrgTypeFilterValue | null) => void;
 	};
+	/** Icon-only filter/sort triggers with a count coin when active. */
+	controlsVariant?: 'labeled' | 'icon';
 }
 
 /**
@@ -88,7 +92,9 @@ export interface TableConfig<T> {
 	/** Hide the bottom border of the table (default: false) */
 	hideBottomBorder?: boolean;
 	/** Visual variant of the table (default: 'default') */
-	variant?: 'default' | 'no-bordered';
+	variant?: 'default' | 'no-bordered' | 'card';
+	/** Applied to the inner `<table>` (e.g. `table-fixed` for predictable column widths). */
+	tableClassName?: string;
 }
 
 /**
@@ -162,7 +168,9 @@ const QueryBuilderWrapper = memo<{
 	onFilterChange: (filters: FilterCondition[]) => void;
 	onSortChange: (sorts: SortOption[]) => void;
 	toolbarTrailing?: React.ReactNode;
-}>(({ filterOptions, sortOptions, filters, sorts, onFilterChange, onSortChange, toolbarTrailing }) => {
+	controlsVariant?: 'labeled' | 'icon';
+	placement?: 'standalone' | 'header';
+}>(({ filterOptions, sortOptions, filters, sorts, onFilterChange, onSortChange, toolbarTrailing, controlsVariant, placement }) => {
 	return (
 		<QueryBuilder
 			filterOptions={filterOptions}
@@ -170,13 +178,22 @@ const QueryBuilderWrapper = memo<{
 			onFilterChange={onFilterChange}
 			sortOptions={sortOptions}
 			onSortChange={onSortChange}
-			selectedSorts={sorts}>
+			selectedSorts={sorts}
+			controlsVariant={controlsVariant}
+			placement={placement}>
 			{toolbarTrailing}
 		</QueryBuilder>
 	);
 });
 
 QueryBuilderWrapper.displayName = 'QueryBuilderWrapper';
+
+/** Ensures list responses always expose an `items` array for table + empty-state logic. */
+const normalizeListResponse = <T,>(result: { items?: T[]; pagination?: { total?: number } }) => ({
+	...result,
+	items: result.items ?? [],
+	pagination: result.pagination ?? { total: 0 },
+});
 
 // Data area component - re-renders when query params change
 const DataArea = <T,>({
@@ -294,6 +311,19 @@ const QueryableDataArea = <T = any,>({
 		persistenceKey: queryConfig.filterPersistenceKey ?? dataConfig.queryKey,
 	});
 
+	const allowedFilterFields = useMemo(() => new Set(queryConfig.filterOptions.map((field) => field.field)), [queryConfig.filterOptions]);
+	const hasValidatedPersistedFiltersRef = useRef(false);
+
+	// Drop stale persisted filters (e.g. renamed fields) so they cannot zero-out results silently.
+	useLayoutEffect(() => {
+		if (hasValidatedPersistedFiltersRef.current) return;
+		hasValidatedPersistedFiltersRef.current = true;
+		const valid = filters.filter((condition) => allowedFilterFields.has(condition.field));
+		if (valid.length !== filters.length) {
+			setFilters(valid);
+		}
+	}, [allowedFilterFields, filters, setFilters]);
+
 	const orgTypeMetadataFilter = queryConfig.orgTypeMetadataFilter;
 
 	const handleFilterChange = useCallback(
@@ -352,33 +382,34 @@ const QueryableDataArea = <T = any,>({
 
 	// Create fetch function with all params
 	const fetchData = useCallback(async () => {
-		return await dataConfig.fetchFn({
+		const result = await dataConfig.fetchFn({
 			limit,
 			offset,
 			filters: sanitizedFilters,
 			sort: sanitizedSorts,
 			...dataConfig.additionalQueryParams,
 		});
+		return normalizeListResponse(result);
 	}, [dataConfig, limit, offset, sanitizedFilters, sanitizedSorts]);
 
 	// Create probe fetch function
 	const probeFetch = useCallback(async () => {
-		if (dataConfig.probeFetchFn) {
-			return await dataConfig.probeFetchFn({
-				limit: 1,
-				offset: 0,
-				filters: [],
-				sort: [],
-				...dataConfig.additionalQueryParams,
-			});
-		}
-		return await dataConfig.fetchFn({
-			limit: 1,
-			offset: 0,
-			filters: [],
-			sort: [],
-			...dataConfig.additionalQueryParams,
-		});
+		const result = dataConfig.probeFetchFn
+			? await dataConfig.probeFetchFn({
+					limit: 1,
+					offset: 0,
+					filters: [],
+					sort: [],
+					...dataConfig.additionalQueryParams,
+				})
+			: await dataConfig.fetchFn({
+					limit: 1,
+					offset: 0,
+					filters: [],
+					sort: [],
+					...dataConfig.additionalQueryParams,
+				});
+		return normalizeListResponse(result);
 	}, [dataConfig]);
 
 	// Data fetching with empty state detection
@@ -391,7 +422,7 @@ const QueryableDataArea = <T = any,>({
 			queryKey: [dataConfig.queryKey, 'probe', queryKey],
 			queryFn: probeFetch,
 		},
-		shouldProbe: (mainData) => mainData?.items.length === 0,
+		shouldProbe: (mainData) => (mainData?.items?.length ?? 0) === 0,
 	});
 
 	const onMainDataChangeRef = useRef(dataConfig.onMainDataChange);
@@ -414,9 +445,9 @@ const QueryableDataArea = <T = any,>({
 			setIsTransitionLoading(true);
 		}
 
-		// Clear loading states when query completes
+		// Clear loading states once queries settle (success or error — not only when data exists)
 		if (!isLoading) {
-			if (isInitialMount && (data || probeData)) {
+			if (isInitialMount) {
 				setIsInitialMount(false);
 			}
 			if (isTransitionLoading) {
@@ -426,15 +457,17 @@ const QueryableDataArea = <T = any,>({
 
 		// Update previous query key
 		prevQueryKeyRef.current = queryKey;
-	}, [queryKey, isLoading, data, probeData, isInitialMount, isTransitionLoading]);
+	}, [queryKey, isLoading, isInitialMount, isTransitionLoading]);
 
 	// Calculate loading state
 	const shouldShowLoading = isLoading || isInitialMount || isTransitionLoading;
 
 	// Show empty page when no data exists (only when not loading and have definitive data)
 	const showEmptyPage = useMemo(() => {
-		if (shouldShowLoading || !data || !probeData) return false;
-		return probeData.items.length === 0 && data.items.length === 0;
+		if (shouldShowLoading || !data) return false;
+		if ((data.items?.length ?? 0) > 0) return false;
+		if (!probeData) return false;
+		return (probeData.items?.length ?? 0) === 0;
 	}, [shouldShowLoading, probeData, data]);
 
 	const shouldShowEmptyState = showEmptyPage && !!emptyStateConfig;
@@ -451,20 +484,26 @@ const QueryableDataArea = <T = any,>({
 		return true;
 	}, [isInitialMount, shouldShowEmptyState]);
 
+	const toolbarSlotEl = usePageToolbarSlot();
+	const useHeaderToolbar = toolbarSlotEl != null;
+
+	const queryControls = shouldShowQueryBuilder ? (
+		<QueryBuilderWrapper
+			filterOptions={queryConfig.filterOptions}
+			sortOptions={queryConfig.sortOptions}
+			filters={filters}
+			sorts={sorts}
+			onFilterChange={handleFilterChange}
+			onSortChange={setSorts}
+			toolbarTrailing={resolvedToolbarTrailing}
+			controlsVariant={queryConfig.controlsVariant ?? 'icon'}
+			placement={useHeaderToolbar ? 'header' : 'standalone'}
+		/>
+	) : null;
+
 	return (
 		<div>
-			{/* Stable QueryBuilder - only show when we know data state (not during initial loading) */}
-			{shouldShowQueryBuilder && (
-				<QueryBuilderWrapper
-					filterOptions={queryConfig.filterOptions}
-					sortOptions={queryConfig.sortOptions}
-					filters={filters}
-					sorts={sorts}
-					onFilterChange={handleFilterChange}
-					onSortChange={setSorts}
-					toolbarTrailing={resolvedToolbarTrailing}
-				/>
-			)}
+			{useHeaderToolbar ? createPortal(queryControls, toolbarSlotEl) : queryControls}
 
 			{/* Data area - re-renders when query params change */}
 			<DataArea<T>

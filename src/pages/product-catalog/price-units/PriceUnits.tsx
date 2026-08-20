@@ -1,4 +1,4 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
+import { AddButton, ActionButton, StatusChip, Page } from '@/components/atoms';
 import { ApiDocsContent, PriceUnitDrawer } from '@/components/molecules';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { ColumnData } from '@/components/molecules/Table';
@@ -156,6 +156,7 @@ const PriceUnitsPage = () => {
 			{
 				fieldName: 'name',
 				title: t('priceUnits.table.name'),
+				fieldVariant: 'title',
 			},
 			{
 				fieldName: 'code',
@@ -182,7 +183,7 @@ const PriceUnitsPage = () => {
 				render: (row) => {
 					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('priceUnits.listPage.filterStatus.active') : t('priceUnits.listPage.filterStatus.inactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
@@ -193,6 +194,7 @@ const PriceUnitsPage = () => {
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render(row) {
 					return (
 						<ActionButton
@@ -219,7 +221,7 @@ const PriceUnitsPage = () => {
 	);
 
 	return (
-		<Page heading={t('priceUnits.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
+		<Page className='max-w-none' heading={t('priceUnits.listPage.title')} headingCTA={<AddButton onClick={handleOnAdd} />}>
 			<PriceUnitDrawer
 				data={activePriceUnit}
 				open={priceUnitDrawerOpen}
@@ -250,6 +252,8 @@ const PriceUnitsPage = () => {
 					}}
 					tableConfig={{
 						columns,
+						variant: 'card',
+						tableClassName: 'table-fixed',
 						showEmptyRow: true,
 					}}
 					paginationConfig={{

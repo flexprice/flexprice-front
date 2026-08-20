@@ -122,7 +122,7 @@ const PropertyFilterQueryBuilder = ({
 	}, [localSorts]);
 
 	return (
-		<div className='flex flex-wrap items-center gap-3 mb-5'>
+		<div className='flex flex-wrap items-center gap-2.5 mb-5'>
 			{/* Filter options */}
 			{fields.length > 0 && (
 				<PropertyFilterPopover

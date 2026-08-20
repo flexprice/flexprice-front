@@ -1,4 +1,4 @@
-import { Page, ActionButton, Chip, Tooltip, AddButton } from '@/components/atoms';
+import { ActionButton, StatusChip, TableAvatar, Tooltip, AddButton, Page } from '@/components/atoms';
 import { ApiDocsContent, RedirectCell } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
@@ -28,9 +28,9 @@ import { SubscriptionResponse } from '@/types/dto/Subscription';
 import { useMemo, useState, useCallback } from 'react';
 import SubscriptionCancelDialog from '@/components/molecules/SubscriptionCancelDialog/SubscriptionCancelDialog';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
 import { isInheritedSubscription } from '@/utils/subscription/isInheritedSubscription';
 import { ENTITY_STATUS } from '@/models';
+import { getSubscriptionListStatus } from './subscriptionListDisplay';
 
 const BILLING_CADENCE_I18N_KEYS: Record<BILLING_CADENCE, 'recurring' | 'onetime'> = {
 	[BILLING_CADENCE.RECURRING]: 'recurring',
@@ -48,6 +48,15 @@ const BILLING_PERIOD_I18N_KEYS: Record<BILLING_PERIOD, 'daily' | 'weekly' | 'mon
 		[BILLING_PERIOD.ONETIME]: 'onetime',
 	};
 
+const SUBSCRIPTION_STATUS_I18N: Record<ReturnType<typeof getSubscriptionListStatus>['kind'], string> = {
+	active: 'common:status.active',
+	trial: 'subscriptions.listPage.statusChips.trial',
+	cancelled: 'common:status.cancelled',
+	incomplete: 'common:status.incomplete',
+	draft: 'common:status.draft',
+	inactive: 'common:status.inactive',
+};
+
 const initialFilters: FilterCondition[] = [
 	{
 		field: 'subscription_status',
@@ -57,23 +66,6 @@ const initialFilters: FilterCondition[] = [
 		id: 'initial-status',
 	},
 ];
-
-const getSubscriptionStatusChip = (status: SUBSCRIPTION_STATUS, t: TFunction) => {
-	switch (status) {
-		case SUBSCRIPTION_STATUS.ACTIVE:
-			return <Chip variant='success' label={t('common:status.active')} />;
-		case SUBSCRIPTION_STATUS.CANCELLED:
-			return <Chip variant='failed' label={t('common:status.cancelled')} />;
-		case SUBSCRIPTION_STATUS.INCOMPLETE:
-			return <Chip variant='warning' label={t('common:status.incomplete')} />;
-		case SUBSCRIPTION_STATUS.TRIALING:
-			return <Chip variant='warning' label={t('common:status.trialing')} />;
-		case SUBSCRIPTION_STATUS.DRAFT:
-			return <Chip variant='warning' label={t('common:status.draft')} />;
-		default:
-			return <Chip variant='default' label={t('common:status.inactive')} />;
-	}
-};
 
 const SubscriptionsPage = () => {
 	const navigate = useNavigate();
@@ -191,30 +183,55 @@ const SubscriptionsPage = () => {
 		() => [
 			{
 				title: t('subscriptions.listPage.columns.customer'),
-				render: (row) => (
-					<RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer_id}`}>{row.customer?.name || row.customer_id}</RedirectCell>
-				),
+				fieldVariant: 'title',
+				width: '22%',
+				render: (row) => {
+					const name = row.customer?.name || row.customer_id;
+					return (
+						<div className='flex min-w-0 items-center gap-2'>
+							<TableAvatar name={name} />
+							<RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer_id}`}>{name}</RedirectCell>
+						</div>
+					);
+				},
 			},
 			{
 				title: t('subscriptions.listPage.columns.plan'),
+				width: '18%',
 				render: (row) => <RedirectCell redirectUrl={`${RouteNames.plan}/${row.plan_id}`}>{row.plan?.name || row.plan_id}</RedirectCell>,
 			},
 			{
 				title: t('subscriptions.listPage.columns.status'),
+				width: 130,
 				render: (row) => {
-					return getSubscriptionStatusChip(row.subscription_status, t);
+					const { status, kind } = getSubscriptionListStatus(row.subscription_status);
+					return <StatusChip status={status} label={t(SUBSCRIPTION_STATUS_I18N[kind])} />;
+				},
+			},
+			{
+				title: t('subscriptions.listPage.columns.billing'),
+				width: '12%',
+				render: (row) => {
+					const periodKey = BILLING_PERIOD_I18N_KEYS[row.billing_period];
+					return periodKey ? t(`subscriptions.listPage.billingPeriod.${periodKey}`) : t('common:labels.na');
 				},
 			},
 			{
 				title: t('subscriptions.listPage.columns.startDate'),
-				render: (row) => formatDate(row.start_date),
+				width: '14%',
+				render: (row) => formatDate(row.start_date, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
 				title: t('subscriptions.listPage.columns.renewalDate'),
-				render: (row) => formatDate(row.current_period_end),
+				width: '14%',
+				render: (row) =>
+					row.subscription_status === SUBSCRIPTION_STATUS.CANCELLED
+						? t('common:labels.na')
+						: formatDate(row.current_period_end, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render: (row) => {
 					if (isInheritedSubscription(row)) {
 						return (
@@ -255,7 +272,7 @@ const SubscriptionsPage = () => {
 
 	return (
 		<>
-			<Page heading={t('subscriptions.title')} headingCTA={<AddButton onClick={handleAddSubscription} />}>
+			<Page className='max-w-none' heading={t('subscriptions.title')} headingCTA={<AddButton onClick={handleAddSubscription} />}>
 				<ApiDocsContent tags={API_DOCS_TAGS.Subscriptions} />
 				<QueryableDataArea<SubscriptionResponse>
 					queryConfig={{
@@ -267,24 +284,36 @@ const SubscriptionsPage = () => {
 					}}
 					dataConfig={{
 						queryKey: 'fetchSubscriptions',
-						fetchFn: async (params) =>
-							SubscriptionApi.searchSubscriptions({
+						fetchFn: async (params) => {
+							const response = await SubscriptionApi.searchSubscriptions({
 								...params,
-								expand: generateExpandQueryParams([EXPAND.CUSTOMER]),
+								expand: generateExpandQueryParams([EXPAND.CUSTOMER, EXPAND.PLAN]),
 								status: ENTITY_STATUS.PUBLISHED,
-							}),
-						probeFetchFn: async (params) =>
-							SubscriptionApi.searchSubscriptions({
+							});
+							return {
+								...response,
+								items: response.items ?? [],
+							};
+						},
+						probeFetchFn: async (params) => {
+							const response = await SubscriptionApi.searchSubscriptions({
 								...params,
 								limit: 1,
 								offset: 0,
 								filters: [],
 								sort: [],
 								status: ENTITY_STATUS.PUBLISHED,
-							}),
+							});
+							return {
+								...response,
+								items: response.items ?? [],
+							};
+						},
 					}}
 					tableConfig={{
 						columns,
+						variant: 'card',
+						tableClassName: 'table-fixed',
 						onRowClick: (row) => {
 							navigate(`${RouteNames.customers}/${row?.customer_id}/subscription/${row?.id}`);
 						},

@@ -18,7 +18,7 @@ const OrgTypeMetadataFilter = ({ value, onChange }: OrgTypeMetadataFilterProps) 
 
 	return (
 		<div
-			className='inline-flex items-center rounded-[7px] border border-input bg-background p-0.5'
+			className='inline-flex h-[var(--fp-control-height)] items-center rounded-[7px] border border-input bg-background p-0.5'
 			role='group'
 			aria-label={t('list.orgTypeFilter.ariaLabel')}>
 			{OPTIONS.map((option) => {
@@ -30,7 +30,7 @@ const OrgTypeMetadataFilter = ({ value, onChange }: OrgTypeMetadataFilterProps) 
 						onClick={() => handleSelect(option)}
 						aria-pressed={isSelected}
 						className={cn(
-							'h-7 rounded-[6px] px-3 text-sm font-medium transition-colors',
+							'h-[calc(var(--fp-control-height)-4px)] rounded-[6px] px-3 text-sm font-medium transition-colors',
 							isSelected ? 'bg-brand-fill text-content-on-brand' : 'text-foreground hover:bg-accent hover:text-accent-foreground',
 						)}>
 						{t(`list.orgTypeFilter.${option}`)}

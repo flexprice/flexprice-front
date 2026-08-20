@@ -400,11 +400,15 @@
 			},
 			"columns": {
 				"name": "Name",
+				"lookupKey": "Key",
+				"billingPeriod": "Billing period",
+				"currency": "Currency",
 				"status": "Status",
-				"updatedAt": "Updated at"
+				"createdAt": "Created",
+				"updatedAt": "Updated"
 			},
 			"entityName": "Plan",
-			"paginationUnit": "Pricing Plans",
+			"paginationUnit": "plans",
 			"rowActions": {
 				"edit": "Edit",
 				"duplicate": "Duplicate",
@@ -436,7 +440,8 @@
 			"metadata": "Metadata"
 		},
 		"pricing": {
-			"noWidget": "No Pricing Widget Exists",
+			"noWidget": "No pricing widget exists",
+			"noWidgetHint": "Create your first plan to get started.",
 			"widgetsPageTitle": "Pricing Widgets",
 			"selectBillingPeriod": "Select billing period",
 			"selectCurrency": "Select currency",
@@ -633,11 +638,14 @@
 		"listPage": {
 			"title": "Features",
 			"columns": {
-				"featureName": "Feature Name",
+				"featureName": "Name",
+				"key": "Key",
+				"usage": "Usage",
 				"group": "Group",
 				"type": "Type",
 				"status": "Status",
-				"updatedAt": "Updated At"
+				"updatedAt": "Updated",
+				"createdAt": "Created"
 			},
 			"sortLabels": {
 				"name": "Name",
@@ -667,6 +675,11 @@
 				"static": "Static",
 				"config": "Config",
 				"unknown": "Unknown"
+			},
+			"usage": {
+				"boolean": "On / off",
+				"static": "Static value",
+				"config": "Config"
 			},
 			"emptyCell": "—",
 			"paginationUnit": "Features",

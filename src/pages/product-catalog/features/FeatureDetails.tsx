@@ -15,7 +15,20 @@ import formatChips from '@/utils/common/format_chips';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 
 // Components
-import { Button, Card, CardHeader, Chip, CopyIdButton, Divider, Loader, NoDataCard, Page, Sheet, Spacer } from '@/components/atoms';
+import {
+	Button,
+	Card,
+	CardHeader,
+	Chip,
+	CopyIdButton,
+	Divider,
+	Loader,
+	NoDataCard,
+	Page,
+	Sheet,
+	Spacer,
+	StatusChip,
+} from '@/components/atoms';
 import {
 	ApiDocsContent,
 	ColumnData,
@@ -229,7 +242,7 @@ const FeatureDetails = () => {
 				render: (rowData) => {
 					const rawStatus = rowData.entity_type === ENTITLEMENT_ENTITY_TYPE.ADDON ? rowData.addon?.status : rowData.plan?.status;
 					const label = formatChips(rawStatus || '');
-					return <Chip variant={label === 'Active' ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={label === 'Active' ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{

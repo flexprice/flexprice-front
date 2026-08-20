@@ -1,4 +1,4 @@
-import { AddButton, Page, ActionButton, Chip } from '@/components/atoms';
+import { AddButton, ActionButton, Chip, StatusChip, Page } from '@/components/atoms';
 import { ApiDocsContent, CouponDrawer } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
@@ -139,6 +139,7 @@ const CouponsPage = () => {
 			{
 				fieldName: 'name',
 				title: t('coupons.table.name'),
+				fieldVariant: 'title',
 			},
 			{
 				title: t('coupons.table.type'),
@@ -170,7 +171,7 @@ const CouponsPage = () => {
 				render: (row) => {
 					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('coupons.table.statusActive') : t('coupons.table.statusInactive');
-					return <Chip variant={isActive ? 'success' : 'default'} label={label} />;
+					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
@@ -181,6 +182,7 @@ const CouponsPage = () => {
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render: (row) => (
 					<ActionButton
 						id={row.id}
@@ -204,13 +206,7 @@ const CouponsPage = () => {
 
 	return (
 		<>
-			<Page
-				heading={t('coupons.listPage.title')}
-				headingCTA={
-					<div className='flex justify-between items-center gap-2'>
-						<AddButton onClick={handleCreateCoupon} />
-					</div>
-				}>
+			<Page className='max-w-none' heading={t('coupons.listPage.title')} headingCTA={<AddButton onClick={handleCreateCoupon} />}>
 				<ApiDocsContent tags={API_DOCS_TAGS.Coupons} />
 				<QueryableDataArea<Coupon>
 					queryConfig={{
@@ -234,6 +230,8 @@ const CouponsPage = () => {
 					}}
 					tableConfig={{
 						columns,
+						variant: 'card',
+						tableClassName: 'table-fixed',
 						onRowClick: (row) => {
 							navigate(`${RouteNames.couponDetails}/${row.id}`);
 						},

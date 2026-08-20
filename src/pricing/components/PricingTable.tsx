@@ -51,22 +51,25 @@ const PricingTable: FC<PricingTableProps> = ({
 				</div>
 			)}
 
-			<div className='grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:gap-6'>
-				<div className='contents'>
-					{safePlans.map((plan, index) => (
-						<div className='flex w-full' key={plan.id || index}>
-							<PricingCard {...plan} className='w-full' useModernChrome onSelectPlan={onSelectPlan} getFeatureHref={getFeatureHref} />
-						</div>
-					))}
-				</div>
-				{/* Keep the 3-col grid balanced when fewer than 3 plans render. */}
-				{safePlans.length === 2 && <div className='hidden lg:block' />}
-				{safePlans.length === 1 && (
-					<>
-						<div className='hidden md:block' />
-						<div className='hidden lg:block' />
-					</>
-				)}
+			<div
+				className={cn(
+					'grid w-full items-start justify-items-stretch gap-6 md:gap-8',
+					safePlans.length === 1
+						? 'mx-auto max-w-sm grid-cols-1'
+						: safePlans.length === 2
+							? 'mx-auto max-w-2xl grid-cols-1 sm:grid-cols-2'
+							: 'mx-auto max-w-[1080px] grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+				)}>
+				{safePlans.map((plan, index) => (
+					<PricingCard
+						key={plan.id || index}
+						{...plan}
+						className='w-full'
+						useModernChrome
+						onSelectPlan={onSelectPlan}
+						getFeatureHref={getFeatureHref}
+					/>
+				))}
 			</div>
 		</div>
 	);

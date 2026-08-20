@@ -2,6 +2,7 @@ import { FilterField, FilterCondition, SortOption, SortDirection } from '@/types
 import { useState, useCallback, useMemo, useEffect, type ReactNode } from 'react';
 import { debounce } from 'lodash';
 import { FilterPopover, SortDropdown } from '@/components/molecules';
+import { cn } from '@/lib/utils';
 
 interface Props {
 	// Filter options
@@ -30,6 +31,10 @@ interface Props {
 
 	/** Trailing toolbar content (e.g. count label, CTAs); rendered flush right on wide layouts. */
 	children?: ReactNode;
+	/** Icon-only filter/sort triggers with a count coin when active. */
+	controlsVariant?: 'labeled' | 'icon';
+	/** When `header`, controls sit inline in the page toolbar (no bottom margin, single row). */
+	placement?: 'standalone' | 'header';
 }
 
 const QueryBuilder = ({
@@ -41,6 +46,8 @@ const QueryBuilder = ({
 	selectedSorts = [],
 	debounceTime = 500,
 	children,
+	controlsVariant = 'icon',
+	placement = 'standalone',
 }: Props) => {
 	const [filter, setFilter] = useState<FilterCondition[]>(filters);
 	const [localSorts, setLocalSorts] = useState<SortOption[]>(selectedSorts);
@@ -123,16 +130,40 @@ const QueryBuilder = ({
 	}, [localSorts]);
 
 	const hasTrailing = children != null && children !== false;
+	const isHeaderPlacement = placement === 'header';
+	const controlGap = controlsVariant === 'icon' ? 'gap-2.5' : 'gap-3';
+	const popoverAlign = isHeaderPlacement ? 'end' : 'start';
+
+	const filterControls = (
+		<>
+			{fields.length > 0 && (
+				<FilterPopover fields={fields} value={filter} onChange={handleFilterChange} variant={controlsVariant} popoverAlign={popoverAlign} />
+			)}
+
+			{sortOptions.length > 0 && selectedSorts && (
+				<SortDropdown
+					options={sortOptions}
+					value={sortDropdownValue}
+					onChange={handleSortChange}
+					variant={controlsVariant}
+					popoverAlign={popoverAlign}
+				/>
+			)}
+		</>
+	);
+
+	if (isHeaderPlacement) {
+		return (
+			<div className={cn('flex flex-wrap items-center min-w-0', controlGap)}>
+				{filterControls}
+				{hasTrailing ? children : null}
+			</div>
+		);
+	}
 
 	return (
-		<div className={hasTrailing ? 'flex flex-wrap items-center justify-between gap-3 mb-5' : 'flex flex-wrap items-center gap-3 mb-5'}>
-			<div className='flex flex-wrap items-center gap-3 min-w-0'>
-				{fields.length > 0 && <FilterPopover fields={fields} value={filter} onChange={handleFilterChange} />}
-
-				{sortOptions.length > 0 && selectedSorts && (
-					<SortDropdown options={sortOptions} value={sortDropdownValue} onChange={handleSortChange} />
-				)}
-			</div>
+		<div className={cn('flex flex-wrap items-center', hasTrailing ? 'mb-5 justify-between gap-3' : 'mb-5 gap-3')}>
+			<div className={cn('flex flex-wrap items-center min-w-0', controlGap)}>{filterControls}</div>
 
 			{hasTrailing ? <div className='flex flex-wrap items-center gap-3 shrink-0'>{children}</div> : null}
 		</div>

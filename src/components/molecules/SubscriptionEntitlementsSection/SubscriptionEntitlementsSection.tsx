@@ -2,7 +2,8 @@ import { FC, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Plus, Trash2, Pencil, Info } from 'lucide-react';
-import { Button, Card, CardHeader, Chip, Dialog, NoDataCard, Sheet } from '@/components/atoms';
+import { Button, Card, CardHeader, Dialog, NoDataCard, Sheet } from '@/components/atoms';
+import StatusChip, { getFeatureTypeTone } from '@/components/atoms/StatusChip';
 import { FlexpriceTable, ColumnData, AddEntitlementDrawer, EditSubscriptionEntitlementDrawer } from '@/components/molecules';
 import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import SubscriptionApi from '@/api/SubscriptionApi';
@@ -172,18 +173,17 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 
 	const getFeatureTypeChip = (featureType: string) => {
 		const type = featureType?.toLowerCase();
-		switch (type) {
-			case 'metered':
-				return <Chip label={tc('labels.metered')} variant='info' />;
-			case 'boolean':
-				return <Chip label={tc('labels.boolean')} variant='success' />;
-			case 'static':
-				return <Chip label={tc('labels.static')} variant='warning' />;
-			case 'config':
-				return <Chip label={tc('labels.config')} variant='default' />;
-			default:
-				return <Chip label={featureType} variant='info' />;
-		}
+		const label =
+			type === 'metered'
+				? tc('labels.metered')
+				: type === 'boolean'
+					? tc('labels.boolean')
+					: type === 'static'
+						? tc('labels.static')
+						: type === 'config'
+							? tc('labels.config')
+							: featureType;
+		return <StatusChip tone={getFeatureTypeTone(featureType)} label={label} />;
 	};
 
 	const getSourceLabel = (row: EnrichedSubscriptionEntitlement) => {

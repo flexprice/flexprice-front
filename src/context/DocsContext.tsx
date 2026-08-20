@@ -1,9 +1,10 @@
-import { createContext, useContext, FC, ReactNode } from 'react';
+import { createContext, useContext, FC, ReactNode, useMemo } from 'react';
 import { useApiDocsStore, ApiDocsSnippet } from '@/store/useApiDocsStore';
 
 interface DocsContextProps {
 	setPageDocs: (snippets: ApiDocsSnippet[]) => void;
-	clearPageDocs: () => void;
+	registerPageDocsConsumer: () => void;
+	unregisterPageDocsConsumer: () => void;
 }
 
 const DocsContext = createContext<DocsContextProps | undefined>(undefined);
@@ -13,12 +14,14 @@ interface DocsProviderProps {
 }
 
 export const DocsProvider: FC<DocsProviderProps> = ({ children }) => {
-	const { setDocs, clearDocs } = useApiDocsStore();
-
-	const value = {
-		setPageDocs: setDocs,
-		clearPageDocs: clearDocs,
-	};
+	const value = useMemo(
+		() => ({
+			setPageDocs: (snippets: ApiDocsSnippet[]) => useApiDocsStore.getState().setDocs(snippets),
+			registerPageDocsConsumer: () => useApiDocsStore.getState().registerConsumer(),
+			unregisterPageDocsConsumer: () => useApiDocsStore.getState().unregisterConsumer(),
+		}),
+		[],
+	);
 
 	return <DocsContext.Provider value={value}>{children}</DocsContext.Provider>;
 };

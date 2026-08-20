@@ -1,4 +1,4 @@
-import { Button, Page, ShortPagination, SectionHeader, ActionButton, CopyIdButton } from '@/components/atoms';
+import { Button, Page, ShortPagination, ActionButton, CopyIdButton, SectionHeader } from '@/components/atoms';
 import { ColumnData, FlexpriceTable, ApiDocsContent } from '@/components/molecules';
 import { UserApi } from '@/api/UserApi';
 import { useQuery } from '@tanstack/react-query';
@@ -99,6 +99,7 @@ const ServiceAccountsPage = () => {
 			},
 			{
 				fieldVariant: 'interactive',
+				width: 56,
 				render: (row: User) => (
 					<ActionButton
 						id={row.id}
@@ -158,8 +159,21 @@ const ServiceAccountsPage = () => {
 						</Button>
 					</SectionHeader>
 					<div className='pb-12 mt-2'>
-						<FlexpriceTable showEmptyRow columns={serviceAccountColumns} data={serviceAccountsResponse?.items || []} />
-						<ShortPagination unit={t('serviceAccounts.paginationUnit')} totalItems={serviceAccountsResponse?.pagination?.total || 0} />
+						<FlexpriceTable
+							variant='card'
+							tableClassName='table-fixed'
+							showEmptyRow
+							hideBottomBorder={false}
+							columns={serviceAccountColumns}
+							data={serviceAccountsResponse?.items || []}
+							footer={
+								<ShortPagination
+									unit={t('serviceAccounts.paginationUnit')}
+									totalItems={serviceAccountsResponse?.pagination?.total || 0}
+									variant='embedded'
+								/>
+							}
+						/>
 					</div>
 				</Page>
 			)}
