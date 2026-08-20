@@ -11,8 +11,10 @@ import SignupForm from '../../SignupForm';
 import ForgotPasswordForm from '../../ForgotPasswordForm';
 import ResetPasswordForm from '../../ResetPasswordForm';
 import { config } from '@/config/config';
+import SplitIslandLayout from '@/layouts/SplitIslandLayout';
+import { cn } from '@/lib/utils';
 
-const SLACK_COMMUNITY_URL = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ';
+const SLACK_COMMUNITY_URL = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-3lglk6d7l-MNuKTOhxLyphYHEGOcnVmg';
 
 interface FlexpriceDefaultProps {
 	currentTab: AuthTab;
@@ -48,65 +50,69 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 	 * photograph it would never see.
 	 */
 	return (
-		<div className='flex w-full min-h-screen bg-surface-canvas page !p-0 !flex-col lg:!flex-row'>
-			<div className='w-full lg:w-[45%] flex flex-col'>
-				<a
-					href={SLACK_COMMUNITY_URL}
-					target='_blank'
-					rel='noopener noreferrer'
-					className='w-full h-[48px] flex items-center justify-center gap-2.5 cursor-pointer border-y border-line-subtle hover:opacity-90 transition-opacity'
-					style={{
-						background: 'linear-gradient(to right, rgb(var(--fp-banner-bg)), rgb(var(--fp-banner-bg-mid)), rgb(var(--fp-banner-bg)))',
-					}}>
-					<span className='text-[15px] font-medium text-content-secondary'>{t('slackBanner', { brandName: name })}</span>
-					<img src='/assets/logo/slack-logo.png' alt={t('images.slackLogoAlt')} className='h-4 w-auto' />
-				</a>
-				<div className='flex-1 flex justify-center items-center pt-[10px]'>
-					<div className='flex flex-col justify-center max-w-xl w-[88%] sm:w-[70%] lg:w-[55%] mx-auto py-10 lg:py-0'>
-						<div className='flex justify-center mb-4'>
-							<img src={logo} alt={`${name} Logo`} className='h-12' />
-						</div>
-						{signupEnabled && currentTab === AuthTab.SIGNUP && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('createAccount.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-10'>{t('createAccount.subheading', { brandName: name })}</p>
-								<div className='mb-6'>
-									<RegionSelector />
-								</div>
-							</>
-						)}
-						{(currentTab === AuthTab.LOGIN || (!signupEnabled && currentTab === AuthTab.SIGNUP)) && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-3'>{t('login.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-10'>{t('login.subheading')}</p>
-								<div className='mb-6'>
-									<RegionSelector />
-								</div>
-							</>
-						)}
-						{currentTab === AuthTab.FORGOT_PASSWORD && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('forgotPassword.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-8'>{t('forgotPassword.subheading')}</p>
-							</>
-						)}
-						{currentTab === AuthTab.RESET_PASSWORD && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('resetPassword.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-8'>{t('resetPassword.subheading')}</p>
-							</>
-						)}
-						{renderForm()}
-						<div className='mt-6 flex justify-start'>
-							<LocaleSelector />
+		<SplitIslandLayout
+			flushStart
+			left={
+				<div className='flex min-h-0 flex-1 flex-col'>
+					<a
+						href={SLACK_COMMUNITY_URL}
+						target='_blank'
+						rel='noopener noreferrer'
+						className={cn(
+							'flex w-full shrink-0 items-center justify-center gap-2.5 bg-surface-shell/85 px-4 py-2.5 text-[15px] font-medium text-content-secondary backdrop-blur-md transition-colors hover:bg-surface-shell dark:bg-surface-subtle/50',
+							'mt-[var(--fp-shell-inset)]',
+							'max-lg:mx-4 max-lg:w-auto max-lg:rounded-[var(--fp-radius-shell)] max-lg:border max-lg:border-line-subtle',
+							'lg:rounded-none lg:border-y lg:border-s lg:border-e-0 lg:border-line-subtle',
+							'dark:border-white/10',
+						)}>
+						<span className='truncate'>{t('slackBanner', { brandName: name })}</span>
+						<img src='/assets/logo/slack-logo.png' alt={t('images.slackLogoAlt')} className='h-4 w-auto shrink-0' />
+					</a>
+					<div className='flex flex-1 items-center justify-center overflow-y-auto'>
+						<div className='mx-auto flex w-[88%] max-w-xl flex-col justify-center py-10 sm:w-[70%] lg:w-[55%] lg:py-0'>
+							<div className='mb-4 flex justify-center'>
+								<img src={logo} alt={`${name} Logo`} className='h-12' />
+							</div>
+							{signupEnabled && currentTab === AuthTab.SIGNUP && (
+								<>
+									<h2 className='mb-2 text-center text-3xl font-medium text-content-heading'>{t('createAccount.heading')}</h2>
+									<p className='mb-10 text-center text-content-tertiary'>{t('createAccount.subheading', { brandName: name })}</p>
+									<div className='mb-6'>
+										<RegionSelector />
+									</div>
+								</>
+							)}
+							{(currentTab === AuthTab.LOGIN || (!signupEnabled && currentTab === AuthTab.SIGNUP)) && (
+								<>
+									<h2 className='mb-3 text-center text-3xl font-medium text-content-heading'>{t('login.heading')}</h2>
+									<p className='mb-10 text-center text-content-tertiary'>{t('login.subheading')}</p>
+									<div className='mb-6'>
+										<RegionSelector />
+									</div>
+								</>
+							)}
+							{currentTab === AuthTab.FORGOT_PASSWORD && (
+								<>
+									<h2 className='mb-2 text-center text-3xl font-medium text-content-heading'>{t('forgotPassword.heading')}</h2>
+									<p className='mb-8 text-center text-content-tertiary'>{t('forgotPassword.subheading')}</p>
+								</>
+							)}
+							{currentTab === AuthTab.RESET_PASSWORD && (
+								<>
+									<h2 className='mb-2 text-center text-3xl font-medium text-content-heading'>{t('resetPassword.heading')}</h2>
+									<p className='mb-8 text-center text-content-tertiary'>{t('resetPassword.subheading')}</p>
+								</>
+							)}
+							{renderForm()}
+							<div className='mt-6 flex justify-start'>
+								<LocaleSelector />
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div className='hidden lg:flex w-[55%] min-h-screen'>
-				<LandingSection />
-			</div>
-		</div>
+			}
+			right={<LandingSection />}
+		/>
 	);
 };
 

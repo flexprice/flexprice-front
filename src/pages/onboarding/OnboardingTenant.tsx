@@ -1,4 +1,5 @@
 import { Button } from '@/components/atoms';
+import SplitIslandLayout from '@/layouts/SplitIslandLayout';
 import OnboardingLandingPanel from './OnboardingLandingPanel';
 import { OnboardingOrgStep, OnboardingReferralStep } from './steps';
 import useOnboardingTenant from './useOnboardingTenant';
@@ -37,16 +38,16 @@ const OnboardingTenant = () => {
 	);
 
 	return (
-		<div className='page flex min-h-screen w-full !flex-col bg-surface-canvas !p-0 lg:!flex-row'>
-			<div className='flex w-full flex-col lg:w-[45%]'>
-				<div className='flex flex-1 items-center justify-center pt-[10px]'>
-					<div className='mx-auto flex w-[88%] max-w-xl flex-col justify-center py-10 sm:w-[70%] lg:w-[55%] lg:py-0'>{formContent}</div>
+		<SplitIslandLayout
+			left={
+				<div className='flex min-h-0 flex-1 flex-col'>
+					<div className='flex flex-1 items-center justify-center overflow-y-auto pt-[10px]'>
+						<div className='mx-auto flex w-[88%] max-w-xl flex-col justify-center py-10 sm:w-[70%] lg:w-[55%] lg:py-0'>{formContent}</div>
+					</div>
 				</div>
-			</div>
-			<div className='hidden min-h-screen w-[55%] lg:flex'>
-				<OnboardingLandingPanel />
-			</div>
-		</div>
+			}
+			right={<OnboardingLandingPanel />}
+		/>
 	);
 };
 

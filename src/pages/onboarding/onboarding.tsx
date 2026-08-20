@@ -1,4 +1,5 @@
 import { Button, Card, Page } from '@/components/atoms';
+import type { HugeIconData } from '@/components/atoms';
 import { AlignJustify, ArrowRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +13,7 @@ export interface TutorialItem {
 	description: string;
 	onClick: () => void;
 	imageUrl?: string;
+	icon?: HugeIconData;
 }
 
 const tutorials: TutorialItem[] = [

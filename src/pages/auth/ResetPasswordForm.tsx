@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input } from '@/components/atoms';
+import { Button, HugeIcon, Input } from '@/components/atoms';
 import toast from 'react-hot-toast';
-import { EyeIcon, EyeOff, Link2Off } from 'lucide-react';
+import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons';
+import { Link2Off } from 'lucide-react';
 import supabase from '@/core/services/supbase/config';
 import { useMutation } from '@tanstack/react-query';
 import { AuthTab } from './authTabs';
@@ -114,7 +115,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 								onClick={() => setShowPassword(!showPassword)}
 								className='cursor-pointer text-content-muted hover:text-content-secondary focus:outline-none'
 								aria-label={showPassword ? 'Hide password' : 'Show password'}>
-								{showPassword ? <EyeOff className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
+								{showPassword ? <HugeIcon icon={ViewOffSlashIcon} size={20} /> : <HugeIcon icon={ViewIcon} size={20} />}
 							</button>
 						}
 					/>
@@ -137,7 +138,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({ switchTab }) => {
 								onClick={() => setShowConfirmPassword(!showConfirmPassword)}
 								className='cursor-pointer text-content-muted hover:text-content-secondary focus:outline-none'
 								aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}>
-								{showConfirmPassword ? <EyeOff className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
+								{showConfirmPassword ? <HugeIcon icon={ViewOffSlashIcon} size={20} /> : <HugeIcon icon={ViewIcon} size={20} />}
 							</button>
 						}
 					/>

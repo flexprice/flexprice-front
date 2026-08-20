@@ -10,6 +10,7 @@ import SignupForm from '../../SignupForm';
 import ForgotPasswordForm from '../../ForgotPasswordForm';
 import ResetPasswordForm from '../../ResetPasswordForm';
 import { config as appConfig } from '@/config/config';
+import SplitIslandLayout from '@/layouts/SplitIslandLayout';
 
 interface Template2Props {
 	config: Template2Config;
@@ -41,66 +42,65 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 		: { backgroundColor: '#0f0f0f' };
 
 	return (
-		<div className='flex w-full min-h-screen bg-surface page !p-0 !flex-row'>
-			{/* Left — login form */}
-			<div className='w-[45%] flex flex-col'>
-				<div className='flex-1 flex justify-center items-center'>
-					<div className='flex flex-col justify-center max-w-xl w-[65%] mx-auto'>
-						<div className='flex justify-center mb-4'>
-							<img src={logo} alt={`${name} Logo`} className='h-12' />
-						</div>
-						{signupEnabled && currentTab === AuthTab.SIGNUP && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('createAccount.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-10'>{t('createAccount.subheading', { brandName: name })}</p>
-								<div className='mb-6'>
-									<RegionSelector />
-								</div>
-							</>
-						)}
-						{(currentTab === AuthTab.LOGIN || (!signupEnabled && currentTab === AuthTab.SIGNUP)) && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-3'>{t('login.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-10'>{t('login.subheading')}</p>
-								<div className='mb-6'>
-									<RegionSelector />
-								</div>
-							</>
-						)}
-						{currentTab === AuthTab.FORGOT_PASSWORD && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('forgotPassword.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-8'>{t('forgotPassword.subheading')}</p>
-							</>
-						)}
-						{currentTab === AuthTab.RESET_PASSWORD && (
-							<>
-								<h2 className='text-3xl font-medium text-center text-content-heading mb-2'>{t('resetPassword.heading')}</h2>
-								<p className='text-center text-content-tertiary mb-8'>{t('resetPassword.subheading')}</p>
-							</>
-						)}
-						{renderForm()}
-						<div className='mt-6 flex justify-start'>
-							<LocaleSelector />
+		<SplitIslandLayout
+			left={
+				<div className='flex min-h-0 flex-1 flex-col'>
+					<div className='flex flex-1 items-center justify-center overflow-y-auto'>
+						<div className='mx-auto flex w-[65%] max-w-xl flex-col justify-center py-10 lg:py-0'>
+							<div className='mb-4 flex justify-center'>
+								<img src={logo} alt={`${name} Logo`} className='h-12' />
+							</div>
+							{signupEnabled && currentTab === AuthTab.SIGNUP && (
+								<>
+									<h2 className='mb-2 text-center text-3xl font-medium text-content-heading'>{t('createAccount.heading')}</h2>
+									<p className='mb-10 text-center text-content-tertiary'>{t('createAccount.subheading', { brandName: name })}</p>
+									<div className='mb-6'>
+										<RegionSelector />
+									</div>
+								</>
+							)}
+							{(currentTab === AuthTab.LOGIN || (!signupEnabled && currentTab === AuthTab.SIGNUP)) && (
+								<>
+									<h2 className='mb-3 text-center text-3xl font-medium text-content-heading'>{t('login.heading')}</h2>
+									<p className='mb-10 text-center text-content-tertiary'>{t('login.subheading')}</p>
+									<div className='mb-6'>
+										<RegionSelector />
+									</div>
+								</>
+							)}
+							{currentTab === AuthTab.FORGOT_PASSWORD && (
+								<>
+									<h2 className='mb-2 text-center text-3xl font-medium text-content-heading'>{t('forgotPassword.heading')}</h2>
+									<p className='mb-8 text-center text-content-tertiary'>{t('forgotPassword.subheading')}</p>
+								</>
+							)}
+							{currentTab === AuthTab.RESET_PASSWORD && (
+								<>
+									<h2 className='mb-2 text-center text-3xl font-medium text-content-heading'>{t('resetPassword.heading')}</h2>
+									<p className='mb-8 text-center text-content-tertiary'>{t('resetPassword.subheading')}</p>
+								</>
+							)}
+							{renderForm()}
+							<div className='mt-6 flex justify-start'>
+								<LocaleSelector />
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-
-			{/* Right — background image, logo + tagline grouped & centered-left (always LTR) */}
-			<div className='w-[55%] min-h-screen relative' style={rightPanelStyle}>
-				<div className='absolute inset-0 flex flex-col justify-center items-start px-28'>
-					<img src={config.landingLogo || logo} alt={name} className='h-12 w-auto mb-6' />
-					{config.tagline && (
-						<p /* On a background image, so literally white in both themes. */
-							className='text-6xl font-medium text-white leading-tight'
-							style={{ maxWidth: '36rem' }}>
-							{config.tagline}
-						</p>
-					)}
+			}
+			right={
+				<div className='absolute inset-0' style={rightPanelStyle}>
+					<div className='absolute inset-0 flex flex-col items-start justify-center px-28'>
+						<img src={config.landingLogo || logo} alt={name} className='mb-6 h-12 w-auto' />
+						{config.tagline && (
+							<p className='text-6xl font-medium leading-tight text-white' style={{ maxWidth: '36rem' }}>
+								{config.tagline}
+							</p>
+						)}
+					</div>
 				</div>
-			</div>
-		</div>
+			}
+		/>
 	);
 };
 
