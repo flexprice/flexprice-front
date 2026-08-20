@@ -8,7 +8,7 @@ export interface ContactDetails {
 }
 
 const FLEXPRICE_CONTACT: ContactDetails = {
-	slackUrl: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
+	slackUrl: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-3lglk6d7l-MNuKTOhxLyphYHEGOcnVmg',
 	email: 'support@flexprice.io',
 	bookCallUrl: 'https://calendly.com/nikhil-flexprice/30min',
 };

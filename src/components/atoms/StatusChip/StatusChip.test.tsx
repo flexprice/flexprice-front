@@ -14,8 +14,9 @@ describe('StatusChip', () => {
 	});
 
 	it('maps Paid onto the success tone', () => {
-		render(<StatusChip status='Paid' />);
+		const { container } = render(<StatusChip status='Paid' />);
 		expect(screen.getByText('Paid')).toBeInTheDocument();
+		expect(container.querySelector('[aria-hidden]')).toHaveClass('bg-success-bright');
 	});
 
 	it('accepts an explicit tone and label', () => {
@@ -24,8 +25,9 @@ describe('StatusChip', () => {
 	});
 
 	it('maps Failed onto the danger tone', () => {
-		render(<StatusChip status='Failed' label='Failed' />);
+		const { container } = render(<StatusChip status='Failed' label='Failed' />);
 		expect(screen.getByText('Failed')).toBeInTheDocument();
+		expect(container.querySelector('[aria-hidden]')).toHaveClass('bg-danger-bright');
 	});
 
 	it('sizes the status dot from the chip token', () => {

@@ -674,7 +674,9 @@ html {
 		 * dark page while the Tailwind-classed cards around them went subtle. line-strong IS gray.300,
 		 * so light is byte-identical; dark drops to `line` to match those neighbouring cards.
 		 */
-		@apply rounded-[var(--fp-radius-lg)] border border-line-strong p-6;
+		@apply rounded-[var(--fp-radius-lg)] border border-line-strong;
+
+		padding: 1.5rem;
 	}
 
 	.dark .card {

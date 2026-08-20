@@ -1,6 +1,7 @@
 // src/components/molecules/LocaleSelector/LocaleSelector.tsx
 import React from 'react';
-import { Globe } from 'lucide-react';
+import { Globe02Icon } from '@hugeicons/core-free-icons';
+import { HugeIcon } from '@/components/atoms';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useLocaleStore } from '@/store/useLocaleStore';
 import { Locale } from '@/config/branding';
@@ -21,7 +22,7 @@ const LocaleSelector: React.FC = () => {
 	return (
 		<Select value={locale} onValueChange={(v) => setLocale(v as Locale)}>
 			<SelectTrigger className='h-auto w-auto gap-1.5 border-none bg-transparent px-0 py-0 shadow-none text-sm text-content-muted hover:text-content-secondary'>
-				<Globe size={14} />
+				<HugeIcon icon={Globe02Icon} size={14} />
 				<SelectValue />
 			</SelectTrigger>
 			<SelectContent>

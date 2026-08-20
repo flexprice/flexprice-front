@@ -1496,7 +1496,7 @@
 			"exchangingTokens": "🔒 Securely exchanging authorization code for tokens"
 		},
 		"revenue": {
-			"pageHeading": "Revenue",
+			"pageHeading": "Analytics",
 			"metricNetRevenue": "Net Revenue",
 			"metricContractRevenue": "Contract Revenue",
 			"metricUsageRevenue": "Usage Revenue",

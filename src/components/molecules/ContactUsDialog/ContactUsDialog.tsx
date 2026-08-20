@@ -3,7 +3,7 @@ import { Mail, CalendarDays } from 'lucide-react';
 import { Dialog } from '@/components/atoms';
 import { useTranslation } from 'react-i18next';
 
-const SLACK_LINK = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ';
+const SLACK_LINK = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-3lglk6d7l-MNuKTOhxLyphYHEGOcnVmg';
 const EMAIL_LINK = 'mailto:support@flexprice.io';
 const CALENDLY_LINK = 'https://calendly.com/nikhil-flexprice/30min';
 

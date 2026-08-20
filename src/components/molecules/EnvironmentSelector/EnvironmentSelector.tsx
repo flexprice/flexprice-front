@@ -1,8 +1,17 @@
 import { cn } from '@/lib/utils';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@/components/ui';
-import { Blocks, Rocket, Server, ChevronsUpDown, Plus, Copy, Pencil } from 'lucide-react';
+import {
+	BlocksIcon,
+	RocketIcon,
+	ServerStack01Icon,
+	UnfoldMoreIcon,
+	PlusSignIcon,
+	Copy01Icon,
+	PencilEdit01Icon,
+} from '@hugeicons/core-free-icons';
+import { HugeIcon } from '@/components/atoms';
 import { useGlobalLoading } from '@/core/services/tanstack/ReactQueryProvider';
 import useUser from '@/hooks/useUser';
 import { Select, SelectContent, useSidebar } from '@/components/ui';
@@ -45,7 +54,7 @@ const SelectItem = React.forwardRef<
 	<SelectPrimitive.Item
 		ref={ref}
 		className={cn(
-			'relative flex w-full cursor-default select-none items-center rounded-[6px] py-1.5 px-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+			'relative flex w-full cursor-default select-none items-center rounded-[var(--fp-radius-md)] py-1.5 px-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
 			className,
 		)}
 		{...props}>
@@ -56,18 +65,18 @@ const SelectItem = React.forwardRef<
 const getEnvironmentIcon = (type: ENVIRONMENT_TYPE) => {
 	switch (type) {
 		case ENVIRONMENT_TYPE.PRODUCTION:
-			return <Rocket className='h-4 w-4' />;
+			return <HugeIcon icon={RocketIcon} size={16} />;
 		case ENVIRONMENT_TYPE.DEVELOPMENT:
-			return <Blocks className='h-4 w-4' />;
+			return <HugeIcon icon={BlocksIcon} size={16} />;
 		default:
-			return <Server className='h-4 w-4' />;
+			return <HugeIcon icon={ServerStack01Icon} size={16} />;
 	}
 };
 
 const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) => {
 	const { t } = useTranslation('settings');
 	const { loading, user } = useUser();
-	const { open: sidebarOpen } = useSidebar();
+	const { open } = useSidebar();
 	const navigate = useNavigate();
 	const { setLoading } = useGlobalLoading();
 
@@ -81,6 +90,10 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 	const [editingEnvironment, setEditingEnvironment] = useState<Environment | null>(null);
 	const [isSuspendedDialogOpen, setIsSuspendedDialogOpen] = useState(false);
 
+	useEffect(() => {
+		if (!open) setIsOpen(false);
+	}, [open]);
+
 	if (loading)
 		return (
 			<div>
@@ -92,8 +105,11 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 		return (
 			<div className={cn('mt-1 w-full', className)}>
 				<p className='p-2 text-sm text-muted-foreground'>{t('environment.selector.noneAvailable')}</p>
-				<Button onClick={() => setIsCreatorOpen(true)} size='sm' className='w-full text-center rounded-[6px] justify-center items-center'>
-					<Plus className='h-4 w-4' />
+				<Button
+					onClick={() => setIsCreatorOpen(true)}
+					size='sm'
+					className='w-full text-center rounded-[var(--fp-radius-md)] justify-center items-center'>
+					<HugeIcon icon={PlusSignIcon} size={16} />
 					{t('environment.selector.addEnvironment')}
 				</Button>
 
@@ -151,16 +167,20 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 	return (
 		<div className={cn('mt-1 w-full', className)}>
 			{/* Tenant */}
-			<div className='w-full mt-2 flex items-center justify-between gap-2'>
-				<div className='flex items-center text-start gap-2 min-w-0'>
-					<span className='size-7 bg-surface-avatar text-content-inverse flex justify-center items-center bg-contain rounded-[6px] text-xs font-semibold'>
+			<div className={cn('w-full mt-2 flex items-center gap-2', open ? 'justify-between' : 'justify-center')}>
+				<div className={cn('flex items-center min-w-0', open ? 'gap-2 text-start' : 'justify-center')}>
+					<span
+						className={cn(
+							'bg-surface-avatar text-content-inverse flex justify-center items-center bg-contain font-semibold',
+							open ? 'size-7 rounded-[6px] text-xs' : 'size-8 rounded-[var(--fp-radius-md)] text-xs',
+						)}>
 						{user?.tenant?.name
 							?.split(' ')
 							.map((n) => n[0])
 							.join('')
 							.slice(0, 2) || t('environment.selector.fallbackTenantLetters')}
 					</span>
-					<div className={cn('text-start min-w-0', sidebarOpen ? '' : 'hidden')}>
+					<div className={cn('text-start min-w-0', open ? '' : 'hidden')}>
 						<p className='font-medium text-[16px] leading-snug truncate'>{user?.tenant?.name || t('environment.selector.unknownTenant')}</p>
 					</div>
 				</div>
@@ -168,10 +188,11 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 
 			{/* Environment picker (colored box) */}
 			<Select open={isOpen} onOpenChange={setIsOpen} value={activeEnvironment?.id} onValueChange={handleChange} disabled={disabled}>
-				<SelectTrigger className={cn(sidebarOpen ? '' : 'hidden')}>
+				<SelectTrigger className='w-full'>
 					<div
 						className={cn(
-							'w-full mt-3.5 flex items-center justify-between h-10 px-2 py-[10px] rounded-[6px] border',
+							'mt-3.5 flex items-center rounded-[var(--fp-radius-md)] border',
+							open ? 'h-10 w-full justify-between px-2 py-[10px]' : 'size-10 justify-center p-0',
 							isDevelopment && 'border-accent-yellow-line text-accent-yellow-deep',
 							isProduction && 'border-env-prod-line text-env-prod-text',
 						)}
@@ -185,18 +206,18 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 								? 'linear-gradient(to right, rgb(var(--fp-env-prod-bg)), rgb(var(--fp-env-prod-bg-mid)), rgb(var(--fp-env-prod-bg)))'
 								: 'linear-gradient(to right, rgb(var(--fp-env-dev-bg)), rgb(var(--fp-env-dev-bg-mid)), rgb(var(--fp-env-dev-bg)))',
 						}}>
-						<div className='flex items-center gap-2 min-w-0'>
+						<div className={cn('flex items-center min-w-0', open ? 'gap-2' : 'justify-center')}>
 							{isDevelopment ? (
-								<Blocks absoluteStrokeWidth className='!size-5 !stroke-[1.5px] text-current' />
+								<HugeIcon icon={BlocksIcon} size={20} className='text-current' />
 							) : (
-								<Rocket absoluteStrokeWidth className='!size-5 !stroke-[1.5px] text-current' />
+								<HugeIcon icon={RocketIcon} size={20} className='text-current' />
 							)}
-							<span className='block text-[14px] font-normal truncate max-w-[120px]'>{environmentName}</span>
+							<span className={cn('block text-[14px] font-normal truncate max-w-[120px]', !open && 'hidden')}>{environmentName}</span>
 						</div>
-						<ChevronsUpDown className='h-4 w-4 opacity-60 shrink-0' />
+						<HugeIcon icon={UnfoldMoreIcon} size={16} className={cn('opacity-60', !open && 'hidden')} />
 					</div>
 				</SelectTrigger>
-				<SelectContent className='mt-2 w-[calc(var(--radix-select-trigger-width)+8px)] max-w-[calc(var(--radix-select-trigger-width)+8px)] border-line bg-surface text-content'>
+				<SelectContent className='mt-2 w-[calc(var(--radix-select-trigger-width)+8px)] max-w-[calc(var(--radix-select-trigger-width)+8px)] rounded-[var(--fp-radius-lg)] border-line bg-surface text-content'>
 					{options.map((option, idx) => {
 						const env = environments[idx];
 						return (
@@ -215,7 +236,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 									onPointerDown={(e) => e.stopPropagation()}
 									onClick={(e) => handleEditClick(env, e)}
 									className='absolute right-1.5 top-1/2 -translate-y-1/2 p-1 rounded-[4px] text-muted-foreground hover:bg-accent hover:text-foreground opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity'>
-									<Pencil className='h-3.5 w-3.5' />
+									<HugeIcon icon={PencilEdit01Icon} size={14} />
 								</button>
 							</div>
 						);
@@ -229,8 +250,8 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 							key='create'
 							value='create'
 							size='sm'
-							className='w-full text-center rounded-[6px] justify-center items-center'>
-							<Plus className='h-4 w-4' />
+							className='w-full text-center rounded-[var(--fp-radius-md)] justify-center items-center'>
+							<HugeIcon icon={PlusSignIcon} size={16} />
 							{t('environment.selector.addEnvironment')}
 						</Button>
 						<Button
@@ -241,8 +262,8 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 							key='copy'
 							size='sm'
 							variant='outline'
-							className='w-full text-center rounded-[6px] justify-center items-center'>
-							<Copy className='h-4 w-4' />
+							className='w-full text-center rounded-[var(--fp-radius-md)] justify-center items-center'>
+							<HugeIcon icon={Copy01Icon} size={16} />
 							{t('environment.selector.copyEnvironment')}
 						</Button>
 					</div>

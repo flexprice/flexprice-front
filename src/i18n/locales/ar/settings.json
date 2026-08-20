@@ -1458,7 +1458,7 @@
 			"exchangingTokens": "جارٍ استبدال رمز التفويض بالرموز المميّزة بأمان"
 		},
 		"revenue": {
-			"pageHeading": "الإيرادات",
+			"pageHeading": "التحليلات",
 			"metricNetRevenue": "صافي الإيرادات",
 			"metricContractRevenue": "إيرادات العقود",
 			"metricUsageRevenue": "إيرادات الاستخدام",
