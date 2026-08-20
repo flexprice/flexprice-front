@@ -10,14 +10,18 @@ interface ModalProps {
 	children?: ReactNode;
 	className?: string;
 	showOverlay?: boolean;
+	overlayClassName?: string;
 }
 
-const Modal: FC<ModalProps> = ({ isOpen, onOpenChange, children, className, showOverlay = true }) => {
+const Modal: FC<ModalProps> = ({ isOpen, onOpenChange, children, className, showOverlay = true, overlayClassName }) => {
 	if (!isOpen) return null;
 
 	const modalContent = (
 		<div
-			className={cn('fixed inset-0 z-50 flex items-center justify-center', showOverlay ? 'bg-surface-scrim bg-opacity-50' : '')}
+			className={cn(
+				'fixed inset-0 z-50 flex items-center justify-center',
+				showOverlay && (overlayClassName ?? 'bg-surface-scrim bg-opacity-50'),
+			)}
 			onClick={() => onOpenChange(false)}>
 			<div className={cn('relative', className)} onClick={(e) => e.stopPropagation()}>
 				<Button

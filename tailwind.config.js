@@ -14,6 +14,10 @@ export default {
 				geist: ['Geist', 'sans-serif'],
 				'fira-code': ['Fira Code', 'monospace'],
 			},
+			transitionTimingFunction: {
+				/** Decelerate into rest — sidebar width, subnav height. */
+				flow: 'cubic-bezier(0.32, 0.72, 0, 1)',
+			},
 			borderRadius: {
 				DEFAULT: '6px',
 				sm: '6px',
@@ -23,6 +27,21 @@ export default {
 				'2xl': '6px',
 				'3xl': '6px',
 				full: '9999px',
+				/** Figma table-card 10px — do not remap rounded-xl; that would restyle the whole app. */
+				card: 'var(--fp-radius-lg)',
+				/** Figma pagination / outline control 8px. */
+				control: 'var(--fp-radius-md)',
+				/** Figma table avatar 6px (same as DEFAULT, named for intent). */
+				avatar: 'var(--fp-radius-sm)',
+			},
+			height: {
+				'table-header': 'var(--fp-table-header-height)',
+				'table-row': 'var(--fp-table-row-height)',
+				'table-pager': 'var(--fp-table-pager-height)',
+				control: 'var(--fp-control-height)',
+			},
+			spacing: {
+				'table-cell': 'var(--fp-table-cell-x)',
 			},
 			colors: {
 				background: 'hsl(var(--background))',
@@ -330,6 +349,15 @@ export default {
 				'brand-blue-light': 'rgb(var(--fp-brand-blue-light) / <alpha-value>)',
 				/* fp-tokens:end */
 
+				/* Table avatar palette — Figma initials tiles. Outside the generated color table. */
+				'avatar-1': 'rgb(var(--fp-avatar-1) / <alpha-value>)',
+				'avatar-2': 'rgb(var(--fp-avatar-2) / <alpha-value>)',
+				'avatar-3': 'rgb(var(--fp-avatar-3) / <alpha-value>)',
+				'avatar-4': 'rgb(var(--fp-avatar-4) / <alpha-value>)',
+				'avatar-5': 'rgb(var(--fp-avatar-5) / <alpha-value>)',
+				'avatar-6': 'rgb(var(--fp-avatar-6) / <alpha-value>)',
+				'avatar-7': 'rgb(var(--fp-avatar-7) / <alpha-value>)',
+
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -359,6 +387,14 @@ export default {
 						height: '0',
 					},
 				},
+				'collapsible-down': {
+					from: { height: '0', opacity: '0.4' },
+					to: { height: 'var(--radix-collapsible-content-height)', opacity: '1' },
+				},
+				'collapsible-up': {
+					from: { height: 'var(--radix-collapsible-content-height)', opacity: '1' },
+					to: { height: '0', opacity: '0.4' },
+				},
 				'spin-once': {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' },
@@ -375,6 +411,8 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
+				'collapsible-down': 'collapsible-down 0.32s cubic-bezier(0.32, 0.72, 0, 1)',
+				'collapsible-up': 'collapsible-up 0.28s cubic-bezier(0.32, 0.72, 0, 1)',
 				'spin-once': 'spin-once 0.6s ease-in-out',
 				'command-palette-in': 'command-palette-in 0.22s ease-in both',
 				'command-palette-out': 'command-palette-out 0.18s ease-in both',

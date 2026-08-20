@@ -1,5 +1,5 @@
 import { Loader, Page, Dialog, Card, Button, Divider } from '@/components/atoms';
-import { Integration, INTEGRATION_TAG_DATA_PIPELINES } from './integrationsData';
+import { Integration, INTEGRATION_TAG_DATA_PIPELINES } from '@/utils/integrations/integrationCatalog';
 import { useIntegrationsCatalog } from './useIntegrationsCatalog';
 import { cn } from '@/lib/utils';
 import { PremiumFeature, ApiDocsContent, PaddleConnectionDrawer } from '@/components/molecules';

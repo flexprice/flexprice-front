@@ -55,4 +55,13 @@ describe('ShortPaginationControls', () => {
 		render(<ShortPaginationControls page={1} pageSize={10} totalItems={25} onPageChange={onPageChange} unit='items' />);
 		expect(onPageChange).not.toHaveBeenCalled();
 	});
+
+	it('renders icon-only Previous and Next controls in the embedded variant', () => {
+		render(<ShortPaginationControls page={1} pageSize={8} totalItems={24} onPageChange={vi.fn()} unit='plans' variant='embedded' />);
+		expect(screen.getByText('Showing 1–8 of 24 plans')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
+		expect(screen.queryByText('Previous')).not.toBeInTheDocument();
+		expect(screen.queryByText('Next')).not.toBeInTheDocument();
+	});
 });

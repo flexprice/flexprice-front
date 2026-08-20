@@ -6,6 +6,7 @@ import { createBundledT } from '@/lib/exportable/bundledI18n';
 const EN_PAGINATION = {
 	page: 'Page {{current}} of {{total}}',
 	showingRange: 'Showing {{start}} to {{end}} of {{total}} {{unit}}',
+	showingRangeCompact: 'Showing {{start}}–{{end}} of {{total}} {{unit}}',
 	unitItems: 'items',
 	previous: 'Previous',
 	next: 'Next',
