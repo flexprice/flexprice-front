@@ -357,10 +357,10 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 	},
 	{
 		id: CommandPaletteCommandId.navToolsRevenue,
-		label: 'Tools → Revenue',
+		label: 'Tools → Analytics',
 		group: CommandPaletteGroup.GoTo,
 		path: P['tools-revenue'],
-		keywords: ['revenue', 'dashboard', 'tools'],
+		keywords: ['revenue', 'analytics', 'dashboard', 'tools'],
 		icon: ChartLineData02Icon,
 	},
 	{
