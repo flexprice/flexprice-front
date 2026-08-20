@@ -26,7 +26,7 @@ import {
 	PRICE_TYPE,
 	PRICE_UNIT_TYPE,
 	INVOICE_CADENCE,
-	BUCKET_SIZE,
+	PriceBucketSize,
 } from '@/models';
 import { PriceUnitConfig, PriceResponse } from '@/types/dto/Price';
 import { BILLING_PERIOD, BUCKET_SIZE_NONE } from '@/constants/constants';
@@ -452,7 +452,7 @@ export interface OverrideLineItemRequest {
 
 	/** Windows usage into fixed-size buckets before aggregation, overriding the plan price for this
 	 * subscription (USAGE prices only). Omit to inherit the plan price's bucket_size unchanged. */
-	bucket_size?: BUCKET_SIZE;
+	bucket_size?: PriceBucketSize;
 }
 
 /** Request to update a subscription (PUT /subscriptions/:id). Omitted fields are unchanged; send "" or null to clear where supported. */
@@ -625,7 +625,7 @@ export interface SubscriptionPriceCreateRequest {
 	display_name?: string;
 	min_quantity?: number;
 	/** Windows usage into fixed-size buckets before aggregation (USAGE prices only). Omit for no bucketing. */
-	bucket_size?: BUCKET_SIZE;
+	bucket_size?: PriceBucketSize;
 }
 
 export interface CreateSubscriptionLineItemRequest {
@@ -664,7 +664,7 @@ export interface UpdateSubscriptionLineItemRequest {
 	proration_behavior?: ADDON_PRORATION_BEHAVIOR;
 	/** Same new-price/end-date-old-price semantics as UpdatePriceRequest.bucket_size - re-fetch after
 	 * a successful update instead of patching in place. BUCKET_SIZE_NONE removes bucketing. */
-	bucket_size?: BUCKET_SIZE | typeof BUCKET_SIZE_NONE;
+	bucket_size?: PriceBucketSize | typeof BUCKET_SIZE_NONE;
 	// Commitment fields
 	commitment_amount?: number;
 	commitment_quantity?: number;

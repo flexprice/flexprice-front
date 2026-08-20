@@ -14,7 +14,7 @@ import {
 	Metadata,
 	Pagination,
 	PriceUnit,
-	BUCKET_SIZE,
+	PriceBucketSize,
 } from '@/models';
 import { QueryFilter, TimeRangeFilter } from './base';
 import type { TypedBackendFilter, TypedBackendSort } from '@/types/formatters/QueryBuilder';
@@ -86,7 +86,7 @@ export interface CreatePriceRequest {
 	group_id?: string;
 	min_quantity?: number;
 	/** Windows usage into fixed-size buckets before aggregation (USAGE prices only). Omit for no bucketing. */
-	bucket_size?: BUCKET_SIZE;
+	bucket_size?: PriceBucketSize;
 }
 
 export interface GetPriceResponse extends Price {
@@ -186,5 +186,5 @@ export interface UpdatePriceRequest {
 	 * merging the response into existing state. Send BUCKET_SIZE_NONE (the literal string "none")
 	 * to remove bucketing from the price entirely; omit the field to leave it unchanged.
 	 */
-	bucket_size?: BUCKET_SIZE | typeof BUCKET_SIZE_NONE;
+	bucket_size?: PriceBucketSize | typeof BUCKET_SIZE_NONE;
 }

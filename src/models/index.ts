@@ -108,7 +108,7 @@ export {
 } from './Invoice';
 
 // Meter
-export type { Meter } from './Meter';
+export type { Meter, PriceBucketSize } from './Meter';
 export { METER_USAGE_RESET_PERIOD, METER_AGGREGATION_TYPE, BUCKET_SIZE } from './Meter';
 
 // Pagination

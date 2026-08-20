@@ -682,7 +682,7 @@
 		"addCharge": {
 			"selectMeterForBuckets": "Select a metered feature to configure window commitment time buckets.",
 			"loadingMeter": "Loading meter details…",
-			"meterNotSupported": "This meter does not support window commitment. Configure a bucket size on the meter first."
+			"meterNotSupported": "This charge does not support window commitment. Configure a bucket size on the price first."
 		},
 		"timeBuckets": {
 			"bucketCount": "{{count}} time bucket(s)",

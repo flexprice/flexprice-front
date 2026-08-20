@@ -156,7 +156,7 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 				showMeterNotSupported ? (
 					<Notice>
 						{t('commitmentConfig.addCharge.meterNotSupported', {
-							defaultValue: 'This meter does not support window commitment. Configure a bucket size on the meter first.',
+							defaultValue: 'This charge does not support window commitment. Configure a bucket size on the price first.',
 						})}
 					</Notice>
 				) : null

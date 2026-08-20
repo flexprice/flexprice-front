@@ -2,7 +2,7 @@ import { FC, useState, useEffect, useMemo } from 'react';
 import { Dialog } from '@/components/atoms';
 import { Input, Button, Select, SelectOption, DatePicker } from '@/components/atoms';
 import { Price, BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
-import { BUCKET_SIZE } from '@/models/Meter';
+import { PriceBucketSize } from '@/models/Meter';
 import { formatAmount, removeFormatting } from '@/components/atoms/Input/Input';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import VolumeTieredPricingForm from '@/components/organisms/PlanForm/VolumeTieredPricingForm';
@@ -45,7 +45,9 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 		divide_by: 1,
 	});
 	const [effectiveFrom, setEffectiveFrom] = useState<Date | undefined>(undefined);
-	const [overrideBucketSize, setOverrideBucketSize] = useState<BUCKET_SIZE | ''>(price.bucket_size ?? '');
+	const [overrideBucketSize, setOverrideBucketSize] = useState<PriceBucketSize | ''>(
+		(price.bucket_size as PriceBucketSize | undefined) ?? '',
+	);
 
 	// Detect price unit type
 	const isCustomPriceUnit = price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
@@ -105,7 +107,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 
 			setOverrideTransformQuantity(price.transform_quantity || { divide_by: 1, round: 'up' });
 			setEffectiveFrom(undefined);
-			setOverrideBucketSize(price.bucket_size ?? '');
+			setOverrideBucketSize((price.bucket_size as PriceBucketSize | undefined) ?? '');
 		}
 	}, [isOpen, price, isCustomPriceUnit]);
 
@@ -339,7 +341,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 							<label className='text-sm font-medium text-content-secondary'>{t('priceDialogs.bucketSize')}</label>
 							<Select
 								value={overrideBucketSize}
-								onChange={(value) => setOverrideBucketSize(value as BUCKET_SIZE)}
+								onChange={(value) => setOverrideBucketSize(value as PriceBucketSize)}
 								options={priceBucketSizeOptions}
 								placeholder={t('priceDialogs.bucketSizePlaceholder')}
 							/>

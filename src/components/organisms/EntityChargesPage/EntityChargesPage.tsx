@@ -17,6 +17,7 @@ import { RectangleRadiogroup, RectangleRadiogroupOption } from '@/components/mol
 import { Gauge, Repeat } from 'lucide-react';
 import { INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_MODEL, PRICE_TYPE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE, BILLING_PERIOD } from '@/models/Price';
+import { PriceBucketSize } from '@/models/Meter';
 import { logger } from '@/utils/common/Logger';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { useTranslation } from 'react-i18next';
@@ -259,6 +260,7 @@ const EntityChargesPage: React.FC<EntityChargesPageProps> = ({ entityType, entit
 				billing_period: price.billing_period!,
 				billing_period_count: price.billing_period_count || 1,
 				billing_model: price.billing_model!,
+				bucket_size: price.bucket_size as PriceBucketSize | undefined,
 				meter_id: price.meter_id,
 				filter_values: price.filter_values || undefined,
 				lookup_key: price.lookup_key,

@@ -1,6 +1,6 @@
 import { Price } from '@/models/Price';
 import { BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
-import { BUCKET_SIZE } from '@/models/Meter';
+import { PriceBucketSize } from '@/models/Meter';
 import { BUCKET_SIZE_NONE } from '@/constants/constants';
 import { LineItemCommitmentConfig } from '@/types/dto/LineItemCommitmentConfig';
 import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
@@ -19,7 +19,7 @@ export interface SubscriptionLineItemOverrideRequest {
 	transform_quantity?: TransformQuantity;
 	price_unit_amount?: string; // For CUSTOM price unit type, FLAT_FEE/PACKAGE billing models
 	price_unit_tiers?: CreatePriceTier[]; // For CUSTOM price unit type, TIERED billing model
-	bucket_size?: BUCKET_SIZE; // USAGE prices only
+	bucket_size?: PriceBucketSize; // USAGE prices only
 }
 
 // Backend interface (converted format)
@@ -33,7 +33,7 @@ export interface BackendSubscriptionLineItemOverrideRequest {
 	transform_quantity?: TransformQuantity;
 	price_unit_amount?: string; // For CUSTOM price unit type
 	price_unit_tiers?: CreatePriceTier[]; // For CUSTOM price unit type
-	bucket_size?: BUCKET_SIZE; // USAGE prices only
+	bucket_size?: PriceBucketSize; // USAGE prices only
 }
 
 /**
@@ -55,7 +55,7 @@ export interface ExtendedPriceOverride {
 	// USAGE prices only - overrides the plan price's bucket_size. BUCKET_SIZE_NONE only makes sense when
 	// editing an existing subscription line item (forwarded to UpdateSubscriptionLineItemRequest); it is
 	// stripped before being sent as part of a subscription-create-time override (see getLineItemOverrides).
-	bucket_size?: BUCKET_SIZE | typeof BUCKET_SIZE_NONE;
+	bucket_size?: PriceBucketSize | typeof BUCKET_SIZE_NONE;
 }
 
 /**
@@ -97,7 +97,9 @@ export const getLineItemOverrides = (
 					override.transform_quantity !== undefined ||
 					override.price_unit_amount !== undefined ||
 					override.price_unit_tiers !== undefined ||
-					override.bucket_size !== undefined)
+					// BUCKET_SIZE_NONE alone isn't meaningful at create time (see the mapper below,
+					// which drops it) - don't let it count as a reason to include an otherwise-empty override.
+					(override.bucket_size !== undefined && override.bucket_size !== BUCKET_SIZE_NONE))
 			);
 		})
 		.map(([priceId, override]) => {

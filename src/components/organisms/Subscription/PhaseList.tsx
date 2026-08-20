@@ -3,7 +3,7 @@ import { Button } from '@/components/atoms';
 import PhaseForm, { PhaseFormData } from './PhaseForm';
 import { SubscriptionPhaseCreateRequest } from '@/types/dto/Subscription';
 import { Price } from '@/models/Price';
-import { BILLING_PERIOD } from '@/constants/constants';
+import { BILLING_PERIOD, BUCKET_SIZE_NONE } from '@/constants/constants';
 import { Pencil, Trash2, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Coupon } from '@/models/Coupon';
@@ -197,6 +197,12 @@ const PhaseList: React.FC<PhaseListProps> = ({
 								...(tierMode !== undefined && { tier_mode: tierMode }),
 								...(override.tiers !== undefined && { tiers: override.tiers }),
 								...(override.transform_quantity !== undefined && { transform_quantity: override.transform_quantity }),
+								// bucket_size only makes sense for USAGE prices. BUCKET_SIZE_NONE isn't meaningful
+								// at phase-create time since there's no existing price to clear - drop it, same as
+								// getLineItemOverrides does for subscription-create-time overrides.
+								...(override.bucket_size !== undefined &&
+									override.bucket_size !== BUCKET_SIZE_NONE &&
+									isUsagePrice && { bucket_size: override.bucket_size }),
 							};
 						})
 					: undefined,
@@ -238,6 +244,7 @@ const PhaseList: React.FC<PhaseListProps> = ({
 					tier_mode: override.tier_mode,
 					tiers: override.tiers,
 					transform_quantity: override.transform_quantity,
+					bucket_size: override.bucket_size,
 				};
 			});
 		}

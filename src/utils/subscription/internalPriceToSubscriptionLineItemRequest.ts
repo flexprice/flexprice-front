@@ -1,5 +1,6 @@
 import { BILLING_MODEL, BILLING_PERIOD, INVOICE_CADENCE, PRICE_TYPE, TIER_MODE, PRICE_UNIT_TYPE } from '@/models';
 import type { CreatePriceTier } from '@/models/Price';
+import type { PriceBucketSize } from '@/models/Meter';
 import type { CreateSubscriptionLineItemRequest, SubscriptionPriceCreateRequest } from '@/types/dto/Subscription';
 import type { InternalPrice } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
@@ -109,7 +110,7 @@ export function internalPriceToSubscriptionLineItemRequest(
 		if (internalPrice.tier_mode != null) price.tier_mode = internalPrice.tier_mode as TIER_MODE;
 		if (internalPrice.tiers?.length) price.tiers = internalPrice.tiers;
 		if (internalPrice.transform_quantity) price.transform_quantity = internalPrice.transform_quantity;
-		if (internalPrice.bucket_size) price.bucket_size = internalPrice.bucket_size;
+		if (internalPrice.bucket_size) price.bucket_size = internalPrice.bucket_size as PriceBucketSize;
 		if (internalPrice.price_unit_type === PRICE_UNIT_TYPE.CUSTOM && internalPrice.price_unit_config) {
 			price.price_unit_config = internalPrice.price_unit_config;
 		}

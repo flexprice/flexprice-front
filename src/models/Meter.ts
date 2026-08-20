@@ -46,3 +46,11 @@ export enum BUCKET_SIZE {
 	WindowSizeWeek = 'WEEK',
 	WindowSizeMonth = 'MONTH',
 }
+
+/**
+ * BUCKET_SIZE restricted to the values the backend accepts for price.bucket_size - WEEK/MONTH are
+ * meter-only historical values, never valid at the price level (matches priceBucketSizeOptions in
+ * @/constants/constants). Use this instead of the full BUCKET_SIZE for price-level request/override
+ * fields so invalid values are caught at compile time, not just filtered out of the UI.
+ */
+export type PriceBucketSize = Exclude<BUCKET_SIZE, BUCKET_SIZE.WindowSizeWeek | BUCKET_SIZE.WindowSizeMonth>;

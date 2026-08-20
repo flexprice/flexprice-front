@@ -329,6 +329,13 @@ export type LineItemCommitmentUpdateResult = { ok: true; payload: UpdateSubscrip
 export function buildLineItemCommitmentUpdatePayload(
 	commitmentState: SubscriptionChargeCommitmentState,
 	lineItem: LineItem,
+	/**
+	 * Bucket size to validate/normalize time buckets against. Pass the pending price override's
+	 * bucket_size when the same submission also changes it - otherwise buckets get validated and
+	 * normalized against the line item's current (stale) bucket_size while the merged update sends
+	 * the new one, which can reject valid edits or persist misaligned time ranges.
+	 */
+	effectiveBucketSize?: BUCKET_SIZE | string | null,
 ): LineItemCommitmentUpdateResult {
 	const config = subscriptionChargeCommitmentConfigFromState(commitmentState);
 	const validationError = validateCommitment(config);
@@ -358,7 +365,7 @@ export function buildLineItemCommitmentUpdatePayload(
 		return { ok: false, error: 'commitmentConfig.addCharge.selectMeterForBuckets' };
 	}
 
-	const bucketSize = lineItem.price?.bucket_size;
+	const bucketSize = effectiveBucketSize !== undefined ? effectiveBucketSize : lineItem.price?.bucket_size;
 	const validation = normalizeTimeBucketDraftsOrError(commitmentState.timeBuckets, commitmentState.commitmentType, bucketSize, {
 		requireCommitmentFields: true,
 		requireBucketPrice: true,

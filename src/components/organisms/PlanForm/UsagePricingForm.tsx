@@ -8,7 +8,7 @@ import { Group } from '@/models/Group';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { billlingPeriodOptions, currencyOptions, priceBucketSizeOptions } from '@/constants/constants';
-import { BUCKET_SIZE } from '@/models/Meter';
+import { PriceBucketSize } from '@/models/Meter';
 import VolumeTieredPricingForm from './VolumeTieredPricingForm';
 import { InternalPrice } from './SetupChargesSection';
 import UsageChargePreview from './UsageChargePreview';
@@ -140,7 +140,7 @@ const UsagePricingForm: FC<Props> = ({
 		price: '',
 	});
 	const [startDate, setStartDate] = useState<Date | undefined>(price.start_date ? new Date(price.start_date) : undefined);
-	const [bucketSize, setBucketSize] = useState<BUCKET_SIZE | ''>(price.bucket_size ?? '');
+	const [bucketSize, setBucketSize] = useState<PriceBucketSize | ''>((price.bucket_size as PriceBucketSize | undefined) ?? '');
 
 	const [errors, setErrors] = useState<Partial<Record<keyof Price, any>>>({});
 	const [inputErrors, setInputErrors] = useState({
@@ -207,7 +207,7 @@ const UsagePricingForm: FC<Props> = ({
 			setDisplayName(price.display_name || '');
 			setBillingPeriod(normalizeUsageBillingPeriod(price.billing_period));
 			setStartDate(price.start_date ? new Date(price.start_date) : undefined);
-			setBucketSize(price.bucket_size ?? '');
+			setBucketSize((price.bucket_size as PriceBucketSize | undefined) ?? '');
 
 			if (price.billing_model === BILLING_MODEL.FLAT_FEE) {
 				setFlatFee(price.amount || '');
@@ -586,7 +586,7 @@ const UsagePricingForm: FC<Props> = ({
 			<Select
 				value={bucketSize}
 				options={priceBucketSizeOptions}
-				onChange={(value) => setBucketSize(value as BUCKET_SIZE)}
+				onChange={(value) => setBucketSize(value as PriceBucketSize)}
 				label={t('catalog:plans.organisms.usageForm.bucketSize')}
 				placeholder={t('catalog:plans.organisms.usageForm.bucketSizePlaceholder')}
 				description={t('catalog:plans.organisms.usageForm.bucketSizeDescription')}
