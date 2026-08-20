@@ -75,17 +75,13 @@ describe('subscription charge base commitment fields', () => {
 			],
 		};
 
-		const result = applyWindowCommitmentToLineItem(
-			request,
-			commitmentState,
-			{
-				meter_id: 'meter_01',
-				currency: 'usd',
-				billing_period: BILLING_PERIOD.MONTHLY,
-				type: PRICE_TYPE.USAGE,
-			},
-			{ aggregation: { bucket_size: 'WINDOW_SIZE_HOUR' } } as never,
-		);
+		const result = applyWindowCommitmentToLineItem(request, commitmentState, {
+			meter_id: 'meter_01',
+			currency: 'usd',
+			billing_period: BILLING_PERIOD.MONTHLY,
+			type: PRICE_TYPE.USAGE,
+			bucket_size: 'HOUR',
+		});
 
 		expect(result).toBeNull();
 		expect(request).toMatchObject({
@@ -155,6 +151,7 @@ describe('buildLineItemCommitmentUpdatePayload', () => {
 				billing_period: BILLING_PERIOD.MONTHLY,
 				price_unit_type: PRICE_UNIT_TYPE.FIAT,
 				invoice_cadence: INVOICE_CADENCE.ARREAR,
+				bucket_size: 'HOUR',
 			},
 			commitment_time_buckets: [
 				{
@@ -175,7 +172,6 @@ describe('buildLineItemCommitmentUpdatePayload', () => {
 				timeBuckets: [],
 			},
 			lineItem,
-			{ aggregation: { bucket_size: 'WINDOW_SIZE_HOUR' } } as never,
 		);
 
 		expect(result.ok).toBe(true);

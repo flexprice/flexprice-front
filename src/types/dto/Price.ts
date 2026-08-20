@@ -1,4 +1,4 @@
-import { INVOICE_CADENCE } from '@/constants';
+import { INVOICE_CADENCE, BUCKET_SIZE_NONE } from '@/constants';
 import {
 	Price,
 	BILLING_MODEL,
@@ -14,6 +14,7 @@ import {
 	Metadata,
 	Pagination,
 	PriceUnit,
+	BUCKET_SIZE,
 } from '@/models';
 import { QueryFilter, TimeRangeFilter } from './base';
 import type { TypedBackendFilter, TypedBackendSort } from '@/types/formatters/QueryBuilder';
@@ -84,6 +85,8 @@ export interface CreatePriceRequest {
 	end_date?: string; // ISO date string
 	group_id?: string;
 	min_quantity?: number;
+	/** Windows usage into fixed-size buckets before aggregation (USAGE prices only). Omit for no bucketing. */
+	bucket_size?: BUCKET_SIZE;
 }
 
 export interface GetPriceResponse extends Price {
@@ -176,4 +179,12 @@ export interface UpdatePriceRequest {
 
 	// GroupID is the id of the group to update the price in
 	group_id?: string;
+
+	/**
+	 * Changing this creates a new price (parent_price_id points at the old one, which is end-dated)
+	 * rather than patching in place - callers must re-fetch after a successful update instead of
+	 * merging the response into existing state. Send BUCKET_SIZE_NONE (the literal string "none")
+	 * to remove bucketing from the price entirely; omit the field to leave it unchanged.
+	 */
+	bucket_size?: BUCKET_SIZE | typeof BUCKET_SIZE_NONE;
 }

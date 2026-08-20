@@ -3,8 +3,10 @@ import toast from 'react-hot-toast';
 import { Dialog } from '@/components/atoms';
 import { Input, Button, Select, SelectOption, DatePicker } from '@/components/atoms';
 import { Price, BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
+import { BUCKET_SIZE } from '@/models/Meter';
 import { formatAmount, removeFormatting } from '@/components/atoms/Input/Input';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
+import { BUCKET_SIZE_NONE, priceBucketSizeOptions } from '@/constants/constants';
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import VolumeTieredPricingForm from '@/components/organisms/PlanForm/VolumeTieredPricingForm';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
@@ -15,7 +17,6 @@ import SubscriptionChargeCommitmentSection, {
 	DEFAULT_SUBSCRIPTION_CHARGE_COMMITMENT_STATE,
 	type SubscriptionChargeCommitmentState,
 } from '@/components/organisms/Subscription/SubscriptionChargeCommitmentSection';
-import { useMeterForCommitment } from '@/hooks/useMeterForCommitment';
 import {
 	buildLineItemCommitmentUpdatePayload,
 	formatWindowCommitmentError,
@@ -53,7 +54,6 @@ const PriceOverrideDialog: FC<Props> = ({
 	const { t } = useTranslation('catalog');
 	const { t: tBilling } = useTranslation('billing');
 	const meterId = lineItem?.meter_id || lineItem?.price?.meter_id;
-	const { meter } = useMeterForCommitment(meterId, lineItem?.price?.meter);
 	const { bucketsWithPrices, isLoading: isLoadingBucketPrices } = useCommitmentTimeBucketPrices(
 		isOpen && lineItem ? lineItem.commitment_time_buckets : undefined,
 	);
@@ -90,6 +90,7 @@ const PriceOverrideDialog: FC<Props> = ({
 	});
 	const [effectiveFrom, setEffectiveFrom] = useState<Date | undefined>(undefined);
 	const [isOverridden, setIsOverridden] = useState(false);
+	const [overrideBucketSize, setOverrideBucketSize] = useState<BUCKET_SIZE | ''>(price.bucket_size ?? '');
 
 	// Detect price unit type
 	const isCustomPriceUnit = price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
@@ -116,6 +117,9 @@ const PriceOverrideDialog: FC<Props> = ({
 			if (showEffectiveFrom && currentOverride.effective_from) {
 				setEffectiveFrom(new Date(currentOverride.effective_from));
 			}
+			setOverrideBucketSize(
+				(currentOverride.bucket_size === BUCKET_SIZE_NONE ? '' : currentOverride.bucket_size) ?? price.bucket_size ?? '',
+			);
 		} else {
 			// Prefill with original price values
 			setOverrideQuantity(1); // Default quantity for usage-based prices
@@ -175,6 +179,7 @@ const PriceOverrideDialog: FC<Props> = ({
 			if (showEffectiveFrom) {
 				setEffectiveFrom(undefined);
 			}
+			setOverrideBucketSize(price.bucket_size ?? '');
 		}
 	}, [
 		price.id,
@@ -188,6 +193,7 @@ const PriceOverrideDialog: FC<Props> = ({
 		price.price_unit_amount,
 		price.price_unit_tiers,
 		price.price_unit_config,
+		price.bucket_size,
 		showEffectiveFrom,
 		isCustomPriceUnit,
 	]);
@@ -247,6 +253,16 @@ const PriceOverrideDialog: FC<Props> = ({
 			override.effective_from = effectiveFrom.toISOString();
 		}
 
+		// Bucket size override (USAGE prices only). BUCKET_SIZE_NONE signals an explicit clear - only
+		// meaningful when editing an existing subscription line item; getLineItemOverrides strips it
+		// before it reaches a subscription-create-time payload.
+		if (price.type === PRICE_TYPE.USAGE) {
+			const originalBucketSize = price.bucket_size ?? '';
+			if (overrideBucketSize !== originalBucketSize) {
+				override.bucket_size = overrideBucketSize || BUCKET_SIZE_NONE;
+			}
+		}
+
 		return override;
 	};
 
@@ -260,7 +276,7 @@ const PriceOverrideDialog: FC<Props> = ({
 
 		if (lineItem && onLineItemUpdate) {
 			const priceUpdate = convertPriceOverrideToLineItemUpdate(price.id, override);
-			const commitmentResult = buildLineItemCommitmentUpdatePayload(commitmentState, lineItem, meter);
+			const commitmentResult = buildLineItemCommitmentUpdatePayload(commitmentState, lineItem);
 			if (!commitmentResult.ok) {
 				toast.error(formatWindowCommitmentError(commitmentResult.error, tBilling));
 				return;
@@ -338,6 +354,7 @@ const PriceOverrideDialog: FC<Props> = ({
 		if (showEffectiveFrom) {
 			setEffectiveFrom(undefined);
 		}
+		setOverrideBucketSize(price.bucket_size ?? '');
 		setIsOverridden(false);
 	};
 
@@ -358,6 +375,9 @@ const PriceOverrideDialog: FC<Props> = ({
 			if (showEffectiveFrom && currentOverride.effective_from) {
 				setEffectiveFrom(new Date(currentOverride.effective_from));
 			}
+			setOverrideBucketSize(
+				(currentOverride.bucket_size === BUCKET_SIZE_NONE ? '' : currentOverride.bucket_size) ?? price.bucket_size ?? '',
+			);
 		} else {
 			// Reset to original values based on price unit type
 			if (isCustomPriceUnit) {
@@ -406,6 +426,7 @@ const PriceOverrideDialog: FC<Props> = ({
 			if (showEffectiveFrom) {
 				setEffectiveFrom(undefined);
 			}
+			setOverrideBucketSize(price.bucket_size ?? '');
 		}
 		onOpenChange(false);
 	};
@@ -471,13 +492,16 @@ const PriceOverrideDialog: FC<Props> = ({
 			}
 		}
 
+		const bucketSizeChanged = overrideBucketSize !== (price.bucket_size ?? '');
+
 		return (
 			amountChanged ||
 			overrideQuantity !== undefined ||
 			billingModelChanged ||
 			tiersChanged ||
 			overrideTransformQuantity !== undefined ||
-			(showEffectiveFrom && effectiveFrom !== undefined)
+			(showEffectiveFrom && effectiveFrom !== undefined) ||
+			bucketSizeChanged
 		);
 	};
 
@@ -539,6 +563,19 @@ const PriceOverrideDialog: FC<Props> = ({
 								onChange={(value) => setOverrideBillingModel(value as BILLING_MODEL)}
 								options={billingModelOptions}
 								placeholder={t('priceDialogs.selectBillingModel')}
+							/>
+						</div>
+					)}
+
+					{/* Bucket Size Override - Only show for USAGE price types */}
+					{price.type === PRICE_TYPE.USAGE && (
+						<div className='space-y-2'>
+							<label className='text-sm font-medium text-content-secondary'>{t('priceDialogs.bucketSize')}</label>
+							<Select
+								value={overrideBucketSize}
+								onChange={(value) => setOverrideBucketSize(value as BUCKET_SIZE)}
+								options={priceBucketSizeOptions}
+								placeholder={t('priceDialogs.bucketSizePlaceholder')}
 							/>
 						</div>
 					)}
@@ -676,6 +713,8 @@ const PriceOverrideDialog: FC<Props> = ({
 						currency={lineItem.currency}
 						value={commitmentState}
 						onChange={setCommitmentState}
+						sourcePrice={lineItem.price}
+						sourceBucketSize={lineItem.price?.bucket_size}
 						disabled={isSaving}
 					/>
 				)}

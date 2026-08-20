@@ -3,8 +3,8 @@ import { Input, Select } from '@/components/atoms';
 import { Switch } from '@/components/ui';
 import CommitmentTimeBucketsEditor from '@/components/molecules/CommitmentTimeBucketsEditor';
 import CommitmentTypeSelect from '@/components/molecules/CommitmentTypeSelect';
-import { useMeterForCommitment } from '@/hooks/useMeterForCommitment';
 import { Price } from '@/models/Price';
+import { BUCKET_SIZE } from '@/models/Meter';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { CommitmentType } from '@/types/dto/LineItemCommitmentConfig';
 import { supportsCommitmentTimeBuckets, supportsWindowCommitment } from '@/utils/common/commitment_helpers';
@@ -31,6 +31,8 @@ interface Props {
 	bucketDefaults?: CommitmentTimeBucketDefaults;
 	/** Source price for bucket defaults when `bucketDefaults` is omitted. */
 	sourcePrice?: BucketPriceSource;
+	/** The charge's bucket_size (windows commitment is only available when this is set). */
+	sourceBucketSize?: BUCKET_SIZE | string | null;
 }
 
 const Notice: FC<{ children: ReactNode }> = ({ children }) => (
@@ -46,10 +48,10 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 	disabled,
 	bucketDefaults,
 	sourcePrice,
+	sourceBucketSize,
 }) => {
 	const { t } = useTranslation('billing');
-	const { meter, isLoading } = useMeterForCommitment(meterId);
-	const priceLike = { meter_id: meterId ?? '', meter: meter ?? undefined } as Price;
+	const priceLike = { meter_id: meterId ?? '', bucket_size: sourceBucketSize ?? undefined } as Price;
 	const showWindow = !!meterId && supportsWindowCommitment(priceLike);
 	const showBuckets = showWindow && value.windowCommitment && supportsCommitmentTimeBuckets(priceLike);
 	const hasWindowCommitmentData = value.windowCommitment || value.timeBuckets.length > 0;
@@ -150,8 +152,6 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 						defaultValue: 'Select a metered feature to configure window commitment time buckets.',
 					})}
 				</Notice>
-			) : isLoading ? (
-				<Notice>{t('commitmentConfig.addCharge.loadingMeter', { defaultValue: 'Loading meter details…' })}</Notice>
 			) : !showWindow ? (
 				showMeterNotSupported ? (
 					<Notice>
@@ -166,7 +166,7 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 						<div className='flex-1 pr-4'>
 							<label className='text-sm font-medium text-content-secondary'>{t('commitmentConfig.windowCommitment')}</label>
 							<p className='mt-0.5 text-xs text-content-muted'>
-								{t('commitmentConfig.windowCommitmentHint', { bucketSize: meter?.aggregation?.bucket_size ?? '—' })}
+								{t('commitmentConfig.windowCommitmentHint', { bucketSize: sourceBucketSize ?? '—' })}
 							</p>
 						</div>
 						<Switch
@@ -185,7 +185,7 @@ const SubscriptionChargeCommitmentSection: FC<Props> = ({
 						<CommitmentTimeBucketsEditor
 							buckets={value.timeBuckets}
 							onChange={(timeBuckets) => updateValue({ timeBuckets })}
-							bucketSize={meter?.aggregation?.bucket_size}
+							bucketSize={sourceBucketSize}
 							disabled={disabled}
 							defaultCommitmentType={value.commitmentType}
 							currencySymbol={currencySymbol}

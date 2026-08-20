@@ -109,6 +109,7 @@ export function internalPriceToSubscriptionLineItemRequest(
 		if (internalPrice.tier_mode != null) price.tier_mode = internalPrice.tier_mode as TIER_MODE;
 		if (internalPrice.tiers?.length) price.tiers = internalPrice.tiers;
 		if (internalPrice.transform_quantity) price.transform_quantity = internalPrice.transform_quantity;
+		if (internalPrice.bucket_size) price.bucket_size = internalPrice.bucket_size;
 		if (internalPrice.price_unit_type === PRICE_UNIT_TYPE.CUSTOM && internalPrice.price_unit_config) {
 			price.price_unit_config = internalPrice.price_unit_config;
 		}
@@ -189,6 +190,7 @@ export function subscriptionLineItemToInternalPrice(
 			tier_mode: subscriptionPrice.tier_mode,
 			tiers: subscriptionPrice.tiers as InternalPrice['tiers'],
 			transform_quantity: subscriptionPrice.transform_quantity ?? undefined,
+			bucket_size: subscriptionPrice.bucket_size,
 			currency: (subscriptionPrice as { currency?: string }).currency ?? defaults?.currency ?? 'USD',
 		};
 		const priceWithMeter = subscriptionPrice as SubscriptionPriceCreateRequest & { meter?: unknown };

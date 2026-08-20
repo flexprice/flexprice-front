@@ -1,7 +1,7 @@
 import { removeFormatting } from '@/components/atoms/Input/Input';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { INVOICE_CADENCE } from '@/models/Invoice';
-import { Meter } from '@/models/Meter';
+import { BUCKET_SIZE } from '@/models/Meter';
 import { PRICE_TYPE, PRICE_UNIT_TYPE, BILLING_MODEL, type Price } from '@/models/Price';
 import type { LineItem } from '@/models/Subscription';
 import type { CommitmentTimeBucket, CommitmentTimeBucketPrice } from '@/types/dto/CommitmentTimeBucket';
@@ -329,7 +329,6 @@ export type LineItemCommitmentUpdateResult = { ok: true; payload: UpdateSubscrip
 export function buildLineItemCommitmentUpdatePayload(
 	commitmentState: SubscriptionChargeCommitmentState,
 	lineItem: LineItem,
-	meter?: Meter | null,
 ): LineItemCommitmentUpdateResult {
 	const config = subscriptionChargeCommitmentConfigFromState(commitmentState);
 	const validationError = validateCommitment(config);
@@ -359,7 +358,7 @@ export function buildLineItemCommitmentUpdatePayload(
 		return { ok: false, error: 'commitmentConfig.addCharge.selectMeterForBuckets' };
 	}
 
-	const bucketSize = meter?.aggregation?.bucket_size;
+	const bucketSize = lineItem.price?.bucket_size;
 	const validation = normalizeTimeBucketDraftsOrError(commitmentState.timeBuckets, commitmentState.commitmentType, bucketSize, {
 		requireCommitmentFields: true,
 		requireBucketPrice: true,
@@ -373,7 +372,7 @@ export function buildLineItemCommitmentUpdatePayload(
 
 	const existingById = new Map((lineItem.commitment_time_buckets ?? []).filter((b) => b.id).map((b) => [b.id!, b]));
 
-	const minutesEnabled = getMinutesEnabledForMeter(meter);
+	const minutesEnabled = getCommitmentTimeBucketConstraints(bucketSize).minutesEnabled;
 
 	const buckets = commitmentState.timeBuckets.map((draft) => {
 		const commitmentType = resolveDraftCommitmentType(draft, commitmentState.commitmentType);
@@ -407,10 +406,6 @@ export function buildLineItemCommitmentUpdatePayload(
 	};
 }
 
-export function getMinutesEnabledForMeter(meter?: Meter | null): boolean {
-	return getCommitmentTimeBucketConstraints(meter?.aggregation?.bucket_size).minutesEnabled;
-}
-
 function bucketPriceContextFromLineItem(item: CreateSubscriptionLineItemRequest, currency: string): BucketPriceContext | null {
 	const meterId = item.price?.meter_id;
 	if (!meterId) return null;
@@ -434,6 +429,7 @@ type ApplyWindowCommitmentInput = {
 	price_unit_type?: PRICE_UNIT_TYPE;
 	invoice_cadence?: INVOICE_CADENCE;
 	display_name?: string;
+	bucket_size?: BUCKET_SIZE | string | null;
 };
 
 export function formatWindowCommitmentError(
@@ -499,7 +495,6 @@ export function applyWindowCommitmentToLineItem(
 	request: CreateSubscriptionLineItemRequest,
 	commitmentState: SubscriptionChargeCommitmentState,
 	partial: ApplyWindowCommitmentInput,
-	meter?: Meter | null,
 ): { error: string } | null {
 	const baseError = applyBaseCommitmentToLineItem(request, commitmentState);
 	if (baseError) {
@@ -514,24 +509,19 @@ export function applyWindowCommitmentToLineItem(
 		return { error: 'commitmentConfig.addCharge.selectMeterForBuckets' };
 	}
 
-	const result = normalizeTimeBucketDraftsOrError(
-		commitmentState.timeBuckets,
-		commitmentState.commitmentType,
-		meter?.aggregation?.bucket_size,
-		{
-			requireCommitmentFields: true,
-			requireBucketPrice: true,
-			priceContext: {
-				meter_id: partial.meter_id,
-				currency: (partial.currency ?? 'usd').toLowerCase(),
-				billing_period: partial.billing_period ?? BILLING_PERIOD.MONTHLY,
-				type: partial.type ?? PRICE_TYPE.USAGE,
-				price_unit_type: partial.price_unit_type ?? PRICE_UNIT_TYPE.FIAT,
-				invoice_cadence: partial.invoice_cadence ?? INVOICE_CADENCE.ARREAR,
-				display_name: partial.display_name,
-			},
+	const result = normalizeTimeBucketDraftsOrError(commitmentState.timeBuckets, commitmentState.commitmentType, partial.bucket_size, {
+		requireCommitmentFields: true,
+		requireBucketPrice: true,
+		priceContext: {
+			meter_id: partial.meter_id,
+			currency: (partial.currency ?? 'usd').toLowerCase(),
+			billing_period: partial.billing_period ?? BILLING_PERIOD.MONTHLY,
+			type: partial.type ?? PRICE_TYPE.USAGE,
+			price_unit_type: partial.price_unit_type ?? PRICE_UNIT_TYPE.FIAT,
+			invoice_cadence: partial.invoice_cadence ?? INVOICE_CADENCE.ARREAR,
+			display_name: partial.display_name,
 		},
-	);
+	});
 
 	if ('error' in result) {
 		return { error: result.error };
@@ -546,7 +536,6 @@ export function applyWindowCommitmentToLineItem(
 export function sanitizeSubscriptionLineItemForApi(
 	item: CreateSubscriptionLineItemRequest,
 	currency: string,
-	meter?: Meter | null,
 ): CreateSubscriptionLineItemRequest {
 	if (!item.commitment_windowed || !item.commitment_time_buckets?.length) {
 		return item;
@@ -555,7 +544,7 @@ export function sanitizeSubscriptionLineItemForApi(
 	const priceContext = bucketPriceContextFromLineItem(item, currency);
 	if (!priceContext) return item;
 
-	const buckets = normalizeCommitmentTimeBuckets(item.commitment_time_buckets, meter?.aggregation?.bucket_size).map((bucket) => {
+	const buckets = normalizeCommitmentTimeBuckets(item.commitment_time_buckets, item.price?.bucket_size).map((bucket) => {
 		const draft = bucket as CommitmentTimeBucketDraft;
 		const hasInlinePrice = bucket.price && (bucket.price.amount || bucket.price.tiers?.length || bucket.price.billing_model);
 

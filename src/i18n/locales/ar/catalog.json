@@ -1018,6 +1018,8 @@
 		},
 		"originalPrice": "السعر الأصلي",
 		"billingModel": "نموذج الفوترة",
+		"bucketSize": "حجم الدفعة (اختياري)",
+		"bucketSizePlaceholder": "بدون تجميع",
 		"selectBillingModel": "اختر نموذج الفوترة",
 		"overrideAmountLabel": "مبلغ التجاوز ({{unit}})",
 		"enterNewAmountOptional": "أدخل مبلغًا جديدًا (اختياري)",

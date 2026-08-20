@@ -3,6 +3,7 @@ import { CREDIT_GRANT_PERIOD } from '@/models/CreditGrant';
 import { BILLING_MODEL, PRICE_ENTITY_TYPE } from '@/models/Price';
 import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import { BILLING_CADENCE, INVOICE_CADENCE } from '@/models/Invoice';
+import { BUCKET_SIZE } from '@/models/Meter';
 import {
 	BILLING_CYCLE,
 	COLLECTION_METHOD,
@@ -113,6 +114,26 @@ export const billingModelOptions = [
 	{ label: 'Package', value: BILLING_MODEL.PACKAGE },
 	{ label: 'Volume Tiered', value: BILLING_MODEL.TIERED },
 	{ label: 'Slab Tiered', value: 'SLAB_TIERED' }, // Maps to TIERED with SLAB tier_mode
+];
+
+/**
+ * Sent as the literal string value of `bucket_size` on an UpdatePriceRequest to remove bucketing
+ * from an existing price. Distinct from simply omitting the field, which leaves it unchanged.
+ */
+export const BUCKET_SIZE_NONE = 'none' as const;
+
+// Usage-window options for a price's `bucket_size` (windows usage into fixed buckets before the
+// meter's aggregation runs, e.g. per-HOUR SUM). Only the values the backend accepts at the price
+// level - WEEK/MONTH (present on the meter-level BUCKET_SIZE enum) are not offered here.
+export const priceBucketSizeOptions = [
+	{ label: 'Minute', value: BUCKET_SIZE.WindowSizeMinute },
+	{ label: '15 Minute', value: BUCKET_SIZE.WindowSize15Min },
+	{ label: '30 Minute', value: BUCKET_SIZE.WindowSize30Min },
+	{ label: 'Hour', value: BUCKET_SIZE.WindowSizeHour },
+	{ label: '3 Hour', value: BUCKET_SIZE.WindowSize3Hour },
+	{ label: '6 Hour', value: BUCKET_SIZE.WindowSize6Hour },
+	{ label: '12 Hour', value: BUCKET_SIZE.WindowSize12Hour },
+	{ label: 'Day', value: BUCKET_SIZE.WindowSizeDay },
 ];
 
 export const billingCadenceOptions = [

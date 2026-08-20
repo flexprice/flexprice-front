@@ -137,7 +137,7 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 		let normalizedTimeBuckets: CommitmentTimeBucket[] | undefined;
 		if (showTimeBucketEditor) {
 			if (timeBuckets.length > 0) {
-				const result = normalizeTimeBucketDraftsOrError(timeBuckets, commitmentType, price.meter?.aggregation?.bucket_size, {
+				const result = normalizeTimeBucketDraftsOrError(timeBuckets, commitmentType, price.bucket_size, {
 					requireCommitmentFields: true,
 					requireBucketPrice: !!bucketPriceContext,
 					requireNonEmpty: false,
@@ -290,9 +290,7 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 					<div className='flex items-center justify-between p-4 bg-surface-subtle rounded-lg'>
 						<div className='flex-1'>
 							<label className='text-sm font-medium text-content-secondary block mb-1'>{t('commitmentConfig.windowCommitment')}</label>
-							<p className='text-xs text-content-muted'>
-								{t('commitmentConfig.windowCommitmentHint', { bucketSize: price.meter?.aggregation?.bucket_size })}
-							</p>
+							<p className='text-xs text-content-muted'>{t('commitmentConfig.windowCommitmentHint', { bucketSize: price.bucket_size })}</p>
 						</div>
 						<Switch
 							checked={isWindowCommitment}
@@ -311,7 +309,7 @@ const CommitmentConfigDialog: FC<CommitmentConfigDialogProps> = ({
 							setTimeBuckets(nextBuckets);
 							if (commitmentErrorTarget === 'banner') clearValidation();
 						}}
-						bucketSize={price.meter?.aggregation?.bucket_size}
+						bucketSize={price.bucket_size}
 						defaultCommitmentType={commitmentType}
 						currencySymbol={currencySymbol}
 						currency={price.currency}

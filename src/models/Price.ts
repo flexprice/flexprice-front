@@ -1,6 +1,6 @@
 import { BaseModel, Metadata } from './base';
 import { BILLING_CADENCE, INVOICE_CADENCE } from './Invoice';
-import { Meter } from './Meter';
+import { Meter, BUCKET_SIZE } from './Meter';
 import { Group } from './Group';
 
 export interface Price extends BaseModel {
@@ -40,6 +40,8 @@ export interface Price extends BaseModel {
 	readonly group_id?: string;
 	readonly group?: Group;
 	readonly min_quantity?: number;
+	/** Windows usage into fixed-size buckets before applying the meter's aggregation (e.g. per-HOUR SUM). Absent means no bucketing. */
+	readonly bucket_size?: BUCKET_SIZE;
 }
 
 export interface Tier {

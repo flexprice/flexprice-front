@@ -136,7 +136,7 @@ const MINUTE_BUCKET_SIZES: BUCKET_SIZE[] = [BUCKET_SIZE.WindowSizeMinute, BUCKET
  * Window commitment is only available for meters with bucket_size configured
  */
 export const supportsWindowCommitment = (price: Price): boolean => {
-	return price.meter?.aggregation?.bucket_size !== undefined && price.meter?.aggregation?.bucket_size !== null;
+	return price.bucket_size !== undefined && price.bucket_size !== null;
 };
 
 export const isHourBucketSize = (bucketSize?: BUCKET_SIZE | string | null): boolean => {
@@ -215,7 +215,7 @@ export function isCommitmentTimePointAligned(point: CommitmentTimePoint, constra
  * Time buckets are only configurable when the meter window size is hours or minutes.
  */
 export const supportsCommitmentTimeBuckets = (price: Price): boolean => {
-	const bucketSize = price.meter?.aggregation?.bucket_size;
+	const bucketSize = price.bucket_size;
 	if (!bucketSize) return false;
 	return isHourBucketSize(bucketSize) || MINUTE_BUCKET_SIZES.includes(bucketSize as BUCKET_SIZE);
 };
@@ -338,7 +338,7 @@ export const enrichCommitmentTimeBucketsForApi = (
 	price: Price,
 	override?: Pick<ExtendedPriceOverride, 'amount'>,
 ): CommitmentTimeBucket[] => {
-	const normalized = normalizeCommitmentTimeBuckets(buckets, price.meter?.aggregation?.bucket_size);
+	const normalized = normalizeCommitmentTimeBuckets(buckets, price.bucket_size);
 	const commitmentValue = getCommitmentValueString(config);
 	const commitmentType = resolveCommitmentType(config);
 

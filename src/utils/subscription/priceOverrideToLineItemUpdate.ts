@@ -33,6 +33,10 @@ export function convertPriceOverrideToLineItemUpdate(
 		updateData.transform_quantity = override.transform_quantity;
 	}
 
+	if (override.bucket_size) {
+		updateData.bucket_size = override.bucket_size;
+	}
+
 	if (override.effective_from) {
 		updateData.effective_from = override.effective_from;
 	}

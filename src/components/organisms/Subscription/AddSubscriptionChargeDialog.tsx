@@ -25,7 +25,6 @@ import {
 	sanitizeSubscriptionLineItemForApi,
 	subscriptionChargeCommitmentFromLineItem,
 } from '@/utils/subscription/subscription_line_item_commitment_helpers';
-import { useMeterForCommitment } from '@/hooks/useMeterForCommitment';
 import { useTranslation } from 'react-i18next';
 
 export type { AddedSubscriptionLineItem };
@@ -115,7 +114,6 @@ const AddSubscriptionChargeDialog: React.FC<AddSubscriptionChargeDialogProps> = 
 	const [selectedMeterId, setSelectedMeterId] = useState<string | undefined>();
 
 	const meterId = selectedMeterId ?? price.meter_id;
-	const { meter } = useMeterForCommitment(meterId);
 
 	const resetForm = useCallback(() => {
 		setSelectedChargeType(null);
@@ -170,16 +168,12 @@ const AddSubscriptionChargeDialog: React.FC<AddSubscriptionChargeDialogProps> = 
 			let finalRequest = request;
 
 			if (isUsage) {
-				const commitmentError = applyWindowCommitmentToLineItem(finalRequest, commitmentState, partial, meter);
+				const commitmentError = applyWindowCommitmentToLineItem(finalRequest, commitmentState, partial);
 				if (commitmentError) {
 					toast.error(formatWindowCommitmentError(commitmentError.error, t));
 					return;
 				}
-				finalRequest = sanitizeSubscriptionLineItemForApi(
-					finalRequest,
-					(partial.currency ?? defaultCurrency ?? 'usd').toLowerCase(),
-					meter,
-				);
+				finalRequest = sanitizeSubscriptionLineItemForApi(finalRequest, (partial.currency ?? defaultCurrency ?? 'usd').toLowerCase());
 			}
 
 			try {
@@ -189,7 +183,7 @@ const AddSubscriptionChargeDialog: React.FC<AddSubscriptionChargeDialogProps> = 
 				// Keep dialog open so the user can fix and retry.
 			}
 		},
-		[commitmentState, defaultCurrency, meter, onOpenChange, onSave, t],
+		[commitmentState, defaultCurrency, onOpenChange, onSave, t],
 	);
 
 	const handleAdd = useCallback((partial: Partial<InternalPrice>) => buildAndSave(partial, uniqueId('sub_')), [buildAndSave]);
@@ -258,6 +252,7 @@ const AddSubscriptionChargeDialog: React.FC<AddSubscriptionChargeDialogProps> = 
 							value={commitmentState}
 							onChange={setCommitmentState}
 							sourcePrice={price}
+							sourceBucketSize={price.bucket_size}
 							disabled={isSaving}
 						/>
 					}

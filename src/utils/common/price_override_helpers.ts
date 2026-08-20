@@ -1,5 +1,7 @@
 import { Price } from '@/models/Price';
 import { BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
+import { BUCKET_SIZE } from '@/models/Meter';
+import { BUCKET_SIZE_NONE } from '@/constants/constants';
 import { LineItemCommitmentConfig } from '@/types/dto/LineItemCommitmentConfig';
 import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
 
@@ -17,6 +19,7 @@ export interface SubscriptionLineItemOverrideRequest {
 	transform_quantity?: TransformQuantity;
 	price_unit_amount?: string; // For CUSTOM price unit type, FLAT_FEE/PACKAGE billing models
 	price_unit_tiers?: CreatePriceTier[]; // For CUSTOM price unit type, TIERED billing model
+	bucket_size?: BUCKET_SIZE; // USAGE prices only
 }
 
 // Backend interface (converted format)
@@ -30,6 +33,7 @@ export interface BackendSubscriptionLineItemOverrideRequest {
 	transform_quantity?: TransformQuantity;
 	price_unit_amount?: string; // For CUSTOM price unit type
 	price_unit_tiers?: CreatePriceTier[]; // For CUSTOM price unit type
+	bucket_size?: BUCKET_SIZE; // USAGE prices only
 }
 
 /**
@@ -48,6 +52,10 @@ export interface ExtendedPriceOverride {
 	commitment_time_buckets?: CommitmentTimeBucket[];
 	price_unit_amount?: string; // For CUSTOM price unit type, FLAT_FEE/PACKAGE billing models
 	price_unit_tiers?: CreatePriceTier[]; // For CUSTOM price unit type, TIERED billing model
+	// USAGE prices only - overrides the plan price's bucket_size. BUCKET_SIZE_NONE only makes sense when
+	// editing an existing subscription line item (forwarded to UpdateSubscriptionLineItemRequest); it is
+	// stripped before being sent as part of a subscription-create-time override (see getLineItemOverrides).
+	bucket_size?: BUCKET_SIZE | typeof BUCKET_SIZE_NONE;
 }
 
 /**
@@ -88,7 +96,8 @@ export const getLineItemOverrides = (
 					override.tiers !== undefined ||
 					override.transform_quantity !== undefined ||
 					override.price_unit_amount !== undefined ||
-					override.price_unit_tiers !== undefined)
+					override.price_unit_tiers !== undefined ||
+					override.bucket_size !== undefined)
 			);
 		})
 		.map(([priceId, override]) => {
@@ -115,6 +124,12 @@ export const getLineItemOverrides = (
 				...(billingModel !== undefined && { billing_model: billingModel as BILLING_MODEL }),
 				...(tierMode !== undefined && { tier_mode: tierMode }),
 				...(override.transform_quantity !== undefined && { transform_quantity: override.transform_quantity }),
+				// bucket_size only makes sense for USAGE prices, same restriction the backend enforces.
+				// BUCKET_SIZE_NONE (explicit clear) isn't meaningful at subscription-create time since
+				// there's no existing price to clear - drop it rather than forwarding an unsupported value.
+				...(override.bucket_size !== undefined &&
+					override.bucket_size !== BUCKET_SIZE_NONE &&
+					isUsagePrice && { bucket_size: override.bucket_size }),
 			};
 
 			// Handle FIAT vs CUSTOM price unit fields (mutually exclusive)

@@ -1034,6 +1034,8 @@
 		},
 		"originalPrice": "Original Price",
 		"billingModel": "Billing Model",
+		"bucketSize": "Bucket Size (Optional)",
+		"bucketSizePlaceholder": "No bucketing",
 		"selectBillingModel": "Select billing model",
 		"overrideAmountLabel": "Override Amount ({{unit}})",
 		"enterNewAmountOptional": "Enter new amount (optional)",

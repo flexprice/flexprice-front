@@ -10,7 +10,7 @@ import { queryClient, refetchQueries } from '@/core/services/tanstack/ReactQuery
 import { SIDEBAR_PRICING_PROMO_QUERY_KEY } from '@/hooks/useShouldShowSidebarPricingPromo';
 import { cn } from '@/lib/utils';
 import { FEATURE_TYPE } from '@/models/Feature';
-import { BUCKET_SIZE, METER_AGGREGATION_TYPE, METER_USAGE_RESET_PERIOD } from '@/models/Meter';
+import { METER_AGGREGATION_TYPE, METER_USAGE_RESET_PERIOD } from '@/models/Meter';
 import FeatureApi from '@/api/FeatureApi';
 import { CreateFeatureRequest, CreateMeterRequest, FeatureFormData } from '@/types/dto';
 import { useMutation } from '@tanstack/react-query';
@@ -121,52 +121,6 @@ const EXPRESSION_SUPPORTED_TYPES: METER_AGGREGATION_TYPE[] = [
 	METER_AGGREGATION_TYPE.LATEST,
 ];
 
-const BUCKET_SIZE_OPTIONS: SelectOption[] = [
-	{
-		label: 'Minute',
-		value: BUCKET_SIZE.WindowSizeMinute,
-	},
-	{
-		label: '15 Minute',
-		value: BUCKET_SIZE.WindowSize15Min,
-	},
-	{
-		label: '30 Minute',
-		value: BUCKET_SIZE.WindowSize30Min,
-	},
-	{
-		label: 'Hour',
-		value: BUCKET_SIZE.WindowSizeHour,
-	},
-	{
-		label: '3 Hour',
-		value: BUCKET_SIZE.WindowSize3Hour,
-	},
-	{
-		label: '6 Hour',
-		value: BUCKET_SIZE.WindowSize6Hour,
-	},
-	{
-		label: '12 Hour',
-		value: BUCKET_SIZE.WindowSize12Hour,
-	},
-	{
-		label: 'Day',
-		value: BUCKET_SIZE.WindowSizeDay,
-	},
-	{
-		label: 'Week',
-		value: BUCKET_SIZE.WindowSizeWeek,
-	},
-	{
-		label: 'Month',
-		value: BUCKET_SIZE.WindowSizeMonth,
-	},
-];
-
-const aggregationSupportsBucketSize = (type?: METER_AGGREGATION_TYPE): boolean =>
-	type === METER_AGGREGATION_TYPE.SUM || type === METER_AGGREGATION_TYPE.MAX;
-
 // Validation schemas
 const FEATURE_SCHEMA = z.object({
 	name: z.string().nonempty('Feature name is required'),
@@ -198,7 +152,6 @@ interface FeatureFormState {
 	showUnitName: boolean;
 	showReportingUnitName: boolean;
 	showEventFilters: boolean;
-	showBucketSize: boolean;
 	showGroupBy: boolean;
 	showCustomExpression: boolean;
 }
@@ -219,7 +172,6 @@ const useFeatureForm = () => {
 		showUnitName: false,
 		showReportingUnitName: false,
 		showEventFilters: false,
-		showBucketSize: false,
 		showGroupBy: false,
 		showCustomExpression: false,
 	});
@@ -726,11 +678,7 @@ const AggregationSection = ({
 	const handleAggregationTypeChange = useCallback(
 		(type: string) => {
 			const nextType = type as METER_AGGREGATION_TYPE;
-			const supportsBucketSize = aggregationSupportsBucketSize(nextType);
 			const stillSupportsExpression = EXPRESSION_SUPPORTED_TYPES.includes(nextType);
-			if (!supportsBucketSize) {
-				onUpdateFormState({ showBucketSize: false });
-			}
 			onUpdateFeature({
 				meter: {
 					...meter,
@@ -741,7 +689,6 @@ const AggregationSection = ({
 						// Drop expression when switching to a type that can't carry one
 						// (e.g. COUNT, COUNT_UNIQUE, SUM_WITH_MULTIPLIER, WEIGHTED_SUM).
 						expression: stillSupportsExpression ? meter?.aggregation?.expression : '',
-						...(supportsBucketSize ? {} : { bucket_size: undefined }),
 					},
 				},
 			});
@@ -833,34 +780,6 @@ const AggregationSection = ({
 		[onUpdateFeature, meter],
 	);
 
-	const handleWindowSizeChange = useCallback(
-		(type: string) => {
-			onUpdateFeature({
-				meter: {
-					...meter,
-					aggregation: {
-						...(meter?.aggregation ?? { type: METER_AGGREGATION_TYPE.SUM }),
-						bucket_size: type as BUCKET_SIZE,
-					},
-				},
-			});
-		},
-		[onUpdateFeature, meter],
-	);
-
-	const handleClearBucketSize = useCallback(() => {
-		onUpdateFormState({ showBucketSize: false });
-		onUpdateFeature({
-			meter: {
-				...meter,
-				aggregation: {
-					...(meter?.aggregation ?? { type: METER_AGGREGATION_TYPE.SUM }),
-					bucket_size: undefined,
-				},
-			},
-		});
-	}, [onUpdateFeature, onUpdateFormState, meter]);
-
 	const handleGroupByChange = useCallback(
 		(value: string) => {
 			onUpdateFeature({
@@ -881,7 +800,6 @@ const AggregationSection = ({
 	const showExpressionInput = supportsExpression && formState.showCustomExpression;
 	const showFieldInput = aggType !== METER_AGGREGATION_TYPE.COUNT && !showExpressionInput;
 	const showMultiplierInput = aggType === METER_AGGREGATION_TYPE.SUM_WITH_MULTIPLIER;
-	const supportsBucketSize = aggregationSupportsBucketSize(aggType);
 
 	return (
 		<>
@@ -946,12 +864,6 @@ const AggregationSection = ({
 
 				<div className='flex flex-col gap-2'>
 					<div className='flex flex-wrap items-center gap-2'>
-						{supportsBucketSize && !formState.showBucketSize ? (
-							<AddChargesButton
-								label={t('catalog:features.form.bucketSizeButton')}
-								onClick={() => onUpdateFormState({ showBucketSize: true })}
-							/>
-						) : null}
 						{meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX && !formState.showGroupBy ? (
 							<AddChargesButton label={t('catalog:features.form.groupByButton')} onClick={() => onUpdateFormState({ showGroupBy: true })} />
 						) : null}
@@ -966,26 +878,6 @@ const AggregationSection = ({
 							/>
 						) : null}
 					</div>
-					{supportsBucketSize && formState.showBucketSize ? (
-						<div className='space-y-1'>
-							<div className='flex items-center justify-between gap-2'>
-								<label className='text-sm font-medium text-content-secondary'>{t('catalog:features.form.bucketSize')}</label>
-								<button
-									type='button'
-									onClick={handleClearBucketSize}
-									className='text-sm text-content-muted hover:text-content-heading underline-offset-2 hover:underline'>
-									{t('common:form.remove')}
-								</button>
-							</div>
-							<Select
-								options={BUCKET_SIZE_OPTIONS}
-								onChange={handleWindowSizeChange}
-								placeholder=''
-								description={t('catalog:features.form.bucketSizeHelp')}
-								value={meter?.aggregation?.bucket_size || undefined}
-							/>
-						</div>
-					) : null}
 					{meter?.aggregation?.type === METER_AGGREGATION_TYPE.MAX && formState.showGroupBy ? (
 						<Input
 							value={meter?.aggregation?.group_by || ''}
@@ -1077,9 +969,6 @@ const AddFeaturePage = () => {
 									? { expression: featureData.meter.aggregation.expression.trim() }
 									: { field: featureData.meter.aggregation?.field || '' }),
 								multiplier: featureData.meter.aggregation?.multiplier,
-								bucket_size: aggregationSupportsBucketSize(featureData.meter.aggregation?.type)
-									? featureData.meter.aggregation?.bucket_size
-									: undefined,
 								group_by: featureData.meter.aggregation?.group_by,
 							},
 							reset_usage: featureData.meter.reset_usage || METER_USAGE_RESET_PERIOD.BILLING_PERIOD,
