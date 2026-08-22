@@ -61,8 +61,6 @@ interface IntercomConfig {
 interface PylonConfig {
 	enabled: boolean;
 	appId: string;
-	/** Fetch a signed JWT from POST /users/chat/verify and let it carry identity. */
-	identityVerificationEnabled: boolean;
 }
 interface ReoConfig {
 	enabled: boolean;
@@ -333,7 +331,6 @@ export const config: Config = {
 	pylon: {
 		enabled: import.meta.env.VITE_PYLON_ENABLED === EnvFlag.True,
 		appId: import.meta.env.VITE_PYLON_APP_ID ?? '',
-		identityVerificationEnabled: import.meta.env.VITE_PYLON_IDENTITY_VERIFICATION_ENABLED === EnvFlag.True,
 	},
 	reo: {
 		enabled: import.meta.env.VITE_REO_ENABLED === 'true',

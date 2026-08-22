@@ -12,10 +12,6 @@ export function createSupportChatAdapter(provider: SupportChatProvider, flow: Su
 		case SupportChatProvider.Intercom:
 			return createIntercomAdapter(config.intercom.appId, flow.statePollIntervalMs, flow.hideDefaultLauncher);
 		case SupportChatProvider.Pylon:
-			return createPylonAdapter(
-				config.pylon.appId,
-				// Undefined when the flag is off, so no request is made.
-				config.pylon.identityVerificationEnabled ? async () => (await SupportChatApi.getIdentityToken()).token : undefined,
-			);
+			return createPylonAdapter(config.pylon.appId, async () => (await SupportChatApi.getIdentityToken()).token);
 	}
 }

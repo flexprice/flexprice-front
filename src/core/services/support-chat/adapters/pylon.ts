@@ -2,7 +2,6 @@
  * Pylon chat widget adapter. Unlike Intercom it has native onShow/onHide, so no polling.
  * Docs: https://docs.usepylon.com/pylon-docs/chat-widget/chat-setup
  */
-import { errorLogger } from '@/core/services/error/ErrorLoggingService';
 import { DocumentReadyState } from '@/types/enums/dom';
 import type { SupportChatAdapter, SupportChatUser, SupportChatVisibilityHandlers } from '../SupportChatAdapter';
 
@@ -88,10 +87,9 @@ function loadWidgetScript(appId: string): Promise<void> {
 	return load;
 }
 
-/** Injected, not imported, so the API module is only reached when the flag is on. */
-export type FetchPylonIdentityToken = () => Promise<string>;
+export type FetchPylonEmailHash = () => Promise<string>;
 
-export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylonIdentityToken): SupportChatAdapter {
+export function createPylonAdapter(appId: string, fetchEmailHash: FetchPylonEmailHash): SupportChatAdapter {
 	let disposed = false;
 	let handlers: SupportChatVisibilityHandlers | null = null;
 	let registered = false;
@@ -103,39 +101,16 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 				throw new Error('Invalid Pylon app id: expected only letters, digits, hyphens and underscores');
 			}
 
+			const emailHash = await fetchEmailHash();
 			const target = pylonWindow();
 
-			// Best-effort: on failure, log and boot unverified so the Help button keeps working.
-			let identityToken: string | null = null;
-			if (fetchIdentityToken) {
-				try {
-					identityToken = await fetchIdentityToken();
-				} catch (error) {
-					errorLogger.logError(error instanceof Error ? error : new Error(String(error)), undefined, {
-						scope: 'support-chat',
-						action: 'fetch-pylon-identity-token',
-					});
-				}
-			}
-
-			// This prod tenant has no Pylon account, so don't send it as account_external_id.
-			const accountExternalId = user.tenantId === '00000000-0000-0000-0000-000000000000' ? undefined : user.tenantId;
-			const chatSettings: Record<string, unknown> = identityToken
-				? {
-						app_id: appId,
-						jwt: identityToken,
-						email: user.email ?? '',
-						name: user.name ?? '',
-						contact_external_id: user.id,
-						...(accountExternalId ? { account_external_id: accountExternalId } : {}),
-					}
-				: {
-						app_id: appId,
-						email: user.email ?? '',
-						name: user.name ?? '',
-						// Groups a tenant's users under one Pylon account.
-						...(accountExternalId ? { account_external_id: accountExternalId } : {}),
-					};
+			const chatSettings: Record<string, unknown> = {
+				app_id: appId,
+				email_hash: emailHash,
+				email: user.email ?? '',
+				name: user.name ?? '',
+				contact_external_id: user.id,
+			};
 			// Pylon documents no re-identify call, so updating this after the widget has
 			// already loaded is best-effort: it is confirmed to apply on first boot only.
 			target.pylon = { chat_settings: chatSettings };
