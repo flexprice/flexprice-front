@@ -13,8 +13,18 @@ const USER: SupportChatUser = {
 	tenantId: 'tenant_1',
 };
 
-/** Let the Pylon script "load" so its init promise settles; a no-op for Intercom. */
-function settlePendingScript(): void {
+/** Let the Pylon script "load" so its init promise settles; a no-op for Intercom, which never injects one. */
+async function settlePendingScript(): Promise<void> {
+	try {
+		await vi.waitFor(
+			() => {
+				if (!document.querySelector('script[src*="widget.usepylon.com"]')) throw new Error('not yet injected');
+			},
+			{ timeout: 100 },
+		);
+	} catch {
+		return;
+	}
 	document.querySelector<HTMLScriptElement>('script[src*="widget.usepylon.com"]')?.dispatchEvent(new Event('load'));
 }
 
@@ -30,7 +40,7 @@ const CASES: ReadonlyArray<{ provider: SupportChatProvider; create: () => Promis
 		provider: SupportChatProvider.Pylon,
 		create: async () => {
 			const { createPylonAdapter } = await import('./pylon');
-			return createPylonAdapter('app-123');
+			return createPylonAdapter('app-123', async () => 'hashed-email');
 		},
 	},
 ];
@@ -52,7 +62,7 @@ describe.each(CASES)('$provider adapter conformance', ({ create }) => {
 	it('resolves init for a valid configuration', async () => {
 		const adapter = await create();
 		const pending = adapter.init(USER);
-		settlePendingScript();
+		await settlePendingScript();
 
 		await expect(pending).resolves.toBeUndefined();
 	});
@@ -66,7 +76,7 @@ describe.each(CASES)('$provider adapter conformance', ({ create }) => {
 	it('does not throw when show() is called after dispose', async () => {
 		const adapter = await create();
 		const pending = adapter.init(USER);
-		settlePendingScript();
+		await settlePendingScript();
 		await pending;
 		adapter.dispose();
 
@@ -79,7 +89,7 @@ describe.each(CASES)('$provider adapter conformance', ({ create }) => {
 		expect(() => adapter.subscribe({ onShow: vi.fn(), onHide: vi.fn() })).not.toThrow();
 
 		const pending = adapter.init(USER);
-		settlePendingScript();
+		await settlePendingScript();
 		await expect(pending).resolves.toBeUndefined();
 	});
 
@@ -96,7 +106,7 @@ describe.each(CASES)('$provider adapter conformance', ({ create }) => {
 	it('has an idempotent dispose', async () => {
 		const adapter = await create();
 		const pending = adapter.init(USER);
-		settlePendingScript();
+		await settlePendingScript();
 		await pending;
 
 		expect(() => {
