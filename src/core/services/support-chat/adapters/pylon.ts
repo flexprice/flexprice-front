@@ -118,13 +118,8 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 				}
 			}
 
-			// The widget both (a) gates rendering on chat_settings.email/name being present,
-			// regardless of JWT mode, and (b) sends chat_settings.account_external_id /
-			// contact_external_id verbatim to Pylon's jwt-auth endpoint alongside the JWT — any
-			// mismatch against the JWT's own signed claims gets the auth call rejected. These are
-			// sent here to exactly mirror what the backend (userService.CreateSupportChatToken)
-			// signs into the token: email, name (falls back to tenant name), contact_external_id
-			// (always the user id), and account_external_id (the tenant id, when present).
+			// This prod tenant has no Pylon account, so don't send it as account_external_id.
+			const accountExternalId = user.tenantId === '00000000-0000-0000-0000-000000000000' ? undefined : user.tenantId;
 			const chatSettings: Record<string, unknown> = identityToken
 				? {
 						app_id: appId,
@@ -132,14 +127,14 @@ export function createPylonAdapter(appId: string, fetchIdentityToken?: FetchPylo
 						email: user.email ?? '',
 						name: user.name ?? '',
 						contact_external_id: user.id,
-						...(user.tenantId ? { account_external_id: user.tenantId } : {}),
+						...(accountExternalId ? { account_external_id: accountExternalId } : {}),
 					}
 				: {
 						app_id: appId,
 						email: user.email ?? '',
 						name: user.name ?? '',
 						// Groups a tenant's users under one Pylon account.
-						...(user.tenantId ? { account_external_id: user.tenantId } : {}),
+						...(accountExternalId ? { account_external_id: accountExternalId } : {}),
 					};
 			// Pylon documents no re-identify call, so updating this after the widget has
 			// already loaded is best-effort: it is confirmed to apply on first boot only.
