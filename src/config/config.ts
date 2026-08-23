@@ -61,6 +61,8 @@ interface IntercomConfig {
 interface PylonConfig {
 	enabled: boolean;
 	appId: string;
+	/** When true, fetch HMAC email hash from the backend and pass it as Pylon `email_hash`. */
+	identityVerificationEnabled: boolean;
 }
 interface ReoConfig {
 	enabled: boolean;
@@ -331,6 +333,7 @@ export const config: Config = {
 	pylon: {
 		enabled: import.meta.env.VITE_PYLON_ENABLED === EnvFlag.True,
 		appId: import.meta.env.VITE_PYLON_APP_ID ?? '',
+		identityVerificationEnabled: import.meta.env.VITE_PYLON_IDENTITY_VERIFICATION_ENABLED === EnvFlag.True,
 	},
 	reo: {
 		enabled: import.meta.env.VITE_REO_ENABLED === 'true',

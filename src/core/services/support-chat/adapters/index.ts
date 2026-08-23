@@ -12,6 +12,11 @@ export function createSupportChatAdapter(provider: SupportChatProvider, flow: Su
 		case SupportChatProvider.Intercom:
 			return createIntercomAdapter(config.intercom.appId, flow.statePollIntervalMs, flow.hideDefaultLauncher);
 		case SupportChatProvider.Pylon:
-			return createPylonAdapter(config.pylon.appId, async () => (await SupportChatApi.getIdentityToken()).token);
+			return createPylonAdapter(
+				config.pylon.appId,
+				config.pylon.identityVerificationEnabled
+					? async () => (await SupportChatApi.getIdentityToken())?.token ?? ''
+					: undefined,
+			);
 	}
 }

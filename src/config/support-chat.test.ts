@@ -11,6 +11,7 @@ describe('support chat config', () => {
 		vi.stubEnv('VITE_APP_INTERCOM_APP_ID', '');
 		vi.stubEnv('VITE_PYLON_ENABLED', 'false');
 		vi.stubEnv('VITE_PYLON_APP_ID', '');
+		vi.stubEnv('VITE_PYLON_IDENTITY_VERIFICATION_ENABLED', 'false');
 	});
 
 	afterEach(() => {
@@ -40,6 +41,19 @@ describe('support chat config', () => {
 		const { getActiveSupportChatProvider } = await import('./support-chat');
 
 		expect(getActiveSupportChatProvider()).toBe(SupportChatProvider.Pylon);
+	});
+
+	it('defaults Pylon identity verification to off', async () => {
+		const { config } = await import('./config');
+
+		expect(config.pylon.identityVerificationEnabled).toBe(false);
+	});
+
+	it('enables Pylon identity verification only when the env flag is true', async () => {
+		vi.stubEnv('VITE_PYLON_IDENTITY_VERIFICATION_ENABLED', 'true');
+		const { config } = await import('./config');
+
+		expect(config.pylon.identityVerificationEnabled).toBe(true);
 	});
 
 	it('treats a malformed Pylon app id as unconfigured, so no dead button renders', async () => {

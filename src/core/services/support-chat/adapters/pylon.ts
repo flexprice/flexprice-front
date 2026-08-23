@@ -89,7 +89,7 @@ function loadWidgetScript(appId: string): Promise<void> {
 
 export type FetchPylonEmailHash = () => Promise<string>;
 
-export function createPylonAdapter(appId: string, fetchEmailHash: FetchPylonEmailHash): SupportChatAdapter {
+export function createPylonAdapter(appId: string, fetchEmailHash?: FetchPylonEmailHash): SupportChatAdapter {
 	let disposed = false;
 	let handlers: SupportChatVisibilityHandlers | null = null;
 	let registered = false;
@@ -101,15 +101,15 @@ export function createPylonAdapter(appId: string, fetchEmailHash: FetchPylonEmai
 				throw new Error('Invalid Pylon app id: expected only letters, digits, hyphens and underscores');
 			}
 
-			const emailHash = await fetchEmailHash();
+			const emailHash = fetchEmailHash ? await fetchEmailHash() : undefined;
 			const target = pylonWindow();
 
 			const chatSettings: Record<string, unknown> = {
 				app_id: appId,
-				email_hash: emailHash,
 				email: user.email ?? '',
 				name: user.name ?? '',
 				contact_external_id: user.id,
+				...(emailHash !== undefined ? { email_hash: emailHash } : {}),
 			};
 			// Pylon documents no re-identify call, so updating this after the widget has
 			// already loaded is best-effort: it is confirmed to apply on first boot only.

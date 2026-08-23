@@ -62,6 +62,23 @@ describe('pylon adapter', () => {
 		await pending;
 	});
 
+	it('omits email_hash when no hash fetcher is provided', async () => {
+		const adapter = createPylonAdapter('app-123');
+		const pending = adapter.init(USER);
+		await vi.waitFor(() => expect(globals().pylon?.chat_settings).toBeDefined());
+
+		expect(globals().pylon?.chat_settings).toEqual({
+			app_id: 'app-123',
+			email: 'ada@example.com',
+			name: 'Ada Tenant',
+			contact_external_id: 'user_1',
+		});
+		expect(globals().pylon?.chat_settings).not.toHaveProperty('email_hash');
+
+		completeScriptLoad();
+		await pending;
+	});
+
 	it('rejects and never touches the widget when the hash fetch fails', async () => {
 		const adapter = createPylonAdapter('app-123', async () => {
 			throw new Error('token endpoint unavailable');
