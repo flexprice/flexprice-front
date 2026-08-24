@@ -48,6 +48,9 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 	const [overrideBucketSize, setOverrideBucketSize] = useState<PriceBucketSize | ''>(
 		(price.bucket_size as PriceBucketSize | undefined) ?? '',
 	);
+	// The API rejects a price defining its own bucket_size when the meter already carries one
+	// ("meter already defines a bucket size") - disable the override instead of surfacing that as a 400.
+	const meterBucketSize = price.meter?.aggregation?.bucket_size;
 
 	// Detect price unit type
 	const isCustomPriceUnit = price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
@@ -344,6 +347,8 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 								onChange={(value) => setOverrideBucketSize(value as PriceBucketSize)}
 								options={priceBucketSizeOptions}
 								placeholder={t('priceDialogs.bucketSizePlaceholder')}
+								disabled={!!meterBucketSize}
+								description={meterBucketSize ? t('priceDialogs.bucketSizeSetOnMeter', { bucketSize: meterBucketSize }) : undefined}
 							/>
 						</div>
 					)}

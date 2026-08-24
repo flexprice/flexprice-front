@@ -1021,6 +1021,7 @@
 		"billingModel": "نموذج الفوترة",
 		"bucketSize": "حجم الدفعة (اختياري)",
 		"bucketSizePlaceholder": "بدون تجميع",
+		"bucketSizeSetOnMeter": "تم تعيينه بالفعل على العداد ({{bucketSize}}) - لا يمكن للسعر تعريف حجم خاص به فوق ذلك.",
 		"selectBillingModel": "اختر نموذج الفوترة",
 		"overrideAmountLabel": "مبلغ التجاوز ({{unit}})",
 		"enterNewAmountOptional": "أدخل مبلغًا جديدًا (اختياري)",

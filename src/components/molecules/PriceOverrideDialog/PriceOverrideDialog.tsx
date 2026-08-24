@@ -22,6 +22,7 @@ import {
 	formatWindowCommitmentError,
 	lineItemWindowCommitmentStateFromBuckets,
 } from '@/utils/subscription/subscription_line_item_commitment_helpers';
+import { resolveBucketSize } from '@/utils/common/commitment_helpers';
 import { useCommitmentTimeBucketPrices } from '@/hooks/useCommitmentTimeBucketPrices';
 import { convertPriceOverrideToLineItemUpdate } from '@/utils/subscription/priceOverrideToLineItemUpdate';
 
@@ -93,6 +94,9 @@ const PriceOverrideDialog: FC<Props> = ({
 	const [overrideBucketSize, setOverrideBucketSize] = useState<PriceBucketSize | ''>(
 		(price.bucket_size as PriceBucketSize | undefined) ?? '',
 	);
+	// The API rejects a price defining its own bucket_size when the meter already carries one
+	// ("meter already defines a bucket size") - disable the override instead of surfacing that as a 400.
+	const meterBucketSize = price.meter?.aggregation?.bucket_size;
 
 	// Detect price unit type
 	const isCustomPriceUnit = price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
@@ -282,8 +286,14 @@ const PriceOverrideDialog: FC<Props> = ({
 			const priceUpdate = convertPriceOverrideToLineItemUpdate(price.id, override);
 			// overrideBucketSize reflects this submission's pending bucket_size (changed or not) - use it
 			// instead of the line item's stale lineItem.price?.bucket_size so window-commitment validation
-			// and normalization match what actually gets sent.
-			const commitmentResult = buildLineItemCommitmentUpdatePayload(commitmentState, lineItem, overrideBucketSize || undefined);
+			// and normalization match what actually gets sent. Falls back to the price's effective
+			// (price-then-meter) bucket size when the selector was never touched, so legacy
+			// meter-bucketed prices with no price-level bucket_size still validate correctly.
+			const commitmentResult = buildLineItemCommitmentUpdatePayload(
+				commitmentState,
+				lineItem,
+				overrideBucketSize || resolveBucketSize(price) || undefined,
+			);
 			if (!commitmentResult.ok) {
 				toast.error(formatWindowCommitmentError(commitmentResult.error, tBilling));
 				return;
@@ -585,6 +595,8 @@ const PriceOverrideDialog: FC<Props> = ({
 								onChange={(value) => setOverrideBucketSize(value as PriceBucketSize)}
 								options={priceBucketSizeOptions}
 								placeholder={t('priceDialogs.bucketSizePlaceholder')}
+								disabled={!!meterBucketSize}
+								description={meterBucketSize ? t('priceDialogs.bucketSizeSetOnMeter', { bucketSize: meterBucketSize }) : undefined}
 							/>
 						</div>
 					)}
@@ -723,7 +735,7 @@ const PriceOverrideDialog: FC<Props> = ({
 						value={commitmentState}
 						onChange={setCommitmentState}
 						sourcePrice={lineItem.price}
-						sourceBucketSize={overrideBucketSize || undefined}
+						sourceBucketSize={overrideBucketSize || resolveBucketSize(price) || undefined}
 						disabled={isSaving}
 					/>
 				)}

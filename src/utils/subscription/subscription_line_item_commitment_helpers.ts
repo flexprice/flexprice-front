@@ -13,6 +13,7 @@ import {
 	validateCommitment,
 	resolveCommitmentTypeFromConfig,
 	mapCommitmentValidationError,
+	resolveBucketSize,
 } from '@/utils/common/commitment_helpers';
 import {
 	buildBucketPriceFromDraft,
@@ -365,7 +366,7 @@ export function buildLineItemCommitmentUpdatePayload(
 		return { ok: false, error: 'commitmentConfig.addCharge.selectMeterForBuckets' };
 	}
 
-	const bucketSize = effectiveBucketSize !== undefined ? effectiveBucketSize : lineItem.price?.bucket_size;
+	const bucketSize = effectiveBucketSize !== undefined ? effectiveBucketSize : resolveBucketSize(lineItem.price);
 	const validation = normalizeTimeBucketDraftsOrError(commitmentState.timeBuckets, commitmentState.commitmentType, bucketSize, {
 		requireCommitmentFields: true,
 		requireBucketPrice: true,
