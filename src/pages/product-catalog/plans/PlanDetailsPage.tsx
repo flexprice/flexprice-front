@@ -120,16 +120,24 @@ const PlanDetailsPage = () => {
 	);
 	const latestRun = planRuns[0];
 	const isSyncRunning = latestRun?.status === 'Running';
+	const isTerminalSyncStatus = latestRun?.status === 'Completed' || latestRun?.status === 'Failed';
 
-	// A running sync isn't reflected in planData until it finishes; refetch
-	// once it does so the button's disable state settles without a manual reload.
+	// Refetch plan data after a sync we started reaches a terminal workflow status —
+	// including when the first poll is already Completed and never passed through Running.
+	// Also refetch if a run that was already Running when this page loaded later finishes.
 	const wasSyncRunning = useRef(isSyncRunning);
+	const awaitingPlanRefresh = useRef(false);
+	const workflowKeyWhenSyncStarted = useRef<string | undefined>(undefined);
 	useEffect(() => {
-		if (wasSyncRunning.current && !isSyncRunning) {
+		const finishedObservedRun = wasSyncRunning.current && !isSyncRunning;
+		const finishedStartedRun =
+			awaitingPlanRefresh.current && isTerminalSyncStatus && latestRun?.run_id !== workflowKeyWhenSyncStarted.current;
+		if (finishedObservedRun || finishedStartedRun) {
+			awaitingPlanRefresh.current = false;
 			void queryClient.invalidateQueries({ queryKey: ['fetchPlan', planId] });
 		}
 		wasSyncRunning.current = isSyncRunning;
-	}, [isSyncRunning, planId, queryClient]);
+	}, [isSyncRunning, isTerminalSyncStatus, latestRun?.run_id, planId, queryClient]);
 
 	const { mutate: archivePlan } = useMutation({
 		mutationFn: async () => {
@@ -148,6 +156,8 @@ const PlanDetailsPage = () => {
 		mutationFn: () => PlanApi.synchronizePlanPricesWithSubscription(planId!),
 		onSuccess: () => {
 			toast.success('Sync has been started and will take up to 1 hour to complete.');
+			awaitingPlanRefresh.current = true;
+			workflowKeyWhenSyncStarted.current = latestRun?.run_id;
 			void queryClient.invalidateQueries({ queryKey: ['planSyncWorkflows', planId] });
 		},
 		onError: (error: Error) => {

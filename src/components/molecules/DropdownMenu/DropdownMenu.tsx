@@ -112,7 +112,9 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, trigger, isOpen, o
 					<DropdownMenu
 						className={cn('w-full', className)}
 						trigger={
-							<div className='flex justify-between gap-2 items-center w-full'>
+							<button
+								type='button'
+								className='flex justify-between gap-2 items-center w-full bg-transparent p-0 text-left cursor-pointer'>
 								<div className='flex gap-2 items-center w-full'>
 									{option.icon && <span className='text-muted-foreground'>{option.icon}</span>}
 									<span className='font-medium'>{option.label}</span>
@@ -120,7 +122,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, trigger, isOpen, o
 								<span className='text-muted-foreground'>
 									<ChevronRight className='h-4 w-4' />
 								</span>
-							</div>
+							</button>
 						}
 						options={option.children || []}
 					/>

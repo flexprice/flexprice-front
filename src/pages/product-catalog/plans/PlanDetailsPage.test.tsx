@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -13,6 +14,7 @@ import commonEn from '@/i18n/locales/en/common.json';
 
 const mockGetPlansByFilter = vi.hoisted(() => vi.fn());
 const mockSearchWorkflows = vi.hoisted(() => vi.fn());
+const mockSynchronizePlan = vi.hoisted(() => vi.fn().mockResolvedValue({}));
 
 vi.mock('@/api', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('@/api')>();
@@ -21,7 +23,7 @@ vi.mock('@/api', async (importOriginal) => {
 		PlanApi: {
 			getPlansByFilter: (...args: unknown[]) => mockGetPlansByFilter(...args),
 			deletePlan: vi.fn(),
-			synchronizePlanPricesWithSubscription: vi.fn(),
+			synchronizePlanPricesWithSubscription: (...args: unknown[]) => mockSynchronizePlan(...args),
 		},
 		WorkflowApi: {
 			search: (...args: unknown[]) => mockSearchWorkflows(...args),
@@ -116,6 +118,8 @@ describe('PlanDetailsPage sync usage badge', () => {
 	beforeEach(() => {
 		mockGetPlansByFilter.mockReset();
 		mockSearchWorkflows.mockReset();
+		mockSynchronizePlan.mockReset();
+		mockSynchronizePlan.mockResolvedValue({});
 		mockSearchWorkflows.mockResolvedValue({ items: [] });
 	});
 
@@ -135,6 +139,26 @@ describe('PlanDetailsPage sync usage badge', () => {
 		renderPage();
 
 		const button = await screen.findByRole('button', { name: /Sync Usage Charges/i });
-		expect(button).not.toHaveTextContent('0');
+		expect(button).toBeInTheDocument();
+		expect(screen.queryByLabelText(/unsynced subscription/i)).not.toBeInTheDocument();
+	});
+
+	it('refetches the plan when a started sync is already terminal on the first poll', async () => {
+		const user = userEvent.setup();
+		mockGetPlansByFilter.mockResolvedValue({ items: [plan(3, false)] });
+		mockSearchWorkflows
+			.mockResolvedValueOnce({ items: [] })
+			.mockResolvedValue({
+				items: [{ run_id: 'run_new', status: 'Completed', entity_id: 'plan_1', start_time: '2026-08-24T00:00:00Z' }],
+			});
+
+		renderPage();
+		const button = await screen.findByRole('button', { name: /Sync Usage Charges/i });
+		const callsBeforeSync = mockGetPlansByFilter.mock.calls.length;
+		await user.click(button);
+
+		await waitFor(() => {
+			expect(mockGetPlansByFilter.mock.calls.length).toBeGreaterThan(callsBeforeSync);
+		});
 	});
 });
