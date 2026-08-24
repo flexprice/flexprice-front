@@ -149,7 +149,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, trigger, isOpen, o
 	return (
 		<div className={cn('', className)} onClick={handleClick} data-interactive='true'>
 			<ShadcnMenu dir={dir} onOpenChange={handleOpenChange} open={isMenuOpen}>
-				<DropdownMenuTrigger className='w-full focus:outline-none rounded-md'>
+				<DropdownMenuTrigger asChild={!!trigger} className={trigger ? undefined : 'w-full focus:outline-none rounded-md'}>
 					{trigger || <BsThreeDots className='text-base text-muted-foreground hover:text-foreground transition-colors' />}
 				</DropdownMenuTrigger>
 				<DropdownMenuContent

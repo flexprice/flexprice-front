@@ -1,5 +1,5 @@
 // React imports
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet, useNavigate, useParams, useLocation } from 'react-router';
 
 // Third-party libraries
@@ -85,11 +85,15 @@ const PlanDetailsPage = () => {
 				limit: 1,
 				offset: 0,
 				sort: [],
+				expand: 'price_sync_status',
 			});
 			return response.items[0] ?? null;
 		},
 		enabled: !!planId,
 	});
+
+	const isFullySynced = planData?.price_sync_status?.synced ?? false;
+	const unsyncedCount = planData?.price_sync_status?.unsynced_subscription_count ?? 0;
 
 	const { data: syncWorkflowsData } = useQuery({
 		queryKey: ['planSyncWorkflows', planId],
@@ -116,6 +120,16 @@ const PlanDetailsPage = () => {
 	);
 	const latestRun = planRuns[0];
 	const isSyncRunning = latestRun?.status === 'Running';
+
+	// A running sync isn't reflected in planData until it finishes; refetch
+	// once it does so the button's disable state settles without a manual reload.
+	const wasSyncRunning = useRef(isSyncRunning);
+	useEffect(() => {
+		if (wasSyncRunning.current && !isSyncRunning) {
+			void queryClient.invalidateQueries({ queryKey: ['fetchPlan', planId] });
+		}
+		wasSyncRunning.current = isSyncRunning;
+	}, [isSyncRunning, planId, queryClient]);
 
 	const { mutate: archivePlan } = useMutation({
 		mutationFn: async () => {
@@ -233,16 +247,23 @@ const PlanDetailsPage = () => {
 					<TooltipProvider delayDuration={0}>
 						<Tooltip>
 							<TooltipTrigger asChild>
-								<span className='inline-block'>
+								<span className='relative inline-block'>
 									<Button
 										onClick={() => syncPlan()}
-										disabled={isSyncing || isSyncRunning || !canWritePlan}
+										disabled={isSyncing || isSyncRunning || !canWritePlan || isFullySynced}
 										isLoading={isSyncing}
 										variant='outline'
 										className='flex gap-2'>
 										<RefreshCw />
 										Sync Usage Charges
 									</Button>
+									{unsyncedCount > 0 && (
+										<span
+											className='absolute -right-1.5 -top-1.5 z-10 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-medium text-destructive-foreground pointer-events-none'
+											aria-label={t('plans.detailsPage.unsyncedCountAria', { count: unsyncedCount })}>
+											{unsyncedCount > 99 ? '99+' : unsyncedCount}
+										</span>
+									)}
 								</span>
 							</TooltipTrigger>
 							<TooltipContent>
@@ -260,6 +281,10 @@ const PlanDetailsPage = () => {
 										</button>
 										.
 									</span>
+								) : isFullySynced ? (
+									<span className='text-sm'>All subscriptions are already in sync with this plan's prices.</span>
+								) : unsyncedCount > 0 ? (
+									<span className='text-sm'>{t('plans.detailsPage.unsyncedCountTooltip', { count: unsyncedCount })}</span>
 								) : latestRun?.status === 'Completed' ? (
 									<span className='text-sm'>Sync completed. You can sync again.</span>
 								) : latestRun?.status === 'Failed' ? (

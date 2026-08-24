@@ -445,7 +445,11 @@
 		},
 		"detailsPage": {
 			"writeDeniedTooltip": "You don't have permission to modify this plan. Ask a tenant admin for access.",
-			"syncWriteDeniedTooltip": "You don't have permission to sync this plan's prices. Ask a tenant admin for access."
+			"syncWriteDeniedTooltip": "You don't have permission to sync this plan's prices. Ask a tenant admin for access.",
+			"unsyncedCountAria_one": "{{count}} unsynced subscription",
+			"unsyncedCountAria_other": "{{count}} unsynced subscriptions",
+			"unsyncedCountTooltip_one": "{{count}} subscription is out of sync with this plan's prices.",
+			"unsyncedCountTooltip_other": "{{count}} subscriptions are out of sync with this plan's prices."
 		},
 		"information": {
 			"loading": "Loading plan details...",

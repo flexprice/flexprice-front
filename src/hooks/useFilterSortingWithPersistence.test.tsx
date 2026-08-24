@@ -57,13 +57,7 @@ const Harness = ({
 	);
 };
 
-const HarnessInner = ({
-	initialFilters,
-	initialSorts,
-}: {
-	initialFilters: FilterCondition[];
-	initialSorts: SortOption[];
-}) => {
+const HarnessInner = ({ initialFilters, initialSorts }: { initialFilters: FilterCondition[]; initialSorts: SortOption[] }) => {
 	const hook = useFilterSortingWithPersistence({ initialFilters, initialSorts, persistenceKey: KEY });
 	const { reset, page, setPage } = usePagination();
 	const location = useLocation();
@@ -94,11 +88,12 @@ const getSearch = () => screen.getByTestId('search').textContent ?? '';
 const getFilters = (): FilterCondition[] => JSON.parse(screen.getByTestId('filters').textContent ?? '[]');
 const getSorts = (): SortOption[] => JSON.parse(screen.getByTestId('sorts').textContent ?? '[]');
 const getPage = () => screen.getByTestId('page').textContent;
-const hook = () => (window as any).__testHook as ReturnType<typeof useFilterSortingWithPersistence> & {
-	reset: () => void;
-	page: number;
-	setPage: (n: number) => void;
-};
+const hook = () =>
+	(window as any).__testHook as ReturnType<typeof useFilterSortingWithPersistence> & {
+		reset: () => void;
+		page: number;
+		setPage: (n: number) => void;
+	};
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
@@ -296,10 +291,7 @@ describe('useFilterSortingWithPersistence', () => {
 			<MemoryRouter initialEntries={[`/customers?${F_PARAM}=${encoded}`]}>{children}</MemoryRouter>
 		);
 
-		const { result } = renderHook(
-			() => useFilterSortingWithPersistence({ initialFilters: [], persistenceKey: KEY }),
-			{ wrapper },
-		);
+		const { result } = renderHook(() => useFilterSortingWithPersistence({ initialFilters: [], persistenceKey: KEY }), { wrapper });
 
 		// On the very first synchronous render the ref is populated from window.location
 		// The field should be name (from URL) not absent (from empty initialFilters)

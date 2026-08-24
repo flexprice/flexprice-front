@@ -119,7 +119,7 @@ export type { Payment, Attempt } from './Payment';
 export { PAYMENT_METHOD_TYPE, PAYMENT_DESTINATION_TYPE } from './Payment';
 
 // Plan
-export type { Plan } from './Plan';
+export type { Plan, PlanPriceSyncStatus } from './Plan';
 
 // Price
 export type { Price, Tier, TransformQuantity, PriceUnitConfig, CreatePriceTier } from './Price';

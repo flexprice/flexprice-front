@@ -213,11 +213,7 @@ const CustomerInformationTab = () => {
 						<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('overview.cardTitle')}</h3>
 						<div className='flex gap-2'>
 							{!isArchived && hasStripeConnection && (
-								<Button
-									variant='outline'
-									size='sm'
-									onClick={() => setShowSaveCardModal(true)}
-									className='!h-9 flex items-center gap-2'>
+								<Button variant='outline' size='sm' onClick={() => setShowSaveCardModal(true)} className='!h-9 flex items-center gap-2'>
 									<CreditCard className='size-4' />
 									{t('tabPanels.information.saveCardOnStripe')}
 								</Button>
