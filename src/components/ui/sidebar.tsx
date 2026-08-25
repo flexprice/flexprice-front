@@ -32,6 +32,23 @@ type SidebarContext = {
 
 const SidebarContext = React.createContext<SidebarContext | null>(null);
 
+/**
+ * Upstream shadcn expects a server to read this cookie and hand it back as
+ * `defaultOpen`; a Vite SPA has no such step, so the client reads it itself on
+ * mount. A stored choice wins over `defaultOpen`, which only covers a first visit.
+ */
+function readStoredSidebarState(): boolean | undefined {
+	if (typeof document === 'undefined') return undefined;
+
+	const entry = document.cookie.split('; ').find((cookie) => cookie.startsWith(`${SIDEBAR_COOKIE_NAME}=`));
+	if (!entry) return undefined;
+
+	const value = entry.slice(SIDEBAR_COOKIE_NAME.length + 1);
+	if (value === 'true') return true;
+	if (value === 'false') return false;
+	return undefined;
+}
+
 function useSidebar() {
 	const context = React.useContext(SidebarContext);
 	if (!context) {
@@ -54,7 +71,7 @@ const SidebarProvider = React.forwardRef<
 
 	// This is the internal state of the sidebar.
 	// We use openProp and setOpenProp for control from outside the component.
-	const [_open, _setOpen] = React.useState(defaultOpen);
+	const [_open, _setOpen] = React.useState(() => readStoredSidebarState() ?? defaultOpen);
 	const open = openProp ?? _open;
 	const setOpen = React.useCallback(
 		(value: boolean | ((value: boolean) => boolean)) => {
