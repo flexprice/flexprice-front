@@ -30,6 +30,17 @@ interface Props {
 	hideSelectedTick?: boolean;
 	trigger?: React.ReactNode;
 	contentClassName?: string;
+	/**
+	 * Id put on the Radix trigger and pointed at by the label's `htmlFor`. Generated when
+	 * omitted; pass one only when something outside this component needs to reference it.
+	 */
+	id?: string;
+	/**
+	 * Accessible name for the trigger when there is no visible `label` — e.g. a toolbar
+	 * dropdown that shows only its current value. Ignored when `label` is set, because the
+	 * visible label is already the accessible name and a second one would override it.
+	 */
+	ariaLabel?: string;
 }
 
 const RadioSelectItem = React.forwardRef<
@@ -73,12 +84,19 @@ const FlexPriceSelect: React.FC<Props> = ({
 	hideSelectedTick = true,
 	trigger,
 	contentClassName,
+	id,
+	ariaLabel,
 }) => {
+	const generatedId = React.useId();
+	const triggerId = id ?? generatedId;
+
 	return (
 		<div className={cn('space-y-1 ', className)}>
 			{/* Label */}
 			{label && (
-				<label className={cn(' block text-sm font-medium break-words', disabled ? 'text-content-zinc-muted' : 'text-content-zinc')}>
+				<label
+					htmlFor={triggerId}
+					className={cn(' block text-sm font-medium break-words', disabled ? 'text-content-zinc-muted' : 'text-content-zinc')}>
 					{label}
 					{required && <span className='text-destructive'> *</span>}
 				</label>
@@ -93,7 +111,10 @@ const FlexPriceSelect: React.FC<Props> = ({
 				}}
 				value={value ?? ''}
 				disabled={disabled}>
-				<SelectTrigger className={cn(disabled && 'cursor-not-allowed', className)}>
+				<SelectTrigger
+					id={triggerId}
+					aria-label={label ? undefined : ariaLabel}
+					className={cn(disabled && 'cursor-not-allowed', className)}>
 					{trigger ? (
 						trigger
 					) : (
