@@ -111,5 +111,21 @@ export default tseslint.config(
 		files: ['**/*Demo.{ts,tsx}'],
 		rules: { 'i18next/no-literal-string': 'off' },
 	},
+	{
+		// The E2E suite runs in Node against a browser it drives, not in the app.
+		// react-hooks reads Playwright's `use` fixture callback as React's `use`
+		// hook, and asserting on user-visible English is the entire point of a UI
+		// test, so translated-string enforcement does not apply either.
+		files: ['e2e/**/*.ts', 'playwright.config.ts'],
+		languageOptions: { globals: globals.node },
+		rules: {
+			'react-hooks/rules-of-hooks': 'off',
+			'i18next/no-literal-string': 'off',
+			// Playwright reads a fixture's destructured first parameter to work out its
+			// dependencies, so `async ({}, use) => …` is the documented way to declare
+			// one that needs nothing. It is an empty pattern on purpose.
+			'no-empty-pattern': 'off',
+		},
+	},
 	storybook.configs['flat/recommended'],
 );

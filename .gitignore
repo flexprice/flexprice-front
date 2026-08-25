@@ -43,3 +43,17 @@ vite.config.js
 # Local scratch
 tmp-*.txt
 deploy-config.json
+# Playwright
+# .env.* above already covers .env.e2e; these are run outputs and the cached
+# authenticated session, none of which belong in the repo.
+/playwright-report/
+/test-results/
+/blob-report/
+/e2e/.auth/
+/playwright/.cache/
+
+# Visual-regression baselines generated on a developer machine. Snapshots are
+# platform-specific and font-rendering-sensitive; only baselines produced in the
+# Playwright Docker image (matching CI) belong in the repo. See e2e/README.md.
+/e2e/visual/**/*-darwin.png
+/e2e/visual/**/*-win32.png
