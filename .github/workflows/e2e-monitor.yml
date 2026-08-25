@@ -44,6 +44,8 @@ jobs:
     env:
       CI: 'true'
       E2E_BASE_URL: ${{ secrets.E2E_STAGING_URL }}
+      # Enables environment isolation; without it the run writes to the account default.
+      E2E_API_URL: ${{ secrets.E2E_API_URL }}
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
       E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

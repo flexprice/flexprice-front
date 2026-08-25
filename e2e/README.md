@@ -119,16 +119,56 @@ is the only way to combine "start it yourself" with "on this port".
 
 ### Environment variables
 
-| Variable                 | Default        | Purpose                                          |
-| ------------------------ | -------------- | ------------------------------------------------ |
-| `E2E_BASE_URL`           | localhost:3000 | Target to drive; setting it skips the web server |
-| `E2E_START_SERVER`       | unset          | `1` starts the server even when a URL is given   |
-| `E2E_WEB_SERVER_COMMAND` | `npm run dev`  | How to start the server when we own it           |
-| `E2E_API_URL`            | —              | Backend for API-assisted setup, including `/v1`  |
-| `E2E_USER_EMAIL`         | —              | Admin test account                               |
-| `E2E_USER_PASSWORD`      | —              | Its password                                     |
-| `E2E_VIEWER_EMAIL`       | —              | Read-only account; enables the `rbac` project    |
-| `E2E_VIEWER_PASSWORD`    | —              | Its password                                     |
+| Variable                 | Default         | Purpose                                            |
+| ------------------------ | --------------- | -------------------------------------------------- |
+| `E2E_BASE_URL`           | localhost:3000  | Target to drive; setting it skips the web server   |
+| `E2E_START_SERVER`       | unset           | `1` starts the server even when a URL is given     |
+| `E2E_WEB_SERVER_COMMAND` | `npm run dev`   | How to start the server when we own it             |
+| `E2E_API_URL`            | —               | Backend for API setup + isolation, including `/v1` |
+| `E2E_ENVIRONMENT_NAME`   | `E2e<YYYYMMDD>` | Overrides the environment the run writes into      |
+| `E2E_USER_EMAIL`         | —               | Admin test account                                 |
+| `E2E_USER_PASSWORD`      | —               | Its password                                       |
+| `E2E_VIEWER_EMAIL`       | —               | Read-only account; enables the `rbac` project      |
+| `E2E_VIEWER_PASSWORD`    | —               | Its password                                       |
+
+## Environment isolation
+
+**Every run writes real records to a real backend.** There is no mocking layer: the
+app under test makes the same API calls it makes in production, and the fixtures
+create data over HTTP.
+
+So before any test runs, the setup pins the whole run to its own Flexprice
+environment, named `E2e<YYYYMMDD>` — today's is `E2e20260825`. Without this, records
+land in whichever environment the account opens by default, which is usually one
+people are also using by hand: a test run and someone's manual work end up in the
+same customer list.
+
+How it works:
+
+1. Sign in through the login form as usual.
+2. `GET /environments`, look for today's name, `POST /environments` if absent.
+3. Write that id to `active_environment_id` in localStorage.
+4. Navigate again so the app refetches every environment-scoped query against it.
+
+That one key is what both halves of the run read: the app sends it as
+`X-Environment-ID` on every request, and the fixture client recovers it from the
+saved storage state. UI-created and API-created records therefore always land in the
+same place.
+
+Step 4 is retried up to three times. `useEnvironment` resets the key to the first
+environment in its list whenever the stored id is missing from it, and on the first
+run of a new day the app has already fetched that list before the environment
+existed — so the first attempt gets overwritten and the refetch makes the next one
+stick.
+
+**Skipped when `E2E_API_URL` is unset**, with a warning. Read-only suites — smoke,
+run against a deployment — write nothing and are not worth failing over a missing
+variable.
+
+> **The backend has no DELETE for environments.** Anything created here is permanent,
+> which is why the name is per _day_ and not per run: a bounded, self-describing
+> trail rather than unbounded growth. If even that is too much for your tenant, set
+> `E2E_ENVIRONMENT_NAME` to a single fixed name and reuse it forever.
 
 ## Authentication
 
