@@ -1,0 +1,145 @@
+# Pull-request regression net.
+#
+# Two stages. Cheap static checks run first and fail in under a minute; the browser
+# suite only starts once they pass, so a lint error never costs Playwright minutes.
+#
+#   checks   typecheck the E2E suite + lint
+#      |
+#   e2e      build the branch, then Playwright
+#              public  -> login page, no credentials needed
+#              e2e     -> journeys + regressions, skipped if public failed
+#
+# Unit tests are deliberately not duplicated here — test.yml already runs vitest on
+# every pull request as its own required check.
+#
+# Required repository secrets (see e2e/README.md):
+#   E2E_API_URL        backend the test tenant lives in, e.g. https://staging.api.flexprice.io/v1
+#   E2E_USER_EMAIL     dedicated test account — never a real person's login
+#   E2E_USER_PASSWORD
+#
+# Without those secrets only the credential-free `public` project runs, so forks and
+# first-time setups stay green instead of failing with a wall of timeouts.
+
+name: E2E (PR)
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'e2e/**'
+      - 'packages/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'playwright.config.ts'
+      - 'tsconfig.e2e.json'
+      - '.github/workflows/e2e-pr.yml'
+  workflow_dispatch:
+
+# A newer push supersedes the run in progress; nobody needs the results of a commit
+# that has already been replaced.
+concurrency:
+  group: e2e-pr-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Static checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The root tsconfig covers only `src`, so this is the only thing that
+      # typechecks the suite itself.
+      - name: Typecheck E2E suite
+        run: npm run typecheck:e2e
+
+      - name: Lint
+        run: npm run lint
+
+  e2e:
+    name: Playwright
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      CI: 'true'
+      # Serve the built bundle on the port playwright.config.ts expects.
+      E2E_WEB_SERVER_COMMAND: 'npm run preview -- --port 3000 --strictPort'
+      E2E_API_URL: ${{ secrets.E2E_API_URL }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Browsers are a large download; caching them turns ~40s into ~2s on a hit.
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+          VITE_API_URL: ${{ secrets.E2E_API_URL }}
+        run: npm run build
+
+      - name: Decide which projects can run
+        id: scope
+        run: |
+          if [ -n "${E2E_USER_EMAIL}" ] && [ -n "${E2E_USER_PASSWORD}" ]; then
+            # `e2e` declares `public` and `setup` as dependencies, so selecting it
+            # runs the login suite first and skips the rest if that fails.
+            echo "projects=--project=e2e" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::E2E_USER_EMAIL / E2E_USER_PASSWORD are not set — running the public suite only."
+            echo "projects=--project=public" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Playwright
+        run: npx playwright test ${{ steps.scope.outputs.projects }}
+
+      # always(): the artifacts matter most precisely when the step above failed.
+      # playwright-report/ holds the HTML report and results.json; test-results/
+      # holds traces, screenshots and video, and is near-empty on a green run.
+      - name: Upload HTML report and results.json
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Upload traces, screenshots and video
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-${{ github.run_id }}
+          path: test-results/
+          retention-days: 14
+          if-no-files-found: ignore
