@@ -1,0 +1,124 @@
+# Post-deployment health check.
+#
+# Fires when a deployment reports success and runs the smoke suite against the
+# URL that was actually deployed — not a rebuild of it. This is the gate that
+# catches "it built fine and the app is still broken", which is the failure mode a
+# PR suite structurally cannot see.
+#
+# Vercel publishes GitHub deployment statuses, so `deployment_status` gives both the
+# trigger and the target URL with no extra wiring. A manual run is also allowed for
+# any environment, which is how you check production after an incident.
+#
+# Required repository secrets:
+#   E2E_USER_EMAIL / E2E_USER_PASSWORD   the dedicated test account
+#   SLACK_WEBHOOK_URL                    optional; without it the run still gates,
+#                                        it just does not announce itself
+
+name: E2E (post-deploy smoke)
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Base URL to smoke test (e.g. https://staging.flexprice.io)'
+        required: true
+        type: string
+
+jobs:
+  smoke:
+    name: Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # deployment_status fires for every state transition. Only a successful
+    # deployment is worth testing; pending and failure states have nothing to hit.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.deployment_status.state == 'success'
+
+    env:
+      CI: 'true'
+      E2E_BASE_URL: ${{ github.event.inputs.target_url || github.event.deployment_status.environment_url }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      # Skips rather than fails when unconfigured. This fires on every successful
+      # deployment, so failing here would mark each one red until the secrets exist —
+      # which reads as "the deploy broke" rather than "the tests are not set up".
+      # A manual dispatch is different: someone asked for a specific URL to be tested,
+      # so a missing target there is a real error.
+      - name: Check configuration
+        id: guard
+        run: |
+          if [ -z "${E2E_BASE_URL}" ]; then
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "::error::No target URL supplied."
+              exit 1
+            fi
+            echo "::notice::Deployment reported no environment_url — nothing to smoke test."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -z "${E2E_USER_EMAIL}" ] || [ -z "${E2E_USER_PASSWORD}" ]; then
+            echo "::notice::E2E_USER_EMAIL / E2E_USER_PASSWORD are not set — skipping the smoke suite."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Testing ${E2E_BASE_URL}"
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.guard.outputs.configured == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.guard.outputs.configured == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.guard.outputs.configured == 'true'
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        if: steps.guard.outputs.configured == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.guard.outputs.configured == 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Run smoke suite
+        if: steps.guard.outputs.configured == 'true'
+        run: npx playwright test --project=smoke
+
+      - name: Notify Slack on failure
+        if: failure() && steps.guard.outputs.configured == 'true'
+        run: |
+          node scripts/e2e-slack-notify.mjs \
+            --status failure \
+            --context "Post-deploy smoke" \
+            --environment "${E2E_BASE_URL}"
+
+      - name: Upload report
+        if: always() && steps.guard.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 14
+
+      - name: Upload traces, screenshots and video
+        if: always() && steps.guard.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-traces-${{ github.run_id }}
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 14
