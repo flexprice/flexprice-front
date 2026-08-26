@@ -217,7 +217,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 			className={cn(
 				variant === 'default' ? 'h-8 bg-muted border-b border-line-slate rounded-t-[var(--fp-radius-lg)]' : 'h-8',
 				variant === 'no-bordered' && 'bg-transparent',
-				isCard && 'h-[var(--fp-table-header-height)] bg-surface-faint',
+				isCard && 'h-[var(--fp-table-header-height)] bg-transparent',
 			)}>
 			<TableRow
 				className={cn(
@@ -263,7 +263,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 					onRowClick && 'cursor-pointer hover:bg-muted/50',
 					lastRow && hideBottomBorder && 'border-b-0',
 					!isCard && '!py-1',
-					isCard && 'border-b border-line-zinc-subtle hover:bg-surface-faint',
+					isCard && 'border-0 hover:bg-muted/40',
 					isCard && lastRow && hideBottomBorder && 'border-b-0',
 				)}
 				key={rowIndex}>
@@ -286,7 +286,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 								fieldVariant === 'interactive' && 'cursor-default',
 								isCard &&
 									'min-w-0 overflow-hidden px-[var(--fp-table-cell-x)] py-[var(--fp-table-cell-pad-y)] text-sm !font-normal leading-5 text-content-zinc-secondary',
-								isCard && fieldVariant === 'title' && '!font-medium text-content-zinc-bold',
+								isCard && fieldVariant === 'title' && '!font-normal text-content-zinc-bold',
 							)}
 							style={{ flex: width ? undefined : flex }}
 							width={width}

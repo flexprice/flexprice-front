@@ -1,4 +1,4 @@
-import { AddButton, ActionButton, StatusChip, TableAvatar, ProviderLogoStack, Page } from '@/components/atoms';
+import { AddButton, ActionButton, StatusChip, ProviderLogoStack, Page } from '@/components/atoms';
 import { CreateCustomerDrawer, ApiDocsContent, TooltipCell } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
@@ -202,12 +202,7 @@ const CustomerListPage = () => {
 				title: t('list.columns.name'),
 				fieldVariant: 'title',
 				width: '16%',
-				render: (row) => (
-					<div className='flex min-w-0 items-center gap-2'>
-						<TableAvatar name={row.name || row.external_id} size='md' />
-						<span className='truncate'>{row.name || t('common:labels.na')}</span>
-					</div>
-				),
+				render: (row) => <span className='block truncate'>{row.name || t('common:labels.na')}</span>,
 			},
 			{
 				title: t('list.columns.externalId'),
@@ -236,7 +231,9 @@ const CustomerListPage = () => {
 				render: (row) => {
 					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('common:status.active') : t('common:status.inactive');
-					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
+					// `py-0.5` matches ferry's StatusBadge box (22px). The atom's default `py-1.5`
+					// makes a 32px pill, which alone pushes the row from ferry's ~50px to 60px.
+					return <StatusChip className='py-0.5' status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
 			},
 			{
@@ -274,7 +271,7 @@ const CustomerListPage = () => {
 	);
 
 	return (
-		<Page className='max-w-none' heading={t('list.title')} headingCTA={customerToolbarActions}>
+		<Page className='max-w-none' documentTitle={t('list.title')}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Customers} />
 			<QueryableDataArea<CustomerListRow>
 				queryConfig={{
@@ -283,6 +280,7 @@ const CustomerListPage = () => {
 					initialFilters,
 					initialSorts,
 					debounceTime: 300,
+					toolbarTrailing: customerToolbarActions,
 					...(showOrgTypeFilter
 						? {
 								orgTypeMetadataFilter: {

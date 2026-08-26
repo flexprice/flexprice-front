@@ -69,13 +69,21 @@
 		 * `--radius-sm: calc(var(--radius) - 2px)` = 4px. Its Surface `raised` (the card /
 		 * table shell) is `rounded-lg`, i.e. 6px, and Button `sm`/`xs`/`lg` + Input are
 		 * `rounded-sm`, i.e. 4px. So the named tokens below lose their 8/10/12 steps:
-		 * sm 6 -> 4 avatar · md 8 -> 6 control · lg 10 -> 6 table card · shell 12 -> 6.
+		 * sm 6 -> 4 avatar · md 8 -> 6 control · lg 10 -> 6 table card.
 		 * chip-dot and the spacing tokens are sizes, not radii, and are unchanged.
+		 *
+		 * EXCEPTION — `--fp-radius-shell` stays on the Figma value, not ferry's. It is the
+		 * app-shell curve (MainLayout's `SidebarInset` island, which is what rounds the main
+		 * pane against the sidebar), and the Figma `App · Pages` deck draws that shell at
+		 * 12px (node 119:2803 `Content`, inside a 14px `App` frame). Ferry has no equivalent
+		 * island — its shell is flush — so collapsing this onto 6px flattened a curve that
+		 * has no ferry counterpart to inherit. Table card radius does follow ferry (6px),
+		 * even though Figma draws it at 10px.
 		 */
 		--fp-radius-sm: 4px;
 		--fp-radius-md: 6px;
 		--fp-radius-lg: 6px;
-		--fp-radius-shell: 6px;
+		--fp-radius-shell: 12px;
 		--fp-chip-dot: 8px;
 		--fp-shell-inset: 12px;
 		--fp-page-pad-top: 28px;
