@@ -1,4 +1,4 @@
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -139,7 +139,7 @@ const ActionButton: FC<ActionProps> = ({
 		setIsOpen(!isOpen);
 	};
 
-	const defaultTriggerIcon = <BsThreeDots className='text-base size-4' />;
+	const defaultTriggerIcon = <BsThreeDotsVertical className='text-base size-4' />;
 	const trigger = triggerIcon || defaultTriggerIcon;
 
 	return (

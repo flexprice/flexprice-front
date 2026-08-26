@@ -165,20 +165,6 @@ const WorkflowsPage = () => {
 				},
 			},
 			{
-				title: t('workflows.columns.status'),
-				width: '12%',
-				render: (row) => {
-					const status = row.status ?? t('labels.missingValue');
-					const label =
-						status === 'Completed'
-							? t('workflows.statusChip.completed')
-							: status === 'Failed'
-								? t('workflows.statusChip.failed')
-								: translateWorkflowStatus(status, t);
-					return <StatusChip tone={getWorkflowStatusTone(status)} label={label} />;
-				},
-			},
-			{
 				title: t('workflows.columns.startTime'),
 				width: '16%',
 				render: (row) => (
@@ -198,6 +184,20 @@ const WorkflowsPage = () => {
 				render: (row) => {
 					const formatted = formatWorkflowDuration(row.duration_ms, t);
 					return <TooltipCell tooltipContent={formatted} tooltipText={formatted} />;
+				},
+			},
+			{
+				title: t('workflows.columns.status'),
+				width: '12%',
+				render: (row) => {
+					const status = row.status ?? t('labels.missingValue');
+					const label =
+						status === 'Completed'
+							? t('workflows.statusChip.completed')
+							: status === 'Failed'
+								? t('workflows.statusChip.failed')
+								: translateWorkflowStatus(status, t);
+					return <StatusChip tone={getWorkflowStatusTone(status)} label={label} />;
 				},
 			},
 		],

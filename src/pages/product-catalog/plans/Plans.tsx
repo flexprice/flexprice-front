@@ -1,4 +1,4 @@
-import { AddButton, Button, Dialog, Page, StatusChip } from '@/components/atoms';
+import { AddButton, Button, Dialog, Page, StatusChip, TableAvatar } from '@/components/atoms';
 import { ApiDocsContent, DropdownMenu, DuplicatePlanDialog, PlanDrawer, getCopyIdOption } from '@/components/molecules';
 import type { DropdownMenuOption } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
@@ -25,7 +25,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import formatDate from '@/utils/common/format_date';
 import toast from 'react-hot-toast';
 import { Copy, EyeOff, Pencil, WandSparkles } from 'lucide-react';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { useTranslation } from 'react-i18next';
 import { getPlanBillingPeriodLabel, getPlanCurrencyLabel, getPlanListStatus } from './planListDisplay';
@@ -208,7 +208,12 @@ const PlansPage = () => {
 				title: t('plans.listPage.columns.name'),
 				fieldVariant: 'title',
 				width: '20%',
-				render: (row) => <span className='block truncate'>{row.name}</span>,
+				render: (row) => (
+					<div className='flex min-w-0 items-center gap-2'>
+						<TableAvatar name={row.name} size='md' />
+						<span className='truncate'>{row.name}</span>
+					</div>
+				),
 			},
 			{
 				title: t('plans.listPage.columns.billingPeriod'),
@@ -221,15 +226,6 @@ const PlansPage = () => {
 				render: (row) => getPlanCurrencyLabel(row, tc('labels.na')),
 			},
 			{
-				title: t('plans.listPage.columns.status'),
-				width: '14%',
-				render: (row) => {
-					const status = getPlanListStatus(row);
-					const label = status === 'Active' ? t('plans.listPage.filterStatus.active') : t('plans.listPage.filterStatus.inactive');
-					return <StatusChip status={status} label={label} />;
-				},
-			},
-			{
 				title: t('plans.listPage.columns.createdAt'),
 				width: '14%',
 				render: (row) => formatDate(row.created_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
@@ -240,6 +236,15 @@ const PlansPage = () => {
 				render: (row) => formatDate(row.updated_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
+				title: t('plans.listPage.columns.status'),
+				width: '14%',
+				render: (row) => {
+					const status = getPlanListStatus(row);
+					const label = status === 'Active' ? t('plans.listPage.filterStatus.active') : t('plans.listPage.filterStatus.inactive');
+					return <StatusChip status={status} label={label} />;
+				},
+			},
+			{
 				fieldVariant: 'interactive',
 				width: 56,
 				render: (row) => (
@@ -247,7 +252,7 @@ const PlansPage = () => {
 						options={getRowDropdownOptions(row)}
 						trigger={
 							<Button variant='ghost' size='icon' className='size-8'>
-								<BsThreeDots className='size-4' />
+								<BsThreeDotsVertical className='size-4' />
 							</Button>
 						}
 					/>

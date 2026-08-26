@@ -167,17 +167,17 @@ const CouponsPage = () => {
 				},
 			},
 			{
+				title: t('coupons.table.updatedAt'),
+				render: (row) => {
+					return formatDate(row.updated_at);
+				},
+			},
+			{
 				title: t('coupons.table.status'),
 				render: (row) => {
 					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('coupons.table.statusActive') : t('coupons.table.statusInactive');
 					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
-				},
-			},
-			{
-				title: t('coupons.table.updatedAt'),
-				render: (row) => {
-					return formatDate(row.updated_at);
 				},
 			},
 			{

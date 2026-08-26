@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import {
 	DropdownMenu as ShadcnMenu,
 	DropdownMenuContent,
@@ -129,7 +129,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, trigger, isOpen, o
 		<div className={cn('', className)} onClick={handleClick} data-interactive='true'>
 			<ShadcnMenu dir={dir} onOpenChange={handleOpenChange} open={isMenuOpen}>
 				<DropdownMenuTrigger className='w-full focus:outline-none rounded-md'>
-					{trigger || <BsThreeDots className='text-base text-muted-foreground hover:text-foreground transition-colors' />}
+					{trigger || <BsThreeDotsVertical className='text-base text-muted-foreground hover:text-foreground transition-colors' />}
 				</DropdownMenuTrigger>
 				<DropdownMenuContent
 					className={cn(

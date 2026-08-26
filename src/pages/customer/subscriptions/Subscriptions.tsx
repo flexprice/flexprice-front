@@ -201,14 +201,6 @@ const SubscriptionsPage = () => {
 				render: (row) => <RedirectCell redirectUrl={`${RouteNames.plan}/${row.plan_id}`}>{row.plan?.name || row.plan_id}</RedirectCell>,
 			},
 			{
-				title: t('subscriptions.listPage.columns.status'),
-				width: 130,
-				render: (row) => {
-					const { status, kind } = getSubscriptionListStatus(row.subscription_status);
-					return <StatusChip status={status} label={t(SUBSCRIPTION_STATUS_I18N[kind])} />;
-				},
-			},
-			{
 				title: t('subscriptions.listPage.columns.billing'),
 				width: '12%',
 				render: (row) => {
@@ -228,6 +220,14 @@ const SubscriptionsPage = () => {
 					row.subscription_status === SUBSCRIPTION_STATUS.CANCELLED
 						? t('common:labels.na')
 						: formatDate(row.current_period_end, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
+			},
+			{
+				title: t('subscriptions.listPage.columns.status'),
+				width: 130,
+				render: (row) => {
+					const { status, kind } = getSubscriptionListStatus(row.subscription_status);
+					return <StatusChip status={status} label={t(SUBSCRIPTION_STATUS_I18N[kind])} />;
+				},
 			},
 			{
 				fieldVariant: 'interactive',

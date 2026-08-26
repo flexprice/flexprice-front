@@ -327,13 +327,6 @@ const InvoicesPage = () => {
 					),
 			},
 			{
-				title: t('invoices.list.columns.status'),
-				render: (row: EnrichedInvoice) => {
-					const { status, kind } = getInvoiceListStatus(row);
-					return <StatusChip status={status} label={t(INVOICE_STATUS_I18N[kind])} />;
-				},
-			},
-			{
 				title: t('invoices.list.columns.amount'),
 				render: (row) => <span>{`${getCurrencySymbol(row.currency)}${row.amount_due}`}</span>,
 			},
@@ -343,6 +336,13 @@ const InvoicesPage = () => {
 				render: (row: EnrichedInvoice) => {
 					const issuedAt = getInvoiceIssuedAt(row);
 					return <span>{issuedAt ? formatDate(issuedAt, undefined, TABLE_SHORT_DATE_FORMAT) : t('common:labels.na')}</span>;
+				},
+			},
+			{
+				title: t('invoices.list.columns.status'),
+				render: (row: EnrichedInvoice) => {
+					const { status, kind } = getInvoiceListStatus(row);
+					return <StatusChip status={status} label={t(INVOICE_STATUS_I18N[kind])} />;
 				},
 			},
 			{

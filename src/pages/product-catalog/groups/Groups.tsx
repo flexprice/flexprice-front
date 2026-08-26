@@ -63,16 +63,16 @@ const GroupsPage = () => {
 				},
 			},
 			{
+				title: t('groups.table.updatedAt'),
+				render: (row) => formatDate(row.updated_at),
+			},
+			{
 				title: t('groups.table.status'),
 				render: (row) => {
 					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('common:status.active') : t('common:status.inactive');
 					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
-			},
-			{
-				title: t('groups.table.updatedAt'),
-				render: (row) => formatDate(row.updated_at),
 			},
 			{
 				fieldVariant: 'interactive',

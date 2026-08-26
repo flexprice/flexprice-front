@@ -140,17 +140,17 @@ const AddonsPage = () => {
 				title: t('addons.listPage.columns.lookupKey'),
 			},
 			{
+				title: t('addons.listPage.columns.updatedAt'),
+				render: (row) => {
+					return formatDate(row?.updated_at);
+				},
+			},
+			{
 				title: t('addons.listPage.columns.status'),
 				render: (row) => {
 					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('addons.listPage.filterStatus.active') : t('addons.listPage.filterStatus.inactive');
 					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
-				},
-			},
-			{
-				title: t('addons.listPage.columns.updatedAt'),
-				render: (row) => {
-					return formatDate(row?.updated_at);
 				},
 			},
 			{

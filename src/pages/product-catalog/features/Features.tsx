@@ -175,15 +175,6 @@ const FeaturesPage = () => {
 				},
 			},
 			{
-				title: t('features.listPage.columns.status'),
-				width: '16%',
-				render: (row) => {
-					const status = getFeatureListStatus(row?.status);
-					const label = status === 'Active' ? t('features.listPage.filterStatus.active') : t('features.listPage.filterStatus.inactive');
-					return <StatusChip status={status} label={label} />;
-				},
-			},
-			{
 				title: t('features.listPage.columns.createdAt'),
 				width: '16%',
 				render: (row) => {
@@ -195,6 +186,15 @@ const FeaturesPage = () => {
 				width: '16%',
 				render: (row) => {
 					return formatDate(row?.updated_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+				},
+			},
+			{
+				title: t('features.listPage.columns.status'),
+				width: '16%',
+				render: (row) => {
+					const status = getFeatureListStatus(row?.status);
+					const label = status === 'Active' ? t('features.listPage.filterStatus.active') : t('features.listPage.filterStatus.inactive');
+					return <StatusChip status={status} label={label} />;
 				},
 			},
 			{

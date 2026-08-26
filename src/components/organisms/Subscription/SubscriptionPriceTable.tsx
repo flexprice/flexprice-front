@@ -9,7 +9,7 @@ import { FormHeader, DecimalUsageInput, AddButton } from '@/components/atoms';
 import { ChargeValueCell } from '@/components/molecules';
 import { capitalize } from 'es-toolkit';
 import { Coupon } from '@/models';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui';
 import OptionsDropdownMenu from '@/components/molecules/DropdownMenu';
 import { ExtendedPriceOverride } from '@/utils';
@@ -78,7 +78,7 @@ const PriceActionMenu: FC<PriceActionMenuProps> = ({
 			<DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
 				<DropdownMenuTrigger asChild>
 					<button>
-						<BsThreeDots className='text-base size-4' />
+						<BsThreeDotsVertical className='text-base size-4' />
 					</button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align='end' className='w-48'>
@@ -411,7 +411,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 						onOpenChange={(open) => setOpenAddedMenuTempId(open ? item.tempId : null)}
 						trigger={
 							<button type='button' disabled={disabled}>
-								<BsThreeDots className='text-base size-4' />
+								<BsThreeDotsVertical className='text-base size-4' />
 							</button>
 						}
 						align='end'

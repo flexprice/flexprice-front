@@ -179,17 +179,17 @@ const PriceUnitsPage = () => {
 				},
 			},
 			{
+				title: t('priceUnits.table.updatedAt'),
+				render: (row) => {
+					return formatDate(row?.updated_at);
+				},
+			},
+			{
 				title: t('priceUnits.table.status'),
 				render: (row) => {
 					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('priceUnits.listPage.filterStatus.active') : t('priceUnits.listPage.filterStatus.inactive');
 					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
-				},
-			},
-			{
-				title: t('priceUnits.table.updatedAt'),
-				render: (row) => {
-					return formatDate(row?.updated_at);
 				},
 			},
 			{

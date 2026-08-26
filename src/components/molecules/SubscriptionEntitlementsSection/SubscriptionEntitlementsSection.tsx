@@ -12,7 +12,7 @@ import { FEATURE_TYPE } from '@/models/Feature';
 import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import toast from 'react-hot-toast';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 import { ENTITY_STATUS, EXPAND } from '@/models';
@@ -419,7 +419,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 						<DropdownMenu open={dropdownOpen === row.feature_id} onOpenChange={(open) => setDropdownOpen(open ? row.feature_id : null)}>
 							<DropdownMenuTrigger asChild>
 								<button className='focus:outline-none'>
-									<BsThreeDots className='text-base text-muted-foreground hover:text-foreground transition-colors' />
+									<BsThreeDotsVertical className='text-base text-muted-foreground hover:text-foreground transition-colors' />
 								</button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>

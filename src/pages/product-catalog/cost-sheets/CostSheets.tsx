@@ -140,17 +140,17 @@ const CostSheetsPage = () => {
 				title: t('costSheets.table.lookupKey'),
 			},
 			{
+				title: t('costSheets.table.updatedAt'),
+				render: (row) => {
+					return formatDate(row?.updated_at);
+				},
+			},
+			{
 				title: t('costSheets.table.status'),
 				render: (row) => {
 					const isActive = row?.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('costSheets.listPage.filterStatus.active') : t('costSheets.listPage.filterStatus.inactive');
 					return <StatusChip status={isActive ? 'Active' : 'Inactive'} label={label} />;
-				},
-			},
-			{
-				title: t('costSheets.table.updatedAt'),
-				render: (row) => {
-					return formatDate(row?.updated_at);
 				},
 			},
 			{

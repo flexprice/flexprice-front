@@ -7,7 +7,7 @@ import { Button, Card, CardHeader, DatePicker, Dialog, AddButton, Select, Toolti
 import type { StatusChipTone } from '@/components/atoms/StatusChip';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { BsThreeDots } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { ADDON_ASSOCIATION_STATUS } from '@/models/AddonAssociation';
 import { AddonAssociationResponse } from '@/types/dto/Subscription';
@@ -324,7 +324,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 							<DropdownMenu open={dropdownOpen === row.id} onOpenChange={(open) => setDropdownOpen(open ? row.id : null)}>
 								<DropdownMenuTrigger asChild>
 									<button className='focus:outline-none'>
-										<BsThreeDots className='text-base text-muted-foreground hover:text-foreground transition-colors' />
+										<BsThreeDotsVertical className='text-base text-muted-foreground hover:text-foreground transition-colors' />
 									</button>
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align='end'>
