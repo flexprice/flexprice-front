@@ -8,6 +8,16 @@ export default {
 			fontSize: {
 				xs: '12px',
 				sm: '14px',
+				/* Semantic ramp mirrored from ferry-front apps/web/src/index.css @theme. Additive:
+				   ferry does not override --text-sm, so its tables run at Tailwind's default 14px
+				   and `body` (13px) is for chrome, not table cells. */
+				label: ['12px', { lineHeight: '12px' }],
+				'table-header': ['12px', { lineHeight: '1.25' }],
+				body: ['13px', { lineHeight: '1.25' }],
+				caption: ['14px', { lineHeight: '1.3' }],
+				stat: ['16px', { lineHeight: '1.25' }],
+				subheading: ['16px', { lineHeight: '1.35' }],
+				heading: ['18px', { lineHeight: '1.25' }],
 			},
 			fontFamily: {
 				sans: ['var(--font-sans)'],
@@ -18,20 +28,25 @@ export default {
 				/** Decelerate into rest — sidebar width, subnav height. */
 				flow: 'cubic-bezier(0.32, 0.72, 0, 1)',
 			},
+			/*
+			 * ferry's radius scale: one `--radius` of 0.375rem (6px) with md/lg/xl/2xl/3xl all
+			 * collapsed onto it, and `sm = calc(--radius - 2px)` = 4px. `rounded-sm` is the only
+			 * step that differs from DEFAULT — ferry puts it on Button sm/xs/lg and on Input.
+			 */
 			borderRadius: {
 				DEFAULT: '6px',
-				sm: '6px',
+				sm: '4px',
 				md: '6px',
 				lg: '6px',
 				xl: '6px',
 				'2xl': '6px',
 				'3xl': '6px',
 				full: '9999px',
-				/** Figma table-card 10px — do not remap rounded-xl; that would restyle the whole app. */
+				/** Table / card shell — ferry Surface `raised` is rounded-lg, i.e. --radius (6px). */
 				card: 'var(--fp-radius-lg)',
-				/** Figma pagination / outline control 8px. */
+				/** Pagination / outline control — ferry Button rounded-md, i.e. --radius (6px). */
 				control: 'var(--fp-radius-md)',
-				/** Figma table avatar 6px (same as DEFAULT, named for intent). */
+				/** Table avatar — ferry rounded-sm (4px). */
 				avatar: 'var(--fp-radius-sm)',
 			},
 			height: {
@@ -41,7 +56,10 @@ export default {
 				control: 'var(--fp-control-height)',
 			},
 			spacing: {
+				/* ferry table cells are `px-3 py-3.5`, headers `px-3 py-2.5`. */
 				'table-cell': 'var(--fp-table-cell-x)',
+				'table-cell-y': 'var(--fp-table-cell-pad-y)',
+				'table-header-y': 'var(--fp-table-header-pad-y)',
 			},
 			colors: {
 				background: 'hsl(var(--background))',
@@ -82,7 +100,7 @@ export default {
 					 * `--fp-content-slate-muted` resolves to slate.500 = #64748b, byte-identical to the
 					 * literal it replaces.
 					 */
-					foreground: 'rgb(var(--fp-content-slate-muted) / <alpha-value>)',
+					foreground: 'rgb(var(--fp-content-muted) / <alpha-value>)',
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',

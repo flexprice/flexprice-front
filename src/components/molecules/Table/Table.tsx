@@ -116,7 +116,7 @@ const TableHead = React.forwardRef<
 		ref={ref}
 		style={{ textAlign: alignStyle(align), width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined, ...style }}
 		className={cn(
-			'h-12 px-4 text-[14px] font-medium text-content-slate-muted',
+			'h-12 px-4 text-sm font-medium text-content-slate-muted',
 			alignClass(align),
 			'align-middle',
 			className,
@@ -134,7 +134,7 @@ const TableCell = React.forwardRef<
 	<td
 		ref={ref}
 		style={{ textAlign: alignStyle(align), width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined, ...style }}
-		className={cn('px-4 py-2 text-[14px] font-medium min-w-0 overflow-hidden', alignClass(align), 'align-middle', className)}
+		className={cn('px-4 py-2 text-sm font-medium min-w-0 overflow-hidden', alignClass(align), 'align-middle', className)}
 		{...props}
 	/>
 ));
@@ -240,7 +240,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 								variant === 'default' && index === columns.length - 1 ? 'rounded-se-[var(--fp-radius-lg)]' : '',
 								variant === 'no-bordered' && 'border-b-0',
 								isCard &&
-									'h-[var(--fp-table-header-height)] border-b border-line-zinc-subtle px-[var(--fp-table-cell-x)] text-[11px] font-medium uppercase tracking-[0.66px] text-content-slate-muted',
+									'h-[var(--fp-table-header-height)] border-b border-line-zinc-subtle px-[var(--fp-table-cell-x)] py-[var(--fp-table-header-pad-y)] text-caption font-medium normal-case tracking-normal text-content-muted',
 								className,
 							)}>
 							<span className={cn(index === 0 && !isCard && 'ps-2')}>{children ? children : title}</span>
@@ -278,14 +278,14 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 							className={cn(
 								textColor ? `text-[${textColor}]` : 'text-content-secondary',
 								variant === 'default' ? 'font-normal' : 'font-light',
-								!isCard && '!max-h-8 px-3 py-3 text-[14px]',
+								!isCard && '!max-h-8 px-3 py-3 text-sm',
 								onCLick && 'cursor-pointer hover:bg-muted/50',
 								fieldVariant === 'title' ? 'font-regular text-foreground' : '!font-light text-content-secondary',
 								fieldVariant === 'link' && 'cursor-pointer text-primary dark:text-info hover:underline',
 								fieldVariant === 'icon' && 'w-10',
 								fieldVariant === 'interactive' && 'cursor-default',
 								isCard &&
-									'min-w-0 overflow-hidden px-[var(--fp-table-cell-x)] py-4 text-[14px] !font-normal leading-5 text-content-zinc-secondary',
+									'min-w-0 overflow-hidden px-[var(--fp-table-cell-x)] py-[var(--fp-table-cell-pad-y)] text-sm !font-normal leading-5 text-content-zinc-secondary',
 								isCard && fieldVariant === 'title' && '!font-medium text-content-zinc-bold',
 							)}
 							style={{ flex: width ? undefined : flex }}
@@ -312,7 +312,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 							className={cn(
 								textColor ? `text-[${textColor}]` : 'text-content-zinc w-full ',
 								'font-normal',
-								'!max-h-8 px-4 py-2 text-[14px]',
+								'!max-h-8 px-4 py-2 text-sm',
 								lastRow ? 'text-center' : '',
 							)}
 							style={{ flex: width ? undefined : flex }}
