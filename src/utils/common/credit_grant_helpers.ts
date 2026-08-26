@@ -7,9 +7,9 @@ export const formatExpirationType = (expirationType: CREDIT_GRANT_EXPIRATION_TYP
 		case CREDIT_GRANT_EXPIRATION_TYPE.BILLING_CYCLE:
 			return 'Subscription period';
 		case CREDIT_GRANT_EXPIRATION_TYPE.NEVER:
-			return '--';
+			return '—';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
@@ -32,5 +32,5 @@ export const formatExpirationPeriod = (grant: CreditGrant): string => {
 		return `${duration} ${unitName}`;
 	}
 
-	return grant.expiration_type ? formatExpirationType(grant.expiration_type) : '--';
+	return grant.expiration_type ? formatExpirationType(grant.expiration_type) : '—';
 };

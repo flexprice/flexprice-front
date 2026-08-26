@@ -68,7 +68,7 @@ const EnvironmentEditor: React.FC<Props> = ({ isOpen, onOpenChange, environment,
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
 			title={t('environment.editor.title')}
-			className='max-w-[480px]'
+			className='max-w-[30rem]'
 			description={t('environment.editor.description')}>
 			<div className='space-y-4'>
 				<Input

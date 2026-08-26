@@ -297,7 +297,7 @@ const InvoicesPage = () => {
 				fieldVariant: 'title',
 				render: (row: EnrichedInvoice) =>
 					row.invoice_status?.toUpperCase() === INVOICE_STATUS.DRAFT ? (
-						<span className='text-content-subtle text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
+						<span className='text-content-subtle text-[0.8125rem]'>{t('invoices.list.toBeGenerated')}</span>
 					) : (
 						<span>{row.invoice_number || t('common:labels.na')}</span>
 					),

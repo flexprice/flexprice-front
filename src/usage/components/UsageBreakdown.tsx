@@ -169,11 +169,11 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className }: 
 					<Table>
 						<TableHeader className='h-10 border-b border-line'>
 							<TableRow className='border-b border-line'>
-								<TableHead className='ps-3 font-semibold text-[13px] w-[35%] text-content'>{t('usageWidgets.feature')}</TableHead>
-								<TableHead className='font-semibold text-[13px] text-content'>
+								<TableHead className='ps-3 font-semibold text-[0.8125rem] w-[35%] text-content'>{t('usageWidgets.feature')}</TableHead>
+								<TableHead className='font-semibold text-[0.8125rem] text-content'>
 									{renderSortableHeader(SORT_TOTAL_USAGE, t('usageWidgets.totalUsage'))}
 								</TableHead>
-								<TableHead className='font-semibold text-[13px] text-content'>
+								<TableHead className='font-semibold text-[0.8125rem] text-content'>
 									{renderSortableHeader(SORT_TOTAL_COST, t('usageWidgets.totalCost'))}
 								</TableHead>
 							</TableRow>
@@ -204,7 +204,7 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className }: 
 											)}>
 											<TableCell className='ps-3 py-2.5 align-middle'>
 												<div className='inline-flex items-center gap-2 text-start'>
-													<span className='font-semibold text-[13px] text-content'>{bucket.groupName}</span>
+													<span className='font-semibold text-[0.8125rem] text-content'>{bucket.groupName}</span>
 													{bucket.items.length > 0 &&
 														(isExpanded ? (
 															<ChevronUp className='h-4 w-4 shrink-0 text-content-secondary' aria-hidden />
@@ -213,10 +213,10 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className }: 
 														))}
 												</div>
 											</TableCell>
-											<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>
+											<TableCell className='py-2.5 font-normal text-[0.8125rem] text-content-secondary'>
 												{t('usageWidgets.cellEmDash')}
 											</TableCell>
-											<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>
+											<TableCell className='py-2.5 font-normal text-[0.8125rem] text-content-secondary'>
 												{firstCurrency ? (
 													<>
 														{getCurrencySymbol(firstCurrency)}
@@ -230,11 +230,15 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className }: 
 										{isExpanded &&
 											bucket.items.map((row, childIndex) => (
 												<TableRow key={`${bucket.groupKey}:${row.id}:${childIndex}`} className='h-10 align-middle border-b border-line'>
-													<TableCell className='py-2.5 ps-3 font-normal text-[13px] align-middle text-content'>
+													<TableCell className='py-2.5 ps-3 font-normal text-[0.8125rem] align-middle text-content'>
 														{row.name || t('usageWidgets.unknownRow')}
 													</TableCell>
-													<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderUsageCell(row)}</TableCell>
-													<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderCostCell(row)}</TableCell>
+													<TableCell className='py-2.5 font-normal text-[0.8125rem] text-content-secondary'>
+														{renderUsageCell(row)}
+													</TableCell>
+													<TableCell className='py-2.5 font-normal text-[0.8125rem] text-content-secondary'>
+														{renderCostCell(row)}
+													</TableCell>
 												</TableRow>
 											))}
 									</React.Fragment>
@@ -242,16 +246,16 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className }: 
 							})}
 							{ungroupedItems.map((row, index) => (
 								<TableRow key={`ungrouped:${row.id}:${index}`} className='h-10 align-middle border-b border-line'>
-									<TableCell className='ps-3 py-2.5 font-normal text-[13px] text-content'>
+									<TableCell className='ps-3 py-2.5 font-normal text-[0.8125rem] text-content'>
 										{row.name || t('usageWidgets.unknownRow')}
 									</TableCell>
-									<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderUsageCell(row)}</TableCell>
-									<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderCostCell(row)}</TableCell>
+									<TableCell className='py-2.5 font-normal text-[0.8125rem] text-content-secondary'>{renderUsageCell(row)}</TableCell>
+									<TableCell className='py-2.5 font-normal text-[0.8125rem] text-content-secondary'>{renderCostCell(row)}</TableCell>
 								</TableRow>
 							))}
 							{rows.length === 0 && (
 								<TableRow>
-									<TableCell colSpan={3} className='ps-3 py-4 font-normal text-[13px] text-content-secondary'>
+									<TableCell colSpan={3} className='ps-3 py-4 font-normal text-[0.8125rem] text-content-secondary'>
 										{t('usageWidgets.cellEmpty')}
 									</TableCell>
 								</TableRow>

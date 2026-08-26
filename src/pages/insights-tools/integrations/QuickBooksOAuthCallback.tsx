@@ -152,7 +152,7 @@ const QuickBooksOAuthCallback = () => {
 	if (error) {
 		return (
 			<Page>
-				<div className='flex flex-col items-center justify-center min-h-[400px]'>
+				<div className='flex flex-col items-center justify-center min-h-[25rem]'>
 					<div className='text-danger text-lg font-semibold mb-2'>{t('insightsTools.oauthCallback.authorizationFailed')}</div>
 					<div className='text-content-tertiary mb-4'>{error}</div>
 					<div className='text-sm text-content-muted'>{t('insightsTools.oauthCallback.redirectingToIntegrations')}</div>
@@ -163,7 +163,7 @@ const QuickBooksOAuthCallback = () => {
 
 	return (
 		<Page>
-			<div className='flex flex-col items-center justify-center min-h-[400px]'>
+			<div className='flex flex-col items-center justify-center min-h-[25rem]'>
 				<Loader />
 				<div className='mt-4 text-content-tertiary'>
 					{t('insightsTools.oauthCallback.completingAuthorization', { provider: providerName })}

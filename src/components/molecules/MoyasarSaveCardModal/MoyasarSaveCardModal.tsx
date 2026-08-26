@@ -36,7 +36,7 @@ const MoyasarSaveCardModal: FC<MoyasarSaveCardModalProps> = ({ isOpen, onOpenCha
 					{t('moyasarAutopay.title')}
 				</span>
 			}
-			className='sm:max-w-[420px]'>
+			className='sm:max-w-[26.25rem]'>
 			<div className='space-y-4 py-2'>
 				<p className='text-sm text-content-tertiary'>{t('moyasarAutopay.intro')}</p>
 				<Button className='w-full' onClick={() => setupAutopay()} isLoading={isPending} disabled={isPending}>

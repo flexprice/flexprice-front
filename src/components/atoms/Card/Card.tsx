@@ -27,7 +27,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 	) => {
 		const notchSizes = {
 			sm: 'before:w-0.5',
-			md: 'before:w-[3px]',
+			md: 'before:w-[0.1875rem]',
 			lg: 'before:w-1',
 		};
 

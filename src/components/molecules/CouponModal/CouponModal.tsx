@@ -85,7 +85,7 @@ const CouponModal: React.FC<Props> = ({ isOpen, onOpenChange, onSave, onCancel, 
 			showCloseButton={false}
 			onOpenChange={onOpenChange}
 			title={t('coupons.modal.title')}
-			className='sm:max-w-[500px]'>
+			className='sm:max-w-[31.25rem]'>
 			<div className='grid gap-4 mt-3'>
 				<div className='space-y-2'>
 					<Select

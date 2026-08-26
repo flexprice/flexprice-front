@@ -75,7 +75,7 @@ const ResultCard = ({
 	<PageWrap>
 		<CardHeader className='text-center pb-4 pt-10 px-8'>
 			<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100'>{icon}</div>
-			<CardTitle className='text-[20px] font-medium text-zinc-950 leading-normal'>{title}</CardTitle>
+			<CardTitle className='text-[1.25rem] font-medium text-zinc-950 leading-normal'>{title}</CardTitle>
 		</CardHeader>
 		<CardContent className='text-center px-8 pb-10'>
 			<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>{description}</p>
@@ -208,7 +208,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 				title={t('moyasarAutopay.cardSetupFailedTitle')}
 				description={errorMsg || t('moyasarAutopay.cardSetupFailedDefaultDescription')}
 				action={
-					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[140px]'>
+					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[8.75rem]'>
 						{t('moyasarAutopay.tryAgain')}
 					</Button>
 				}
@@ -223,7 +223,7 @@ const MoyasarCheckout = ({ rawToken }: { rawToken: string }) => {
 				<div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100'>
 					<CreditCard className='h-8 w-8 text-zinc-600' />
 				</div>
-				<CardTitle className='text-[20px] font-medium text-zinc-950'>{t('moyasarAutopay.formTitle')}</CardTitle>
+				<CardTitle className='text-[1.25rem] font-medium text-zinc-950'>{t('moyasarAutopay.formTitle')}</CardTitle>
 			</CardHeader>
 			<CardContent className='px-8 pb-10'>
 				<p className='text-sm text-zinc-500 text-center mb-6'>{t('moyasarAutopay.formDesc')}</p>
@@ -309,7 +309,7 @@ const PaddleCheckout = () => {
 					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100'>
 						<Clock className='h-9 w-9 text-zinc-600' />
 					</div>
-					<CardTitle className='text-[20px] font-medium text-zinc-950 mb-4 leading-normal'>
+					<CardTitle className='text-[1.25rem] font-medium text-zinc-950 mb-4 leading-normal'>
 						{t('checkoutPage.paymentLinkExpiredTitle')}
 					</CardTitle>
 				</CardHeader>
@@ -327,13 +327,13 @@ const PaddleCheckout = () => {
 					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100'>
 						<AlertCircle className='h-9 w-9 text-zinc-600' />
 					</div>
-					<CardTitle className='text-[20px] font-medium text-zinc-950 mb-4 leading-normal'>
+					<CardTitle className='text-[1.25rem] font-medium text-zinc-950 mb-4 leading-normal'>
 						{t('checkoutPage.invalidPaymentLinkTitle')}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
 					<p className='text-base text-zinc-500 mb-8 leading-normal max-w-md mx-auto'>{t('checkoutPage.invalidPaymentLinkDescription')}</p>
-					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[140px]'>
+					<Button onClick={() => window.location.reload()} variant='outline' className='min-w-[8.75rem]'>
 						<RefreshCw className='w-4 h-4 mr-2' />
 						{t('checkoutPage.refreshPage')}
 					</Button>

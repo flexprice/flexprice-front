@@ -26,7 +26,7 @@ const BreadCrumbsSearchTrigger: React.FC = () => {
 			onClick={handleClick}
 			variant='outline'
 			size='sm'
-			className='flex w-auto min-w-0 sm:min-w-[180px] md:min-w-[220px] items-center border-line bg-surface hover:bg-surface-subtle hover:border-line !ps-2 sm:!ps-3 !pe-1 [&>div]:w-full [&>div]:min-w-0 [&>div]:gap-2'
+			className='flex w-auto min-w-0 sm:min-w-[11.25rem] md:min-w-[13.75rem] items-center border-line bg-surface hover:bg-surface-subtle hover:border-line !ps-2 sm:!ps-3 !pe-1 [&>div]:w-full [&>div]:min-w-0 [&>div]:gap-2'
 			aria-label={t('commandPalette.searchAriaLabel')}>
 			<HugeIcon icon={Search01Icon} size={16} className='text-content-subtle order-first' />
 			<span className='hidden sm:block flex-1 min-w-0 truncate text-start text-muted-foreground order-2'>
@@ -74,7 +74,7 @@ const BreadCrumbs: FC = () => {
 							) : index === breadcrumbs.length - 1 || index === 0 ? (
 								<div
 									title={breadcrumb.label}
-									className={`hover:text-content-heading capitalize select-none max-w-[140px] truncate ${
+									className={`hover:text-content-heading capitalize select-none max-w-[8.75rem] truncate ${
 										index === breadcrumbs.length - 1 ? 'font-normal text-content-slate-deep' : ''
 									}`}>
 									{breadcrumb.label}
@@ -83,7 +83,7 @@ const BreadCrumbs: FC = () => {
 								<Link
 									to={breadcrumb.path}
 									title={breadcrumb.label}
-									className={`hover:text-content-heading capitalize max-w-[140px] truncate block ${index === breadcrumbs.length - 1 ? 'font-normal text-content-slate-deep' : ''}`}>
+									className={`hover:text-content-heading capitalize max-w-[8.75rem] truncate block ${index === breadcrumbs.length - 1 ? 'font-normal text-content-slate-deep' : ''}`}>
 									{breadcrumb.label}
 								</Link>
 							)}

@@ -80,7 +80,7 @@ const CreditNoteDetails: FC<Props> = ({ credit_note_id, breadcrumb_index }) => {
 			<div ref={creditNoteRef} className='rounded-xl border border-line-strong p-6'>
 				<div className='p-4'>
 					<div className='flex items-center gap-2'>
-						<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('creditNotes.detailPage.title')}</h3>
+						<h3 className={getTypographyClass('card-header') + '!text-[1rem]'}>{t('creditNotes.detailPage.title')}</h3>
 						<div className='text-content-zinc text-sm'>{getStatusChip(data?.credit_note_status ?? CREDIT_NOTE_STATUS.DRAFT, t)}</div>
 					</div>
 					<Spacer className='!my-8' />

@@ -135,7 +135,7 @@ const UpdatePriceDetailsDrawer: FC<UpdatePriceDetailsDrawerProps> = ({ price, op
 					onChange={(e) => {
 						setFormData({ ...formData, description: e });
 					}}
-					className='min-h-[100px]'
+					className='min-h-[6.25rem]'
 				/>
 
 				<Input
@@ -156,7 +156,7 @@ const UpdatePriceDetailsDrawer: FC<UpdatePriceDetailsDrawerProps> = ({ price, op
 						}
 					}}
 					error={errors.metadata}
-					className='min-h-[100px]'
+					className='min-h-[6.25rem]'
 					placeholder={t('catalog:shared.metadataPlaceholder')}
 					label={t('catalog:shared.metadataOptional')}
 					description={t('catalog:shared.metadataJsonStringsOnly')}

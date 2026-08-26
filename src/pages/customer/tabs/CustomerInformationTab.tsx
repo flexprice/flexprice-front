@@ -144,15 +144,15 @@ const CustomerInformationTab = () => {
 	const billingDetails: Detail[] = [
 		{
 			label: 'Name',
-			value: customer?.name || '--',
+			value: customer?.name || '—',
 		},
 		{
 			label: 'External ID',
-			value: customer?.external_id || '--',
+			value: customer?.external_id || '—',
 		},
 		{
 			label: 'Email',
-			value: customer?.email || '--',
+			value: customer?.email || '—',
 		},
 		...(customer?.timezone?.trim()
 			? [
@@ -168,31 +168,31 @@ const CustomerInformationTab = () => {
 		{
 			variant: 'heading',
 			label: 'Billing Details',
-			className: getTypographyClass('card-header') + '!text-[16px]',
+			className: getTypographyClass('card-header') + '!text-[1rem]',
 		},
 		{
 			label: 'Address Line 1',
-			value: customer?.address_line1 || '--',
+			value: customer?.address_line1 || '—',
 		},
 		{
 			label: 'Country',
-			value: customer?.address_country ? Country.getCountryByCode(customer.address_country)?.name : '--',
+			value: customer?.address_country ? Country.getCountryByCode(customer.address_country)?.name : '—',
 		},
 		{
 			label: 'Address Line 2',
-			value: customer?.address_line2 || '--',
+			value: customer?.address_line2 || '—',
 		},
 		{
 			label: 'State',
-			value: customer?.address_state || '--',
+			value: customer?.address_state || '—',
 		},
 		{
 			label: 'City',
-			value: customer?.address_city || '--',
+			value: customer?.address_city || '—',
 		},
 		{
 			label: 'Postal Code',
-			value: customer?.address_postal_code || '--',
+			value: customer?.address_postal_code || '—',
 		},
 	];
 
@@ -206,18 +206,14 @@ const CustomerInformationTab = () => {
 
 	return (
 		<div>
-			{billingDetails.filter((detail) => detail.value !== '--').length > 0 && (
+			{billingDetails.filter((detail) => detail.value !== '—').length > 0 && (
 				<div>
 					<Spacer className='!h-4' />
 					<div className='flex justify-between items-center'>
-						<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('overview.cardTitle')}</h3>
+						<h3 className={getTypographyClass('card-header') + '!text-[1rem]'}>{t('overview.cardTitle')}</h3>
 						<div className='flex gap-2'>
 							{!isArchived && hasStripeConnection && (
-								<Button
-									variant='outline'
-									size='sm'
-									onClick={() => setShowSaveCardModal(true)}
-									className='!h-9 flex items-center gap-2'>
+								<Button variant='outline' size='sm' onClick={() => setShowSaveCardModal(true)} className='!h-9 flex items-center gap-2'>
 									<CreditCard className='size-4' />
 									{t('tabPanels.information.saveCardOnStripe')}
 								</Button>
@@ -248,7 +244,7 @@ const CustomerInformationTab = () => {
 					<Divider className='my-4' />
 					<div className='mt-8'>
 						<div className='flex justify-between items-center mb-2'>
-							<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('tabPanels.common.metadata')}</h3>
+							<h3 className={getTypographyClass('card-header') + '!text-[1rem]'}>{t('tabPanels.common.metadata')}</h3>
 							{!isArchived && (
 								<Button variant='outline' size='icon' onClick={() => setShowMetadataModal(true)}>
 									<Pencil className='size-5' />

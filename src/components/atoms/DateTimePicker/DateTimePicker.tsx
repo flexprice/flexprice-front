@@ -155,7 +155,7 @@ export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, place
 							/>
 						</div>
 						<Select value={timezone} onValueChange={(v) => handleTimezoneChange(v as CalendarTimezone)}>
-							<SelectTrigger className='h-8 w-[80px] text-xs border-input'>
+							<SelectTrigger className='h-8 w-[5rem] text-xs border-input'>
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent align='end'>

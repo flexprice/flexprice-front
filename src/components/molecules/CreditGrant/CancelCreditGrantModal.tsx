@@ -45,7 +45,7 @@ const CancelCreditGrantModal: React.FC<Props> = ({ isOpen, onOpenChange, onConfi
 			showCloseButton={false}
 			onOpenChange={onOpenChange}
 			title={t('creditGrant.cancelModal.title')}
-			className='sm:max-w-[500px]'>
+			className='sm:max-w-[31.25rem]'>
 			<div className='space-y-4 mt-3'>
 				<p className='text-sm text-content-tertiary'>{t('creditGrant.cancelModal.body', { name: creditGrant?.name ?? '' })}</p>
 

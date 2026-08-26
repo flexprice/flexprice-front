@@ -53,7 +53,7 @@ const InvoiceTaxAssociationTable: FC<Props> = ({ data, onChange, disabled, defau
 		},
 		{
 			title: 'Priority',
-			render: (row) => row.priority || '--',
+			render: (row) => row.priority || '—',
 		},
 		{
 			title: 'Auto Apply',

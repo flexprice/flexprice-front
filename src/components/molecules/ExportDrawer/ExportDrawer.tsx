@@ -479,7 +479,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 									<Tooltip
 										delayDuration={0}
 										side='right'
-										content={<div className='max-w-[280px] text-sm'>{t('exportDrawer.metadata.tooltip')}</div>}>
+										content={<div className='max-w-[17.5rem] text-sm'>{t('exportDrawer.metadata.tooltip')}</div>}>
 										<span className='inline-flex items-center text-info-bright hover:text-info'>
 											<Info className='h-3.5 w-3.5' />
 										</span>
@@ -532,7 +532,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 												</button>
 											</div>
 											{expandedColumnNames.has(index) ? (
-												<div className='pl-[128px] pr-[40px]'>
+												<div className='pl-[8rem] pr-[2.5rem]'>
 													<Input
 														placeholder={t('exportDrawer.metadata.columnNamePlaceholder')}
 														value={field.column_name}
@@ -540,7 +540,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 													/>
 												</div>
 											) : (
-												<div className='pl-[128px]'>
+												<div className='pl-[8rem]'>
 													<button
 														type='button'
 														onClick={() => toggleColumnName(index)}

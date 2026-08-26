@@ -17,7 +17,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial, logoHeig
 	return (
 		<Card
 			className={cn(
-				'bg-surface-canvas rounded-[var(--fp-radius-md)] shadow-[0_10px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_32px_rgba(0,0,0,0.35)] border w-[340px] border-line flex flex-col gap-4 p-6',
+				'bg-surface-canvas rounded-[var(--fp-radius-md)] shadow-[0_10px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_32px_rgba(0,0,0,0.35)] border w-[21.25rem] border-line flex flex-col gap-4 p-6',
 				'transition-shadow hover:shadow-[0_12px_36px_rgba(0,0,0,0.11)] dark:hover:shadow-[0_12px_36px_rgba(0,0,0,0.45)]',
 			)}>
 			<div className='flex items-center justify-between gap-2 mb-1'>
@@ -33,7 +33,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial, logoHeig
 					testimonial.label && <span className='text-xs font-medium text-info'>{testimonial.label}</span>
 				)}
 			</div>
-			<div className={cn('text-content-black mb-6', 'font-normal', 'text-[13px]', 'leading-relaxed', 'font-[400]')}>
+			<div className={cn('text-content-black mb-6', 'font-normal', 'text-[0.8125rem]', 'leading-relaxed', 'font-[400]')}>
 				"{testimonial.testimonial}"
 			</div>
 			<div className='flex items-center gap-3 mt-auto '>
@@ -46,8 +46,8 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial, logoHeig
 					}}
 				/>
 				<div>
-					<div className={getTypographyClass('card-header', 'leading-tight font-normal text-[14px]')}>{testimonial.name}</div>
-					<div className={cn('text-[13px] text-content-zinc-muted leading-tight font-[400]')}>{testimonial.designation}</div>
+					<div className={getTypographyClass('card-header', 'leading-tight font-normal text-[0.875rem]')}>{testimonial.name}</div>
+					<div className={cn('text-[0.8125rem] text-content-zinc-muted leading-tight font-[400]')}>{testimonial.designation}</div>
 				</div>
 			</div>
 		</Card>

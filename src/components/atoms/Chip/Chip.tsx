@@ -102,9 +102,9 @@ const Chip: FC<ChipProps> = ({
 				border: `1px solid ${borderColor ?? defaultBorderColor}`,
 			}}
 			aria-disabled={disabled}>
-			{icon && <span className='flex items-center text-[16px] leading-none'>{icon}</span>}
-			{label && <span className={cn('leading-none text-[14px]', icon ? 'ms-1.5' : '', childrenAfter ? 'me-1.5' : '')}>{label}</span>}
-			{childrenAfter && <span className='flex items-center text-[16px] leading-none'>{childrenAfter}</span>}
+			{icon && <span className='flex items-center text-[1rem] leading-none'>{icon}</span>}
+			{label && <span className={cn('leading-none text-[0.875rem]', icon ? 'ms-1.5' : '', childrenAfter ? 'me-1.5' : '')}>{label}</span>}
+			{childrenAfter && <span className='flex items-center text-[1rem] leading-none'>{childrenAfter}</span>}
 		</span>
 	);
 };

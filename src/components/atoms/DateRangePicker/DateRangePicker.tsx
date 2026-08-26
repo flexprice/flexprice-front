@@ -121,7 +121,7 @@ const DateRangePicker = ({
 								!selectedRange?.from || !selectedRange?.to
 									? 'text-muted-foreground opacity-70 hover:text-muted-foreground'
 									: 'text-content-black',
-								!className && (selectedRange?.from && selectedRange?.to ? 'w-[260px]' : 'w-[240px]'),
+								!className && (selectedRange?.from && selectedRange?.to ? 'w-[16.25rem]' : 'w-[15rem]'),
 								'transition-all duration-300 ease-in-out',
 								className,
 							)}>
@@ -130,7 +130,7 @@ const DateRangePicker = ({
 						</Button>
 						{selectedRange?.from && selectedRange?.to && (
 							<X
-								className='ms-2 h-4 w-4 absolute right-2 top-[12px] cursor-pointer'
+								className='ms-2 h-4 w-4 absolute right-2 top-[0.75rem] cursor-pointer'
 								onClick={(e) => {
 									e.stopPropagation();
 									setSelectedRange(undefined);

@@ -39,11 +39,11 @@ const PaymentList = () => {
 	if ((payments?.items ?? []).length === 0) {
 		return (
 			<div className='space-y-6'>
-				<div className='bg-surface-faint border border-line-hairline dark:bg-surface dark:border-line rounded-[10px] w-full h-[360px] flex flex-col items-center justify-center mx-auto'>
-					<div className='font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>
+				<div className='bg-surface-faint border border-line-hairline dark:bg-surface dark:border-line rounded-[10px] w-full h-[22.5rem] flex flex-col items-center justify-center mx-auto'>
+					<div className='font-medium text-[1.25rem] leading-normal text-content-secondary mb-4 text-center'>
 						{t('payments.recordFirstHeading')}
 					</div>
-					<div className='font-normal bg-surface-faint-inner dark:bg-transparent text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
+					<div className='font-normal bg-surface-faint-inner dark:bg-transparent text-[1rem] leading-normal text-content-subtle mb-8 text-center max-w-[21.875rem]'>
 						{t('payments.recordFirstDescription')}
 					</div>
 				</div>

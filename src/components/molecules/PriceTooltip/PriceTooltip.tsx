@@ -289,7 +289,7 @@ const PriceTooltipContent: FC<{
 	return (
 		<TooltipContent
 			sideOffset={5}
-			className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
+			className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[20rem]'>
 			<div className='space-y-3'>
 				{isSubscriptionOverride && (
 					<div className='space-y-2'>

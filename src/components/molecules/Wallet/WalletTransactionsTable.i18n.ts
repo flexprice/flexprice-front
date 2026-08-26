@@ -28,7 +28,7 @@ const EN_WALLET_TRANSACTIONS_TABLE = {
 	},
 	wallet: {
 		table: {
-			emptyCell: '--',
+			emptyCell: '—',
 			columnTransactions: 'Transactions',
 			columnPaymentDate: 'Payment Date',
 			columnExpiryDate: 'Expiry Date',

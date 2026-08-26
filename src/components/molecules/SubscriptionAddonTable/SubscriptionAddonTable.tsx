@@ -153,11 +153,11 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 			},
 			// {
 			// 	title: 'Start Date',
-			// 	render: (row) => (row.start_date ? new Date(row.start_date).toLocaleDateString() : '--'),
+			// 	render: (row) => (row.start_date ? new Date(row.start_date).toLocaleDateString() : '—'),
 			// },
 			// {
 			// 	title: 'End Date',
-			// 	render: (row) => (row.end_date ? new Date(row.end_date).toLocaleDateString() : '--'),
+			// 	render: (row) => (row.end_date ? new Date(row.end_date).toLocaleDateString() : '—'),
 			// },
 			{
 				fieldVariant: 'interactive',

@@ -37,7 +37,7 @@ interface SubscriptionAddonsSectionProps {
 }
 
 const formatAddonCharges = (prices: Price[] = []): string => {
-	if (!prices || prices.length === 0) return '--';
+	if (!prices || prices.length === 0) return '—';
 
 	const recurringPrices = prices.filter((p) => p.type === PRICE_TYPE.FIXED);
 	const usagePrices = prices.filter((p) => p.type === PRICE_TYPE.USAGE);
@@ -45,7 +45,7 @@ const formatAddonCharges = (prices: Price[] = []): string => {
 	const hasUsage = usagePrices.length > 0;
 
 	if (recurringPrices.length === 0) {
-		return hasUsage ? 'Depends on usage' : '--';
+		return hasUsage ? 'Depends on usage' : '—';
 	}
 
 	// Calculate total recurring amount
@@ -292,7 +292,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 						content={row.tooltipContent}
 						delayDuration={0}
 						sideOffset={5}
-						className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
+						className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[20rem]'>
 						<span>
 							<StatusChip label={row.statusLabel} tone={row.statusTone} />
 						</span>

@@ -22,7 +22,7 @@ const CustomTabs = ({ tabs, defaultValue = tabs[0]?.value, className }: CustomTa
 						key={tab.value}
 						value={tab.value}
 						className={cn(
-							'text-[15px] font-normal text-content-muted px-3 py-1 rounded-md',
+							'text-[0.9375rem] font-normal text-content-muted px-3 py-1 rounded-md',
 							'data-[state=active]:text-content data-[state=active]:bg-surface-subtle',
 							'hover:text-content transition-colors',
 							'data-[state=inactive]:border  data-[state=inactive]:border-border',

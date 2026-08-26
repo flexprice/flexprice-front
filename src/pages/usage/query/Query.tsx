@@ -237,7 +237,7 @@ const QueryPage: React.FC = () => {
 					selectedSorts={sorts}
 				/>
 				{/* Move SelectFeature here, after QueryBuilder and before Refresh button */}
-				<div className='flex flex-col justify-end min-w-[250px]'>
+				<div className='flex flex-col justify-end min-w-[15.625rem]'>
 					<SelectFeature
 						featureTypes={[FEATURE_TYPE.METERED]}
 						label=''

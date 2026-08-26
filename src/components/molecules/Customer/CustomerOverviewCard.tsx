@@ -27,20 +27,20 @@ const CustomerOverviewCard: React.FC<CustomerCardProps> = ({ customerId }) => {
 	const billingDetails: Detail[] = [
 		{
 			label: t('overview.labels.customer'),
-			value: customer?.name || '--',
+			value: customer?.name || '—',
 			labelStyle: 'semibold',
 			valueVariant: 'foreground',
 		},
 		{
 			label: t('overview.labels.email'),
-			value: customer?.email || '--',
+			value: customer?.email || '—',
 			labelStyle: 'semibold',
 			valueVariant: 'foreground',
 		},
 
 		{
 			label: t('overview.labels.billingId'),
-			value: customer?.external_id || '--',
+			value: customer?.external_id || '—',
 			labelStyle: 'semibold',
 			valueVariant: 'foreground',
 			tag: {
@@ -59,28 +59,28 @@ const CustomerOverviewCard: React.FC<CustomerCardProps> = ({ customerId }) => {
 		},
 		{
 			label: t('overview.labels.address'),
-			value: customer?.address_line1 || '--',
+			value: customer?.address_line1 || '—',
 			colSpan: 2,
 			valueVariant: 'muted',
 		},
 		{
 			label: t('overview.labels.country'),
-			value: customer?.address_country ? Country.getCountryByCode(customer.address_country)?.name : '--',
+			value: customer?.address_country ? Country.getCountryByCode(customer.address_country)?.name : '—',
 			valueVariant: 'muted',
 		},
 		{
 			label: t('overview.labels.state'),
-			value: customer?.address_state || '--',
+			value: customer?.address_state || '—',
 			valueVariant: 'muted',
 		},
 		{
 			label: t('overview.labels.city'),
-			value: customer?.address_city || '--',
+			value: customer?.address_city || '—',
 			valueVariant: 'muted',
 		},
 		{
 			label: t('overview.labels.postalCode'),
-			value: customer?.address_postal_code || '--',
+			value: customer?.address_postal_code || '—',
 			valueVariant: 'muted',
 		},
 	];
@@ -95,7 +95,7 @@ const CustomerOverviewCard: React.FC<CustomerCardProps> = ({ customerId }) => {
 
 	return (
 		<div>
-			{billingDetails.filter((detail) => detail.value !== '--').length > 0 && (
+			{billingDetails.filter((detail) => detail.value !== '—').length > 0 && (
 				<div>
 					<Spacer className='!h-4' />
 					<DetailsCard data={billingDetails} childrenAtTop cardStyle='default' variant='stacked' gridCols={4}>

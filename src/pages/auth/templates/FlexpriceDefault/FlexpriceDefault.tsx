@@ -59,7 +59,7 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 						target='_blank'
 						rel='noopener noreferrer'
 						className={cn(
-							'flex w-full shrink-0 items-center justify-center gap-2.5 bg-surface-shell/85 px-4 py-2.5 text-[15px] font-medium text-content-secondary backdrop-blur-md transition-colors hover:bg-surface-shell dark:bg-surface-subtle/50',
+							'flex w-full shrink-0 items-center justify-center gap-2.5 bg-surface-shell/85 px-4 py-2.5 text-[0.9375rem] font-medium text-content-secondary backdrop-blur-md transition-colors hover:bg-surface-shell dark:bg-surface-subtle/50',
 							'mt-[var(--fp-shell-inset)]',
 							'max-lg:mx-4 max-lg:w-auto max-lg:rounded-[var(--fp-radius-shell)] max-lg:border max-lg:border-line-subtle',
 							'lg:rounded-none lg:border-y lg:border-s lg:border-e-0 lg:border-line-subtle',

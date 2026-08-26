@@ -131,7 +131,7 @@ const FeatureDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQu
 					onChange={(e) => {
 						setFormData({ ...formData, description: e });
 					}}
-					className='min-h-[100px]'
+					className='min-h-[6.25rem]'
 				/>
 
 				<SelectGroup

@@ -93,7 +93,7 @@ const InvoiceConfigurationSection = () => {
 		<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
 			<CardHeader title={t('billing.invoiceConfiguration.title')} titleClassName='text-lg font-medium text-content-zinc-strong' />
 			{isLoading ? (
-				<div className='flex min-h-[200px] items-center justify-center'>
+				<div className='flex min-h-[12.5rem] items-center justify-center'>
 					<Loader />
 				</div>
 			) : (

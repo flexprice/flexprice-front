@@ -181,7 +181,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 							.slice(0, 2) || t('environment.selector.fallbackTenantLetters')}
 					</span>
 					<div className={cn('text-start min-w-0', open ? '' : 'hidden')}>
-						<p className='font-medium text-[16px] leading-snug truncate'>{user?.tenant?.name || t('environment.selector.unknownTenant')}</p>
+						<p className='font-medium text-[1rem] leading-snug truncate'>{user?.tenant?.name || t('environment.selector.unknownTenant')}</p>
 					</div>
 				</div>
 			</div>
@@ -192,7 +192,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 					<div
 						className={cn(
 							'mt-3.5 flex items-center rounded-[var(--fp-radius-md)] border',
-							open ? 'h-10 w-full justify-between px-2 py-[10px]' : 'size-10 justify-center p-0',
+							open ? 'h-10 w-full justify-between px-2 py-[0.625rem]' : 'size-10 justify-center p-0',
 							isDevelopment && 'border-accent-yellow-line text-accent-yellow-deep',
 							isProduction && 'border-env-prod-line text-env-prod-text',
 						)}
@@ -212,7 +212,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 							) : (
 								<HugeIcon icon={RocketIcon} size={20} className='text-current' />
 							)}
-							<span className={cn('block text-[14px] font-normal truncate max-w-[120px]', !open && 'hidden')}>{environmentName}</span>
+							<span className={cn('block text-[0.875rem] font-normal truncate max-w-[7.5rem]', !open && 'hidden')}>{environmentName}</span>
 						</div>
 						<HugeIcon icon={UnfoldMoreIcon} size={16} className={cn('opacity-60', !open && 'hidden')} />
 					</div>

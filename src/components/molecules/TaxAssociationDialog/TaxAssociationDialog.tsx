@@ -142,7 +142,7 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 	}));
 
 	return (
-		<Dialog isOpen={open} onOpenChange={onOpenChange} title={t('taxAssociation.dialogTitle')} className='sm:max-w-[500px]'>
+		<Dialog isOpen={open} onOpenChange={onOpenChange} title={t('taxAssociation.dialogTitle')} className='sm:max-w-[31.25rem]'>
 			<form onSubmit={handleSubmit} className='space-y-6'>
 				<div className='space-y-4'>
 					<div className='space-y-2'>

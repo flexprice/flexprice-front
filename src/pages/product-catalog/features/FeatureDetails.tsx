@@ -464,7 +464,7 @@ const FeatureDetails = () => {
 									<div className='space-y-3'>
 										{/* <div className='grid grid-cols-[200px_1fr] items-center'>
 										<span className='text-content-muted text-sm'>Aggregation</span>
-										<span className='text-content-heading text-sm'>{toSentenceCase(data?.meter?.aggregation.type || '--')}</span>
+										<span className='text-content-heading text-sm'>{toSentenceCase(data?.meter?.aggregation.type || '—')}</span>
 									</div> */}
 										<div className='grid grid-cols-[200px_1fr] items-center'>
 											<span className='text-content-muted text-sm'>{t('catalog:features.details.type')}</span>

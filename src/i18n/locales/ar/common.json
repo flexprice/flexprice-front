@@ -363,7 +363,7 @@
 	"labels": {
 		"payload": "الحمولة",
 		"sort": "ترتيب",
-		"na": "--",
+		"na": "—",
 		"notApplicable": "غير منطبق",
 		"unknown": "غير معروف",
 		"creditGrants": "منح الرصيد",

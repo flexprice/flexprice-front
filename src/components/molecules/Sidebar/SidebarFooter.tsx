@@ -93,7 +93,7 @@ const SidebarFooter = () => {
 						<img
 							src='/assets/logo/slack-logo.png'
 							alt={t('contactUs.slackAlt')}
-							className={cn('shrink-0 object-contain', open ? 'size-5 me-1' : 'size-[21px]')}
+							className={cn('shrink-0 object-contain', open ? 'size-5 me-1' : 'size-[1.3125rem]')}
 						/>
 						<ContactUsHoverLabel className={cn(!open && 'hidden')} />
 					</span>

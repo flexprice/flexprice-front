@@ -103,7 +103,7 @@ const EnvironmentCreator: React.FC<Props> = ({ isOpen, onOpenChange, onEnvironme
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
 			title={t('environment.creator.title')}
-			className='max-w-[550px]'
+			className='max-w-[34.375rem]'
 			description={t('environment.creator.description')}>
 			<div className='space-y-4'>
 				<Input

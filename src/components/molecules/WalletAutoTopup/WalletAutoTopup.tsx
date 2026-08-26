@@ -177,7 +177,7 @@ const WalletAutoTopup: React.FC<WalletAutoTopupProps> = ({ open, autoTopupConfig
 				</div>
 			}
 			showCloseButton>
-			<div className='flex flex-col gap-6 min-w-[500px]'>
+			<div className='flex flex-col gap-6 min-w-[31.25rem]'>
 				{/* Enable Auto Top-Up Toggle */}
 				<Toggle
 					title={t('wallet.autoTopup.enableTitle')}

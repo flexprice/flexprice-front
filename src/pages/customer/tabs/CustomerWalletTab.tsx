@@ -330,7 +330,7 @@ const CustomerWalletTab = () => {
 					{/* Wallet Selection and Actions */}
 					<div className='w-full flex justify-between items-center mb-3'>
 						<div>
-							<div className='min-w-[250px]'>
+							<div className='min-w-[15.625rem]'>
 								<Select
 									options={walletOptions}
 									value={activeWallet?.id}
@@ -415,7 +415,7 @@ const CustomerWalletTab = () => {
 
 							{/* Wallet Balance */}
 							{isBalanceLoading ? (
-								<Skeleton className='w-full h-[200px]' />
+								<Skeleton className='w-full h-[12.5rem]' />
 							) : (
 								<div className='w-full grid grid-cols-2 gap-4'>
 									{[WALLET_BALANCE_TYPE.CURRENT, WALLET_BALANCE_TYPE.ONGOING].map((type, index) => (

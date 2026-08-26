@@ -188,11 +188,11 @@ const Revenue = () => {
 			heading={t('insightsTools.revenue.pageHeading')}
 			headingCTA={
 				<div className='flex items-center gap-2'>
-					<div className='w-[220px]'>
+					<div className='w-[13.75rem]'>
 						<Select options={FILTER_OPTIONS} value={selectedFilter} onChange={(value) => handleFilterChange(value as RevenueFilterValue)} />
 					</div>
 					{currencyOptions.length > 0 && (
-						<div className='w-[100px]'>
+						<div className='w-[6.25rem]'>
 							<Select
 								options={currencyOptions}
 								value={selectedCurrency}
@@ -357,18 +357,18 @@ const Revenue = () => {
 									placeholder={t('insightsTools.revenue.searchCustomersPlaceholder')}
 									value={search}
 									onChange={(e) => handleSearch(e.target.value)}
-									className='pl-8 h-8 text-[13px] border-line bg-surface-subtle focus:bg-surface placeholder:text-content-subtle'
+									className='pl-8 h-8 text-[0.8125rem] border-line bg-surface-subtle focus:bg-surface placeholder:text-content-subtle'
 								/>
 							</div>
 							<div className='flex items-center gap-4'>
 								{search.trim() && (
-									<p className='text-[12px] text-content-subtle'>
+									<p className='text-[0.75rem] text-content-subtle'>
 										{filteredItems.length === 1
 											? i18n.t('search.resultsCountSingular', { ns: 'common', count: filteredItems.length })
 											: i18n.t('search.resultsCountPlural', { ns: 'common', count: filteredItems.length })}
 									</p>
 								)}
-								<p className='text-[12px] text-content-subtle'>
+								<p className='text-[0.75rem] text-content-subtle'>
 									{start.toLocaleDateString(undefined, UTC_SHORT_DATE)}
 									{' – '}
 									{end.toLocaleDateString(undefined, UTC_SHORT_DATE)}
@@ -378,31 +378,31 @@ const Revenue = () => {
 						<Table>
 							<TableHeader className='h-10 rounded-t-[var(--fp-radius-lg)] border-b border-line bg-surface-subtle'>
 								<TableRow className='rounded-t-[var(--fp-radius-lg)] border-b border-line'>
-									<TableHead className='rounded-ss-[var(--fp-radius-lg)] pl-4 font-semibold text-[13px] text-content-secondary'>
+									<TableHead className='rounded-ss-[var(--fp-radius-lg)] pl-4 font-semibold text-[0.8125rem] text-content-secondary'>
 										{t('insightsTools.revenue.colCustomer')}
 									</TableHead>
 									{selectedCurrency === '' && (
-										<TableHead className='font-semibold text-content-secondary text-[13px]'>
+										<TableHead className='font-semibold text-content-secondary text-[0.8125rem]'>
 											{t('insightsTools.revenue.colCurrency')}
 										</TableHead>
 									)}
-									<TableHead className='font-semibold text-content-secondary text-[13px]'>
+									<TableHead className='font-semibold text-content-secondary text-[0.8125rem]'>
 										{t('insightsTools.revenue.metricNetRevenue')}
 									</TableHead>
-									<TableHead className='font-semibold text-content-secondary text-[13px]'>
+									<TableHead className='font-semibold text-content-secondary text-[0.8125rem]'>
 										{t('insightsTools.revenue.metricContractRevenue')}
 									</TableHead>
 									<TableHead
-										className={`font-semibold text-[13px] text-content-secondary ${!showVoiceColumns ? 'rounded-se-[var(--fp-radius-lg)]' : ''}`}>
+										className={`font-semibold text-[0.8125rem] text-content-secondary ${!showVoiceColumns ? 'rounded-se-[var(--fp-radius-lg)]' : ''}`}>
 										{t('insightsTools.revenue.metricUsageRevenue')}
 									</TableHead>
 									{showVoiceColumns && (
-										<TableHead className='font-semibold text-content-secondary text-[13px]'>
+										<TableHead className='font-semibold text-content-secondary text-[0.8125rem]'>
 											{t('insightsTools.revenue.metricVoiceMinutes')}
 										</TableHead>
 									)}
 									{showVoiceColumns && (
-										<TableHead className='rounded-se-[var(--fp-radius-lg)] font-semibold text-[13px] text-content-secondary'>
+										<TableHead className='rounded-se-[var(--fp-radius-lg)] font-semibold text-[0.8125rem] text-content-secondary'>
 											{t('insightsTools.revenue.metricCostPerMinute')}
 										</TableHead>
 									)}
@@ -415,12 +415,12 @@ const Revenue = () => {
 										<TableRow
 											key={`${row.customer_id}:${row.currency}`}
 											className='h-[var(--fp-table-row-height)] align-middle border-b border-line bg-surface hover:bg-surface-subtle/50 transition-colors'>
-											<TableCell className='py-4 pl-4 font-normal text-content-secondary text-[13px] align-middle'>
+											<TableCell className='py-4 pl-4 font-normal text-content-secondary text-[0.8125rem] align-middle'>
 												<RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer_id}`} allowRedirect={Boolean(row.customer_id)}>
 													{row.customer_name || row.external_customer_id || unknownLabel}
 												</RedirectCell>
 											</TableCell>
-											<TableCell className='py-4 font-semibold text-content-secondary text-[13px]'>
+											<TableCell className='py-4 font-semibold text-content-secondary text-[0.8125rem]'>
 												{formatCurrency(
 													toNumberOrNull(row.total_revenue) ??
 														(toNumberOrNull(row.total_usage_revenue) ?? 0) + (toNumberOrNull(row.total_fixed_revenue) ?? 0),
@@ -428,19 +428,19 @@ const Revenue = () => {
 													naLabel,
 												)}
 											</TableCell>
-											<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
+											<TableCell className='py-4 font-normal text-content-tertiary text-[0.8125rem]'>
 												{formatCurrency(toNumberOrNull(row.total_fixed_revenue), rowCurrency, naLabel)}
 											</TableCell>
-											<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
+											<TableCell className='py-4 font-normal text-content-tertiary text-[0.8125rem]'>
 												{formatCurrency(toNumberOrNull(row.total_usage_revenue), rowCurrency, naLabel)}
 											</TableCell>
 											{showVoiceColumns && (
-												<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
+												<TableCell className='py-4 font-normal text-content-tertiary text-[0.8125rem]'>
 													{formatInteger(toNumberOrNull(row.voice_minutes), naLabel)}
 												</TableCell>
 											)}
 											{showVoiceColumns && (
-												<TableCell className='py-4 font-normal text-content-tertiary text-[13px]'>
+												<TableCell className='py-4 font-normal text-content-tertiary text-[0.8125rem]'>
 													{formatDecimal(toNumberOrNull(row.cpm), naLabel)}
 												</TableCell>
 											)}
@@ -451,7 +451,7 @@ const Revenue = () => {
 									<TableRow className='bg-surface'>
 										<TableCell
 											colSpan={showVoiceColumns ? 6 : selectedCurrency === '' ? 5 : 4}
-											className='pl-4 py-4 font-normal text-content-muted text-[13px]'>
+											className='pl-4 py-4 font-normal text-content-muted text-[0.8125rem]'>
 											{search.trim() ? t('insightsTools.revenue.noSearchMatches') : i18n.t('labels.na', { ns: 'common' })}
 										</TableCell>
 									</TableRow>
@@ -513,9 +513,9 @@ const MetricTile = ({
 }) => {
 	return (
 		<div
-			className={`px-5 py-4 min-h-[104px] flex flex-col ${!isLast ? 'lg:border-r lg:border-line' : ''} border-b sm:border-b-0 border-line`}>
-			<p className='text-[12px] leading-4 text-content-zinc-tertiary whitespace-normal break-words'>{title}</p>
-			<p className='mt-4 text-[22px] leading-[1.2] font-medium text-content-zinc-bold'>{loading ? loadingLabel : value}</p>
+			className={`px-5 py-4 min-h-[6.5rem] flex flex-col ${!isLast ? 'lg:border-r lg:border-line' : ''} border-b sm:border-b-0 border-line`}>
+			<p className='text-[0.75rem] leading-4 text-content-zinc-tertiary whitespace-normal break-words'>{title}</p>
+			<p className='mt-4 text-[1.375rem] leading-[1.2] font-medium text-content-zinc-bold'>{loading ? loadingLabel : value}</p>
 		</div>
 	);
 };

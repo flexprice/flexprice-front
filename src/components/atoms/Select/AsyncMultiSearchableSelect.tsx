@@ -231,7 +231,7 @@ const AsyncMultiSearchableSelect = <T = unknown,>({
 												<Badge
 													key={v}
 													variant='secondary'
-													className='flex items-center gap-1 px-2 py-1 text-xs whitespace-nowrap shrink-0 max-w-[140px]'>
+													className='flex items-center gap-1 px-2 py-1 text-xs whitespace-nowrap shrink-0 max-w-[8.75rem]'>
 													<span className='truncate' title={labelExtractor(item)}>
 														{labelExtractor(item)}
 													</span>
@@ -290,7 +290,7 @@ const AsyncMultiSearchableSelect = <T = unknown,>({
 							className='h-9'
 						/>
 						<CommandList
-							className='max-h-[200px] w-full max-w-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
+							className='max-h-[12.5rem] w-full max-w-full overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
 							onWheel={(e) => e.stopPropagation()}
 							onScroll={(e) => e.stopPropagation()}>
 							{showLoading && (

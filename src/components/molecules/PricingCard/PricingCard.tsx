@@ -215,7 +215,7 @@ const UsageChargeTooltip: React.FC<{ charge: UsageCharge; t: TFunction<'common'>
 	return (
 		<TooltipContent
 			sideOffset={5}
-			className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
+			className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[20rem]'>
 			<div className='space-y-3'>
 				<div className='font-medium border-b border-spacing-1 border-line pb-2 text-base text-content'>
 					{t('pricingCard.volumePricing')}
@@ -325,14 +325,14 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 				{/* Base Price */}
 				<div className='flex flex-col'>
 					<div className='flex items-baseline'>
-						<span className={cn('font-normal text-content', visualModern ? 'text-[28px]' : 'text-4xl')}>
+						<span className={cn('font-normal text-content', visualModern ? 'text-[1.75rem]' : 'text-4xl')}>
 							{config.useCurrencyZeroDisplay ? `${getCurrencySymbol(price.currency || '')}0` : displayAmount}
 						</span>
 						{config.showBillingPeriod && (
 							<span className={cn('ms-2 text-content-muted', visualModern ? 'text-xs' : 'text-sm text3')}>
 								/{formatBillingPeriodForPrice(price.billingPeriod || '')}
 								{config.subtext && (!visualModern || isSetupPreview) && (
-									<span className={cn('ms-1', visualModern ? 'text-[11px] font-semibold text-accent-indigo' : 'font-medium text-lg')}>
+									<span className={cn('ms-1', visualModern ? 'text-[0.6875rem] font-semibold text-accent-indigo' : 'font-medium text-lg')}>
 										{config.subtext}
 									</span>
 								)}
@@ -347,7 +347,7 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 						<div
 							className={cn(
 								'font-medium text-content',
-								visualModern ? 'mb-2 text-[10px] uppercase tracking-wide text-content-subtle' : 'mb-2 text-sm',
+								visualModern ? 'mb-2 text-[0.625rem] uppercase tracking-wide text-content-subtle' : 'mb-2 text-sm',
 							)}>
 							{visualModern ? t('pricingCard.usageSectionModern') : t('pricingCard.usageSectionClassic')}
 						</div>
@@ -357,7 +357,7 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 									key={index}
 									className={cn(
 										'flex items-start justify-between gap-2',
-										visualModern ? 'text-[11px] leading-snug text-content-slate-secondary' : 'gap-3 text-sm text-content-tertiary',
+										visualModern ? 'text-[0.6875rem] leading-snug text-content-slate-secondary' : 'gap-3 text-sm text-content-tertiary',
 									)}>
 									<span className={cn('min-w-0 flex-1', !visualModern && 'leading-snug')}>{charge.meter_name}</span>
 									<div className='flex items-center gap-1.5 shrink-0'>
@@ -444,7 +444,7 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 					{entitlements.length > 0 ? (
 						<>
 							{visualModern && (
-								<p className='mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-content-subtle'>
+								<p className='mb-2.5 text-[0.625rem] font-semibold uppercase tracking-wide text-content-subtle'>
 									{t('pricingCard.includedHeading')}
 								</p>
 							)}
@@ -455,7 +455,7 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 										return (
 											<li key={entitlement.id} className='flex items-center gap-2'>
 												<Icon className={cn('h-3.5 w-3.5 shrink-0', iconClass)} strokeWidth={2} aria-hidden />
-												<span className='min-w-0 flex-1 text-[11px] font-normal leading-snug text-content-slate-secondary'>
+												<span className='min-w-0 flex-1 text-[0.6875rem] font-normal leading-snug text-content-slate-secondary'>
 													{isSetupPreview ? (
 														formatEntitlementPreviewLine(entitlement, t)
 													) : (
@@ -480,7 +480,7 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 															</TooltipTrigger>
 															<TooltipContent
 																sideOffset={5}
-																className='max-w-[200px] rounded-lg bg-surface-inverse px-3 py-1.5 text-xs text-content-inverse'>
+																className='max-w-[12.5rem] rounded-lg bg-surface-inverse px-3 py-1.5 text-xs text-content-inverse'>
 																{entitlement.description}
 															</TooltipContent>
 														</Tooltip>
@@ -491,8 +491,8 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 									}
 									return (
 										<li key={entitlement.id} className='flex items-center gap-3'>
-											<Check className='h-[18px] w-[18px] flex-shrink-0 text-content-tertiary' />
-											<span className='flex-1 text-[15px] font-normal text-content-tertiary'>
+											<Check className='h-[1.125rem] w-[1.125rem] flex-shrink-0 text-content-tertiary' />
+											<span className='flex-1 text-[0.9375rem] font-normal text-content-tertiary'>
 												{formatEntitlementValue({
 													type: entitlement.type,
 													value: entitlement.value,
@@ -511,7 +511,7 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 														</TooltipTrigger>
 														<TooltipContent
 															sideOffset={5}
-															className='max-w-[200px] rounded-lg bg-surface-inverse px-3 py-1.5 text-xs text-content-inverse'>
+															className='max-w-[12.5rem] rounded-lg bg-surface-inverse px-3 py-1.5 text-xs text-content-inverse'>
 															{entitlement.description}
 														</TooltipContent>
 													</Tooltip>
@@ -540,13 +540,15 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 												</TooltipTrigger>
 												<TooltipContent
 													sideOffset={5}
-													className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[280px]'>
+													className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[17.5rem]'>
 													<div className='space-y-2'>
 														{entitlements.slice(VISIBLE_LIMIT).map((ent, i) => {
 															if (visualModern) {
 																const { Icon, iconClass } = getEntitlementVisual(ent.type, ent.name);
 																return (
-																	<div key={i} className='flex items-start gap-2 text-[11px] leading-snug text-content-slate-secondary'>
+																	<div
+																		key={i}
+																		className='flex items-start gap-2 text-[0.6875rem] leading-snug text-content-slate-secondary'>
 																		<Icon className={cn('mt-0.5 h-3.5 w-3.5 shrink-0', iconClass)} strokeWidth={2} aria-hidden />
 																		<span>
 																			{formatEntitlementValue({
@@ -614,14 +616,14 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 
 					{visualModern && creditGrants.length > 0 && (
 						<div className={cn(entitlements.length > 0 || !isSetupPreview ? 'mt-3 border-t border-line-slate-subtle pt-3' : '')}>
-							<p className='mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-content-subtle'>
+							<p className='mb-2.5 text-[0.625rem] font-semibold uppercase tracking-wide text-content-subtle'>
 								{t('pricingCard.creditsHeading')}
 							</p>
 							<ul className='space-y-2.5'>
 								{creditGrants.map((g, i) => (
 									<li key={`${g.name}-${i}`} className='flex items-center gap-2'>
 										<Coins className='h-3.5 w-3.5 shrink-0 text-content-slate-subtle' strokeWidth={2} aria-hidden />
-										<span className='min-w-0 flex-1 text-[11px] font-normal leading-snug text-content-slate-secondary'>
+										<span className='min-w-0 flex-1 text-[0.6875rem] font-normal leading-snug text-content-slate-secondary'>
 											<span className='font-medium text-content-slate-strong'>
 												{t('pricingCard.creditsAmount', { formatted: g.credits.toLocaleString() })}
 											</span>

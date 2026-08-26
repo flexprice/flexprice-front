@@ -31,7 +31,7 @@ const QueryControlTrigger = forwardRef<HTMLButtonElement, Props>(
 				aria-label={label}>
 				<HugeIcon icon={icon} size={16} />
 				{count > 0 && (
-					<span className='pointer-events-none absolute -right-1 -top-1.5 z-10 flex size-4 items-center justify-center rounded-full bg-info text-[10px] leading-3 text-white dark:text-surface-canvas'>
+					<span className='pointer-events-none absolute -right-1 -top-1.5 z-10 flex size-4 items-center justify-center rounded-full bg-info text-[0.625rem] leading-3 text-white dark:text-surface-canvas'>
 						{count > 99 ? t('queryBuilder.filterCountMax') : count}
 					</span>
 				)}

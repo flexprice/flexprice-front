@@ -571,7 +571,7 @@ const SidebarMenuSubButton = React.forwardRef<
 			data-active={isActive}
 			className={cn(
 				// Base styles with proper vertical centering and consistent sizing
-				'flex min-w-0 -translate-x-px items-center justify-start gap-2 overflow-hidden rounded-[6px] ms-2 px-3 text-[14px] font-normal outline-none transition-colors duration-200',
+				'flex min-w-0 -translate-x-px items-center justify-start gap-2 overflow-hidden rounded-[6px] ms-2 px-3 text-[0.875rem] font-normal outline-none transition-colors duration-200',
 				// Interactive states with consistent hover behavior using the same colors as reference UI
 				'hover:bg-surface-muted hover:text-content-zinc-bold',
 				'focus-visible:ring-2 focus-visible:ring-info',
@@ -585,7 +585,7 @@ const SidebarMenuSubButton = React.forwardRef<
 				'[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
 				// Size variants with proper heights
 				size === 'sm' && 'h-8 text-xs',
-				size === 'md' && 'h-10 text-[14px]',
+				size === 'md' && 'h-10 text-[0.875rem]',
 				// Hide when sidebar is collapsed to icon mode
 				'group-data-[collapsible=icon]:hidden',
 				// Cursor pointer for better UX

@@ -65,7 +65,7 @@ const MetadataModal: React.FC<MetadataModalProps> = ({ open, data, onSave, onClo
 			}}
 			title={t('labels.editMetadata')}
 			showCloseButton>
-			<div className='flex flex-col gap-4 min-w-[600px]'>
+			<div className='flex flex-col gap-4 min-w-[37.5rem]'>
 				{localData.map((item, idx) => (
 					<div key={idx} className='flex gap-2 items-start'>
 						<div className='flex-[3] min-w-0'>

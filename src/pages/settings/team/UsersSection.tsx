@@ -351,7 +351,7 @@ function UsersSection() {
 					}
 				/>
 				{isLoading && (
-					<div className='flex min-h-[200px] items-center justify-center'>
+					<div className='flex min-h-[12.5rem] items-center justify-center'>
 						<Loader />
 					</div>
 				)}
@@ -393,7 +393,7 @@ function UsersSection() {
 				description={t('members.addMember.description')}
 				titleClassName='text-lg font-semibold text-content-zinc-bold'
 				descriptionClassName='text-sm text-content-zinc-muted'
-				className='rounded-xl border border-line-subtle shadow-lg sm:max-w-[560px]'>
+				className='rounded-xl border border-line-subtle shadow-lg sm:max-w-[35rem]'>
 				<div className='mt-3 space-y-3'>
 					{addError && (
 						<div className='flex w-full items-center gap-2.5 rounded-md border border-danger-line bg-danger-muted px-3 py-2' role='alert'>
@@ -457,14 +457,14 @@ function UsersSection() {
 				onOpenChange={(open) => (open ? setPasswordDialogOpen(true) : handleClosePasswordDialog())}
 				title={t('members.credentials.title')}
 				description={t('members.credentials.description')}
-				className='w-full max-w-[480px] rounded-xl border border-line-subtle shadow-lg'>
+				className='w-full max-w-[30rem] rounded-xl border border-line-subtle shadow-lg'>
 				<div className='mt-3 space-y-4'>
 					{addedUserEmail && (
 						<div>
 							<span className='text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
 								{t('members.addMember.emailLabel')}
 							</span>
-							<div className='mt-1 flex min-h-[40px] items-center gap-2 rounded-md border border-line bg-surface-faint px-3 py-2'>
+							<div className='mt-1 flex min-h-[2.5rem] items-center gap-2 rounded-md border border-line bg-surface-faint px-3 py-2'>
 								<Mail className='h-4 w-4 flex-shrink-0 text-content-zinc-subtle' />
 								<span className='min-w-0 flex-1 truncate text-sm text-content-zinc-bold'>{addedUserEmail}</span>
 								<button
@@ -488,14 +488,14 @@ function UsersSection() {
 
 					<div>
 						<span className='text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>{t('members.credentials.password')}</span>
-						<div className='relative mt-1 flex min-h-[40px] items-center rounded-md border border-line bg-surface-faint px-3 py-2'>
+						<div className='relative mt-1 flex min-h-[2.5rem] items-center rounded-md border border-line bg-surface-faint px-3 py-2'>
 							<Lock className='h-4 w-4 flex-shrink-0 text-content-zinc-subtle' />
 							<Input
 								id='temp-password'
 								readOnly
 								type={showPassword ? 'text' : 'password'}
 								value={oneTimePassword ?? ''}
-								className='min-h-[24px] flex-1 border-0 bg-transparent py-0 pl-2 pr-24 font-mono text-sm text-content-zinc-bold focus-visible:ring-0'
+								className='min-h-[1.5rem] flex-1 border-0 bg-transparent py-0 pl-2 pr-24 font-mono text-sm text-content-zinc-bold focus-visible:ring-0'
 							/>
 							<div className='absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-0.5'>
 								<button

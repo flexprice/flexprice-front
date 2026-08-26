@@ -26,7 +26,7 @@ const EN_USAGE_WIDGETS = {
 	collapseAllAria: 'Collapse all',
 	unknownRow: 'Unknown',
 	cellEmDash: '—',
-	cellEmpty: '--',
+	cellEmpty: '—',
 };
 
 export const useUsageT = createBundledT('common', { usageWidgets: EN_USAGE_WIDGETS }).useBoundT;

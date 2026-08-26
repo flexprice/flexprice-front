@@ -10,7 +10,7 @@ export const typography = {
 	// Card and Section Headers
 	'card-title': 'text-base font-semibold text-content-zinc mb-4',
 	'section-title': 'text-base font-semibold text-content-zinc',
-	'form-title': 'text-[20px] font-bold text-content-zinc',
+	'form-title': 'text-[1.25rem] font-bold text-content-zinc',
 	'subsection-title': 'text-sm font-medium text-content-zinc',
 
 	// Body Text
@@ -41,7 +41,7 @@ export const typography = {
 	breadcrumb: 'text-sm text-content-zinc-tertiary',
 
 	// card styles
-	'card-header': 'text-[20px] font-medium text-content-zinc',
+	'card-header': 'text-[1.25rem] font-medium text-content-zinc',
 	'card-subtitle': 'text-sm text-content-zinc-muted',
 
 	// modal styles

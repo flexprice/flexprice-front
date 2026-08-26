@@ -219,7 +219,7 @@ const OverrideTooltip: FC<{
 				</TooltipTrigger>
 				<TooltipContent
 					sideOffset={5}
-					className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[300px]'>
+					className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[18.75rem]'>
 					<div className='space-y-2'>
 						<div className='font-medium text-content'>Price Override Applied</div>
 						{changes.map((change, index) => {
@@ -286,7 +286,7 @@ const TieredPricingTooltip: FC<{
 				</TooltipTrigger>
 				<TooltipContent
 					sideOffset={5}
-					className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
+					className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[20rem]'>
 					<div className='space-y-3'>
 						<div className='font-medium border-b border-spacing-1 border-line pb-2 text-base text-content'>
 							{t('catalog:chargeValue.tierPricingTitle', { mode: modeLabel })}

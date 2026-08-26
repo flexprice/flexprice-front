@@ -56,8 +56,8 @@ const CouponAssociation: FC<Props> = ({ data, onChange, currency, disabled }) =>
 				</div>
 			),
 		},
-		{ title: 'Type', render: (row) => row.type || '--' },
-		{ title: 'Cadence', render: (row) => row.cadence || '--' },
+		{ title: 'Type', render: (row) => row.type || '—' },
+		{ title: 'Cadence', render: (row) => row.cadence || '—' },
 		{ title: 'Currency', render: (row) => row.currency.toUpperCase() },
 		{
 			fieldVariant: 'interactive',

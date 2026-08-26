@@ -78,11 +78,11 @@ const SelectGroup: FC<Props> = ({
 	);
 
 	if (isLoading && !groupsData) {
-		return <div className={cn('min-w-[200px]', className)}></div>;
+		return <div className={cn('min-w-[12.5rem]', className)}></div>;
 	}
 
 	if (isError && !groupsData) {
-		return <div className={cn('min-w-[200px]', className)}></div>;
+		return <div className={cn('min-w-[12.5rem]', className)}></div>;
 	}
 
 	// Hide component if hiddenIfEmpty is true and no groups are available
@@ -91,7 +91,7 @@ const SelectGroup: FC<Props> = ({
 	}
 
 	return (
-		<div className={cn('min-w-[200px]', className)}>
+		<div className={cn('min-w-[12.5rem]', className)}>
 			<SearchableSelect
 				error={error}
 				value={value || ''}

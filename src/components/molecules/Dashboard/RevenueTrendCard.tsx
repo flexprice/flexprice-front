@@ -83,14 +83,14 @@ export const RevenueTrendCard: React.FC<RevenueTrendCardProps> = ({ revenueData,
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface-inverse-zinc text-xs text-content-inverse px-3 py-1.5 rounded-lg max-w-[250px]'>
+									className='bg-surface-inverse-zinc text-xs text-content-inverse px-3 py-1.5 rounded-lg max-w-[15.625rem]'>
 									{t('dashboardHome.revenueTrendTooltip')}
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
 					</div>
 					{currencySelectOptions.length > 0 && (
-						<div className='w-full sm:w-auto min-w-[120px]'>
+						<div className='w-full sm:w-auto min-w-[7.5rem]'>
 							<Select
 								value={selectedCurrency}
 								options={currencySelectOptions}

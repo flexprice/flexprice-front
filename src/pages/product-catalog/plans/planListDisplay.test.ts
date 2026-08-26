@@ -3,7 +3,7 @@ import { ENTITY_STATUS, Plan } from '@/models';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { getPlanBillingPeriodLabel, getPlanCurrencyLabel, getPlanListStatus } from './planListDisplay';
 
-const empty = '--';
+const empty = '—';
 
 const plan = (overrides: Partial<Plan> = {}): Plan =>
 	({

@@ -120,7 +120,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 
 			return (
 				<div className='flex items-center gap-2'>
-					<span className='max-w-[240px] truncate' title={valueText}>
+					<span className='max-w-[15rem] truncate' title={valueText}>
 						{valueText}
 					</span>
 					{hasChangedValue && (
@@ -131,7 +131,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>
@@ -153,7 +153,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 
 			return (
 				<div className='flex items-center gap-2'>
-					<span className='max-w-[240px] truncate' title={value}>
+					<span className='max-w-[15rem] truncate' title={value}>
 						{value}
 					</span>
 					{hasOverride && value !== originalValue && (
@@ -164,7 +164,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>
@@ -195,7 +195,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>
@@ -219,7 +219,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 				<div className='flex items-center gap-2'>
 					<button
 						type='button'
-						className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-[240px]'
+						className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-[15rem]'
 						style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-all' }}
 						onClick={() => setConfigSheet({ open: true, name: entitlement.feature?.name ?? '', value: cv ?? null })}>
 						{compact}
@@ -232,7 +232,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>{t('entitlements.overridesTable.tooltipConfig')}</div>
@@ -253,7 +253,7 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 			render: (row) => {
 				const name = row.feature?.name || t('entitlements.overridesTable.unknownFeature');
 				return (
-					<span className='block max-w-[240px] truncate' title={name}>
+					<span className='block max-w-[15rem] truncate' title={name}>
 						{name}
 					</span>
 				);

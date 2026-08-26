@@ -10,8 +10,8 @@ import { RouteNames } from '@/core/routes/Routes';
 import { useTranslation } from 'react-i18next';
 
 const getPlanDisplayName = (invoice: InvoiceListItem): string => {
-	if (invoice.invoice_type !== INVOICE_TYPE.SUBSCRIPTION) return '--';
-	return invoice.line_items?.find((item) => item.plan_display_name)?.plan_display_name ?? '--';
+	if (invoice.invoice_type !== INVOICE_TYPE.SUBSCRIPTION) return '—';
+	return invoice.line_items?.find((item) => item.plan_display_name)?.plan_display_name ?? '—';
 };
 
 import InvoiceTableMenu from './InvoiceTableMenu';
@@ -40,7 +40,7 @@ const CustomerInvoiceTable: FC<Props> = ({ data, onRowClick }) => {
 				title: t('invoices.list.sort.invoiceNumber'),
 				render: (row) =>
 					row.invoice_status?.toUpperCase() === INVOICE_STATUS.DRAFT ? (
-						<span className='text-content-subtle text-[13px]'>{t('invoices.list.toBeGenerated')}</span>
+						<span className='text-content-subtle text-[0.8125rem]'>{t('invoices.list.toBeGenerated')}</span>
 					) : (
 						<>{row.invoice_number || naLabel}</>
 					),

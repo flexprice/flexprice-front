@@ -76,7 +76,7 @@ const WalletAlertSettingsSection = () => {
 				/>
 			</div>
 			{isLoading ? (
-				<div className='flex min-h-[200px] items-center justify-center'>
+				<div className='flex min-h-[12.5rem] items-center justify-center'>
 					<Loader />
 				</div>
 			) : (

@@ -49,7 +49,7 @@ const CommandPaletteDialog = ({ children, value, onValueChange, filter, open, ..
 					role='dialog'
 					aria-modal='true'
 					className={cn(
-						'fixed left-[50%] top-[18%] z-50 w-full max-w-[720px] translate-x-[-50%]',
+						'fixed left-[50%] top-[18%] z-50 w-full max-w-[45rem] translate-x-[-50%]',
 						'bg-surface dark:bg-background/90 backdrop-blur-xl',
 						'shadow-[0_0_0_1px_rgba(0,0,0,0.04),0_4px_6px_rgba(0,0,0,0.04),0_16px_32px_rgba(0,0,0,0.08)]',
 						'overflow-hidden p-0 rounded-[var(--fp-radius-shell)] origin-center',
@@ -60,7 +60,7 @@ const CommandPaletteDialog = ({ children, value, onValueChange, filter, open, ..
 						onValueChange={onValueChange}
 						filter={filter}
 						className={
-							'[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2.5 [&_[cmdk-group-heading]]:pb-1.5 [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:first-child]:pt-2.5 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-[18px] [&_[cmdk-input-wrapper]_svg]:w-[18px] [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:!px-3 [&_[cmdk-item]]:!py-3'
+							'[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2.5 [&_[cmdk-group-heading]]:pb-1.5 [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:first-child]:pt-2.5 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-[1.125rem] [&_[cmdk-input-wrapper]_svg]:w-[1.125rem] [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:!px-3 [&_[cmdk-item]]:!py-3'
 						}>
 						{children}
 					</Command>
@@ -109,7 +109,7 @@ const CommandGroup = React.forwardRef<
 	<CommandPrimitive.Group
 		ref={ref}
 		className={cn(
-			'overflow-hidden px-2 py-0 text-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-normal [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:text-muted-foreground/80',
+			'overflow-hidden px-2 py-0 text-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[0.625rem] [&_[cmdk-group-heading]]:font-normal [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider [&_[cmdk-group-heading]]:text-muted-foreground/80',
 			className,
 		)}
 		{...props}
@@ -126,7 +126,7 @@ const CommandItem = React.forwardRef<
 		className={cn(
 			'group relative flex cursor-default gap-2 select-none items-center rounded-md !px-3 !py-3 text-sm font-normal outline-none transition-colors',
 			'data-[disabled=true]:pointer-events-none data-[selected=true]:bg-surface-scrim/[0.03] dark:data-[selected=true]:bg-surface/[0.08] data-[selected=true]:text-foreground data-[disabled=true]:opacity-50',
-			'[&_svg]:pointer-events-none [&_svg]:size-[18px] [&_svg]:shrink-0 [&_svg]:text-muted-foreground/80 [&_span:last-child_svg]:!h-4 [&_span:last-child_svg]:!w-4',
+			'[&_svg]:pointer-events-none [&_svg]:size-[1.125rem] [&_svg]:shrink-0 [&_svg]:text-muted-foreground/80 [&_span:last-child_svg]:!h-4 [&_span:last-child_svg]:!w-4',
 			className,
 		)}
 		{...props}>

@@ -296,7 +296,7 @@ const CouponDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQue
 							setErrors({ ...errors, metadata: t('coupons.drawer.invalidMetadata') });
 						}
 					}}
-					className='min-h-[100px]'
+					className='min-h-[6.25rem]'
 					placeholder={t('shared.metadataPlaceholder')}
 					label={t('shared.metadataOptional')}
 					description={t('shared.metadataJsonAdditional')}

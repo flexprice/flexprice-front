@@ -175,7 +175,7 @@ const CreateCustomerWalletModal: FC<Props> = ({ customerId, onSuccess = () => {}
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className='bg-surface sm:max-w-[600px] max-h-[80vh] overflow-y-auto'>
+			<DialogContent className='bg-surface sm:max-w-[37.5rem] max-h-[80vh] overflow-y-auto'>
 				<DialogHeader>
 					<DialogTitle>{t('customers:wallet.createTitle')}</DialogTitle>
 					<DialogDescription>{t('customers:wallet.description')}</DialogDescription>

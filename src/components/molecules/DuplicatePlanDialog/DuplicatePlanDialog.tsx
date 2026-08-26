@@ -150,7 +150,7 @@ const DuplicatePlanDialog: FC<DuplicatePlanDialogProps> = ({
 			<Textarea
 				value={description}
 				onChange={(e) => setDescription(e)}
-				className='min-h-[100px]'
+				className='min-h-[6.25rem]'
 				placeholder={t('catalog:shared.enterDescription')}
 				label={t('catalog:features.drawer.descriptionLabel')}
 				description={t('catalog:plans.drawer.purposeDescription')}
@@ -163,7 +163,7 @@ const DuplicatePlanDialog: FC<DuplicatePlanDialogProps> = ({
 					if (errors.metadata) setErrors((prev) => ({ ...prev, metadata: undefined }));
 				}}
 				error={errors.metadata}
-				className='min-h-[100px]'
+				className='min-h-[6.25rem]'
 				placeholder={t('catalog:shared.metadataPlaceholder')}
 				label={t('catalog:shared.metadataOptional')}
 				description={t('catalog:shared.metadataJsonStringsOnly')}

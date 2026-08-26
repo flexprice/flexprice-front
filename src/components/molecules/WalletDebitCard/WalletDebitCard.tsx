@@ -108,7 +108,7 @@ const DebitCard: FC<DebitCardProps> = ({ walletId, currency, conversion_rate = 1
 			onOpenChange={onOpenChange}
 			title={t('wallet.debit.title')}
 			description={t('wallet.debit.description')}
-			className='sm:max-w-[600px]'>
+			className='sm:max-w-[37.5rem]'>
 			<div className='grid gap-4'>
 				<Input
 					variant='formatted-number'

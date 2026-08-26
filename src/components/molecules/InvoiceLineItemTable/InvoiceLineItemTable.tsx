@@ -180,7 +180,7 @@ const InvoiceLineItemTable: FC<Props> = ({
 										</TooltipTrigger>
 										<TooltipContent
 											sideOffset={5}
-											className='bg-surface-inverse text-xs text-content-inverse px-2.5 py-1.5 rounded-[6px] max-w-[200px]'>
+											className='bg-surface-inverse text-xs text-content-inverse px-2.5 py-1.5 rounded-[6px] max-w-[12.5rem]'>
 											{t('invoices.details.lineItemsTable.netPayableTooltip')}
 										</TooltipContent>
 									</Tooltip>

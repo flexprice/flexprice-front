@@ -36,8 +36,8 @@ const OnboardingLandingPanel = () => {
 				style={{ backgroundImage: `url(${sideBgDark})` }}
 			/>
 
-			<div className='relative flex w-full max-w-[560px] flex-col'>
-				<blockquote className='text-[28px] font-normal leading-snug tracking-tight text-zinc-950 dark:text-zinc-50'>
+			<div className='relative flex w-full max-w-[35rem] flex-col'>
+				<blockquote className='text-[1.75rem] font-normal leading-snug tracking-tight text-zinc-950 dark:text-zinc-50'>
 					“{review.testimonial}”
 				</blockquote>
 
@@ -49,7 +49,7 @@ const OnboardingLandingPanel = () => {
 							className='size-12 shrink-0 rounded-full border border-zinc-200/80 object-cover dark:border-zinc-700'
 						/>
 						<div className='min-w-0'>
-							<div className='truncate text-[15px] font-medium text-zinc-950 dark:text-zinc-50'>{review.name}</div>
+							<div className='truncate text-[0.9375rem] font-medium text-zinc-950 dark:text-zinc-50'>{review.name}</div>
 							<div className='truncate text-sm text-zinc-600 dark:text-zinc-400'>
 								{review.designation}
 								{review.companyName ? `, ${review.companyName}` : ''}
@@ -59,7 +59,7 @@ const OnboardingLandingPanel = () => {
 					<img
 						src={review.logoUrl}
 						alt={t('tenantSetup.reviewCompanyLogoAlt', { company: review.companyName })}
-						className={cn('max-h-[22px] w-auto shrink-0 object-contain dark:brightness-0 dark:invert')}
+						className={cn('max-h-[1.375rem] w-auto shrink-0 object-contain dark:brightness-0 dark:invert')}
 					/>
 				</div>
 			</div>

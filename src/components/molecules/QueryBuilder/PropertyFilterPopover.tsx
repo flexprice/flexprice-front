@@ -451,7 +451,7 @@ const PropertyFilterPopover: React.FC<Props> = ({
 										<div className='space-y-3'>
 											{propertyFilters.rows.map((row) => (
 												<div key={row.id} className='flex gap-2 items-end flex-wrap'>
-													<div className='flex-1 min-w-[120px]'>
+													<div className='flex-1 min-w-[7.5rem]'>
 														<Input
 															placeholder={t('queryBuilder.metadataKey')}
 															value={row.key}
@@ -461,7 +461,7 @@ const PropertyFilterPopover: React.FC<Props> = ({
 															className='h-9 text-sm'
 														/>
 													</div>
-													<div className='flex-1 min-w-[120px]'>
+													<div className='flex-1 min-w-[7.5rem]'>
 														<Input
 															placeholder={t('queryBuilder.metadataValue')}
 															value={row.value}

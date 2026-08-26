@@ -127,10 +127,10 @@ const LandingSection: React.FC = () => {
 			    surface, so it has to track which PHOTO is showing — near-black on the pale light shot,
 			    near-white on the dark one. A content token would resolve against a surface that is not
 			    there. */}
-			<h2 className='relative text-[28px] font-normal text-zinc-950 dark:text-zinc-50 mb-[44px] text-center'>
+			<h2 className='relative text-[1.75rem] font-normal text-zinc-950 dark:text-zinc-50 mb-[2.75rem] text-center'>
 				{t('landing.defaultTagline')}
 			</h2>
-			<div className='relative flex h-[340px] w-full items-center justify-center mb-6'>
+			<div className='relative flex h-[21.25rem] w-full items-center justify-center mb-6'>
 				<div ref={scrollRef} className='w-full overflow-x-hidden' style={{ height: 320 }}>
 					<div className='flex gap-x-7 w-max'>
 						{cards.map((card, idx) => (
@@ -159,7 +159,7 @@ const LandingSection: React.FC = () => {
 				<div className='text-center text-black dark:text-zinc-50 font-medium mb-14 text-lg'>{t('landing.trustedBy')}</div>
 				<div className='w-full max-w-3xl grid grid-cols-3 grid-rows-2 gap-y-12 gap-x-10 justify-items-center items-center'>
 					{customerLogos.map((logo) => (
-						<div key={logo.src} className='flex h-10 w-full max-w-[160px] items-center justify-center'>
+						<div key={logo.src} className='flex h-10 w-full max-w-[10rem] items-center justify-center'>
 							{/*
 							 * These are dark-ink logos drawn for a pale background — one is literally named
 							 * "vapidarklogo". The night photo is close to black exactly where this row sits, so

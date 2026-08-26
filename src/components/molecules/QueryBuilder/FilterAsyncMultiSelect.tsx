@@ -161,7 +161,7 @@ const FilterAsyncMultiSelect = <T = any,>({
 			<PopoverContent align='start' className='w-48 p-0 !z-[110]'>
 				<Command shouldFilter={false}>
 					<CommandInput placeholder={searchPlaceholder} value={searchQuery} onValueChange={setSearchQuery} className='h-9' />
-					<CommandList className='max-h-[300px]'>
+					<CommandList className='max-h-[18.75rem]'>
 						{isLoading && searchQuery === '' && (
 							<div className='flex flex-col items-center justify-center py-8'>
 								<Loader2 className='h-5 w-5 animate-spin text-muted-foreground mb-2' />

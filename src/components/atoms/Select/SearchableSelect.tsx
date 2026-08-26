@@ -96,7 +96,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
 				option.disabled && 'select-none cursor-not-allowed',
 			)}>
 			{/* Radio Icon */}
-			<span className='absolute left-2 top-[10px] flex h-4 w-4 justify-center'>
+			<span className='absolute left-2 top-[0.625rem] flex h-4 w-4 justify-center'>
 				{value === option.value ? <Circle className='size-2 text-content-black fill-current' /> : null}
 				<Circle className='size-4 text-content-subtle absolute' />
 			</span>

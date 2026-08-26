@@ -143,7 +143,7 @@ const CommandPalette = () => {
 	const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 	const shortcutHint = isMac ? '⌘K' : 'Ctrl+K';
 	const kbdClass =
-		'inline-flex h-5 min-w-5 items-center justify-center rounded border border-border/70 bg-surface px-1.5 font-sans text-[11px] font-medium text-foreground/70 shadow-sm dark:bg-surface/20';
+		'inline-flex h-5 min-w-5 items-center justify-center rounded border border-border/70 bg-surface px-1.5 font-sans text-[0.6875rem] font-medium text-foreground/70 shadow-sm dark:bg-surface/20';
 
 	return (
 		<CommandPaletteDialog open={open} onOpenChange={handleOpenChange} value={search} onValueChange={setSearch} filter={filter}>
@@ -161,7 +161,7 @@ const CommandPalette = () => {
 								return (
 									<CommandItem key={command.id} value={searchValue} onSelect={() => handleSelect(command)} className='my-0.5 !rounded-xl'>
 										{Icon && <HugeIcon icon={Icon} size={16} className='text-muted-foreground' />}
-										<span className='!text-[13px] text-content-black/70 !font-normal'>{command.label}</span>
+										<span className='!text-[0.8125rem] text-content-black/70 !font-normal'>{command.label}</span>
 									</CommandItem>
 								);
 							})}
@@ -169,7 +169,7 @@ const CommandPalette = () => {
 					);
 				})}
 			</CommandList>
-			<div className='flex items-center justify-between gap-4 border-t border-border/60 bg-muted/40 px-4 py-3.5 text-[12px] text-muted-foreground shadow-[0_-6px_16px_-8px_rgba(0,0,0,0.08)] dark:shadow-[0_-6px_16px_-8px_rgba(0,0,0,0.35)]'>
+			<div className='flex items-center justify-between gap-4 border-t border-border/60 bg-muted/40 px-4 py-3.5 text-[0.75rem] text-muted-foreground shadow-[0_-6px_16px_-8px_rgba(0,0,0,0.08)] dark:shadow-[0_-6px_16px_-8px_rgba(0,0,0,0.35)]'>
 				<span className='sr-only'>{t('commandPalette.keyboardShortcutsSrOnly')}</span>
 				<div className='flex flex-wrap items-center gap-x-3 gap-y-1.5'>
 					<span className='inline-flex items-center gap-1.5'>

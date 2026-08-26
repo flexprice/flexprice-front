@@ -36,14 +36,14 @@ const ErrorState = ({ icon, title, description, actionLabel, onAction }: ErrorSt
 					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#FEE2E2]/30'>
 						<div className='text-zinc-700'>{icon}</div>
 					</div>
-					<CardTitle className='text-[20px] font-medium text-zinc-950 mb-4 leading-normal'>{title}</CardTitle>
+					<CardTitle className='text-[1.25rem] font-medium text-zinc-950 mb-4 leading-normal'>{title}</CardTitle>
 				</CardHeader>
 				<CardContent className='text-center px-8 pb-10'>
 					<p className='text-base text-zinc-600 mb-8 leading-normal max-w-md mx-auto'>{description}</p>
 					{actionLabel && onAction && (
 						<Button
 							onClick={onAction}
-							className='w-full sm:w-auto min-w-[140px] transition-all duration-200 hover:opacity-90'
+							className='w-full sm:w-auto min-w-[8.75rem] transition-all duration-200 hover:opacity-90'
 							variant='outline'>
 							<RefreshCw className='w-4 h-4 mr-2' />
 							{actionLabel}

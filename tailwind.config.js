@@ -5,19 +5,23 @@ export default {
 	content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
 	theme: {
 		extend: {
+			/*
+			 * Expressed in rem so the whole ramp tracks the 90% root font-size set in
+			 * index.css. Nominal values are unchanged (1rem = 16px); what shifts is the root.
+			 */
 			fontSize: {
-				xs: '12px',
-				sm: '14px',
+				xs: '0.75rem',
+				sm: '0.875rem',
 				/* Semantic ramp mirrored from ferry-front apps/web/src/index.css @theme. Additive:
 				   ferry does not override --text-sm, so its tables run at Tailwind's default 14px
 				   and `body` (13px) is for chrome, not table cells. */
-				label: ['12px', { lineHeight: '12px' }],
-				'table-header': ['12px', { lineHeight: '1.25' }],
-				body: ['13px', { lineHeight: '1.25' }],
-				caption: ['14px', { lineHeight: '1.3' }],
-				stat: ['16px', { lineHeight: '1.25' }],
-				subheading: ['16px', { lineHeight: '1.35' }],
-				heading: ['18px', { lineHeight: '1.25' }],
+				label: ['0.75rem', { lineHeight: '0.75rem' }],
+				'table-header': ['0.75rem', { lineHeight: '1.25' }],
+				body: ['0.8125rem', { lineHeight: '1.25' }],
+				caption: ['0.875rem', { lineHeight: '1.3' }],
+				stat: ['1rem', { lineHeight: '1.25' }],
+				subheading: ['1rem', { lineHeight: '1.35' }],
+				heading: ['1.125rem', { lineHeight: '1.25' }],
 			},
 			fontFamily: {
 				sans: ['var(--font-sans)'],

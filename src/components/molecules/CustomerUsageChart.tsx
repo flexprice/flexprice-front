@@ -214,7 +214,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({ data, ti
 					<CardTitle>{title}</CardTitle>
 					<CardDescription>{t('customerCharts.usageNoDataDescription')}</CardDescription>
 				</CardHeader>
-				<CardContent className='flex items-center justify-center h-[250px]'>
+				<CardContent className='flex items-center justify-center h-[15.625rem]'>
 					<p className='text-muted-foreground'>{t('customerCharts.usageNoDataBody')}</p>
 				</CardContent>
 			</Card>

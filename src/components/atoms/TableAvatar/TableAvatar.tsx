@@ -2,8 +2,8 @@ import { cn } from '@/lib/utils';
 import { FC } from 'react';
 
 const AVATAR_SIZE = {
-	sm: 'size-6 text-[10px] leading-3',
-	md: 'size-8 text-[11px] leading-3',
+	sm: 'size-6 text-[0.625rem] leading-3',
+	md: 'size-8 text-[0.6875rem] leading-3',
 } as const;
 
 export function getTableAvatarInitials(name: string): string {

@@ -64,7 +64,7 @@ const CreditNoteTable: FC<Props> = ({ data, footer }) => {
 		{
 			title: t('creditNotes.table.invoice'),
 			render: (row: CreditNote) => {
-				if (!row.invoice_id) return '--';
+				if (!row.invoice_id) return '—';
 
 				return (
 					<RedirectCell redirectUrl={`${RouteNames.invoices}/${row.invoice_id}`}>
@@ -76,7 +76,7 @@ const CreditNoteTable: FC<Props> = ({ data, footer }) => {
 		{
 			title: t('creditNotes.table.customer'),
 			render: (row: CreditNote) => {
-				if (!row.customer?.id) return '--';
+				if (!row.customer?.id) return '—';
 
 				return (
 					<RedirectCell redirectUrl={`${RouteNames.customers}/${row.customer?.id}`}>

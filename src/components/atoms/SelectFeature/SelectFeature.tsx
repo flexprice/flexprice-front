@@ -107,11 +107,11 @@ const SelectFeature: FC<Props> = ({
 
 	// Handle loading state for initial feature fetch
 	if (value && isLoadingSelected) {
-		return <div className={cn('min-w-[200px]')}></div>;
+		return <div className={cn('min-w-[12.5rem]')}></div>;
 	}
 
 	return (
-		<div className={cn('min-w-[200px]')}>
+		<div className={cn('min-w-[12.5rem]')}>
 			<AsyncSearchableSelect<Feature>
 				search={{
 					searchFn: searchFeatures,

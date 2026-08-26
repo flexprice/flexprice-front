@@ -41,7 +41,7 @@ const OnboardingTenant = () => {
 		<SplitIslandLayout
 			left={
 				<div className='flex min-h-0 flex-1 flex-col'>
-					<div className='flex flex-1 items-center justify-center overflow-y-auto pt-[10px]'>
+					<div className='flex flex-1 items-center justify-center overflow-y-auto pt-[0.625rem]'>
 						<div className='mx-auto flex w-[88%] max-w-xl flex-col justify-center py-10 sm:w-[70%] lg:w-[55%] lg:py-0'>{formContent}</div>
 					</div>
 				</div>

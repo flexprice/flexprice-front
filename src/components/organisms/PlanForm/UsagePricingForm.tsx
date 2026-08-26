@@ -617,7 +617,7 @@ const UsagePricingForm: FC<Props> = ({
 								}
 							}}
 						/>
-						<div className='h-[50px] items-center flex gap-2'>
+						<div className='h-[3.125rem] items-center flex gap-2'>
 							<p className='text-content-zinc-bold font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
 						</div>
 						<Input

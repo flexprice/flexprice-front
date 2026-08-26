@@ -248,7 +248,7 @@ export const JsonEditor: FC<JsonEditorProps> = ({ value, onChange }) => {
 				spellCheck={false}
 				autoCorrect='off'
 				autoCapitalize='off'
-				className='block w-full outline-none overflow-auto min-h-[320px] max-h-[500px] p-4 font-fira-code text-sm text-[#d6deeb]'
+				className='block w-full outline-none overflow-auto min-h-[20rem] max-h-[31.25rem] p-4 font-fira-code text-sm text-[#d6deeb]'
 				style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', lineHeight: '20px', caretColor: '#c5e4fd', tabSize: 2 }}
 			/>
 

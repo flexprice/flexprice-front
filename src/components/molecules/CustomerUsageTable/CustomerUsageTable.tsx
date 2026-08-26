@@ -64,7 +64,9 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 				case FEATURE_TYPE.CONFIG: {
 					const configVal = usageRow.sources?.[0]?.config_value;
 					if (!configVal || Object.keys(configVal).length === 0) return t('usageTable.fallback');
-					return <span className='font-mono text-xs text-muted-foreground truncate max-w-[200px] block'>{JSON.stringify(configVal)}</span>;
+					return (
+						<span className='font-mono text-xs text-muted-foreground truncate max-w-[12.5rem] block'>{JSON.stringify(configVal)}</span>
+					);
 				}
 				default:
 					return t('usageTable.fallback');
@@ -172,7 +174,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 									usage: formatAmount(usage.toString()),
 								})}
 								value={0}
-								className='h-[6px]'
+								className='h-[0.375rem]'
 								indicatorColor='bg-info'
 								backgroundColor='bg-info-line'
 							/>
@@ -189,7 +191,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 						<Progress
 							label={`${formatAmount(usage.toString())} / ${formatAmount(limit.toString())}`}
 							value={value}
-							className='h-[6px]'
+							className='h-[0.375rem]'
 							indicatorColor={indicatorColor}
 							backgroundColor={backgroundColor}
 						/>

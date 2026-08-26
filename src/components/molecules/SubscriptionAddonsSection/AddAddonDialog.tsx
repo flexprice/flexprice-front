@@ -301,7 +301,7 @@ const AddAddonDialog: React.FC<Props> = ({ isOpen, onOpenChange, subscriptionId,
 			showCloseButton={false}
 			onOpenChange={handleDialogOpenChange}
 			title={t('common:actions.add')}
-			className='sm:max-w-[900px]'>
+			className='sm:max-w-[56.25rem]'>
 			<div className='grid gap-4 mt-3'>
 				<div className='space-y-2'>
 					<Select

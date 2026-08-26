@@ -56,17 +56,19 @@ export function getFeatureTypeTone(type: string): StatusChipTone {
 }
 
 /**
- * White Linear-style pill. The coloured dot carries meaning; the label stays primary.
- * Dot size is `--fp-chip-dot` so list and inner-table pills stay in lockstep.
+ * Status indicator: a small coloured dot plus a muted label — no pill, no border, no fill.
+ * The dot carries the meaning; the label stays quiet so the row's primary cell keeps the
+ * visual weight. Dot size is `--fp-chip-dot`, deliberately still px: at 6px it is an icon,
+ * not type, and should not ride the 90% root downscale.
  */
 const StatusChip: FC<StatusChipProps> = ({ tone, status, label, className }) => {
 	const resolvedTone = tone ?? (status ? STATUS_TONE[status.toLowerCase()] : undefined) ?? 'neutral';
 	const resolvedLabel = label ?? status ?? '';
 
 	return (
-		<span className={cn('inline-flex max-w-full shrink-0 items-center gap-2 rounded-full bg-surface py-1.5 pe-3 ps-2.5', className)}>
+		<span className={cn('inline-flex max-w-full shrink-0 items-center gap-1.5', className)}>
 			<span className={cn('size-[var(--fp-chip-dot)] shrink-0 rounded-full', TONE_DOT[resolvedTone])} aria-hidden />
-			<span className='truncate text-[13px] font-medium leading-[18px] text-content-zinc-bold'>{resolvedLabel}</span>
+			<span className='truncate text-body font-normal text-content-secondary'>{resolvedLabel}</span>
 		</span>
 	);
 };

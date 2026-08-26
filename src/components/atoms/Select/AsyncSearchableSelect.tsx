@@ -232,7 +232,7 @@ const AsyncSearchableSelect = <T = any,>({
 					option.disabled && 'select-none cursor-not-allowed',
 				)}>
 				{/* Radio Icon */}
-				<span className='absolute left-2 top-[10px] flex h-4 w-4 justify-center'>
+				<span className='absolute left-2 top-[0.625rem] flex h-4 w-4 justify-center'>
 					{isSelected ? <Circle className='size-2 text-content-black fill-current' /> : null}
 					<Circle className='size-4 text-content-subtle absolute' />
 				</span>
@@ -327,7 +327,7 @@ const AsyncSearchableSelect = <T = any,>({
 					<Command shouldFilter={false}>
 						<CommandInput placeholder={searchPlaceholder} value={searchQuery} onValueChange={setSearchQuery} className='h-9' />
 						<CommandList
-							className='max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
+							className='max-h-[12.5rem] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100'
 							onWheel={(e) => e.stopPropagation()}
 							onScroll={(e) => e.stopPropagation()}>
 							{isLoading && (

@@ -216,14 +216,14 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 					}
 					setState((prev) => ({ ...prev, isCancelModalOpen: open }));
 				}}
-				className='card bg-surface w-[560px] max-w-[90vw]'>
+				className='card bg-surface w-[35rem] max-w-[90vw]'>
 				<div className='space-y-4'>
 					<FormHeader
 						title={t('customers:organisms.subscriptionAction.cancelTitle')}
 						variant='sub-header'
 						subtitle={t('customers:organisms.subscriptionAction.cancelSubtitle')}
 						titleClassName='!mb-1'
-						subtitleClassName='!text-sm !max-w-[440px] !leading-6'
+						subtitleClassName='!text-sm !max-w-[27.5rem] !leading-6'
 					/>
 					<div className='space-y-4'>
 						<Select
@@ -319,7 +319,7 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			<Modal
 				isOpen={state.isActivateModalOpen}
 				onOpenChange={(open) => setState((prev) => ({ ...prev, isActivateModalOpen: open }))}
-				className='bg-surface rounded-lg p-6 w-[560px] max-w-[90vw]'>
+				className='bg-surface rounded-lg p-6 w-[35rem] max-w-[90vw]'>
 				<div className=''>
 					<FormHeader
 						title={t('customers:organisms.subscriptionAction.activateTitle')}

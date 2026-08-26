@@ -38,7 +38,7 @@ export const formatInvoiceCadence = (cadence: string): string => {
 		case INVOICE_CADENCE.ARREAR:
 			return 'Arrear';
 		default:
-			return '--';
+			return '—';
 	}
 };
 

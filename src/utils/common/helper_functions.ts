@@ -33,7 +33,7 @@ export const formatBillingModel = (billingModel: string) => {
 		case BILLING_MODEL.TIERED:
 			return 'Tiered';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
@@ -59,7 +59,7 @@ export const formatBillingPeriodForPrice = (billingPeriod: string) => {
 		case BILLING_PERIOD.ONETIME:
 			return 'one-time';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
@@ -85,19 +85,19 @@ export const formatBillingPeriodForDisplay = (billingPeriod: string) => {
 		case BILLING_PERIOD.ONETIME:
 			return 'One-time';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
 export const getPriceTypeLabel = (type: string | PRICE_TYPE | undefined): string => {
-	if (type == null || type === '') return '--';
+	if (type == null || type === '') return '—';
 	switch (String(type).toUpperCase()) {
 		case PRICE_TYPE.FIXED:
 			return 'Fixed charge';
 		case PRICE_TYPE.USAGE:
 			return 'Usage Based';
 		default:
-			return '--';
+			return '—';
 	}
 };
 

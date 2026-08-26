@@ -24,7 +24,7 @@ const ContactUsDialog: React.FC<ContactUsDialogProps> = ({ isOpen, onOpenChange,
 	const dialogDescription = description ?? t('contactUs.defaultDescription');
 
 	return (
-		<Dialog isOpen={isOpen} onOpenChange={onOpenChange} title={dialogTitle} className='max-w-[550px]' description={dialogDescription}>
+		<Dialog isOpen={isOpen} onOpenChange={onOpenChange} title={dialogTitle} className='max-w-[34.375rem]' description={dialogDescription}>
 			<div className='flex gap-8 justify-center items-center px-4 pt-2'>
 				<button
 					type='button'

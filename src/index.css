@@ -84,9 +84,9 @@
 		--fp-radius-md: 6px;
 		--fp-radius-lg: 6px;
 		--fp-radius-shell: 12px;
-		--fp-chip-dot: 8px;
-		--fp-shell-inset: 12px;
-		--fp-page-pad-top: 28px;
+		--fp-chip-dot: 6px;
+		--fp-shell-inset: 0.75rem;
+		--fp-page-pad-top: 1.75rem;
 		--fp-shell-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 2px 6px rgb(15 23 42 / 0.03);
 		--fp-shell-scrollbar: 161 161 170; /* #a1a1aa — island overlay thumb */
 		/*
@@ -100,13 +100,13 @@
 		 * Horizontal padding drops 18 -> 12 (ferry `px-3`).
 		 * Control height follows ferry Button `default` / Input, both `h-9` = 36px.
 		 */
-		--fp-table-header-height: 38px;
-		--fp-table-row-height: 48px;
-		--fp-table-pager-height: 48px;
-		--fp-table-cell-x: 12px;
-		--fp-table-header-pad-y: 10px;
-		--fp-table-cell-pad-y: 14px;
-		--fp-control-height: 36px;
+		--fp-table-header-height: 2.375rem;
+		--fp-table-row-height: 3rem;
+		--fp-table-pager-height: 3rem;
+		--fp-table-cell-x: 0.75rem;
+		--fp-table-header-pad-y: 0.625rem;
+		--fp-table-cell-pad-y: 0.875rem;
+		--fp-control-height: 2.25rem;
 		--fp-avatar-1: 99 102 241; /* #6366f1 */
 		--fp-avatar-2: 139 92 246; /* #8b5cf6 */
 		--fp-avatar-3: 16 185 129; /* #10b981 */
@@ -684,6 +684,16 @@
 
 html {
 	font-family: var(--font-sans);
+	/*
+	 * Global 10% downscale. The UI at 100% browser zoom should read the way it did at 90%,
+	 * so every rem-denominated value — Tailwind's spacing scale, the fontSize ramp, and the
+	 * `--fp-*` metric tokens — is rebased through the root rather than each being retuned.
+	 * 90% of the 16px default = 14.4px.
+	 *
+	 * Radii and 1-2px hairlines deliberately stay in px: the shell curve was matched to the
+	 * Figma deck, and a hairline must stay a hairline rather than becoming 0.9px.
+	 */
+	font-size: 90%;
 }
 
 @layer base {

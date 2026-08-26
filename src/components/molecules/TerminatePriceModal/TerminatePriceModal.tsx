@@ -45,7 +45,7 @@ const TerminatePriceModal: FC<TerminatePriceModalProps> = ({ planId: _planId, pr
 	};
 
 	return (
-		<DialogContent className='bg-surface sm:max-w-[600px]'>
+		<DialogContent className='bg-surface sm:max-w-[37.5rem]'>
 			<DialogHeader>
 				<DialogTitle>{t('termination.price.title')}</DialogTitle>
 			</DialogHeader>

@@ -135,7 +135,7 @@ const DashboardPage = () => {
 				</div>
 			</CardHeader>
 			<CardContent className='pt-0'>
-				<Skeleton className='h-[300px] w-full' />
+				<Skeleton className='h-[18.75rem] w-full' />
 			</CardContent>
 		</Card>
 	);

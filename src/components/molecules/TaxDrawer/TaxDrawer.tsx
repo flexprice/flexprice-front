@@ -227,7 +227,7 @@ const TaxDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQueryK
 					onChange={(e) => {
 						setFormData({ ...formData, description: e });
 					}}
-					className='min-h-[100px]'
+					className='min-h-[6.25rem]'
 					placeholder={t('taxes.drawer.descriptionPlaceholder')}
 					label={t('taxes.drawer.descriptionLabel')}
 					description={t('taxes.drawer.descriptionHint')}

@@ -124,7 +124,7 @@ const AddonDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQuer
 				onChange={(e) => {
 					setFormData({ ...formData, description: e });
 				}}
-				className='min-h-[100px]'
+				className='min-h-[6.25rem]'
 				placeholder={t('shared.enterDescription')}
 				label={t('shared.description')}
 				description={t('addons.drawer.purposeDescription')}

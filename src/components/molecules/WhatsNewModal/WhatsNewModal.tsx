@@ -54,15 +54,15 @@ const WhatsNewModal = () => {
 			overlayClassName='bg-surface-scrim/30 backdrop-blur-[3px]'>
 			<div className='flex items-stretch gap-5 overflow-hidden rounded-[var(--fp-radius-shell)] border border-line-zinc-strong bg-surface p-3 shadow-[0_16px_50px_rgb(15_23_42/0.18)] dark:shadow-[0_16px_50px_rgb(0_0_0/0.5)]'>
 				<div
-					className='relative w-[45%] min-h-[360px] shrink-0 overflow-hidden rounded-[var(--fp-radius-lg)] border border-line-hairline'
+					className='relative w-[45%] min-h-[22.5rem] shrink-0 overflow-hidden rounded-[var(--fp-radius-lg)] border border-line-hairline'
 					data-testid='whats-new-photo-island'>
 					<img src={leftModalImage} alt='' className='absolute inset-0 size-full object-cover object-left-top dark:hidden' />
 					<img src={leftModalImageDark} alt='' className='absolute inset-0 hidden size-full object-cover object-left-top dark:block' />
 				</div>
 				<div className='flex min-w-0 flex-1 flex-col justify-center py-8 ps-5 pe-10'>
 					<div className='flex flex-col gap-1.5'>
-						<h2 className='text-[22px] font-medium leading-snug text-content'>{t('whatsNew.title')}</h2>
-						<p className='text-[15px] leading-relaxed text-content-muted'>{t('whatsNew.subtitle')}</p>
+						<h2 className='text-[1.375rem] font-medium leading-snug text-content'>{t('whatsNew.title')}</h2>
+						<p className='text-[0.9375rem] leading-relaxed text-content-muted'>{t('whatsNew.subtitle')}</p>
 					</div>
 					<ul className='mt-6 flex flex-col gap-5'>
 						{HIGHLIGHTS.map((item) => (

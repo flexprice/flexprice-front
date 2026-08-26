@@ -48,7 +48,7 @@ const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit,
 						className='p-1 hover:bg-surface-shell rounded-md'>
 						<Pencil size={16} />
 					</button>
-					<div className='border-r h-[16px] border-line-zinc' />
+					<div className='border-r h-[1rem] border-line-zinc' />
 					<button onClick={() => onDelete?.(index)} className='p-1 hover:bg-surface-shell rounded-md text-danger-bright'>
 						<Trash2 size={16} />
 					</button>

@@ -26,7 +26,7 @@ const MetricCards = ({ metrics: rawMetrics, isLoading = false, className }: Metr
 		return (
 			<div className={cn('flexprice-ui', 'grid grid-cols-2 md:grid-cols-4 gap-3', className)}>
 				{Array.from({ length: 4 }).map((_, i) => (
-					<div key={i} className='space-y-3 rounded-[var(--fp-radius-lg)] border border-line bg-surface p-[25px]'>
+					<div key={i} className='space-y-3 rounded-[var(--fp-radius-lg)] border border-line bg-surface p-[1.5625rem]'>
 						<Skeleton className='h-4 w-24' />
 						<Skeleton className='h-7 w-32' />
 					</div>

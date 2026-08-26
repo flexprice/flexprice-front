@@ -45,7 +45,7 @@ const ProviderLogoStack: FC<ProviderLogoStackProps> = ({ providers, emptyLabel }
 					<ProviderMark key={provider} provider={provider} />
 				))}
 				{overflow > 0 ? (
-					<span className='inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-shell text-[11px] font-medium tabular-nums text-content-zinc-bold'>
+					<span className='inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-shell text-[0.6875rem] font-medium tabular-nums text-content-zinc-bold'>
 						+{overflow}
 					</span>
 				) : null}

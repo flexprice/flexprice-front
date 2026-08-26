@@ -95,7 +95,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
 	<tr
 		ref={ref}
 		className={cn(
-			'border-b border-line-slate h-[36px] transition-colors hover:bg-muted/50',
+			'border-b border-line-slate h-[2.25rem] transition-colors hover:bg-muted/50',
 			'align-middle', // Vertically align middle
 			className,
 		)}
@@ -209,7 +209,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 
 	const isCard = variant === 'card';
 	// Card geometry uses `h-[var(--token)]` / `rounded-[var(--token)]` so tailwind-merge
-	// replaces the default `h-[36px]` / `rounded-[6px]`. Named utilities like `h-table-row`
+	// replaces the default `h-[2.25rem]` / `rounded-[6px]`. Named utilities like `h-table-row`
 	// are not in those conflict groups and silently leave the compressed defaults in place.
 
 	const renderTableHeader = () => (
@@ -240,7 +240,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 								variant === 'default' && index === columns.length - 1 ? 'rounded-se-[var(--fp-radius-lg)]' : '',
 								variant === 'no-bordered' && 'border-b-0',
 								isCard &&
-									'h-[var(--fp-table-header-height)] border-b border-line-zinc-subtle px-[var(--fp-table-cell-x)] py-[var(--fp-table-header-pad-y)] text-caption font-medium normal-case tracking-normal text-content-muted',
+									'h-[var(--fp-table-header-height)] border-b border-line-zinc-subtle px-[var(--fp-table-cell-x)] py-[var(--fp-table-header-pad-y)] text-table-header font-medium normal-case tracking-normal text-content-muted',
 								className,
 							)}>
 							<span className={cn(index === 0 && !isCard && 'ps-2')}>{children ? children : title}</span>
@@ -263,7 +263,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 					onRowClick && 'cursor-pointer hover:bg-muted/50',
 					lastRow && hideBottomBorder && 'border-b-0',
 					!isCard && '!py-1',
-					isCard && 'group border-0 hover:bg-muted/40',
+					isCard && 'group border-b border-line-zinc-subtle last:border-b-0 hover:bg-muted/40',
 					isCard && lastRow && hideBottomBorder && 'border-b-0',
 				)}
 				key={rowIndex}>
@@ -285,8 +285,11 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 								fieldVariant === 'icon' && 'w-10',
 								fieldVariant === 'interactive' && 'cursor-default',
 								isCard &&
-									'min-w-0 overflow-hidden px-[var(--fp-table-cell-x)] py-[var(--fp-table-cell-pad-y)] text-sm !font-normal leading-5 text-content-zinc-secondary',
-								isCard && fieldVariant === 'title' && '!font-normal text-content-zinc-bold',
+									'min-w-0 overflow-hidden px-[var(--fp-table-cell-x)] py-[var(--fp-table-cell-pad-y)] text-body !font-normal text-content-muted',
+								isCard && fieldVariant === 'title' && '!text-sm !font-medium text-content-zinc-bold',
+								isCard &&
+									fieldVariant === 'interactive' &&
+									'opacity-0 transition-opacity duration-150 focus-within:opacity-100 group-hover:opacity-100 motion-reduce:transition-none',
 							)}
 							style={{ flex: width ? undefined : flex }}
 							width={width}
@@ -333,7 +336,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 				variant === 'default' && 'rounded-[var(--fp-radius-lg)] border border-line-slate',
 				variant === 'default' && !hideBottomBorder && 'border-b border-line-slate',
 				variant === 'no-bordered' && 'border-0',
-				isCard && 'rounded-[var(--fp-radius-lg)] border border-line-zinc bg-surface',
+				isCard && 'bg-transparent',
 			)}>
 			<Table className={tableClassName}>
 				{renderTableHeader()}

@@ -170,7 +170,7 @@ const AlertSettingsDialog: React.FC<AlertSettingsDialogProps> = ({ open, onClose
 			// Rendered inside interactive subscription/line-item table rows; without this, in-dialog
 			// clicks bubble through the React tree to the row's onClick and navigate away.
 			interactiveContent>
-			<div className='flex min-w-[600px] flex-col gap-6'>
+			<div className='flex min-w-[37.5rem] flex-col gap-6'>
 				<Toggle
 					title={t('spendAlerts.enableTitle')}
 					label={t(isLineItem ? 'spendAlerts.lineItemEnableLabel' : 'spendAlerts.subscriptionEnableLabel')}

@@ -357,7 +357,7 @@ const RecordPaymentTopup: FC<Props> = ({
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
 				title={t('payments.recordPayment')}
-				className='sm:max-w-[500px]'
+				className='sm:max-w-[31.25rem]'
 				titleClassName='text-lg font-semibold text-content-zinc-bold'>
 				<div className='space-y-4 py-4'>
 					<Input

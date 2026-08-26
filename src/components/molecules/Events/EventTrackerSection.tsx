@@ -63,7 +63,7 @@ const EventTrackerSection: FC<EventTrackerSectionProps> = ({ debugResponse, disp
 								<EventTrackerStep title={s.title} status={s.status} stepKey={s.key} />
 							</AccordionTrigger>
 							<AccordionContent className='pl-0'>
-								<div className='ml-[40px] relative z-10 mt-3'>
+								<div className='ml-[2.5rem] relative z-10 mt-3'>
 									<JsonCodeBlock
 										value={s.value}
 										title={t('labels.response')}
@@ -87,7 +87,7 @@ const EventTrackerSection: FC<EventTrackerSectionProps> = ({ debugResponse, disp
 								/>
 							</AccordionTrigger>
 							<AccordionContent className='pl-0'>
-								<div className='ml-[40px] relative z-10 mt-3'>
+								<div className='ml-[2.5rem] relative z-10 mt-3'>
 									<JsonCodeBlock
 										value={tracker.attributed_to_customer}
 										title={t('labels.response')}

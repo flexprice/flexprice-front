@@ -274,11 +274,11 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 				<Table>
 					<TableHeader className='h-10 border-b border-gray-200'>
 						<TableRow className='border-b border-gray-200'>
-							<TableHead className='pl-0 font-semibold text-gray-700 text-[13px]'>{t('usageBreakdown.feature')}</TableHead>
-							<TableHead className='font-semibold text-gray-700 text-[13px]'>
+							<TableHead className='pl-0 font-semibold text-gray-700 text-[0.8125rem]'>{t('usageBreakdown.feature')}</TableHead>
+							<TableHead className='font-semibold text-gray-700 text-[0.8125rem]'>
 								{renderSortableHeader(SORT_TOTAL_USAGE, t('usageBreakdown.totalUsage'))}
 							</TableHead>
-							<TableHead className='font-semibold text-gray-700 text-[13px]'>
+							<TableHead className='font-semibold text-gray-700 text-[0.8125rem]'>
 								{renderSortableHeader(SORT_TOTAL_COST, t('usageBreakdown.totalCost'))}
 							</TableHead>
 						</TableRow>
@@ -307,14 +307,14 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 										)}>
 										<TableCell className='pl-0 py-2.5 align-middle'>
 											<div className='inline-flex items-center gap-2 text-start'>
-												<span className='font-semibold text-gray-900 text-[13px]'>{bucket.groupName}</span>
+												<span className='font-semibold text-gray-900 text-[0.8125rem]'>{bucket.groupName}</span>
 												{bucket.items.length > 0 ? (
 													<img src={isExpanded ? CHEVRON_UP_SVG : CHEVRON_DOWN_SVG} alt='' className='h-4 w-4 shrink-0' aria-hidden />
 												) : null}
 											</div>
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-gray-700 text-[13px]'>{t('usageBreakdown.cellEmDash')}</TableCell>
-										<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-gray-700 text-[0.8125rem]'>{t('usageBreakdown.cellEmDash')}</TableCell>
+										<TableCell className='py-2.5 font-normal text-gray-600 text-[0.8125rem]'>
 											{firstCurrency ? (
 												<>
 													{getCurrencySymbol(firstCurrency)}
@@ -330,11 +330,11 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 											<TableRow
 												key={`${bucket.groupKey}:${row.feature_id ?? row.price_id ?? row.meter_id ?? childIndex}`}
 												className='h-10 align-middle border-b border-gray-200 bg-white hover:bg-gray-50/50'>
-												<TableCell className='py-2.5 pl-0 font-normal text-gray-700 text-[13px] align-middle'>
+												<TableCell className='py-2.5 pl-0 font-normal text-gray-700 text-[0.8125rem] align-middle'>
 													<span>{row.name || row.feature?.name || row.event_name || t('usageBreakdown.unknownRow')}</span>
 												</TableCell>
-												<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsagePortal(row)}</TableCell>
-												<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalCostPortal(row)}</TableCell>
+												<TableCell className='py-2.5 font-normal text-gray-600 text-[0.8125rem]'>{renderTotalUsagePortal(row)}</TableCell>
+												<TableCell className='py-2.5 font-normal text-gray-600 text-[0.8125rem]'>{renderTotalCostPortal(row)}</TableCell>
 											</TableRow>
 										))}
 								</React.Fragment>
@@ -344,16 +344,16 @@ const UsageBreakdownTable: React.FC<{ items: UsageAnalyticItem[] }> = ({ items }
 							<TableRow
 								key={`ungrouped:${row.feature_id ?? row.price_id ?? row.meter_id ?? index}`}
 								className='h-10 align-middle border-b border-gray-200 bg-white hover:bg-gray-50/50'>
-								<TableCell className='pl-0 py-2.5 font-normal text-gray-700 text-[13px]'>
+								<TableCell className='pl-0 py-2.5 font-normal text-gray-700 text-[0.8125rem]'>
 									<span>{row.name || row.feature?.name || row.event_name || t('usageBreakdown.unknownRow')}</span>
 								</TableCell>
-								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalUsagePortal(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-gray-600 text-[13px]'>{renderTotalCostPortal(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[0.8125rem]'>{renderTotalUsagePortal(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-gray-600 text-[0.8125rem]'>{renderTotalCostPortal(row)}</TableCell>
 							</TableRow>
 						))}
 						{items.length === 0 && (
 							<TableRow className='bg-white'>
-								<TableCell colSpan={3} className='pl-0 py-4 font-normal text-gray-500 text-[13px]'>
+								<TableCell colSpan={3} className='pl-0 py-4 font-normal text-gray-500 text-[0.8125rem]'>
 									{t('usageBreakdown.cellEmpty')}
 								</TableCell>
 							</TableRow>

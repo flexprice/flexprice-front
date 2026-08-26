@@ -120,14 +120,14 @@ const SectionDateFilter = ({
 					date={effectiveStart ? new Date(effectiveStart) : undefined}
 					setDate={(d) => onCustomStartChange(d ? startOfDay(d).toISOString() : '')}
 					placeholder={startPlaceholder}
-					className={`w-[130px] h-9 text-xs ${hasTheme ? '' : 'bg-white'}`}
+					className={`w-[8.125rem] h-9 text-xs ${hasTheme ? '' : 'bg-white'}`}
 					popoverTriggerClassName={`[&_button]:h-9 [&_button]:text-xs [&_button]:rounded-md${hasTheme ? ' [&_button]:bg-[var(--portal-surface)] [&_button]:border-[var(--portal-border)] [&_button]:text-[var(--portal-text-primary)]' : ''}`}
 				/>
 				<DatePicker
 					date={effectiveEnd ? new Date(effectiveEnd) : undefined}
 					setDate={(d) => onCustomEndChange(d ? endOfDay(d).toISOString() : '')}
 					placeholder={endPlaceholder}
-					className={`w-[130px] h-9 text-xs ${hasTheme ? '' : 'bg-white'}`}
+					className={`w-[8.125rem] h-9 text-xs ${hasTheme ? '' : 'bg-white'}`}
 					popoverTriggerClassName={`[&_button]:h-9 [&_button]:text-xs [&_button]:rounded-md${hasTheme ? ' [&_button]:bg-[var(--portal-surface)] [&_button]:border-[var(--portal-border)] [&_button]:text-[var(--portal-text-primary)]' : ''}`}
 				/>
 			</div>

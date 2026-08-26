@@ -123,7 +123,7 @@ const EditUserRolesDialog: FC<EditUserRolesDialogProps> = ({ user, isOpen, onOpe
 			description={t('members.editRoles.description')}
 			titleClassName='text-lg font-semibold text-content-zinc-bold'
 			descriptionClassName='text-sm text-content-zinc-muted'
-			className='rounded-xl border border-line-subtle shadow-lg sm:max-w-[560px]'>
+			className='rounded-xl border border-line-subtle shadow-lg sm:max-w-[35rem]'>
 			<div className='space-y-4'>
 				{displayUser && (
 					<div className='flex items-center gap-3'>

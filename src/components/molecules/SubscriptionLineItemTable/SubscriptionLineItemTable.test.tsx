@@ -12,6 +12,6 @@ describe('getQuantityDisplayForLineItem', () => {
 	});
 
 	it('returns "--" for a USAGE-type row regardless of quantity', () => {
-		expect(getQuantityDisplayForLineItem({ price_type: PRICE_TYPE.USAGE, quantity: 3 })).toBe('--');
+		expect(getQuantityDisplayForLineItem({ price_type: PRICE_TYPE.USAGE, quantity: 3 })).toBe('—');
 	});
 });

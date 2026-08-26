@@ -49,7 +49,7 @@ const formatBillingPeriod = (billingPeriod: string) => {
 		case BILLING_PERIOD.HALF_YEARLY:
 			return 'Half Yearly';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
@@ -122,7 +122,7 @@ const getFeatureValue = (entitlement: Entitlement, unlimited: string, unitLabel:
 		case FEATURE_TYPE.BOOLEAN:
 			return entitlement.is_enabled ? 'Yes' : 'No';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
@@ -241,7 +241,7 @@ const AddonDetails = () => {
 				<Chip label={formatChips(addonData?.status)} variant={addonData?.status === ENTITY_STATUS.PUBLISHED ? 'success' : 'default'} />
 			),
 		},
-		{ label: 'Description', value: addonData?.description || '--' },
+		{ label: 'Description', value: addonData?.description || '—' },
 	];
 
 	return (

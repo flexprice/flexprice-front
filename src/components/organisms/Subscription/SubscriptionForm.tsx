@@ -74,7 +74,7 @@ const BillingAccordionInfoTooltip = ({ description, ariaLabel }: { description: 
 		content={<span className='block max-w-xs text-xs font-normal leading-relaxed text-popover-foreground'>{description}</span>}
 		className='max-w-xs'>
 		<span
-			className='inline-flex size-[22px] shrink-0 items-center justify-center rounded-md text-content-zinc-subtle outline-none transition-colors hover:bg-surface-muted hover:text-content-zinc-tertiary focus-visible:ring-2 focus-visible:ring-line-zinc-bold/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface'
+			className='inline-flex size-[1.375rem] shrink-0 items-center justify-center rounded-md text-content-zinc-subtle outline-none transition-colors hover:bg-surface-muted hover:text-content-zinc-tertiary focus-visible:ring-2 focus-visible:ring-line-zinc-bold/40 focus-visible:ring-offset-2 focus-visible:ring-offset-surface'
 			tabIndex={0}
 			aria-label={ariaLabel}
 			onPointerDown={(e) => e.stopPropagation()}
@@ -115,7 +115,7 @@ const BillingCycleSelector = ({
 						key={index}
 						data-state={value === option.value ? 'active' : 'inactive'}
 						className={cn(
-							'text-[15px] font-normal text-content-muted px-3 py-1 rounded-[6px]',
+							'text-[0.9375rem] font-normal text-content-muted px-3 py-1 rounded-[6px]',
 							'data-[state=active]:text-content data-[state=active]:bg-surface-shell',
 							'hover:text-content transition-colors',
 							'data-[state=inactive]:border data-[state=inactive]:border-border data-[state=active]:border-primary',
@@ -1121,7 +1121,7 @@ const SubscriptionForm = ({
 							</AccordionTrigger>
 							<AccordionContent className='border-t border-line-zinc-subtle bg-surface px-5 pb-5 pt-4'>
 								<div className='flex flex-row items-center justify-between gap-4 w-full'>
-									<p className='text-[13px] leading-relaxed text-content-zinc-tertiary min-w-0 flex-1'>
+									<p className='text-[0.8125rem] leading-relaxed text-content-zinc-tertiary min-w-0 flex-1'>
 										{t('organisms.subscriptionForm.prorationInline')}
 									</p>
 									<Switch

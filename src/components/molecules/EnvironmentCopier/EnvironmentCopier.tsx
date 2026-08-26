@@ -115,12 +115,12 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
 			title={t('environment.copy.title')}
-			className='max-w-[520px]'
+			className='max-w-[32.5rem]'
 			description={
 				sourceEnvironment ? (
 					<span className='text-sm text-muted-foreground'>
 						{t('environment.copy.introBeforeBadge')}{' '}
-						<span className='inline-flex items-center font-semibold text-content bg-surface-shell border border-line rounded px-1.5 py-0.5 text-[12px] leading-none'>
+						<span className='inline-flex items-center font-semibold text-content bg-surface-shell border border-line rounded px-1.5 py-0.5 text-[0.75rem] leading-none'>
 							{sourceEnvironment.name}
 						</span>{' '}
 						{isNewEnvironment ? t('environment.copy.intoNew') : t('environment.copy.intoSelected')}
@@ -135,8 +135,8 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 					<div className='flex items-start gap-2.5'>
 						<AlertTriangle className='h-4 w-4 mt-0.5 flex-shrink-0 text-warning-bright' />
 						<div>
-							<p className='text-[13px] font-semibold text-warning-deep mb-0.5'>{t('environment.copy.cleanupTitle')}</p>
-							<p className='text-[13px] text-warning-strong leading-relaxed'>
+							<p className='text-[0.8125rem] font-semibold text-warning-deep mb-0.5'>{t('environment.copy.cleanupTitle')}</p>
+							<p className='text-[0.8125rem] text-warning-strong leading-relaxed'>
 								{t('environment.copy.cleanupBodyLead')}
 								<span className='font-medium'>{t('environment.copy.cleanupBefore')}</span>
 								{t('environment.copy.cleanupBodyTrail')}
@@ -179,7 +179,7 @@ const EnvironmentCopier: React.FC<Props> = ({ isOpen, onOpenChange, sourceEnviro
 				{/* What gets copied */}
 				<div className='rounded-lg border border-line divide-y divide-line-subtle overflow-hidden'>
 					<div className='px-4 py-2.5 bg-surface-subtle'>
-						<p className='text-[11px] font-semibold text-content-subtle uppercase tracking-widest'>
+						<p className='text-[0.6875rem] font-semibold text-content-subtle uppercase tracking-widest'>
 							{t('environment.copy.whatCopiedHeading')}
 						</p>
 					</div>

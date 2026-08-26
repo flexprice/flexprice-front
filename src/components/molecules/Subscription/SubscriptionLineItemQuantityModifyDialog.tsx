@@ -152,7 +152,7 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 					</span>
 				) : undefined
 			}
-			className='sm:max-w-[560px]'
+			className='sm:max-w-[35rem]'
 			showCloseButton={!busy}>
 			<div className={step === 'preview' ? 'space-y-4' : 'space-y-6'}>
 				{step === 'form' && (

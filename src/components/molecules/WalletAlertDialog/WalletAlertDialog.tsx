@@ -121,7 +121,7 @@ const WalletAlertDialog: React.FC<WalletAlertDialogProps> = ({ open, alertSettin
 			}}
 			title={t('wallet.alerts.dialogTitle')}
 			showCloseButton>
-			<div className='flex min-w-[600px] flex-col gap-6'>
+			<div className='flex min-w-[37.5rem] flex-col gap-6'>
 				<Toggle
 					title={t('wallet.alerts.enableTitle')}
 					label={t('wallet.alerts.enableLabel')}

@@ -400,7 +400,7 @@ const FeatureDetailsSection = ({
 
 			<Spacer height='16px' />
 
-			<div className='w-full min-w-[200px] overflow-hidden'>
+			<div className='w-full min-w-[12.5rem] overflow-hidden'>
 				<Select
 					label={t('catalog:features.form.type')}
 					options={FEATURE_TYPE_OPTIONS}

@@ -264,8 +264,8 @@ const PlansPage = () => {
 
 	const emptyStateCustom = useMemo(
 		() => (
-			<div className='mx-auto flex h-[280px] w-full flex-col items-center justify-center rounded-[var(--fp-radius-lg)] border border-line-hairline bg-surface-faint px-6 dark:border-line dark:bg-surface'>
-				<div className='mb-8 max-w-xl bg-surface-faint-inner text-center text-[16px] font-normal leading-normal text-content-subtle dark:bg-transparent'>
+			<div className='mx-auto flex h-[17.5rem] w-full flex-col items-center justify-center rounded-[var(--fp-radius-lg)] border border-line-hairline bg-surface-faint px-6 dark:border-line dark:bg-surface'>
+				<div className='mb-8 max-w-xl bg-surface-faint-inner text-center text-[1rem] font-normal leading-normal text-content-subtle dark:bg-transparent'>
 					{t('plans.listPage.emptyStateCustom.description')}
 				</div>
 				<Button

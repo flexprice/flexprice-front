@@ -204,11 +204,11 @@ const CreateInvoicePage: FC = () => {
 
 	const customerAddress = customer
 		? `${customer.address_line1} ${customer.address_line2} ${customer.address_city} ${customer.address_state} ${customer.address_postal_code} ${customer.address_country}`
-		: '--';
+		: '—';
 
 	const tenantAddress = user?.tenant.billing_details.address
 		? `${user.tenant.billing_details.address.address_line1} ${user.tenant.billing_details.address.address_line2} ${user.tenant.billing_details.address.address_city} ${user.tenant.billing_details.address.address_state} ${user.tenant.billing_details.address.address_postal_code} ${user.tenant.billing_details.address.address_country}`
-		: '--';
+		: '—';
 
 	return (
 		<Page heading={t('createInvoice.pageTitle')}>
@@ -297,7 +297,7 @@ const CreateInvoicePage: FC = () => {
 										/>
 									</div>
 									<div className='col-span-1 flex items-end justify-end'>
-										<Button variant='outline' className='size-[42px] shrink-0' onClick={() => handleRemoveLineItem(index)}>
+										<Button variant='outline' className='size-[2.625rem] shrink-0' onClick={() => handleRemoveLineItem(index)}>
 											<Trash2 className='w-4 h-4' />
 										</Button>
 									</div>

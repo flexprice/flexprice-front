@@ -168,7 +168,7 @@ const SamlSsoTab = () => {
 				infoAriaLabel={t('info.ariaLabel', { field: configTitle })}
 			/>
 			{isLoading ? (
-				<div className='flex min-h-[200px] items-center justify-center'>
+				<div className='flex min-h-[12.5rem] items-center justify-center'>
 					<Loader />
 				</div>
 			) : (
@@ -260,7 +260,7 @@ const SamlSsoTab = () => {
 							value={draft.idp_certificate}
 							disabled={isSaving}
 							error={errors.idp_certificate}
-							textAreaClassName='min-h-[180px] font-mono text-xs'
+							textAreaClassName='min-h-[11.25rem] font-mono text-xs'
 							onChange={(value) => setDraft((prev) => ({ ...prev, idp_certificate: value }))}
 						/>
 

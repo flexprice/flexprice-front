@@ -410,7 +410,7 @@ const RecurringChargesForm = ({
 										<Calculator className='size-4' />
 									</button>
 								</PopoverTrigger>
-								<PopoverContent className='w-[360px]' align='end' sideOffset={8} onOpenAutoFocus={(e) => e.preventDefault()}>
+								<PopoverContent className='w-[22.5rem]' align='end' sideOffset={8} onOpenAutoFocus={(e) => e.preventDefault()}>
 									<SubscriptionCalculatorContent
 										currency={localPrice.currency || 'USD'}
 										initialAmount={localPrice.amount ?? ''}
@@ -444,7 +444,7 @@ const RecurringChargesForm = ({
 								}
 							}}
 						/>
-						<div className='h-[50px] items-center flex gap-2'>
+						<div className='h-[3.125rem] items-center flex gap-2'>
 							<p className='text-content-zinc-bold font-medium'>{t('catalog:plans.organisms.usageForm.per')}</p>
 						</div>
 						<Input

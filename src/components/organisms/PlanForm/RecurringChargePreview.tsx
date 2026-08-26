@@ -78,7 +78,7 @@ const RecurringChargePreview: FC<Props> = ({ charge, onEditClicked, onDeleteClic
 					<button onClick={() => onEditClicked?.()} className='p-1 hover:bg-surface-shell rounded-md'>
 						<Pencil size={16} />
 					</button>
-					<div className='border-r h-[16px] border-line-zinc' />
+					<div className='border-r h-[1rem] border-line-zinc' />
 					<button onClick={onDeleteClicked} className='p-1 hover:bg-surface-shell rounded-md text-danger-bright'>
 						<Trash2 size={16} />
 					</button>

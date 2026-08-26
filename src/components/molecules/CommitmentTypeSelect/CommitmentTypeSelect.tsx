@@ -58,7 +58,7 @@ const CommitmentTypeSelect: FC<Props> = ({ value, onChange, disabled, size = 'de
 							!isCompact && value === option.value && 'font-medium',
 						)}>
 						<div className={cn('font-medium', isCompact ? 'text-xs' : 'text-sm')}>{option.label}</div>
-						<div className={cn('text-content-muted', isCompact ? 'mt-0.5 text-[11px]' : 'mt-0.5 text-xs')}>{option.description}</div>
+						<div className={cn('text-content-muted', isCompact ? 'mt-0.5 text-[0.6875rem]' : 'mt-0.5 text-xs')}>{option.description}</div>
 					</button>
 				))}
 			</div>

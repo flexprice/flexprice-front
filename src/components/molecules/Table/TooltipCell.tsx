@@ -37,7 +37,7 @@ const TooltipCell: FC<Props> = ({ tooltipContent, tooltipText, maxChars, revealO
 	const textStyle: CSSProperties | undefined = maxChars ? { width: `${maxChars * 0.5}em` } : undefined;
 
 	return (
-		<div className='inline-flex max-w-full items-center gap-[3px]'>
+		<div className='inline-flex max-w-full items-center gap-[0.1875rem]'>
 			<TooltipProvider>
 				<Tooltip>
 					<TooltipTrigger asChild>

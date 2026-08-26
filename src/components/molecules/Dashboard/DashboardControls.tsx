@@ -52,7 +52,7 @@ export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod
 						value={timePeriod}
 						options={timePeriodOptions}
 						onChange={(value) => onTimePeriodChange(value as TIME_PERIOD)}
-						className='min-w-[150px]'
+						className='min-w-[9.375rem]'
 					/>
 				</div>
 				<div className='flex flex-col gap-2'>
@@ -61,7 +61,7 @@ export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod
 						value={windowSize}
 						options={windowSizeOptions}
 						onChange={(value) => onWindowSizeChange(value as WindowSize)}
-						className='min-w-[150px]'
+						className='min-w-[9.375rem]'
 					/>
 				</div>
 			</div>

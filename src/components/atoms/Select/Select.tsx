@@ -44,7 +44,7 @@ const RadioSelectItem = React.forwardRef<
 		)}
 		{...props}>
 		{/* Checkbox Icon - Show Empty when Not Selected, Filled when Selected */}
-		<span className='absolute left-2 top-[10px] flex h-4 w-4  justify-center'>
+		<span className='absolute left-2 top-[0.625rem] flex h-4 w-4  justify-center'>
 			<SelectPrimitive.ItemIndicator className='flex items-center justify-center w-full h-full'>
 				<Circle className='size-2 text-content-black fill-current' />
 			</SelectPrimitive.ItemIndicator>

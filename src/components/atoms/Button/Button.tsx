@@ -48,7 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				{isLoading ? (
 					<LoaderCircleIcon className='size-4 animate-spin ' />
 				) : (
-					<div className='flex items-center gap-[5px]'>
+					<div className='flex items-center gap-[0.3125rem]'>
 						{prefixIcon}
 						{children}
 						{suffixIcon}

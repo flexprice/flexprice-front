@@ -224,7 +224,7 @@ export interface Props {
 
 function formatAddedLineItemPrice(item: AddedSubscriptionLineItem, fallbackCurrency?: string): string {
 	const p = item.price;
-	if (!p) return '--';
+	if (!p) return '—';
 	const currency =
 		p.price_unit_type === PRICE_UNIT_TYPE.CUSTOM
 			? p.price_unit_config?.price_unit
@@ -382,7 +382,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 			),
 			quantity: <span>{item.quantity ?? 1}</span>,
 			price: <span>{formatAddedLineItemPrice(item, currency)}</span>,
-			invoice_cadence: item.price?.invoice_cadence ?? '--',
+			invoice_cadence: item.price?.invoice_cadence ?? '—',
 			actions:
 				onRemoveAddedCharge || onEditAddedCharge ? (
 					<OptionsDropdownMenu

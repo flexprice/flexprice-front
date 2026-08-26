@@ -133,7 +133,7 @@ const CostSheetDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetch
 				onChange={(e) => {
 					setFormData({ ...formData, description: e });
 				}}
-				className='min-h-[100px]'
+				className='min-h-[6.25rem]'
 				placeholder={t('catalog:shared.enterDescription')}
 				label={t('catalog:shared.description')}
 				description={t('catalog:costSheets.drawer.purposeDescription')}

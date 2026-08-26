@@ -128,7 +128,7 @@ const ExportManagement = () => {
 				<div className='card text-center !py-12'>
 					<div className='text-content-muted mb-4'>
 						<h3 className='text-lg font-medium text-content mb-2'>{t('insightsTools.exports.noExportTasks')}</h3>
-						<p className='text-content-muted mb-4 max-w-[500px] mx-auto'>{t('insightsTools.exports.noExportTasksHint')}</p>
+						<p className='text-content-muted mb-4 max-w-[31.25rem] mx-auto'>{t('insightsTools.exports.noExportTasksHint')}</p>
 						<Button
 							variant='outline'
 							onClick={() => {

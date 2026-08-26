@@ -275,7 +275,7 @@ const CustomerAnalyticsTab = () => {
 		<div className='pt-9'>
 			<div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
 				{[1, 2, 3, 4].map((i) => (
-					<div key={i} className='bg-surface border border-line p-[25px] rounded-md'>
+					<div key={i} className='bg-surface border border-line p-[1.5625rem] rounded-md'>
 						<Skeleton className='h-5 w-20 mb-3' />
 						<Skeleton className='h-7 w-24' />
 					</div>
@@ -287,7 +287,7 @@ const CustomerAnalyticsTab = () => {
 	const ChartSkeleton = () => (
 		<div className='space-y-4'>
 			<Skeleton className='h-6 w-32' />
-			<Skeleton className='h-[400px] w-full' />
+			<Skeleton className='h-[25rem] w-full' />
 		</div>
 	);
 
@@ -312,7 +312,7 @@ const CustomerAnalyticsTab = () => {
 			<div className='flex flex-wrap items-end gap-8'>
 				{featuresLoading ? (
 					<>
-						<div className='flex-1 min-w-[200px] max-w-md'>
+						<div className='flex-1 min-w-[12.5rem] max-w-md'>
 							<div className='w-full'>
 								<Skeleton className='h-5 w-20 mb-1' />
 								<Skeleton className='h-10 w-full' />
@@ -320,12 +320,12 @@ const CustomerAnalyticsTab = () => {
 						</div>
 						<div>
 							<Skeleton className='h-5 w-24 mb-1' />
-							<Skeleton className='h-10 w-[280px]' />
+							<Skeleton className='h-10 w-[17.5rem]' />
 						</div>
 					</>
 				) : (
 					<>
-						<div className='flex-1 min-w-[200px] max-w-md'>
+						<div className='flex-1 min-w-[12.5rem] max-w-md'>
 							<FeatureMultiSelect
 								label={t('tabPanels.analytics.featuresLabel')}
 								placeholder={t('tabPanels.analytics.featuresPlaceholder')}
@@ -335,7 +335,7 @@ const CustomerAnalyticsTab = () => {
 							/>
 						</div>
 						{/* Start Date Picker */}
-						<div className='min-w-[200px]'>
+						<div className='min-w-[12.5rem]'>
 							<DatePicker
 								date={startDate}
 								setDate={handleStartDateChange}
@@ -346,7 +346,7 @@ const CustomerAnalyticsTab = () => {
 						</div>
 
 						{/* End Date Picker */}
-						<div className='min-w-[200px]'>
+						<div className='min-w-[12.5rem]'>
 							<DatePicker
 								date={endDate}
 								setDate={handleEndDateChange}
@@ -355,7 +355,7 @@ const CustomerAnalyticsTab = () => {
 								minDate={minEndDate}
 							/>
 						</div>
-						<div className='ml-auto min-w-[200px]'>
+						<div className='ml-auto min-w-[12.5rem]'>
 							<div className='mb-1 w-full text-start text-sm text-content-zinc-tertiary'>{t('tabPanels.analytics.options')}</div>
 							<label
 								htmlFor='include-children'
@@ -494,7 +494,7 @@ const GroupChildRows = React.memo(function GroupChildRows({ bucket, isExpanded }
 				<TableRow
 					key={usageRowKey(row, childIndex)}
 					className='h-10 align-middle border-b border-line bg-surface hover:bg-surface-subtle/50 transition-colors'>
-					<TableCell className='py-2.5 pl-4 font-normal text-content-secondary text-[13px] align-middle'>
+					<TableCell className='py-2.5 pl-4 font-normal text-content-secondary text-[0.8125rem] align-middle'>
 						{row.feature_id ? (
 							<RedirectCell target='_blank' redirectUrl={`${RouteNames.featureDetails}/${row.feature_id}`}>
 								{row.name}
@@ -503,10 +503,10 @@ const GroupChildRows = React.memo(function GroupChildRows({ bucket, isExpanded }
 							<span>{row.name || t('tabPanels.common.unknown')}</span>
 						)}
 					</TableCell>
-					<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderTotalUsage(row)}</TableCell>
-					<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderRevenue(row)}</TableCell>
-					<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderCogs(row)}</TableCell>
-					<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderMargin(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderTotalUsage(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderRevenue(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderCogs(row)}</TableCell>
+					<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderMargin(row)}</TableCell>
 				</TableRow>
 			))}
 		</>
@@ -681,19 +681,19 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 				<Table>
 					<TableHeader className='h-10 bg-surface-subtle border-b border-line rounded-t-md'>
 						<TableRow className='rounded-t-md border-b border-line'>
-							<TableHead className='rounded-tl-md pl-4 font-semibold text-content-secondary text-[13px]'>
+							<TableHead className='rounded-tl-md pl-4 font-semibold text-content-secondary text-[0.8125rem]'>
 								{t('usageTable.columns.feature')}
 							</TableHead>
-							<TableHead className='font-semibold text-content-secondary text-[13px]'>
+							<TableHead className='font-semibold text-content-secondary text-[0.8125rem]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.totalUsage, t('tabPanels.analytics.totalUsage'))}
 							</TableHead>
-							<TableHead className='font-semibold text-content-secondary text-[13px]'>
+							<TableHead className='font-semibold text-content-secondary text-[0.8125rem]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.revenue, t('tabPanels.analytics.metricRevenue'))}
 							</TableHead>
-							<TableHead className='font-semibold text-content-secondary text-[13px]'>
+							<TableHead className='font-semibold text-content-secondary text-[0.8125rem]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.cogs, t('tabPanels.analytics.cogs'))}
 							</TableHead>
-							<TableHead className='rounded-tr-md font-semibold text-content-secondary text-[13px]'>
+							<TableHead className='rounded-tr-md font-semibold text-content-secondary text-[0.8125rem]'>
 								{renderSortableHeader(USAGE_BREAKDOWN_SORT_FIELDS.margin, t('tabPanels.analytics.metricMargin'))}
 							</TableHead>
 						</TableRow>
@@ -726,20 +726,20 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 										)}>
 										<TableCell className='pl-4 py-2.5 align-middle'>
 											<div className='inline-flex items-center gap-2 text-left'>
-												<span className='font-semibold text-content text-[13px]'>{bucket.groupName}</span>
+												<span className='font-semibold text-content text-[0.8125rem]'>{bucket.groupName}</span>
 												{bucket.items.length > 0 ? (
 													<img src={isExpanded ? CHEVRON_UP_SVG : CHEVRON_DOWN_SVG} alt='' className='h-4 w-4 shrink-0' aria-hidden />
 												) : null}
 											</div>
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-content-secondary text-[13px]'>—</TableCell>
-										<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-content-secondary text-[0.8125rem]'>—</TableCell>
+										<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>
 											{renderCurrencyAmount(aggregateRevenue, firstCurrency)}
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>
 											{hasCogs ? renderCurrencyAmount(aggregateCogs, firstCurrency) : '—'}
 										</TableCell>
-										<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>
+										<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>
 											{hasMargin ? renderCurrencyAmount(aggregateMargin, firstCurrency, { showSign: true }) : '—'}
 										</TableCell>
 									</TableRow>
@@ -751,7 +751,7 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 							<TableRow
 								key={`ungrouped:${usageRowKey(row, index)}`}
 								className='h-10 align-middle border-b border-line bg-surface hover:bg-surface-subtle/50 transition-colors'>
-								<TableCell className='pl-4 py-2.5 font-normal text-content-secondary text-[13px]'>
+								<TableCell className='pl-4 py-2.5 font-normal text-content-secondary text-[0.8125rem]'>
 									{row.feature_id ? (
 										<RedirectCell target='_blank' redirectUrl={`${RouteNames.featureDetails}/${row.feature_id}`}>
 											{row.name}
@@ -760,15 +760,15 @@ const UsageDataTable: React.FC<{ items: MergedUsageAnalyticRow[] }> = ({ items }
 										<span>{row.name || t('tabPanels.common.unknown')}</span>
 									)}
 								</TableCell>
-								<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderTotalUsage(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderRevenue(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderCogs(row)}</TableCell>
-								<TableCell className='py-2.5 font-normal text-content-tertiary text-[13px]'>{renderMargin(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderTotalUsage(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderRevenue(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderCogs(row)}</TableCell>
+								<TableCell className='py-2.5 font-normal text-content-tertiary text-[0.8125rem]'>{renderMargin(row)}</TableCell>
 							</TableRow>
 						))}
 						{items.length === 0 && (
 							<TableRow className='bg-surface'>
-								<TableCell colSpan={5} className='pl-4 py-4 font-normal text-content-muted text-[13px]'>
+								<TableCell colSpan={5} className='pl-4 py-4 font-normal text-content-muted text-[0.8125rem]'>
 									{t('tabPanels.analytics.tableEmpty')}
 								</TableCell>
 							</TableRow>

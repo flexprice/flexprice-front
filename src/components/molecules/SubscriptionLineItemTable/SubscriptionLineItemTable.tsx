@@ -50,7 +50,7 @@ interface Props {
  * from metered consumption, so their quantity column shows "--" instead.
  */
 export function getQuantityDisplayForLineItem(row: Pick<LineItem, 'price_type' | 'quantity'>): string {
-	if (row.price_type !== PRICE_TYPE.FIXED) return '--';
+	if (row.price_type !== PRICE_TYPE.FIXED) return '—';
 	return String(row.quantity);
 }
 
@@ -266,7 +266,7 @@ const getLineItemStatus = (lineItem: LineItem): PRICE_STATUS => {
 };
 
 const getEntityLabel = (entityType?: string): string => {
-	if (!entityType) return '--';
+	if (!entityType) return '—';
 	switch (entityType.toLowerCase()) {
 		case SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE.PLAN:
 			return 'Plan';
@@ -478,17 +478,17 @@ const SubscriptionLineItemTable: FC<Props> = ({
 			{
 				title: 'Display Name',
 				render: (row: LineItemWithStatus) => {
-					const displayName = row.display_name?.trim() || '--';
+					const displayName = row.display_name?.trim() || '—';
 					return (
-						<div className='flex min-w-0 max-w-[240px] items-center gap-1'>
-							{displayName === '--' ? (
+						<div className='flex min-w-0 max-w-[15rem] items-center gap-1'>
+							{displayName === '—' ? (
 								<span className='truncate'>{displayName}</span>
 							) : (
 								<Tooltip
 									content={displayName}
 									delayDuration={0}
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[20rem]'>
 									<span className='block min-w-0 truncate'>{displayName}</span>
 								</Tooltip>
 							)}
@@ -497,7 +497,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 									content={formatCommitmentTooltip(commitmentInfo!, t)}
 									delayDuration={0}
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[20rem]'>
 									<button
 										type='button'
 										data-interactive='true'
@@ -556,7 +556,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 							content={rowData.tooltipContent}
 							delayDuration={0}
 							sideOffset={5}
-							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
+							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[20rem]'>
 							<span>
 								<StatusChip label={rowData.statusLabel} tone={rowData.statusTone} />
 							</span>
@@ -571,7 +571,7 @@ const SubscriptionLineItemTable: FC<Props> = ({
 			{
 				title: 'Charge',
 				render: (row) => {
-					if (!row.price) return '--';
+					if (!row.price) return '—';
 					const isSubscriptionOverride =
 						row.price.entity_type === PRICE_ENTITY_TYPE.SUBSCRIPTION && row.entity_type === SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE.PLAN;
 					return (

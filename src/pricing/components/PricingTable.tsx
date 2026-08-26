@@ -58,7 +58,7 @@ const PricingTable: FC<PricingTableProps> = ({
 						? 'mx-auto max-w-sm grid-cols-1'
 						: safePlans.length === 2
 							? 'mx-auto max-w-2xl grid-cols-1 sm:grid-cols-2'
-							: 'mx-auto max-w-[1080px] grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+							: 'mx-auto max-w-[67.5rem] grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
 				)}>
 				{safePlans.map((plan, index) => (
 					<PricingCard

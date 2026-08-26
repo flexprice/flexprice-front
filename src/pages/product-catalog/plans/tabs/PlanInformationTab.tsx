@@ -44,8 +44,8 @@ const PlanInformationTab = () => {
 
 	const planDetails = [
 		{ label: 'Name', value: planData?.name },
-		{ label: 'Lookup Key', value: planData?.lookup_key || '--' },
-		{ label: 'Description', value: planData?.description || '--' },
+		{ label: 'Lookup Key', value: planData?.lookup_key || '—' },
+		{ label: 'Description', value: planData?.description || '—' },
 		{ label: 'Created Date', value: formatDate(planData?.created_at ?? '') },
 		{
 			label: 'Status',
@@ -86,11 +86,11 @@ const PlanInformationTab = () => {
 
 	return (
 		<div>
-			{planDetails.filter((detail) => detail.value !== '--').length > 0 && (
+			{planDetails.filter((detail) => detail.value !== '—').length > 0 && (
 				<div>
 					<Spacer className='!h-4' />
 					<div className='flex justify-between items-center'>
-						<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('catalog:plans.information.planDetails')}</h3>
+						<h3 className={getTypographyClass('card-header') + '!text-[1rem]'}>{t('catalog:plans.information.planDetails')}</h3>
 						<div className='flex gap-2'>
 							{!isArchived && (
 								<PlanDrawer
@@ -114,7 +114,7 @@ const PlanInformationTab = () => {
 					<Divider className='my-4' />
 					<div className='mt-8'>
 						<div className='flex justify-between items-center mb-2'>
-							<h3 className={getTypographyClass('card-header') + '!text-[16px]'}>{t('catalog:plans.information.metadata')}</h3>
+							<h3 className={getTypographyClass('card-header') + '!text-[1rem]'}>{t('catalog:plans.information.metadata')}</h3>
 							{!isArchived && (
 								<Button variant='outline' size='icon' onClick={() => setShowMetadataModal(true)}>
 									<Pencil className='size-5' />

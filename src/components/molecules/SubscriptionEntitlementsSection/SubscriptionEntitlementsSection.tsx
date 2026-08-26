@@ -228,7 +228,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>
@@ -247,8 +247,8 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		}
 
 		if (featureType === FEATURE_TYPE.STATIC) {
-			const value = getEffectiveStaticValue(entitlementData) || '--';
-			const originalValue = row.originalStaticValue || '--';
+			const value = getEffectiveStaticValue(entitlementData) || '—';
+			const originalValue = row.originalStaticValue || '—';
 			const hasChanged = row.isOverrideOfParent && value !== originalValue;
 
 			return (
@@ -262,7 +262,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>
@@ -294,7 +294,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>
@@ -330,7 +330,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</TooltipTrigger>
 								<TooltipContent
 									sideOffset={5}
-									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[300px]'>
+									className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[18.75rem]'>
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>{t('entitlements.overridesTable.tooltipConfig')}</div>
@@ -343,7 +343,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			);
 		}
 
-		return '--';
+		return '—';
 	};
 
 	const handleEdit = (entitlement: EnrichedSubscriptionEntitlement) => {

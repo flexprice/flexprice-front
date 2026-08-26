@@ -252,7 +252,7 @@ const FeatureAlertDialog: React.FC<FeatureAlertDialogProps> = ({ open, alertSett
 			}}
 			title={t('catalog:features.alerts.dialogTitle')}
 			showCloseButton>
-			<div className='flex flex-col gap-6 min-w-[600px]'>
+			<div className='flex flex-col gap-6 min-w-[37.5rem]'>
 				{/* Alert Toggle */}
 				<Toggle
 					title={t('catalog:features.alerts.enableTitle')}

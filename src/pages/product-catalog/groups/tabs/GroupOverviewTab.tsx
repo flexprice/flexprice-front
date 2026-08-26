@@ -406,7 +406,7 @@ const GroupOverviewTab = () => {
 							content={tooltipContent}
 							delayDuration={0}
 							sideOffset={5}
-							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[320px]'>
+							className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-[6px] max-w-[20rem]'>
 							<span>
 								<StatusChip tone={tone} label={label} />
 							</span>

@@ -21,12 +21,12 @@ const getTaxTypeLabel = (type: TAX_RATE_TYPE) => {
 		case TAX_RATE_TYPE.FIXED:
 			return 'Fixed';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
 const formatTaxValue = (taxRate: TaxRateResponse | undefined, currency: string = 'USD') => {
-	if (!taxRate) return '--';
+	if (!taxRate) return '—';
 
 	if (taxRate.tax_rate_type === TAX_RATE_TYPE.PERCENTAGE && taxRate.percentage_value !== undefined) {
 		return `${taxRate.percentage_value}%`;
@@ -34,7 +34,7 @@ const formatTaxValue = (taxRate: TaxRateResponse | undefined, currency: string =
 	if (taxRate.tax_rate_type === TAX_RATE_TYPE.FIXED && taxRate.fixed_value !== undefined) {
 		return formatAmount(taxRate.fixed_value, currency);
 	}
-	return '--';
+	return '—';
 };
 
 const AppliedTaxesTable: FC<Props> = ({ data }) => {
@@ -77,7 +77,7 @@ const AppliedTaxesTable: FC<Props> = ({ data }) => {
 			title: 'Code',
 			render: (row) => {
 				const taxRate = taxRatesMap.get(row.tax_rate_id);
-				return <TooltipCell tooltipContent={taxRate?.code || '--'} tooltipText={taxRate?.code || '--'} />;
+				return <TooltipCell tooltipContent={taxRate?.code || '—'} tooltipText={taxRate?.code || '—'} />;
 			},
 		},
 		{

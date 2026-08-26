@@ -171,8 +171,8 @@ const DebugMenu = () => {
 						sideOffset={8}
 						/* Always-dark tooltip: surface-scrim is black in both themes, so the text stays literal
 						   white — content-inverse would render it near-black on black in dark mode. */
-						className='flex flex-col gap-1 bg-surface-scrim/90 text-white px-4 py-2 rounded-lg max-w-[240px]'>
-						<div className='text-[13px] text-white'>{t('debug.tooltipTitle')}</div>
+						className='flex flex-col gap-1 bg-surface-scrim/90 text-white px-4 py-2 rounded-lg max-w-[15rem]'>
+						<div className='text-[0.8125rem] text-white'>{t('debug.tooltipTitle')}</div>
 					</TooltipContent>
 				</Tooltip>
 			</TooltipProvider>
@@ -189,7 +189,7 @@ const DebugMenu = () => {
 							damping: 25,
 							duration: 0.3,
 						}}
-						className={`fixed bottom-6 ${anchorClass} w-[300px] bg-surface/95 rounded-lg shadow-lg z-[100] border border-line/50 backdrop-blur-sm`}
+						className={`fixed bottom-6 ${anchorClass} w-[18.75rem] bg-surface/95 rounded-lg shadow-lg z-[100] border border-line/50 backdrop-blur-sm`}
 						drag
 						dragConstraints={{
 							top: -400,

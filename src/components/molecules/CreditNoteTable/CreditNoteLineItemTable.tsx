@@ -53,7 +53,7 @@ const CreditNoteLineItemTable: FC<Props> = ({ data, total_amount, currency, titl
 					</table>
 				</div>
 
-				<div className='flex justify-end px-[6px]  py-4 border-t border-line'>
+				<div className='flex justify-end px-[0.375rem]  py-4 border-t border-line'>
 					<div className='text-sm text-content-heading space-y-4 w-1/3'>
 						{sub_total !== undefined && (
 							<div className='flex justify-between'>

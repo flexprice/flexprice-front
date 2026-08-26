@@ -90,7 +90,7 @@ const Toolbar = ({ config, filters, onFilterChange }: ToolbarProps) => {
 			{enableSearch && (
 				<div className='w-1/2'>
 					<Input
-						suffix={<Search className='size-[14px] text-content-muted' />}
+						suffix={<Search className='size-[0.875rem] text-content-muted' />}
 						placeholder={resolvedPlaceholder}
 						value={filters.searchQuery}
 						onChange={(e) => onFilterChange({ searchQuery: e })}

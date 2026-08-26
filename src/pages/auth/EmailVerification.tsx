@@ -61,7 +61,7 @@ const EmailVerification = () => {
 				style={{ backgroundImage: `url(${sideBgDark})` }}
 			/>
 			<div className='absolute inset-0 bg-surface/30' aria-hidden />
-			<div className='relative w-full max-w-[480px] rounded-[var(--fp-radius-shell)] border border-line-zinc-strong bg-surface px-10 py-12 shadow-lg'>
+			<div className='relative w-full max-w-[30rem] rounded-[var(--fp-radius-shell)] border border-line-zinc-strong bg-surface px-10 py-12 shadow-lg'>
 				<h2 className='text-center text-2xl font-semibold text-content-zinc-bold'>
 					{isNewSignup ? t('verification.verifyHeading') : t('verification.verificationHeading')}
 				</h2>

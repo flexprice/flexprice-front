@@ -29,7 +29,7 @@ const OptionFilterPopover = ({ ariaLabel, groups, activeFilterCount = 0, align =
 				<Button variant='outline' size='icon' aria-label={ariaLabel} className='relative h-9 w-9'>
 					<SlidersHorizontal className='h-4 w-4' />
 					{activeFilterCount > 0 ? (
-						<span className='absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-surface-inverse-zinc px-1 text-[10px] font-medium text-content-inverse'>
+						<span className='absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-surface-inverse-zinc px-1 text-[0.625rem] font-medium text-content-inverse'>
 							{activeFilterCount}
 						</span>
 					) : null}

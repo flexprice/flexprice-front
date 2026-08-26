@@ -82,7 +82,7 @@ const SubscriptionEditDetailsHeader: FC<SubscriptionEditDetailsHeaderProps> = ({
 		<div>
 			<Spacer className='!h-4' />
 			<div className='flex justify-between items-center'>
-				<h3 className={getTypographyClass('card-header') + ' !text-[16px]'}>{t('subscriptions.editDetailsHeader.title')}</h3>
+				<h3 className={getTypographyClass('card-header') + ' !text-[1rem]'}>{t('subscriptions.editDetailsHeader.title')}</h3>
 				{subscription?.subscription_status !== SUBSCRIPTION_STATUS.CANCELLED && (
 					<Tooltip
 						delayDuration={0}

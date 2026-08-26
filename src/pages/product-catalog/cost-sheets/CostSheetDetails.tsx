@@ -51,7 +51,7 @@ const formatBillingPeriod = (billingPeriod: string) => {
 		case BILLING_PERIOD.ONETIME:
 			return 'One-time';
 		default:
-			return '--';
+			return '—';
 	}
 };
 
@@ -303,7 +303,7 @@ const CostSheetDetails = () => {
 				/>
 			),
 		},
-		{ label: t('catalog:costSheets.details.fields.description'), value: costSheetData.description || '--' },
+		{ label: t('catalog:costSheets.details.fields.description'), value: costSheetData.description || '—' },
 	];
 
 	return (

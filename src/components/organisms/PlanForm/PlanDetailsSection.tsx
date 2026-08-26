@@ -53,7 +53,7 @@ const PlanDetailsSection = ({ plan, setPlanField, errors }: Props) => {
 			<Textarea
 				value={plan.description}
 				onChange={(e) => setPlanField('description', e)}
-				className='min-h-[100px]'
+				className='min-h-[6.25rem]'
 				placeholder={t('catalog:shared.enterDescription')}
 				label={t('catalog:shared.description')}
 				description={t('catalog:plans.drawer.purposeDescription')}

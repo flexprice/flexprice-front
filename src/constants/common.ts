@@ -49,10 +49,10 @@ export const getCurrencySymbol = (currency: string): string => {
 // =============================================================================
 
 export const formatDate = (date: string | Date): string => {
-	if (!date) return '--';
+	if (!date) return '—';
 
 	const dateObj = typeof date === 'string' ? new Date(date) : date;
-	if (isNaN(dateObj.getTime())) return '--';
+	if (isNaN(dateObj.getTime())) return '—';
 
 	return new Intl.DateTimeFormat('en-US', {
 		year: 'numeric',
@@ -62,10 +62,10 @@ export const formatDate = (date: string | Date): string => {
 };
 
 export const formatDateTime = (date: string | Date): string => {
-	if (!date) return '--';
+	if (!date) return '—';
 
 	const dateObj = typeof date === 'string' ? new Date(date) : date;
-	if (isNaN(dateObj.getTime())) return '--';
+	if (isNaN(dateObj.getTime())) return '—';
 
 	return new Intl.DateTimeFormat('en-US', {
 		year: 'numeric',

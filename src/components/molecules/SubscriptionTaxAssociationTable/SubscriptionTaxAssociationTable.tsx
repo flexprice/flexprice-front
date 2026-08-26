@@ -55,7 +55,7 @@ const SubscriptionTaxAssociationTable: FC<Props> = ({ data, onChange, disabled }
 		},
 		{
 			title: 'Priority',
-			render: (row) => row.priority || '--',
+			render: (row) => row.priority || '—',
 		},
 		{
 			title: 'Auto Apply',
