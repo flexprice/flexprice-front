@@ -1,4 +1,4 @@
-import { Button, Page, ShortPagination, ActionButton, CopyIdButton, SectionHeader } from '@/components/atoms';
+import { Button, Page, ShortPagination, ActionButton, CopyIdButton } from '@/components/atoms';
 import { ColumnData, FlexpriceTable, ApiDocsContent } from '@/components/molecules';
 import { UserApi } from '@/api/UserApi';
 import { useQuery } from '@tanstack/react-query';
@@ -152,12 +152,13 @@ const ServiceAccountsPage = () => {
 				/>
 			)}
 			{(serviceAccountsResponse?.items.length || 0) > 0 && (
-				<Page>
-					<SectionHeader title={t('common:nav.serviceAccounts')} titleClassName='text-3xl font-medium'>
+				<Page
+					heading={t('common:nav.serviceAccounts')}
+					headingCTA={
 						<Button prefixIcon={<Plus />} onClick={handleAdd}>
 							{t('common:actions.add')}
 						</Button>
-					</SectionHeader>
+					}>
 					<div className='pb-12 mt-2'>
 						<FlexpriceTable
 							variant='card'

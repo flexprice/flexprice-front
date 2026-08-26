@@ -1,16 +1,6 @@
 import { cn } from '@/lib/utils';
 import { FC } from 'react';
 
-/** Six separated avatar tokens — one hue each, then the hash wraps. */
-const AVATAR_TONES = [
-	'bg-[rgb(var(--fp-avatar-1))]',
-	'bg-[rgb(var(--fp-avatar-2))]',
-	'bg-[rgb(var(--fp-avatar-3))]',
-	'bg-[rgb(var(--fp-avatar-4))]',
-	'bg-[rgb(var(--fp-avatar-5))]',
-	'bg-[rgb(var(--fp-avatar-6))]',
-] as const;
-
 const AVATAR_SIZE = {
 	sm: 'size-6 text-[10px] leading-3',
 	md: 'size-8 text-[11px] leading-3',
@@ -23,30 +13,25 @@ export function getTableAvatarInitials(name: string): string {
 	return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
-export function getTableAvatarToneIndex(name: string): number {
-	let hash = 2166136261;
-	for (let i = 0; i < name.length; i += 1) {
-		hash ^= name.charCodeAt(i);
-		hash = Math.imul(hash, 16777619);
-	}
-	return (hash >>> 0) % AVATAR_TONES.length;
-}
-
 export interface TableAvatarProps {
 	name: string;
 	size?: keyof typeof AVATAR_SIZE;
 	className?: string;
 }
 
-/** Initials tile used in Figma list tables. `sm` is 24px; `md` is 32px. */
+/**
+ * Initials disc used in list tables. Outline-only: a full circle, a hairline border and the
+ * initials — no fill. The six hashed `--fp-avatar-*` tones this used to carry were dropped
+ * because they read as loud next to a borderless ferry-style row; the disc is now chrome, not
+ * a colour signal, so nothing depends on the name hash any more.
+ */
 const TableAvatar: FC<TableAvatarProps> = ({ name, size = 'sm', className }) => {
 	const initials = getTableAvatarInitials(name);
 	return (
 		<span
 			className={cn(
-				'inline-flex shrink-0 items-center justify-center overflow-clip rounded-[var(--fp-radius-sm)] text-white',
+				'inline-flex shrink-0 items-center justify-center overflow-clip rounded-full border border-line-zinc font-medium text-content-muted',
 				AVATAR_SIZE[size],
-				AVATAR_TONES[getTableAvatarToneIndex(name || initials)],
 				className,
 			)}
 			aria-hidden>

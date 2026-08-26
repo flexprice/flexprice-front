@@ -3,14 +3,21 @@ import { Copy } from 'lucide-react';
 import { CSSProperties, FC, ReactNode, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface Props {
 	tooltipContent: ReactNode;
 	tooltipText: string;
 	maxChars?: number;
+	/**
+	 * Hide the copy button until the surrounding `group` (a table row) is hovered or the button
+	 * is keyboard-focused. Opt-in: `WorkflowDetailsPage` renders this inside a DetailsCard with
+	 * no row to hover, where an always-hidden icon would be unreachable.
+	 */
+	revealOnHover?: boolean;
 }
 
-const TooltipCell: FC<Props> = ({ tooltipContent, tooltipText, maxChars }) => {
+const TooltipCell: FC<Props> = ({ tooltipContent, tooltipText, maxChars, revealOnHover = false }) => {
 	const { t } = useTranslation('common');
 	const value = tooltipText.trim();
 
@@ -49,7 +56,11 @@ const TooltipCell: FC<Props> = ({ tooltipContent, tooltipText, maxChars }) => {
 				onClick={handleCopy}
 				title={t('labels.copyToClipboard')}
 				aria-label={t('labels.copyToClipboard')}
-				className='inline-flex shrink-0 items-center justify-center text-content-muted hover:text-foreground'>
+				className={cn(
+					'inline-flex shrink-0 items-center justify-center text-content-muted hover:text-foreground',
+					revealOnHover &&
+						'opacity-0 transition-opacity duration-150 focus-visible:opacity-100 group-hover:opacity-100 motion-reduce:transition-none',
+				)}>
 				<Copy className='size-3.5' />
 			</button>
 		</div>

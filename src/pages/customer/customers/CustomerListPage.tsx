@@ -1,4 +1,4 @@
-import { AddButton, ActionButton, StatusChip, ProviderLogoStack, Page } from '@/components/atoms';
+import { AddButton, ActionButton, StatusChip, TableAvatar, ProviderLogoStack, Page } from '@/components/atoms';
 import { CreateCustomerDrawer, ApiDocsContent, TooltipCell } from '@/components/molecules';
 import { ColumnData } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
@@ -202,7 +202,12 @@ const CustomerListPage = () => {
 				title: t('list.columns.name'),
 				fieldVariant: 'title',
 				width: '16%',
-				render: (row) => <span className='block truncate'>{row.name || t('common:labels.na')}</span>,
+				render: (row) => (
+					<div className='flex min-w-0 items-center gap-2'>
+						<TableAvatar name={row.name || row.external_id} size='md' />
+						<span className='truncate'>{row.name || t('common:labels.na')}</span>
+					</div>
+				),
 			},
 			{
 				title: t('list.columns.externalId'),
@@ -217,8 +222,13 @@ const CustomerListPage = () => {
 					if (!email) {
 						return <span className='text-content-zinc-subtle'>{t('common:labels.na')}</span>;
 					}
-					return <TooltipCell tooltipContent={email} tooltipText={email} />;
+					return <TooltipCell revealOnHover tooltipContent={email} tooltipText={email} />;
 				},
+			},
+			{
+				title: t('list.columns.createdAt'),
+				width: '16%',
+				render: (row) => formatDate(row.created_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
 				title: t('list.columns.integrations'),
@@ -231,15 +241,10 @@ const CustomerListPage = () => {
 				render: (row) => {
 					const isActive = row.status === ENTITY_STATUS.PUBLISHED;
 					const label = isActive ? t('common:status.active') : t('common:status.inactive');
-					// `py-0.5` matches ferry's StatusBadge box (22px). The atom's default `py-1.5`
-					// makes a 32px pill, which alone pushes the row from ferry's ~50px to 60px.
+					// `py-0.5` matches ferry's StatusBadge box. The atom's default `py-1.5` makes a
+					// 32px pill, which alone pushed the row past ferry's ~50px.
 					return <StatusChip className='py-0.5' status={isActive ? 'Active' : 'Inactive'} label={label} />;
 				},
-			},
-			{
-				title: t('list.columns.createdAt'),
-				width: '16%',
-				render: (row) => formatDate(row.created_at, undefined, { day: 'numeric', month: 'short', year: 'numeric' }),
 			},
 			{
 				fieldVariant: 'interactive',
@@ -271,7 +276,7 @@ const CustomerListPage = () => {
 	);
 
 	return (
-		<Page className='max-w-none' documentTitle={t('list.title')}>
+		<Page className='max-w-none' heading={t('list.title')} headingCTA={customerToolbarActions}>
 			<ApiDocsContent tags={API_DOCS_TAGS.Customers} />
 			<QueryableDataArea<CustomerListRow>
 				queryConfig={{
@@ -280,7 +285,6 @@ const CustomerListPage = () => {
 					initialFilters,
 					initialSorts,
 					debounceTime: 300,
-					toolbarTrailing: customerToolbarActions,
 					...(showOrgTypeFilter
 						? {
 								orgTypeMetadataFilter: {

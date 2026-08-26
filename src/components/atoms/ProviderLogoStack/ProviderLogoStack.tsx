@@ -31,7 +31,7 @@ const ProviderMark: FC<{ provider: string }> = ({ provider }) => {
 const ProviderLogoStack: FC<ProviderLogoStackProps> = ({ providers, emptyLabel }) => {
 	const unique = [...new Set(providers.filter(Boolean))];
 	if (unique.length === 0) {
-		return <span className='text-content-zinc-subtle'>{emptyLabel}</span>;
+		return <span className='block w-full text-center text-content-zinc-subtle'>{emptyLabel}</span>;
 	}
 
 	const visible = unique.slice(0, MAX_VISIBLE_LOGOS);

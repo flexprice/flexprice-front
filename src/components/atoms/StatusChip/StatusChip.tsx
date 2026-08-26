@@ -64,11 +64,7 @@ const StatusChip: FC<StatusChipProps> = ({ tone, status, label, className }) => 
 	const resolvedLabel = label ?? status ?? '';
 
 	return (
-		<span
-			className={cn(
-				'inline-flex max-w-full shrink-0 items-center gap-2 rounded-full border border-line-zinc bg-surface py-1.5 pe-3 ps-2.5',
-				className,
-			)}>
+		<span className={cn('inline-flex max-w-full shrink-0 items-center gap-2 rounded-full bg-surface py-1.5 pe-3 ps-2.5', className)}>
 			<span className={cn('size-[var(--fp-chip-dot)] shrink-0 rounded-full', TONE_DOT[resolvedTone])} aria-hidden />
 			<span className='truncate text-[13px] font-medium leading-[18px] text-content-zinc-bold'>{resolvedLabel}</span>
 		</span>

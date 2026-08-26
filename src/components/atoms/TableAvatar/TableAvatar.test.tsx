@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import TableAvatar, { getTableAvatarInitials, getTableAvatarToneIndex } from './TableAvatar';
+import TableAvatar, { getTableAvatarInitials } from './TableAvatar';
 
 describe('TableAvatar', () => {
 	it('renders two-letter initials from a multi-word name', () => {
@@ -12,21 +12,21 @@ describe('TableAvatar', () => {
 		expect(getTableAvatarInitials('Globex')).toBe('GL');
 	});
 
-	it('uses the avatar token classes so dark-mode overrides can affect the tile', () => {
+	it('is a full circle with a hairline border', () => {
 		const { container } = render(<TableAvatar name='Acme Corporation' />);
 		const tile = container.querySelector('span');
-		expect(tile?.className).toMatch(/bg-\[rgb\(var\(--fp-avatar-\d\)\)\]/);
+		expect(tile?.className).toContain('rounded-full');
+		expect(tile?.className).toContain('border-line-zinc');
+	});
+
+	it('carries no fill, so the disc reads as chrome rather than a colour signal', () => {
+		const { container } = render(<TableAvatar name='Acme Corporation' />);
+		const tile = container.querySelector('span');
+		expect(tile?.className).not.toMatch(/\bbg-/);
 	});
 
 	it('uses a slightly larger tile when size is md', () => {
 		const { container } = render(<TableAvatar name='Acme Corporation' size='md' />);
 		expect(container.querySelector('span')?.className).toContain('size-8');
-	});
-
-	it('spreads names across six distinct primaries instead of clustering on purple/pink', () => {
-		const names = ['Acme', 'Globex', 'Initech', 'Umbrella', 'Stark', 'Wayne', 'Soylent', 'Hooli'];
-		const tones = new Set(names.map((name) => getTableAvatarToneIndex(name)));
-		expect(tones.size).toBeGreaterThanOrEqual(4);
-		expect(Math.max(...names.map((name) => getTableAvatarToneIndex(name)))).toBeLessThan(6);
 	});
 });

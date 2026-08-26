@@ -263,7 +263,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 					onRowClick && 'cursor-pointer hover:bg-muted/50',
 					lastRow && hideBottomBorder && 'border-b-0',
 					!isCard && '!py-1',
-					isCard && 'border-0 hover:bg-muted/40',
+					isCard && 'group border-0 hover:bg-muted/40',
 					isCard && lastRow && hideBottomBorder && 'border-b-0',
 				)}
 				key={rowIndex}>
