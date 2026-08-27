@@ -77,8 +77,8 @@ const SubscriptionDetailChargesSection: FC<Props> = ({ subscriptionId, customerI
 
 	return (
 		<Card className='card mt-8' variant='notched'>
-			<FormHeader title={t('labels.charges')} variant='sub-header' titleClassName='font-semibold' />
-			<div className='mt-4'>
+			<div className='flex flex-wrap items-center justify-between gap-3'>
+				<FormHeader title={t('labels.charges')} variant='sub-header' titleClassName='font-semibold' className='!mb-0' />
 				<QueryBuilder
 					filterOptions={SUBSCRIPTION_EDIT_LINE_ITEM_FILTER_OPTIONS}
 					filters={filters}
@@ -87,7 +87,10 @@ const SubscriptionDetailChargesSection: FC<Props> = ({ subscriptionId, customerI
 					selectedSorts={sorts}
 					onSortChange={setSorts}
 					debounceTime={300}
+					className='!mb-0'
 				/>
+			</div>
+			<div className='mt-4'>
 				<SubscriptionLineItemTable
 					data={lineItems}
 					isLoading={isLoading}

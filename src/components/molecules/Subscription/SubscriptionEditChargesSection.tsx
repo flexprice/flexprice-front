@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { FC, useMemo } from 'react';
-import { Card, AddButton, NoDataCard, ShortPagination, Spacer } from '@/components/atoms';
+import { Card, AddButton, FormHeader, NoDataCard, ShortPagination, Spacer } from '@/components/atoms';
 import SubscriptionLineItemTable from '@/components/molecules/SubscriptionLineItemTable/SubscriptionLineItemTable';
 import { QueryBuilder } from '@/components/molecules/QueryBuilder';
 import type { LineItem, SubscriptionCommitmentInfo, SubscriptionPhase } from '@/models/Subscription';
@@ -127,16 +127,20 @@ const SubscriptionEditChargesSection: FC<SubscriptionEditChargesSectionProps> = 
 
 	return (
 		<Card variant='notched'>
-			<QueryBuilder
-				filterOptions={SUBSCRIPTION_EDIT_LINE_ITEM_FILTER_OPTIONS}
-				filters={filters}
-				onFilterChange={setFilters}
-				sortOptions={SUBSCRIPTION_EDIT_LINE_ITEM_SORT_OPTIONS}
-				selectedSorts={sorts}
-				onSortChange={setSorts}
-				debounceTime={300}>
-				{onAddCharge ? <AddButton onClick={onAddCharge} disabled={addDisabled} /> : null}
-			</QueryBuilder>
+			<div className='flex flex-wrap items-center justify-between gap-3 mb-5'>
+				<FormHeader title={t('labels.charges')} variant='sub-header' titleClassName='font-semibold' className='!mb-0' />
+				<QueryBuilder
+					filterOptions={SUBSCRIPTION_EDIT_LINE_ITEM_FILTER_OPTIONS}
+					filters={filters}
+					onFilterChange={setFilters}
+					sortOptions={SUBSCRIPTION_EDIT_LINE_ITEM_SORT_OPTIONS}
+					selectedSorts={sorts}
+					onSortChange={setSorts}
+					debounceTime={300}
+					className='!mb-0'>
+					{onAddCharge ? <AddButton onClick={onAddCharge} disabled={addDisabled} /> : null}
+				</QueryBuilder>
+			</div>
 			<SubscriptionLineItemTable
 				data={lineItems}
 				isLoading={isLoading}

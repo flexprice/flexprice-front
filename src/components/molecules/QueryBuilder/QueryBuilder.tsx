@@ -2,6 +2,7 @@ import { FilterField, FilterCondition, SortOption, SortDirection } from '@/types
 import { useState, useCallback, useMemo, useEffect, type ReactNode } from 'react';
 import { debounce } from 'lodash';
 import { FilterPopover, SortDropdown } from '@/components/molecules';
+import { cn } from '@/lib/utils';
 
 interface Props {
 	// Filter options
@@ -30,6 +31,9 @@ interface Props {
 
 	/** Trailing toolbar content (e.g. count label, CTAs); rendered flush right on wide layouts. */
 	children?: ReactNode;
+
+	/** Extra classes merged onto the root row (e.g. '!mb-0' when embedded in a section header). */
+	className?: string;
 }
 
 const QueryBuilder = ({
@@ -41,6 +45,7 @@ const QueryBuilder = ({
 	selectedSorts = [],
 	debounceTime = 500,
 	children,
+	className,
 }: Props) => {
 	const [filter, setFilter] = useState<FilterCondition[]>(filters);
 	const [localSorts, setLocalSorts] = useState<SortOption[]>(selectedSorts);
@@ -125,7 +130,11 @@ const QueryBuilder = ({
 	const hasTrailing = children != null && children !== false;
 
 	return (
-		<div className={hasTrailing ? 'flex flex-wrap items-center justify-between gap-3 mb-5' : 'flex flex-wrap items-center gap-3 mb-5'}>
+		<div
+			className={cn(
+				hasTrailing ? 'flex flex-wrap items-center justify-between gap-3 mb-5' : 'flex flex-wrap items-center gap-3 mb-5',
+				className,
+			)}>
 			<div className='flex flex-wrap items-center gap-3 min-w-0'>
 				{fields.length > 0 && <FilterPopover fields={fields} value={filter} onChange={handleFilterChange} />}
 
