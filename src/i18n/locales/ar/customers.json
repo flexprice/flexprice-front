@@ -533,6 +533,7 @@
 			"colBillingPeriod": "فترة الفوترة",
 			"colQuantity": "الكمية",
 			"colPrice": "السعر",
+			"colBucketSize": "حجم الدفعة",
 			"editAdded": "تعديل",
 			"deleteAdded": "حذف"
 		},
