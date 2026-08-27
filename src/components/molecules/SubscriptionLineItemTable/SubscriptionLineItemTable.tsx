@@ -533,11 +533,13 @@ const SubscriptionLineItemTable: FC<Props> = ({
 			{
 				title: 'Price Type',
 				// Bucket size rides along as a secondary label instead of its own
-				// column — it applies to too few rows to earn one.
+				// column — it applies to too few rows to earn one. The column is kept
+				// wide enough that "Usage Based · 30 Minute" doesn't wrap.
+				width: 190,
 				render: (row) => {
 					const bucketLabel = getBucketSizeLabel(resolveBucketSize(row.price));
 					return (
-						<span>
+						<span className='whitespace-nowrap'>
 							{getPriceTypeLabel(row.price_type)}
 							{bucketLabel ? <span className='text-content-muted'>{` · ${bucketLabel}`}</span> : null}
 						</span>

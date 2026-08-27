@@ -480,7 +480,7 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 										<Chip label={t('catalog:plans.organisms.planPriceTable.usageBased')} variant='info' />
 									</span>
 								</Tooltip>
-								{bucketLabel ? <span className='text-sm text-content-muted'>{bucketLabel}</span> : null}
+								{bucketLabel ? <span className='text-sm text-content-muted whitespace-nowrap'>{bucketLabel}</span> : null}
 							</div>
 						);
 					}
