@@ -467,13 +467,21 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 					}
 
 					if (isUsageCharge) {
-						// For usage charges: show [Usage Based] only
+						// For usage charges: [Usage Based], with the bucket size as a
+						// secondary label when configured (too rare to earn a column).
+						const bucketLabel = getBucketSizeLabel(resolveBucketSize(row));
 						return (
-							<Tooltip content={t('catalog:plans.organisms.planPriceTable.chargeTypeTooltips.usageBased')} delayDuration={0} sideOffset={5}>
-								<span>
-									<Chip label={t('catalog:plans.organisms.planPriceTable.usageBased')} variant='info' />
-								</span>
-							</Tooltip>
+							<div className='flex items-center gap-2'>
+								<Tooltip
+									content={t('catalog:plans.organisms.planPriceTable.chargeTypeTooltips.usageBased')}
+									delayDuration={0}
+									sideOffset={5}>
+									<span>
+										<Chip label={t('catalog:plans.organisms.planPriceTable.usageBased')} variant='info' />
+									</span>
+								</Tooltip>
+								{bucketLabel ? <span className='text-sm text-content-muted'>{bucketLabel}</span> : null}
+							</div>
 						);
 					}
 
@@ -484,13 +492,6 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 			{
 				title: 'Billing Period',
 				render: (row) => <span>{formatBillingPeriod(row.billing_period as string)}</span>,
-			},
-			{
-				title: 'Bucket Size',
-				render: (row) => {
-					const label = getBucketSizeLabel(resolveBucketSize(row));
-					return label ? <Chip label={label} variant='default' /> : <span className='text-content-muted'>{t('common:labels.na')}</span>;
-				},
 			},
 			{
 				title: 'Status',
