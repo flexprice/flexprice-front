@@ -105,6 +105,26 @@ describe('ActionButton Component', () => {
 			expect(triggerButton).toBeInTheDocument();
 		});
 
+		it('should give the trigger an accessible name by default', () => {
+			render(
+				<TestWrapper>
+					<ActionButton {...defaultProps} />
+				</TestWrapper>,
+			);
+
+			expect(screen.getByRole('button', { name: 'Row actions' })).toBeInTheDocument();
+		});
+
+		it('should use a caller-supplied accessible name when ariaLabel is passed', () => {
+			render(
+				<TestWrapper>
+					<ActionButton {...defaultProps} ariaLabel='Actions for Acme Corp' />
+				</TestWrapper>,
+			);
+
+			expect(screen.getByRole('button', { name: 'Actions for Acme Corp' })).toBeInTheDocument();
+		});
+
 		it('should render with custom trigger icon', () => {
 			const customIcon = <span data-testid='custom-icon'>Custom</span>;
 

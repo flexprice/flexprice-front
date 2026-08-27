@@ -19,8 +19,19 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
-    "lint": "eslint src vite.config.ts vitest.config.ts .storybook",
-    "build:ui": "vite build --config vite.flexprice-ui.config.ts"
+    "lint": "eslint src vite.config.ts vitest.config.ts .storybook e2e playwright.config.ts",
+    "build:ui": "vite build --config vite.flexprice-ui.config.ts",
+    "test:e2e": "playwright test --project=e2e",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:public": "playwright test --project=public",
+    "test:e2e:smoke": "playwright test --project=smoke",
+    "test:e2e:critical": "playwright test --project=e2e --grep @critical",
+    "test:e2e:regression": "playwright test --project=e2e --grep @regression",
+    "test:e2e:rbac": "playwright test --project=rbac",
+    "test:e2e:visual": "playwright test --project=visual",
+    "test:e2e:visual:update": "playwright test --project=visual --update-snapshots",
+    "test:e2e:report": "playwright show-report",
+    "typecheck:e2e": "tsc -p tsconfig.e2e.json"
   },
   "dependencies": {
     "@csvbox/react": "^1.1.11",
@@ -90,6 +101,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^5.2.1",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
     "@storybook/addon-docs": "^10.5.5",
     "@storybook/addon-onboarding": "^10.5.5",
     "@storybook/react-vite": "^10.5.5",

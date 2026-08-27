@@ -1,0 +1,141 @@
+# Scheduled synthetic monitoring.
+#
+# Runs the smoke suite against staging on a timer, independent of anyone pushing
+# code. This is the layer that catches breakage no pull request could have caught:
+# a backend contract change, an expired credential, a flipped feature flag, a third
+# party going down, a configuration drift.
+#
+# Notifications are edge-triggered, not level-triggered — an alert on the first
+# failure and a recovery notice on the first pass afterwards. Repeating "still
+# broken" every thirty minutes trains people to mute the channel.
+#
+# Required repository secrets:
+#   E2E_STAGING_URL                      base URL to monitor
+#   E2E_USER_EMAIL / E2E_USER_PASSWORD   the dedicated test account
+#   SLACK_WEBHOOK_URL                    where alerts go
+
+name: E2E (monitor)
+
+on:
+  schedule:
+    # Every 30 minutes. GitHub queues scheduled runs on shared capacity, so the
+    # actual start time drifts by a few minutes — fine for monitoring, and the
+    # reason this is not set to a tighter interval.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+# Never let a slow run overlap the next tick.
+concurrency:
+  group: e2e-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    name: Smoke (staging)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    permissions:
+      # Reading this workflow's own previous conclusion is what makes the
+      # recovery notice possible.
+      actions: read
+      contents: read
+
+    env:
+      CI: 'true'
+      E2E_BASE_URL: ${{ secrets.E2E_STAGING_URL }}
+      E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      # Skips rather than fails when unconfigured. This job runs every 30 minutes from
+      # the default branch, so failing here would post a red run around the clock from
+      # the moment it merges until someone adds the secrets — training everyone to
+      # ignore exactly the workflow whose whole value is being believed.
+      - name: Check configuration
+        id: guard
+        run: |
+          if [ -z "${E2E_BASE_URL}" ] || [ -z "${E2E_USER_EMAIL}" ] || [ -z "${E2E_USER_PASSWORD}" ]; then
+            echo "::notice::Monitoring is not configured yet (needs E2E_STAGING_URL, E2E_USER_EMAIL, E2E_USER_PASSWORD) — skipping."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.guard.outputs.configured == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.guard.outputs.configured == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.guard.outputs.configured == 'true'
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        if: steps.guard.outputs.configured == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.guard.outputs.configured == 'true'
+        run: npx playwright install --with-deps chromium
+
+      # Captured before this run's own result exists, so "was it broken already?"
+      # is answered by the previous tick rather than by this one.
+      - name: Read previous run conclusion
+        id: previous
+        if: steps.guard.outputs.configured == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          conclusion="$(gh api \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/e2e-monitor.yml/runs?status=completed&per_page=1" \
+            --jq '.workflow_runs[0].conclusion // "none"' 2>/dev/null || echo "none")"
+          echo "Previous conclusion: ${conclusion}"
+          echo "conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
+
+      - name: Run smoke suite
+        id: smoke
+        if: steps.guard.outputs.configured == 'true'
+        run: npx playwright test --project=smoke
+
+      - name: Alert on failure
+        if: failure() && steps.guard.outputs.configured == 'true'
+        run: |
+          node scripts/e2e-slack-notify.mjs \
+            --status failure \
+            --context "Scheduled monitor" \
+            --environment "${E2E_BASE_URL}"
+
+      # Only on the transition back to green, so recovery is announced once.
+      - name: Announce recovery
+        if: success() && steps.guard.outputs.configured == 'true' && steps.previous.outputs.conclusion == 'failure'
+        run: |
+          node scripts/e2e-slack-notify.mjs \
+            --status recovered \
+            --context "Scheduled monitor" \
+            --environment "${E2E_BASE_URL}"
+
+      - name: Upload report
+        if: always() && steps.guard.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload traces, screenshots and video
+        if: always() && steps.guard.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-traces-${{ github.run_id }}
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7

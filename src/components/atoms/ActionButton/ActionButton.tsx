@@ -52,6 +52,9 @@ interface ActionProps {
 	refetchQueryKey: string;
 	entityName: string;
 	triggerIcon?: React.ReactNode;
+	/** Accessible name for the menu trigger. Defaults to a generic "Row actions"; pass a specific
+	 * label (e.g. "Actions for Acme Corp") so screen readers and E2E role selectors can tell rows apart. */
+	ariaLabel?: string;
 	edit?: EditActionConfig;
 	archive?: ArchiveActionConfig;
 	customActions?: CustomAction[];
@@ -76,6 +79,7 @@ const ActionButton: FC<ActionProps> = ({
 	refetchQueryKey,
 	entityName,
 	triggerIcon,
+	ariaLabel,
 	edit,
 	archive,
 	customActions,
@@ -198,7 +202,9 @@ const ActionButton: FC<ActionProps> = ({
 			<div data-interactive='true' onClick={handleClick}>
 				<DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
 					<DropdownMenuTrigger asChild>
-						<button>{trigger}</button>
+						<button type='button' aria-label={ariaLabel || t('actions.rowActions')}>
+							{trigger}
+						</button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align='end'>
 						{copyId && copyId.enabled !== false && (

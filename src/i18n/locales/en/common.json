@@ -36,7 +36,8 @@
 		"sync": "Sync",
 		"linking": "Linking...",
 		"unlink": "Unlink",
-		"unlinking": "Unlinking..."
+		"unlinking": "Unlinking...",
+		"rowActions": "Row actions"
 	},
 	"status": {
 		"active": "Active",
