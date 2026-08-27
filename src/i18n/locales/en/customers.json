@@ -511,6 +511,7 @@
 			"colBillingPeriod": "Billing Period",
 			"colQuantity": "Quantity",
 			"colPrice": "Price",
+			"colBucketSize": "Bucket Size",
 			"editAdded": "Edit",
 			"deleteAdded": "Delete"
 		},

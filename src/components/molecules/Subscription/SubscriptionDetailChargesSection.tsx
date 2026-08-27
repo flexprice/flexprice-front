@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import SubscriptionApi from '@/api/SubscriptionApi';
-import { Card, FormHeader, ShortPagination, Spacer } from '@/components/atoms';
+import { Card, CardHeader, ShortPagination, Spacer } from '@/components/atoms';
 import { QueryBuilder } from '@/components/molecules/QueryBuilder';
 import SubscriptionLineItemTable from '@/components/molecules/SubscriptionLineItemTable/SubscriptionLineItemTable';
 import { EXPAND } from '@/models';
@@ -77,20 +77,23 @@ const SubscriptionDetailChargesSection: FC<Props> = ({ subscriptionId, customerI
 
 	return (
 		<Card className='card mt-8' variant='notched'>
-			<div className='flex flex-wrap items-center justify-between gap-3'>
-				<FormHeader title={t('labels.charges')} variant='sub-header' titleClassName='font-semibold' className='!mb-0' />
-				<QueryBuilder
-					filterOptions={SUBSCRIPTION_EDIT_LINE_ITEM_FILTER_OPTIONS}
-					filters={filters}
-					onFilterChange={setFilters}
-					sortOptions={SUBSCRIPTION_EDIT_LINE_ITEM_SORT_OPTIONS}
-					selectedSorts={sorts}
-					onSortChange={setSorts}
-					debounceTime={300}
-					className='!mb-0'
-				/>
-			</div>
-			<div className='mt-4'>
+			{/* CardHeader keeps the heading typography and spacing identical to sibling sections. */}
+			<CardHeader
+				title={t('labels.charges')}
+				cta={
+					<QueryBuilder
+						filterOptions={SUBSCRIPTION_EDIT_LINE_ITEM_FILTER_OPTIONS}
+						filters={filters}
+						onFilterChange={setFilters}
+						sortOptions={SUBSCRIPTION_EDIT_LINE_ITEM_SORT_OPTIONS}
+						selectedSorts={sorts}
+						onSortChange={setSorts}
+						debounceTime={300}
+						className='!mb-0'
+					/>
+				}
+			/>
+			<div>
 				<SubscriptionLineItemTable
 					data={lineItems}
 					isLoading={isLoading}

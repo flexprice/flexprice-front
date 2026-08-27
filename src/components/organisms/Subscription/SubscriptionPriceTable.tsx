@@ -4,8 +4,9 @@ import { ColumnData, FlexpriceTable, LineItemCoupon } from '@/components/molecul
 import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
 import CommitmentConfigDialog from '@/components/molecules/CommitmentConfigDialog';
 import { Price, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models';
+import type { PriceBucketSize } from '@/models/Meter';
 import { ChevronDownIcon, ChevronUpIcon, Copy, Pencil, RotateCcw, Tag, Target, Trash2 } from 'lucide-react';
-import { FormHeader, DecimalUsageInput, AddButton } from '@/components/atoms';
+import { FormHeader, DecimalUsageInput, AddButton, Chip } from '@/components/atoms';
 import { ChargeValueCell } from '@/components/molecules';
 import { capitalize } from 'es-toolkit';
 import { Coupon } from '@/models';
@@ -42,7 +43,13 @@ type ChargeTableData = {
 	quantity: ReactNode;
 	price: ReactNode;
 	invoice_cadence: string;
+	bucketSize: ReactNode;
 	actions?: ReactNode;
+};
+
+const bucketSizeCell = (bucketSize: ReturnType<typeof resolveBucketSize> | PriceBucketSize | undefined, naLabel: string): ReactNode => {
+	const label = getBucketSizeLabel(bucketSize);
+	return label ? <Chip label={label} variant='default' /> : <span className='text-content-muted'>{naLabel}</span>;
 };
 
 interface PriceActionMenuProps {
@@ -275,6 +282,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 			},
 			{ fieldName: 'quantity', title: t('organisms.subscriptionPriceTable.colQuantity') },
 			{ fieldName: 'price', title: t('organisms.subscriptionPriceTable.colPrice') },
+			{ fieldName: 'bucketSize', title: t('organisms.subscriptionPriceTable.colBucketSize') },
 			{
 				fieldName: 'actions',
 				title: '',
@@ -331,9 +339,6 @@ const SubscriptionPriceTable: FC<Props> = ({
 				charge: (
 					<div>
 						<div>{price.display_name || price.meter?.name || t('organisms.subscriptionPriceTable.chargeFallback')}</div>
-						{getBucketSizeLabel(resolveBucketSize(price)) ? (
-							<div className='text-xs text-content-muted'>{getBucketSizeLabel(resolveBucketSize(price))}</div>
-						) : null}
 					</div>
 				),
 				quantity: (
@@ -351,6 +356,7 @@ const SubscriptionPriceTable: FC<Props> = ({
 				),
 				price: <ChargeValueCell data={price} appliedCoupon={appliedCoupon} priceOverride={isOverridden ? override : undefined} />,
 				invoice_cadence: price.invoice_cadence,
+				bucketSize: bucketSizeCell(resolveBucketSize(price), t('common:labels.na')),
 				actions: (
 					<PriceActionMenu
 						price={price}
@@ -382,14 +388,12 @@ const SubscriptionPriceTable: FC<Props> = ({
 			charge: (
 				<div>
 					<div>{item.display_name || item.price?.display_name || t('organisms.subscriptionPriceTable.chargeFallback')}</div>
-					{getBucketSizeLabel(item.price?.bucket_size) ? (
-						<div className='text-xs text-content-muted'>{getBucketSizeLabel(item.price?.bucket_size)}</div>
-					) : null}
 				</div>
 			),
 			quantity: <span>{item.quantity ?? 1}</span>,
 			price: <span>{formatAddedLineItemPrice(item, currency)}</span>,
 			invoice_cadence: item.price?.invoice_cadence ?? '--',
+			bucketSize: bucketSizeCell(item.price?.bucket_size, t('common:labels.na')),
 			actions:
 				onRemoveAddedCharge || onEditAddedCharge ? (
 					<OptionsDropdownMenu

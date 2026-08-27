@@ -532,21 +532,18 @@ const SubscriptionLineItemTable: FC<Props> = ({
 				: []),
 			{
 				title: 'Price Type',
-				// Bucket size rides along as a secondary label instead of its own
-				// column — it applies to too few rows to earn one.
-				render: (row) => {
-					const bucketLabel = getBucketSizeLabel(resolveBucketSize(row.price));
-					return (
-						<span>
-							{getPriceTypeLabel(row.price_type)}
-							{bucketLabel ? <span className='text-content-muted'>{` · ${bucketLabel}`}</span> : null}
-						</span>
-					);
-				},
+				render: (row) => <span>{getPriceTypeLabel(row.price_type)}</span>,
 			},
 			{
 				title: 'Billing Period',
 				render: (row) => formatBillingPeriodForDisplay(row.billing_period),
+			},
+			{
+				title: 'Bucket Size',
+				render: (row) => {
+					const label = getBucketSizeLabel(resolveBucketSize(row.price));
+					return label ? <Chip label={label} variant='default' /> : <span className='text-content-muted'>{t('labels.na')}</span>;
+				},
 			},
 			...(hasMultipleEntityTypes
 				? [
