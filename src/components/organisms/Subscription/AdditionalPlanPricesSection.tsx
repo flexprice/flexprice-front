@@ -4,96 +4,84 @@ import { useTranslation } from 'react-i18next';
 import { capitalize } from 'es-toolkit';
 import { ColumnData, FlexpriceTable } from '@/components/molecules';
 import { Checkbox, FormHeader, Chip } from '@/components/atoms';
-import { formatAmount } from '@/components/atoms/Input/Input';
-import { Price, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { cadenceFanoutCount } from '@/utils/subscription/cadenceCompatibility';
-import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
+import type { AdditionalCadenceGroup } from '@/utils/subscription/planPricesForSubscriptionUi';
 
 interface Props {
-	/** Additional-cadence prices from `partitionPricesForSubscription(...).additional`. */
-	prices: Price[];
-	/** Currently opted-in price IDs (subset of `prices.map(p => p.id)`). */
-	optedInIds: string[];
-	/** Called when the user toggles a checkbox. */
-	onToggle: (priceId: string, included: boolean) => void;
-	/** Subscription cadence — required for the fan-out hint. */
+	/** Additional-cadence groups from `groupAdditionalPricesByCadence(partition.additional)`. */
+	groups: AdditionalCadenceGroup[];
+	/** Currently opted-in cadence keys (subset of `groups.map(g => g.key)`). */
+	optedInKeys: string[];
+	/** Called when the user toggles a cadence's checkbox. */
+	onToggle: (cadenceKey: string, included: boolean) => void;
+	/** Subscription cadence — used for the fan-out hint per cadence group. */
 	subPeriod: BILLING_PERIOD;
-	/** Subscription cadence count — required for the fan-out hint. */
+	/** Subscription cadence count — used for the fan-out hint per cadence group. */
 	subCount: number;
 	disabled?: boolean;
 }
 
 type Row = {
-	priceId: string;
+	key: string;
 	include: ReactNode;
-	charge: ReactNode;
-	billing_period: ReactNode;
-	price: ReactNode;
+	cadence: ReactNode;
+	count: ReactNode;
+	fanout: ReactNode;
 };
 
-function formatPriceForRow(p: Price): string {
-	const currency = p.price_unit_type === PRICE_UNIT_TYPE.CUSTOM ? p.price_unit_config?.price_unit : (p as { currency?: string }).currency;
-	const symbol = currency ? getCurrencySymbol(currency) : '';
-	const amount = p.amount ?? p.price_unit_config?.amount ?? '0';
-	const period = p.billing_period ? formatBillingPeriodForPrice(p.billing_period) : '';
-	return `${symbol}${formatAmount(amount)}${period ? ` / ${period}` : ''}`;
-}
-
 /**
- * Opt-in section for finer-cadence plan prices that would fan out on the subscription's
- * invoice. Rendered only when the partition helper returns at least one additional price.
- * Selection state lives on the parent's `SubscriptionFormState.optedInAdditionalPriceIds`.
+ * Opt-in section for finer-cadence plan prices, grouped by cadence. Toggling a group's
+ * checkbox pulls **every** plan price of that cadence into the parent's main "Charges"
+ * table (via `SubscriptionFormState.optedInAdditionalCadences`) so the user gets full
+ * override / commitment / coupon controls on the merged prices. Rendered only when the
+ * partition helper produced at least one additional group.
  */
-const AdditionalPlanPricesSection: FC<Props> = ({ prices, optedInIds, onToggle, subPeriod, subCount, disabled = false }) => {
+const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle, subPeriod, subCount, disabled = false }) => {
 	const { t } = useTranslation('customers');
-	const optedInSet = useMemo(() => new Set(optedInIds), [optedInIds]);
+	const optedInSet = useMemo(() => new Set(optedInKeys), [optedInKeys]);
 
 	const columns = useMemo<ColumnData<Row>[]>(
 		() => [
 			{ fieldName: 'include', title: '', width: 40, align: 'center', fieldVariant: 'interactive' },
-			{ fieldName: 'charge', title: t('organisms.subscriptionPriceTable.colCharge') },
-			{ fieldName: 'billing_period', title: t('organisms.subscriptionPriceTable.colBillingPeriod') },
-			{ fieldName: 'price', title: t('organisms.subscriptionPriceTable.colPrice') },
+			{ fieldName: 'cadence', title: t('organisms.additionalPlanPrices.colCadence') },
+			{ fieldName: 'count', title: t('organisms.additionalPlanPrices.colCount') },
+			{ fieldName: 'fanout', title: t('organisms.additionalPlanPrices.colBillingImpact') },
 		],
 		[t],
 	);
 
 	const rows = useMemo<Row[]>(() => {
-		return prices.map((price) => {
-			const fanout = cadenceFanoutCount(subPeriod, subCount, price.billing_period, price.billing_period_count);
-			const isChecked = optedInSet.has(price.id);
+		return groups.map((group) => {
+			const fanout = cadenceFanoutCount(subPeriod, subCount, group.period, group.count);
+			const isChecked = optedInSet.has(group.key);
+			const cadenceLabel = group.count > 1 ? `${capitalize(String(group.period))} × ${group.count}` : capitalize(String(group.period));
 			return {
-				priceId: price.id,
+				key: group.key,
 				include: (
 					<div data-interactive='true' onClick={(e) => e.stopPropagation()}>
 						<Checkbox
-							id={`additional-price-${price.id}`}
+							id={`additional-cadence-${group.key}`}
 							checked={isChecked}
 							disabled={disabled}
-							onCheckedChange={(next) => onToggle(price.id, !!next)}
+							onCheckedChange={(next) => onToggle(group.key, !!next)}
 						/>
 					</div>
 				),
-				charge: (
-					<div>
-						<div>{price.display_name || price.meter?.name || t('organisms.subscriptionPriceTable.chargeFallback')}</div>
-						{fanout != null && fanout > 1 && (
-							<div className='text-xs text-content-muted mt-0.5'>
-								{t('organisms.subscriptionPriceTable.fanoutHint', { count: fanout })}
-							</div>
-						)}
-					</div>
-				),
-				billing_period: <Chip label={capitalize(String(price.billing_period))} variant='default' />,
-				price: (
-					<span>{price.type === PRICE_TYPE.FIXED ? formatPriceForRow(price) : t('organisms.subscriptionPriceTable.payAsYouGo')}</span>
+				cadence: <Chip label={cadenceLabel} variant='default' />,
+				count: <span>{t('organisms.additionalPlanPrices.chargeCount', { count: group.prices.length })}</span>,
+				fanout: (
+					<span className='text-xs text-content-muted'>
+						{fanout != null && fanout > 1
+							? t('organisms.additionalPlanPrices.fanoutHint', { count: fanout })
+							: t('organisms.additionalPlanPrices.noFanout')}
+					</span>
 				),
 			};
 		});
-	}, [prices, optedInSet, subPeriod, subCount, disabled, onToggle, t]);
+	}, [groups, optedInSet, subPeriod, subCount, disabled, onToggle, t]);
 
-	if (prices.length === 0) return null;
+	if (groups.length === 0) return null;
 
 	return (
 		<div className='space-y-3'>

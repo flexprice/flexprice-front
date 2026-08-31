@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { BILLING_PERIOD } from '@/constants/constants';
 import type { Price } from '@/models/Price';
 import { PRICE_TYPE } from '@/models';
-import { partitionPricesForSubscription } from './planPricesForSubscriptionUi';
+import { cadenceKey, groupAdditionalPricesByCadence, partitionPricesForSubscription } from './planPricesForSubscriptionUi';
 
 function makePrice(overrides: { id: string; billing_period: BILLING_PERIOD; billing_period_count?: number; currency?: string }): Price {
 	return {
@@ -79,5 +79,46 @@ describe('partitionPricesForSubscription', () => {
 		expect(primary.map((p) => p.id)).toEqual(['q2']);
 		// quarterly x 1 (3 months) divides quarterly x 2 (6 months) → compatible finer
 		expect(additional.map((p) => p.id)).toEqual(['q1']);
+	});
+});
+
+describe('cadenceKey', () => {
+	it('normalizes period to uppercase and pins count', () => {
+		expect(cadenceKey(BILLING_PERIOD.MONTHLY, 1)).toBe('MONTHLY:1');
+		expect(cadenceKey('monthly', 1)).toBe('MONTHLY:1');
+		expect(cadenceKey(BILLING_PERIOD.QUARTERLY, 2)).toBe('QUARTERLY:2');
+	});
+
+	it('defaults undefined / non-positive counts to 1', () => {
+		expect(cadenceKey(BILLING_PERIOD.MONTHLY, undefined)).toBe('MONTHLY:1');
+		expect(cadenceKey(BILLING_PERIOD.MONTHLY, 0)).toBe('MONTHLY:1');
+	});
+});
+
+describe('groupAdditionalPricesByCadence', () => {
+	it('buckets multiple monthly prices under a single MONTHLY:1 group in plan order', () => {
+		const additional = [
+			makePrice({ id: 'monthly_a', billing_period: BILLING_PERIOD.MONTHLY }),
+			makePrice({ id: 'monthly_b', billing_period: BILLING_PERIOD.MONTHLY }),
+		];
+		const groups = groupAdditionalPricesByCadence(additional);
+		expect(groups).toHaveLength(1);
+		expect(groups[0].key).toBe('MONTHLY:1');
+		expect(groups[0].period).toBe(BILLING_PERIOD.MONTHLY);
+		expect(groups[0].count).toBe(1);
+		expect(groups[0].prices.map((p) => p.id)).toEqual(['monthly_a', 'monthly_b']);
+	});
+
+	it('separates by count', () => {
+		const additional = [
+			makePrice({ id: 'q1', billing_period: BILLING_PERIOD.QUARTERLY, billing_period_count: 1 }),
+			makePrice({ id: 'q2', billing_period: BILLING_PERIOD.QUARTERLY, billing_period_count: 2 }),
+		];
+		const groups = groupAdditionalPricesByCadence(additional);
+		expect(groups.map((g) => g.key).sort()).toEqual(['QUARTERLY:1', 'QUARTERLY:2']);
+	});
+
+	it('returns empty array for empty input', () => {
+		expect(groupAdditionalPricesByCadence([])).toEqual([]);
 	});
 });

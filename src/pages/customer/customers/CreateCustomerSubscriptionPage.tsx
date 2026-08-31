@@ -55,6 +55,7 @@ import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { usePlanPrices } from '@/hooks/usePlanPrices';
 import {
+	cadenceKey,
 	filterPlanPricesForSubscriptionCharges,
 	isOneTimePlanPrice,
 	partitionPricesForSubscription,
@@ -134,12 +135,14 @@ export type SubscriptionFormState = {
 	/** Set to send `auto_invoice_threshold` when plan has no FIXED charges; leave empty to omit. */
 	autoInvoiceThreshold: string;
 	/**
-	 * Plan-price IDs the user opted in from the "Also available on this plan" section (compatible
-	 * finer-cadence prices). Empty = user accepted the default (exact cadence + ONETIME only).
-	 * On submit: if non-empty, we send `include_price_ids = [primary_ids + these]` so backend
-	 * attaches exactly the user's selection.
+	 * Cadence keys (`period:count`, e.g. "MONTHLY:1") the user opted in from the
+	 * "Also available on this plan" section. Each opted-in cadence pulls **all**
+	 * plan prices of that cadence into the main Charges table. Empty = user
+	 * accepted the default (exact cadence + ONETIME only).
+	 * On submit: if non-empty, we send `include_price_ids = [primary_ids +
+	 * every_price_in_opted_in_cadences]` so backend attaches exactly the user's selection.
 	 */
-	optedInAdditionalPriceIds: string[];
+	optedInAdditionalCadences: string[];
 };
 
 const usePlans = () => {
@@ -317,7 +320,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		inheritanceCustomers: [],
 		subscriptionTrialPeriodDays: '',
 		autoInvoiceThreshold: '',
-		optedInAdditionalPriceIds: [],
+		optedInAdditionalCadences: [],
 	});
 
 	const { data: plans, isLoading: plansLoading, isError: plansError } = usePlans();
@@ -584,7 +587,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			inheritanceCustomers,
 			subscriptionTrialPeriodDays,
 			autoInvoiceThreshold,
-			optedInAdditionalPriceIds,
+			optedInAdditionalCadences,
 		} = subscriptionState;
 
 		const hasFixedSubscriptionChargePrice = subscriptionChargesHaveFixedPrice(prices, billingPeriod, currency, isPriceActive);
@@ -638,13 +641,13 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			const currentPrices = filterPlanPricesForSubscriptionCharges(activeItems, billingPeriod, currency);
 
 			// Only send include_price_ids when the user opted in at least one additional-cadence
-			// price. Full authoritative list = primary partition IDs + opted-in IDs (intersected
-			// against the additional partition as a safety net in case reconciliation lagged).
-			if (optedInAdditionalPriceIds.length > 0) {
+			// bucket. Full authoritative list = primary partition IDs + every additional price
+			// whose (period, count) cadence key matches one of the opted-in cadences.
+			if (optedInAdditionalCadences.length > 0) {
+				const optedSet = new Set(optedInAdditionalCadences);
 				const { primary, additional } = partitionPricesForSubscription(activeItems, billingPeriod, 1, currency);
-				const additionalIdSet = new Set(additional.map((p) => p.id));
-				const validOptedIn = optedInAdditionalPriceIds.filter((id) => additionalIdSet.has(id));
-				finalIncludePriceIds = [...primary.map((p) => p.id), ...validOptedIn];
+				const optedInPrices = additional.filter((p) => optedSet.has(cadenceKey(p.billing_period, p.billing_period_count)));
+				finalIncludePriceIds = [...primary.map((p) => p.id), ...optedInPrices.map((p) => p.id)];
 			}
 
 			// Convert price overrides to line item overrides

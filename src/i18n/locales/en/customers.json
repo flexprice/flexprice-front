@@ -514,12 +514,18 @@
 			"colPrice": "Price",
 			"colBucketSize": "Bucket Size",
 			"editAdded": "Edit",
-			"deleteAdded": "Delete",
-			"fanoutHint": "Bills as {{count}} line items per subscription invoice"
+			"deleteAdded": "Delete"
 		},
 		"additionalPlanPrices": {
 			"title": "Also available on this plan",
-			"explainer": "These prices bill more frequently than your subscription cadence. Add them to include them on this subscription's invoices."
+			"explainer": "These cadences bill more frequently than your subscription cadence. Toggle a cadence on to add all its plan prices to Charges.",
+			"colCadence": "Cadence",
+			"colCount": "Charges",
+			"colBillingImpact": "Billing impact",
+			"chargeCount_one": "{{count}} charge",
+			"chargeCount_other": "{{count}} charges",
+			"fanoutHint": "Each bills as {{count}} line items per subscription invoice",
+			"noFanout": "Same as subscription cadence"
 		},
 		"subscriptionTable": {
 			"planModifiedAria": "Plan modified",

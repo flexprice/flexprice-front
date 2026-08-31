@@ -76,6 +76,43 @@ export function filterPlanPricesForSubscriptionCharges(
 	return [...primary, ...additional];
 }
 
+/**
+ * Stable string key identifying a (period, count) cadence tuple. Used to opt whole
+ * cadence groups in/out of the subscription (e.g. "MONTHLY:1" checks in every monthly
+ * price on the plan). Uppercased period + numeric count keep the key JSON-safe.
+ */
+export function cadenceKey(period: BILLING_PERIOD | string, count: number | undefined): string {
+	const c = Math.max(1, count ?? 1);
+	return `${String(period).toUpperCase()}:${c}`;
+}
+
+export interface AdditionalCadenceGroup {
+	key: string;
+	period: BILLING_PERIOD;
+	count: number;
+	prices: Price[];
+}
+
+/**
+ * Bucket the `additional` partition by cadence so the UI can render one opt-in row per
+ * cadence (with a single fan-out hint) instead of one per price. Preserves plan order.
+ */
+export function groupAdditionalPricesByCadence(additional: Price[]): AdditionalCadenceGroup[] {
+	const groups = new Map<string, AdditionalCadenceGroup>();
+	for (const p of additional) {
+		const period = String(p.billing_period).toUpperCase() as BILLING_PERIOD;
+		const count = p.billing_period_count ?? 1;
+		const key = cadenceKey(period, count);
+		const existing = groups.get(key);
+		if (existing) {
+			existing.prices.push(p);
+		} else {
+			groups.set(key, { key, period, count, prices: [p] });
+		}
+	}
+	return [...groups.values()];
+}
+
 /** Distinct recurring billing periods on a plan (excludes ONETIME — not selectable as subscription cadence). */
 export function uniqueRecurringBillingPeriodsFromPrices(prices: { billing_period: string | BILLING_PERIOD }[]): BILLING_PERIOD[] {
 	const set = new Set<BILLING_PERIOD>();

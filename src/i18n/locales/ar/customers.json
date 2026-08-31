@@ -536,12 +536,18 @@
 			"colPrice": "السعر",
 			"colBucketSize": "حجم الدفعة",
 			"editAdded": "تعديل",
-			"deleteAdded": "حذف",
-			"fanoutHint": "يتم إصداره كـ {{count}} بنود لكل فاتورة اشتراك"
+			"deleteAdded": "حذف"
 		},
 		"additionalPlanPrices": {
 			"title": "متوفر أيضاً في هذه الخطة",
-			"explainer": "تُحتسب هذه الأسعار بمعدل أكثر تكراراً من دورة اشتراكك. أضفها لتضمينها في فواتير هذا الاشتراك."
+			"explainer": "تُحتسب هذه الدورات بمعدل أكثر تكراراً من دورة اشتراكك. فعّل دورة لإضافة كل أسعارها إلى الرسوم.",
+			"colCadence": "الدورة",
+			"colCount": "الرسوم",
+			"colBillingImpact": "الأثر على الفواتير",
+			"chargeCount_one": "{{count}} رسم",
+			"chargeCount_other": "{{count}} رسوم",
+			"fanoutHint": "يُحتسب كلٌّ منها كـ {{count}} بنود لكل فاتورة اشتراك",
+			"noFanout": "بنفس دورة الاشتراك"
 		},
 		"subscriptionTable": {
 			"planModifiedAria": "تم تعديل الخطة",
