@@ -89,7 +89,7 @@ const ExportManagement = () => {
 						}}
 					/>
 				) : (
-					<Tooltip content={t('bulkImports.writeDeniedTooltip')}>
+					<Tooltip content={t('insightsTools.exports.writeDeniedTooltip')}>
 						<span tabIndex={0} className='inline-block'>
 							<AddButton disabled />
 						</span>
@@ -151,7 +151,7 @@ const ExportManagement = () => {
 								{t('insightsTools.exports.addExportTask')}
 							</Button>
 						) : (
-							<Tooltip content={t('bulkImports.writeDeniedTooltip')}>
+							<Tooltip content={t('insightsTools.exports.writeDeniedTooltip')}>
 								<span tabIndex={0} className='inline-block'>
 									<Button disabled variant='outline' className='!p-5 !bg-surface-panel !border-line-muted flex items-center gap-2 mx-auto'>
 										<Plus className='w-4 h-4' />

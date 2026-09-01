@@ -35,7 +35,7 @@ const EmptyState = ({ config }: EmptyStateProps) => {
 					config.buttonLabel &&
 					(config.buttonDisabled ? (
 						<Tooltip content={config.buttonDisabledReason}>
-							<span tabIndex={0} className='inline-block'>
+							<span tabIndex={0} aria-disabled='true' className='inline-block'>
 								<Button disabled variant='outline' className='!p-5 !bg-surface-panel !border-line-muted'>
 									{config.buttonLabel}
 								</Button>

@@ -1006,6 +1006,7 @@
 	},
 	"insightsTools": {
 		"exports": {
+			"writeDeniedTooltip": "ليس لديك إذن لإنشاء مهام تصدير. اطلب الوصول من مسؤول المستأجر.",
 			"pageHeading": "تصدير البيانات",
 			"s3PageHeading": "تصدير بيانات S3",
 			"exportNotFound": "التصدير غير موجود",

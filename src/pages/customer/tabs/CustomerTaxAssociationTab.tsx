@@ -115,7 +115,10 @@ const CustomerTaxAssociationTab = () => {
 			<ApiDocsContent tags={API_DOCS_TAGS.TaxAssociations} />
 			<Card variant='notched'>
 				<CardHeader title={t('tabPanels.tax.associationsTitle')} cta={addTaxAssociationCta} />
-				<TaxAssociationTable data={taxAssociationsData.items} showDelete={!isArchived && canWriteTax} />
+				{/* TaxAssociationTable applies its own canWriteTax disabled+tooltip to the delete
+				    action — pass only the archived-state condition here so a denied user still sees
+				    the (disabled, explained) action instead of it disappearing outright. */}
+				<TaxAssociationTable data={taxAssociationsData.items} showDelete={!isArchived} />
 				<ShortPagination unit={t('tabPanels.tax.associationsPaginationUnit')} totalItems={taxAssociationsData.pagination.total ?? 0} />
 			</Card>
 

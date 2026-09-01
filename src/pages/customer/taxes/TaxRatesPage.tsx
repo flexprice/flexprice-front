@@ -22,7 +22,7 @@ const TaxPage = () => {
 	const { limit, offset, page } = usePagination();
 	const [taxDrawerOpen, setTaxDrawerOpen] = useState(false);
 	const [activeTax, setActiveTax] = useState<TaxRateResponse | null>(null);
-	const { can } = useCurrentUserPermissions();
+	const { can, isLoading: permissionsLoading } = useCurrentUserPermissions();
 	const canWriteTax = can('tax', 'write');
 
 	const fetchTaxRates = async () => {
@@ -51,7 +51,7 @@ const TaxPage = () => {
 		setTaxDrawerOpen(true);
 	};
 
-	if (isLoading) {
+	if (isLoading || permissionsLoading) {
 		return <Loader />;
 	}
 

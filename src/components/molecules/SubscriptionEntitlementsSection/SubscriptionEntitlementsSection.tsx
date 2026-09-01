@@ -37,6 +37,9 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 	const { t } = useTranslation('catalog');
 	const { can } = useCurrentUserPermissions();
 	const canWriteEntitlement = can('entitlement', 'write');
+	// Only explain the permission-denied case, not the (unrelated) readOnly case, where the
+	// button being disabled has nothing to do with the current user's own write access.
+	const addButtonDeniedReason = !readOnly && !canWriteEntitlement ? t('plans.entitlementsTab.writeDeniedTooltip') : undefined;
 	const [addDrawerOpen, setAddDrawerOpen] = useState(false);
 	const [editDrawerOpen, setEditDrawerOpen] = useState(false);
 	const [selectedEntitlement, setSelectedEntitlement] = useState<EnrichedSubscriptionEntitlement | null>(null);
@@ -426,30 +429,61 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>
-								<DropdownMenuItem
-									disabled={!canWriteEntitlement}
-									onSelect={(e) => {
-										e.preventDefault();
-										if (!canWriteEntitlement) return;
-										handleEdit(row);
-									}}
-									className={`flex gap-2 items-center cursor-pointer ${!canWriteEntitlement ? 'opacity-50 cursor-not-allowed' : ''}`}>
-									<Pencil className='h-4 w-4' />
-									<span>{t('entitlements.overridesTable.edit')}</span>
-								</DropdownMenuItem>
-								{canDelete && (
-									<DropdownMenuItem
-										disabled={!canWriteEntitlement}
-										onSelect={(e) => {
-											e.preventDefault();
-											if (!canWriteEntitlement) return;
-											handleDelete(row);
-										}}
-										className={`flex gap-2 items-center cursor-pointer text-danger ${!canWriteEntitlement ? 'opacity-50 cursor-not-allowed' : ''}`}>
-										<Trash2 className='h-4 w-4' />
-										<span>{row.isOverrideOfParent ? t('entitlements.subscriptionEdit.resetAction') : tc('actions.delete')}</span>
-									</DropdownMenuItem>
-								)}
+								{(() => {
+									const editItem = (
+										<DropdownMenuItem
+											aria-disabled={!canWriteEntitlement}
+											onSelect={(e) => {
+												e.preventDefault();
+												if (!canWriteEntitlement) return;
+												handleEdit(row);
+											}}
+											className={`flex gap-2 items-center cursor-pointer ${!canWriteEntitlement ? 'opacity-50 cursor-not-allowed' : ''}`}>
+											<Pencil className='h-4 w-4' />
+											<span>{t('entitlements.overridesTable.edit')}</span>
+										</DropdownMenuItem>
+									);
+									// Tooltip wraps the item directly (asChild merges its trigger props into it)
+									// rather than a wrapping <span> — a Radix-disabled item drops out of the
+									// menu's roving-focus/collection, so the select is blocked in onSelect
+									// instead, keeping the item reachable by arrow-key nav.
+									return canWriteEntitlement ? (
+										editItem
+									) : (
+										<TooltipProvider delayDuration={0}>
+											<Tooltip>
+												<TooltipTrigger asChild>{editItem}</TooltipTrigger>
+												<TooltipContent>{t('plans.entitlementsTab.writeDeniedTooltip')}</TooltipContent>
+											</Tooltip>
+										</TooltipProvider>
+									);
+								})()}
+								{canDelete &&
+									(() => {
+										const deleteItem = (
+											<DropdownMenuItem
+												aria-disabled={!canWriteEntitlement}
+												onSelect={(e) => {
+													e.preventDefault();
+													if (!canWriteEntitlement) return;
+													handleDelete(row);
+												}}
+												className={`flex gap-2 items-center cursor-pointer text-danger ${!canWriteEntitlement ? 'opacity-50 cursor-not-allowed' : ''}`}>
+												<Trash2 className='h-4 w-4' />
+												<span>{row.isOverrideOfParent ? t('entitlements.subscriptionEdit.resetAction') : tc('actions.delete')}</span>
+											</DropdownMenuItem>
+										);
+										return canWriteEntitlement ? (
+											deleteItem
+										) : (
+											<TooltipProvider delayDuration={0}>
+												<Tooltip>
+													<TooltipTrigger asChild>{deleteItem}</TooltipTrigger>
+													<TooltipContent>{t('plans.entitlementsTab.writeDeniedTooltip')}</TooltipContent>
+												</Tooltip>
+											</TooltipProvider>
+										);
+									})()}
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</div>
@@ -494,30 +528,34 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			? tc('status.deleting')
 			: tc('actions.delete');
 
+	const addEntitlementButton = addButtonDeniedReason ? (
+		<TooltipProvider delayDuration={0}>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<span tabIndex={0} className='inline-block'>
+						<Button prefixIcon={<Plus />} disabled>
+							{tc('actions.add')}
+						</Button>
+					</span>
+				</TooltipTrigger>
+				<TooltipContent>{addButtonDeniedReason}</TooltipContent>
+			</Tooltip>
+		</TooltipProvider>
+	) : (
+		<Button prefixIcon={<Plus />} onClick={() => setAddDrawerOpen(true)} disabled={readOnly}>
+			{tc('actions.add')}
+		</Button>
+	);
+
 	return (
 		<>
 			{entitlements.length > 0 ? (
 				<Card variant='notched'>
-					<CardHeader
-						title={tc('labels.entitlements')}
-						cta={
-							<Button prefixIcon={<Plus />} onClick={() => setAddDrawerOpen(true)} disabled={readOnly || !canWriteEntitlement}>
-								{tc('actions.add')}
-							</Button>
-						}
-					/>
+					<CardHeader title={tc('labels.entitlements')} cta={addEntitlementButton} />
 					<FlexpriceTable showEmptyRow data={entitlements} columns={columns} variant='no-bordered' />
 				</Card>
 			) : (
-				<NoDataCard
-					title={tc('labels.entitlements')}
-					subtitle={tc('labels.noEntitlementsAddedYet')}
-					cta={
-						<Button prefixIcon={<Plus />} onClick={() => setAddDrawerOpen(true)} disabled={readOnly || !canWriteEntitlement}>
-							{tc('actions.add')}
-						</Button>
-					}
-				/>
+				<NoDataCard title={tc('labels.entitlements')} subtitle={tc('labels.noEntitlementsAddedYet')} cta={addEntitlementButton} />
 			)}
 
 			<AddEntitlementDrawer

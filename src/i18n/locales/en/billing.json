@@ -2,6 +2,7 @@
 	"invoices": {
 		"title": "Invoices",
 		"empty": "No invoices found",
+		"writeDeniedTooltip": "You don't have permission to modify invoices",
 		"columns": {
 			"invoiceId": "Invoice ID",
 			"amount": "Amount due",

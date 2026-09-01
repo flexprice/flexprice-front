@@ -58,7 +58,11 @@ const WalletAlertSettingsSection = () => {
 		});
 	};
 
-	const isDisabled = !draft.alert_enabled || updateSettings.isPending;
+	// Denied users could still flip the switch and edit thresholds — pointless since they can't
+	// save, and misleading since nothing indicates why. Fold the permission check into the same
+	// disabled state as the pending-save one.
+	const isReadOnly = !canWriteAlertSettings || updateSettings.isPending;
+	const isDisabled = !draft.alert_enabled || isReadOnly;
 	const alertsTitle = t('alerts.walletAlerts.title');
 
 	return (
@@ -74,7 +78,7 @@ const WalletAlertSettingsSection = () => {
 						<Switch
 							checked={draft.alert_enabled ?? false}
 							onCheckedChange={(enabled) => setDraft((prev) => ({ ...prev, alert_enabled: enabled }))}
-							disabled={isLoading || updateSettings.isPending}
+							disabled={isLoading || isReadOnly}
 							aria-label={alertsTitle}
 						/>
 					}

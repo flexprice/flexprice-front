@@ -1007,6 +1007,7 @@
 	},
 	"insightsTools": {
 		"exports": {
+			"writeDeniedTooltip": "You don't have permission to create export tasks. Ask a tenant admin for access.",
 			"pageHeading": "Data Exports",
 			"s3PageHeading": "S3 Data Exports",
 			"exportNotFound": "Export Not Found",

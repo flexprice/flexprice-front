@@ -20,7 +20,7 @@ const ServiceAccountsPage = () => {
 	const { page, limit, offset } = usePagination();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [selectedAccount, setSelectedAccount] = useState<User | null>(null);
-	const { can } = useCurrentUserPermissions();
+	const { can, isLoading: permissionsLoading } = useCurrentUserPermissions();
 	const canWriteUser = can('user', 'write');
 
 	const {
@@ -131,7 +131,7 @@ const ServiceAccountsPage = () => {
 		[t, handleEdit, canWriteUser],
 	);
 
-	if (isLoadingServiceAccounts) {
+	if (isLoadingServiceAccounts || permissionsLoading) {
 		return <Loader />;
 	}
 

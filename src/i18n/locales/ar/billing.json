@@ -2,6 +2,7 @@
 	"invoices": {
 		"title": "الفواتير",
 		"empty": "لم يتم العثور على فواتير",
+		"writeDeniedTooltip": "ليس لديك إذن لتعديل الفواتير",
 		"columns": {
 			"invoiceId": "معرّف الفاتورة",
 			"amount": "المبلغ المستحق",

@@ -49,10 +49,14 @@ const CostSheetsPage = () => {
 	const [costSheetDrawerOpen, setCostSheetDrawerOpen] = useState(false);
 	const navigate = useNavigate();
 	const { can, isLoading: permissionsLoading } = useCurrentUserPermissions();
-	// Optimistic during the loading window rather than gated behind a page-level Loader — the write
-	// controls would otherwise briefly evaluate against an empty role catalog and flash a false
-	// "denied" state for authorized users; can() settles to the real value once roles arrive.
-	const canWriteCostSheet = permissionsLoading || can('costsheet', 'write');
+	const canWriteCostSheet = can('costsheet', 'write');
+	// Controls stay disabled during the loading window rather than gated behind a page-level
+	// Loader — but disabled, not optimistically enabled: treating "still loading" as "granted"
+	// let unauthorized users click through and only get rejected server-side. The denial
+	// tooltip itself only shows once loading has actually finished and settled to false, so
+	// authorized users don't see a false "denied" flash while roles are still being fetched.
+	const writeControlsDisabled = permissionsLoading || !canWriteCostSheet;
+	const writeDeniedReason = !permissionsLoading && !canWriteCostSheet ? t('costSheets.writeDeniedTooltip') : undefined;
 
 	const sortingOptions: SortOption[] = useMemo(
 		() => [
@@ -173,34 +177,34 @@ const CostSheetsPage = () => {
 							edit={{
 								enabled: true,
 								onClick: () => handleEdit(row),
-								disabled: !canWriteCostSheet,
-								disabledReason: canWriteCostSheet ? undefined : t('costSheets.writeDeniedTooltip'),
+								disabled: writeControlsDisabled,
+								disabledReason: writeDeniedReason,
 							}}
 							archive={{
 								enabled: row?.status !== ENTITY_STATUS.ARCHIVED,
-								disabled: !canWriteCostSheet,
-								disabledReason: canWriteCostSheet ? undefined : t('costSheets.writeDeniedTooltip'),
+								disabled: writeControlsDisabled,
+								disabledReason: writeDeniedReason,
 							}}
 						/>
 					);
 				},
 			},
 		],
-		[t, canWriteCostSheet],
+		[t, writeControlsDisabled, writeDeniedReason],
 	);
 
 	return (
 		<Page
 			heading={t('costSheets.listPage.title')}
 			headingCTA={
-				canWriteCostSheet ? (
-					<AddButton onClick={handleOnAdd} />
-				) : (
-					<Tooltip content={t('costSheets.writeDeniedTooltip')}>
+				writeDeniedReason ? (
+					<Tooltip content={writeDeniedReason}>
 						<span tabIndex={0} className='inline-block'>
 							<AddButton disabled onClick={handleOnAdd} />
 						</span>
 					</Tooltip>
+				) : (
+					<AddButton disabled={writeControlsDisabled} onClick={handleOnAdd} />
 				)
 			}>
 			<CostSheetDrawer
@@ -246,8 +250,8 @@ const CostSheetsPage = () => {
 						description: t('costSheets.listPage.emptyState.description'),
 						buttonLabel: t('costSheets.listPage.emptyState.createButton'),
 						buttonAction: handleOnAdd,
-						buttonDisabled: !canWriteCostSheet,
-						buttonDisabledReason: canWriteCostSheet ? undefined : t('costSheets.writeDeniedTooltip'),
+						buttonDisabled: writeControlsDisabled,
+						buttonDisabledReason: writeDeniedReason,
 						tags: API_DOCS_TAGS.Costs,
 						tutorials: guides.features.tutorials,
 					}}

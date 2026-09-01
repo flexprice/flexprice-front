@@ -49,10 +49,14 @@ const AddonsPage = () => {
 	const [addonDrawerOpen, setAddonDrawerOpen] = useState(false);
 	const navigate = useNavigate();
 	const { can, isLoading: permissionsLoading } = useCurrentUserPermissions();
-	// Optimistic during the loading window rather than gated behind a page-level Loader — the write
-	// controls would otherwise briefly evaluate against an empty role catalog and flash a false
-	// "denied" state for authorized users; can() settles to the real value once roles arrive.
-	const canWriteAddon = permissionsLoading || can('addon', 'write');
+	const canWriteAddon = can('addon', 'write');
+	// Controls stay disabled during the loading window rather than gated behind a page-level
+	// Loader — but disabled, not optimistically enabled: treating "still loading" as "granted"
+	// let unauthorized users click through and only get rejected server-side. The denial
+	// tooltip itself only shows once loading has actually finished and settled to false, so
+	// authorized users don't see a false "denied" flash while roles are still being fetched.
+	const writeControlsDisabled = permissionsLoading || !canWriteAddon;
+	const writeDeniedReason = !permissionsLoading && !canWriteAddon ? t('addons.writeDeniedTooltip') : undefined;
 
 	const handleOnAdd = useCallback(() => {
 		setActiveAddon(null);
@@ -176,29 +180,29 @@ const AddonsPage = () => {
 							}}
 							archive={{
 								enabled: row?.status !== ENTITY_STATUS.ARCHIVED,
-								disabled: !canWriteAddon,
-								disabledReason: canWriteAddon ? undefined : t('addons.writeDeniedTooltip'),
+								disabled: writeControlsDisabled,
+								disabledReason: writeDeniedReason,
 							}}
 						/>
 					);
 				},
 			},
 		],
-		[t, handleEdit, canWriteAddon],
+		[t, handleEdit, writeControlsDisabled, writeDeniedReason],
 	);
 
 	return (
 		<Page
 			heading={t('addons.listPage.title')}
 			headingCTA={
-				canWriteAddon ? (
-					<AddButton onClick={handleOnAdd} />
-				) : (
-					<Tooltip content={t('addons.writeDeniedTooltip')}>
+				writeDeniedReason ? (
+					<Tooltip content={writeDeniedReason}>
 						<span tabIndex={0} className='inline-block'>
 							<AddButton disabled onClick={handleOnAdd} />
 						</span>
 					</Tooltip>
+				) : (
+					<AddButton disabled={writeControlsDisabled} onClick={handleOnAdd} />
 				)
 			}>
 			<AddonDrawer data={activeAddon} open={addonDrawerOpen} onOpenChange={setAddonDrawerOpen} refetchQueryKeys={['fetchAddons']} />
@@ -239,8 +243,8 @@ const AddonsPage = () => {
 						description: t('addons.listPage.emptyState.description'),
 						buttonLabel: t('addons.listPage.emptyState.createButton'),
 						buttonAction: handleOnAdd,
-						buttonDisabled: !canWriteAddon,
-						buttonDisabledReason: canWriteAddon ? undefined : t('addons.writeDeniedTooltip'),
+						buttonDisabled: writeControlsDisabled,
+						buttonDisabledReason: writeDeniedReason,
 						tags: API_DOCS_TAGS.Addons,
 						tutorials: guides.addons.tutorials,
 					}}

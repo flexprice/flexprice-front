@@ -15,10 +15,24 @@ describe('EnvironmentApi.waitForActiveEnvironment', () => {
 		localStorage.clear();
 	});
 
-	it('resolves immediately when an active environment ID is already stored', async () => {
+	it('resolves immediately (via the stored-ID path, not the timeout) when an active environment ID is already stored', async () => {
 		localStorage.setItem(ACTIVE_ENVIRONMENT_ID_KEY, 'env_123');
 		const EnvironmentApi = await freshEnvironmentApi();
-		await expect(EnvironmentApi.waitForActiveEnvironment(50)).resolves.toBeUndefined();
+
+		vi.useFakeTimers();
+		let resolved = false;
+		EnvironmentApi.waitForActiveEnvironment(50).then(() => {
+			resolved = true;
+		});
+
+		// Flush microtasks only — fake timers freeze real time, so the 50ms setTimeout
+		// fallback cannot have fired here. Resolving anyway proves it went through the
+		// synchronous stored-ID path (Promise.resolve()), not the timeout race.
+		await Promise.resolve();
+		await Promise.resolve();
+		expect(resolved).toBe(true);
+
+		vi.useRealTimers();
 	}, 15000);
 
 	it('resolves once setActiveEnvironmentId is called after the wait started', async () => {

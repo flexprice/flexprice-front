@@ -592,7 +592,7 @@ const PlanPriceTable: FC<PlanChargesTableProps> = ({ plan, onPriceUpdate }) => {
 							</Button>
 						) : (
 							<Tooltip content={t('catalog:plans.organisms.planPriceTable.writeDeniedTooltip')}>
-								<span tabIndex={0} className='inline-block cursor-not-allowed'>
+								<span tabIndex={0} aria-disabled='true' className='inline-block cursor-not-allowed'>
 									<Button disabled prefixIcon={<Plus />}>
 										{t('common:actions.add')}
 									</Button>

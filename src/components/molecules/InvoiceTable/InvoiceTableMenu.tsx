@@ -24,10 +24,10 @@ interface Props {
 
 const InvoiceTableMenu: FC<Props> = ({ data }) => {
 	const navigate = useNavigate();
-	const { t: tc } = useTranslation('common');
+	const { t: tc, i18n } = useTranslation('common');
 	const { can } = useCurrentUserPermissions();
 	const canWrite = can('invoice', 'write');
-	const writeDeniedReason = canWrite ? undefined : "You don't have permission to modify invoices";
+	const writeDeniedReason = canWrite ? undefined : i18n.t('invoices.writeDeniedTooltip', { ns: 'billing' });
 
 	const { mutate: triggerCommunication } = useMutation({
 		mutationFn: async (invoice_id: string) => {

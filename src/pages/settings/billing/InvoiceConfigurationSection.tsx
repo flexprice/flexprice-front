@@ -14,7 +14,7 @@ const DATE_FORMAT_OPTIONS: InvoiceNumberFormat[] = ['YYYYMM', 'YYYY', 'YYYYMMDD'
 const InvoiceConfigurationSection = () => {
 	const { t } = useTranslation(['settings', 'common']);
 	const { configuration, isLoading, updateConfiguration, resetToDefaults } = useInvoiceConfiguration();
-	const { can, isSuperAdmin } = useCurrentUserPermissions();
+	const { can, isSuperAdmin, isLoading: permissionsLoading } = useCurrentUserPermissions();
 	// Backed by SettingsApi (a generic settings key), whose PUT/DELETE the backend restricts
 	// to Super Admin regardless of setting:write — see SamlSsoTab's own settings-gating note.
 	const canWriteSetting = can('setting', 'write') && isSuperAdmin;
@@ -97,7 +97,7 @@ const InvoiceConfigurationSection = () => {
 	return (
 		<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
 			<CardHeader title={t('billing.invoiceConfiguration.title')} titleClassName='text-lg font-medium text-content-zinc-strong' />
-			{isLoading ? (
+			{isLoading || permissionsLoading ? (
 				<div className='flex min-h-[200px] items-center justify-center'>
 					<Loader />
 				</div>

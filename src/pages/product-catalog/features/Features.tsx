@@ -51,8 +51,16 @@ const FeaturesPage = () => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
 	const navigate = useNavigate();
-	const { can } = useCurrentUserPermissions();
+	const { can, isLoading: permissionsLoading } = useCurrentUserPermissions();
 	const canWriteFeature = can('feature', 'write');
+	// Controls stay disabled during the loading window rather than gated behind a page-level
+	// Loader — but disabled, not optimistically enabled: can() evaluates against an empty role
+	// catalog while roles are still loading, so treating that as a settled "denied" would flash
+	// a false denial for authorized users, and treating it as "granted" would let unauthorized
+	// users click through. The denial tooltip itself only shows once loading has actually
+	// finished and settled to false.
+	const writeControlsDisabled = permissionsLoading || !canWriteFeature;
+	const writeDeniedReason = !permissionsLoading && !canWriteFeature ? t('features.writeDeniedTooltip') : undefined;
 
 	const handleEdit = useCallback((feature: Feature) => {
 		setSelectedFeature(feature);
@@ -267,21 +275,21 @@ const FeaturesPage = () => {
 							entityName={row?.name}
 							archive={{
 								enabled: row?.status !== ENTITY_STATUS.ARCHIVED,
-								disabled: !canWriteFeature,
-								disabledReason: canWriteFeature ? undefined : t('features.writeDeniedTooltip'),
+								disabled: writeControlsDisabled,
+								disabledReason: writeDeniedReason,
 							}}
 							edit={{
 								enabled: true,
 								onClick: () => handleEdit(row),
-								disabled: !canWriteFeature,
-								disabledReason: canWriteFeature ? undefined : t('features.writeDeniedTooltip'),
+								disabled: writeControlsDisabled,
+								disabledReason: writeDeniedReason,
 							}}
 						/>
 					);
 				},
 			},
 		],
-		[t, getFeatureTypeChips, handleEdit, canWriteFeature],
+		[t, getFeatureTypeChips, handleEdit, writeControlsDisabled, writeDeniedReason],
 	);
 
 	return (
@@ -289,16 +297,22 @@ const FeaturesPage = () => {
 			heading={t('features.listPage.title')}
 			headingCTA={
 				<div className='flex justify-between items-center gap-2'>
-					{canWriteFeature ? (
+					{writeControlsDisabled ? (
+						// Never wrap a disabled AddButton in Link — the anchor itself would still
+						// navigate on click even though the inner button looks disabled.
+						writeDeniedReason ? (
+							<Tooltip content={writeDeniedReason}>
+								<span tabIndex={0} className='inline-block'>
+									<AddButton disabled />
+								</span>
+							</Tooltip>
+						) : (
+							<AddButton disabled />
+						)
+					) : (
 						<Link to={RouteNames.createFeature}>
 							<AddButton />
 						</Link>
-					) : (
-						<Tooltip content={t('features.writeDeniedTooltip')}>
-							<span tabIndex={0} className='inline-block'>
-								<AddButton disabled />
-							</span>
-						</Tooltip>
 					)}
 				</div>
 			}>
@@ -338,8 +352,8 @@ const FeaturesPage = () => {
 					description: t('features.listPage.emptyState.description'),
 					buttonLabel: t('features.listPage.emptyState.createButton'),
 					buttonAction: () => navigate(RouteNames.createFeature),
-					buttonDisabled: !canWriteFeature,
-					buttonDisabledReason: canWriteFeature ? undefined : t('features.writeDeniedTooltip'),
+					buttonDisabled: writeControlsDisabled,
+					buttonDisabledReason: writeDeniedReason,
 					tags: API_DOCS_TAGS.Features,
 					tutorials: guides.features.tutorials,
 				}}
