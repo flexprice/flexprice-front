@@ -331,6 +331,38 @@ describe('EditInvoicePage', () => {
 		);
 	});
 
+	it('chains finalized operations onto the recreated draft and navigates to it', async () => {
+		mockGetInvoiceById.mockResolvedValue(
+			makeInvoice({
+				invoice_status: 'FINALIZED',
+				line_items: [{ id: 'li_1', display_name: 'Consulting', quantity: '2', amount: 300 }],
+			}),
+		);
+		// The first operation voids the invoice and returns the new draft copy.
+		mockModifyInvoice.mockResolvedValue({ invoice: makeInvoice({ id: 'inv_draft_2', invoice_status: 'DRAFT' }) });
+		const user = userEvent.setup();
+		renderPage();
+
+		const nameInput = await screen.findByDisplayValue('Consulting');
+		await user.clear(nameInput);
+		await user.type(nameInput, 'Consulting hours');
+		await user.click(screen.getByRole('button', { name: 'Add Line Item' }));
+		const nameInputs = screen.getAllByPlaceholderText('Enter item name');
+		await user.type(nameInputs[nameInputs.length - 1], 'Setup fee');
+		const amountInputs = screen.getAllByPlaceholderText('0.00');
+		await user.clear(amountInputs[amountInputs.length - 1]);
+		await user.type(amountInputs[amountInputs.length - 1], '50');
+
+		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
+		await user.click(await screen.findByRole('button', { name: 'Void & create draft' }));
+
+		await waitFor(() => expect(mockModifyInvoice).toHaveBeenCalledTimes(2));
+		// First call hits the original invoice; the follow-up targets the returned draft.
+		expect(mockModifyInvoice.mock.calls[0][0]).toBe('inv_1');
+		expect(mockModifyInvoice.mock.calls[1][0]).toBe('inv_draft_2');
+		await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/billing/invoices/inv_draft_2'));
+	});
+
 	it('keeps the edited form state when the finalized save fails', async () => {
 		mockGetInvoiceById.mockResolvedValue(
 			makeInvoice({

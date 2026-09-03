@@ -219,15 +219,23 @@ const EditInvoicePage: FC = () => {
 			nextPaymentStatus: string | null;
 			ops: LineItemOps | null;
 		}) => {
-			if (payload) await InvoiceApi.updateInvoice(invoiceId!, payload);
-			if (nextPaymentStatus) await InvoiceApi.updateInvoicePaymentStatus(invoiceId!, { payment_status: nextPaymentStatus });
+			// A finalized save voids the invoice and recreates it as a draft; every response
+			// carries the invoice the operation actually landed on, so chain later calls (and
+			// the success navigation) to that id. For drafts the id never changes — no-op.
+			let targetId = invoiceId!;
+			if (payload) {
+				const updated = await InvoiceApi.updateInvoice(targetId, payload);
+				targetId = updated?.id ?? targetId;
+			}
+			if (nextPaymentStatus) await InvoiceApi.updateInvoicePaymentStatus(targetId, { payment_status: nextPaymentStatus });
 			if (ops) {
 				if (ops.removes.length > 0) {
 					const payload: ExecuteInvoiceModifyPayload = {
 						type: 'line_item',
 						line_item_params: { action: INVOICE_MODIFY_LINE_ITEM_ACTION.REMOVE, line_item_ids: ops.removes },
 					};
-					await InvoiceApi.modifyInvoice(invoiceId!, payload);
+					const resp = await InvoiceApi.modifyInvoice(targetId, payload);
+					targetId = resp?.invoice?.id ?? targetId;
 				}
 				// One update per call: the backend versions each edit individually.
 				for (const { line_item_id, update } of ops.updates) {
@@ -235,22 +243,26 @@ const EditInvoicePage: FC = () => {
 						type: 'line_item',
 						line_item_params: { action: INVOICE_MODIFY_LINE_ITEM_ACTION.UPDATE, line_item_id, update },
 					};
-					await InvoiceApi.modifyInvoice(invoiceId!, payload);
+					const resp = await InvoiceApi.modifyInvoice(targetId, payload);
+					targetId = resp?.invoice?.id ?? targetId;
 				}
 				if (ops.adds.length > 0) {
 					const payload: ExecuteInvoiceModifyPayload = {
 						type: 'line_item',
 						line_item_params: { action: INVOICE_MODIFY_LINE_ITEM_ACTION.ADD, items: ops.adds },
 					};
-					await InvoiceApi.modifyInvoice(invoiceId!, payload);
+					const resp = await InvoiceApi.modifyInvoice(targetId, payload);
+					targetId = resp?.invoice?.id ?? targetId;
 				}
 			}
+			return targetId;
 		},
-		onSuccess: () => {
+		onSuccess: (targetId: string) => {
 			toast.success(t('invoices.edit.toast.updateSuccess'));
 			void refetchInvoiceQueries();
 			void refetchQueries(['invoiceEdit', invoiceId!]);
-			navigate(`${RouteNames.invoices}/${invoiceId}`);
+			// After a finalized save this is the newly created draft; for drafts it is unchanged.
+			navigate(`${RouteNames.invoices}/${targetId ?? invoiceId}`);
 		},
 		onError: (error: Error) => {
 			if (isFinalized) {

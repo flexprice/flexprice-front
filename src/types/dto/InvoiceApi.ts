@@ -61,7 +61,9 @@ export interface UpdateInvoicePayload {
 	invoice_pdf_url?: string;
 	// Full replace of the invoice's metadata, not a merge.
 	metadata?: Metadata;
-	// Recalculates discount from existing coupon associations. DRAFT invoices only.
+	// Recalculates discount from existing coupon associations. Accepted for DRAFT
+	// invoices, and for FINALIZED invoices under the void-and-recreate flow (the
+	// backend applies it to the new draft copy).
 	apply_discount?: boolean;
 }
 
