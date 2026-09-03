@@ -50,10 +50,16 @@
 				"updateFailed": "Failed to update invoice",
 				"loadError": "Error loading invoice"
 			},
-			"lineItemsDraftOnlyNote": "Line items can only be edited while the invoice is a draft.",
+			"lineItemsDraftOnlyNote": "Line items cannot be edited for this invoice status.",
 			"manualEditHint": "Editing line items marks the invoice as manually edited; automatic recomputation is disabled afterwards.",
 			"lineItemInvalid": "Each line item needs a name and non-negative amount and quantity.",
-			"removeLineItem": "Remove line item"
+			"removeLineItem": "Remove line item",
+			"voidConfirm": {
+				"title": "Void invoice and create a new draft?",
+				"description": "This invoice is finalized. When you proceed, the current invoice will be voided and a new draft invoice will be created carrying all existing data plus your changes. You can review the new draft and finalize it again. If anything fails, no changes are applied and you can keep editing.",
+				"proceed": "Void & create draft"
+			},
+			"finalizedEditHint": "This invoice is finalized. Saving changes will void it and recreate it as a draft that carries all current data plus your edits."
 		},
 		"status": {
 			"void": "Void",

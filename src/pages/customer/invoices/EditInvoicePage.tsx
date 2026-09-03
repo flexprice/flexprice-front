@@ -5,7 +5,20 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 import { Trash2 } from 'lucide-react';
-import { Button, Checkbox, DateTimePicker, Divider, FormHeader, Input, Loader, Page, Select, Spacer, Textarea } from '@/components/atoms';
+import {
+	Button,
+	Checkbox,
+	DateTimePicker,
+	Dialog,
+	Divider,
+	FormHeader,
+	Input,
+	Loader,
+	Page,
+	Select,
+	Spacer,
+	Textarea,
+} from '@/components/atoms';
 import { InvoiceLineItemTable, InvoiceStatusModal } from '@/components/molecules';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { getPaymentStatusChip, getStatusChip } from '@/components/molecules/InvoiceTable/InvoiceTable';
@@ -114,6 +127,7 @@ const EditInvoicePage: FC = () => {
 	const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
 	const [lineItemRows, setLineItemRows] = useState<LineItemRow[]>([]);
 	const [removedLineItemIds, setRemovedLineItemIds] = useState<string[]>([]);
+	const [isVoidConfirmOpen, setIsVoidConfirmOpen] = useState(false);
 
 	const {
 		data: invoice,
@@ -144,7 +158,9 @@ const EditInvoicePage: FC = () => {
 	}, [invoice?.invoice_number, invoiceId, updateBreadcrumb]);
 
 	const isEditable = !!invoice && EDITABLE_STATUSES.includes(invoice.invoice_status);
-	const isDraft = invoice?.invoice_status === INVOICE_STATUS.DRAFT;
+	// Saving a finalized invoice voids it and recreates it as a draft carrying all
+	// current + changed data; the save button asks for confirmation first.
+	const isFinalized = invoice?.invoice_status === INVOICE_STATUS.FINALIZED;
 
 	const originalDueDateMs = useMemo(() => (invoice?.due_date ? new Date(invoice.due_date).getTime() : undefined), [invoice]);
 	const dueDateChanged = !!invoice && dueDate?.getTime() !== originalDueDateMs;
@@ -160,9 +176,11 @@ const EditInvoicePage: FC = () => {
 		isEditable && (invoice?.payment_status === PAYMENT_STATUS.PENDING || invoice?.payment_status === PAYMENT_STATUS.FAILED);
 	const paymentStatusChanged = !!invoice && isPaymentStatusEditable && !!paymentStatus && paymentStatus !== invoice.payment_status;
 
-	// Line-item edits go exclusively through POST /invoices/:id/modify/execute (DRAFT only).
+	// Line-item edits go exclusively through POST /invoices/:id/modify/execute.
+	// For FINALIZED invoices the backend voids the current invoice and applies the
+	// edits to a new draft copy — same endpoints, same responses.
 	const lineItemOps = useMemo<LineItemOps>(() => {
-		if (!invoice || invoice.invoice_status !== INVOICE_STATUS.DRAFT) return { removes: [], updates: [], adds: [] };
+		if (!invoice || !EDITABLE_STATUSES.includes(invoice.invoice_status)) return { removes: [], updates: [], adds: [] };
 		const originalById = new Map((invoice.line_items ?? []).map((li) => [li.id, li]));
 		const removes = removedLineItemIds.filter((id) => originalById.has(id));
 		const updates: LineItemOps['updates'] = [];
@@ -235,6 +253,12 @@ const EditInvoicePage: FC = () => {
 			navigate(`${RouteNames.invoices}/${invoiceId}`);
 		},
 		onError: (error: Error) => {
+			if (isFinalized) {
+				// The void-and-recreate flow failed: keep the user's edits so they can
+				// fix and retry — reseeding from the server would wipe the form.
+				toast.error(error.message || t('invoices.edit.toast.updateFailed'));
+				return;
+			}
 			// A partial save may have persisted earlier operations (e.g. a removal before a
 			// failed update); reset the form baseline from server state so a retry can't replay them.
 			void refetchInvoiceQueries();
@@ -243,14 +267,15 @@ const EditInvoicePage: FC = () => {
 		},
 	});
 
-	const handleSave = () => {
-		if (!invoice || !hasChanges || isPending) return;
+	/** Validates the form and builds the save arguments; returns null (with a toast) when invalid or empty. */
+	const buildSaveArgs = () => {
+		if (!invoice || !hasChanges || isPending) return null;
 
 		const payload: UpdateInvoicePayload = {};
 		if (dueDateChanged && dueDate) {
 			if (dueDate.getTime() < Date.now()) {
 				toast.error(t('invoices.edit.dueDatePast'));
-				return;
+				return null;
 			}
 			payload.due_date = dueDate.toISOString();
 		}
@@ -258,14 +283,14 @@ const EditInvoicePage: FC = () => {
 			const trimmed = pdfUrl.trim();
 			if (trimmed && !isValidUrl(trimmed)) {
 				toast.error(t('invoices.edit.pdfUrlInvalid'));
-				return;
+				return null;
 			}
 			payload.invoice_pdf_url = trimmed;
 		}
 		if (metadataChanged) {
 			payload.metadata = rowsToMetadata(metadataRows);
 		}
-		if (applyDiscount && isDraft) {
+		if (applyDiscount && isEditable) {
 			payload.apply_discount = true;
 		}
 
@@ -280,16 +305,33 @@ const EditInvoicePage: FC = () => {
 			});
 			if (invalidRow) {
 				toast.error(t('invoices.edit.lineItemInvalid'));
-				return;
+				return null;
 			}
 		}
 
 		const invoicePayload = Object.keys(payload).length > 0 ? payload : null;
 		const nextPaymentStatus = paymentStatusChanged ? paymentStatus : null;
 		const ops = lineItemsChanged ? lineItemOps : null;
-		if (!invoicePayload && !nextPaymentStatus && !ops) return;
+		if (!invoicePayload && !nextPaymentStatus && !ops) return null;
 
-		updateInvoice({ payload: invoicePayload, nextPaymentStatus, ops });
+		return { payload: invoicePayload, nextPaymentStatus, ops };
+	};
+
+	const handleSave = () => {
+		const args = buildSaveArgs();
+		if (!args) return;
+		// A finalized invoice is voided and recreated as a draft on save — confirm first.
+		if (isFinalized) {
+			setIsVoidConfirmOpen(true);
+			return;
+		}
+		updateInvoice(args);
+	};
+
+	const handleVoidConfirmProceed = () => {
+		const args = buildSaveArgs();
+		setIsVoidConfirmOpen(false);
+		if (args) updateInvoice(args);
 	};
 
 	const handleCancel = () => {
@@ -334,6 +376,20 @@ const EditInvoicePage: FC = () => {
 		<Page documentTitle={t('invoices.edit.pageTitle')} heading={t('invoices.edit.pageTitle')}>
 			<div className='space-y-6'>
 				<InvoiceStatusModal invoice={invoice} isOpen={isStatusModalOpen} onOpenChange={setIsStatusModalOpen} />
+				<Dialog
+					isOpen={isVoidConfirmOpen}
+					onOpenChange={setIsVoidConfirmOpen}
+					title={t('invoices.edit.voidConfirm.title')}
+					description={t('invoices.edit.voidConfirm.description')}>
+					<div className='mt-6 flex justify-end gap-3'>
+						<Button variant='outline' onClick={() => setIsVoidConfirmOpen(false)}>
+							{t('common:actions.cancel')}
+						</Button>
+						<Button onClick={handleVoidConfirmProceed} disabled={isPending}>
+							{t('invoices.edit.voidConfirm.proceed')}
+						</Button>
+					</div>
+				</Dialog>
 				<div className='rounded-xl border border-line bg-transparent p-6'>
 					{/* read-only invoice context */}
 					<div className='p-4'>
@@ -410,7 +466,7 @@ const EditInvoicePage: FC = () => {
 								description={!isPaymentStatusEditable && isEditable ? t('invoices.edit.paymentStatusLockedHint') : undefined}
 							/>
 						</div>
-						{isDraft && (
+						{isEditable && (
 							<div className='mt-6'>
 								<Checkbox
 									id='apply-discount'
@@ -425,58 +481,13 @@ const EditInvoicePage: FC = () => {
 
 					<Divider className='my-4' />
 
-					{/* metadata */}
-					<div className='p-4'>
-						<FormHeader title={t('invoices.edit.metadata')} variant='sub-header' titleClassName='font-semibold' />
-						<div className='mt-6 flex flex-col gap-4 max-w-3xl'>
-							{metadataRows.map((row, index) => (
-								<div key={index} className='flex gap-2 items-start'>
-									<div className='flex-[3] min-w-0'>
-										<Input
-											placeholder={t('common:form.key')}
-											value={row.key}
-											onChange={(value) => handleMetadataChange(index, 'key', value)}
-											disabled={!isEditable}
-										/>
-									</div>
-									<div className='flex-[5] min-w-0'>
-										<Textarea
-											placeholder={t('common:form.value')}
-											value={row.value}
-											onChange={(value) => handleMetadataChange(index, 'value', value)}
-											textAreaClassName='min-h-6 h-6 rounded-md'
-											className='rounded-md'
-											disabled={!isEditable}
-										/>
-									</div>
-									<Button
-										variant='ghost'
-										className='size-10'
-										onClick={() => setMetadataRows((prev) => prev.filter((_, i) => i !== index))}
-										disabled={!isEditable}
-										aria-label={t('common:form.remove')}>
-										<Trash2 className='size-5' />
-									</Button>
-								</div>
-							))}
-							{isEditable && (
-								<div>
-									<AddChargesButton
-										onClick={() => setMetadataRows((prev) => [...prev, { key: '', value: '' }])}
-										label={t('common:form.addAnotherItem')}
-									/>
-								</div>
-							)}
-						</div>
-					</div>
-
-					<Divider className='my-4' />
-
-					{/* line items — editable for drafts through the invoice modify API */}
-					{isDraft ? (
+					{/* line items — editable for drafts and finalized invoices through the invoice modify API */}
+					{isEditable ? (
 						<div className='p-4'>
 							<FormHeader title={t('invoices.edit.lineItemsTitle')} variant='sub-header' titleClassName='font-semibold' />
-							<p className='text-sm text-content-zinc-muted mt-1 mb-4'>{t('invoices.edit.manualEditHint')}</p>
+							<p className='text-sm text-content-zinc-muted mt-1 mb-4'>
+								{isFinalized ? t('invoices.edit.finalizedEditHint') : t('invoices.edit.manualEditHint')}
+							</p>
 							<div className='min-w-0'>
 								{lineItemRows.map((row, index) => (
 									<div key={row.id ?? `new-${index}`} className='mb-4 grid grid-cols-12 items-end gap-3 min-w-0'>
@@ -543,6 +554,53 @@ const EditInvoicePage: FC = () => {
 							/>
 						</div>
 					)}
+
+					<Divider className='my-4' />
+
+					{/* metadata */}
+					<div className='p-4'>
+						<FormHeader title={t('invoices.edit.metadata')} variant='sub-header' titleClassName='font-semibold' />
+						<div className='mt-6 flex flex-col gap-4 max-w-3xl'>
+							{metadataRows.map((row, index) => (
+								<div key={index} className='flex gap-2 items-start'>
+									<div className='flex-[3] min-w-0'>
+										<Input
+											placeholder={t('common:form.key')}
+											value={row.key}
+											onChange={(value) => handleMetadataChange(index, 'key', value)}
+											disabled={!isEditable}
+										/>
+									</div>
+									<div className='flex-[5] min-w-0'>
+										<Textarea
+											placeholder={t('common:form.value')}
+											value={row.value}
+											onChange={(value) => handleMetadataChange(index, 'value', value)}
+											textAreaClassName='min-h-6 h-6 rounded-md'
+											className='rounded-md'
+											disabled={!isEditable}
+										/>
+									</div>
+									<Button
+										variant='ghost'
+										className='size-10'
+										onClick={() => setMetadataRows((prev) => prev.filter((_, i) => i !== index))}
+										disabled={!isEditable}
+										aria-label={t('common:form.remove')}>
+										<Trash2 className='size-5' />
+									</Button>
+								</div>
+							))}
+							{isEditable && (
+								<div>
+									<AddChargesButton
+										onClick={() => setMetadataRows((prev) => [...prev, { key: '', value: '' }])}
+										label={t('common:form.addAnotherItem')}
+									/>
+								</div>
+							)}
+						</div>
+					</div>
 				</div>
 
 				<div className='flex justify-end p-4'>
