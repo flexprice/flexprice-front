@@ -14,6 +14,8 @@ const mockGetInvoiceById = vi.hoisted(() => vi.fn());
 const mockUpdateInvoice = vi.hoisted(() => vi.fn());
 const mockUpdatePaymentStatus = vi.hoisted(() => vi.fn());
 const mockModifyInvoice = vi.hoisted(() => vi.fn());
+const mockVoidInvoice = vi.hoisted(() => vi.fn());
+const mockFinalizeInvoice = vi.hoisted(() => vi.fn());
 const mockNavigate = vi.hoisted(() => vi.fn());
 
 vi.mock('@/api/InvoiceApi', () => ({
@@ -22,6 +24,8 @@ vi.mock('@/api/InvoiceApi', () => ({
 		updateInvoice: (...args: unknown[]) => mockUpdateInvoice(...args),
 		updateInvoicePaymentStatus: (...args: unknown[]) => mockUpdatePaymentStatus(...args),
 		modifyInvoice: (...args: unknown[]) => mockModifyInvoice(...args),
+		voidInvoice: (...args: unknown[]) => mockVoidInvoice(...args),
+		finalizeInvoice: (...args: unknown[]) => mockFinalizeInvoice(...args),
 	},
 }));
 
@@ -159,6 +163,8 @@ describe('EditInvoicePage', () => {
 		mockUpdateInvoice.mockReset();
 		mockUpdatePaymentStatus.mockReset();
 		mockModifyInvoice.mockReset();
+		mockVoidInvoice.mockReset();
+		mockFinalizeInvoice.mockReset();
 		mockNavigate.mockReset();
 	});
 
@@ -223,8 +229,8 @@ describe('EditInvoicePage', () => {
 		const user = userEvent.setup();
 		renderPage();
 
-		const select = await screen.findByRole('combobox');
-		await user.selectOptions(select, 'SUCCEEDED');
+		const selects = await screen.findAllByRole('combobox');
+		await user.selectOptions(selects[0], 'SUCCEEDED');
 		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
 		await waitFor(() => expect(mockUpdatePaymentStatus).toHaveBeenCalledWith('inv_1', { payment_status: 'SUCCEEDED' }));
@@ -236,14 +242,53 @@ describe('EditInvoicePage', () => {
 		mockGetInvoiceById.mockResolvedValue(makeInvoice({ payment_status: 'SUCCEEDED' }));
 		renderPage();
 
-		expect(await screen.findByRole('combobox')).toBeDisabled();
+		const selects = await screen.findAllByRole('combobox');
+		expect(selects[0]).toBeDisabled();
 	});
 
-	it('offers the invoice status modal for editable invoices', async () => {
+	it('voids the invoice through the status dropdown on save', async () => {
 		mockGetInvoiceById.mockResolvedValue(makeInvoice());
+		mockVoidInvoice.mockResolvedValue(undefined);
+		const user = userEvent.setup();
 		renderPage();
 
-		expect(await screen.findByRole('button', { name: 'Update Invoice Status' })).toBeEnabled();
+		const selects = await screen.findAllByRole('combobox');
+		await user.selectOptions(selects[selects.length - 1], 'VOIDED');
+		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
+
+		await waitFor(() => expect(mockVoidInvoice).toHaveBeenCalledWith('inv_1'));
+		expect(mockUpdateInvoice).not.toHaveBeenCalled();
+	});
+
+	it('finalizes a failed draft through the status dropdown on save', async () => {
+		mockGetInvoiceById.mockResolvedValue(makeInvoice({ payment_status: 'FAILED' }));
+		mockFinalizeInvoice.mockResolvedValue(undefined);
+		const user = userEvent.setup();
+		renderPage();
+
+		const selects = await screen.findAllByRole('combobox');
+		await user.selectOptions(selects[selects.length - 1], 'FINALIZED');
+		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
+
+		await waitFor(() => expect(mockFinalizeInvoice).toHaveBeenCalledWith('inv_1'));
+	});
+
+	it('blocks voiding combined with line item changes', async () => {
+		mockGetInvoiceById.mockResolvedValue(
+			makeInvoice({ line_items: [{ id: 'li_1', display_name: 'Consulting', quantity: '2', amount: 300 }] }),
+		);
+		const user = userEvent.setup();
+		renderPage();
+
+		const nameInput = await screen.findByDisplayValue('Consulting');
+		await user.clear(nameInput);
+		await user.type(nameInput, 'Consulting hours');
+		const selects = screen.getAllByRole('combobox');
+		await user.selectOptions(selects[selects.length - 1], 'VOIDED');
+		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
+
+		expect(mockVoidInvoice).not.toHaveBeenCalled();
+		expect(mockModifyInvoice).not.toHaveBeenCalled();
 	});
 
 	it('edits a draft line item through the modify endpoint', async () => {

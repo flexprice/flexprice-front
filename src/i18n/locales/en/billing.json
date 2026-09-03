@@ -59,7 +59,11 @@
 				"description": "This invoice is finalized. When you proceed, the current invoice will be voided and a new draft invoice will be created carrying all existing data plus your changes. You can review the new draft and finalize it again. If anything fails, no changes are applied and you can keep editing.",
 				"proceed": "Void & create draft"
 			},
-			"finalizedEditHint": "This invoice is finalized. Saving changes will void it and recreate it as a draft that carries all current data plus your edits."
+			"finalizedEditHint": "This invoice is finalized. Saving changes will void it and recreate it as a draft that carries all current data plus your edits.",
+			"invoiceStatus": "Invoice Status",
+			"invoiceStatusLockedHint": "Invoice status can only be changed when the invoice can be voided or finalized.",
+			"voidOnSaveHint": "The invoice will be voided when you save. Voided invoices cannot be edited or paid.",
+			"voidWithEditsError": "Line item or discount changes cannot be combined with voiding the invoice."
 		},
 		"status": {
 			"void": "Void",
@@ -73,7 +77,8 @@
 			"refunded": "Refunded",
 			"partiallyRefunded": "Partially Refunded",
 			"overpaid": "Overpaid",
-			"unknown": "Unknown"
+			"unknown": "Unknown",
+			"draft": "Draft"
 		},
 		"list": {
 			"toBeGenerated": "To be generated",

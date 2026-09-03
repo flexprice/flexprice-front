@@ -19,7 +19,7 @@ import {
 	Spacer,
 	Textarea,
 } from '@/components/atoms';
-import { InvoiceLineItemTable, InvoiceStatusModal } from '@/components/molecules';
+import { InvoiceLineItemTable } from '@/components/molecules';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { getPaymentStatusChip, getStatusChip } from '@/components/molecules/InvoiceTable/InvoiceTable';
 import RedirectCell from '@/components/molecules/Table/RedirectCell';
@@ -83,6 +83,15 @@ const parseInvoiceForEdit = (invoice: Invoice): Invoice => {
 // Backend only accepts updates for invoices in these statuses.
 const EDITABLE_STATUSES: string[] = [INVOICE_STATUS.DRAFT, INVOICE_STATUS.FINALIZED];
 
+/** Payment statuses that allow voiding an invoice (matches backend allowedPaymentStatuses). */
+const VOIDABLE_PAYMENT_STATUSES = [
+	PAYMENT_STATUS.PENDING,
+	PAYMENT_STATUS.FAILED,
+	PAYMENT_STATUS.SUCCEEDED,
+	PAYMENT_STATUS.PARTIALLY_REFUNDED,
+	PAYMENT_STATUS.OVERPAID,
+];
+
 const toMetadataRows = (invoice: Invoice): MetadataRow[] => {
 	const entries = Object.entries(invoice.metadata ?? {}).filter(([, value]) => typeof value === 'string');
 	return entries.map(([key, value]) => ({ key, value: value as string }));
@@ -124,7 +133,7 @@ const EditInvoicePage: FC = () => {
 	const [metadataRows, setMetadataRows] = useState<MetadataRow[]>([]);
 	const [applyDiscount, setApplyDiscount] = useState(false);
 	const [paymentStatus, setPaymentStatus] = useState('');
-	const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+	const [invoiceStatus, setInvoiceStatus] = useState('');
 	const [lineItemRows, setLineItemRows] = useState<LineItemRow[]>([]);
 	const [removedLineItemIds, setRemovedLineItemIds] = useState<string[]>([]);
 	const [isVoidConfirmOpen, setIsVoidConfirmOpen] = useState(false);
@@ -147,6 +156,7 @@ const EditInvoicePage: FC = () => {
 		setMetadataRows(toMetadataRows(invoice));
 		setApplyDiscount(false);
 		setPaymentStatus(invoice.payment_status ?? '');
+		setInvoiceStatus(invoice.invoice_status ?? '');
 		setLineItemRows(toLineItemRows(invoice));
 		setRemovedLineItemIds([]);
 	}, [invoice]);
@@ -175,6 +185,17 @@ const EditInvoicePage: FC = () => {
 	const isPaymentStatusEditable =
 		isEditable && (invoice?.payment_status === PAYMENT_STATUS.PENDING || invoice?.payment_status === PAYMENT_STATUS.FAILED);
 	const paymentStatusChanged = !!invoice && isPaymentStatusEditable && !!paymentStatus && paymentStatus !== invoice.payment_status;
+
+	// Invoice status transitions mirror the backend rules: voiding needs an editable
+	// invoice with a voidable payment status; finalizing needs a DRAFT with FAILED payment.
+	const canVoid =
+		isEditable &&
+		!!invoice?.payment_status &&
+		VOIDABLE_PAYMENT_STATUSES.includes(invoice.payment_status as PAYMENT_STATUS) &&
+		invoice.invoice_status !== INVOICE_STATUS.VOIDED;
+	const canFinalize = invoice?.invoice_status === INVOICE_STATUS.DRAFT && invoice?.payment_status === PAYMENT_STATUS.FAILED;
+	const isInvoiceStatusEditable = canVoid || canFinalize;
+	const invoiceStatusChanged = !!invoice && !!invoiceStatus && invoiceStatus !== invoice.invoice_status;
 
 	// Line-item edits go exclusively through POST /invoices/:id/modify/execute.
 	// For FINALIZED invoices the backend voids the current invoice and applies the
@@ -207,17 +228,20 @@ const EditInvoicePage: FC = () => {
 
 	const lineItemsChanged = lineItemOps.removes.length > 0 || lineItemOps.updates.length > 0 || lineItemOps.adds.length > 0;
 
-	const hasChanges = dueDateChanged || pdfUrlChanged || metadataChanged || applyDiscount || paymentStatusChanged || lineItemsChanged;
+	const hasChanges =
+		dueDateChanged || pdfUrlChanged || metadataChanged || applyDiscount || paymentStatusChanged || lineItemsChanged || invoiceStatusChanged;
 
 	const { mutate: updateInvoice, isPending } = useMutation({
 		mutationFn: async ({
 			payload,
 			nextPaymentStatus,
 			ops,
+			nextInvoiceStatus,
 		}: {
 			payload: UpdateInvoicePayload | null;
 			nextPaymentStatus: string | null;
 			ops: LineItemOps | null;
+			nextInvoiceStatus: string | null;
 		}) => {
 			// A finalized save voids the invoice and recreates it as a draft; every response
 			// carries the invoice the operation actually landed on, so chain later calls (and
@@ -254,6 +278,13 @@ const EditInvoicePage: FC = () => {
 					const resp = await InvoiceApi.modifyInvoice(targetId, payload);
 					targetId = resp?.invoice?.id ?? targetId;
 				}
+			}
+			// Status transition runs last: line-item edits must land while the invoice is
+			// still editable, and a finalize must see the finished draft.
+			if (nextInvoiceStatus === INVOICE_STATUS.VOIDED) {
+				await InvoiceApi.voidInvoice(targetId);
+			} else if (nextInvoiceStatus === INVOICE_STATUS.FINALIZED) {
+				await InvoiceApi.finalizeInvoice(targetId);
 			}
 			return targetId;
 		},
@@ -321,19 +352,28 @@ const EditInvoicePage: FC = () => {
 			}
 		}
 
+		const nextInvoiceStatus = invoiceStatusChanged ? invoiceStatus : null;
+		// Voiding discards the invoice — combining it with line-item or discount edits
+		// (which would void-and-recreate a finalized invoice first) makes no sense.
+		if (nextInvoiceStatus === INVOICE_STATUS.VOIDED && (lineItemsChanged || applyDiscount)) {
+			toast.error(t('invoices.edit.voidWithEditsError'));
+			return null;
+		}
+
 		const invoicePayload = Object.keys(payload).length > 0 ? payload : null;
 		const nextPaymentStatus = paymentStatusChanged ? paymentStatus : null;
 		const ops = lineItemsChanged ? lineItemOps : null;
-		if (!invoicePayload && !nextPaymentStatus && !ops) return null;
+		if (!invoicePayload && !nextPaymentStatus && !ops && !nextInvoiceStatus) return null;
 
-		return { payload: invoicePayload, nextPaymentStatus, ops };
+		return { payload: invoicePayload, nextPaymentStatus, ops, nextInvoiceStatus };
 	};
 
 	const handleSave = () => {
 		const args = buildSaveArgs();
 		if (!args) return;
-		// A finalized invoice is voided and recreated as a draft on save — confirm first.
-		if (isFinalized) {
+		// Financial edits void a finalized invoice and recreate it as a draft — confirm first.
+		// Plain field/status changes on a finalized invoice save directly.
+		if (isFinalized && (args.ops || args.payload?.apply_discount)) {
 			setIsVoidConfirmOpen(true);
 			return;
 		}
@@ -387,7 +427,6 @@ const EditInvoicePage: FC = () => {
 	return (
 		<Page documentTitle={t('invoices.edit.pageTitle')} heading={t('invoices.edit.pageTitle')}>
 			<div className='space-y-6'>
-				<InvoiceStatusModal invoice={invoice} isOpen={isStatusModalOpen} onOpenChange={setIsStatusModalOpen} />
 				<Dialog
 					isOpen={isVoidConfirmOpen}
 					onOpenChange={setIsVoidConfirmOpen}
@@ -405,14 +444,7 @@ const EditInvoicePage: FC = () => {
 				<div className='rounded-xl border border-line bg-transparent p-6'>
 					{/* read-only invoice context */}
 					<div className='p-4'>
-						<div className='flex justify-between items-center'>
-							<FormHeader className='!mb-0' title={t('invoices.edit.detailsTitle')} variant='sub-header' titleClassName='font-semibold' />
-							{isEditable && (
-								<Button variant='outline' onClick={() => setIsStatusModalOpen(true)}>
-									{t('invoices.details.updateInvoiceStatus')}
-								</Button>
-							)}
-						</div>
+						<FormHeader className='!mb-0' title={t('invoices.edit.detailsTitle')} variant='sub-header' titleClassName='font-semibold' />
 						<Spacer className='!my-6' />
 						<div className='w-full grid grid-cols-4 gap-4'>
 							<p className={readonlyLabelClass}>{t('invoices.edit.invoiceNumber')}</p>
@@ -476,6 +508,38 @@ const EditInvoicePage: FC = () => {
 								onChange={setPaymentStatus}
 								disabled={!isPaymentStatusEditable}
 								description={!isPaymentStatusEditable && isEditable ? t('invoices.edit.paymentStatusLockedHint') : undefined}
+							/>
+							<Select
+								label={t('invoices.edit.invoiceStatus')}
+								value={invoiceStatus}
+								options={[
+									{
+										value: INVOICE_STATUS.DRAFT,
+										label: t('invoices.status.draft'),
+										disabled: invoice.invoice_status !== INVOICE_STATUS.DRAFT,
+									},
+									{
+										value: INVOICE_STATUS.FINALIZED,
+										label: t('invoices.status.finalized'),
+										disabled: invoice.invoice_status !== INVOICE_STATUS.FINALIZED && !canFinalize,
+									},
+									{
+										value: INVOICE_STATUS.VOIDED,
+										label: t('invoices.status.void'),
+										disabled: !canVoid,
+									},
+								]}
+								onChange={setInvoiceStatus}
+								disabled={!isInvoiceStatusEditable}
+								description={
+									isInvoiceStatusEditable
+										? invoiceStatus === INVOICE_STATUS.VOIDED && invoiceStatusChanged
+											? t('invoices.edit.voidOnSaveHint')
+											: undefined
+										: isEditable
+											? t('invoices.edit.invoiceStatusLockedHint')
+											: undefined
+								}
 							/>
 						</div>
 						{isEditable && (
