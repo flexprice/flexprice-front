@@ -10,7 +10,7 @@ import { InvoiceDownloadFormatDialog } from '@/components/molecules';
 import { Invoice, INVOICE_STATUS } from '@/models/Invoice';
 import { PAYMENT_STATUS } from '@/constants/payment';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatMoney } from '@/utils/common/formatBalance';
 import { CreditCard, Download, Eye, MoreHorizontal, Receipt, Search, SearchX } from 'lucide-react';
 import EmptyState from '../EmptyState';
 import PortalSection from '../PortalSection';
@@ -79,7 +79,7 @@ const InvoicesTable = ({ invoices, onOpenDownloadFormat, downloadPendingId, onVi
 								    rendered with the wrong symbol — ₹100 in the list against $100 in
 								    the drawer for the same invoice. */}
 							{getCurrencySymbol(invoice.currency ?? '')}
-							{formatAmount(String(invoice.total ?? 0))}
+							{formatMoney(invoice.total ?? 0)}
 						</PortalTableCell>
 						<PortalTableCell align='end'>
 							<div className='flex items-center justify-end'>

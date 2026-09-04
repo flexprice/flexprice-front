@@ -2,6 +2,7 @@ import { Customer } from '@/models';
 import { Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePortalConfig } from '@/context/PortalConfigContext';
+import { isColorDark } from '@/components/customer-portal/portalTheme';
 import { cn } from '@/lib/utils';
 
 interface PortalHeaderProps {
@@ -13,6 +14,9 @@ const PortalHeader = ({ customer, tenantName }: PortalHeaderProps) => {
 	const { t } = useTranslation('customer-portal');
 	const { config } = usePortalConfig();
 	const theme = config.theme;
+	// The avatar's own background is the tenant color, not a themed surface token, so it needs
+	// its own light/dark check — a light primary_color (e.g. #ffffff) must not get white text.
+	const avatarTextIsLight = theme?.primary_color ? isColorDark(theme.primary_color) : false;
 
 	const initials =
 		customer.name
@@ -33,7 +37,13 @@ const PortalHeader = ({ customer, tenantName }: PortalHeaderProps) => {
 						<div
 							className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-subtle'
 							style={theme?.primary_color ? { backgroundColor: theme.primary_color } : undefined}>
-							<span className={cn('text-lg font-medium', theme?.primary_color ? 'text-white' : 'text-content-secondary')}>{initials}</span>
+							<span
+							className={cn(
+								'text-lg font-medium',
+								theme?.primary_color ? (avatarTextIsLight ? 'text-white' : 'text-content') : 'text-content-secondary',
+							)}>
+							{initials}
+						</span>
 						</div>
 
 						<div>

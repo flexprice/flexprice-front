@@ -89,7 +89,11 @@
 		"unknownPlan": "خطة غير معروفة",
 		"nextBilling": "الفوترة التالية {{date}}",
 		"trialEnds": "تنتهي التجربة {{date}}",
+		"count_zero": "لا توجد اشتراكات",
 		"count_one": "اشتراك واحد",
+		"count_two": "اشتراكان",
+		"count_few": "{{count}} اشتراكات",
+		"count_many": "{{count}} اشتراكًا",
 		"count_other": "{{count}} اشتراكات"
 	},
 	"usage": {

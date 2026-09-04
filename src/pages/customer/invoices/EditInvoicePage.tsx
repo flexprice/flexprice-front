@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +30,7 @@ import {
 	ExecuteInvoiceModifyPayload,
 	INVOICE_MODIFY_LINE_ITEM_ACTION,
 	InvoiceModifyAddLineItem,
+	InvoiceModifyResponse,
 	InvoiceModifyUpdateLineItem,
 	UpdateInvoicePayload,
 } from '@/types/dto';
@@ -60,6 +61,32 @@ interface LineItemOps {
 	adds: InvoiceModifyAddLineItem[];
 }
 
+/**
+ * Tracks how far a finalized-invoice save got, so a retry after a partial failure
+ * resumes instead of replaying from the original (now-voided) invoice.
+ *
+ * A finalized save is a sequence of independent backend calls, and the first one
+ * that touches line items voids the invoice and recreates it as a draft - every
+ * call after that must target the new draft's id, not the original. Without this,
+ * a retry rebuilds the same ops from unchanged form state and resends every step
+ * against `invoiceId`, which by then no longer accepts edits: at best the retry
+ * fails outright, at worst a second void-and-recreate produces a duplicate draft.
+ */
+interface SaveProgress {
+	targetId: string;
+	/** Step keys already executed successfully in this save; see stepKey below. */
+	done: Set<string>;
+}
+
+const stepKey = {
+	payload: 'payload',
+	paymentStatus: 'paymentStatus',
+	removes: 'removes',
+	update: (lineItemId: string) => `update:${lineItemId}`,
+	adds: 'adds',
+	status: 'status',
+} as const;
+
 const toLineItemRows = (invoice: Invoice): LineItemRow[] =>
 	(invoice.line_items ?? []).map((li) => ({
 		id: li.id,
@@ -78,6 +105,15 @@ const invoiceEditResponseSchema = z.object({
 const parseInvoiceForEdit = (invoice: Invoice): Invoice => {
 	invoiceEditResponseSchema.parse(invoice);
 	return invoice;
+};
+
+// The modify endpoint's { invoice } envelope gets the same guard, reusing
+// invoiceEditResponseSchema for the nested invoice rather than a second schema.
+const invoiceModifyResponseSchema = z.object({ invoice: invoiceEditResponseSchema });
+
+const parseModifyResponse = (resp: InvoiceModifyResponse): InvoiceModifyResponse => {
+	invoiceModifyResponseSchema.parse(resp);
+	return resp;
 };
 
 // Backend only accepts updates for invoices in these statuses.
@@ -231,6 +267,11 @@ const EditInvoicePage: FC = () => {
 	const hasChanges =
 		dueDateChanged || pdfUrlChanged || metadataChanged || applyDiscount || paymentStatusChanged || lineItemsChanged || invoiceStatusChanged;
 
+	// Only the finalized (void-and-recreate) path needs resume tracking: a plain draft
+	// save's targetId never changes, and its onError below already invalidates the
+	// invoice query, so a retry recomputes ops against fresh server state instead.
+	const saveProgressRef = useRef<SaveProgress | null>(null);
+
 	const { mutate: updateInvoice, isPending } = useMutation({
 		mutationFn: async ({
 			payload,
@@ -246,49 +287,72 @@ const EditInvoicePage: FC = () => {
 			// A finalized save voids the invoice and recreates it as a draft; every response
 			// carries the invoice the operation actually landed on, so chain later calls (and
 			// the success navigation) to that id. For drafts the id never changes — no-op.
-			let targetId = invoiceId!;
-			if (payload) {
-				const updated = await InvoiceApi.updateInvoice(targetId, payload);
-				targetId = updated?.id ?? targetId;
+			//
+			// Resuming from a prior partial failure: `done` and `targetId` reflect exactly how
+			// far that attempt got, so a retry with unchanged form state can't resend a step that
+			// already landed against an invoice that, by then, may no longer accept it.
+			const resuming = isFinalized ? saveProgressRef.current : null;
+			let targetId = resuming?.targetId ?? invoiceId!;
+			const done = new Set(resuming?.done);
+			const markDone = (key: string, newTargetId?: string) => {
+				done.add(key);
+				if (newTargetId) targetId = newTargetId;
+				if (isFinalized) saveProgressRef.current = { targetId, done: new Set(done) };
+			};
+
+			if (payload && !done.has(stepKey.payload)) {
+				const updated = parseInvoiceForEdit(await InvoiceApi.updateInvoice(targetId, payload));
+				markDone(stepKey.payload, updated?.id ?? targetId);
 			}
-			if (nextPaymentStatus) await InvoiceApi.updateInvoicePaymentStatus(targetId, { payment_status: nextPaymentStatus });
+			if (nextPaymentStatus && !done.has(stepKey.paymentStatus)) {
+				await InvoiceApi.updateInvoicePaymentStatus(targetId, { payment_status: nextPaymentStatus });
+				markDone(stepKey.paymentStatus);
+			}
 			if (ops) {
-				if (ops.removes.length > 0) {
+				if (ops.removes.length > 0 && !done.has(stepKey.removes)) {
 					const payload: ExecuteInvoiceModifyPayload = {
 						type: 'line_item',
 						line_item_params: { action: INVOICE_MODIFY_LINE_ITEM_ACTION.REMOVE, line_item_ids: ops.removes },
 					};
-					const resp = await InvoiceApi.modifyInvoice(targetId, payload);
-					targetId = resp?.invoice?.id ?? targetId;
+					const resp = parseModifyResponse(await InvoiceApi.modifyInvoice(targetId, payload));
+					markDone(stepKey.removes, resp?.invoice?.id ?? targetId);
 				}
 				// One update per call: the backend versions each edit individually.
 				for (const { line_item_id, update } of ops.updates) {
+					const key = stepKey.update(line_item_id);
+					if (done.has(key)) continue;
 					const payload: ExecuteInvoiceModifyPayload = {
 						type: 'line_item',
 						line_item_params: { action: INVOICE_MODIFY_LINE_ITEM_ACTION.UPDATE, line_item_id, update },
 					};
-					const resp = await InvoiceApi.modifyInvoice(targetId, payload);
-					targetId = resp?.invoice?.id ?? targetId;
+					const resp = parseModifyResponse(await InvoiceApi.modifyInvoice(targetId, payload));
+					markDone(key, resp?.invoice?.id ?? targetId);
 				}
-				if (ops.adds.length > 0) {
+				if (ops.adds.length > 0 && !done.has(stepKey.adds)) {
 					const payload: ExecuteInvoiceModifyPayload = {
 						type: 'line_item',
 						line_item_params: { action: INVOICE_MODIFY_LINE_ITEM_ACTION.ADD, items: ops.adds },
 					};
-					const resp = await InvoiceApi.modifyInvoice(targetId, payload);
-					targetId = resp?.invoice?.id ?? targetId;
+					const resp = parseModifyResponse(await InvoiceApi.modifyInvoice(targetId, payload));
+					markDone(stepKey.adds, resp?.invoice?.id ?? targetId);
 				}
 			}
 			// Status transition runs last: line-item edits must land while the invoice is
 			// still editable, and a finalize must see the finished draft.
-			if (nextInvoiceStatus === INVOICE_STATUS.VOIDED) {
-				await InvoiceApi.voidInvoice(targetId);
-			} else if (nextInvoiceStatus === INVOICE_STATUS.FINALIZED) {
-				await InvoiceApi.finalizeInvoice(targetId);
+			if (!done.has(stepKey.status)) {
+				if (nextInvoiceStatus === INVOICE_STATUS.VOIDED) {
+					await InvoiceApi.voidInvoice(targetId);
+					markDone(stepKey.status);
+				} else if (nextInvoiceStatus === INVOICE_STATUS.FINALIZED) {
+					await InvoiceApi.finalizeInvoice(targetId);
+					markDone(stepKey.status);
+				}
 			}
 			return targetId;
 		},
 		onSuccess: (targetId: string) => {
+			// Fully landed — the next save (if any, e.g. on the recreated draft) starts fresh.
+			saveProgressRef.current = null;
 			toast.success(t('invoices.edit.toast.updateSuccess'));
 			void refetchInvoiceQueries();
 			void refetchQueries(['invoiceEdit', invoiceId!]);
@@ -297,8 +361,10 @@ const EditInvoicePage: FC = () => {
 		},
 		onError: (error: Error) => {
 			if (isFinalized) {
-				// The void-and-recreate flow failed: keep the user's edits so they can
-				// fix and retry — reseeding from the server would wipe the form.
+				// The void-and-recreate flow failed partway through: keep the user's edits so
+				// they can fix and retry — reseeding from the server would wipe the form.
+				// saveProgressRef already reflects exactly how far this attempt got, so the
+				// retry (handled above) resumes rather than replaying completed steps.
 				toast.error(error.message || t('invoices.edit.toast.updateFailed'));
 				return;
 			}

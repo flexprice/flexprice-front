@@ -20,9 +20,12 @@ import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
 interface Props {
 	data: InvoiceListItem;
+	/** Overrides the default `/invoices/:id/edit` navigation — lets a caller keep
+	 *  this menu decoupled from RouteNames when it needs a different edit route. */
+	onEdit?: (invoiceId: string) => void;
 }
 
-const InvoiceTableMenu: FC<Props> = ({ data }) => {
+const InvoiceTableMenu: FC<Props> = ({ data, onEdit }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation('billing');
 	const { t: tc } = useTranslation('common');
@@ -106,7 +109,8 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 			label: t('invoices.edit.menuLabel'),
 			group: 'Actions',
 			onSelect: () => {
-				navigate(`${RouteNames.invoices}/${data.id}/edit`);
+				if (onEdit) onEdit(data.id);
+				else navigate(`${RouteNames.invoices}/${data.id}/edit`);
 			},
 			disabled: !canWrite || !isEditableStatus,
 			disabledReason: writeDeniedReason ?? (!isEditableStatus ? t('invoices.edit.menuDisabledStatus') : undefined),

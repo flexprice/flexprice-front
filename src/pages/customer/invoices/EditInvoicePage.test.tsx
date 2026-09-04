@@ -432,6 +432,54 @@ describe('EditInvoicePage', () => {
 		expect(mockNavigate).not.toHaveBeenCalled();
 	});
 
+	it('resumes onto the recreated draft on retry instead of replaying the completed step', async () => {
+		mockGetInvoiceById.mockResolvedValue(
+			makeInvoice({
+				invoice_status: 'FINALIZED',
+				line_items: [{ id: 'li_1', display_name: 'Consulting', quantity: '2', amount: 300 }],
+			}),
+		);
+		mockModifyInvoice
+			// The update step succeeds and voids-and-recreates the invoice.
+			.mockResolvedValueOnce({ invoice: makeInvoice({ id: 'inv_draft_2', invoice_status: 'DRAFT' }) })
+			// The add step fails on the first attempt.
+			.mockRejectedValueOnce(new Error('add failed'))
+			// The retried add step succeeds.
+			.mockResolvedValueOnce({ invoice: makeInvoice({ id: 'inv_draft_2', invoice_status: 'DRAFT' }) });
+		const user = userEvent.setup();
+		renderPage();
+
+		const nameInput = await screen.findByDisplayValue('Consulting');
+		await user.clear(nameInput);
+		await user.type(nameInput, 'Consulting hours');
+		await user.click(screen.getByRole('button', { name: 'Add Line Item' }));
+		const nameInputs = screen.getAllByPlaceholderText('Enter item name');
+		await user.type(nameInputs[nameInputs.length - 1], 'Setup fee');
+		const amountInputs = screen.getAllByPlaceholderText('0.00');
+		await user.clear(amountInputs[amountInputs.length - 1]);
+		await user.type(amountInputs[amountInputs.length - 1], '50');
+
+		// First attempt: update succeeds (recreates the draft), add fails.
+		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
+		await user.click(await screen.findByRole('button', { name: 'Void & create draft' }));
+		await waitFor(() => expect(mockModifyInvoice).toHaveBeenCalledTimes(2));
+		expect(mockNavigate).not.toHaveBeenCalled();
+
+		// Retry with unchanged form state.
+		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
+		await user.click(await screen.findByRole('button', { name: 'Void & create draft' }));
+
+		await waitFor(() => expect(mockModifyInvoice).toHaveBeenCalledTimes(3));
+		// The retry must not resend the already-completed update against the original
+		// (by now voided) invoice — only the failed add re-runs, against the recreated draft.
+		expect(mockModifyInvoice.mock.calls[2][0]).toBe('inv_draft_2');
+		expect(mockModifyInvoice.mock.calls[2][1]).toEqual({
+			type: 'line_item',
+			line_item_params: { action: 'add', items: [{ display_name: 'Setup fee', amount: '50', quantity: '1' }] },
+		});
+		await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/billing/invoices/inv_draft_2'));
+	});
+
 	it('cancelling the void confirmation returns to editing without saving', async () => {
 		mockGetInvoiceById.mockResolvedValue(
 			makeInvoice({
