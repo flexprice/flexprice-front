@@ -7,6 +7,7 @@ import { formatCompactNumber } from '@/utils';
 import { GetUsageAnalyticsResponse } from '@/types/dto';
 import { UsageAnalyticItem } from '@/models/Analytics';
 import { useCustomerUsageChartT } from './CustomerUsageChart.i18n';
+import type { ReactNode } from 'react';
 
 // Configuration constants - adjust these values as needed
 const MAX_LEGEND_ITEMS = 5;
@@ -24,6 +25,7 @@ const normalizeUsageData = (items: UsageAnalyticItem[], getSeriesFallbackName: (
 			chartData: [],
 			seriesConfig: {},
 			seriesIds: [],
+			seriesIdsWithPoints: new Set<string>(),
 		};
 	}
 
@@ -31,6 +33,10 @@ const normalizeUsageData = (items: UsageAnalyticItem[], getSeriesFallbackName: (
 	const timestampMap: Record<string, Record<string, number>> = {};
 	const seriesConfig: Record<string, { label: string; color?: string }> = {};
 	const seriesIds: string[] = [];
+	// chartData zero-fills every series on every row, which is right for drawing a
+	// continuous line but makes a series that reported nothing indistinguishable
+	// from one that reported zero. Tracked here so markers can tell them apart.
+	const seriesIdsWithPoints = new Set<string>();
 
 	// Process each item (data series)
 	items.forEach((item, index) => {
@@ -58,6 +64,7 @@ const normalizeUsageData = (items: UsageAnalyticItem[], getSeriesFallbackName: (
 			// Ensure the usage value is a number and not too small (to avoid floating point issues)
 			const normalizedValue = isNaN(usageValue) ? 0 : Math.round(usageValue * 100) / 100;
 			timestampMap[timestamp][seriesId] = normalizedValue;
+			seriesIdsWithPoints.add(seriesId);
 		});
 	});
 
@@ -79,12 +86,14 @@ const normalizeUsageData = (items: UsageAnalyticItem[], getSeriesFallbackName: (
 		chartData,
 		seriesConfig,
 		seriesIds,
+		seriesIdsWithPoints,
 	};
 };
 
 interface CustomerUsageChartProps {
 	data: GetUsageAnalyticsResponse;
-	title?: string;
+	/** A node, not just a string, so a caller can badge it with a section icon. */
+	title?: ReactNode;
 	description?: string;
 	className?: string;
 	/** Portal primary color — defaults to indigo if not provided */
@@ -106,7 +115,7 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({
 }) => {
 	const t = useCustomerUsageChartT();
 	// Process the data for chart display
-	const { chartData, seriesConfig, seriesIds } = normalizeUsageData(data.items, (seriesIndex) =>
+	const { chartData, seriesConfig, seriesIds, seriesIdsWithPoints } = normalizeUsageData(data.items, (seriesIndex) =>
 		t('customerCharts.seriesFallback', { index: seriesIndex + 1 }),
 	);
 
@@ -492,12 +501,14 @@ export const CustomerUsageChart: React.FC<CustomerUsageChartProps> = ({
 										// A line needs two points to draw anything, so a chart with a single
 										// row renders an empty plot unless the point is marked.
 										//
-										// Deliberately the chart's row count, not a per-series one: chartData
-										// zero-fills every series on every row (see `|| 0` above), so a series
-										// with one real reading still draws a line through zeros and stays
-										// visible. Only a single-row chart has nothing to draw.
+										// The chart's row count, not a per-series one: chartData zero-fills
+										// every series on every row (see `|| 0` above), so a series with one
+										// real reading still draws a line through zeros and stays visible.
+										// Only a single-row chart has nothing to draw. Gated on the series
+										// having a real reading, or a series that reported nothing would be
+										// marked at zero as if it had.
 										dot={
-											chartData.length < 2
+											chartData.length < 2 && seriesIdsWithPoints.has(seriesId)
 												? { r: 3.5, stroke: 'rgb(var(--fp-surface))', strokeWidth: 1, fill: getSeriesColor(index) }
 												: false
 										}

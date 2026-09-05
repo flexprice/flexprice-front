@@ -55,7 +55,22 @@ describe('portalReturnUrl', () => {
 	it('round-trips the token across browsing contexts', () => {
 		rememberSessionToken('tok_123');
 		expect(recallSessionToken()).toBe('tok_123');
-		expect(localStorage.getItem('flexprice.portal.sessionToken')).toBe('tok_123');
+		// Stored with the time it was written, so it can expire rather than sitting
+		// in a shared browser profile indefinitely.
+		expect(JSON.parse(localStorage.getItem('flexprice.portal.sessionToken')!).token).toBe('tok_123');
+	});
+
+	// It exists only to survive a trip to a payment provider and back.
+	it('refuses a stored token past its lifetime', () => {
+		localStorage.setItem('flexprice.portal.sessionToken', JSON.stringify({ token: 'tok_old', storedAt: Date.now() - 31 * 60 * 1000 }));
+		expect(recallSessionToken()).toBeNull();
+		expect(localStorage.getItem('flexprice.portal.sessionToken')).toBeNull();
+	});
+
+	// An older build stored the bare token with no date, so it cannot be aged out.
+	it('drops a token it cannot date', () => {
+		localStorage.setItem('flexprice.portal.sessionToken', 'tok_legacy');
+		expect(recallSessionToken()).toBeNull();
 	});
 
 	it('forgets the token on request', () => {

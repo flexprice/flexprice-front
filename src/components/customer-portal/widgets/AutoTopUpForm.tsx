@@ -53,8 +53,17 @@ const AutoTopUpForm = ({ wallet, hasChargeableMethod, onAddPaymentMethod, onDone
 			const payload: PortalAutoTopupRequest = {
 				enabled,
 				...(enabled ? { threshold, amount } : {}),
-				// null clears a stored cooloff; omitting the field would leave it in place.
-				cooldown: cooldownEnabled && Number(cooldownValue) > 0 ? { value: Number(cooldownValue), unit: cooldownUnit } : null,
+				// A zero-valued duration clears a stored cooloff, not null.
+				//
+				// The backend merges auto top-up field by field and only looks at cooldown
+				// when the pointer is non-nil, so JSON null is indistinguishable from the
+				// field being absent and the stored cooloff survived untouched. Its clear
+				// branch keys off Duration.IsEmpty(), which is value === 0 — so that is the
+				// payload that actually resets it.
+				cooldown:
+					cooldownEnabled && Number(cooldownValue) > 0
+						? { value: Number(cooldownValue), unit: cooldownUnit }
+						: { value: 0, unit: cooldownUnit },
 			};
 			return CustomerPortalApi.updateAutoTopup(wallet.id, payload);
 		},
@@ -69,7 +78,11 @@ const AutoTopUpForm = ({ wallet, hasChargeableMethod, onAddPaymentMethod, onDone
 	// Both are required by the API whenever auto top-up is on. Enabling it without a
 	// chargeable method saves a config that can never fire — a trap rather than a
 	// setting — so the save is blocked, not just warned about.
-	const isValid = !enabled || (Number(threshold) > 0 && Number(amount) > 0 && hasChargeableMethod);
+	// The cool-off clause matters: with the toggle on and the field empty the
+	// payload sends cooldown: null, silently clearing the cool-off while the
+	// switch still reads as on. Blocking Save is the honest response.
+	const hasValidCooloff = !cooldownEnabled || Number(cooldownValue) > 0;
+	const isValid = (!enabled || (Number(threshold) > 0 && Number(amount) > 0 && hasChargeableMethod)) && hasValidCooloff;
 	const currencySymbol = getCurrencySymbol(wallet.currency ?? 'USD');
 
 	return (
@@ -143,20 +156,16 @@ const AutoTopUpForm = ({ wallet, hasChargeableMethod, onAddPaymentMethod, onDone
 				</div>
 			)}
 
-			<div style={{ borderTop: '1px solid var(--portal-border, #E9E9E9)', paddingTop: '1rem' }}>
+			<div className='border-t border-line pt-4'>
 				{/* Sits directly above the button it explains. At the top of the form it
 				    was separated from the greyed-out Save by the whole configuration, and
 				    a second line under the button repeated it. */}
 				{enabled && !hasChargeableMethod && (
-					<div
-						className='flex items-start gap-2 rounded-lg border p-3 mb-3'
-						style={{ borderColor: 'var(--portal-border, #E9E9E9)', backgroundColor: 'var(--portal-bg, #fafafa)' }}>
-						<AlertCircle className='h-4 w-4 mt-0.5 shrink-0' style={{ color: 'rgb(var(--fp-danger))' }} />
+					<div className='mb-3 flex items-start gap-2 rounded-lg border border-line bg-surface-subtle p-3'>
+						<AlertCircle className='mt-0.5 h-4 w-4 shrink-0 text-danger' />
 						<div className='text-sm'>
-							<p style={{ color: 'var(--portal-text-primary, #09090b)' }}>{t('autoTopUp.noSavedCard')}</p>
-							<p className='text-xs mt-0.5' style={{ color: 'var(--portal-text-secondary, #a1a1aa)' }}>
-								{t('autoTopUp.needsCardHint')}
-							</p>
+							<p className='text-content'>{t('autoTopUp.noSavedCard')}</p>
+							<p className='text-xs mt-0.5 text-content-tertiary'>{t('autoTopUp.needsCardHint')}</p>
 							{onAddPaymentMethod && (
 								<button
 									type='button'

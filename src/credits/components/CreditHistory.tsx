@@ -1,6 +1,9 @@
 // src/credits/components/CreditHistory.tsx
 import { useMemo } from 'react';
 import Card from '@/components/atoms/Card/Card';
+import EmptyState from '@/components/atoms/EmptyState/EmptyState';
+import SectionIcon from '@/components/atoms/SectionIcon/SectionIcon';
+import { ArrowLeftRight } from 'lucide-react';
 import Select from '@/components/atoms/Select/Select';
 import { ShortPaginationControls } from '@/components/atoms/ShortPagination/ShortPaginationControls';
 // Imported by direct file path rather than the `@/components/molecules` barrel: the barrel's
@@ -93,29 +96,35 @@ const CreditHistory = ({
 			)}
 
 			<Card noPadding className='rounded-xl overflow-hidden bg-surface'>
-				<div className='p-6 border-b border-line'>
-					<h3 className='text-base font-medium text-content'>{t('creditWidgets.transactionHistory')}</h3>
+				<div className='flex items-center gap-2.5 border-b border-line px-5 py-4'>
+					<SectionIcon>
+						<ArrowLeftRight />
+					</SectionIcon>
+					<h3 className='text-sm font-medium text-content'>{t('creditWidgets.transactionHistory')}</h3>
 				</div>
-				<div className='p-6'>
+				<div>
 					{transactions.length > 0 ? (
-						<WalletTransactionsTable data={tableData} />
+						<WalletTransactionsTable data={tableData} chrome='portal' />
 					) : (
-						<div className='flex flex-col items-center justify-center py-16 px-4'>
-							<p className='text-sm font-medium text-content-secondary mb-1'>{t('creditWidgets.noTransactionsTitle')}</p>
-							<p className='text-xs text-content-muted text-center max-w-sm mt-1'>{t('creditWidgets.noTransactionsDescription')}</p>
-						</div>
+						<EmptyState
+							icon={<ArrowLeftRight />}
+							title={t('creditWidgets.noTransactionsTitle')}
+							description={t('creditWidgets.noTransactionsDescription')}
+						/>
 					)}
 					{/* Rendered on totalItems, not the current page's row count, so a stale out-of-range
 					    page (e.g. after a delete/filter shrinks the total) still shows pagination and
 					    lets ShortPaginationControls' own resync effect clamp `page` back into range. */}
 					{totalItems > 0 && (
-						<ShortPaginationControls
-							page={page}
-							onPageChange={onPageChange}
-							totalItems={totalItems}
-							pageSize={pageSize}
-							unit={t('creditWidgets.transactionsUnit')}
-						/>
+						<div className='border-t border-line px-5 py-3'>
+							<ShortPaginationControls
+								page={page}
+								onPageChange={onPageChange}
+								totalItems={totalItems}
+								pageSize={pageSize}
+								unit={t('creditWidgets.transactionsUnit')}
+							/>
+						</div>
 					)}
 				</div>
 			</Card>

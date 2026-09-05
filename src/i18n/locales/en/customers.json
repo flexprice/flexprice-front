@@ -229,7 +229,8 @@
 			"missingExternalId": "Billing customer must have an external ID."
 		},
 		"sandboxNotice": "This is a sandbox subscription and will automatically end on {{date}} ({{days}} days from now).",
-		"saveAsDraft": "Save as Draft"
+		"saveAsDraft": "Save as Draft",
+		"create": "Create Subscription"
 	},
 	"subscriptionDetail": {
 		"breadcrumbSubscription": "Subscription",

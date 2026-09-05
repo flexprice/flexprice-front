@@ -1,7 +1,7 @@
 import supabase from '@/core/services/supbase/config';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { data, useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useUser } from '@/hooks/UserContext';
 import { Button, Input } from '@/components/atoms';
 import { EyeIcon, EyeOff } from 'lucide-react';
@@ -70,6 +70,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 		onError: (error: Error) => {
 			toast.error(error.message || 'Something went wrong. Please try again.');
 		},
+		// Runs after either outcome — a failed self-hosted login otherwise left the button
+		// disabled forever, since neither onSuccess nor onError reset `loading`.
+		onSettled: () => setLoading(false),
 	});
 
 	const handleLogin = async () => {
@@ -81,21 +84,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 		setLoading(true);
 
 		if (config.app.env !== APP_ENV.SelfHosted) {
-			const { error } = await supabase.auth.signInWithPassword({
-				email,
-				password,
-			});
+			try {
+				const { data: authData, error } = await supabase.auth.signInWithPassword({
+					email,
+					password,
+				});
 
-			setLoading(false);
+				if (error) {
+					toast.error(error.message);
+					return;
+				}
 
-			if (error) {
-				toast.error(error.message);
-				return;
+				userContext.setUser(authData.user);
+				navigate('/');
+				toast.success('Login successful');
+			} catch (error) {
+				// Belt-and-suspenders: a thrown error here (e.g. a misconfigured auth client)
+				// must still surface and release the button, not just leave it disabled.
+				toast.error(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+			} finally {
+				setLoading(false);
 			}
-
-			userContext.setUser(data);
-			navigate('/');
-			toast.success('Login successful');
 		} else {
 			localLogin();
 		}

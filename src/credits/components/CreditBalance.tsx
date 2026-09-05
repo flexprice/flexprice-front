@@ -20,7 +20,7 @@ const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'failed' | 'default
  * Prop-only wallet-balance card — no fetching, no auth, no PortalConfigContext. Consumers supply
  * an already-adapted `wallet` (see `adaptCreditBalance`), or `null` for the empty state.
  */
-const CreditBalance = ({ wallet: rawWallet, isLoading = false, className, actions }: CreditBalanceProps) => {
+const CreditBalance = ({ wallet: rawWallet, isLoading = false, className, actions, balanceAction }: CreditBalanceProps) => {
 	const wallet = rawWallet ? normalizeCreditBalanceData(rawWallet) : null;
 	const t = useCreditsT();
 
@@ -57,31 +57,39 @@ const CreditBalance = ({ wallet: rawWallet, isLoading = false, className, action
 
 	return (
 		<Card noPadding className={cn('flexprice-ui', 'rounded-xl overflow-hidden bg-surface', className)}>
-			<div className='p-5 flex items-start justify-between gap-4'>
-				<div className='flex items-center gap-3 min-w-0'>
-					<div className='h-9 w-9 rounded-full flex items-center justify-center shrink-0 bg-accent-indigo-muted'>
+			{/* Identity above the rule, money below it. */}
+			<div className='flex items-start justify-between gap-4 border-b border-line px-5 py-4'>
+				<div className='flex min-w-0 items-center gap-3'>
+					<div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-indigo-muted'>
 						<WalletIcon className='h-4 w-4 text-accent-indigo' />
 					</div>
 					<div className='min-w-0'>
-						<h3 className='text-sm font-medium text-content truncate'>{wallet.name || t('creditWidgets.defaultName')}</h3>
+						<h3 className='truncate text-sm font-medium text-content'>{wallet.name || t('creditWidgets.defaultName')}</h3>
 						<Chip label={t(`creditWidgets.status.${wallet.status}`)} variant={STATUS_VARIANT[wallet.status] ?? 'default'} />
 					</div>
 				</div>
 				{actions && <div className='shrink-0'>{actions}</div>}
 			</div>
-			<div className='px-5 pb-5'>
-				<span className='text-sm block mb-1 text-content-secondary'>{t('creditWidgets.balance')}</span>
+
+			{/* The label's line carries the balance's own control, with the header rule
+			    above giving it something to align against rather than floating in the
+			    empty right half of a full-width card. */}
+			<div className='px-5 py-4'>
+				<div className='flex items-center justify-between gap-4'>
+					<span className='text-sm text-content-secondary'>{t('creditWidgets.balance')}</span>
+					{balanceAction && <div className='shrink-0'>{balanceAction}</div>}
+				</div>
 				{/* Money leads: it is the figure a customer can act on. Credits follow as the unit detail.
 				    The sign sits outside the currency symbol so a negative reads as -$17,681.62. */}
-				<p className={cn('text-3xl font-semibold', isOverdrawn ? 'text-accent-rose' : 'text-content')}>
+				<p className={cn('mt-1 text-3xl font-semibold', isOverdrawn ? 'text-accent-rose' : 'text-content')}>
 					{wallet.balance < 0 ? '-' : ''}
 					{currencySymbol}
 					{formatMoney(Math.abs(wallet.balance))}
 				</p>
-				<p className='text-sm mt-1 text-content-secondary'>
+				<p className='mt-1 text-sm text-content-secondary'>
 					{formatCredits(wallet.creditBalance)} {t('creditWidgets.credits')}
 				</p>
-				{isOverdrawn && <p className='text-sm mt-3 text-accent-rose'>{t('creditWidgets.overdrawnHint')}</p>}
+				{isOverdrawn && <p className='mt-3 text-sm text-accent-rose'>{t('creditWidgets.overdrawnHint')}</p>}
 			</div>
 		</Card>
 	);

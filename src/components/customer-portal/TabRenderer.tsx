@@ -15,6 +15,7 @@ const CreditBalanceContainer = lazy(() => import('@/credits/containers/CreditBal
 const CreditHistoryContainer = lazy(() => import('@/credits/containers/CreditHistoryContainer'));
 const MetricCardsContainer = lazy(() => import('@/usage/containers/MetricCardsContainer'));
 const TopUpWidget = lazy(() => import('./widgets/TopUpWidget'));
+const TopUpButton = lazy(() => import('./widgets/TopUpButton'));
 const AutoTopUpWidget = lazy(() => import('./widgets/AutoTopUpWidget'));
 const PaymentMethodsWidget = lazy(() => import('./widgets/PaymentMethodsWidget'));
 const WalletActionsHeader = lazy(() => import('./widgets/WalletActionsHeader'));
@@ -78,8 +79,9 @@ const TabRenderer = ({ tab, subscriptions = [], usageData, analyticsParams }: Ta
 			{tab.type === 'usage_breakdown' && <UsageBreakdownContainer analyticsParams={analyticsParams} label={tab.label} />}
 			{tab.type === 'invoices' && <InvoicesWidget />}
 			{tab.type === 'account_summary' && <AccountSummaryWidget label={tab.label} />}
-			{/* Top up rides in the balance header — it is the primary action on this page. */}
-			{tab.type === 'wallet_balance' && <CreditBalanceContainer actions={<WalletActionsHeader />} />}
+			{/* Top up leads, in the header beside the wallet's name; the menu drops to the
+			    balance row so the primary action is the first thing read. */}
+			{tab.type === 'wallet_balance' && <CreditBalanceContainer actions={<TopUpButton />} balanceAction={<WalletActionsHeader />} />}
 			{tab.type === 'wallet_transactions' && <CreditHistoryContainer />}
 			{tab.type === 'wallet_topup' && <TopUpWidget label={tab.label} />}
 			{tab.type === 'auto_topup' && <AutoTopUpWidget label={tab.label} />}

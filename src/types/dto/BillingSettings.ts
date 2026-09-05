@@ -92,6 +92,28 @@ export function getInvoiceConfigValidationErrorKey(config: InvoiceConfig): Invoi
 	return null;
 }
 
+export type FinalizationDelayUnit = 'seconds' | 'minutes' | 'hours' | 'days';
+
+export const FINALIZATION_DELAY_UNIT_SECONDS: Record<FinalizationDelayUnit, number> = {
+	seconds: 1,
+	minutes: 60,
+	hours: 3600,
+	days: 86400,
+};
+
+/**
+ * Picks the largest unit that divides the stored delay evenly, so the settings UI
+ * shows 7200 as "2 hours" and 90 as "90 seconds" without losing precision.
+ */
+export function toFinalizationDelayDisplay(seconds: number): { value: number; unit: FinalizationDelayUnit } {
+	const units: FinalizationDelayUnit[] = ['days', 'hours', 'minutes'];
+	for (const unit of units) {
+		const size = FINALIZATION_DELAY_UNIT_SECONDS[unit];
+		if (seconds > 0 && seconds % size === 0) return { value: seconds / size, unit };
+	}
+	return { value: Math.max(0, seconds), unit: 'seconds' };
+}
+
 export function parseSequenceDigitsInput(raw: string): number | null {
 	const trimmed = raw.trim();
 	if (trimmed === '') return null;

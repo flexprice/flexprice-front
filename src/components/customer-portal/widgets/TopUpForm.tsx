@@ -186,11 +186,12 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 				disabled={isPending}
 			/>
 
-			{canCheckout && checkoutProviders.length > 1 && (
+			{/* Shown for a single provider too, not just a choice of several: the customer
+			    is about to be handed to a third party, and naming it is part of telling
+			    them what happens next. It is simply already selected. */}
+			{canCheckout && checkoutProviders.length > 0 && (
 				<div>
-					<p className='text-sm font-medium mb-1' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-						{t('topUp.providerLabel')}
-					</p>
+					<p className='text-sm font-medium mb-1 text-content'>{t('topUp.providerLabel')}</p>
 					{/* Inline rather than a Select: a Radix Select portals its list outside
 					    the dialog, and this dialog is modal={false}, so choosing an option
 					    reads as an outside click to the dismissable layer and closed the
@@ -218,9 +219,9 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 							);
 						})}
 					</div>
-					<p className='text-xs mt-1.5' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-						{t('topUp.providerHint')}
-					</p>
+					{/* Only a choice when there is one to make — with a single provider the
+					    hint would invite a decision the customer does not have. */}
+					{checkoutProviders.length > 1 && <p className='text-xs mt-1.5 text-content-secondary'>{t('topUp.providerHint')}</p>}
 				</div>
 			)}
 
@@ -236,18 +237,15 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 				/>
 			)}
 
+			{/* Not gated on checkout being configured. Without it the request still
+			    raises an invoice, and the response says so — announcing the account's
+			    payment setup to the customer told them about the tenant's configuration
+			    rather than about anything they can do, and blocked an action that works. */}
 			<div className='pt-1'>
-				<Button
-					className='w-full'
-					onClick={() => topUp()}
-					disabled={!isValid || isPending || !canCheckout}
-					isLoading={isPending}
-					title={canCheckout ? undefined : t('topUp.checkoutUnavailable')}>
+				<Button className='w-full' onClick={() => topUp()} disabled={!isValid || isPending} isLoading={isPending}>
 					{t('topUp.payNow')}
 				</Button>
-				<p className='text-xs text-center mt-2' style={{ color: 'var(--portal-text-secondary, #a1a1aa)' }}>
-					{canCheckout ? t('topUp.cardSavedNotice') : t('topUp.checkoutUnavailable')}
-				</p>
+				{canCheckout && <p className='mt-2 text-center text-xs text-content-tertiary'>{t('topUp.cardSavedNotice')}</p>}
 			</div>
 		</div>
 	);

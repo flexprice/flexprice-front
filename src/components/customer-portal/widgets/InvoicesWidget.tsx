@@ -13,6 +13,16 @@ import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functi
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { CreditCard, Download, Eye, MoreHorizontal, Receipt, Search, SearchX } from 'lucide-react';
 import EmptyState from '../EmptyState';
+import PortalSection from '../PortalSection';
+import {
+	PortalTable,
+	PortalTableBody,
+	PortalTableCell,
+	PortalTableEmpty,
+	PortalTableHead,
+	PortalTableHeader,
+	PortalTableRow,
+} from '@/components/atoms/PortalTable/PortalTable';
 import { downloadInvoiceLineItemsCsv } from '@/utils/invoices/downloadInvoiceLineItemsCsv';
 import InvoiceDetailDrawer from './InvoiceDetailDrawer';
 import CheckoutLinkDialog from './CheckoutLinkDialog';
@@ -41,116 +51,84 @@ const InvoicesTable = ({ invoices, onOpenDownloadFormat, downloadPendingId, onVi
 	};
 
 	return (
-		<div className='overflow-x-auto'>
-			<table className='w-full'>
-				<thead>
-					<tr
-						className='border-b'
-						style={{
-							backgroundColor: 'var(--portal-surface, #f9fafb)',
-							borderColor: 'var(--portal-border, #E9E9E9)',
-						}}>
-						<th
-							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-start'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-							{t('invoices.columnDate')}
-						</th>
-						<th
-							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-start'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-							{t('invoices.columnInvoice')}
-						</th>
-						<th
-							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-start'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-							{t('invoices.columnStatus')}
-						</th>
-						<th
-							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-end'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-							{t('invoices.columnAmount')}
-						</th>
-						<th
-							className='px-4 py-3 text-xs font-medium uppercase tracking-wider text-end'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-							{t('invoices.columnAction')}
-						</th>
-					</tr>
-				</thead>
-				<tbody className='divide-y' style={{ borderColor: 'var(--portal-border, #E9E9E9)' }}>
-					{invoices.map((invoice) => (
-						<tr key={invoice.id} className='transition-colors' style={{ backgroundColor: 'var(--portal-surface, white)' }}>
-							<td className='px-4 py-2.5 text-sm' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-								{invoice.finalized_at ? formatDateShort(invoice.finalized_at) : formatDateShort(invoice.created_at)}
-							</td>
-							<td className='px-4 py-2.5 text-sm font-medium'>
-								<button
-									type='button'
-									onClick={() => onView(invoice)}
-									className='hover:underline text-start'
-									style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-									{invoice.invoice_number || t('invoices.numberPrefix', { id: invoice.id.slice(0, 8) })}
-								</button>
-							</td>
-							<td className='px-4 py-2.5'>{getStatusChip(invoice)}</td>
-							<td className='px-4 py-2.5 text-sm text-end font-medium' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-								{/* Resolved per row: the list previously took invoices[0].currency and
+		<PortalTable>
+			<PortalTableHeader>
+				<tr>
+					<PortalTableHead>{t('invoices.columnDate')}</PortalTableHead>
+					<PortalTableHead>{t('invoices.columnInvoice')}</PortalTableHead>
+					<PortalTableHead>{t('invoices.columnStatus')}</PortalTableHead>
+					<PortalTableHead align='end'>{t('invoices.columnAmount')}</PortalTableHead>
+					<PortalTableHead align='end'>{t('invoices.columnAction')}</PortalTableHead>
+				</tr>
+			</PortalTableHeader>
+			<PortalTableBody>
+				{invoices.map((invoice) => (
+					<PortalTableRow key={invoice.id}>
+						<PortalTableCell className='text-content-secondary'>
+							{invoice.finalized_at ? formatDateShort(invoice.finalized_at) : formatDateShort(invoice.created_at)}
+						</PortalTableCell>
+						<PortalTableCell className='font-medium'>
+							<button type='button' onClick={() => onView(invoice)} className='text-start text-content hover:underline'>
+								{invoice.invoice_number || t('invoices.numberPrefix', { id: invoice.id.slice(0, 8) })}
+							</button>
+						</PortalTableCell>
+						<PortalTableCell>{getStatusChip(invoice)}</PortalTableCell>
+						<PortalTableCell align='end' className='font-medium'>
+							{/* Resolved per row: the list previously took invoices[0].currency and
 								    applied it to every row, so an invoice in another currency was
 								    rendered with the wrong symbol — ₹100 in the list against $100 in
 								    the drawer for the same invoice. */}
-								{getCurrencySymbol(invoice.currency ?? '')}
-								{formatAmount(String(invoice.total ?? 0))}
-							</td>
-							<td className='px-4 py-2.5'>
-								<div className='flex items-center justify-end'>
-									<DropdownMenu
-										align='end'
-										// The shared default trigger is a bare icon with no accessible
-										// name, which leaves the only action on the row unreachable by
-										// screen reader and unnameable in tests.
-										trigger={
-											<button
-												type='button'
-												aria-label={t('invoices.rowActions', { invoice: invoice.invoice_number || invoice.id })}
-												className='p-1.5 rounded-md transition-colors'
-												style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-												<MoreHorizontal className='h-4 w-4' />
-											</button>
-										}
-										options={[
-											{
-												label: t('invoices.payNow'),
-												icon: <CreditCard className='w-4 h-4' />,
-												disabled: !isPayable(invoice) || payPendingId !== null,
-												disabledReason: isPayable(invoice) ? undefined : t('invoices.notPayable'),
-												onSelect: () => onPay(invoice),
-											},
-											{
-												label: t('invoices.viewInvoice'),
-												icon: <Eye className='w-4 h-4' />,
-												onSelect: () => onView(invoice),
-											},
-											{
-												label: t('invoices.downloadInvoice'),
-												icon: <Download className='w-4 h-4' />,
-												disabled: invoice.invoice_status !== INVOICE_STATUS.FINALIZED || downloadPendingId !== null,
-												disabledReason: invoice.invoice_status === INVOICE_STATUS.FINALIZED ? undefined : t('invoices.notDownloadable'),
-												onSelect: () => onOpenDownloadFormat(invoice),
-											},
-										]}
-									/>
-								</div>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-			{invoices.length === 0 && (
-				<div className='py-8'>
-					<EmptyState icon={<SearchX />} title={t('invoices.noMatchTitle')} description={t('invoices.noMatchDescription')} />
-				</div>
-			)}
-		</div>
+							{getCurrencySymbol(invoice.currency ?? '')}
+							{formatAmount(String(invoice.total ?? 0))}
+						</PortalTableCell>
+						<PortalTableCell align='end'>
+							<div className='flex items-center justify-end'>
+								<DropdownMenu
+									align='end'
+									// The shared default trigger is a bare icon with no accessible
+									// name, which leaves the only action on the row unreachable by
+									// screen reader and unnameable in tests.
+									trigger={
+										<button
+											type='button'
+											aria-label={t('invoices.rowActions', { invoice: invoice.invoice_number || invoice.id })}
+											className='p-1.5 rounded-md transition-colors text-content-secondary'>
+											<MoreHorizontal className='h-4 w-4' />
+										</button>
+									}
+									options={[
+										{
+											label: t('invoices.payNow'),
+											icon: <CreditCard className='w-4 h-4' />,
+											disabled: !isPayable(invoice) || payPendingId !== null,
+											disabledReason: isPayable(invoice) ? undefined : t('invoices.notPayable'),
+											onSelect: () => onPay(invoice),
+										},
+										{
+											label: t('invoices.viewInvoice'),
+											icon: <Eye className='w-4 h-4' />,
+											onSelect: () => onView(invoice),
+										},
+										{
+											label: t('invoices.downloadInvoice'),
+											icon: <Download className='w-4 h-4' />,
+											disabled: invoice.invoice_status !== INVOICE_STATUS.FINALIZED || downloadPendingId !== null,
+											disabledReason: invoice.invoice_status === INVOICE_STATUS.FINALIZED ? undefined : t('invoices.notDownloadable'),
+											onSelect: () => onOpenDownloadFormat(invoice),
+										},
+									]}
+								/>
+							</div>
+						</PortalTableCell>
+					</PortalTableRow>
+				))}
+				{invoices.length === 0 && (
+					<PortalTableEmpty colSpan={5}>
+						<EmptyState icon={<SearchX />} title={t('invoices.noMatchTitle')} description={t('invoices.noMatchDescription')} />
+					</PortalTableEmpty>
+				)}
+			</PortalTableBody>
+		</PortalTable>
 	);
 };
 
@@ -205,9 +183,7 @@ const InvoicesWidget = () => {
 		return (
 			<div className='space-y-6'>
 				<div className='h-10 bg-zinc-100 animate-pulse rounded-md'></div>
-				<Card
-					className='rounded-xl p-4'
-					style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+				<Card className='rounded-xl p-4 bg-surface border border-line'>
 					<div className='animate-pulse space-y-3'>
 						{[1, 2, 3, 4].map((i) => (
 							<div key={i} className='h-12 bg-zinc-100 rounded'></div>
@@ -220,9 +196,7 @@ const InvoicesWidget = () => {
 
 	if (invoices.length === 0) {
 		return (
-			<Card
-				className='rounded-xl p-6'
-				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+			<Card className='rounded-xl p-6 bg-surface border border-line'>
 				<EmptyState icon={<Receipt />} title={t('invoices.emptyTitle')} description={t('invoices.emptyDescription')} />
 			</Card>
 		);
@@ -275,10 +249,7 @@ const InvoicesWidget = () => {
 				}}
 			/>
 			<div className='relative'>
-				<Search
-					className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4'
-					style={{ color: 'var(--portal-text-secondary, #a1a1aa)' }}
-				/>
+				<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-content-tertiary' />
 				<input
 					type='text'
 					placeholder={t('invoices.searchPlaceholder')}
@@ -293,9 +264,7 @@ const InvoicesWidget = () => {
 				/>
 			</div>
 
-			<Card
-				className='rounded-xl overflow-hidden'
-				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+			<PortalSection flush icon={<Receipt />} title={t('invoices.title')}>
 				<InvoicesTable
 					invoices={filteredInvoices}
 					onOpenDownloadFormat={openInvoiceDownload}
@@ -304,7 +273,7 @@ const InvoicesWidget = () => {
 					onPay={(invoice) => payInvoice(invoice.id)}
 					payPendingId={payingInvoiceId}
 				/>
-			</Card>
+			</PortalSection>
 		</div>
 	);
 };

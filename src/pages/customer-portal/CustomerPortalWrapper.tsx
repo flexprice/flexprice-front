@@ -63,14 +63,15 @@ const CustomerPortalWrapper = () => {
 	const { t } = useTranslation('customer-portal');
 	// A provider redirect lands in the tab the checkout was opened in, not the one
 	// the customer left behind. That tab reports back and closes itself.
-	const isHandingOff = useCheckoutTabHandoff();
+	const { isHandingOff, wasCheckoutReturn } = useCheckoutTabHandoff();
 	const [searchParams] = useSearchParams();
-	// Falls back to stored state so a customer returning from a hosted checkout
-	// still authenticates: the return URL deliberately omits the token rather than
-	// handing the session to the payment provider. The provider opens in a fresh
-	// tab, so the store has to outlive this one — see portalReturnUrl.
+	// The stored token is recovered only on a redirect landing, where the return
+	// URL deliberately omits it rather than handing the session to the payment
+	// provider. Recovering it for any tokenless visit meant the next person to open
+	// the portal on a shared browser profile resumed the previous customer's
+	// session — so a bare visit gets the invalid-link card instead.
 	const urlToken = searchParams.get('token');
-	const token = urlToken ?? recallSessionToken();
+	const token = urlToken ?? (wasCheckoutReturn ? recallSessionToken() : null);
 
 	useEffect(() => {
 		if (urlToken) rememberSessionToken(urlToken);

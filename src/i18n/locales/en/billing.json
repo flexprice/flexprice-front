@@ -19,6 +19,62 @@
 			"voidSuccess": "Invoice voided successfully",
 			"downloadError": "Failed to download invoice"
 		},
+		"edit": {
+			"pageTitle": "Edit Invoice",
+			"detailsTitle": "Invoice Details",
+			"invoiceNumber": "Invoice Number",
+			"customer": "Customer",
+			"currency": "Currency",
+			"issueDate": "Date of Issue",
+			"status": "Status",
+			"paymentStatus": "Payment Status",
+			"paymentStatusLockedHint": "Payment status can only be changed while it is pending or failed.",
+			"editableTitle": "Edit Details",
+			"dueDate": "Due Date",
+			"dueDatePlaceholder": "Select due date",
+			"pdfUrl": "Custom PDF URL",
+			"pdfUrlPlaceholder": "https://example.com/invoice.pdf",
+			"pdfUrlInvalid": "Please enter a valid URL for the invoice PDF",
+			"dueDatePast": "Due date cannot be in the past",
+			"metadata": "Metadata",
+			"applyDiscount": "Reapply coupon discounts",
+			"applyDiscountDescription": "Recalculates the discount from the invoice's current coupons when you save.",
+			"lineItemsTitle": "Line Items",
+			"notEditable": "This invoice cannot be edited. Only draft and finalized invoices can be updated.",
+			"saveChanges": "Save Changes",
+			"saving": "Saving...",
+			"menuLabel": "Edit Invoice",
+			"menuDisabledStatus": "Only draft and finalized invoices can be edited",
+			"toast": {
+				"updateSuccess": "Invoice updated successfully",
+				"updateFailed": "Failed to update invoice",
+				"loadError": "Error loading invoice"
+			},
+			"lineItemsDraftOnlyNote": "Line items cannot be edited for this invoice status.",
+			"manualEditHint": "Editing line items marks the invoice as manually edited; automatic recomputation is disabled afterwards.",
+			"lineItemInvalid": "Each line item needs a name and non-negative amount and quantity.",
+			"removeLineItem": "Remove line item",
+			"voidConfirm": {
+				"title": "Void invoice and create a new draft?",
+				"description": "The current invoice will be voided and replaced by a draft with your changes. Nothing is applied if this fails.",
+				"proceed": "Void & create draft"
+			},
+			"finalizedEditHint": "Saving will void this finalized invoice and create an editable draft copy.",
+			"invoiceStatus": "Invoice Status",
+			"invoiceStatusLockedHint": "Invoice status can only be changed when the invoice can be voided or finalized.",
+			"voidOnSaveHint": "The invoice will be voided when you save. Voided invoices cannot be edited or paid.",
+			"voidWithEditsError": "Line item or discount changes cannot be combined with voiding the invoice.",
+			"pdfUrlHint": "Overrides the generated invoice PDF. Leave empty to use the Flexprice document.",
+			"description": "Description",
+			"periodStart": "Period Start",
+			"periodEnd": "Period End",
+			"lineItemDescriptionPlaceholder": "Optional description",
+			"servicePeriod": "Service Period",
+			"zeroChargesHidden": "Zero-amount line items hidden ({{hidden}})",
+			"itemColumn": "Item",
+			"noLineItems": "No line items on this invoice yet.",
+			"newLineItem": "New line item"
+		},
 		"status": {
 			"void": "Void",
 			"finalized": "Finalized",
@@ -31,7 +87,8 @@
 			"refunded": "Refunded",
 			"partiallyRefunded": "Partially Refunded",
 			"overpaid": "Overpaid",
-			"unknown": "Unknown"
+			"unknown": "Unknown",
+			"draft": "Draft"
 		},
 		"list": {
 			"toBeGenerated": "To be generated",
@@ -132,7 +189,8 @@
 			"plan": "Plan",
 			"billingPeriod": "Billing Period",
 			"total": "Total"
-		}
+		},
+		"writeDenied": "You don't have permission to modify invoices"
 	},
 	"creditNotes": {
 		"title": "Credit Notes",

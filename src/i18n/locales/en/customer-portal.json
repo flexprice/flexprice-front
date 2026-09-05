@@ -87,8 +87,10 @@
 		"emptyTitle": "No active subscriptions",
 		"emptyDescription": "You do not have any active subscriptions at the moment",
 		"unknownPlan": "Unknown Plan",
-		"nextBilling": "Next billing: {{date}}",
-		"trialEnds": "Trial ends: {{date}}"
+		"nextBilling": "Next billing {{date}}",
+		"trialEnds": "Trial ends {{date}}",
+		"count_one": "{{count}} subscription",
+		"count_other": "{{count}} subscriptions"
 	},
 	"usage": {
 		"title": "Usage",
@@ -129,7 +131,8 @@
 		"downloadInvoice": "Download invoice",
 		"notPayable": "This invoice is not awaiting payment.",
 		"notDownloadable": "Only finalized invoices can be downloaded.",
-		"rowActions": "Actions for invoice {{invoice}}"
+		"rowActions": "Actions for invoice {{invoice}}",
+		"title": "Invoices"
 	},
 	"wallet": {
 		"defaultName": "Wallet",
@@ -174,7 +177,7 @@
 	},
 	"topUp": {
 		"title": "Add credits",
-		"description": "Top up your balance. You will be taken to a secure checkout page to complete the payment.",
+		"description": "Top up your balance using the payment options available on your account.",
 		"creditsLabel": "Credits",
 		"creditsPlaceholder": "Enter an amount",
 		"chargeSummary": "You'll be charged {{amount}}",
@@ -186,7 +189,6 @@
 		"useSavedMethod": "Pay with my saved card ({{method}})",
 		"useSavedMethodTitle": "Saved card",
 		"useSavedMethodHint": "Charge the card on file instead of opening a checkout page.",
-		"checkoutUnavailable": "Online payment is not set up for this account, so an invoice will be raised instead.",
 		"useSavedMethodEmptyLabel": "Use my saved card",
 		"savedMethodUnsupported": "Your payment provider does not support charging a saved card.",
 		"savedMethodNone": "No saved card yet — add one from the Payments tab.",

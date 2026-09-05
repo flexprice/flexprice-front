@@ -48,4 +48,16 @@ describe('openPaymentUrl', () => {
 		expect(openPaymentUrl('')).toBe(false);
 		expect(open).not.toHaveBeenCalled();
 	});
+
+	// The URL comes from an API response, and a payment page served over plain http
+	// puts the customer's card details on the wire in cleartext.
+	it('refuses http for a non-local host', () => {
+		expect(isSafePaymentUrl('http://pay.example.com/checkout')).toBe(false);
+		expect(isSafePaymentUrl('https://pay.example.com/checkout')).toBe(true);
+	});
+
+	it('still allows http for a local gateway', () => {
+		expect(isSafePaymentUrl('http://localhost:8080/checkout')).toBe(true);
+		expect(isSafePaymentUrl('http://127.0.0.1:8080/checkout')).toBe(true);
+	});
 });

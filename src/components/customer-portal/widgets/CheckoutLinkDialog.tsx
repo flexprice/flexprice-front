@@ -69,11 +69,7 @@ const CheckoutLinkDialog = ({ url, onOpenChange, purpose = 'payment' }: Checkout
 			description={t(`checkoutLink.${purpose}Description`)}>
 			{url && (
 				<div className='space-y-3'>
-					<p
-						className='text-xs break-all rounded-md p-3'
-						style={{ backgroundColor: 'var(--portal-bg, #f4f4f5)', color: 'var(--portal-text-secondary, #71717a)' }}>
-						{url}
-					</p>
+					<p className='text-xs break-all rounded-md p-3 bg-surface-subtle text-content-secondary'>{url}</p>
 					<div className='flex items-center gap-2'>
 						<Button onClick={() => openPaymentUrl(url)} prefixIcon={<ExternalLink />}>
 							{t(`checkoutLink.${purpose}Open`)}

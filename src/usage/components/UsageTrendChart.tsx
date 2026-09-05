@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils';
 import { formatCredits } from '@/utils/common/formatBalance';
 import { LineChart } from 'lucide-react';
 import EmptyState from '@/components/atoms/EmptyState/EmptyState';
+import { useTranslation } from 'react-i18next';
+import SectionIcon from '@/components/atoms/SectionIcon/SectionIcon';
 import { useUsageT } from '../i18n';
 import { normalizeUsageTrendSeries } from '../schema';
 import type { UsageTrendChartProps } from '../types';
@@ -32,6 +34,11 @@ import type { UsageTrendChartProps } from '../types';
 const UsageTrendChart = ({ series: rawSeries, label, isLoading = false, className, periodLabel, emptyAction }: UsageTrendChartProps) => {
 	const series = useMemo(() => normalizeUsageTrendSeries(rawSeries), [rawSeries]);
 	const t = useUsageT();
+	// The caption's words come from i18next but its date came from the browser
+	// locale, so the two could disagree — an Arabic label above an en-US date.
+	// Optional throughout: a consumer app may have no i18next provider at all.
+	const { i18n } = useTranslation();
+	const locale = i18n?.resolvedLanguage || i18n?.language || undefined;
 
 	const chartData: GetUsageAnalyticsResponse = useMemo(
 		() => ({
@@ -53,14 +60,23 @@ const UsageTrendChart = ({ series: rawSeries, label, isLoading = false, classNam
 	// With a single point there is no trend to read, so the chart is captioned with the
 	// value and its date. The chart still renders — CustomerUsageChart shows a marker
 	// when the series is too short to draw a line.
+	// Built once so the empty card and the chart's own header carry the same heading.
+	const heading = (
+		<span className='flex items-center gap-2.5'>
+			<SectionIcon>
+				<LineChart />
+			</SectionIcon>
+			<span className='text-sm font-medium text-content'>{label || t('usageWidgets.trendTitle')}</span>
+		</span>
+	);
+
 	const points = series.flatMap((s) => s.points);
 	const sparseCaption =
 		points.length === 1
 			? t('usageWidgets.singlePointLabel', {
 					// Not formatDateShort: it pins 'en-US', so this caption rendered an
-					// English date inside the Arabic portal. Passing undefined defers to
-					// the runtime locale without wiring host i18n into the package.
-					date: new Date(points[0].timestamp).toLocaleDateString(undefined, {
+					// English date inside the Arabic portal.
+					date: new Date(points[0].timestamp).toLocaleDateString(locale, {
 						month: 'short',
 						day: 'numeric',
 						year: 'numeric',
@@ -72,9 +88,7 @@ const UsageTrendChart = ({ series: rawSeries, label, isLoading = false, classNam
 	if (isLoading) {
 		return (
 			<Card noPadding className={cn('flexprice-ui', 'rounded-xl overflow-hidden bg-surface', className)}>
-				<div className='p-6 border-b border-line'>
-					<h3 className='text-base font-medium text-content'>{label || t('usageWidgets.trendTitle')}</h3>
-				</div>
+				<div className='border-b border-line px-5 py-4'>{heading}</div>
 				<div className='p-6'>
 					<div className='w-full h-64 flex flex-col gap-3 px-1'>
 						<div className='flex flex-col justify-between h-52 relative'>
@@ -121,7 +135,7 @@ const UsageTrendChart = ({ series: rawSeries, label, isLoading = false, classNam
 	return (
 		<CustomerUsageChart
 			data={chartData}
-			title={label || t('usageWidgets.trendTitle')}
+			title={heading}
 			description={sparseCaption || periodLabel}
 			className={cn('flexprice-ui', className)}
 			height={260}

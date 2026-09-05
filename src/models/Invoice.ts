@@ -55,6 +55,7 @@ export interface Invoice extends BaseModel {
 	// recalculated_invoice_id is the ID of the replacement invoice created when this invoice was voided and recalculated.
 	// When set, it forms a parent→child link from this (voided) invoice to the new replacement invoice.
 	readonly recalculated_invoice_id?: string;
+	readonly metadata?: Metadata;
 }
 
 /** Entity type of an invoice line item (plan, addon, or subscription) */

@@ -2,14 +2,25 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, FieldWithInfo, Input, Loader, Select } from '@/components/atoms';
-import type { InvoiceConfig, InvoiceNumberFormat } from '@/types/dto/BillingSettings';
-import { getInvoiceConfigValidationErrorKey, normalizeInvoiceConfig, parseSequenceDigitsInput } from '@/types/dto/BillingSettings';
+import type { FinalizationDelayUnit, InvoiceConfig, InvoiceNumberFormat } from '@/types/dto/BillingSettings';
+import {
+	FALLBACK_INVOICE_CONFIG,
+	FINALIZATION_DELAY_UNIT_SECONDS,
+	getInvoiceConfigValidationErrorKey,
+	normalizeInvoiceConfig,
+	parseSequenceDigitsInput,
+	toFinalizationDelayDisplay,
+} from '@/types/dto/BillingSettings';
 import { useInvoiceConfiguration } from './useInvoiceConfiguration';
 import { buildInvoiceNumberPreview } from './invoicePreview';
 import SettingsFormActions from '../SettingsFormActions';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
 const DATE_FORMAT_OPTIONS: InvoiceNumberFormat[] = ['YYYYMM', 'YYYY', 'YYYYMMDD', 'YYMMDD', 'YY'];
+const DELAY_UNIT_OPTIONS: FinalizationDelayUnit[] = ['seconds', 'minutes', 'hours', 'days'];
+
+const configuredDelaySeconds = (config: InvoiceConfig): number =>
+	config.finalization_delay_seconds ?? FALLBACK_INVOICE_CONFIG.finalization_delay_seconds ?? 0;
 
 const InvoiceConfigurationSection = () => {
 	const { t } = useTranslation(['settings', 'common']);
@@ -20,10 +31,16 @@ const InvoiceConfigurationSection = () => {
 	const canWriteSetting = can('setting', 'write') && isSuperAdmin;
 	const [draft, setDraft] = useState<InvoiceConfig>(configuration);
 	const [suffixLengthInput, setSuffixLengthInput] = useState(String(configuration.suffix_length));
+	// The delay is stored in seconds; the UI edits it as value + unit (7200 → "2 hours").
+	const [delayValueInput, setDelayValueInput] = useState(String(toFinalizationDelayDisplay(configuredDelaySeconds(configuration)).value));
+	const [delayUnit, setDelayUnit] = useState<FinalizationDelayUnit>(toFinalizationDelayDisplay(configuredDelaySeconds(configuration)).unit);
 
 	useEffect(() => {
 		setDraft(configuration);
 		setSuffixLengthInput(String(configuration.suffix_length));
+		const delayDisplay = toFinalizationDelayDisplay(configuredDelaySeconds(configuration));
+		setDelayValueInput(String(delayDisplay.value));
+		setDelayUnit(delayDisplay.unit);
 	}, [configuration]);
 
 	const preview = useMemo(() => {
@@ -45,10 +62,18 @@ const InvoiceConfigurationSection = () => {
 		});
 	};
 
+	/** Current delay in seconds; an empty/invalid value input falls back to the draft's stored delay. */
+	const delaySecondsFromInputs = (): number => {
+		const parsed = parseSequenceDigitsInput(delayValueInput);
+		if (parsed === null || parsed < 0) return configuredDelaySeconds(draft);
+		return parsed * FINALIZATION_DELAY_UNIT_SECONDS[delayUnit];
+	};
+
 	const buildConfigForSave = (): InvoiceConfig => {
 		const parsedSuffixLength = parseSequenceDigitsInput(suffixLengthInput);
 		return {
 			...draft,
+			finalization_delay_seconds: delaySecondsFromInputs(),
 			...(parsedSuffixLength !== null ? { suffix_length: parsedSuffixLength } : {}),
 		};
 	};
@@ -72,6 +97,9 @@ const InvoiceConfigurationSection = () => {
 		const normalized = normalizeInvoiceConfig(configForSave);
 		setDraft(normalized);
 		setSuffixLengthInput(String(normalized.suffix_length));
+		const delayDisplay = toFinalizationDelayDisplay(configuredDelaySeconds(normalized));
+		setDelayValueInput(String(delayDisplay.value));
+		setDelayUnit(delayDisplay.unit);
 
 		updateConfiguration.mutate(normalized, {
 			onSuccess: () => toast.success(t('billing.invoiceConfiguration.saveSuccess')),
@@ -92,7 +120,13 @@ const InvoiceConfigurationSection = () => {
 		startSequence: t('billing.invoiceConfiguration.fields.startSequence'),
 		sequenceDigits: t('billing.invoiceConfiguration.fields.sequenceDigits'),
 		paymentDueDays: t('billing.invoiceConfiguration.fields.paymentDueDays'),
+		finalizationDelay: t('billing.invoiceConfiguration.fields.finalizationDelay'),
 	};
+
+	const delayUnitOptions = DELAY_UNIT_OPTIONS.map((unit) => ({
+		value: unit,
+		label: t(`billing.invoiceConfiguration.delayUnits.${unit}`),
+	}));
 
 	return (
 		<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
@@ -192,6 +226,31 @@ const InvoiceConfigurationSection = () => {
 								onChange={(value) => updateDraft('due_date_days', Number(value || 0))}
 								disabled={updateConfiguration.isPending}
 							/>
+						</FieldWithInfo>
+						<FieldWithInfo
+							label={fieldLabels.finalizationDelay}
+							description={t('billing.invoiceConfiguration.hints.finalizationDelay')}
+							infoAriaLabel={t('info.ariaLabel', { field: fieldLabels.finalizationDelay })}
+							disabled={updateConfiguration.isPending}>
+							<div className='flex gap-2'>
+								<div className='flex-1 min-w-0'>
+									<Input
+										inputMode='numeric'
+										variant='integer'
+										value={delayValueInput}
+										onChange={setDelayValueInput}
+										disabled={updateConfiguration.isPending}
+									/>
+								</div>
+								<div className='w-32 shrink-0'>
+									<Select
+										value={delayUnit}
+										options={delayUnitOptions}
+										onChange={(value) => setDelayUnit(value as FinalizationDelayUnit)}
+										disabled={updateConfiguration.isPending}
+									/>
+								</div>
+							</div>
 						</FieldWithInfo>
 					</div>
 

@@ -19,6 +19,62 @@
 			"voidSuccess": "تم إبطال الفاتورة بنجاح",
 			"downloadError": "فشل تنزيل الفاتورة"
 		},
+		"edit": {
+			"pageTitle": "تعديل الفاتورة",
+			"detailsTitle": "تفاصيل الفاتورة",
+			"invoiceNumber": "رقم الفاتورة",
+			"customer": "العميل",
+			"currency": "العملة",
+			"issueDate": "تاريخ الإصدار",
+			"status": "الحالة",
+			"paymentStatus": "حالة الدفع",
+			"paymentStatusLockedHint": "لا يمكن تغيير حالة الدفع إلا عندما تكون قيد الانتظار أو فاشلة.",
+			"editableTitle": "تعديل التفاصيل",
+			"dueDate": "تاريخ الاستحقاق",
+			"dueDatePlaceholder": "اختر تاريخ الاستحقاق",
+			"pdfUrl": "رابط PDF مخصص",
+			"pdfUrlPlaceholder": "https://example.com/invoice.pdf",
+			"pdfUrlInvalid": "يرجى إدخال رابط صحيح لملف PDF الخاص بالفاتورة",
+			"dueDatePast": "لا يمكن أن يكون تاريخ الاستحقاق في الماضي",
+			"metadata": "البيانات الوصفية",
+			"applyDiscount": "إعادة تطبيق خصومات القسائم",
+			"applyDiscountDescription": "يعيد احتساب الخصم من قسائم الفاتورة الحالية عند الحفظ.",
+			"lineItemsTitle": "بنود الفاتورة",
+			"notEditable": "لا يمكن تعديل هذه الفاتورة. يمكن تحديث الفواتير في حالة المسودة أو النهائية فقط.",
+			"saveChanges": "حفظ التغييرات",
+			"saving": "جارٍ الحفظ...",
+			"menuLabel": "تعديل الفاتورة",
+			"menuDisabledStatus": "يمكن تعديل الفواتير في حالة المسودة أو النهائية فقط",
+			"toast": {
+				"updateSuccess": "تم تحديث الفاتورة بنجاح",
+				"updateFailed": "فشل تحديث الفاتورة",
+				"loadError": "خطأ في تحميل الفاتورة"
+			},
+			"lineItemsDraftOnlyNote": "لا يمكن تعديل بنود الفاتورة في حالتها الحالية.",
+			"manualEditHint": "تعديل البنود يجعل الفاتورة معدلة يدوياً؛ ويتم تعطيل إعادة الاحتساب التلقائي بعد ذلك.",
+			"lineItemInvalid": "كل بند يحتاج إلى اسم ومبلغ وكمية غير سالبين.",
+			"removeLineItem": "إزالة بند الفاتورة",
+			"voidConfirm": {
+				"title": "إلغاء الفاتورة وإنشاء مسودة جديدة؟",
+				"description": "سيتم إلغاء الفاتورة الحالية واستبدالها بمسودة تتضمن تعديلاتك. لن يتم تطبيق أي شيء في حال الفشل.",
+				"proceed": "إلغاء وإنشاء مسودة"
+			},
+			"finalizedEditHint": "سيؤدي الحفظ إلى إلغاء هذه الفاتورة النهائية وإنشاء نسخة مسودة قابلة للتعديل.",
+			"invoiceStatus": "حالة الفاتورة",
+			"invoiceStatusLockedHint": "لا يمكن تغيير حالة الفاتورة إلا عندما يكون إلغاؤها أو اعتمادها ممكنًا.",
+			"voidOnSaveHint": "سيتم إلغاء الفاتورة عند الحفظ. لا يمكن تعديل الفواتير الملغاة أو دفعها.",
+			"voidWithEditsError": "لا يمكن الجمع بين تعديلات البنود أو الخصومات وإلغاء الفاتورة.",
+			"pdfUrlHint": "يستبدل ملف PDF المُنشأ للفاتورة. اتركه فارغًا لاستخدام مستند Flexprice.",
+			"description": "الوصف",
+			"periodStart": "بداية الفترة",
+			"periodEnd": "نهاية الفترة",
+			"lineItemDescriptionPlaceholder": "وصف اختياري",
+			"servicePeriod": "فترة الخدمة",
+			"zeroChargesHidden": "بنود بقيمة صفر مخفية ({{hidden}})",
+			"itemColumn": "البند",
+			"noLineItems": "لا توجد بنود في هذه الفاتورة بعد.",
+			"newLineItem": "بند جديد"
+		},
 		"status": {
 			"void": "مبطلة",
 			"finalized": "نهائية",
@@ -31,7 +87,8 @@
 			"refunded": "مستردة",
 			"partiallyRefunded": "مستردة جزئياً",
 			"overpaid": "مدفوعة زيادة",
-			"unknown": "غير معروف"
+			"unknown": "غير معروف",
+			"draft": "مسودة"
 		},
 		"list": {
 			"toBeGenerated": "سيتم إنشاؤها",
@@ -132,7 +189,8 @@
 			"plan": "الخطة",
 			"billingPeriod": "فترة الفوترة",
 			"total": "الإجمالي"
-		}
+		},
+		"writeDenied": "ليست لديك صلاحية تعديل الفواتير"
 	},
 	"creditNotes": {
 		"title": "إشعارات دائنة",

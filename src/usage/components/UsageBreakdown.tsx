@@ -2,10 +2,19 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, ChevronsUpDown, ListFilter } from 'lucide-react';
 // Direct file import, NOT the '@/components/atoms' barrel — see UsageQuota.tsx for why.
 import Card from '@/components/atoms/Card/Card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/molecules/Table/Table';
+// Direct file import, NOT a barrel — see the note on Card above.
+import {
+	PortalTable as Table,
+	PortalTableBody as TableBody,
+	PortalTableCell as TableCell,
+	PortalTableHead as TableHead,
+	PortalTableHeader as TableHeader,
+	PortalTableRow as TableRow,
+} from '@/components/atoms/PortalTable/PortalTable';
 import { formatNumber, getCurrencySymbol } from '@/utils';
 import { cn } from '@/lib/utils';
 import EmptyState from '@/components/atoms/EmptyState/EmptyState';
+import SectionIcon from '@/components/atoms/SectionIcon/SectionIcon';
 import { useUsageT } from '../i18n';
 import { normalizeUsageBreakdownRows } from '../schema';
 import type { UsageBreakdownProps, UsageBreakdownRow } from '../types';
@@ -165,9 +174,14 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className, em
 
 	return (
 		<Card noPadding className={cn('flexprice-ui', 'rounded-xl overflow-hidden bg-surface', className)}>
-			<div className='p-6'>
+			<div className='border-b border-line px-5 py-4'>
 				<div className='flex items-center justify-between'>
-					<h3 className='text-base font-semibold text-content'>{label || t('usageWidgets.breakdownTitle')}</h3>
+					<div className='flex items-center gap-2.5'>
+						<SectionIcon>
+							<ListFilter />
+						</SectionIcon>
+						<h3 className='text-sm font-medium text-content'>{label || t('usageWidgets.breakdownTitle')}</h3>
+					</div>
 					{hasGroups && (
 						<button
 							type='button'
@@ -180,101 +194,103 @@ const UsageBreakdown = ({ rows: rawRows, label, isLoading = false, className, em
 				</div>
 			</div>
 
-			<div className='px-6 pb-6'>
-				<div className='rounded-lg overflow-hidden border border-line'>
-					<Table>
-						<TableHeader className='h-10 border-b border-line'>
-							<TableRow className='border-b border-line'>
-								<TableHead className='ps-3 font-semibold text-[13px] w-[35%] text-content'>{t('usageWidgets.feature')}</TableHead>
-								<TableHead className='font-semibold text-[13px] text-content'>
-									{renderSortableHeader(SORT_TOTAL_USAGE, t('usageWidgets.totalUsage'))}
-								</TableHead>
-								<TableHead className='font-semibold text-[13px] text-content'>
-									{renderSortableHeader(SORT_TOTAL_COST, t('usageWidgets.totalCost'))}
-								</TableHead>
+			{/* Flush, and with no border of its own: the card is already a boundary, and
+			    a bordered table inside it read as a different component from the portal's
+			    other two tables. */}
+			<div>
+				<Table>
+					<TableHeader>
+						<TableRow>
+							<TableHead className='w-[45%]'>{t('usageWidgets.feature')}</TableHead>
+							<TableHead align='end'>{renderSortableHeader(SORT_TOTAL_USAGE, t('usageWidgets.totalUsage'))}</TableHead>
+							<TableHead align='end'>{renderSortableHeader(SORT_TOTAL_COST, t('usageWidgets.totalCost'))}</TableHead>
+						</TableRow>
+					</TableHeader>
+					<TableBody>
+						{groupedBuckets.map((bucket) => {
+							const isExpanded = expandedGroupIds.has(bucket.groupKey);
+							const aggregateCost = bucket.items.reduce((s, i) => s + i.totalCost, 0);
+							const currencies = new Set(bucket.items.map((i) => i.currency).filter(Boolean));
+							// A mixed-currency bucket has no single valid symbol for the summed total.
+							const firstCurrency = currencies.size === 1 ? bucket.items.find((i) => i.currency)?.currency : undefined;
+							return (
+								<React.Fragment key={bucket.groupKey}>
+									<TableRow
+										role='button'
+										tabIndex={0}
+										aria-expanded={bucket.items.length > 0 ? isExpanded : undefined}
+										onClick={() => bucket.items.length > 0 && toggleGroup(bucket.groupKey)}
+										onKeyDown={(e) => {
+											if ((e.key === 'Enter' || e.key === ' ') && bucket.items.length > 0) {
+												e.preventDefault();
+												toggleGroup(bucket.groupKey);
+											}
+										}}
+										interactive={bucket.items.length > 0}
+										className={cn(
+											'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+											bucket.items.length === 0 && 'cursor-default',
+										)}>
+										<TableCell>
+											<div className='inline-flex items-center gap-2 text-start'>
+												<span className='font-semibold text-[13px] text-content'>{bucket.groupName}</span>
+												{bucket.items.length > 0 &&
+													(isExpanded ? (
+														<ChevronUp className='h-4 w-4 shrink-0 text-content-secondary' aria-hidden />
+													) : (
+														<ChevronDown className='h-4 w-4 shrink-0 text-content-secondary' aria-hidden />
+													))}
+											</div>
+										</TableCell>
+										<TableCell align='end' className='text-content-secondary'>
+											{t('usageWidgets.cellEmDash')}
+										</TableCell>
+										<TableCell align='end' className='text-content-secondary'>
+											{firstCurrency ? (
+												<>
+													{getCurrencySymbol(firstCurrency)}
+													{formatNumber(aggregateCost, 2)}
+												</>
+											) : (
+												t('usageWidgets.cellEmDash')
+											)}
+										</TableCell>
+									</TableRow>
+									{isExpanded &&
+										bucket.items.map((row, childIndex) => (
+											<TableRow key={`${bucket.groupKey}:${row.id}:${childIndex}`}>
+												<TableCell className='ps-8'>{row.name || t('usageWidgets.unknownRow')}</TableCell>
+												<TableCell align='end' className='text-content-secondary'>
+													{renderUsageCell(row)}
+												</TableCell>
+												<TableCell align='end' className='text-content-secondary'>
+													{renderCostCell(row)}
+												</TableCell>
+											</TableRow>
+										))}
+								</React.Fragment>
+							);
+						})}
+						{ungroupedItems.map((row, index) => (
+							<TableRow key={`ungrouped:${row.id}:${index}`}>
+								<TableCell>{row.name || t('usageWidgets.unknownRow')}</TableCell>
+								<TableCell align='end' className='text-content-secondary'>
+									{renderUsageCell(row)}
+								</TableCell>
+								<TableCell align='end' className='text-content-secondary'>
+									{renderCostCell(row)}
+								</TableCell>
 							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{groupedBuckets.map((bucket) => {
-								const isExpanded = expandedGroupIds.has(bucket.groupKey);
-								const aggregateCost = bucket.items.reduce((s, i) => s + i.totalCost, 0);
-								const currencies = new Set(bucket.items.map((i) => i.currency).filter(Boolean));
-								// A mixed-currency bucket has no single valid symbol for the summed total.
-								const firstCurrency = currencies.size === 1 ? bucket.items.find((i) => i.currency)?.currency : undefined;
-								return (
-									<React.Fragment key={bucket.groupKey}>
-										<TableRow
-											role='button'
-											tabIndex={0}
-											aria-expanded={bucket.items.length > 0 ? isExpanded : undefined}
-											onClick={() => bucket.items.length > 0 && toggleGroup(bucket.groupKey)}
-											onKeyDown={(e) => {
-												if ((e.key === 'Enter' || e.key === ' ') && bucket.items.length > 0) {
-													e.preventDefault();
-													toggleGroup(bucket.groupKey);
-												}
-											}}
-											className={cn(
-												'h-10 align-middle border-b border-line cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-												bucket.items.length === 0 && 'border-b-0 cursor-default',
-											)}>
-											<TableCell className='ps-3 py-2.5 align-middle'>
-												<div className='inline-flex items-center gap-2 text-start'>
-													<span className='font-semibold text-[13px] text-content'>{bucket.groupName}</span>
-													{bucket.items.length > 0 &&
-														(isExpanded ? (
-															<ChevronUp className='h-4 w-4 shrink-0 text-content-secondary' aria-hidden />
-														) : (
-															<ChevronDown className='h-4 w-4 shrink-0 text-content-secondary' aria-hidden />
-														))}
-												</div>
-											</TableCell>
-											<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>
-												{t('usageWidgets.cellEmDash')}
-											</TableCell>
-											<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>
-												{firstCurrency ? (
-													<>
-														{getCurrencySymbol(firstCurrency)}
-														{formatNumber(aggregateCost, 2)}
-													</>
-												) : (
-													t('usageWidgets.cellEmDash')
-												)}
-											</TableCell>
-										</TableRow>
-										{isExpanded &&
-											bucket.items.map((row, childIndex) => (
-												<TableRow key={`${bucket.groupKey}:${row.id}:${childIndex}`} className='h-10 align-middle border-b border-line'>
-													<TableCell className='py-2.5 ps-3 font-normal text-[13px] align-middle text-content'>
-														{row.name || t('usageWidgets.unknownRow')}
-													</TableCell>
-													<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderUsageCell(row)}</TableCell>
-													<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderCostCell(row)}</TableCell>
-												</TableRow>
-											))}
-									</React.Fragment>
-								);
-							})}
-							{ungroupedItems.map((row, index) => (
-								<TableRow key={`ungrouped:${row.id}:${index}`} className='h-10 align-middle border-b border-line'>
-									<TableCell className='ps-3 py-2.5 font-normal text-[13px] text-content'>
-										{row.name || t('usageWidgets.unknownRow')}
-									</TableCell>
-									<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderUsageCell(row)}</TableCell>
-									<TableCell className='py-2.5 font-normal text-[13px] text-content-secondary'>{renderCostCell(row)}</TableCell>
-								</TableRow>
-							))}
-							{rows.length === 0 && (
-								<TableRow>
-									<TableCell colSpan={3} className='ps-3 py-4 font-normal text-[13px] text-content-secondary'>
-										{t('usageWidgets.cellEmpty')}
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-				</div>
+						))}
+						{rows.length === 0 && (
+							<TableRow>
+								<TableCell colSpan={3} className='text-content-secondary'>
+									{t('usageWidgets.cellEmpty')}
+								</TableCell>
+							</TableRow>
+						)}
+					</TableBody>
+				</Table>
 			</div>
 		</Card>
 	);

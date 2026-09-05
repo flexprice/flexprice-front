@@ -17,9 +17,7 @@ const AutoTopUpWidget = ({ label }: AutoTopUpWidgetProps) => {
 
 	if (isLoading) {
 		return (
-			<Card
-				className='rounded-xl p-5'
-				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+			<Card className='rounded-xl p-5 bg-surface border border-line'>
 				<div className='animate-pulse space-y-3'>
 					<div className='h-4 bg-zinc-100 rounded w-32'></div>
 					<div className='h-8 bg-zinc-100 rounded w-full'></div>
@@ -30,9 +28,7 @@ const AutoTopUpWidget = ({ label }: AutoTopUpWidgetProps) => {
 
 	if (!wallet) {
 		return (
-			<Card
-				className='rounded-xl p-5'
-				style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
+			<Card className='rounded-xl p-5 bg-surface border border-line'>
 				<EmptyState icon={<Wallet />} title={t('wallet.emptyTitle')} description={t('wallet.emptyDescription')} />
 			</Card>
 		);
@@ -42,15 +38,9 @@ const AutoTopUpWidget = ({ label }: AutoTopUpWidgetProps) => {
 	const formKey = `${wallet.id}:${JSON.stringify(wallet.auto_topup ?? null)}`;
 
 	return (
-		<Card
-			className='rounded-xl p-5'
-			style={{ backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' }}>
-			<h3 className='text-sm font-medium mb-1' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-				{label ?? t('autoTopUp.title')}
-			</h3>
-			<p className='text-sm mb-4' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-				{t('autoTopUp.description')}
-			</p>
+		<Card className='rounded-xl p-5 bg-surface border border-line'>
+			<h3 className='text-sm font-medium mb-1 text-content'>{label ?? t('autoTopUp.title')}</h3>
+			<p className='text-sm mb-4 text-content-secondary'>{t('autoTopUp.description')}</p>
 			<AutoTopUpForm key={formKey} wallet={wallet} hasChargeableMethod={hasChargeableMethod} />
 		</Card>
 	);

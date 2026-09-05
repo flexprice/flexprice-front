@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Download, Loader2 } from 'lucide-react';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 import { Button, Chip, Sheet } from '@/components/atoms';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatMoney } from '@/utils/common/formatBalance';
 import { Invoice, INVOICE_STATUS } from '@/models/Invoice';
 import { PAYMENT_STATUS } from '@/constants/payment';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { portalInvoiceQueryKey } from '../queryKeys';
 import { isPayable } from '../invoiceStatus';
+import { cn } from '@/lib/utils';
 
 interface InvoiceDetailDrawerProps {
 	/** Row the drawer was opened from; used for an instant header before the full fetch lands. */
@@ -30,28 +31,21 @@ const StatusChip = ({ invoice }: { invoice: Invoice }) => {
 	return <Chip label={t('invoiceChip.pending')} variant='warning' />;
 };
 
-/** Compact label/value row — dividers instead of nested cards, per the portal's linear layout. */
+/**
+ * Label/value pair. The rule between every fact is gone — a divider per row made
+ * two dates look like two sections, so the group is separated as a whole instead.
+ */
 const MetaRow = ({ label, value }: { label: string; value: string }) => (
-	<div className='flex items-baseline justify-between gap-4 py-2'>
-		<span className='text-sm' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-			{label}
-		</span>
-		<span className='text-sm text-end' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-			{value}
-		</span>
+	<div className='flex items-baseline justify-between gap-4'>
+		<span className='text-sm text-content-secondary'>{label}</span>
+		<span className='text-end text-sm text-content'>{value}</span>
 	</div>
 );
 
 const TotalRow = ({ label, value, emphasis = false }: { label: string; value: string; emphasis?: boolean }) => (
 	<div className='flex items-baseline justify-between gap-4 py-1.5'>
-		<span
-			className={emphasis ? 'text-sm font-medium' : 'text-sm'}
-			style={{ color: emphasis ? 'var(--portal-text-primary, #09090b)' : 'var(--portal-text-secondary, #71717a)' }}>
-			{label}
-		</span>
-		<span className={emphasis ? 'text-sm font-semibold' : 'text-sm'} style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-			{value}
-		</span>
+		<span className={cn('text-sm', emphasis ? 'font-medium text-content' : 'text-content-secondary')}>{label}</span>
+		<span className={cn('text-sm text-content', emphasis && 'font-semibold')}>{value}</span>
 	</div>
 );
 
@@ -83,28 +77,41 @@ const InvoiceDetailDrawer = ({
 	// No 'USD' default: fabricating a symbol for a missing currency renders a
 	// wrong one, which is worse than rendering none. getCurrencySymbol('') is ''.
 	const symbol = getCurrencySymbol(detail?.currency ?? '');
-	const money = (value?: number) => `${symbol}${formatAmount(String(value ?? 0))}`;
+	// formatMoney, not formatAmount: the latter leaves ₹2 where every other portal
+	// surface shows ₹2.00.
+	const money = (value?: number) => `${symbol}${formatMoney(value ?? 0)}`;
 
-	const title = detail ? detail.invoice_number || t('invoices.numberPrefix', { id: detail.id.slice(0, 8) }) : t('invoiceDetail.title');
+	const invoiceNumber = detail
+		? detail.invoice_number || t('invoices.numberPrefix', { id: detail.id.slice(0, 8) })
+		: t('invoiceDetail.title');
+
+	// The status belongs beside the number it describes, not stacked under it where
+	// it read as the first item of the body rather than part of the heading.
+	const title = (
+		<span className='flex flex-wrap items-center gap-3'>
+			{invoiceNumber}
+			{detail && <StatusChip invoice={detail} />}
+		</span>
+	);
 
 	return (
-		<Sheet isOpen={isOpen} onOpenChange={onOpenChange} title={title} size='xl'>
+		<Sheet isOpen={isOpen} onOpenChange={onOpenChange} title={title} size='md'>
 			{!detail ? null : (
-				<div className='space-y-6 pt-2'>
-					{/* Amount owed leads — the customer's first question is what they owe. */}
-					<div>
-						<div className='flex items-center gap-3 mb-1'>
-							<StatusChip invoice={detail} />
-						</div>
-						<p className='text-3xl font-semibold' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
+				// Header → rule → section → rule → section → sticky footer, matching the
+				// wallet card. The drawer used to run header, arbitrary spacing, content,
+				// per-row separators, and a button adrift in the empty half of the panel.
+				<div className='flex min-h-full flex-col'>
+					{/* Amount leads — the customer's first question is what they owe. */}
+					<div className='pb-5'>
+						<p className='text-3xl font-semibold text-content'>
 							{money(detail.amount_remaining > 0 ? detail.amount_remaining : detail.total)}
 						</p>
-						<p className='text-sm mt-1' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
+						<p className='mt-1 text-xs text-content-tertiary'>
 							{detail.amount_remaining > 0 ? t('invoiceDetail.amountDue') : t('invoiceDetail.amountTotal')}
 						</p>
 					</div>
 
-					<div className='divide-y' style={{ borderColor: 'var(--portal-border, #E9E9E9)' }}>
+					<div className='space-y-2 border-t border-line py-5'>
 						{detail.period_start && detail.period_end && (
 							<MetaRow
 								label={t('invoiceDetail.billingPeriod')}
@@ -115,55 +122,55 @@ const InvoiceDetailDrawer = ({
 						{detail.due_date && <MetaRow label={t('invoiceDetail.dueDate')} value={formatDateShort(detail.due_date)} />}
 					</div>
 
-					<div>
-						<h4 className='text-sm font-medium mb-2' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-							{t('invoiceDetail.lineItems')}
-						</h4>
+					<div className='border-t border-line py-5'>
+						<h4 className='mb-3 text-sm font-medium text-content'>{t('invoiceDetail.lineItems')}</h4>
 						{isLoading && !data ? (
 							<div className='animate-pulse space-y-2'>
 								{[1, 2, 3].map((i) => (
-									<div key={i} className='h-8 bg-zinc-100 rounded'></div>
+									<div key={i} className='h-8 rounded bg-surface-subtle'></div>
 								))}
 							</div>
 						) : detail.line_items?.length ? (
-							<div className='divide-y' style={{ borderColor: 'var(--portal-border, #E9E9E9)' }}>
+							<div className='space-y-3'>
 								{detail.line_items.map((item) => (
-									<div key={item.id} className='flex items-baseline justify-between gap-4 py-2'>
+									<div key={item.id} className='flex items-baseline justify-between gap-4'>
 										<div className='min-w-0'>
-											<p className='text-sm truncate' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-												{item.display_name || item.id}
-											</p>
+											<p className='truncate text-sm text-content'>{item.display_name || item.id}</p>
+											{/* Clearly secondary, so it reads as a detail of the line above
+											    rather than a second, unrelated item. */}
 											{item.quantity && (
-												<p className='text-xs' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-													{t('invoiceDetail.quantity', { quantity: item.quantity })}
-												</p>
+												<p className='mt-0.5 text-xs text-content-tertiary'>{t('invoiceDetail.quantity', { quantity: item.quantity })}</p>
 											)}
 										</div>
-										<span className='text-sm shrink-0' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-											{money(item.amount)}
-										</span>
+										<span className='shrink-0 text-sm text-content'>{money(item.amount)}</span>
 									</div>
 								))}
 							</div>
 						) : (
-							<p className='text-sm py-2' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-								{t('invoiceDetail.noLineItems')}
-							</p>
+							<p className='text-sm text-content-secondary'>{t('invoiceDetail.noLineItems')}</p>
 						)}
 					</div>
 
-					<div className='pt-4' style={{ borderTop: '1px solid var(--portal-border, #E9E9E9)' }}>
-						<TotalRow label={t('invoiceDetail.subtotal')} value={money(detail.subtotal)} />
-						{!!detail.total_discount && <TotalRow label={t('invoiceDetail.discount')} value={`−${money(detail.total_discount)}`} />}
-						{!!detail.total_tax && <TotalRow label={t('invoiceDetail.tax')} value={money(detail.total_tax)} />}
-						<TotalRow label={t('invoiceDetail.total')} value={money(detail.total)} emphasis />
-						{!!detail.amount_paid && <TotalRow label={t('invoiceDetail.amountPaid')} value={money(detail.amount_paid)} />}
-						{detail.amount_remaining > 0 && (
-							<TotalRow label={t('invoiceDetail.amountDue')} value={money(detail.amount_remaining)} emphasis />
-						)}
+					<div className='border-t border-line py-5'>
+						<div className='space-y-1.5'>
+							<TotalRow label={t('invoiceDetail.subtotal')} value={money(detail.subtotal)} />
+							{!!detail.total_discount && <TotalRow label={t('invoiceDetail.discount')} value={`−${money(detail.total_discount)}`} />}
+							{!!detail.total_tax && <TotalRow label={t('invoiceDetail.tax')} value={money(detail.total_tax)} />}
+						</div>
+						{/* The figure that matters is separated from its inputs, not listed as
+						    one more line among them. */}
+						<div className='mt-3 space-y-1.5 border-t border-line pt-3'>
+							<TotalRow label={t('invoiceDetail.total')} value={money(detail.total)} emphasis />
+							{!!detail.amount_paid && <TotalRow label={t('invoiceDetail.amountPaid')} value={money(detail.amount_paid)} />}
+							{detail.amount_remaining > 0 && (
+								<TotalRow label={t('invoiceDetail.amountDue')} value={money(detail.amount_remaining)} emphasis />
+							)}
+						</div>
 					</div>
 
-					<div className='flex items-center gap-2 pt-2'>
+					{/* Pinned to the bottom of the panel: floating mid-drawer above a screen
+					    of empty space read as unfinished. -mx-6 spans the sheet's own padding. */}
+					<div className='sticky bottom-0 -mx-6 mt-auto flex items-center justify-end gap-2 border-t border-line bg-surface px-6 pb-1 pt-4'>
 						{isPayable(detail) && (
 							<Button onClick={() => onPay(detail)} isLoading={payPendingId === detail.id} disabled={payPendingId !== null}>
 								{t('invoices.pay')}

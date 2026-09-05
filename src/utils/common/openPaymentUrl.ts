@@ -6,11 +6,22 @@
  */
 const ALLOWED_PROTOCOLS = ['https:', 'http:'];
 
-/** True when a URL is safe to navigate to. http is allowed for local gateways. */
+/** Hosts where plain http is a local gateway rather than a payment page in the clear. */
+const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]', '0.0.0.0']);
+
+/**
+ * True when a URL is safe to navigate to.
+ *
+ * http is allowed only for local development gateways. A payment page reached
+ * over http anywhere else puts the customer's card details on the wire in
+ * cleartext, and the URL comes from an API response rather than from us.
+ */
 export const isSafePaymentUrl = (url: string): boolean => {
 	if (!url) return false;
 	try {
-		return ALLOWED_PROTOCOLS.includes(new URL(url, window.location.origin).protocol);
+		const parsed = new URL(url, window.location.origin);
+		if (!ALLOWED_PROTOCOLS.includes(parsed.protocol)) return false;
+		return parsed.protocol === 'https:' || LOCAL_HOSTS.has(parsed.hostname);
 	} catch {
 		// Not parseable as a URL at all — refuse rather than hand it to the browser.
 		return false;

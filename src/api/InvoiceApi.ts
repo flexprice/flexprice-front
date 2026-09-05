@@ -10,6 +10,9 @@ import {
 	GetInvoicesResponse,
 	GetInvoicesListResponse,
 	InvoiceFilter,
+	UpdateInvoicePayload,
+	ExecuteInvoiceModifyPayload,
+	InvoiceModifyResponse,
 	UpdatePaymentStatusPayload,
 	UpdateInvoiceStatusPayload,
 	GetInvoicePreviewPayload,
@@ -85,8 +88,18 @@ class InvoiceApi {
 		return await AxiosClient.post<Invoice>(`${this.baseurl}`, payload);
 	}
 
-	public static async updateInvoice(invoiceId: string, payload: Partial<Invoice>): Promise<Invoice> {
+	/** Update an existing invoice (due date, PDF URL, metadata, apply_discount). DRAFT and FINALIZED only. */
+	public static async updateInvoice(invoiceId: string, payload: UpdateInvoicePayload): Promise<Invoice> {
 		return await AxiosClient.put<Invoice>(`${this.baseurl}/${invoiceId}`, payload);
+	}
+
+	/**
+	 * Modify a DRAFT invoice's line items (add/update/remove) via the modification
+	 * envelope. Mirrors the subscription modification API. Manual edits mark the
+	 * invoice as manually edited, which disables compute for it afterwards.
+	 */
+	public static async modifyInvoice(invoiceId: string, payload: ExecuteInvoiceModifyPayload): Promise<InvoiceModifyResponse> {
+		return await AxiosClient.post<InvoiceModifyResponse>(`${this.baseurl}/${invoiceId}/modify/execute`, payload);
 	}
 
 	public static async recalculateInvoice(invoiceId: string): Promise<RecalculateInvoiceResponse> {
