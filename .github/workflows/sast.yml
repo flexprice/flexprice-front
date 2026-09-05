@@ -22,7 +22,7 @@ jobs:
 
     steps:
       # Pinned to a full commit SHA — tags are mutable and can be repointed.
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Nothing later in the job performs authenticated Git operations.
           persist-credentials: false
@@ -48,6 +48,6 @@ jobs:
         # Pinned to a full commit SHA — tags are mutable and can be repointed.
         # Runs only when the scan step succeeded (which guarantees the SARIF file
         # exists); upload failures now fail the job instead of being swallowed.
-        uses: github/codeql-action/upload-sarif@2d92b76c45b91eb80fc44c74ce3fce0ee94e8f9d # v3.30.0
+        uses: github/codeql-action/upload-sarif@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4.37.8
         with:
           sarif_file: semgrep.sarif
