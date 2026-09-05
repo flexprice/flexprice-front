@@ -110,6 +110,11 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
           VITE_API_URL: ${{ secrets.E2E_API_URL }}
+          # E2E_USER_EMAIL/PASSWORD are native FlexPrice accounts on E2E_API_URL, not a
+          # Supabase project - without this, LoginForm takes the Supabase branch, whose
+          # client is a mock (no VITE_SUPABASE_URL/ANON_KEY here), so signInWithPassword
+          # throws and auth.setup.ts hangs until page.waitForURL times out.
+          VITE_APP_ENV: self-hosted
         run: npm run build
 
       - name: Decide which projects can run

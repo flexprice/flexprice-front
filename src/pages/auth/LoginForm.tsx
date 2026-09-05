@@ -70,6 +70,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 		onError: (error: Error) => {
 			toast.error(error.message || 'Something went wrong. Please try again.');
 		},
+		// Runs after either outcome — a failed self-hosted login otherwise left the button
+		// disabled forever, since neither onSuccess nor onError reset `loading`.
+		onSettled: () => setLoading(false),
 	});
 
 	const handleLogin = async () => {
@@ -81,21 +84,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 		setLoading(true);
 
 		if (config.app.env !== APP_ENV.SelfHosted) {
-			const { error } = await supabase.auth.signInWithPassword({
-				email,
-				password,
-			});
+			try {
+				const { error } = await supabase.auth.signInWithPassword({
+					email,
+					password,
+				});
 
-			setLoading(false);
+				if (error) {
+					toast.error(error.message);
+					return;
+				}
 
-			if (error) {
-				toast.error(error.message);
-				return;
+				userContext.setUser(data);
+				navigate('/');
+				toast.success('Login successful');
+			} catch (error) {
+				// Belt-and-suspenders: a thrown error here (e.g. a misconfigured auth client)
+				// must still surface and release the button, not just leave it disabled.
+				toast.error(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
+			} finally {
+				setLoading(false);
 			}
-
-			userContext.setUser(data);
-			navigate('/');
-			toast.success('Login successful');
 		} else {
 			localLogin();
 		}
