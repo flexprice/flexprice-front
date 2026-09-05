@@ -6,7 +6,13 @@ const isSelfHosted = config.app.env === APP_ENV.SelfHosted;
 const createMockClient = () => {
 	return {
 		auth: {
-			signIn: async () => ({ user: null, error: null }),
+			// Matches supabase-js's real signInWithPassword shape ({ data, error }) so
+			// LoginForm's destructuring works instead of throwing "not a function" when
+			// this client is used (self-hosted, or Supabase env vars simply unset).
+			signInWithPassword: async () => ({
+				data: { user: null, session: null },
+				error: new Error('Authentication is not configured for this deployment.'),
+			}),
 			signOut: async () => ({ error: null }),
 			onAuthStateChange: () => ({ data: null, error: null }),
 			getSession: async () => ({ data: null, error: null }),
