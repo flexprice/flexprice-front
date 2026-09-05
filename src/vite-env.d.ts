@@ -6,6 +6,8 @@ interface ImportMetaEnv {
 }
 
 declare const __APP_VERSION__: string;
+/** True only when built by Vercel's own build pipeline (see vite.config.ts) — see @vercel/speed-insights gating in main.tsx. */
+declare const __IS_VERCEL__: boolean;
 
 interface ImportMetaEnv {
 	readonly VITE_PADDLE_CLIENT_TOKEN: string;
