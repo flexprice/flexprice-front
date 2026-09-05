@@ -1,3 +1,4 @@
+import { getCustomCurrencySymbol } from '@/utils/common/custom_currency';
 // =============================================================================
 // COMMON CONSTANTS & UTILITIES
 // =============================================================================
@@ -10,12 +11,17 @@ export const formatCurrency = (amount: number | string, currency: string): strin
 	const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
 	if (isNaN(numAmount)) return `${getCurrencySymbol(currency)}0.00`;
 
-	return new Intl.NumberFormat('en-US', {
+	const parts = new Intl.NumberFormat('en-US', {
 		style: 'currency',
 		currency: currency,
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2,
-	}).format(numAmount);
+	}).formatToParts(numAmount);
+
+	// Intl renders an unrecognised code as the code itself, so the configured symbol is
+	// substituted for it rather than reformatting from scratch.
+	const customSymbol = getCustomCurrencySymbol(currency);
+	return parts.map((part) => (part.type === 'currency' && customSymbol ? customSymbol : part.value)).join('');
 };
 
 export const formatAmount = (amount: number | string, currency?: string): string => {
@@ -30,6 +36,10 @@ export const formatAmount = (amount: number | string, currency?: string): string
 };
 
 export const getCurrencySymbol = (currency: string): string => {
+	// A tenant-defined currency is not an ISO code, so Intl cannot resolve it.
+	const customSymbol = getCustomCurrencySymbol(currency);
+	if (customSymbol) return customSymbol;
+
 	try {
 		return (
 			new Intl.NumberFormat('en-US', {

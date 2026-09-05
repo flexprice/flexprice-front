@@ -1,5 +1,6 @@
 import { DEFAULT_CURRENCY_CODE } from '@/constants/constants';
 import { getIntlDigitOptions, getIntlLocale } from './intlLocale';
+import { getCustomCurrencySymbol } from '@/utils/common/custom_currency';
 
 /** Use a neutral locale for symbols so USD stays "$" in RTL locales (ar uses "US$" otherwise). */
 const CURRENCY_SYMBOL_LOCALE = 'en-US';
@@ -73,6 +74,10 @@ export function formatLocalizedCurrency(amount: number | string, currency: strin
 
 /** Currency symbol for a code (narrow symbol, locale-neutral so $ stays $ in Arabic UI). */
 export function getLocalizedCurrencySymbol(currency: string, _language?: string): string {
+	// A tenant-defined currency is not an ISO code, so Intl cannot resolve it.
+	const customSymbol = getCustomCurrencySymbol(currency);
+	if (customSymbol) return customSymbol;
+
 	const currencyCode = resolveCurrencyCode(currency);
 	try {
 		return (

@@ -6,6 +6,7 @@ import { BreadCrumbs, DebugMenu, RestrictedEnvBanner } from '@/components/molecu
 import { CommandPalette } from '@/components/organisms';
 import AppPrefetcher from '@/components/organisms/AppPrefetcher';
 import useUser from '@/hooks/useUser';
+import useCustomCurrencyConfig from '@/hooks/useCustomCurrencyConfig';
 import posthog from 'posthog-js';
 import { useEffect } from 'react';
 import RouteGuard from '@/core/routes/RouteGuard';
@@ -13,6 +14,9 @@ import RouteGuard from '@/core/routes/RouteGuard';
 const MainLayout: React.FC = () => {
 	const { user } = useUser();
 	const navigate = useNavigate();
+
+	// Publishes custom currency symbols to the currency formatters.
+	useCustomCurrencyConfig();
 
 	useEffect(() => {
 		if (!user || !config.app.isProd) return;
