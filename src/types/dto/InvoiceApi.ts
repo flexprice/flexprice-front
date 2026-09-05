@@ -117,6 +117,18 @@ export interface InvoiceModifyResponse {
 	invoice: Invoice;
 }
 
+/** One editable line-item row on the invoice edit page. Rows without an id are new (to be added on save). */
+export interface LineItemRow {
+	id?: string;
+	display_name: string;
+	quantity: string;
+	amount: string;
+	description: string;
+	/** ISO strings; empty when unset. */
+	period_start: string;
+	period_end: string;
+}
+
 /** Request body for PUT /invoices/:id/payment (update payment status). */
 export interface UpdatePaymentStatusPayload {
 	payment_status: string;

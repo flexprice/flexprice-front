@@ -148,6 +148,7 @@ export type {
 	InvoiceModifyAddLineItem,
 	InvoiceModifyUpdateLineItem,
 	InvoiceModifyResponse,
+	LineItemRow,
 	UpdatePaymentStatusPayload,
 	UpdateInvoiceStatusPayload,
 	GetInvoicePreviewPayload,

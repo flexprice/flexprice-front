@@ -33,6 +33,7 @@ import {
 	INVOICE_MODIFY_LINE_ITEM_ACTION,
 	InvoiceModifyAddLineItem,
 	InvoiceModifyUpdateLineItem,
+	LineItemRow,
 	UpdateInvoicePayload,
 } from '@/types/dto';
 import { RouteNames } from '@/core/routes/Routes';
@@ -46,18 +47,6 @@ import { cn } from '@/lib/utils';
 interface MetadataRow {
 	key: string;
 	value: string;
-}
-
-/** One editable line-item row. Rows without an id are new (to be added on save). */
-interface LineItemRow {
-	id?: string;
-	display_name: string;
-	quantity: string;
-	amount: string;
-	description: string;
-	/** ISO strings; empty when unset. */
-	period_start: string;
-	period_end: string;
 }
 
 /** The line-item operations a save must execute through the modify endpoint. */
