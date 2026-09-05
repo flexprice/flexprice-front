@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { NavItem } from './SidebarMenu';
 import {
 	SidebarMenuButton,
@@ -37,6 +37,23 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 		item.onToggle?.(open);
 	};
 
+	// Tracks the pathname as of the most recent render, read from a ref (not
+	// `location.pathname` directly) so the deferred navigate below always sees
+	// the latest value instead of the one captured in its own closure.
+	const locationRef = useRef(location.pathname);
+	useEffect(() => {
+		locationRef.current = location.pathname;
+	}, [location.pathname]);
+
+	// Cancel a still-pending deferred navigate (below) if the item unmounts
+	// (e.g. the route changed and this section collapsed) before it fires.
+	const pendingNavigateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	useEffect(() => {
+		return () => {
+			if (pendingNavigateTimeoutRef.current) clearTimeout(pendingNavigateTimeoutRef.current);
+		};
+	}, []);
+
 	// Handle click for items with children - toggle accordion on regular click
 	// but allow modifier keys (Cmd/Ctrl) to work naturally with Link
 	const handleMainItemClick = (event: React.MouseEvent) => {
@@ -53,10 +70,21 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 			const willOpen = !isOpen;
 			item.onToggle?.(willOpen);
 
-			// If opening and URL is not '#', navigate to it after a small delay
+			// If opening and URL is not '#', navigate to it after a small delay so the
+			// accordion's open animation gets a beat to start first.
 			if (willOpen && item.url && item.url !== '#') {
-				setTimeout(() => {
-					navigate(item.url);
+				const pathnameAtClick = locationRef.current;
+				if (pendingNavigateTimeoutRef.current) clearTimeout(pendingNavigateTimeoutRef.current);
+				pendingNavigateTimeoutRef.current = setTimeout(() => {
+					pendingNavigateTimeoutRef.current = null;
+					// Only follow through if the route hasn't already moved on since this
+					// click (e.g. the user picked a specific child link, such as Plans
+					// under Product Catalog, while this was still pending) - otherwise this
+					// deferred navigate would silently override that newer, more specific
+					// navigation back to the parent's own default page.
+					if (locationRef.current === pathnameAtClick) {
+						navigate(item.url);
+					}
 				}, 100);
 			}
 		}
