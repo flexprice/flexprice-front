@@ -16,7 +16,8 @@ describe('useCheckoutTabHandoff', () => {
 		const close = vi.spyOn(window, 'close').mockImplementation(() => {});
 		const { result } = renderHook(() => useCheckoutTabHandoff());
 
-		expect(result.current).toBe(false);
+		expect(result.current.isHandingOff).toBe(false);
+		expect(result.current.wasCheckoutReturn).toBe(false);
 		act(() => void vi.runAllTimers());
 		expect(close).not.toHaveBeenCalled();
 	});
@@ -31,7 +32,7 @@ describe('useCheckoutTabHandoff', () => {
 		const { result } = renderHook(() => useCheckoutTabHandoff());
 
 		// Renders nothing meanwhile: this tab is on its way out.
-		expect(result.current).toBe(true);
+		expect(result.current.isHandingOff).toBe(true);
 		expect(close).not.toHaveBeenCalled();
 
 		act(() => void vi.advanceTimersByTime(200));
@@ -47,6 +48,9 @@ describe('useCheckoutTabHandoff', () => {
 		const { result } = renderHook(() => useCheckoutTabHandoff());
 		act(() => void vi.advanceTimersByTime(1000));
 
-		expect(result.current).toBe(false);
+		expect(result.current.isHandingOff).toBe(false);
+		// Still true: the wrapper recovers the stored token only on such a landing,
+		// and this tab is now the one rendering the portal.
+		expect(result.current.wasCheckoutReturn).toBe(true);
 	});
 });

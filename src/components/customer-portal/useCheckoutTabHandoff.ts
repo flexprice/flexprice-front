@@ -26,10 +26,18 @@ const ANNOUNCE_SETTLE_MS = 150;
  * this tab may instead be a link the customer opened themselves. If it is still
  * here after the grace period, the flag drops and the portal renders as usual.
  */
-const useCheckoutTabHandoff = (): boolean => {
+interface CheckoutTabHandoff {
+	/** True while this tab is trying to close; render nothing meanwhile. */
+	isHandingOff: boolean;
+	/** True for the whole life of a load that arrived back from a provider. */
+	wasCheckoutReturn: boolean;
+}
+
+const useCheckoutTabHandoff = (): CheckoutTabHandoff => {
 	// Read synchronously during the first render: an effect would let the page
 	// paint before the marker is consumed.
-	const [isHandingOff, setIsHandingOff] = useState(() => consumeCheckoutReturnLoad());
+	const [wasCheckoutReturn] = useState(() => consumeCheckoutReturnLoad());
+	const [isHandingOff, setIsHandingOff] = useState(wasCheckoutReturn);
 
 	useEffect(() => {
 		if (!isHandingOff) return;
@@ -48,7 +56,7 @@ const useCheckoutTabHandoff = (): boolean => {
 		};
 	}, [isHandingOff]);
 
-	return isHandingOff;
+	return { isHandingOff, wasCheckoutReturn };
 };
 
 export default useCheckoutTabHandoff;

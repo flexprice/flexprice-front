@@ -3,7 +3,7 @@ import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { AlertTriangle, Check } from 'lucide-react';
 import { Button } from '@/components/atoms';
 import { cn } from '@/lib/utils';
-import { RbacRole, SUPER_ADMIN_ROLE_ID } from '@/api/RbacApi';
+import { RbacRole } from '@/api/RbacApi';
 
 export interface RolePickerProps {
 	roles: RbacRole[];
@@ -25,10 +25,11 @@ export interface RolePickerProps {
 
 /**
  * Presentational multi-select role picker. Renders whatever roles it's given —
- * no branching on specific role IDs, no role-specific colors/icons, except
- * SUPER_ADMIN_ROLE_ID, which is exclusive with every other role (selecting it
- * clears/disables the rest). Each role is a full-row clickable card (native
- * <label>-to-<Checkbox> delegation, not just a small inner control).
+ * no branching on specific role IDs, no role-specific colors/icons. Every row
+ * stays clickable regardless of what else is selected, including Super Admin;
+ * `onToggle`'s caller decides what selecting a given role does to the rest.
+ * Each role is a full-row clickable card (native <label>-to-<Checkbox>
+ * delegation, not just a small inner control).
  */
 const RolePicker: FC<RolePickerProps> = ({
 	roles,
@@ -46,8 +47,6 @@ const RolePicker: FC<RolePickerProps> = ({
 	emptyLabel = 'No roles available.',
 	ariaLabel = 'Roles',
 }) => {
-	const isSuperAdminSelected = selectedRoleIds.includes(SUPER_ADMIN_ROLE_ID);
-
 	return (
 		<div className='flex flex-col gap-2'>
 			{title && <p className='text-sm font-medium text-content-zinc-bold'>{title}</p>}
@@ -73,22 +72,19 @@ const RolePicker: FC<RolePickerProps> = ({
 				<div role='group' aria-label={ariaLabel} className={cn('grid gap-2', roles.length > 5 ? 'sm:grid-cols-2' : 'grid-cols-1')}>
 					{roles.map((role) => {
 						const isChecked = selectedRoleIds.includes(role.id);
-						const isDisabled = isSuperAdminSelected && role.id !== SUPER_ADMIN_ROLE_ID;
 						const inputId = `role-${role.id}`;
 						return (
 							<label
 								key={role.id}
 								htmlFor={inputId}
 								className={cn(
-									'flex items-start gap-2.5 rounded-md border-2 px-3 py-2.5 transition-colors',
-									isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+									'flex items-start gap-2.5 rounded-md border-2 px-3 py-2.5 transition-colors cursor-pointer',
 									isChecked ? 'bg-surface-selected border-line-zinc-strong' : 'border-line hover:bg-surface-faint',
 								)}>
 								<CheckboxPrimitive.Root
 									id={inputId}
 									checked={isChecked}
 									onCheckedChange={() => onToggle(role.id)}
-									disabled={isDisabled}
 									aria-label={role.name}
 									className={cn(
 										'mt-0.5 h-4 w-4 shrink-0 rounded-full border shadow-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed',

@@ -108,6 +108,10 @@ export interface PortalAutoTopupRequest {
 	enabled: boolean;
 	threshold?: string;
 	amount?: string;
+	/**
+	 * A cooloff between automatic top-ups. `value: 0` clears a stored one — null
+	 * reads as an absent field on the server and leaves it in place.
+	 */
 	cooldown?: { value: number; unit: 'second' | 'minute' | 'hour' | 'day' } | null;
 }
 

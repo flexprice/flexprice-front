@@ -28,18 +28,16 @@ describe('RolePicker', () => {
 		expect(onToggle).toHaveBeenCalledWith('writer');
 	});
 
-	it('disables every non-super_admin checkbox when super_admin is selected', () => {
-		render(<RolePicker roles={roles} selectedRoleIds={['super_admin']} onToggle={vi.fn()} />);
-		expect(screen.getByRole('checkbox', { name: 'Reader' })).toBeDisabled();
-		expect(screen.getByRole('checkbox', { name: 'Writer' })).toBeDisabled();
-		expect(screen.getByRole('checkbox', { name: 'Billing Admin' })).toBeDisabled();
-		expect(screen.getByRole('checkbox', { name: 'Super Admin' })).not.toBeDisabled();
-	});
-
-	it('re-enables every checkbox once super_admin is deselected', () => {
-		render(<RolePicker roles={roles} selectedRoleIds={[]} onToggle={vi.fn()} />);
+	it('keeps every checkbox clickable even when super_admin is selected', () => {
+		const onToggle = vi.fn();
+		render(<RolePicker roles={roles} selectedRoleIds={['super_admin']} onToggle={onToggle} />);
 		expect(screen.getByRole('checkbox', { name: 'Reader' })).not.toBeDisabled();
 		expect(screen.getByRole('checkbox', { name: 'Writer' })).not.toBeDisabled();
+		expect(screen.getByRole('checkbox', { name: 'Billing Admin' })).not.toBeDisabled();
+		expect(screen.getByRole('checkbox', { name: 'Super Admin' })).not.toBeDisabled();
+
+		fireEvent.click(screen.getByRole('checkbox', { name: 'Reader' }));
+		expect(onToggle).toHaveBeenCalledWith('reader');
 	});
 
 	it('allows multiple non-super_admin roles to be selected simultaneously', () => {

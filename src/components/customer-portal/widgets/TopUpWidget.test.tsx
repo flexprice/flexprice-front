@@ -230,11 +230,16 @@ describe('TopUpWidget', () => {
 		expect(payload.checkout?.payment_provider).toBe('chargebee');
 	});
 
-	// One gateway is not a choice, so the customer is not asked to make one.
-	it('offers no provider picker when only one gateway can host checkout', async () => {
+	// The customer is about to be handed to a third party, so it is named even when
+	// there is only one — already selected, with nothing to decide.
+	it('shows the single gateway, pre-selected, with no choice to make', async () => {
 		renderWidget();
-		await screen.findByRole('button', { name: /pay now/i });
-		expect(screen.queryByText('Payment provider')).not.toBeInTheDocument();
+		// Awaited, not queried off the Pay now button: canCheckout is optimistic while
+		// /integrations is in flight, so the button renders before the provider list.
+		expect(await screen.findByText('Payment provider')).toBeInTheDocument();
+		expect(screen.getByRole('radio', { name: /chargebee/i })).toHaveAttribute('aria-checked', 'true');
+		// A hint inviting a choice would imply one that is not on offer.
+		expect(screen.queryByText(/choose which provider/i)).not.toBeInTheDocument();
 	});
 
 	// Inline options, not a Select: a portaled listbox inside this modal={false}
@@ -312,5 +317,23 @@ describe('TopUpWidget', () => {
 		const [, payload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
 		// The default wins over declaration order.
 		expect(payload.checkout?.payment_provider).toBe('chargebee');
+	});
+
+	// Without checkout configured the request still raises an invoice and the
+	// response says so. Blocking the button told the customer about the tenant's
+	// payment setup — something they cannot act on — and stopped an action that works.
+	it('lets the customer pay when no gateway can host a checkout', async () => {
+		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({ payment_integrations: [] } as never);
+		vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({} as never);
+
+		renderWidget();
+		await enterCredits('10');
+
+		const pay = screen.getByRole('button', { name: /pay now/i });
+		await waitFor(() => expect(pay).toBeEnabled());
+		expect(screen.queryByText(/online payment is not set up/i)).not.toBeInTheDocument();
+
+		await userEvent.click(pay);
+		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalled());
 	});
 });

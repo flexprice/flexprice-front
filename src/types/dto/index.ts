@@ -143,6 +143,12 @@ export type {
 	GetInvoicesListResponse,
 	InvoiceListItem,
 	InvoiceFilter,
+	UpdateInvoicePayload,
+	ExecuteInvoiceModifyPayload,
+	InvoiceModifyAddLineItem,
+	InvoiceModifyUpdateLineItem,
+	InvoiceModifyResponse,
+	LineItemRow,
 	UpdatePaymentStatusPayload,
 	UpdateInvoiceStatusPayload,
 	GetInvoicePreviewPayload,
@@ -151,6 +157,7 @@ export type {
 	VoidInvoicePayload,
 	RecalculateInvoiceResponse,
 } from './InvoiceApi';
+export { INVOICE_MODIFY_LINE_ITEM_ACTION } from './InvoiceApi';
 
 export type {
 	MeterFilter,

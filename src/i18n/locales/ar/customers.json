@@ -228,7 +228,8 @@
 			"missingExternalId": "يجب أن يكون لعميل الفوترة معرّف خارجي."
 		},
 		"sandboxNotice": "هذا اشتراك تجريبي وستنتهي صلاحيته تلقائيًا في {{date}} (بعد {{days}} يومًا).",
-		"saveAsDraft": "حفظ كمسودّة"
+		"saveAsDraft": "حفظ كمسودّة",
+		"create": "إنشاء اشتراك"
 	},
 	"subscriptionDetail": {
 		"breadcrumbSubscription": "الاشتراك",

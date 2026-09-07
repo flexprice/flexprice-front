@@ -6,6 +6,8 @@ import {
 	parseInvoiceConfig,
 	parseSequenceDigitsInput,
 	serializeInvoiceConfig,
+	toFinalizationDelayDisplay,
+	FINALIZATION_DELAY_UNIT_SECONDS,
 } from './BillingSettings';
 
 describe('BillingSettings invoice config', () => {
@@ -97,5 +99,24 @@ describe('BillingSettings invoice config', () => {
 		).toBe('sequenceDigitsMin');
 		expect(parseSequenceDigitsInput('2')).toBe(2);
 		expect(parseSequenceDigitsInput('')).toBeNull();
+	});
+});
+
+describe('finalization delay display', () => {
+	it('picks the largest unit that divides the stored seconds evenly', () => {
+		expect(toFinalizationDelayDisplay(7200)).toEqual({ value: 2, unit: 'hours' });
+		expect(toFinalizationDelayDisplay(86400)).toEqual({ value: 1, unit: 'days' });
+		expect(toFinalizationDelayDisplay(300)).toEqual({ value: 5, unit: 'minutes' });
+		expect(toFinalizationDelayDisplay(90)).toEqual({ value: 90, unit: 'seconds' });
+	});
+
+	it('shows zero and negative delays as seconds', () => {
+		expect(toFinalizationDelayDisplay(0)).toEqual({ value: 0, unit: 'seconds' });
+		expect(toFinalizationDelayDisplay(-5)).toEqual({ value: 0, unit: 'seconds' });
+	});
+
+	it('round-trips a display value back to the stored seconds', () => {
+		const display = toFinalizationDelayDisplay(7200);
+		expect(display.value * FINALIZATION_DELAY_UNIT_SECONDS[display.unit]).toBe(7200);
 	});
 });

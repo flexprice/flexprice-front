@@ -40,7 +40,6 @@ const CustomerPortalInner = () => {
 	const { config } = usePortalConfig();
 	// Resolves a checkout the customer has just been redirected back from.
 	useCheckoutReturn();
-	const hasTheme = !!config.theme;
 
 	const {
 		data: customerData,
@@ -127,7 +126,7 @@ const CustomerPortalInner = () => {
 
 	if (customerLoading) {
 		return (
-			<div className='min-h-screen flex items-center justify-center' style={hasTheme ? { backgroundColor: 'var(--portal-bg)' } : undefined}>
+			<div className='flex min-h-screen items-center justify-center bg-surface-subtle'>
 				<Loader />
 			</div>
 		);
@@ -136,9 +135,7 @@ const CustomerPortalInner = () => {
 	if (customerError || !customerData) return null;
 
 	return (
-		<div
-			className={hasTheme ? 'min-h-screen' : 'min-h-screen bg-[#fafafa]'}
-			style={hasTheme ? { backgroundColor: 'var(--portal-bg)' } : undefined}>
+		<div className='min-h-screen bg-surface-subtle'>
 			<PortalHeader customer={customerData} />
 
 			<motion.div
@@ -146,15 +143,11 @@ const CustomerPortalInner = () => {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.3 }}
 				className='max-w-6xl mx-auto px-4 sm:px-6 py-6'>
-				{/* Top-level Section Tab Bar */}
-				<div className='mb-6'>
-					<div
-						className='flex space-x-1 rounded-[6px] p-1 w-fit'
-						style={
-							hasTheme
-								? { backgroundColor: 'var(--portal-surface)', border: '1px solid var(--portal-border)' }
-								: { backgroundColor: 'white', border: '1px solid #E9E9E9' }
-						}>
+				{/* Navigation, not a card: the bordered, padded container gave the tab bar
+				    the same weight as the sections below it and left it floating on its
+				    own. Only the active item carries a background now. */}
+				<div className='mb-6 border-b border-line'>
+					<div className='-mb-px flex items-center gap-1 pb-2'>
 						{visibleSections.map((section) => {
 							const isActive = activeSection?.id === section.id;
 							return (
@@ -162,16 +155,9 @@ const CustomerPortalInner = () => {
 									key={section.id}
 									onClick={() => selectSection(section.id)}
 									className={cn(
-										'px-4 py-2 text-sm font-medium rounded-[6px] transition-colors',
-										!hasTheme && (isActive ? 'bg-zinc-100 text-zinc-900' : 'text-zinc-500 hover:text-zinc-700 hover:bg-zinc-50'),
-									)}
-									style={
-										hasTheme
-											? isActive
-												? { backgroundColor: 'var(--portal-primary)', color: 'white' }
-												: { color: 'var(--portal-text-secondary, #71717a)' }
-											: undefined
-									}>
+										'rounded-md px-4 py-2 text-sm font-medium transition-colors',
+										isActive ? 'bg-surface-subtle text-content' : 'text-content-secondary hover:bg-surface-subtle hover:text-content',
+									)}>
 									{section.label}
 								</button>
 							);
@@ -183,14 +169,14 @@ const CustomerPortalInner = () => {
 				{activeSection && <SectionContent key={activeSection.id} section={activeSection} />}
 
 				{/* Footer */}
-				<div className='mt-12 pt-6 text-center' style={{ borderTop: `1px solid ${hasTheme ? 'var(--portal-border)' : '#E9E9E9'}` }}>
-					<p className='text-xs text-zinc-400'>
+				<div className='mt-12 border-t border-line pt-6 text-center'>
+					<p className='text-xs text-content-tertiary'>
 						{t('footer.poweredBy')}{' '}
 						<a
 							href='https://flexprice.io'
 							target='_blank'
 							rel='noopener noreferrer'
-							className='text-zinc-500 hover:text-zinc-700 transition-colors'>
+							className='text-content-secondary transition-colors hover:text-content'>
 							{t('footer.brand')}
 						</a>
 					</p>

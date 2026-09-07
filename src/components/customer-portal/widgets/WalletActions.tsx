@@ -4,7 +4,6 @@ import { EllipsisVertical, Settings2 } from 'lucide-react';
 import { Button, Dialog } from '@/components/atoms';
 import { DropdownMenu } from '@/components/molecules';
 import { WalletResponse } from '@/types/dto/Wallet';
-import TopUpButton from './TopUpButton';
 import AutoTopUpForm from './AutoTopUpForm';
 import useChargeableMethod from '../useChargeableMethod';
 
@@ -13,7 +12,8 @@ interface WalletActionsProps {
 }
 
 /**
- * Wallet header actions: Top up as the primary button, and a menu for the rest.
+ * The wallet's secondary menu. Top up is the primary action and sits beside the
+ * balance itself — see CreditBalance's balanceAction.
  *
  * The admin wallet menu also carries Create Wallet, Alert Settings, Manual Debit
  * and Terminate. None of those belong to a customer, so the portal menu exposes
@@ -25,8 +25,7 @@ const WalletActions = ({ wallet }: WalletActionsProps) => {
 	const [isAutoTopUpOpen, setIsAutoTopUpOpen] = useState(false);
 
 	return (
-		<div className='flex items-center gap-2'>
-			<TopUpButton />
+		<div className='flex items-center'>
 			<DropdownMenu
 				options={[
 					{

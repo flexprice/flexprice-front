@@ -33,10 +33,11 @@ describe('UsageQuota', () => {
 		expect(container.querySelector('.bg-destructive')).toBeInTheDocument();
 	});
 
-	it('keeps the titled card for an empty item list', () => {
-		render(<UsageQuota items={[]} />);
-		expect(screen.getByText('Usage Quota')).toBeInTheDocument();
-		expect(screen.getByText('No usage quotas configured')).toBeInTheDocument();
+	// An absent quota is a fact about the plan, not a transient empty: a customer
+	// whose plan has no metered features would see the placeholder on every visit.
+	it('renders nothing for an empty item list', () => {
+		const { container } = render(<UsageQuota items={[]} />);
+		expect(container).toBeEmptyDOMElement();
 	});
 
 	it('honors a custom label', () => {

@@ -6,15 +6,18 @@ import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functi
 import { formatCredits, formatMoney } from '@/utils/common/formatBalance';
 import { FC, useMemo } from 'react';
 import { useWalletTransactionsTableT } from './WalletTransactionsTable.i18n';
+import { PortalDataTable } from '@/components/atoms/PortalTable/PortalTable';
 
 const TX_AMOUNT_PRIMARY = 'text-base font-medium';
 const TX_AMOUNT_SECONDARY = 'text-sm';
 
 interface Props {
 	data: WalletTransaction[];
+	/** 'portal' swaps the dashboard's filled header for the portal's table chrome. */
+	chrome?: 'dashboard' | 'portal';
 }
 
-const WalletTransactionsTable: FC<Props> = ({ data }) => {
+const WalletTransactionsTable: FC<Props> = ({ data, chrome = 'dashboard' }) => {
 	const t = useWalletTransactionsTableT();
 
 	const columnData: ColumnData<WalletTransaction>[] = useMemo(() => {
@@ -109,6 +112,27 @@ const WalletTransactionsTable: FC<Props> = ({ data }) => {
 			},
 		];
 	}, [t]);
+
+	// The portal renders the same columns through its own chrome — white header,
+	// hairline divider, no outer border — so its three tables match each other
+	// rather than the dashboard's filled-header treatment. Columns and their copy
+	// stay defined once, here.
+	if (chrome === 'portal') {
+		return (
+			<PortalDataTable
+				columns={columnData.map((column, index) => ({
+					title: column.title,
+					// Amount is the last column and is money: it goes right, per the portal's
+					// one alignment rule.
+					align: index === columnData.length - 1 ? ('end' as const) : ('start' as const),
+					render: (row: WalletTransaction) =>
+						'render' in column && column.render ? column.render(row) : String(row[column.fieldName!] ?? ''),
+				}))}
+				data={data}
+				getRowKey={(row) => row.id}
+			/>
+		);
+	}
 
 	return <FlexpriceTable columns={columnData} data={data} />;
 };

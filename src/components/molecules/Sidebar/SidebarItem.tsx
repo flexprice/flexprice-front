@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { NavItem } from './SidebarMenu';
 import {
 	SidebarMenuButton,
@@ -37,6 +37,28 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 		item.onToggle?.(open);
 	};
 
+	// Delayed so the accordion's own opening animation isn't interrupted by an
+	// immediate route change. Tracked in a ref (not fire-and-forget) so a child
+	// link clicked before it fires - the expected next step once the section is
+	// open - can cancel it; otherwise the stale default-page navigation lands
+	// a beat after the child's own, silently overriding wherever the user (or a
+	// fast automated click) actually asked to go.
+	const pendingNavigateRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	useEffect(
+		() => () => {
+			if (pendingNavigateRef.current) clearTimeout(pendingNavigateRef.current);
+		},
+		[],
+	);
+
+	const cancelPendingNavigate = () => {
+		if (pendingNavigateRef.current) {
+			clearTimeout(pendingNavigateRef.current);
+			pendingNavigateRef.current = null;
+		}
+	};
+
 	// Handle click for items with children - toggle accordion on regular click
 	// but allow modifier keys (Cmd/Ctrl) to work naturally with Link
 	const handleMainItemClick = (event: React.MouseEvent) => {
@@ -52,10 +74,12 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 			event.preventDefault(); // Prevent navigation
 			const willOpen = !isOpen;
 			item.onToggle?.(willOpen);
+			cancelPendingNavigate();
 
 			// If opening and URL is not '#', navigate to it after a small delay
 			if (willOpen && item.url && item.url !== '#') {
-				setTimeout(() => {
+				pendingNavigateRef.current = setTimeout(() => {
+					pendingNavigateRef.current = null;
 					navigate(item.url);
 				}, 100);
 			}
@@ -134,7 +158,7 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 											asChild
 											isActive={subActive}
 											className={cn('w-full font-light text-content-black transition-colors duration-200')}>
-											<Link to={subItem.url} className='flex items-center gap-2'>
+											<Link to={subItem.url} className='flex items-center gap-2' onClick={cancelPendingNavigate}>
 												{SubIcon && (
 													<SubIcon
 														absoluteStrokeWidth
