@@ -37,22 +37,27 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 		item.onToggle?.(open);
 	};
 
-	// Tracks the pathname as of the most recent render, read from a ref (not
-	// `location.pathname` directly) so the deferred navigate below always sees
-	// the latest value instead of the one captured in its own closure.
-	const locationRef = useRef(location.pathname);
-	useEffect(() => {
-		locationRef.current = location.pathname;
-	}, [location.pathname]);
+	// Delayed so the accordion's own opening animation isn't interrupted by an
+	// immediate route change. Tracked in a ref (not fire-and-forget) so a child
+	// link clicked before it fires - the expected next step once the section is
+	// open - can cancel it; otherwise the stale default-page navigation lands
+	// a beat after the child's own, silently overriding wherever the user (or a
+	// fast automated click) actually asked to go.
+	const pendingNavigateRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	// Cancel a still-pending deferred navigate (below) if the item unmounts
-	// (e.g. the route changed and this section collapsed) before it fires.
-	const pendingNavigateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	useEffect(() => {
-		return () => {
-			if (pendingNavigateTimeoutRef.current) clearTimeout(pendingNavigateTimeoutRef.current);
-		};
-	}, []);
+	useEffect(
+		() => () => {
+			if (pendingNavigateRef.current) clearTimeout(pendingNavigateRef.current);
+		},
+		[],
+	);
+
+	const cancelPendingNavigate = () => {
+		if (pendingNavigateRef.current) {
+			clearTimeout(pendingNavigateRef.current);
+			pendingNavigateRef.current = null;
+		}
+	};
 
 	// Handle click for items with children - toggle accordion on regular click
 	// but allow modifier keys (Cmd/Ctrl) to work naturally with Link
@@ -69,22 +74,13 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 			event.preventDefault(); // Prevent navigation
 			const willOpen = !isOpen;
 			item.onToggle?.(willOpen);
+			cancelPendingNavigate();
 
-			// If opening and URL is not '#', navigate to it after a small delay so the
-			// accordion's open animation gets a beat to start first.
+			// If opening and URL is not '#', navigate to it after a small delay
 			if (willOpen && item.url && item.url !== '#') {
-				const pathnameAtClick = locationRef.current;
-				if (pendingNavigateTimeoutRef.current) clearTimeout(pendingNavigateTimeoutRef.current);
-				pendingNavigateTimeoutRef.current = setTimeout(() => {
-					pendingNavigateTimeoutRef.current = null;
-					// Only follow through if the route hasn't already moved on since this
-					// click (e.g. the user picked a specific child link, such as Plans
-					// under Product Catalog, while this was still pending) - otherwise this
-					// deferred navigate would silently override that newer, more specific
-					// navigation back to the parent's own default page.
-					if (locationRef.current === pathnameAtClick) {
-						navigate(item.url);
-					}
+				pendingNavigateRef.current = setTimeout(() => {
+					pendingNavigateRef.current = null;
+					navigate(item.url);
 				}, 100);
 			}
 		}
@@ -162,7 +158,7 @@ const SidebarItem: FC<SidebarItemProps> = (item) => {
 											asChild
 											isActive={subActive}
 											className={cn('w-full font-light text-content-black transition-colors duration-200')}>
-											<Link to={subItem.url} className='flex items-center gap-2'>
+											<Link to={subItem.url} className='flex items-center gap-2' onClick={cancelPendingNavigate}>
 												{SubIcon && (
 													<SubIcon
 														absoluteStrokeWidth

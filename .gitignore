@@ -57,3 +57,6 @@ deploy-config.json
 # Playwright Docker image (matching CI) belong in the repo. See e2e/README.md.
 /e2e/visual/**/*-darwin.png
 /e2e/visual/**/*-win32.png
+
+# Superpowers working specs (session artifacts, not repo docs)
+docs/superpowers/

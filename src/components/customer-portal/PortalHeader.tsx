@@ -2,6 +2,7 @@ import { Customer } from '@/models';
 import { Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePortalConfig } from '@/context/PortalConfigContext';
+import { cn } from '@/lib/utils';
 
 interface PortalHeaderProps {
 	customer: Customer;
@@ -11,7 +12,7 @@ interface PortalHeaderProps {
 const PortalHeader = ({ customer, tenantName }: PortalHeaderProps) => {
 	const { t } = useTranslation('customer-portal');
 	const { config } = usePortalConfig();
-	const hasTheme = !!config.theme;
+	const theme = config.theme;
 
 	const initials =
 		customer.name
@@ -22,42 +23,27 @@ const PortalHeader = ({ customer, tenantName }: PortalHeaderProps) => {
 			.toUpperCase() || t('header.defaultInitials');
 
 	return (
-		<div
-			style={{
-				backgroundColor: hasTheme ? 'var(--portal-surface)' : 'white',
-				borderBottom: `1px solid ${hasTheme ? 'var(--portal-border)' : '#E9E9E9'}`,
-			}}>
-			<div className='max-w-6xl mx-auto px-4 sm:px-6 py-6'>
+		<div className='border-b border-line bg-surface'>
+			<div className='mx-auto max-w-6xl px-4 py-6 sm:px-6'>
 				<div className='flex items-center justify-between'>
 					<div className='flex items-center gap-4'>
-						{/* Customer Avatar */}
+						{/* The avatar is the one place the tenant's accent still applies directly:
+						    it is branding rather than a surface, so it does not go through the
+						    neutral tokens the rest of the portal reads. */}
 						<div
-							className='h-12 w-12 rounded-full flex items-center justify-center shrink-0'
-							style={{
-								backgroundColor: hasTheme ? 'var(--portal-primary)' : '#e4e4e7',
-							}}>
-							<span className='text-lg font-medium' style={{ color: hasTheme ? '#ffffff' : '#52525b' }}>
-								{initials}
-							</span>
+							className='flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-subtle'
+							style={theme?.primary_color ? { backgroundColor: theme.primary_color } : undefined}>
+							<span className={cn('text-lg font-medium', theme?.primary_color ? 'text-white' : 'text-content-secondary')}>{initials}</span>
 						</div>
 
 						<div>
-							<h1 className='text-xl font-medium' style={{ color: hasTheme ? 'var(--portal-text-primary, #ffffff)' : '#09090b' }}>
-								{customer.name}
-							</h1>
-							{customer.email && (
-								<p className='text-sm' style={{ color: hasTheme ? 'var(--portal-text-secondary, #a5a5a5)' : '#71717a' }}>
-									{customer.email}
-								</p>
-							)}
+							<h1 className='text-xl font-medium text-content'>{customer.name}</h1>
+							{customer.email && <p className='text-sm text-content-secondary'>{customer.email}</p>}
 						</div>
 					</div>
 
-					{/* Tenant Branding */}
 					{tenantName && (
-						<div
-							className='hidden sm:flex items-center gap-2'
-							style={{ color: hasTheme ? 'var(--portal-text-secondary, #a5a5a5)' : '#a1a1aa' }}>
+						<div className='hidden items-center gap-2 text-content-tertiary sm:flex'>
 							<Building2 className='h-4 w-4' />
 							<span className='text-sm'>{tenantName}</span>
 						</div>

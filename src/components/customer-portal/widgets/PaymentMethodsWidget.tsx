@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { AlertTriangle, CreditCard, MoreHorizontal, Plus, Star, Trash2 } from 'lucide-react';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 import { portalReturnUrl } from '../portalReturnUrl';
-import { Button, Card, Chip, Dialog } from '@/components/atoms';
+import { Button, Chip, Dialog } from '@/components/atoms';
 import { DropdownMenu } from '@/components/molecules';
 import { refetchPortalQueries } from '../refetchPortalQueries';
 import type { PaymentGatewayType, ProviderSavedPaymentMethods, SavedPaymentMethod } from '@/types/dto/CustomerPortalBilling';
@@ -14,15 +14,14 @@ import usePortalIntegrations from '../usePortalIntegrations';
 import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
 import CheckoutLinkDialog from './CheckoutLinkDialog';
 import EmptyState from '../EmptyState';
+import PortalSection from '../PortalSection';
+import PortalRow, { PortalRows } from '../PortalRow';
 
 interface PaymentMethodsWidgetProps {
 	label?: string;
 }
 
 /** Names a method for an accessible label without leaking the gateway. */
-const describeMethod = (method: SavedPaymentMethod, t: (k: string, o?: Record<string, unknown>) => string) =>
-	method.card?.last4 ? t('paymentMethods.cardLabel', { brand: method.card.brand ?? 'card', last4: method.card.last4 }) : method.id;
-
 const formatExpiry = (month?: number, year?: number) => {
 	if (!month || !year) return null;
 	return `${String(month).padStart(2, '0')}/${String(year).slice(-2)}`;
@@ -40,90 +39,71 @@ const MethodRow = ({ method, canSetDefault, onSetDefault, onDelete, isBusy }: Me
 	const { t } = useTranslation('customer-portal');
 	const expiry = formatExpiry(method.card?.exp_month, method.card?.exp_year);
 	const isExpired = method.status === 'EXPIRED';
+	// Names the method without leaking the gateway — used for the visible title and
+	// for the row menu's accessible name, so the two cannot drift.
+	const described = method.card?.last4
+		? t('paymentMethods.cardLabel', { brand: method.card.brand ?? 'card', last4: method.card.last4 })
+		: method.id;
 
 	return (
-		<div className='flex items-center justify-between gap-4 py-3.5'>
-			<div className='flex items-center gap-3 min-w-0'>
-				<div
-					className='h-9 w-9 rounded-full flex items-center justify-center shrink-0'
-					style={{ backgroundColor: 'var(--portal-bg, #eff6ff)' }}>
-					<CreditCard className='h-4 w-4' style={{ color: 'var(--portal-primary, #2563eb)' }} />
-				</div>
-				<div className='min-w-0'>
-					<p className='text-sm font-medium truncate' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-						{method.card?.last4
-							? t('paymentMethods.cardLabel', { brand: method.card.brand ?? 'card', last4: method.card.last4 })
-							: method.id}
-					</p>
-					<div className='flex items-center gap-2 mt-0.5'>
-						{expiry && (
-							<span className='text-xs' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-								{t('paymentMethods.expires', { expiry })}
-							</span>
-						)}
-						{isExpired && <Chip label={t('paymentMethods.expired')} variant='failed' />}
-					</div>
-				</div>
-			</div>
-
-			<div className='flex items-center gap-2 shrink-0'>
-				{method.is_default && <Chip label={t('paymentMethods.default')} variant='success' />}
-				{/* One menu rather than inline buttons, matching the admin row actions and
-				    the invoices table: the set of actions varies per method, and inline
-				    controls made each row a different width. */}
-				<DropdownMenu
-					align='end'
-					trigger={
-						<button
-							type='button'
-							aria-label={t('paymentMethods.rowActions', { method: describeMethod(method, t) })}
-							className='p-1.5 rounded-md transition-colors'
-							style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-							<MoreHorizontal className='h-4 w-4' />
-						</button>
-					}
-					options={[
-						{
-							label: t('paymentMethods.setDefault'),
-							icon: <Star className='w-4 h-4' />,
-							disabled: method.is_default || !canSetDefault || isExpired || isBusy,
-							disabledReason: method.is_default
-								? t('paymentMethods.alreadyDefault')
-								: !canSetDefault
-									? t('paymentMethods.setDefaultUnsupported')
-									: isExpired
-										? t('paymentMethods.expiredCannotDefault')
-										: undefined,
-							onSelect: () => onSetDefault(method),
-						},
-						{
-							label: t('paymentMethods.remove'),
-							icon: <Trash2 className='w-4 h-4' />,
-							disabled: isBusy,
-							onSelect: () => onDelete(method),
-						},
-					]}
-				/>
-			</div>
-		</div>
+		<PortalRow
+			icon={<CreditCard />}
+			title={described}
+			meta={expiry ? t('paymentMethods.expires', { expiry }) : undefined}
+			trailing={
+				<>
+					{isExpired && <Chip label={t('paymentMethods.expired')} variant='failed' />}
+					{method.is_default && <Chip label={t('paymentMethods.default')} variant='success' />}
+					<DropdownMenu
+						align='end'
+						trigger={
+							<button
+								type='button'
+								aria-label={t('paymentMethods.rowActions', { method: described })}
+								className='rounded-md p-1.5 text-content-tertiary transition-colors hover:text-content'>
+								<MoreHorizontal className='h-4 w-4' />
+							</button>
+						}
+						options={[
+							{
+								label: t('paymentMethods.setDefault'),
+								icon: <Star className='w-4 h-4' />,
+								disabled: method.is_default || !canSetDefault || isExpired || isBusy,
+								// Kept visible and explained rather than hidden: a missing item leaves
+								// the customer wondering whether the portal can do this at all.
+								disabledReason: method.is_default
+									? t('paymentMethods.alreadyDefault')
+									: !canSetDefault
+										? t('paymentMethods.setDefaultUnsupported')
+										: isExpired
+											? t('paymentMethods.expiredCannotDefault')
+											: undefined,
+								onSelect: () => onSetDefault(method),
+							},
+							{
+								label: t('paymentMethods.remove'),
+								icon: <Trash2 className='w-4 h-4' />,
+								disabled: isBusy,
+								onSelect: () => onDelete(method),
+							},
+						]}
+					/>
+				</>
+			}
+		/>
 	);
 };
 
-/** A provider that could not be read is not the same as one with no cards. */
 const ProviderGroup = ({ group, children }: { group: ProviderSavedPaymentMethods; children: React.ReactNode }) => {
 	const { t } = useTranslation('customer-portal');
 
 	if (group.error) {
 		return (
-			<div className='py-3.5 flex items-start gap-2'>
-				<AlertTriangle className='h-4 w-4 mt-0.5 shrink-0' style={{ color: 'rgb(var(--fp-danger))' }} />
+			<div className='flex items-start gap-2 px-5 py-3.5'>
+				<AlertTriangle className='mt-0.5 h-4 w-4 shrink-0 text-danger' />
 				<div>
-					<p className='text-sm' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-						{t('paymentMethods.providerUnavailable')}
-					</p>
-					<p className='text-xs mt-0.5' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-						{group.error.message}
-					</p>
+					<p className='text-sm text-content'>{t('paymentMethods.providerUnavailable')}</p>
+					<p className='mt-0.5 text-xs text-content-tertiary'>{group.error.message}</p>
 				</div>
 			</div>
 		);
@@ -217,32 +197,41 @@ const PaymentMethodsWidget = ({ label }: PaymentMethodsWidgetProps) => {
 	const isBusy = isSettingDefault || isDeleting;
 	const addProvider = defaultProviderFor('payment_method_management');
 
-	const cardStyle = { backgroundColor: 'var(--portal-surface, white)', border: '1px solid var(--portal-border, #E9E9E9)' };
-
 	// An integrations failure is not the same as a provider that cannot manage
 	// methods — saying "not available" would state something we do not know.
 	if (integrationsError) {
 		return (
-			<Card className='rounded-xl p-6' style={cardStyle}>
+			<PortalSection icon={<CreditCard />} title={label ?? t('paymentMethods.title')}>
 				<EmptyState icon={<AlertTriangle />} title={t('paymentMethods.providerUnavailable')} description={t('paymentMethods.retryHint')} />
-			</Card>
+			</PortalSection>
 		);
 	}
 
 	if (!integrationsLoading && !canManage) {
 		return (
-			<Card className='rounded-xl p-6' style={cardStyle}>
+			<PortalSection icon={<CreditCard />} title={label ?? t('paymentMethods.title')}>
 				<EmptyState
 					icon={<CreditCard />}
 					title={t('paymentMethods.unsupportedTitle')}
 					description={t('paymentMethods.unsupportedDescription')}
 				/>
-			</Card>
+			</PortalSection>
 		);
 	}
 
 	return (
-		<Card className='rounded-xl p-5' style={cardStyle}>
+		<PortalSection
+			flush
+			icon={<CreditCard />}
+			title={label ?? t('paymentMethods.title')}
+			description={t('paymentMethods.description')}
+			action={
+				addProvider ? (
+					<Button size='sm' onClick={() => addMethod(addProvider)} isLoading={isAdding} prefixIcon={<Plus />}>
+						{t('paymentMethods.add')}
+					</Button>
+				) : undefined
+			}>
 			<CheckoutLinkDialog url={setupUrl} purpose='setup' onOpenChange={(open) => !open && setSetupUrl(null)} />
 			<Dialog
 				isOpen={pendingDelete !== null}
@@ -259,32 +248,16 @@ const PaymentMethodsWidget = ({ label }: PaymentMethodsWidgetProps) => {
 				</div>
 			</Dialog>
 
-			<div className='flex items-start justify-between gap-4 mb-4'>
-				<div>
-					<h3 className='text-sm font-medium mb-0.5' style={{ color: 'var(--portal-text-primary, #09090b)' }}>
-						{label ?? t('paymentMethods.title')}
-					</h3>
-					<p className='text-sm' style={{ color: 'var(--portal-text-secondary, #71717a)' }}>
-						{t('paymentMethods.description')}
-					</p>
-				</div>
-				{addProvider && (
-					<Button size='sm' onClick={() => addMethod(addProvider)} isLoading={isAdding} prefixIcon={<Plus />} className='shrink-0'>
-						{t('paymentMethods.add')}
-					</Button>
-				)}
-			</div>
-
 			{isLoading || integrationsLoading ? (
-				<div className='animate-pulse space-y-3'>
+				<div className='animate-pulse space-y-3 px-5 py-4'>
 					{[1, 2].map((i) => (
-						<div key={i} className='h-12 bg-zinc-100 rounded'></div>
+						<div key={i} className='h-12 rounded bg-surface-subtle'></div>
 					))}
 				</div>
 			) : isError ? (
 				<EmptyState icon={<AlertTriangle />} title={t('errors.loadPaymentMethods')} description={t('paymentMethods.retryHint')} />
 			) : hasAnyMethod || groups.some((g) => g.error) ? (
-				<div className='divide-y' style={{ borderColor: 'var(--portal-border, #E9E9E9)' }}>
+				<PortalRows>
 					{groups.map((group) => (
 						<ProviderGroup key={group.provider} group={group}>
 							{group.items.map((method) => (
@@ -299,11 +272,11 @@ const PaymentMethodsWidget = ({ label }: PaymentMethodsWidgetProps) => {
 							))}
 						</ProviderGroup>
 					))}
-				</div>
+				</PortalRows>
 			) : (
 				<EmptyState icon={<CreditCard />} title={t('paymentMethods.emptyTitle')} description={t('paymentMethods.emptyDescription')} />
 			)}
-		</Card>
+		</PortalSection>
 	);
 };
 

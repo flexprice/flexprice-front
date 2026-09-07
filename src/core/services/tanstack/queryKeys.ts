@@ -32,6 +32,8 @@ export const INVOICE_QUERY_KEYS = [
 	'invoice',
 	// CustomerSubscriptionDetailsPage — invoice preview for the current period
 	'subscriptionInvoices',
+	// EditInvoicePage — invoice loaded into the edit form
+	'invoiceEdit',
 ] as const;
 
 /** Refetch every subscription surface. Use after any subscription mutation. */

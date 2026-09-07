@@ -12,11 +12,13 @@ import CreditBalance from '../components/CreditBalance';
 
 interface CreditBalanceContainerProps {
 	className?: string;
-	/** Header-right slot, used by the portal to surface Top up beside the balance. */
+	/** Header-right slot, beside the wallet's name. */
 	actions?: ReactNode;
+	/** On the balance label's row, under the header rule. */
+	balanceAction?: ReactNode;
 }
 
-const CreditBalanceContainer = ({ className, actions }: CreditBalanceContainerProps) => {
+const CreditBalanceContainer = ({ className, actions, balanceAction }: CreditBalanceContainerProps) => {
 	const { t } = useTranslation('customer-portal');
 
 	const {
@@ -45,7 +47,7 @@ const CreditBalanceContainer = ({ className, actions }: CreditBalanceContainerPr
 	const isLoading = walletsLoading || (!!wallet?.id && balanceLoading);
 	const data = wallet ? adaptCreditBalance(wallet, realtimeBalance) : null;
 
-	return <CreditBalance wallet={data} isLoading={isLoading} className={className} actions={actions} />;
+	return <CreditBalance wallet={data} isLoading={isLoading} className={className} actions={actions} balanceAction={balanceAction} />;
 };
 
 export default CreditBalanceContainer;

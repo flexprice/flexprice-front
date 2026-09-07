@@ -1,105 +1,103 @@
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { useState } from 'react';
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { MemoryRouter, useLocation } from 'react-router';
-import { describe, it, expect, vi, beforeEach, afterEach, beforeAll } from 'vitest';
-import { SidebarProvider } from '@/components/ui';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { MemoryRouter } from 'react-router';
 import SidebarItem from './SidebarItem';
+import { SidebarProvider } from '@/components/ui';
 
-// jsdom does not implement matchMedia; useIsMobile() (pulled in transitively via
-// SidebarProvider) calls it on mount, so every test in this file needs a stub.
-beforeAll(() => {
-	window.matchMedia =
-		window.matchMedia ||
-		((query: string) =>
-			({
-				matches: false,
-				media: query,
-				onchange: null,
-				addListener: () => {},
-				removeListener: () => {},
-				addEventListener: () => {},
-				removeEventListener: () => {},
-				dispatchEvent: () => false,
-			}) as unknown as MediaQueryList);
+const mockNavigate = vi.hoisted(() => vi.fn());
+
+// SidebarProvider's useIsMobile hook reads this; jsdom doesn't implement it.
+window.matchMedia =
+	window.matchMedia ||
+	((query: string) => ({
+		matches: false,
+		media: query,
+		onchange: null,
+		addListener: vi.fn(),
+		removeListener: vi.fn(),
+		addEventListener: vi.fn(),
+		removeEventListener: vi.fn(),
+		dispatchEvent: vi.fn(),
+	}));
+
+vi.mock('react-router', async () => {
+	const actual = await vi.importActual<typeof import('react-router')>('react-router');
+	return { ...actual, useNavigate: () => mockNavigate };
 });
 
-function LocationProbe() {
-	const location = useLocation();
-	return <div data-testid='pathname'>{location.pathname}</div>;
-}
+const baseItem = {
+	title: 'Product Catalog',
+	url: '/product-catalog/features',
+	items: [
+		{ title: 'Features', url: '/product-catalog/features' },
+		{ title: 'Plans', url: '/product-catalog/plan' },
+	],
+};
 
-/** Mirrors how SidebarMenu drives SidebarItem: `isOpen`/`onToggle` are controlled. */
-function ProductCatalogHarness() {
-	const [isOpen, setIsOpen] = useState(false);
-	return (
-		<>
-			<SidebarItem
-				title='Product Catalog'
-				url='/product-catalog/features'
-				isOpen={isOpen}
-				onToggle={setIsOpen}
-				items={[
-					{ title: 'Features', url: '/product-catalog/features' },
-					{ title: 'Plans', url: '/product-catalog/plan' },
-				]}
-			/>
-			<LocationProbe />
-		</>
+/** Mirrors SidebarMenu.tsx's own open/close state wiring, so a click that toggles
+ *  `isOpen` actually re-renders the Collapsible open, exposing the same timing
+ *  the real sidebar has - rendering SidebarItem with a static `isOpen` prop would
+ *  never open the section a click is meant to open. */
+const StatefulSidebarItem = ({ initialOpen = false }: { initialOpen?: boolean }) => {
+	const [isOpen, setIsOpen] = useState(initialOpen);
+	return <SidebarItem {...baseItem} isOpen={isOpen} onToggle={setIsOpen} />;
+};
+
+const renderItem = (props: { initialOpen?: boolean } = {}) =>
+	render(
+		<MemoryRouter>
+			<SidebarProvider>
+				<StatefulSidebarItem {...props} />
+			</SidebarProvider>
+		</MemoryRouter>,
 	);
-}
 
 describe('SidebarItem', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
+		mockNavigate.mockReset();
 	});
 
 	afterEach(() => {
 		vi.useRealTimers();
 	});
 
-	// Regression test for a race: the parent item's own click handler defers
-	// `navigate(item.url)` by 100ms (to let the accordion's open animation start).
-	// Clicking a specific child in that window used to still get silently
-	// overridden once the deferred navigate fired, landing the user back on the
-	// parent's default page instead of the child they picked.
-	it('does not override a child navigation made while the parent has a deferred navigate pending', () => {
-		render(
-			<MemoryRouter initialEntries={['/home']}>
-				<SidebarProvider>
-					<ProductCatalogHarness />
-				</SidebarProvider>
-			</MemoryRouter>,
-		);
+	it("cancels the parent section's delayed default-page navigation when a child link is clicked first", () => {
+		renderItem({ initialOpen: false });
 
-		// Opens the section and schedules navigate('/product-catalog/features') ~100ms out.
-		fireEvent.click(screen.getByRole('link', { name: 'Product Catalog' }));
+		// Opening the section schedules a delayed navigate to its own default page
+		// (Features).
+		act(() => {
+			fireEvent.click(screen.getByText('Product Catalog'));
+		});
 
-		// Picks a specific child before that deferred navigate fires.
-		fireEvent.click(screen.getByRole('link', { name: 'Plans' }));
+		// Before that delay elapses, the user (or a fast automated click) goes straight
+		// to a specific child instead - the section is now open, so this is reachable.
+		act(() => {
+			fireEvent.click(screen.getByText('Plans'));
+		});
 
-		// Let the parent's deferred navigate's timer elapse.
 		act(() => {
 			vi.advanceTimersByTime(150);
 		});
 
-		expect(screen.getByTestId('pathname')).toHaveTextContent('/product-catalog/plan');
+		// The stale Features navigation must not fire and clobber the Plans link's own
+		// (React Router native, not mocked) navigation.
+		expect(mockNavigate).not.toHaveBeenCalledWith('/product-catalog/features');
 	});
 
-	it('still follows through with the deferred navigate when nothing else navigated in the meantime', () => {
-		render(
-			<MemoryRouter initialEntries={['/home']}>
-				<SidebarProvider>
-					<ProductCatalogHarness />
-				</SidebarProvider>
-			</MemoryRouter>,
-		);
+	it('still navigates to the default page when nothing else is clicked before the delay', () => {
+		renderItem({ initialOpen: false });
 
-		fireEvent.click(screen.getByRole('link', { name: 'Product Catalog' }));
+		act(() => {
+			fireEvent.click(screen.getByText('Product Catalog'));
+		});
+
 		act(() => {
 			vi.advanceTimersByTime(150);
 		});
 
-		expect(screen.getByTestId('pathname')).toHaveTextContent('/product-catalog/features');
+		expect(mockNavigate).toHaveBeenCalledWith('/product-catalog/features');
 	});
 });

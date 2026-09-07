@@ -87,8 +87,10 @@
 		"emptyTitle": "لا توجد اشتراكات نشطة",
 		"emptyDescription": "ليس لديك اشتراكات نشطة في الوقت الحالي",
 		"unknownPlan": "خطة غير معروفة",
-		"nextBilling": "الفوترة التالية: {{date}}",
-		"trialEnds": "تنتهي التجربة: {{date}}"
+		"nextBilling": "الفوترة التالية {{date}}",
+		"trialEnds": "تنتهي التجربة {{date}}",
+		"count_one": "اشتراك واحد",
+		"count_other": "{{count}} اشتراكات"
 	},
 	"usage": {
 		"title": "الاستخدام",
@@ -129,7 +131,8 @@
 		"downloadInvoice": "تنزيل الفاتورة",
 		"notPayable": "هذه الفاتورة ليست في انتظار السداد.",
 		"notDownloadable": "يمكن تنزيل الفواتير النهائية فقط.",
-		"rowActions": "إجراءات الفاتورة {{invoice}}"
+		"rowActions": "إجراءات الفاتورة {{invoice}}",
+		"title": "الفواتير"
 	},
 	"wallet": {
 		"defaultName": "محفظة",
@@ -174,7 +177,7 @@
 	},
 	"topUp": {
 		"title": "إضافة أرصدة",
-		"description": "اشحن رصيدك. سيتم نقلك إلى صفحة دفع آمنة لإتمام العملية.",
+		"description": "اشحن رصيدك باستخدام خيارات الدفع المتاحة في حسابك.",
 		"creditsLabel": "الأرصدة",
 		"creditsPlaceholder": "أدخل المبلغ",
 		"chargeSummary": "سيتم خصم {{amount}}",
@@ -186,7 +189,6 @@
 		"useSavedMethod": "الدفع ببطاقتي المحفوظة ({{method}})",
 		"useSavedMethodTitle": "البطاقة المحفوظة",
 		"useSavedMethodHint": "الخصم من البطاقة المحفوظة بدل فتح صفحة دفع.",
-		"checkoutUnavailable": "الدفع عبر الإنترنت غير مُهيأ لهذا الحساب، لذا سيتم إنشاء فاتورة بدلاً من ذلك.",
 		"useSavedMethodEmptyLabel": "استخدام بطاقتي المحفوظة",
 		"savedMethodUnsupported": "مزوّد الدفع لديك لا يدعم الخصم من بطاقة محفوظة.",
 		"savedMethodNone": "لا توجد بطاقة محفوظة بعد — أضف واحدة من تبويب المدفوعات.",
@@ -257,7 +259,7 @@
 		"unsupportedDescription": "لا يوجد مزوّد دفع في هذا الحساب يدعم البطاقات المحفوظة.",
 		"rowActions": "إجراءات {{method}}",
 		"alreadyDefault": "هذه بطاقتك الافتراضية بالفعل.",
-		"setDefaultUnsupported": "مزوّد الدفع لديك لا يدعم بطاقة افتراضية.",
+		"setDefaultUnsupported": "مزوّد الدفع لديك لا يدعم تعيين بطاقة كطريقة دفع افتراضية.",
 		"expiredCannotDefault": "لا يمكن تعيين بطاقة منتهية كافتراضية."
 	},
 	"invoiceDetail": {

@@ -24,10 +24,13 @@ interface Props {
 
 const InvoiceTableMenu: FC<Props> = ({ data }) => {
 	const navigate = useNavigate();
+	const { t } = useTranslation('billing');
 	const { t: tc } = useTranslation('common');
 	const { can } = useCurrentUserPermissions();
 	const canWrite = can('invoice', 'write');
-	const writeDeniedReason = canWrite ? undefined : "You don't have permission to modify invoices";
+	const writeDeniedReason = canWrite ? undefined : t('invoices.writeDenied');
+	// PUT /invoices/:id only accepts DRAFT and FINALIZED invoices.
+	const isEditableStatus = data.invoice_status === INVOICE_STATUS.DRAFT || data.invoice_status === INVOICE_STATUS.FINALIZED;
 
 	const { mutate: triggerCommunication } = useMutation({
 		mutationFn: async (invoice_id: string) => {
@@ -99,6 +102,15 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 
 	const menuOptions: DropdownMenuOption[] = [
 		getCopyIdOption(data.id, tc, { entityType: 'Invoice' }),
+		{
+			label: t('invoices.edit.menuLabel'),
+			group: 'Actions',
+			onSelect: () => {
+				navigate(`${RouteNames.invoices}/${data.id}/edit`);
+			},
+			disabled: !canWrite || !isEditableStatus,
+			disabledReason: writeDeniedReason ?? (!isEditableStatus ? t('invoices.edit.menuDisabledStatus') : undefined),
+		},
 		{
 			label: 'Download Invoice',
 			group: 'Actions',

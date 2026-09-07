@@ -23,6 +23,7 @@ export { default as ImportExport } from './import-export/ImportExport';
 // Invoices
 export { default as AddCreditNotePage } from './invoices/AddCreditNotePage';
 export { default as CreateInvoice } from './invoices/CreateInvoice';
+export { default as EditInvoicePage } from './invoices/EditInvoicePage';
 export { default as InvoiceDetailsPage } from './invoices/InvoiceDetailsPage';
 export { default as InvoicePage } from './invoices/InvoicePage';
 

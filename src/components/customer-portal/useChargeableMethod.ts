@@ -13,12 +13,16 @@ import usePortalIntegrations from './usePortalIntegrations';
  */
 const useChargeableMethod = () => {
 	const { supports } = usePortalIntegrations();
-	const canManage = supports('payment_method_management');
+	// auto_charge as well as management: a provider can be able to charge a stored
+	// method unattended without exposing add/delete/default controls. Gating the
+	// lookup on management alone left the list unfetched, so hasChargeableMethod
+	// stayed false and auto top-up was disabled despite a chargeable card existing.
+	const canReadMethods = supports('payment_method_management') || supports('auto_charge');
 
 	const { data, isLoading } = useQuery({
 		queryKey: portalPaymentMethodsQueryKey,
 		queryFn: () => CustomerPortalApi.getPaymentMethods(),
-		enabled: canManage,
+		enabled: canReadMethods,
 	});
 
 	const chargeable: SavedPaymentMethod[] = (data?.providers ?? [])

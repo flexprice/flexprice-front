@@ -236,4 +236,20 @@ describe('InvoicesWidget', () => {
 		expect(await screen.findByText('Subtotal')).toBeInTheDocument();
 		expect(screen.getByText('Tax')).toBeInTheDocument();
 	});
+
+	// formatAmount left ₹2 where every other portal surface shows ₹2.00.
+	it('shows drawer amounts at two decimals, like the rest of the portal', async () => {
+		vi.mocked(CustomerPortalApi.getInvoice).mockResolvedValue({
+			...UNPAID,
+			currency: 'inr',
+			total: 2,
+			subtotal: 2,
+			line_items: [],
+		} as never);
+
+		renderWidget();
+		await userEvent.click(await screen.findByText('INV-000484'));
+
+		await waitFor(() => expect(screen.getAllByText(/₹2\.00/).length).toBeGreaterThan(0));
+	});
 });

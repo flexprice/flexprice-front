@@ -553,8 +553,6 @@
 		"cellEmDash": "—",
 		"cellEmpty": "--",
 		"singlePointLabel": "الاستخدام في {{date}} · {{value}}",
-		"quotaEmptyTitle": "لم يتم إعداد حصص استخدام",
-		"quotaEmptyDescription": "ستظهر الحصص عندما تتضمن خطتك ميزات مقيسة.",
 		"trendEmptyTitle": "لا يوجد استخدام بعد",
 		"trendEmptyDescription": "لم يُسجَّل أي استخدام خلال هذه الفترة.",
 		"breakdownEmptyTitle": "لا يوجد استخدام في هذه الفترة",

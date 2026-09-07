@@ -14,9 +14,18 @@ const TOKEN_STORAGE_KEY = 'flexprice.portal.sessionToken';
  *
  * Same-origin and no more exposed than the URL the token already arrives in.
  */
+/**
+ * How long a stored token stays recoverable.
+ *
+ * It exists only to survive a trip to a payment provider and back, which takes
+ * minutes. Beyond that it is a credential sitting in a shared browser profile
+ * with no reason to be there.
+ */
+const TOKEN_TTL_MS = 30 * 60 * 1000;
+
 export const rememberSessionToken = (token: string) => {
 	try {
-		localStorage.setItem(TOKEN_STORAGE_KEY, token);
+		localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify({ token, storedAt: Date.now() }));
 	} catch {
 		// Blocked storage: the customer keeps the URL token and simply loses the
 		// ability to return from a hosted checkout.
@@ -32,10 +41,31 @@ export const forgetSessionToken = () => {
 	}
 };
 
+/**
+ * The stored token, if one is still within its lifetime.
+ *
+ * Callers must only reach for this on a checkout return — see
+ * CustomerPortalWrapper. Handing it to any tokenless visit would let the next
+ * person to open the portal on a shared browser act as the previous customer.
+ */
 export const recallSessionToken = (): string | null => {
 	try {
-		return localStorage.getItem(TOKEN_STORAGE_KEY);
+		const raw = localStorage.getItem(TOKEN_STORAGE_KEY);
+		if (!raw) return null;
+		const stored = JSON.parse(raw) as { token?: string; storedAt?: number };
+		if (!stored?.token || typeof stored.storedAt !== 'number') {
+			forgetSessionToken();
+			return null;
+		}
+		if (Date.now() - stored.storedAt > TOKEN_TTL_MS) {
+			forgetSessionToken();
+			return null;
+		}
+		return stored.token;
 	} catch {
+		// Unreadable or from an older format that stored the bare token: drop it
+		// rather than trusting a credential we cannot date.
+		forgetSessionToken();
 		return null;
 	}
 };

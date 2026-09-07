@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, FC, ReactNode } from 'r
 import { useQuery } from '@tanstack/react-query';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 import { PortalConfig, DEFAULT_PORTAL_CONFIG } from '@/types/dto/PortalConfig';
+import { isColorDark, portalTokenOverrides, PORTAL_TOKEN_NAMES } from '@/components/customer-portal/portalTheme';
 
 interface PortalConfigContextProps {
 	config: PortalConfig;
@@ -16,16 +17,6 @@ interface PortalConfigProviderProps {
 }
 
 /** Returns true if the hex color has low perceived luminance (i.e. is "dark"). */
-function isColorDark(hex: string): boolean {
-	const clean = hex.replace('#', '');
-	if (clean.length < 6) return false;
-	const r = parseInt(clean.slice(0, 2), 16);
-	const g = parseInt(clean.slice(2, 4), 16);
-	const b = parseInt(clean.slice(4, 6), 16);
-	const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-	return luminance < 0.5;
-}
-
 /**
  * Fetches and provides the resolved PortalConfig for the current tenant.
  * Also injects theme CSS variables onto document.documentElement, and
@@ -56,39 +47,35 @@ export const PortalConfigProvider: FC<PortalConfigProviderProps> = ({ token, chi
 	// Inject theme CSS variables — cleanup on unmount
 	useEffect(() => {
 		const { theme } = config;
-		if (!theme) return; // No theme configured — portal keeps its default light-mode look
+		const root = document.documentElement;
+
+		// The app's design tokens are written on every render, themed or not: portal
+		// components style through them with ordinary utility classes, so an unthemed
+		// portal still needs its own greys rather than the dashboard's. See portalTheme.
+		const tokens = portalTokenOverrides(theme);
+		Object.entries(tokens).forEach(([name, value]) => root.style.setProperty(name, value));
 
 		// Guard each value: only write the var if the string is non-empty.
 		// An empty field must NOT override the CSS fallback values.
 		const set = (varName: string, value?: string) => {
-			if (value) document.documentElement.style.setProperty(varName, value);
+			if (value) root.style.setProperty(varName, value);
 		};
 
-		set('--portal-primary', theme.primary_color);
-		set('--portal-bg', theme.background_color);
-		set('--portal-surface', theme.surface_color);
-		set('--portal-border', theme.border_color);
-		set('--portal-font', theme.font_family);
+		// --portal-* stays for the handful of places that need the tenant's accent
+		// directly, and for the chart molecule's grid colour.
+		set('--portal-primary', theme?.primary_color);
+		set('--portal-font', theme?.font_family);
 
-		// Auto-derive text colors from background brightness.
-		// Tenants supply brand colors only; text adapts to dark/light automatically.
-		if (theme.background_color) {
+		if (theme?.background_color) {
 			const dark = isColorDark(theme.background_color);
-			document.documentElement.style.setProperty('--portal-text-primary', dark ? '#ffffff' : '#09090b');
-			document.documentElement.style.setProperty('--portal-text-secondary', dark ? '#a5a5a5' : '#71717a');
-			// Chart-specific: grid lines and card bg inside the chart molecule
-			document.documentElement.style.setProperty('--portal-chart-grid', dark ? 'rgba(255,255,255,0.06)' : 'rgba(243,244,246,0.8)');
+			root.style.setProperty('--portal-chart-grid', dark ? 'rgba(255,255,255,0.06)' : 'rgba(243,244,246,0.8)');
 		}
 
 		return () => {
-			document.documentElement.style.removeProperty('--portal-primary');
-			document.documentElement.style.removeProperty('--portal-bg');
-			document.documentElement.style.removeProperty('--portal-surface');
-			document.documentElement.style.removeProperty('--portal-border');
-			document.documentElement.style.removeProperty('--portal-font');
-			document.documentElement.style.removeProperty('--portal-text-primary');
-			document.documentElement.style.removeProperty('--portal-text-secondary');
-			document.documentElement.style.removeProperty('--portal-chart-grid');
+			PORTAL_TOKEN_NAMES.forEach((name) => root.style.removeProperty(name));
+			root.style.removeProperty('--portal-primary');
+			root.style.removeProperty('--portal-font');
+			root.style.removeProperty('--portal-chart-grid');
 		};
 	}, [config.theme]);
 

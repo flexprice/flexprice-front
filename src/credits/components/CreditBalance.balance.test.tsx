@@ -17,12 +17,14 @@ describe('CreditBalance formatting', () => {
 	// The sign belongs outside the currency symbol: -$17,681.62, never $-17,681.62.
 	it('leads with the monetary value at two decimals, sign before the symbol', () => {
 		render(<CreditBalance wallet={wallet({ balance: -17681.6234 })} />);
-		expect(screen.getByText((_, el) => el?.textContent === '-$17,681.62')).toBeInTheDocument();
+		// Scoped to the paragraph: the figure now shares a row with the top-up action,
+		// so a bare textContent match would also hit that wrapper.
+		expect(screen.getByText((_, el) => el?.tagName === 'P' && el.textContent === '-$17,681.62')).toBeInTheDocument();
 	});
 
 	it('renders a positive balance without a sign', () => {
 		render(<CreditBalance wallet={wallet({ balance: 100.5 })} />);
-		expect(screen.getByText((_, el) => el?.textContent === '$100.50')).toBeInTheDocument();
+		expect(screen.getByText((_, el) => el?.tagName === 'P' && el.textContent === '$100.50')).toBeInTheDocument();
 	});
 
 	// A negative balance is a state the customer must be able to name, not infer.
@@ -39,5 +41,20 @@ describe('CreditBalance formatting', () => {
 	it('renders a header action when one is supplied', () => {
 		render(<CreditBalance wallet={wallet()} actions={<button>Top up</button>} />);
 		expect(screen.getByRole('button', { name: 'Top up' })).toBeInTheDocument();
+	});
+
+	// The primary action belongs with the balance it changes, not up in the header
+	// competing with the wallet's name.
+	it("renders the balance action on the balance label's row, above the amount", () => {
+		render(<CreditBalance wallet={wallet()} balanceAction={<button>Add credits</button>} />);
+		const label = screen.getByText('Balance');
+		const button = screen.getByRole('button', { name: 'Add credits' });
+
+		// Same row as the label, so it has the header rule to align against rather
+		// than floating in the empty right half of a full-width card.
+		expect(label.parentElement).toBe(button.closest('div')?.parentElement);
+		// And the amount reads below that row, not beside the button.
+		const amount = screen.getByText((_, el) => el?.tagName === 'P' && el.textContent === '$100.50');
+		expect(label.parentElement?.nextElementSibling).toBe(amount);
 	});
 });

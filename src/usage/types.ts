@@ -28,7 +28,6 @@ export interface UsageQuotaProps {
 	items: UsageQuotaItem[];
 	label?: string;
 	className?: string;
-	emptyAction?: EmptyStateAction;
 }
 
 // ── MetricCards ──────────────────────────────────────────────────────────────
