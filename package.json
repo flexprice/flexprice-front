@@ -142,6 +142,7 @@
     ]
   },
   "overrides": {
+    "@radix-ui/react-dismissable-layer": "1.1.19",
     "@storybook/addon-actions": {
       "uuid": "^11.1.1"
     },
