@@ -10,7 +10,7 @@ import AddonApi from '@/api/AddonApi';
 import { getTotalPayableTextWithCoupons } from '@/utils/common/helper_functions';
 import { Price, PRICE_TYPE } from '@/models/Price';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { getCurrentPriceAmount, ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
+import { getCurrentPriceAmount, overrideLineItemsToMap, ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import { Coupon } from '@/models/Coupon';
 import { filterAddonPricesForSubscription } from '@/utils/subscription/addon_commitment_helpers';
 
@@ -151,7 +151,11 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 				render: (row) => {
 					const addonDetails = getAddonDetails(row.addon_id);
 					const prices = filterAddonPricesForSubscription(addonDetails?.prices || [], billingPeriod, currency, billingPeriodCount);
-					return <span>{formatAddonCharges(prices, priceOverrides, coupons, t)}</span>;
+					// Each addon row carries its own overrides (set via "Override Price" in the addon
+					// editor) - the shared `priceOverrides` prop is keyed for the base plan's prices and
+					// never covers per-addon overrides, so it must not be the only source used here.
+					const rowOverrides = { ...priceOverrides, ...overrideLineItemsToMap(row.override_line_items) };
+					return <span>{formatAddonCharges(prices, rowOverrides, coupons, t)}</span>;
 				},
 			},
 			// {

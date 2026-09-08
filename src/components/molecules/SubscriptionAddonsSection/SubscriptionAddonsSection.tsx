@@ -9,7 +9,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { BsThreeDots } from 'react-icons/bs';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { ADDON_ASSOCIATION_STATUS } from '@/models/AddonAssociation';
-import { AddonAssociationResponse, SubscriptionResponse } from '@/types/dto/Subscription';
+import { AddonAssociationResponse, SubscriptionLineItemListItem, SubscriptionResponse } from '@/types/dto/Subscription';
+import { EXPAND } from '@/models';
 import { ADDON_PRORATION_BEHAVIOR } from '@/types/dto/Addon';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { toSentenceCase, copyToClipboard } from '@/utils/common/helper_functions';
@@ -192,7 +193,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 	// Fetch active addons (backend returns { items, pagination })
 	const {
 		data: addonAssociationsResponse,
-		isLoading,
+		isLoading: isLoadingAddons,
 		isError,
 	} = useQuery({
 		queryKey: ['subscriptionActiveAddons', subscriptionId],
@@ -211,6 +212,55 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 		const response = addonAssociationsResponse as any;
 		return response.items ?? response ?? [];
 	}, [addonAssociationsResponse]);
+
+	// The Charges column must reflect each addon's actual subscription line items — which
+	// carry any per-subscription price override — rather than the addon's catalog default
+	// prices (`association.addon.prices`, which never change after an override). Fetched
+	// once for the whole subscription and grouped client-side to avoid one request per row.
+	// Query key matches what ConfigureAddonDialog already refetches on every line-item
+	// mutation (see its `invalidateAddonQueries`), so an override there updates this table too.
+	const {
+		data: addonLineItems,
+		isLoading: isLoadingAddonLineItems,
+		isError: isErrorAddonLineItems,
+	} = useQuery({
+		queryKey: ['subscriptionAddonLineItems', subscriptionId],
+		queryFn: async () => {
+			// A page size this large covers virtually every subscription in one request; the loop
+			// below only makes a second request on the rare subscription that actually exceeds it,
+			// so this stays a single round trip for the common case while still being correct for
+			// subscriptions with more active line items than fit on one page.
+			const pageSize = 1000;
+			const items: SubscriptionLineItemListItem[] = [];
+			let offset = 0;
+			while (true) {
+				const page = await SubscriptionApi.searchSubscriptionLineItems({
+					subscription_ids: [subscriptionId],
+					active_filter: true,
+					expand: `${EXPAND.PRICES}.${EXPAND.METERS}`,
+					limit: pageSize,
+					offset,
+				});
+				items.push(...page.items);
+				const total = page.pagination?.total ?? items.length;
+				if (items.length >= total || page.items.length === 0) break;
+				offset += pageSize;
+			}
+			return items;
+		},
+		enabled: !!subscriptionId,
+	});
+
+	const pricesByAddonAssociationId = useMemo<Record<string, Price[]>>(() => {
+		const grouped: Record<string, Price[]> = {};
+		for (const item of addonLineItems ?? []) {
+			if (!item.addon_association_id || !item.price) continue;
+			(grouped[item.addon_association_id] ??= []).push(item.price);
+		}
+		return grouped;
+	}, [addonLineItems]);
+
+	const isLoading = isLoadingAddons || isLoadingAddonLineItems;
 
 	const processedAddonAssociations = useMemo<AddonAssociationWithStatus[]>(() => {
 		return addonAssociations.map((association) => {
@@ -310,7 +360,12 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 			{
 				title: 'Charges',
 				render: (row) => {
-					const prices = row.addon?.prices || [];
+					// Falls back to the catalog default only if this association genuinely has no
+					// matching line items — the common case reads the real, possibly-overridden line
+					// item prices grouped above. When the line-items fetch itself failed, showing the
+					// catalog price would silently pass off a possibly-stale number as current, so
+					// show nothing instead.
+					const prices = pricesByAddonAssociationId[row.id] ?? (isErrorAddonLineItems ? [] : row.addon?.prices) ?? [];
 					return <span>{formatAddonCharges(prices)}</span>;
 				},
 			},
@@ -381,7 +436,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 				},
 			},
 		],
-		[dropdownOpen, handleCancel, readOnly, canWriteAddon, t],
+		[dropdownOpen, handleCancel, readOnly, canWriteAddon, t, pricesByAddonAssociationId, isErrorAddonLineItems],
 	);
 
 	const addButton = readOnly ? undefined : canWriteAddon ? (
@@ -428,7 +483,9 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 					billingPeriod={subscriptionDetails?.billing_period}
 					billingPeriodCount={
 						subscriptionBillingPeriodCount ??
-						(subscriptionContextResolved ? undefined : (subscriptionDetailsFetched as SubscriptionResponse | undefined)?.billing_period_count)
+						(subscriptionContextResolved
+							? undefined
+							: (subscriptionDetailsFetched as SubscriptionResponse | undefined)?.billing_period_count)
 					}
 					currency={subscriptionDetails?.currency}
 					currentPeriodEndIso={subscriptionDetails?.current_period_end}

@@ -1,11 +1,22 @@
 import { Button } from '@/components/atoms';
 import OnboardingLandingPanel from './OnboardingLandingPanel';
-import { OnboardingOrgStep, OnboardingReferralStep } from './steps';
+import { OnboardingOrgStep, OnboardingOrgUrlStep, OnboardingReferralStep } from './steps';
 import useOnboardingTenant from './useOnboardingTenant';
 
 const OnboardingTenant = () => {
-	const { t, orgName, setOrgName, referralSource, setReferralSource, errors, isPending, showFullScreenLoader, handleContinue } =
-		useOnboardingTenant();
+	const {
+		t,
+		orgName,
+		setOrgName,
+		orgUrl,
+		setOrgUrl,
+		referralSource,
+		setReferralSource,
+		errors,
+		isPending,
+		showFullScreenLoader,
+		handleContinue,
+	} = useOnboardingTenant();
 
 	const formContent = showFullScreenLoader ? (
 		<div
@@ -21,6 +32,7 @@ const OnboardingTenant = () => {
 			<p className='mb-10 whitespace-nowrap text-center text-content-tertiary'>{t('tenantSetup.welcomeSubtext')}</p>
 			<div className='space-y-6'>
 				<OnboardingOrgStep orgName={orgName} error={errors.orgName} disabled={isPending} onOrgNameChange={setOrgName} />
+				<OnboardingOrgUrlStep orgUrl={orgUrl} error={errors.orgUrl} disabled={isPending} onOrgUrlChange={setOrgUrl} />
 				<OnboardingReferralStep
 					referralSource={referralSource}
 					error={errors.referralSource}

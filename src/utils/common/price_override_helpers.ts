@@ -4,6 +4,7 @@ import { PriceBucketSize } from '@/models/Meter';
 import { BUCKET_SIZE_NONE } from '@/constants/constants';
 import { LineItemCommitmentConfig } from '@/types/dto/LineItemCommitmentConfig';
 import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
+import type { OverrideLineItemRequest } from '@/types/dto/Subscription';
 
 /**
  * Interface for line item overrides that will be sent to the backend
@@ -214,6 +215,30 @@ export const updatePriceOverride = (
 		...overrides,
 		[priceId]: merged,
 	};
+};
+
+/**
+ * Rehydrate an ExtendedPriceOverride map from a stored backend-shaped override array,
+ * e.g. an addon's own `override_line_items` set when it was added to a subscription.
+ */
+export const overrideLineItemsToMap = (items?: OverrideLineItemRequest[]): Record<string, ExtendedPriceOverride> => {
+	const map: Record<string, ExtendedPriceOverride> = {};
+	(items ?? []).forEach((o) => {
+		const isSlab = o.billing_model === BILLING_MODEL.TIERED && o.tier_mode === TIER_MODE.SLAB;
+		map[o.price_id] = {
+			price_id: o.price_id,
+			...(o.amount !== undefined ? { amount: String(o.amount) } : {}),
+			...(o.quantity !== undefined ? { quantity: o.quantity } : {}),
+			...(o.billing_model ? { billing_model: isSlab ? ('SLAB_TIERED' as const) : o.billing_model } : {}),
+			...(o.tier_mode && !isSlab ? { tier_mode: o.tier_mode } : {}),
+			...(o.tiers ? { tiers: o.tiers } : {}),
+			...(o.transform_quantity ? { transform_quantity: o.transform_quantity } : {}),
+			...(o.bucket_size ? { bucket_size: o.bucket_size } : {}),
+			...(o.price_unit_amount ? { price_unit_amount: o.price_unit_amount } : {}),
+			...(o.price_unit_tiers ? { price_unit_tiers: o.price_unit_tiers } : {}),
+		};
+	});
+	return map;
 };
 
 /**

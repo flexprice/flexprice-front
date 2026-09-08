@@ -24,5 +24,6 @@ export const findBannedOrgNameWord = (name: string): string | undefined => {
 
 export type OnboardingFormErrors = {
 	orgName?: string;
+	orgUrl?: string;
 	referralSource?: string;
 };

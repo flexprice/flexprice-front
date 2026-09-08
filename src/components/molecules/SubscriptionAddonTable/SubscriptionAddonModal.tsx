@@ -1,5 +1,4 @@
 import { AddAddonToSubscriptionRequest, AddonResponse } from '@/types/dto/Addon';
-import { OverrideLineItemRequest } from '@/types/dto/Subscription';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Button, DatePicker } from '@/components/atoms';
 import Dialog from '@/components/atoms/Dialog';
@@ -8,11 +7,12 @@ import AddonApi from '@/api/AddonApi';
 import { Select } from '@/components/atoms';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import { ColumnData, FlexpriceTable } from '@/components/molecules';
-import { BILLING_MODEL, Price, PRICE_TYPE, TIER_MODE } from '@/models/Price';
+import { Price, PRICE_TYPE } from '@/models/Price';
 import { BILLING_PERIOD } from '@/constants/constants';
 import {
 	ExtendedPriceOverride,
 	getLineItemOverrides,
+	overrideLineItemsToMap,
 	removePriceOverride,
 	updatePriceOverride,
 } from '@/utils/common/price_override_helpers';
@@ -47,27 +47,6 @@ interface FormErrors {
 
 type AddonChargeRow = {
 	price: Price;
-};
-
-/** Rehydrate the ExtendedPriceOverride map from a stored backend-shaped override array (edit mode). */
-const backendOverridesToMap = (items?: OverrideLineItemRequest[]): Record<string, ExtendedPriceOverride> => {
-	const map: Record<string, ExtendedPriceOverride> = {};
-	(items ?? []).forEach((o) => {
-		const isSlab = o.billing_model === BILLING_MODEL.TIERED && o.tier_mode === TIER_MODE.SLAB;
-		map[o.price_id] = {
-			price_id: o.price_id,
-			...(o.amount !== undefined ? { amount: String(o.amount) } : {}),
-			...(o.quantity !== undefined ? { quantity: o.quantity } : {}),
-			...(o.billing_model ? { billing_model: isSlab ? ('SLAB_TIERED' as const) : o.billing_model } : {}),
-			...(o.tier_mode && !isSlab ? { tier_mode: o.tier_mode } : {}),
-			...(o.tiers ? { tiers: o.tiers } : {}),
-			...(o.transform_quantity ? { transform_quantity: o.transform_quantity } : {}),
-			...(o.bucket_size ? { bucket_size: o.bucket_size } : {}),
-			...(o.price_unit_amount ? { price_unit_amount: o.price_unit_amount } : {}),
-			...(o.price_unit_tiers ? { price_unit_tiers: o.price_unit_tiers } : {}),
-		};
-	});
-	return map;
 };
 
 const SubscriptionAddonModal: React.FC<Props> = ({
@@ -113,7 +92,7 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 				// Find addon details for editing
 				const addonDetails = addons.find((addon) => addon.id === data.addon_id) ?? null;
 				setSelectedAddonDetails(addonDetails);
-				setOverriddenPrices(backendOverridesToMap(data.override_line_items));
+				setOverriddenPrices(overrideLineItemsToMap(data.override_line_items));
 			} else {
 				setFormData({
 					...getEmptyAddon(),

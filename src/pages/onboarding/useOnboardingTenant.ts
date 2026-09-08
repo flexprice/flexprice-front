@@ -16,6 +16,7 @@ const useOnboardingTenant = () => {
 	const { t } = useTranslation('common');
 	const { user, loading: userLoading } = useUser();
 	const [orgName, setOrgName] = useState('');
+	const [orgUrl, setOrgUrl] = useState('');
 	const [referralSource, setReferralSource] = useState('');
 	const [errors, setErrors] = useState<OnboardingFormErrors>({});
 
@@ -35,13 +36,14 @@ const useOnboardingTenant = () => {
 					...tenant?.metadata,
 					[TenantMetadataKey.ONBOARDING_COMPLETED]: 'true',
 					onboarding_referral_source: referralSource,
+					onboarding_organization_url: orgUrl.trim(),
 				},
 			});
 
 			// Telemetry must not block dashboard navigation after a successful tenant update.
 			void OnboardingApi.recordOnboardingData({
 				orgName: orgName.trim(),
-				orgUrl: '',
+				orgUrl: orgUrl.trim(),
 				website: '',
 				role: '',
 				teamSize: '',
@@ -81,6 +83,8 @@ const useOnboardingTenant = () => {
 			}
 		}
 
+		if (!orgUrl.trim()) next.orgUrl = t('tenantSetup.orgUrlRequired');
+
 		if (!referralSource) next.referralSource = t('tenantSetup.referralRequired');
 
 		setErrors(next);
@@ -96,6 +100,8 @@ const useOnboardingTenant = () => {
 		t,
 		orgName,
 		setOrgName,
+		orgUrl,
+		setOrgUrl,
 		referralSource,
 		setReferralSource,
 		errors,
