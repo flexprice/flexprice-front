@@ -940,7 +940,10 @@
 			"selectFeature": "يُرجى اختيار ميزة",
 			"invalidFeatureType": "نوع الميزة غير صالح",
 			"featureAlreadyAdded": "هذه الميزة مضافة مسبقًا",
-			"addAtLeastOne": "يُرجى إضافة استحقاق واحد على الأقل"
+			"addAtLeastOne": "يُرجى إضافة استحقاق واحد على الأقل",
+			"allowanceRequired": "Enter an allowance",
+			"allowancePositive": "Allowance must be greater than zero",
+			"durationRequired": "Enter how often the allowance refreshes"
 		},
 		"errors": {
 			"entityIdRequired": "معرّف الكيان مطلوب"
@@ -969,7 +972,43 @@
 			"unlimitedDisplay": "غير محدود",
 			"calculatorAriaLabel": "آلة حاسبة للقيمة المعروضة",
 			"unitsFallback": "وحدات",
-			"configValueRequired": "كائن JSON صالح مطلوب لميزات الإعداد"
+			"configValueRequired": "كائن JSON صالح مطلوب لميزات الإعداد",
+			"includedLabel": "How much is included?",
+			"modeRecurringLabel": "A recurring allowance",
+			"modeRecurringDescription": "Refreshes on its own schedule — hourly, daily or weekly",
+			"modePeriodLabel": "Once per billing period",
+			"modePeriodDescription": "One allowance for the whole cycle",
+			"modeUnlimitedLabel": "Unlimited",
+			"modeUnlimitedDescription": "Never billed for this feature",
+			"allowanceLabel": "Allowance",
+			"measureQuantity": "units",
+			"measureAmount": "currency",
+			"measureQuantityDescription": "Counted in raw meter units.",
+			"measureAmountDescription": "Counted as money, priced through the billing pipeline.",
+			"refreshesEveryLabel": "Refreshes every",
+			"durationHour": "hour",
+			"durationDay": "day",
+			"durationWeek": "week",
+			"windowStartsLabel": "Window starts",
+			"windowStartsFirstUsage": "On first use",
+			"windowStartsFirstUsageDescription": "A rolling window anchored to the customer's first event",
+			"windowStartsUnitStart": "At the start of each {{unit}}",
+			"windowStartsUnitStartDescription": "Snaps to the calendar boundary",
+			"advancedLabel": "Advanced",
+			"stackingLabel": "Stacking with other allowances",
+			"stackingAdditive": "Combine into one pool",
+			"stackingAdditiveDescription": "Quotas from the plan and any add-ons sum into a single window",
+			"stackingParallel": "Keep as separate allowances",
+			"stackingParallelDescription": "Each source gets its own independent window",
+			"overageHint": "Usage beyond the allowance is billed at the plan's usage price. Allowances never block requests.",
+			"previewTitle": "What this produces",
+			"previewWindowsPerCycle": "{{count}} windows per cycle",
+			"previewSingleWindow": "1 window per cycle",
+			"previewRecurringFoot": "Up to {{total}} across a 30-day cycle, but only {{quota}} available at a time.",
+			"previewPeriodFoot": "One allowance of {{quota}} for the whole billing period.",
+			"previewUnlimitedFoot": "No ceiling — usage is tracked but never billed.",
+			"grantUnavailable": "Recurring allowances are unavailable for this feature",
+			"durationBillingPeriod": "billing period"
 		},
 		"displayCalculator": {
 			"titleFallback": "القيمة المعروضة",
@@ -1002,7 +1041,9 @@
 			"originalBooleanPrefix": "الأصلي:",
 			"cancel": "إلغاء",
 			"resetToDefault": "إعادة للافتراضي",
-			"saveOverride": "حفظ التجاوز"
+			"saveOverride": "حفظ التجاوز",
+			"planAllowance": "Plan allowance: {{value}}",
+			"allowanceHelp": "Overriding this replaces the plan's allowance for this customer only."
 		},
 		"overridesTable": {
 			"columnFeatureName": "اسم الميزة",
@@ -1024,7 +1065,26 @@
 			"unlimited": "غير محدود",
 			"enabled": "مفعّل",
 			"disabled": "معطّل",
-			"unknownFeature": "ميزة غير معروفة"
+			"unknownFeature": "ميزة غير معروفة",
+			"tooltipAllowance": "Allowance: {{from}} → {{to}}"
+		},
+		"allowance": {
+			"unlimited": "Unlimited",
+			"perPeriod": "{{amount}} / {{period}}",
+			"separateAllowances": "separate",
+			"backedByGrant": "grant",
+			"backedByLegacy": "legacy"
+		},
+		"grantState": {
+			"columnUsage": "Usage",
+			"notStarted": "— / {{quota}} · starts on first use",
+			"unlimited": "Unlimited · {{usage}} used",
+			"ofQuota": "{{usage}} / {{quota}}",
+			"resetsAt": "resets {{time}}",
+			"windowClosed": "window closed",
+			"overBy": "over by {{amount}} · billed at the plan's usage price",
+			"asOf": "as of {{time}}",
+			"noAllowance": "not metered"
 		}
 	},
 	"premiumFeature": {

@@ -1,3 +1,4 @@
+import { GrantState } from './Entitlement';
 import { JsonObject } from '@/types/common';
 import { BaseModel } from './base';
 import Feature from './Feature';
@@ -19,6 +20,8 @@ interface CustomerUsage extends BaseModel {
 	readonly is_soft_limit: boolean;
 	readonly next_usage_reset_at: string | null;
 	readonly sources: EntitlementSource[];
+	/** Per-window ledger for grant-backed features; absent for legacy entitlements. */
+	readonly grant_state?: GrantState;
 }
 
 export interface EntitlementSource {

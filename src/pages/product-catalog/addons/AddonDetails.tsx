@@ -36,13 +36,12 @@ import { Card } from '@/components/atoms';
 import formatChips from '@/utils/common/format_chips';
 import { ChargeValueCell } from '@/components/molecules';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { FEATURE_TYPE } from '@/models/Feature';
 import { getFeatureTypeChips } from '@/components/molecules/CustomerUsageTable/CustomerUsageTable';
-import { formatAmount } from '@/components/atoms/Input/Input';
-import { Entitlement } from '@/models/Entitlement';
 import { ENTITY_STATUS } from '@/models';
 import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import { EntitlementResponse } from '@/types/dto';
+import type { TFunction } from 'i18next';
+import { formatAllowanceValue, formatAllowanceReset, isParallelAllowance } from '@/utils/entitlement/allowanceLabel';
 
 const formatBillingPeriod = (billingPeriod: string) => {
 	switch (billingPeriod.toUpperCase()) {
@@ -180,36 +179,9 @@ const getChargeColumns = (naLabel: string, handlers: ChargeActionHandlers): Colu
 	},
 ];
 
-const getFeatureValue = (entitlement: Entitlement, unlimited: string, unitLabel: string, unitsLabel: string) => {
-	const value = entitlement.usage_limit?.toFixed() || '';
-
-	switch (entitlement.feature_type) {
-		case FEATURE_TYPE.STATIC:
-			return entitlement.static_value;
-		case FEATURE_TYPE.METERED: {
-			const unitPlural = entitlement.feature?.unit_plural || unitsLabel;
-			const unitSingular = entitlement.feature?.unit_singular || unitLabel;
-			return (
-				<span className='flex items-end gap-1'>
-					{formatAmount(value || unlimited)}
-					<span className='text-content-slate-muted text-sm font-normal font-sans'>
-						{value ? (Number(value) > 0 ? unitPlural : unitSingular) : unitPlural}
-					</span>
-				</span>
-			);
-		}
-		case FEATURE_TYPE.BOOLEAN:
-			return entitlement.is_enabled ? 'Yes' : 'No';
-		default:
-			return '--';
-	}
-};
-
 const getEntitlementColumns = (
 	_addonId: string,
-	unlimited: string,
-	unitLabel: string,
-	unitsLabel: string,
+	t: TFunction<'catalog'>,
 	canWriteEntitlement: boolean,
 	entitlementWriteDeniedTooltip: string,
 ): ColumnData<EntitlementResponse>[] => [
@@ -228,7 +200,18 @@ const getEntitlementColumns = (
 	{
 		title: 'Value',
 		render(row) {
-			return getFeatureValue(row, unlimited, unitLabel, unitsLabel);
+			return (
+				<span className='flex items-center gap-2'>
+					<span>{formatAllowanceValue(row, t)}</span>
+					{isParallelAllowance(row) && <Chip variant='default' label={t('entitlements.allowance.separateAllowances')} />}
+				</span>
+			);
+		},
+	},
+	{
+		title: 'Usage Reset',
+		render(row) {
+			return <span className='capitalize'>{formatAllowanceReset(row, t)}</span>;
 		},
 	},
 	{
@@ -533,14 +516,7 @@ const AddonDetails = () => {
 						<FlexpriceTable
 							showEmptyRow
 							data={addonData.entitlements || []}
-							columns={getEntitlementColumns(
-								addonData.id,
-								t('common:labels.unlimited'),
-								t('catalog:features.form.unitDefault'),
-								t('catalog:features.form.unitsDefault'),
-								canWriteEntitlement,
-								t('catalog:plans.entitlementsTab.writeDeniedTooltip'),
-							)}
+							columns={getEntitlementColumns(addonData.id, t, canWriteEntitlement, t('catalog:plans.entitlementsTab.writeDeniedTooltip'))}
 						/>
 					</Card>
 				) : (

@@ -2,6 +2,10 @@ import {
 	Entitlement,
 	ENTITLEMENT_ENTITY_TYPE,
 	ENTITLEMENT_USAGE_RESET_PERIOD,
+	ENTITLEMENT_GRANT_MEASURE,
+	ENTITLEMENT_GRANT_DURATION_UNIT,
+	ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR,
+	ENTITLEMENT_AGGREGATION_MODE,
 	Pagination,
 	Plan,
 	Addon,
@@ -68,6 +72,16 @@ export interface CreateEntitlementRequest {
 	parent_entitlement_id?: string;
 	start_date?: string;
 	end_date?: string;
+
+	// --- Grant config ---
+	// All-or-nothing on metered features. Omit `grant_quota` (with a
+	// subscription_period duration) for an unlimited allowance.
+	grant_measure?: ENTITLEMENT_GRANT_MEASURE;
+	grant_quota?: string;
+	grant_duration_value?: number;
+	grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
+	grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
+	aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
 }
 
 export interface UpdateEntitlementRequest {
@@ -82,6 +96,18 @@ export interface UpdateEntitlementRequest {
 	config_value?: JsonObject;
 	entity_type?: ENTITLEMENT_ENTITY_TYPE;
 	entity_id?: string;
+
+	// --- Grant config ---
+	// All-or-nothing on metered features. Omit `grant_quota` (with a
+	// subscription_period duration) for an unlimited allowance.
+	grant_measure?: ENTITLEMENT_GRANT_MEASURE;
+	grant_quota?: string;
+	grant_duration_value?: number;
+	grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
+	grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
+	aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
+	/** Drops the grant config entirely, returning the entitlement to a legacy quota. */
+	clear_grant_config?: boolean;
 }
 
 export interface CreateBulkEntitlementRequest {

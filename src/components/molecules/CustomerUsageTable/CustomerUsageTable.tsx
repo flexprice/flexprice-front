@@ -1,5 +1,6 @@
 import { Progress, Tooltip } from '@/components/atoms';
 import { ColumnData, FlexpriceTable, RedirectCell } from '@/components/molecules';
+import GrantWindowLedger from './GrantWindowLedger';
 import { RouteNames } from '@/core/routes/Routes';
 import { FEATURE_TYPE } from '@/models/Feature';
 import { FC, useMemo } from 'react';
@@ -187,13 +188,16 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					const backgroundColor = value >= 100 ? 'bg-danger-muted' : 'bg-info-line';
 
 					return (
-						<Progress
-							label={`${formatAmount(usage.toString())} / ${formatAmount(limit.toString())}`}
-							value={value}
-							className='h-[6px]'
-							indicatorColor={indicatorColor}
-							backgroundColor={backgroundColor}
-						/>
+						<>
+							<Progress
+								label={`${formatAmount(usage.toString())} / ${formatAmount(limit.toString())}`}
+								value={value}
+								className='h-[6px]'
+								indicatorColor={indicatorColor}
+								backgroundColor={backgroundColor}
+							/>
+							<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} />
+						</>
 					);
 				},
 			},

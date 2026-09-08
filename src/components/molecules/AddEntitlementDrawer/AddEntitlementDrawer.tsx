@@ -1,15 +1,17 @@
-import { Button, Checkbox, Dialog, FormHeader, Input, Select, SelectFeature, Spacer, Toggle } from '@/components/atoms';
+import { Button, Dialog, FormHeader, Input, SelectFeature, Spacer } from '@/components/atoms';
 import { Sheet as ShadcnSheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useSheetOutsideDismissGuards } from '@/components/atoms/Sheet/Sheet';
 import { JsonObject } from '@/types/common';
 import { JsonEditor } from '@/components/molecules/JsonEditor';
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
+import MeteredAllowanceFields from './MeteredAllowanceFields';
+import { deriveAllowanceMode, patchForMode } from './allowanceMode';
+import { toCreateEntitlementRequest } from './entitlementRequest';
 
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { Entitlement, ENTITLEMENT_ENTITY_TYPE, ENTITLEMENT_USAGE_RESET_PERIOD } from '@/models/Entitlement';
+import { Entitlement, ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
-import { METER_USAGE_RESET_PERIOD } from '@/models/Meter';
 import EntitlementApi from '@/api/EntitlementApi';
 import FeatureApi from '@/api/FeatureApi';
 import { CreateBulkEntitlementRequest, CreateEntitlementRequest } from '@/types/dto/Entitlement';
@@ -36,6 +38,8 @@ interface Props {
 
 interface ValidationErrors {
 	usage_limit?: string;
+	grant_quota?: string;
+	grant_duration_value?: string;
 	static_value?: string;
 	config_value?: string;
 	usage_reset_period?: string;
@@ -57,28 +61,22 @@ const validateMeteredFeature = (
 		return newErrors;
 	}
 
-	const isInfinite = tempEntitlement.usage_limit === null;
-	const isResetNever = activeFeature?.meter?.reset_usage === METER_USAGE_RESET_PERIOD.NEVER;
+	// Unlimited is the absence of a ceiling, so it has nothing else to validate.
+	const mode = deriveAllowanceMode(tempEntitlement);
+	if (mode === 'unlimited') return newErrors;
 
-	// If reset period is set to NEVER, usage limit is required (cannot be infinite)
-	if (isResetNever) {
-		if (tempEntitlement.usage_limit !== undefined && tempEntitlement.usage_limit !== null && tempEntitlement.usage_limit < 0) {
-			newErrors.usage_limit = t('entitlements.validation.usageLimitNegative');
-		}
-	} else {
-		// Normal validation for usage limit when reset is not NEVER
-		if (tempEntitlement.usage_limit === undefined) {
-			newErrors.usage_limit = t('entitlements.validation.usageLimitRequired');
-		} else if (tempEntitlement.usage_limit !== null && tempEntitlement.usage_limit < 0) {
-			newErrors.usage_limit = t('entitlements.validation.usageLimitNegative');
-		}
+	const quota = tempEntitlement.grant_quota;
+	if (quota == null || quota === '') {
+		newErrors.grant_quota = t('entitlements.validation.allowanceRequired');
+	} else if (Number(quota) <= 0) {
+		newErrors.grant_quota = t('entitlements.validation.allowancePositive');
 	}
 
-	// If user sets to infinite, don't require usage reset period
-	// If reset is NEVER, usage reset period is not applicable
-	if (!isInfinite && !isResetNever) {
-		if (!tempEntitlement.usage_reset_period) {
-			newErrors.usage_reset_period = t('entitlements.validation.usageResetRequired');
+	// A recurring window needs a length; a billing-period one derives it from the cycle.
+	if (mode === 'recurring') {
+		const durationValue = tempEntitlement.grant_duration_value;
+		if (durationValue == null || durationValue < 1) {
+			newErrors.grant_duration_value = t('entitlements.validation.durationRequired');
 		}
 	}
 
@@ -267,19 +265,6 @@ const AddEntitlementDrawer: FC<Props> = ({
 	const direction = useLocaleStore((s) => s.direction);
 	const sheetSide = direction === Direction.RTL ? 'left' : 'right';
 
-	const entitlementUsageResetOptions = useMemo(
-		() => [
-			{ label: t('entitlements.usageResetPeriod.DAILY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.DAILY },
-			{ label: t('entitlements.usageResetPeriod.WEEKLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.WEEKLY },
-			{ label: t('entitlements.usageResetPeriod.MONTHLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.MONTHLY },
-			{ label: t('entitlements.usageResetPeriod.QUARTERLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.QUARTERLY },
-			{ label: t('entitlements.usageResetPeriod.HALF_YEARLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.HALF_YEARLY },
-			{ label: t('entitlements.usageResetPeriod.ANNUAL'), value: ENTITLEMENT_USAGE_RESET_PERIOD.ANNUAL },
-			{ label: t('entitlements.usageResetPeriod.NEVER'), value: ENTITLEMENT_USAGE_RESET_PERIOD.NEVER },
-		],
-		[t],
-	);
-
 	const [entitlements, setEntitlements] = useState<Partial<Entitlement>[]>([]);
 	const [errors, setErrors] = useState<ValidationErrors>({});
 	const [, setSelectedFeatures] = useState<Feature[]>(disabledFeatures ?? []);
@@ -350,20 +335,9 @@ const AddEntitlementDrawer: FC<Props> = ({
 				throw new Error(t('entitlements.errors.entityIdRequired'));
 			}
 
-			// Convert entitlements to CreateEntitlementRequest format
-			const entitlementRequests: CreateEntitlementRequest[] = entitlements.map((entitlement) => ({
-				plan_id: planId,
-				feature_id: entitlement.feature_id!,
-				feature_type: entitlement.feature_type! as FEATURE_TYPE,
-				is_enabled: entitlement.is_enabled,
-				usage_limit: entitlement.usage_limit,
-				usage_reset_period: entitlement.usage_reset_period as ENTITLEMENT_USAGE_RESET_PERIOD | undefined,
-				is_soft_limit: entitlement.is_soft_limit,
-				static_value: entitlement.static_value,
-				config_value: entitlement.config_value ?? undefined,
-				entity_type: entityType,
-				entity_id: entityId,
-			}));
+			const entitlementRequests: CreateEntitlementRequest[] = entitlements.map((entitlement) =>
+				toCreateEntitlementRequest(entitlement, { planId, entityType, entityId }),
+			);
 
 			const bulkRequest: CreateBulkEntitlementRequest = {
 				items: entitlementRequests,
@@ -518,6 +492,10 @@ const AddEntitlementDrawer: FC<Props> = ({
 									} else {
 										// For non-boolean features, show the configuration form
 										setActiveFeature(feature);
+										// Seed the grant defaults the form already displays. Without this the
+										// state holds only what the user touched, so typing a quota produces a
+										// partial config (no measure) that the API rejects.
+										setTempEntitlement(feature.type === FEATURE_TYPE.METERED ? patchForMode('recurring', {}) : {});
 										setSelectedFeatures((prev) => [...prev, feature]);
 										setShowSelect(false);
 										setErrors({});
@@ -537,93 +515,28 @@ const AddEntitlementDrawer: FC<Props> = ({
 									<span className='mt-1'>{getFeatureIcon(activeFeature?.type)}</span>
 								</div>
 
-								{/* metered feature */}
+								{/* metered feature — every mode produces a grant config */}
 								{activeFeature.type === FEATURE_TYPE.METERED && (
 									<div>
-										{/* {activeFeature.type === FeatureType.metered && activeFeature.meter_id && (
-										<div className='w-full flex justify-between items-center'>
-											<span className='text-muted-foreground text-sm font-sans'>Meter</span>
-											<span className='text-content-zinc text-sm font-sans'>{activeFeature.meter?.name}</span>
-										</div>
-									)} */}
-										{/* <Spacer className='!my-6' /> */}
-										<Input
-											error={errors.usage_limit}
-											label={t('entitlements.addDrawer.valueLabel')}
-											placeholder={t('entitlements.addDrawer.enterValuePlaceholder')}
-											disabled={tempEntitlement.usage_limit === null}
-											variant='formatted-number'
-											value={
-												tempEntitlement.usage_limit === null
-													? t('entitlements.addDrawer.unlimitedDisplay')
-													: tempEntitlement.usage_limit?.toString() || ''
+										<Spacer className='!my-4' />
+										<MeteredAllowanceFields
+											value={tempEntitlement}
+											onChange={(patch) => setTempEntitlement((prev) => ({ ...prev, ...patch }))}
+											errors={{ grant_quota: errors.grant_quota, grant_duration_value: errors.grant_duration_value }}
+											unitLabel={featureForForm?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
+											quotaSuffix={
+												featureForForm?.reporting_unit != null ? (
+													<Button
+														type='button'
+														variant='ghost'
+														size='icon'
+														className='size-7 shrink-0 text-muted-foreground hover:text-foreground'
+														onClick={() => setIsCalculatorOpen(true)}
+														aria-label={t('entitlements.addDrawer.calculatorAriaLabel')}>
+														<Calculator className='size-4' />
+													</Button>
+												) : undefined
 											}
-											onChange={(value) => {
-												const numValue = value === '' ? undefined : Number(value);
-												setTempEntitlement((prev) => ({
-													...prev,
-													usage_limit: numValue,
-												}));
-											}}
-											suffix={
-												<div className='flex items-center gap-1.5'>
-													<span className='text-muted-foreground text-xs font-sans'>
-														{featureForForm?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
-													</span>
-													{featureForForm?.reporting_unit != null && (
-														<Button
-															type='button'
-															variant='ghost'
-															size='icon'
-															className='size-7 shrink-0 text-muted-foreground hover:text-foreground'
-															onClick={() => setIsCalculatorOpen(true)}
-															aria-label={t('entitlements.addDrawer.calculatorAriaLabel')}>
-															<Calculator className='size-4' />
-														</Button>
-													)}
-												</div>
-											}
-										/>
-										<Spacer className='!my-4' />
-										<Checkbox
-											id='set-infinite'
-											label={t('entitlements.addDrawer.setInfiniteLabel')}
-											checked={tempEntitlement.usage_limit === null}
-											onCheckedChange={(e) => {
-												setTempEntitlement((prev) => ({
-													...prev,
-													usage_limit: e ? null : undefined,
-													usage_reset_period: e ? null : undefined,
-												}));
-											}}
-										/>
-										<Spacer className='!my-4' />
-										<Select
-											disabled={tempEntitlement.usage_limit === null || activeFeature.meter?.reset_usage === METER_USAGE_RESET_PERIOD.NEVER}
-											error={errors.usage_reset_period}
-											label={t('entitlements.addDrawer.usageResetLabel')}
-											placeholder={t('entitlements.addDrawer.usageResetPlaceholder')}
-											options={entitlementUsageResetOptions}
-											description={t('entitlements.addDrawer.usageResetDescription')}
-											value={tempEntitlement.usage_reset_period ?? ''}
-											onChange={(value) => {
-												setTempEntitlement((prev) => ({
-													...prev,
-													usage_reset_period: value as ENTITLEMENT_USAGE_RESET_PERIOD,
-												}));
-											}}
-										/>
-										<Spacer className='!my-4' />
-										<Toggle
-											checked={tempEntitlement.is_soft_limit ?? false}
-											label={t('entitlements.addDrawer.softLimitLabel')}
-											description={t('entitlements.addDrawer.softLimitDescription')}
-											onChange={(value) => {
-												setTempEntitlement((prev) => ({
-													...prev,
-													is_soft_limit: value,
-												}));
-											}}
 										/>
 									</div>
 								)}

@@ -9,6 +9,10 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { EnrichedEntitlementRow } from './EntitlementOverridesTable';
+import MeteredAllowanceFields, { type MeteredAllowanceErrors } from '@/components/molecules/AddEntitlementDrawer/MeteredAllowanceFields';
+import { deriveAllowanceMode } from '@/components/molecules/AddEntitlementDrawer/allowanceMode';
+import { Entitlement, hasGrantConfig } from '@/models/Entitlement';
+import { formatAllowanceValue, formatAllowanceReset } from '@/utils/entitlement/allowanceLabel';
 
 interface EditEntitlementDrawerProps {
 	isOpen: boolean;
@@ -27,6 +31,10 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 	const [isEnabled, setIsEnabled] = useState<boolean>(true);
 	const [configValue, setConfigValue] = useState<JsonObject | null>(null);
 	const [configInvalid, setConfigInvalid] = useState<boolean>(false);
+	// Grant-backed entitlements are edited as an allowance, not a usage limit.
+	const [grantDraft, setGrantDraft] = useState<Partial<Entitlement>>({});
+	const [grantErrors, setGrantErrors] = useState<MeteredAllowanceErrors>({});
+	const isGrantBacked = hasGrantConfig(entitlement ?? undefined);
 
 	// Derived synchronously so JsonEditor always mounts with the correct value on first open
 	const initialConfigValue = useMemo((): JsonObject | null => {
@@ -46,6 +54,16 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 			setIsEnabled(entitlement.displayIsEnabled ?? entitlement.is_enabled ?? true);
 			setConfigValue(null);
 			setConfigInvalid(false);
+			// Seed from the plan's config so an untouched field keeps its value.
+			setGrantDraft({
+				grant_measure: entitlement.grant_measure,
+				grant_quota: entitlement.grant_quota,
+				grant_duration_value: entitlement.grant_duration_value,
+				grant_duration_unit: entitlement.grant_duration_unit,
+				grant_allocation_behavior: entitlement.grant_allocation_behavior,
+				aggregation_mode: entitlement.aggregation_mode,
+			});
+			setGrantErrors({});
 		}
 	}, [entitlement]);
 
@@ -56,7 +74,20 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 			entitlement_id: entitlement.id,
 		};
 
-		if (entitlement.feature_type === FEATURE_TYPE.METERED) {
+		if (entitlement.feature_type === FEATURE_TYPE.METERED && isGrantBacked) {
+			const mode = deriveAllowanceMode(grantDraft);
+			if (mode !== 'unlimited' && (grantDraft.grant_quota == null || grantDraft.grant_quota === '')) {
+				setGrantErrors({ grant_quota: t('entitlements.validation.allowanceRequired') });
+				return;
+			}
+			override.grant_measure = grantDraft.grant_measure ?? undefined;
+			// null (unlimited) must reach the API as an absent field, not a value.
+			override.grant_quota = grantDraft.grant_quota ?? undefined;
+			override.grant_duration_value = grantDraft.grant_duration_value ?? undefined;
+			override.grant_duration_unit = grantDraft.grant_duration_unit;
+			override.grant_allocation_behavior = grantDraft.grant_allocation_behavior;
+			override.aggregation_mode = grantDraft.aggregation_mode;
+		} else if (entitlement.feature_type === FEATURE_TYPE.METERED) {
 			if (isInfinite) {
 				override.usage_limit = null;
 			} else {
@@ -137,6 +168,12 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 		}
 	};
 
+	const planAllowanceLabel = isGrantBacked
+		? `${formatAllowanceValue(entitlement, t)}${
+				formatAllowanceReset(entitlement, t) !== '--' ? ` / ${formatAllowanceReset(entitlement, t)}` : ''
+			}`
+		: '';
+
 	const originalUsageLabel =
 		entitlement.usage_limit === null
 			? t('entitlements.addDrawer.unlimitedDisplay')
@@ -158,7 +195,23 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 					<div>{getFeatureTypeChip(entitlement.feature_type)}</div>
 				</div>
 
-				{entitlement.feature_type === FEATURE_TYPE.METERED && (
+				{entitlement.feature_type === FEATURE_TYPE.METERED && isGrantBacked && (
+					<div className='space-y-3'>
+						<p className='text-xs text-muted-foreground'>{t('entitlements.editDrawer.planAllowance', { value: planAllowanceLabel })}</p>
+						<MeteredAllowanceFields
+							value={grantDraft}
+							onChange={(patch) => {
+								setGrantDraft((prev) => ({ ...prev, ...patch }));
+								setGrantErrors({});
+							}}
+							errors={grantErrors}
+							unitLabel={entitlement.feature?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
+						/>
+						<p className='text-xs text-muted-foreground'>{t('entitlements.editDrawer.allowanceHelp')}</p>
+					</div>
+				)}
+
+				{entitlement.feature_type === FEATURE_TYPE.METERED && !isGrantBacked && (
 					<div className='space-y-4'>
 						<Input
 							id='edit-entitlement-usage-limit'

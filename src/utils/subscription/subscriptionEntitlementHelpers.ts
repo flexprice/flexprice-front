@@ -1,5 +1,5 @@
 import { EntitlementResponse } from '@/types/dto/Entitlement';
-import { SubscriptionEntitlementFeature, SubscriptionEntitlementSource } from '@/types/dto/Subscription';
+import { SubscriptionEntitlementEffective, SubscriptionEntitlementFeature, SubscriptionEntitlementSource } from '@/types/dto/Subscription';
 import { JsonObject } from '@/types/common';
 
 export interface EnrichedSubscriptionEntitlement {
@@ -21,6 +21,8 @@ export interface EnrichedSubscriptionEntitlement {
 	originalStaticValue?: string;
 	originalIsEnabled?: boolean;
 	usage_reset_period?: string;
+	/** Live allowance for grant-backed features; absent for legacy rows. */
+	grant_state?: SubscriptionEntitlementEffective['grant_state'];
 }
 
 const normalizeEntityType = (entityType?: string) => entityType?.toLowerCase() ?? '';
@@ -92,6 +94,7 @@ export const enrichSubscriptionEntitlements = (
 			originalStaticValue: resolvedOriginalStaticValue,
 			originalIsEnabled: resolvedOriginalIsEnabled,
 			usage_reset_period: item.entitlement?.usage_reset_period,
+			grant_state: item.entitlement?.grant_state,
 		};
 	});
 };

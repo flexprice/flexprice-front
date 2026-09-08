@@ -203,7 +203,12 @@
 			"dash": "—",
 			"usageProgressUnlimited": "{{usage}} / غير محدود"
 		},
-		"fallback": "--"
+		"fallback": "--",
+		"windowsTitle": "Allowance windows this cycle",
+		"windowsToggle": "{{count}} windows",
+		"windowOverage": "over by {{amount}}",
+		"windowNone": "—",
+		"windowOpen": "open"
 	},
 	"subscriptionCreate": {
 		"selectCustomerLabel": "العميل",

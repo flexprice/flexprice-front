@@ -27,6 +27,11 @@ import {
 	PRICE_UNIT_TYPE,
 	INVOICE_CADENCE,
 	PriceBucketSize,
+	GrantState,
+	ENTITLEMENT_GRANT_MEASURE,
+	ENTITLEMENT_GRANT_DURATION_UNIT,
+	ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR,
+	ENTITLEMENT_AGGREGATION_MODE,
 } from '@/models';
 import { PriceUnitConfig, PriceResponse } from '@/types/dto/Price';
 import { BILLING_PERIOD, BUCKET_SIZE_NONE } from '@/constants/constants';
@@ -800,6 +805,16 @@ export interface EntitlementOverrideRequest {
 	static_value?: string;
 	is_enabled?: boolean;
 	config_value?: JsonObject;
+
+	// Grant config. Omitted fields inherit from the plan entitlement being
+	// overridden, so an override that only changes the quota keeps the plan's
+	// cadence instead of downgrading the feature to a legacy limit.
+	grant_measure?: ENTITLEMENT_GRANT_MEASURE;
+	grant_quota?: string;
+	grant_duration_value?: number;
+	grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
+	grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
+	aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
 }
 
 // =============================================================================
@@ -820,6 +835,23 @@ export interface SubscriptionEntitlementEffective {
 	is_enabled?: boolean;
 	usage_limit?: number | null;
 	usage_reset_period?: string;
+	/**
+	 * Grant config summary for the whole feature — present regardless of whether a
+	 * window has opened, so the value column can show the promise. `usage_limit`
+	 * is meaningless when these are set.
+	 */
+	grant_measure?: ENTITLEMENT_GRANT_MEASURE;
+	grant_quota?: string | null;
+	grant_duration_value?: number | null;
+	grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
+	/** Grant-based with no ceiling — distinct from "no grant config at all". */
+	grant_unlimited?: boolean;
+	/**
+	 * Runtime half of the grant config above: the windows this allowance has
+	 * materialized. Absent for legacy entitlements; `windows` is empty when no
+	 * window has opened yet.
+	 */
+	grant_state?: GrantState;
 	/** Aggregated static feature values (backend field name) */
 	static_values?: string[];
 	/** Present on EntitlementSource rows, not on aggregated entitlement */

@@ -1,15 +1,15 @@
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Button, Card, CardHeader, NoDataCard, Loader, Sheet, Tooltip } from '@/components/atoms';
+import { Chip, Button, Card, CardHeader, NoDataCard, Loader, Sheet, Tooltip } from '@/components/atoms';
 import { Plus } from 'lucide-react';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import { EntitlementApi } from '@/api';
 import { FlexpriceTable, ColumnData, RedirectCell, AddEntitlementDrawer } from '@/components/molecules';
+import { formatAllowanceValue, formatAllowanceReset, isParallelAllowance } from '@/utils/entitlement/allowanceLabel';
 import { getFeatureTypeChips } from '@/components/molecules/CustomerUsageTable/CustomerUsageTable';
-import { formatAmount } from '@/components/atoms/Input/Input';
-import { Entitlement, ENTITY_STATUS, FEATURE_TYPE, ENTITLEMENT_ENTITY_TYPE, EXPAND, ENTITLEMENT_USAGE_RESET_PERIOD } from '@/models';
+import { ENTITY_STATUS, FEATURE_TYPE, ENTITLEMENT_ENTITY_TYPE, EXPAND } from '@/models';
 import { EntitlementResponse } from '@/types';
 import { RouteNames } from '@/core/routes/Routes';
 import { ActionButton } from '@/components/atoms';
@@ -32,48 +32,6 @@ const PlanEntitlementsTab = () => {
 	});
 	const openConfigSheet = (name: string, value: JsonObject | null) => {
 		setConfigSheet({ open: true, name, value });
-	};
-
-	const getFeatureValue = (entitlement: Entitlement) => {
-		const value = entitlement.usage_limit?.toFixed() || '';
-		const unlimited = t('common:labels.unlimited');
-		const unitLabel = t('catalog:features.form.unitDefault');
-		const unitsLabel = t('catalog:features.form.unitsDefault');
-
-		switch (entitlement.feature_type) {
-			case FEATURE_TYPE.STATIC:
-				return entitlement.static_value;
-			case FEATURE_TYPE.METERED:
-				return (
-					<span className='flex items-end gap-1'>
-						{formatAmount(value || unlimited)}
-						<span className='text-content-slate-muted text-sm font-normal font-sans'>
-							{value
-								? Number(value) > 0
-									? entitlement.feature?.unit_plural || unitsLabel
-									: entitlement.feature?.unit_singular || unitLabel
-								: entitlement.feature?.unit_plural || unitsLabel}
-						</span>
-					</span>
-				);
-			case FEATURE_TYPE.BOOLEAN:
-				return entitlement.is_enabled ? t('common:labels.yes') : t('common:labels.no');
-			case FEATURE_TYPE.CONFIG: {
-				const cv = entitlement.config_value;
-				const compact = cv && Object.keys(cv).length > 0 ? JSON.stringify(cv) : null;
-				return (
-					<button
-						type='button'
-						onClick={() => openConfigSheet(entitlement.feature?.name ?? t('catalog:features.listPage.typeChips.config'), cv ?? null)}
-						className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-md'
-						style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-all' }}>
-						{compact ?? t('common:labels.na')}
-					</button>
-				);
-			}
-			default:
-				return t('common:labels.na');
-		}
 	};
 
 	const {
@@ -107,16 +65,42 @@ const PlanEntitlementsTab = () => {
 			},
 		},
 		{
-			title: 'Usage Reset',
+			title: 'Value',
 			render(row) {
-				const period = row?.usage_reset_period as ENTITLEMENT_USAGE_RESET_PERIOD | '' | null;
-				return period && Object.values(ENTITLEMENT_USAGE_RESET_PERIOD).includes(period as ENTITLEMENT_USAGE_RESET_PERIOD) ? period : '--';
+				// Config features carry no allowance — keep the existing JSON viewer.
+				if (row?.feature_type === FEATURE_TYPE.CONFIG) {
+					const cv = row.config_value;
+					const compact = cv && Object.keys(cv).length > 0 ? JSON.stringify(cv) : null;
+					return (
+						<button
+							type='button'
+							onClick={() => openConfigSheet(row.feature?.name ?? t('catalog:features.listPage.typeChips.config'), cv ?? null)}
+							className='font-mono text-xs text-left text-muted-foreground rounded border border-transparent transition-all hover:border-border hover:shadow-sm hover:text-foreground max-w-md'
+							style={{
+								display: '-webkit-box',
+								WebkitLineClamp: 3,
+								WebkitBoxOrient: 'vertical',
+								overflow: 'hidden',
+								wordBreak: 'break-all',
+							}}>
+							{compact ?? t('common:labels.na')}
+						</button>
+					);
+				}
+				return (
+					<span className='flex items-center gap-2'>
+						<span>{formatAllowanceValue(row, t)}</span>
+						{isParallelAllowance(row) && <Chip variant='default' label={t('entitlements.allowance.separateAllowances')} />}
+					</span>
+				);
 			},
 		},
 		{
-			title: 'Value',
+			// A grant's cadence lives here: "5 days", "billing period", or "--" for
+			// features that have no reset at all.
+			title: 'Usage Reset',
 			render(row) {
-				return getFeatureValue(row);
+				return <span className='capitalize'>{formatAllowanceReset(row, t)}</span>;
 			},
 		},
 		{
