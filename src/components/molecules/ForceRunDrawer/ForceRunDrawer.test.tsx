@@ -47,7 +47,7 @@ describe('ForceRunDrawer date picker', () => {
 
 		fireEvent.click(screen.getByLabelText(commonEn.forceRun.customDateRange));
 		fireEvent.click(screen.getByRole('button', { name: commonEn.forceRun.startTimePlaceholder }));
-		fireEvent.click(screen.getByRole('gridcell', { name: '15' }));
+		fireEvent.click(screen.getByRole('button', { name: /15/ }));
 
 		expect(screen.getByRole('dialog', { name: commonEn.forceRun.title })).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: commonEn.forceRun.endTimePlaceholder })).toBeInTheDocument();
