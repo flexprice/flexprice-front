@@ -166,6 +166,7 @@ const AddAddonDialog: React.FC<Props> = ({
 		onSuccess: () => {
 			toast.success(t('billing:subscriptions.addAddonDialog.toast.addonAddedSuccess'));
 			refetchQueries(['subscriptionActiveAddons', subscriptionId]);
+			refetchQueries(['subscriptionAddonLineItems', subscriptionId]);
 			refetchQueries(['subscriptionDetails', subscriptionId]);
 			refetchQueries(['subscriptionEdit', subscriptionId]);
 			refetchQueries(['subscriptionEntitlements', subscriptionId]);

@@ -1,5 +1,7 @@
 import { PRICE_TYPE, type Price } from '@/models/Price';
 import type { OverrideLineItemRequest } from '@/types/dto/Subscription';
+import { getTotalPayableTextWithCoupons } from '@/utils/common/helper_functions';
+import type { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import { parseNonNegativeQuantity } from './quantityValidation';
 
 type QuantityOverride = number | string | undefined;
@@ -35,6 +37,39 @@ export function formatAddonQuantityDisplay(prices: Price[], overrideLineItems: O
 
 	const overridesByPriceId = Object.fromEntries(overrideLineItems.map((item) => [item.price_id, item]));
 	return fixedPrices.map((price) => String(getResolvedFixedPriceQuantity(price, overridesByPriceId[price.id]?.quantity))).join(', ');
+}
+
+export type AddonChargeLabels = {
+	empty: string;
+	dependsOnUsage: string;
+};
+
+/** Shared Name/Quantity/Charges formatting used by create, edit, and overview addon tables. */
+export function formatAddonCharges(
+	prices: Price[] = [],
+	overrideLineItems: OverrideLineItemRequest[] = [],
+	priceOverrides: Record<string, ExtendedPriceOverride> = {},
+	coupons: { type: string; amount_off?: string; percentage_off?: string }[] = [],
+	labels: AddonChargeLabels,
+): string {
+	if (!prices || prices.length === 0) return labels.empty;
+
+	const recurringPrices = prices.filter((price) => price.type === PRICE_TYPE.FIXED);
+	const usagePrices = prices.filter((price) => price.type === PRICE_TYPE.USAGE);
+
+	if (recurringPrices.length === 0) {
+		return usagePrices.length > 0 ? labels.dependsOnUsage : labels.empty;
+	}
+
+	const fromLineItems = Object.fromEntries(
+		overrideLineItems.map((item) => [item.price_id, { quantity: item.quantity, amount: item.amount }]),
+	);
+	const fromPriceOverrides = Object.fromEntries(
+		Object.entries(priceOverrides).map(([id, override]) => [id, { quantity: override.quantity, amount: override.amount }]),
+	);
+	const recurringTotal = sumFixedAddonRecurringTotal(recurringPrices, { ...fromPriceOverrides, ...fromLineItems });
+
+	return getTotalPayableTextWithCoupons(recurringPrices, usagePrices, recurringTotal, coupons);
 }
 
 /** Unit amount × qty for FIXED addon prices. USAGE prices are ignored. */
@@ -98,4 +133,79 @@ export function sanitizeAddonOverrideLineItemsForApi(
 	}
 
 	return sanitized.length > 0 ? sanitized : undefined;
+}
+
+const DEFAULT_LINE_ITEM_END_DATE = '0001-01-01T00:00:00Z';
+
+/** Existing subscription addon line used for quantity / charges display (edit + overview). */
+export type AttachedAddonChargeLine = {
+	priceType: PRICE_TYPE;
+	quantity: number | string;
+	unitAmount: number;
+	startDate?: string;
+	endDate?: string;
+	price?: Price;
+};
+
+/** Same window as Charges-table ACTIVE: started and not ended. */
+export function isAttachedAddonLineActive(line: Pick<AttachedAddonChargeLine, 'startDate' | 'endDate'>, now: Date = new Date()): boolean {
+	if (line.startDate?.trim()) {
+		const start = new Date(line.startDate);
+		if (!isNaN(start.getTime()) && start > now) {
+			return false;
+		}
+	}
+	if (line.endDate?.trim() && line.endDate !== DEFAULT_LINE_ITEM_END_DATE) {
+		const end = new Date(line.endDate);
+		if (!isNaN(end.getTime()) && end < now) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function isAttachedAddonLineEnded(line: Pick<AttachedAddonChargeLine, 'endDate'>, now: Date): boolean {
+	if (line.endDate?.trim() && line.endDate !== DEFAULT_LINE_ITEM_END_DATE) {
+		const end = new Date(line.endDate);
+		return !isNaN(end.getTime()) && end < now;
+	}
+	return false;
+}
+
+function normalizeAttachedPrice(line: AttachedAddonChargeLine): Price | undefined {
+	if (!line.price) {
+		return undefined;
+	}
+	if (line.price.type) {
+		return line.price;
+	}
+	return { ...line.price, type: line.priceType };
+}
+
+/** Prefer active lines; if none, keep upcoming so qty 3 is not shown as "pay as you go". */
+export function attachedAddonLinesToDisplayInput(
+	lines: AttachedAddonChargeLine[],
+	now: Date = new Date(),
+): { prices: Price[]; overrideLineItems: OverrideLineItemRequest[] } {
+	const displayable = lines.filter((line) => line.price && !isAttachedAddonLineEnded(line, now));
+	const selected = displayable.filter((line) => isAttachedAddonLineActive(line, now));
+	const source = selected.length > 0 ? selected : displayable;
+
+	const prices: Price[] = [];
+	const overrideLineItems: OverrideLineItemRequest[] = [];
+
+	for (const line of source) {
+		const price = normalizeAttachedPrice(line);
+		if (!price) {
+			continue;
+		}
+		prices.push(price);
+		overrideLineItems.push({
+			price_id: price.id,
+			quantity: line.quantity,
+			amount: line.unitAmount,
+		});
+	}
+
+	return { prices, overrideLineItems };
 }
