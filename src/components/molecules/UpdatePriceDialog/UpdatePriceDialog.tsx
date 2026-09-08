@@ -14,6 +14,16 @@ import { BUCKET_SIZE_NONE, priceBucketSizeOptions } from '@/constants/constants'
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
 import { useMeterForCommitment } from '@/hooks/useMeterForCommitment';
+import {
+	PERCENTAGE_BILLING_MODEL,
+	PercentageBillingModel,
+	decimalAmountToPercentage,
+	isPercentagePrice,
+	percentageToDecimalAmount,
+	withPercentageMetadata,
+	withoutPercentageMetadata,
+} from '@/utils/common/percentage_price_helpers';
+import { formatPercentageAmount } from '@/utils/common/price_helpers';
 import { useTranslation } from 'react-i18next';
 
 interface UpdatePriceDialogProps {
@@ -33,13 +43,20 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 			{ label: t('priceDialogs.billingModels.package'), value: BILLING_MODEL.PACKAGE },
 			{ label: t('priceDialogs.billingModels.volumeTiered'), value: BILLING_MODEL.TIERED },
 			{ label: t('priceDialogs.billingModels.slabTiered'), value: 'SLAB_TIERED' },
+			{ label: t('priceDialogs.billingModels.percentageFee'), value: PERCENTAGE_BILLING_MODEL },
 		],
 		[t],
 	);
 
+	// A percentage charge is a FLAT_FEE tagged in metadata; the dialog works in whole percentages and
+	// converts back to the stored decimal on save.
+	const isPercentage = isPercentagePrice(price);
+
 	const [overrideAmount, setOverrideAmount] = useState('');
 	const [overrideQuantity, setOverrideQuantity] = useState<number | undefined>(undefined);
-	const [overrideBillingModel, setOverrideBillingModel] = useState<BILLING_MODEL | 'SLAB_TIERED'>(price.billing_model);
+	const [overrideBillingModel, setOverrideBillingModel] = useState<BILLING_MODEL | 'SLAB_TIERED' | PercentageBillingModel>(
+		isPercentage ? PERCENTAGE_BILLING_MODEL : price.billing_model,
+	);
 	const [overrideTierMode, setOverrideTierMode] = useState<TIER_MODE>(price.tier_mode || TIER_MODE.VOLUME);
 	const [overrideTiers, setOverrideTiers] = useState<CreatePriceTier[]>([]);
 	const [overrideTransformQuantity, setOverrideTransformQuantity] = useState<TransformQuantity>({
@@ -62,7 +79,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 	useEffect(() => {
 		if (isOpen) {
 			setOverrideQuantity(1);
-			setOverrideBillingModel(price.billing_model);
+			setOverrideBillingModel(isPercentage ? PERCENTAGE_BILLING_MODEL : price.billing_model);
 			setOverrideTierMode(price.tier_mode || TIER_MODE.VOLUME);
 
 			// Initialize amount and tiers based on price unit type
@@ -90,7 +107,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 				}
 			} else {
 				// For FIAT prices, use amount and tiers
-				setOverrideAmount(price.amount);
+				setOverrideAmount(isPercentage ? decimalAmountToPercentage(price.amount || '') : price.amount);
 
 				if (price.tiers && price.tiers.length > 0) {
 					setOverrideTiers(
@@ -115,7 +132,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 			setEffectiveFrom(undefined);
 			setOverrideBucketSize((price.bucket_size as PriceBucketSize | undefined) ?? '');
 		}
-	}, [isOpen, price, isCustomPriceUnit]);
+	}, [isOpen, price, isCustomPriceUnit, isPercentage]);
 
 	const { mutateAsync: updatePrice, isPending: isUpdatingPrice } = useMutation({
 		mutationFn: async ({ priceId, data }: { priceId: string; data: UpdatePriceRequest }) => {
@@ -128,31 +145,45 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 
 	const isLoading = isUpdatingPrice;
 
+	/** Strips input formatting and, for the percentage model, converts 2.5 -> "0.025" for storage. */
+	const resolveStoredAmount = (value: string, asPercentage: boolean): string => {
+		const raw = removeFormatting(value);
+		return asPercentage ? percentageToDecimalAmount(raw) : raw;
+	};
+
 	const handleUpdate = async () => {
 		const updateData: UpdatePriceRequest = {};
+		const willBePercentage = overrideBillingModel === PERCENTAGE_BILLING_MODEL;
 
 		// Handle amount/price_unit_amount based on price unit type and billing model
 		if (overrideBillingModel !== BILLING_MODEL.TIERED && overrideBillingModel !== 'SLAB_TIERED') {
+			// The field holds a percentage while that model is selected - store the decimal equivalent.
+			const enteredAmount = overrideAmount ? resolveStoredAmount(overrideAmount, willBePercentage) : '';
 			if (isCustomPriceUnit) {
 				// For CUSTOM prices, use price_unit_amount
 				const originalAmount = price.price_unit_amount || price.price_unit_config?.amount || '';
-				if (overrideAmount && removeFormatting(overrideAmount) !== originalAmount) {
-					updateData.price_unit_amount = removeFormatting(overrideAmount);
+				if (enteredAmount && enteredAmount !== originalAmount) {
+					updateData.price_unit_amount = enteredAmount;
 				}
 			} else {
 				// For FIAT prices, use amount
-				if (overrideAmount && removeFormatting(overrideAmount) !== price.amount) {
-					updateData.amount = removeFormatting(overrideAmount);
+				if (enteredAmount && enteredAmount !== price.amount) {
+					updateData.amount = enteredAmount;
 				}
 			}
 		}
 
-		// Billing model override
-		if (overrideBillingModel !== price.billing_model) {
-			if (overrideBillingModel === 'SLAB_TIERED') {
+		// Billing model override. Percentage is a UI-only model stored as FLAT_FEE, so the marker in
+		// metadata - added or removed - is what actually records the switch.
+		if (willBePercentage !== isPercentage) {
+			updateData.metadata = willBePercentage ? withPercentageMetadata(price.metadata) : (withoutPercentageMetadata(price.metadata) ?? {});
+		}
+		const resolvedBillingModel = willBePercentage ? BILLING_MODEL.FLAT_FEE : overrideBillingModel;
+		if (resolvedBillingModel !== price.billing_model) {
+			if (resolvedBillingModel === 'SLAB_TIERED') {
 				updateData.billing_model = BILLING_MODEL.TIERED;
 			} else {
-				updateData.billing_model = overrideBillingModel as BILLING_MODEL;
+				updateData.billing_model = resolvedBillingModel as BILLING_MODEL;
 			}
 		}
 
@@ -213,7 +244,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 	};
 
 	const hasChanges = () => {
-		const originalBillingModel = price.billing_model;
+		const originalBillingModel = isPercentage ? PERCENTAGE_BILLING_MODEL : price.billing_model;
 		const originalTierMode = price.tier_mode || TIER_MODE.VOLUME;
 
 		let billingModelChanged: boolean;
@@ -230,12 +261,13 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 		}
 
 		// Compare amount/price_unit_amount based on price unit type
+		const enteredAmount = overrideAmount ? resolveStoredAmount(overrideAmount, overrideBillingModel === PERCENTAGE_BILLING_MODEL) : '';
 		let amountChanged: boolean;
 		if (isCustomPriceUnit) {
 			const originalAmount = price.price_unit_amount || price.price_unit_config?.amount || '';
-			amountChanged = !!(overrideAmount && removeFormatting(overrideAmount) !== originalAmount);
+			amountChanged = !!(enteredAmount && enteredAmount !== originalAmount);
 		} else {
-			amountChanged = !!(overrideAmount && removeFormatting(overrideAmount) !== price.amount);
+			amountChanged = !!(enteredAmount && enteredAmount !== price.amount);
 		}
 
 		// Compare tiers/price_unit_tiers based on price unit type
@@ -306,6 +338,9 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 
 	const originalFormatted = formatAmount(getDisplayAmount());
 	const displaySymbol = getDisplaySymbol();
+	// Percentage charges show "2.5%" and drop the currency symbol; the input carries a % suffix too.
+	const showAsPercentage = overrideBillingModel === PERCENTAGE_BILLING_MODEL;
+	const originalPriceDisplay = isPercentage ? formatPercentageAmount(getDisplayAmount()) : `${displaySymbol}${originalFormatted}`;
 	const chargeDisplayName = price.meter?.name || price.description || t('priceDialogs.thisChargeFallback');
 
 	return (
@@ -324,10 +359,7 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 				<div className='space-y-4'>
 					<div className='flex items-center justify-between p-3 bg-surface-subtle rounded-lg'>
 						<div className='text-sm text-content-tertiary'>{t('priceDialogs.originalPrice')}</div>
-						<div className='font-medium'>
-							{displaySymbol}
-							{originalFormatted}
-						</div>
+						<div className='font-medium'>{originalPriceDisplay}</div>
 					</div>
 
 					{price.type === PRICE_TYPE.USAGE && (
@@ -359,14 +391,16 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 					{overrideBillingModel !== BILLING_MODEL.TIERED && overrideBillingModel !== 'SLAB_TIERED' && (
 						<div className='space-y-2'>
 							<label className='text-sm font-medium text-content-secondary'>
-								{t('priceDialogs.overrideAmountLabel', { unit: isCustomPriceUnit ? displaySymbol : price.currency })}
+								{showAsPercentage
+									? t('priceDialogs.overridePercentageLabel')
+									: t('priceDialogs.overrideAmountLabel', { unit: isCustomPriceUnit ? displaySymbol : price.currency })}
 							</label>
 							<Input
 								type='formatted-number'
 								value={overrideAmount}
 								onChange={setOverrideAmount}
-								placeholder={t('priceDialogs.enterNewAmountOptional')}
-								suffix={displaySymbol}
+								placeholder={showAsPercentage ? t('priceDialogs.enterNewPercentageOptional') : t('priceDialogs.enterNewAmountOptional')}
+								suffix={showAsPercentage ? '%' : displaySymbol}
 								className='w-full'
 							/>
 						</div>

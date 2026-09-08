@@ -4,6 +4,7 @@ import { PriceUnit } from '@/models/PriceUnit';
 import { getCurrencySymbol } from './helper_functions';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { ExtendedPriceOverride } from './price_override_helpers';
+import { PERCENTAGE_BILLING_MODEL, PercentageBillingModel, decimalAmountToPercentage, isPercentagePrice } from './percentage_price_helpers';
 
 /**
  * Normalized price structure - single source of truth for price display
@@ -14,7 +15,7 @@ export interface NormalizedPriceDisplay {
 	amount: string; // The amount to display
 	symbol: string; // Currency/unit symbol to display
 	tiers: CreatePriceTier[] | null; // Pricing tiers (null if not tiered)
-	billingModel: BILLING_MODEL | 'SLAB_TIERED'; // Billing model
+	billingModel: BILLING_MODEL | 'SLAB_TIERED' | PercentageBillingModel; // Billing model
 	tierMode: TIER_MODE; // Tier mode (VOLUME or SLAB)
 	transformQuantity: TransformQuantity | null; // Transform quantity for package billing
 	priceUnitType: PRICE_UNIT_TYPE; // FIAT or CUSTOM
@@ -105,8 +106,15 @@ export const normalizePriceDisplay = (
 	}
 
 	// Step 4: Extract billing model and tier mode
-	const billingModel: BILLING_MODEL | 'SLAB_TIERED' = override?.billing_model || price.billing_model;
+	let billingModel: BILLING_MODEL | 'SLAB_TIERED' | PercentageBillingModel = override?.billing_model || price.billing_model;
 	let tierMode: TIER_MODE = override?.tier_mode || price.tier_mode;
+
+	// A percentage charge is stored as a FLAT_FEE tagged in metadata - surface it as its own billing
+	// model so display formats the amount as a percentage rather than a currency value. An override
+	// that moves the charge off FLAT_FEE drops back to the overridden model.
+	if (isPercentagePrice({ billing_model: billingModel, metadata: price.metadata })) {
+		billingModel = PERCENTAGE_BILLING_MODEL;
+	}
 
 	// Step 5: Handle SLAB_TIERED special case
 	// SLAB_TIERED is a frontend convenience representation for TIERED + SLAB mode
@@ -147,12 +155,23 @@ const capDisplayDecimals = (amount: string, maxDecimals: number = MAX_DISPLAY_DE
 	return Number.isFinite(parsed) ? parsed.toFixed(maxDecimals) : amount;
 };
 
+/**
+ * Renders a stored decimal amount as the percentage it stands for: "0.025" -> "2.5%".
+ * Single place every percentage-aware display goes through, so the symbol and the decimal cap stay
+ * consistent across charge tables, previews, tooltips and the pricing card.
+ */
+export const formatPercentageAmount = (amount: string): string =>
+	`${formatAmount(capDisplayDecimals(decimalAmountToPercentage(amount || '0')))}%`;
+
 export const formatPriceDisplay = (normalized: NormalizedPriceDisplay): string => {
 	const { amount, symbol, billingModel, transformQuantity, tiers } = normalized;
 
 	switch (billingModel) {
 		case BILLING_MODEL.FLAT_FEE:
 			return `${symbol}${formatAmount(capDisplayDecimals(amount))}`;
+
+		case PERCENTAGE_BILLING_MODEL:
+			return formatPercentageAmount(amount);
 
 		case BILLING_MODEL.PACKAGE: {
 			const divideBy = transformQuantity?.divide_by || 1;
@@ -173,10 +192,12 @@ export const formatPriceDisplay = (normalized: NormalizedPriceDisplay): string =
 /**
  * Get human-readable label for billing model
  */
-export const getBillingModelLabel = (model: BILLING_MODEL | 'SLAB_TIERED'): string => {
+export const getBillingModelLabel = (model: BILLING_MODEL | 'SLAB_TIERED' | PercentageBillingModel): string => {
 	switch (model) {
 		case BILLING_MODEL.FLAT_FEE:
 			return 'Flat Fee';
+		case PERCENTAGE_BILLING_MODEL:
+			return 'Percentage Fee';
 		case BILLING_MODEL.PACKAGE:
 			return 'Package';
 		case BILLING_MODEL.TIERED:
@@ -206,6 +227,12 @@ export const getPriceTableCharge = (price: Price & { pricing_unit?: PriceUnit },
 	const displaySymbol = getDisplaySymbol(price);
 	const displayAmount = getDisplayAmount(price);
 	const displayTiers = getDisplayTiers(price);
+
+	// Percentage charges are FLAT_FEE prices whose amount is the decimal equivalent - render the
+	// percentage rather than a currency amount, for both fixed and usage charges.
+	if (isPercentagePrice(price)) {
+		return formatPercentageAmount(displayAmount);
+	}
 
 	if (price.type === PRICE_TYPE.FIXED) {
 		return `${displaySymbol}${formatAmount(displayAmount)}`;

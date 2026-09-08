@@ -500,6 +500,7 @@
 				"selectBillingPeriod": "اختر فترة الفوترة",
 				"per": "لكل",
 				"amountPlaceholder": "0.00",
+				"percentagePlaceholder": "0",
 				"bucketSize": "حجم الدفعة (اختياري)",
 				"bucketSizeNone": "بدون تجميع",
 				"bucketSizePlaceholder": "بدون تجميع",
@@ -1037,7 +1038,8 @@
 			"flatFee": "رسوم ثابتة",
 			"package": "حزمة",
 			"volumeTiered": "شرائح حجمية",
-			"slabTiered": "شرائح طبقية"
+			"slabTiered": "شرائح طبقية",
+			"percentageFee": "رسوم بنسبة مئوية"
 		},
 		"originalPrice": "السعر الأصلي",
 		"billingModel": "نموذج الفوترة",
@@ -1069,6 +1071,8 @@
 		"failedUpdateToast": "فشل تحديث السعر",
 		"toastScheduled": "سيسري {{name}} اعتبارًا من {{date}}.",
 		"toastUpdated": "تم تحديث {{name}} بنجاح.",
-		"fallbackPriceName": "سعر"
+		"fallbackPriceName": "سعر",
+		"overridePercentageLabel": "تجاوز النسبة المئوية",
+		"enterNewPercentageOptional": "أدخل نسبة مئوية جديدة (اختياري)"
 	}
 }

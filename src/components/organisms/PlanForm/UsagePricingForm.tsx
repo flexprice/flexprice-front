@@ -22,6 +22,14 @@ import { ENTITY_STATUS } from '@/models/base';
 import { CurrencyPriceUnitSelector } from '@/components/molecules';
 import { CurrencyPriceUnitSelection, isPriceUnitOption } from '@/types/common';
 import { useMeterForCommitment } from '@/hooks/useMeterForCommitment';
+import {
+	PERCENTAGE_BILLING_MODEL,
+	decimalAmountToPercentage,
+	isPercentagePrice,
+	percentageToDecimalAmount,
+	withPercentageMetadata,
+	withoutPercentageMetadata,
+} from '@/utils/common/percentage_price_helpers';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -103,7 +111,19 @@ export const billingModels: SelectOption[] = [
 		label: 'Slab Tiered',
 		description: 'Tiers apply progressively as quantity increases.',
 	}, // Maps to TIERED with SLAB tier_mode
+	{
+		value: PERCENTAGE_BILLING_MODEL,
+		label: 'Percentage Fee',
+		description: 'Charge a percentage of the billable value.',
+	}, // Maps to FLAT_FEE with the decimal equivalent + a percentage metadata marker
 ];
+
+/**
+ * The selector value for a price: PERCENTAGE for a flat fee tagged as percentage in metadata,
+ * otherwise the price's own billing model.
+ */
+const resolveBillingModelSelection = (price: Partial<InternalPrice>): string =>
+	isPercentagePrice(price) ? PERCENTAGE_BILLING_MODEL : price.billing_model || billingModels[0].value;
 
 // ONETIME isn't offered for usage charges (they're inherently metered/recurring), but older prices
 // may still have it saved — fall back to MONTHLY rather than leaving the Select without a matching option.
@@ -126,7 +146,7 @@ const UsagePricingForm: FC<Props> = ({
 	const [currency, setCurrency] = useState(price.currency || currencyOptions[0].value);
 	const [priceUnitType, setPriceUnitType] = useState<PRICE_UNIT_TYPE>(price.price_unit_type || PRICE_UNIT_TYPE.FIAT);
 	const [priceUnitConfig, setPriceUnitConfig] = useState(price.price_unit_config);
-	const [billingModel, setBillingModel] = useState(price.billing_model || billingModels[0].value);
+	const [billingModel, setBillingModel] = useState<string>(() => resolveBillingModelSelection(price));
 	const [selectedFeature, setSelectedFeature] = useState<Feature | undefined>(undefined);
 	const [groupId, setGroupId] = useState<string | undefined>(price.group_id);
 	const [displayName, setDisplayName] = useState<string>(price.display_name || '');
@@ -135,7 +155,9 @@ const UsagePricingForm: FC<Props> = ({
 		{ from: 1, up_to: null, unit_amount: '', flat_amount: '0' },
 	]);
 	const [billingPeriod, setBillingPeriod] = useState(normalizeUsageBillingPeriod(price.billing_period));
-	const [flatFee, setFlatFee] = useState<string>(price.amount || '');
+	const isInitiallyPercentage = isPercentagePrice(price);
+	const [flatFee, setFlatFee] = useState<string>(isInitiallyPercentage ? '' : price.amount || '');
+	const [percentageFee, setPercentageFee] = useState<string>(isInitiallyPercentage ? decimalAmountToPercentage(price.amount || '') : '');
 	const [packagedFee, setPackagedFee] = useState<{ unit: string; price: string }>({
 		unit: '',
 		price: '',
@@ -156,6 +178,7 @@ const UsagePricingForm: FC<Props> = ({
 		flatModelError: '',
 		packagedModelError: '',
 		tieredModelError: '',
+		percentageModelError: '',
 	});
 
 	// Query to find feature by meter_id when editing
@@ -211,14 +234,17 @@ const UsagePricingForm: FC<Props> = ({
 			setCurrency(price.currency || currencyOptions[0].value);
 			setPriceUnitType(price.price_unit_type || PRICE_UNIT_TYPE.FIAT);
 			setPriceUnitConfig(price.price_unit_config);
-			setBillingModel(price.billing_model || billingModels[0].value);
+			setBillingModel(resolveBillingModelSelection(price));
 			// Set display_name from price or feature name (will be set when feature is loaded)
 			setDisplayName(price.display_name || '');
 			setBillingPeriod(normalizeUsageBillingPeriod(price.billing_period));
 			setStartDate(price.start_date ? new Date(price.start_date) : undefined);
 			setBucketSize((price.bucket_size as PriceBucketSize | undefined) ?? '');
 
-			if (price.billing_model === BILLING_MODEL.FLAT_FEE) {
+			if (isPercentagePrice(price)) {
+				// Stored as the decimal equivalent - show the user the percentage they entered.
+				setPercentageFee(decimalAmountToPercentage(price.amount || ''));
+			} else if (price.billing_model === BILLING_MODEL.FLAT_FEE) {
 				setFlatFee(price.amount || '');
 			} else if (price.billing_model === BILLING_MODEL.PACKAGE) {
 				setPackagedFee({
@@ -263,6 +289,7 @@ const UsagePricingForm: FC<Props> = ({
 			flatModelError: '',
 			packagedModelError: '',
 			tieredModelError: '',
+			percentageModelError: '',
 		});
 
 		if (!selectedFeature?.meter_id) {
@@ -383,6 +410,20 @@ const UsagePricingForm: FC<Props> = ({
 			}
 		}
 
+		// Percentage validation
+		if (billingModel === PERCENTAGE_BILLING_MODEL) {
+			if (!percentageFee || percentageFee.trim() === '') {
+				setInputErrors((prev) => ({ ...prev, percentageModelError: 'Percentage is required' }));
+				return false;
+			}
+
+			const percentageAmount = parseFloat(percentageFee);
+			if (isNaN(percentageAmount) || percentageAmount < 0) {
+				setInputErrors((prev) => ({ ...prev, percentageModelError: 'Percentage must be a valid number greater than or equal to 0' }));
+				return false;
+			}
+		}
+
 		return true;
 	};
 
@@ -397,14 +438,22 @@ const UsagePricingForm: FC<Props> = ({
 	const handleSubmit = () => {
 		if (!validate()) return;
 
+		// Percentage is a UI-only billing model: the backend stores it as a FLAT_FEE whose amount is
+		// the decimal equivalent of what the user typed (5 -> "0.05"), with a metadata marker so the
+		// charge reads back as a percentage. Everything below treats it exactly like a flat fee apart
+		// from the amount conversion and that marker.
+		const isPercentage = billingModel === PERCENTAGE_BILLING_MODEL;
+		const isFlatFeeLike = billingModel === billingModels[0].value || isPercentage;
+		const flatFeeAmount = isPercentage ? percentageToDecimalAmount(percentageFee) : flatFee;
+
 		// Build price_unit_config for custom price units based on billing model
 		let finalPriceUnitConfig = priceUnitConfig;
 		if (priceUnitType === PRICE_UNIT_TYPE.CUSTOM && priceUnitConfig) {
-			if (billingModel === billingModels[0].value) {
+			if (isFlatFeeLike) {
 				// FLAT_FEE: Set amount in price_unit_config
 				finalPriceUnitConfig = {
 					...priceUnitConfig,
-					amount: flatFee,
+					amount: flatFeeAmount,
 				};
 			} else if (billingModel === billingModels[1].value) {
 				// PACKAGE: Set amount in price_unit_config
@@ -432,7 +481,10 @@ const UsagePricingForm: FC<Props> = ({
 			price_unit_type: priceUnitType,
 			price_unit_config: finalPriceUnitConfig,
 			billing_period: billingPeriod,
-			billing_model: billingModel as BILLING_MODEL,
+			billing_model: (isPercentage ? BILLING_MODEL.FLAT_FEE : billingModel) as BILLING_MODEL,
+			// Set explicitly (not just when percentage) so switching an existing percentage charge to
+			// another billing model drops the marker instead of inheriting it from the spread below.
+			metadata: isPercentage ? withPercentageMetadata(price.metadata) : withoutPercentageMetadata(price.metadata),
 			type: PRICE_TYPE.USAGE,
 			billing_period_count: 1,
 			invoice_cadence: INVOICE_CADENCE.ARREAR,
@@ -446,11 +498,11 @@ const UsagePricingForm: FC<Props> = ({
 
 		let finalPrice: Partial<Price>;
 
-		if (billingModel === billingModels[0].value) {
+		if (isFlatFeeLike) {
 			// FLAT_FEE: For FIAT, set amount directly; for CUSTOM, amount is in price_unit_config
 			finalPrice = {
 				...basePrice,
-				...(priceUnitType === PRICE_UNIT_TYPE.FIAT ? { amount: flatFee } : {}),
+				...(priceUnitType === PRICE_UNIT_TYPE.FIAT ? { amount: flatFeeAmount } : {}),
 			};
 		} else if (billingModel === billingModels[1].value) {
 			// PACKAGE: For FIAT, set amount directly; for CUSTOM, amount is in price_unit_config
@@ -624,6 +676,26 @@ const UsagePricingForm: FC<Props> = ({
 							}
 						}}
 						suffix={<span className='text-content-slate-muted'>{`/ unit / ${formatBillingPeriodForPrice(billingPeriod)}`}</span>}
+					/>
+				</div>
+			)}
+
+			{billingModel === PERCENTAGE_BILLING_MODEL && (
+				<div className='space-y-2'>
+					<Input
+						placeholder={t('catalog:plans.organisms.usageForm.percentagePlaceholder')}
+						variant='formatted-number'
+						error={inputErrors.percentageModelError}
+						label={t('catalog:plans.organisms.priceForm.price')}
+						value={percentageFee}
+						onChange={(e) => {
+							// Validate decimal input
+							const decimalRegex = /^\d*\.?\d*$/;
+							if (decimalRegex.test(e) || e === '') {
+								setPercentageFee(e);
+							}
+						}}
+						suffix={<span className='text-content-slate-muted'>%</span>}
 					/>
 				</div>
 			)}

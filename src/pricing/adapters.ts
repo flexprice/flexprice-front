@@ -9,6 +9,7 @@ import { Price, BILLING_PERIOD, INVOICE_CADENCE, PRICE_TYPE, CREDIT_GRANT_CADENC
 import { PlanType } from '@/constants/planTypes';
 import { billlingPeriodOptions } from '@/constants/constants';
 import type { Plan, PricingOption } from './types';
+import { isPercentagePrice } from '@/utils/common/percentage_price_helpers';
 
 export type PlanWithData = PlanResponse & { prices: PriceResponse[]; entitlements: EntitlementResponse[] };
 
@@ -16,7 +17,7 @@ export type PlanWithData = PlanResponse & { prices: PriceResponse[]; entitlement
 // so a real PriceResponse (or PlanWithData['prices'][number]) is assignable without any cast.
 type PriceLike = Pick<
 	PriceResponse,
-	'currency' | 'billing_period' | 'billing_model' | 'type' | 'amount' | 'tiers' | 'meter' | 'invoice_cadence'
+	'currency' | 'billing_period' | 'billing_model' | 'type' | 'amount' | 'tiers' | 'meter' | 'invoice_cadence' | 'metadata'
 >;
 
 export const parseAmount = (amount: string | undefined): number => {
@@ -200,6 +201,8 @@ export function adaptPlanToCard(plan: PlanWithData, grants: CreditGrant[]): Plan
 				amount: price.amount,
 				currency: price.currency,
 				billing_model: price.billing_model,
+				// The card has no access to price metadata, so resolve the percentage marker here.
+				is_percentage: isPercentagePrice(price),
 				// price.tiers is Tier[] | null; UsageCharge.tiers is non-nullable and Tier structurally
 				// matches its element (up_to widens to number | null), so assert the Tier[] shape here.
 				tiers: price.tiers as Tier[],
@@ -221,6 +224,7 @@ export function adaptPlanToCard(plan: PlanWithData, grants: CreditGrant[]): Plan
 			billingPeriod: displayPrice?.billing_period,
 			type: displayPrice?.type,
 			displayType,
+			is_percentage: displayPrice ? isPercentagePrice(displayPrice) : false,
 		},
 		usageCharges,
 		entitlements:

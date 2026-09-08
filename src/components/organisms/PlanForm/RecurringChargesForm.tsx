@@ -19,6 +19,14 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calculator } from 'lucide-react';
 import { SubscriptionCalculatorContent } from '@/components/organisms/EntityChargesPage/SubscriptionCalculator';
 import { toast } from 'react-hot-toast';
+import {
+	PERCENTAGE_BILLING_MODEL,
+	decimalAmountToPercentage,
+	isPercentagePrice,
+	percentageToDecimalAmount,
+	withPercentageMetadata,
+	withoutPercentageMetadata,
+} from '@/utils/common/percentage_price_helpers';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -57,13 +65,28 @@ function mapStoredTiersToFormTiers(tiers: StoredPriceTier[]): PriceTier[] {
 	});
 }
 
+/**
+ * The selector value for a price: PERCENTAGE for a flat fee tagged as percentage in metadata,
+ * otherwise the price's own billing model.
+ */
+function resolveBillingModelSelection(price: Partial<InternalPrice>): string {
+	return isPercentagePrice(price) ? PERCENTAGE_BILLING_MODEL : price.billing_model || BILLING_MODEL.FLAT_FEE;
+}
+
 function syncBillingModelFormStateFromPrice(
 	price: Partial<InternalPrice>,
 	setBillingModel: (value: string) => void,
 	setPackagedFee: (value: { unit: string; price: string }) => void,
 	setTieredPrices: (value: PriceTier[]) => void,
+	setPercentageFee: (value: string) => void,
 ) {
-	setBillingModel(price.billing_model || BILLING_MODEL.FLAT_FEE);
+	setBillingModel(resolveBillingModelSelection(price));
+
+	if (isPercentagePrice(price)) {
+		// Stored as the decimal equivalent - show the user the percentage they entered.
+		setPercentageFee(decimalAmountToPercentage(price.amount || ''));
+		return;
+	}
 
 	if (price.billing_model === BILLING_MODEL.PACKAGE) {
 		const packageAmount = price.amount ?? price.price_unit_config?.amount ?? '';
@@ -115,13 +138,16 @@ const RecurringChargesForm = ({
 
 	// Billing-model-specific state. `billingModel` holds the selector value which may be the
 	// frontend-only 'SLAB_TIERED' option (maps to TIERED with SLAB tier_mode on submit).
-	const [billingModel, setBillingModel] = useState<string>(price.billing_model || BILLING_MODEL.FLAT_FEE);
+	const [billingModel, setBillingModel] = useState<string>(() => resolveBillingModelSelection(price));
+	const [percentageFee, setPercentageFee] = useState<string>(() =>
+		isPercentagePrice(price) ? decimalAmountToPercentage(price.amount || '') : '',
+	);
 	const [packagedFee, setPackagedFee] = useState<{ unit: string; price: string }>({
 		unit: price.transform_quantity?.divide_by?.toString() || '',
 		price: price.billing_model === BILLING_MODEL.PACKAGE ? price.amount || '' : '',
 	});
 	const [tieredPrices, setTieredPrices] = useState<PriceTier[]>(getDefaultTiers);
-	const [modelErrors, setModelErrors] = useState({ packagedModelError: '', tieredModelError: '' });
+	const [modelErrors, setModelErrors] = useState({ packagedModelError: '', tieredModelError: '', percentageModelError: '' });
 
 	// Hydrate form when editing an existing charge (avoid resetting in-progress new charge edits)
 	useEffect(() => {
@@ -154,12 +180,15 @@ const RecurringChargesForm = ({
 			return updated;
 		});
 
-		syncBillingModelFormStateFromPrice(price, setBillingModel, setPackagedFee, setTieredPrices);
+		syncBillingModelFormStateFromPrice(price, setBillingModel, setPackagedFee, setTieredPrices, setPercentageFee);
 	}, [price, entityName]);
 
 	const isPackage = billingModel === BILLING_MODEL.PACKAGE;
 	const isTiered = billingModel === BILLING_MODEL.TIERED || billingModel === 'SLAB_TIERED';
 	const isFlatFee = billingModel === BILLING_MODEL.FLAT_FEE;
+	// Percentage Fee is a selector-only model: persisted as FLAT_FEE with the decimal equivalent of the
+	// entered percentage (5 -> "0.05") plus a metadata marker, so it reads back as a percentage.
+	const isPercentage = billingModel === PERCENTAGE_BILLING_MODEL;
 	const isCustomUnit = localPrice.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
 
 	// Get the current currency/price unit value for the selector
@@ -203,7 +232,7 @@ const RecurringChargesForm = ({
 
 	const validate = () => {
 		const newErrors: Partial<Record<keyof InternalPrice, string>> = {};
-		const newModelErrors = { packagedModelError: '', tieredModelError: '' };
+		const newModelErrors = { packagedModelError: '', tieredModelError: '', percentageModelError: '' };
 
 		if (!localPrice.billing_period) {
 			newErrors.billing_period = 'Billing Period is required';
@@ -223,6 +252,17 @@ const RecurringChargesForm = ({
 
 		if (isFlatFee && !localPrice.amount) {
 			newErrors.amount = 'Price is required';
+		}
+
+		if (isPercentage) {
+			if (percentageFee.trim() === '') {
+				newModelErrors.percentageModelError = 'Percentage is required';
+			} else {
+				const percentageAmount = parseFloat(percentageFee);
+				if (isNaN(percentageAmount) || percentageAmount < 0) {
+					newModelErrors.percentageModelError = 'Percentage must be a valid number greater than or equal to 0';
+				}
+			}
 		}
 
 		if (isPackage) {
@@ -272,7 +312,7 @@ const RecurringChargesForm = ({
 		setErrors(newErrors);
 		setModelErrors(newModelErrors);
 
-		const modelError = newModelErrors.packagedModelError || newModelErrors.tieredModelError;
+		const modelError = newModelErrors.packagedModelError || newModelErrors.tieredModelError || newModelErrors.percentageModelError;
 		if (modelError) toast.error(modelError);
 
 		return Object.keys(newErrors).length === 0 && !modelError;
@@ -281,10 +321,16 @@ const RecurringChargesForm = ({
 	const handleSubmit = () => {
 		if (!validate()) return;
 
-		const resolvedBillingModel = isTiered ? BILLING_MODEL.TIERED : (billingModel as BILLING_MODEL);
+		const resolvedBillingModel = isTiered ? BILLING_MODEL.TIERED : isPercentage ? BILLING_MODEL.FLAT_FEE : (billingModel as BILLING_MODEL);
 
 		// Build the per-model amount / transform_quantity / tiers for FIAT prices
-		const amount = isFlatFee ? localPrice.amount : isPackage ? packagedFee.price : undefined;
+		const amount = isFlatFee
+			? localPrice.amount
+			: isPercentage
+				? percentageToDecimalAmount(percentageFee)
+				: isPackage
+					? packagedFee.price
+					: undefined;
 		const transformQuantity = isPackage ? { divide_by: Number(packagedFee.unit) } : undefined;
 		const tiers = isTiered
 			? (tieredPrices.map((tier) => ({
@@ -299,8 +345,8 @@ const RecurringChargesForm = ({
 		// Build price_unit_config for custom price units based on billing model
 		let priceUnitConfig = localPrice.price_unit_config;
 		if (isCustomUnit && localPrice.price_unit_config) {
-			if (isFlatFee) {
-				priceUnitConfig = { ...localPrice.price_unit_config, amount: localPrice.amount };
+			if (isFlatFee || isPercentage) {
+				priceUnitConfig = { ...localPrice.price_unit_config, amount };
 			} else if (isPackage) {
 				priceUnitConfig = { ...localPrice.price_unit_config, amount: packagedFee.price };
 			} else if (isTiered) {
@@ -322,6 +368,9 @@ const RecurringChargesForm = ({
 			...baseLocalPrice,
 			type: localPrice.type ?? PRICE_TYPE.FIXED,
 			billing_model: resolvedBillingModel,
+			// Set explicitly (not just when percentage) so switching an existing percentage charge to
+			// another billing model drops the marker instead of inheriting it from the spread above.
+			metadata: isPercentage ? withPercentageMetadata(localPrice.metadata) : withoutPercentageMetadata(localPrice.metadata),
 			price_unit_config: priceUnitConfig,
 			entity_type: entityType,
 			entity_id: entityId || '',
@@ -426,6 +475,25 @@ const RecurringChargesForm = ({
 						</div>
 					}
 				/>
+			)}
+
+			{isPercentage && (
+				<div className='space-y-1'>
+					<Input
+						onChange={(value) => {
+							const decimalRegex = /^\d*\.?\d*$/;
+							if (decimalRegex.test(value) || value === '') {
+								setPercentageFee(value);
+							}
+						}}
+						value={percentageFee}
+						variant='formatted-number'
+						label={t('catalog:plans.organisms.priceForm.price')}
+						placeholder={t('catalog:plans.organisms.usageForm.percentagePlaceholder')}
+						error={modelErrors.percentageModelError}
+						suffix={<span className='text-content-slate-muted'>%</span>}
+					/>
+				</div>
 			)}
 
 			{isPackage && (

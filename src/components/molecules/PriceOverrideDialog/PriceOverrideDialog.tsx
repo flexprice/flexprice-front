@@ -10,6 +10,8 @@ import { BUCKET_SIZE_NONE, priceBucketSizeOptions } from '@/constants/constants'
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import VolumeTieredPricingForm from '@/components/organisms/PlanForm/VolumeTieredPricingForm';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
+import { decimalAmountToPercentage, isPercentagePrice, percentageToDecimalAmount } from '@/utils/common/percentage_price_helpers';
+import { formatPercentageAmount } from '@/utils/common/price_helpers';
 import { useTranslation } from 'react-i18next';
 import type { LineItem } from '@/models/Subscription';
 import type { UpdateSubscriptionLineItemRequest } from '@/types/dto/Subscription';
@@ -40,6 +42,13 @@ interface Props {
 	onLineItemUpdate?: (updateData: UpdateSubscriptionLineItemRequest) => void | Promise<void>;
 	isSaving?: boolean;
 }
+
+/**
+ * Seeds the amount field from a stored amount. A percentage charge stores the decimal equivalent
+ * ("0.025"), so the field has to show the percentage it stands for ("2.5") instead.
+ */
+const toAmountFieldValue = (stored: string | undefined, asPercentage: boolean): string =>
+	asPercentage ? decimalAmountToPercentage(stored || '') : (stored ?? '');
 
 const PriceOverrideDialog: FC<Props> = ({
 	isOpen,
@@ -114,6 +123,18 @@ const PriceOverrideDialog: FC<Props> = ({
 	// Detect price unit type
 	const isCustomPriceUnit = price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
 
+	// A percentage charge is a FLAT_FEE tagged in the price's metadata. An override can't change that
+	// metadata, so the amount field only reads as a percentage while the model stays on the price's
+	// own - switching to PACKAGE/TIERED here makes the override a plain currency-priced charge.
+	const isPercentage = isPercentagePrice(price);
+	const showAsPercentage = isPercentage && overrideBillingModel === price.billing_model;
+
+	/** Strips input formatting and, while the field reads as a percentage, converts 2.5 -> "0.025". */
+	const resolveStoredAmount = (value: string): string => {
+		const raw = removeFormatting(value);
+		return showAsPercentage ? percentageToDecimalAmount(raw) : raw;
+	};
+
 	// Check if this price is currently overridden
 	useEffect(() => {
 		const currentOverride = overriddenPrices[price.id];
@@ -123,10 +144,15 @@ const PriceOverrideDialog: FC<Props> = ({
 		if (isCurrentlyOverridden) {
 			// Initialize from override or original price based on price unit type
 			if (isCustomPriceUnit) {
-				setOverrideAmount(currentOverride.price_unit_amount || price.price_unit_amount || price.price_unit_config?.amount || '');
+				setOverrideAmount(
+					toAmountFieldValue(
+						currentOverride.price_unit_amount || price.price_unit_amount || price.price_unit_config?.amount || '',
+						isPercentage,
+					),
+				);
 				setOverrideTiers(currentOverride.price_unit_tiers || price.price_unit_tiers || []);
 			} else {
-				setOverrideAmount(currentOverride.amount || price.amount);
+				setOverrideAmount(toAmountFieldValue(currentOverride.amount || price.amount, isPercentage));
 				setOverrideTiers(currentOverride.tiers || price.tiers || []);
 			}
 			setOverrideQuantity(currentOverride.quantity);
@@ -150,7 +176,7 @@ const PriceOverrideDialog: FC<Props> = ({
 			// Initialize amount and tiers based on price unit type
 			if (isCustomPriceUnit) {
 				const initialAmount = price.price_unit_amount || price.price_unit_config?.amount || '';
-				setOverrideAmount(initialAmount);
+				setOverrideAmount(toAmountFieldValue(initialAmount, isPercentage));
 
 				// Initialize with original price_unit_tiers if they exist, otherwise start with one default tier
 				if (price.price_unit_tiers && price.price_unit_tiers.length > 0) {
@@ -172,7 +198,7 @@ const PriceOverrideDialog: FC<Props> = ({
 					]);
 				}
 			} else {
-				setOverrideAmount(price.amount);
+				setOverrideAmount(toAmountFieldValue(price.amount, isPercentage));
 
 				// Initialize with original tiers if they exist, otherwise start with one default tier
 				if (price.tiers && price.tiers.length > 0) {
@@ -217,6 +243,7 @@ const PriceOverrideDialog: FC<Props> = ({
 		price.bucket_size,
 		showEffectiveFrom,
 		isCustomPriceUnit,
+		isPercentage,
 	]);
 
 	const buildPriceOverride = (): Partial<ExtendedPriceOverride> => {
@@ -224,16 +251,17 @@ const PriceOverrideDialog: FC<Props> = ({
 
 		// Handle amount/price_unit_amount based on price unit type and billing model
 		if (overrideBillingModel !== BILLING_MODEL.TIERED && overrideBillingModel !== 'SLAB_TIERED') {
+			const enteredAmount = overrideAmount ? resolveStoredAmount(overrideAmount) : '';
 			if (isCustomPriceUnit) {
 				// For CUSTOM prices, use price_unit_amount
 				const originalAmount = price.price_unit_amount || price.price_unit_config?.amount || '';
-				if (overrideAmount && removeFormatting(overrideAmount) !== originalAmount) {
-					override.price_unit_amount = removeFormatting(overrideAmount);
+				if (enteredAmount && enteredAmount !== originalAmount) {
+					override.price_unit_amount = enteredAmount;
 				}
 			} else {
 				// For FIAT prices, use amount
-				if (overrideAmount && removeFormatting(overrideAmount) !== price.amount) {
-					override.amount = removeFormatting(overrideAmount);
+				if (enteredAmount && enteredAmount !== price.amount) {
+					override.amount = enteredAmount;
 				}
 			}
 		}
@@ -336,7 +364,7 @@ const PriceOverrideDialog: FC<Props> = ({
 
 		// Reset amount and tiers based on price unit type
 		if (isCustomPriceUnit) {
-			setOverrideAmount(price.price_unit_amount || price.price_unit_config?.amount || '');
+			setOverrideAmount(toAmountFieldValue(price.price_unit_amount || price.price_unit_config?.amount || '', isPercentage));
 			if (price.price_unit_tiers && price.price_unit_tiers.length > 0) {
 				setOverrideTiers(
 					price.price_unit_tiers.map((tier) => ({
@@ -355,7 +383,7 @@ const PriceOverrideDialog: FC<Props> = ({
 				]);
 			}
 		} else {
-			setOverrideAmount(price.amount);
+			setOverrideAmount(toAmountFieldValue(price.amount, isPercentage));
 			if (price.tiers && price.tiers.length > 0) {
 				setOverrideTiers(
 					price.tiers.map((tier) => ({
@@ -389,10 +417,15 @@ const PriceOverrideDialog: FC<Props> = ({
 		if (currentOverride) {
 			// Restore from override based on price unit type
 			if (isCustomPriceUnit) {
-				setOverrideAmount(currentOverride.price_unit_amount || price.price_unit_amount || price.price_unit_config?.amount || '');
+				setOverrideAmount(
+					toAmountFieldValue(
+						currentOverride.price_unit_amount || price.price_unit_amount || price.price_unit_config?.amount || '',
+						isPercentage,
+					),
+				);
 				setOverrideTiers(currentOverride.price_unit_tiers || price.price_unit_tiers || []);
 			} else {
-				setOverrideAmount(currentOverride.amount || price.amount);
+				setOverrideAmount(toAmountFieldValue(currentOverride.amount || price.amount, isPercentage));
 				setOverrideTiers(currentOverride.tiers || price.tiers || []);
 			}
 			setOverrideQuantity(currentOverride.quantity);
@@ -409,7 +442,7 @@ const PriceOverrideDialog: FC<Props> = ({
 		} else {
 			// Reset to original values based on price unit type
 			if (isCustomPriceUnit) {
-				setOverrideAmount(price.price_unit_amount || price.price_unit_config?.amount || '');
+				setOverrideAmount(toAmountFieldValue(price.price_unit_amount || price.price_unit_config?.amount || '', isPercentage));
 				if (price.price_unit_tiers && price.price_unit_tiers.length > 0) {
 					setOverrideTiers(
 						price.price_unit_tiers.map((tier) => ({
@@ -428,7 +461,7 @@ const PriceOverrideDialog: FC<Props> = ({
 					]);
 				}
 			} else {
-				setOverrideAmount(price.amount);
+				setOverrideAmount(toAmountFieldValue(price.amount, isPercentage));
 				if (price.tiers && price.tiers.length > 0) {
 					setOverrideTiers(
 						price.tiers.map((tier) => ({
@@ -481,9 +514,9 @@ const PriceOverrideDialog: FC<Props> = ({
 		let amountChanged: boolean;
 		if (isCustomPriceUnit) {
 			const originalAmount = price.price_unit_amount || price.price_unit_config?.amount || '';
-			amountChanged = !!(overrideAmount && removeFormatting(overrideAmount) !== originalAmount);
+			amountChanged = !!(overrideAmount && resolveStoredAmount(overrideAmount) !== originalAmount);
 		} else {
-			amountChanged = !!(overrideAmount && removeFormatting(overrideAmount) !== price.amount);
+			amountChanged = !!(overrideAmount && resolveStoredAmount(overrideAmount) !== price.amount);
 		}
 
 		// Compare tiers/price_unit_tiers based on price unit type
@@ -552,6 +585,7 @@ const PriceOverrideDialog: FC<Props> = ({
 
 	const originalFormatted = formatAmount(getDisplayAmount());
 	const displaySymbol = getDisplaySymbol();
+	const originalPriceDisplay = isPercentage ? formatPercentageAmount(getDisplayAmount()) : `${displaySymbol}${originalFormatted}`;
 	const chargeDisplayName = price.meter?.name || price.description || t('priceDialogs.thisChargeFallback');
 
 	const handleDialogOpenChange = (open: boolean) => {
@@ -576,10 +610,7 @@ const PriceOverrideDialog: FC<Props> = ({
 					{/* Original Price Display */}
 					<div className='flex items-center justify-between p-3 bg-surface-subtle rounded-lg'>
 						<div className='text-sm text-content-tertiary'>{t('priceDialogs.originalPrice')}</div>
-						<div className='font-medium'>
-							{displaySymbol}
-							{originalFormatted}
-						</div>
+						<div className='font-medium'>{originalPriceDisplay}</div>
 					</div>
 
 					{/* Billing Model Override - Only show for USAGE price types */}
@@ -614,14 +645,16 @@ const PriceOverrideDialog: FC<Props> = ({
 					{overrideBillingModel !== BILLING_MODEL.TIERED && overrideBillingModel !== 'SLAB_TIERED' && (
 						<div className='space-y-2'>
 							<label className='text-sm font-medium text-content-secondary'>
-								{t('priceDialogs.overrideAmountLabel', { unit: isCustomPriceUnit ? displaySymbol : price.currency })}
+								{showAsPercentage
+									? t('priceDialogs.overridePercentageLabel')
+									: t('priceDialogs.overrideAmountLabel', { unit: isCustomPriceUnit ? displaySymbol : price.currency })}
 							</label>
 							<Input
 								type='formatted-number'
 								value={overrideAmount}
 								onChange={setOverrideAmount}
-								placeholder={t('priceDialogs.enterNewAmountOptional')}
-								suffix={displaySymbol}
+								placeholder={showAsPercentage ? t('priceDialogs.enterNewPercentageOptional') : t('priceDialogs.enterNewAmountOptional')}
+								suffix={showAsPercentage ? '%' : displaySymbol}
 								className='w-full'
 							/>
 						</div>

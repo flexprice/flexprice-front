@@ -502,6 +502,7 @@
 				"selectBillingPeriod": "Select The Billing Period",
 				"per": "per",
 				"amountPlaceholder": "0.00",
+				"percentagePlaceholder": "0",
 				"bucketSize": "Bucket Size (Optional)",
 				"bucketSizeNone": "No bucketing",
 				"bucketSizePlaceholder": "No bucketing",
@@ -1055,7 +1056,8 @@
 			"flatFee": "Flat Fee",
 			"package": "Package",
 			"volumeTiered": "Volume Tiered",
-			"slabTiered": "Slab Tiered"
+			"slabTiered": "Slab Tiered",
+			"percentageFee": "Percentage Fee"
 		},
 		"originalPrice": "Original Price",
 		"billingModel": "Billing Model",
@@ -1087,6 +1089,8 @@
 		"failedUpdateToast": "Failed to update price",
 		"toastScheduled": "{{name}} will be effective from {{date}}.",
 		"toastUpdated": "{{name}} has been updated successfully.",
-		"fallbackPriceName": "Price"
+		"fallbackPriceName": "Price",
+		"overridePercentageLabel": "Override percentage",
+		"enterNewPercentageOptional": "Enter new percentage (optional)"
 	}
 }

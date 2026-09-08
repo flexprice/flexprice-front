@@ -116,6 +116,9 @@ export function internalPriceToSubscriptionLineItemRequest(
 			meter_id: internalPrice.meter_id,
 			filter_values: internalPrice.filter_values ?? undefined,
 		};
+		// Carries the percentage marker (metadata.billing_model = "percentage") that tells the UI to
+		// read this flat fee back as a percentage.
+		if (internalPrice.metadata) price.metadata = internalPrice.metadata;
 		if (internalPrice.amount != null) price.amount = internalPrice.amount;
 		if (internalPrice.tier_mode != null) price.tier_mode = internalPrice.tier_mode as TIER_MODE;
 		if (internalPrice.tiers?.length) price.tiers = internalPrice.tiers;
@@ -143,6 +146,8 @@ export function internalPriceToSubscriptionLineItemRequest(
 		min_quantity: internalPrice.min_quantity,
 		start_date: internalPrice.start_date,
 	};
+
+	if (internalPrice.metadata) price.metadata = internalPrice.metadata;
 
 	applyFixedChargePricingFields(price, internalPrice);
 
@@ -189,6 +194,7 @@ export function subscriptionLineItemToInternalPrice(
 		min_quantity: lineItem.quantity ?? subscriptionPrice.min_quantity ?? 1,
 		start_date: lineItem.start_date ?? subscriptionPrice.start_date,
 		price_unit_type: subscriptionPrice.price_unit_type ?? PRICE_UNIT_TYPE.FIAT,
+		metadata: subscriptionPrice.metadata ?? undefined,
 		internal_state: PriceInternalState.EDIT,
 	};
 

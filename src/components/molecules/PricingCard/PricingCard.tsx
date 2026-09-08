@@ -12,6 +12,7 @@ import { PlanType } from '@/constants/planTypes';
 import { cn } from '@/lib/utils';
 import { PRICE_TYPE } from '@/models/Price';
 import { normalizeCardProps } from '@/pricing/schema';
+import { formatPercentageAmount } from '@/utils/common/price_helpers';
 import { JsonObject } from '@/types/common';
 export interface UsageCharge {
 	amount?: string;
@@ -25,6 +26,11 @@ export interface UsageCharge {
 	}> | null;
 	matter_name?: string;
 	meter_name?: string;
+	/**
+	 * Set when the charge is a percentage fee: `amount` holds the decimal equivalent ("0.025") and is
+	 * rendered as the percentage it stands for, with no currency symbol and no per-unit suffix.
+	 */
+	is_percentage?: boolean;
 }
 
 export interface PricingCardProps {
@@ -37,6 +43,8 @@ export interface PricingCardProps {
 		billingPeriod?: string;
 		type?: PRICE_TYPE;
 		displayType: PlanType;
+		/** See {@link UsageCharge.is_percentage}. */
+		is_percentage?: boolean;
 	};
 	usageCharges?: UsageCharge[];
 	entitlements: Array<{
@@ -133,6 +141,9 @@ const formatEntitlementValue = ({
 const formatUsageCharge = (charge: UsageCharge, t: TFunction<'common'>) => {
 	if (!charge.amount) return '';
 
+	// A percentage fee prices the metered value itself, so "per unit"/"per package" don't apply.
+	if (charge.is_percentage) return formatPercentageAmount(charge.amount);
+
 	const sym = getCurrencySymbol(charge.currency || '');
 	const amt = `${sym}${formatAmount(charge.amount)}`;
 
@@ -150,6 +161,7 @@ const formatUsageCharge = (charge: UsageCharge, t: TFunction<'common'>) => {
 /** Compact usage line for AI pricing preview (/unit instead of per unit). */
 const formatUsageChargeCompact = (charge: UsageCharge, t: TFunction<'common'>) => {
 	if (!charge.amount) return '';
+	if (charge.is_percentage) return formatPercentageAmount(charge.amount);
 	const sym = getCurrencySymbol(charge.currency || '');
 	const amt = formatAmount(charge.amount);
 	if (charge.billing_model === 'PACKAGE') {
@@ -292,7 +304,11 @@ const PricingCard: React.FC<PricingCardProps> = (rawProps) => {
 
 	// Fall back to FIXED chrome when displayType is missing/invalid so `config` is never undefined.
 	const config = priceDisplayConfig[price.displayType] ?? priceDisplayConfig[PlanType.FIXED];
-	const displayAmount = config.text || `${getCurrencySymbol(price.currency || '')}${formatAmount(price.amount || '')}`;
+	const displayAmount =
+		config.text ||
+		(price.is_percentage
+			? formatPercentageAmount(price.amount || '')
+			: `${getCurrencySymbol(price.currency || '')}${formatAmount(price.amount || '')}`);
 	const hasUsageCharges = usageCharges.length > 0;
 
 	const chargeLimit = isSetupPreview ? usageCharges.length : VISIBLE_LIMIT;

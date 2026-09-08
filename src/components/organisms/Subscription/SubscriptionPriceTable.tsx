@@ -18,6 +18,8 @@ import { LineItemCommitmentConfig } from '@/types/dto/LineItemCommitmentConfig';
 import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
 import type { AddedSubscriptionLineItem } from './AddSubscriptionChargeDialog';
 import { getCurrencySymbol, copyToClipboard, getBucketSizeLabel } from '@/utils/common/helper_functions';
+import { formatPercentageAmount } from '@/utils/common/price_helpers';
+import { isPercentagePrice } from '@/utils/common/percentage_price_helpers';
 import { formatBillingPeriodForPrice } from '@/utils/common/helper_functions';
 import { resolveBucketSize } from '@/utils/common/commitment_helpers';
 import { formatAmount } from '@/components/atoms/Input/Input';
@@ -49,7 +51,9 @@ export function isPriceCompatibleWithBillingPeriod(
 	billingPeriod: string,
 	billingPeriodCount?: number,
 ): boolean {
-	return isOneTimePlanPrice(price) || isCadenceCompatible(billingPeriod, billingPeriodCount, price.billing_period, price.billing_period_count);
+	return (
+		isOneTimePlanPrice(price) || isCadenceCompatible(billingPeriod, billingPeriodCount, price.billing_period, price.billing_period_count)
+	);
 }
 
 type ChargeTableData = {
@@ -266,12 +270,15 @@ export interface Props {
 function formatAddedLineItemPrice(item: AddedSubscriptionLineItem, fallbackCurrency?: string): string {
 	const p = item.price;
 	if (!p) return '--';
+	const amount = p.amount ?? p.price_unit_config?.amount ?? '0';
+	// A percentage charge is stored as a flat fee whose amount is the decimal equivalent - render the
+	// percentage it stands for, with no currency symbol and no billing-period suffix.
+	if (isPercentagePrice(p)) return formatPercentageAmount(amount);
 	const currency =
 		p.price_unit_type === PRICE_UNIT_TYPE.CUSTOM
 			? p.price_unit_config?.price_unit
 			: ((p as { currency?: string }).currency ?? fallbackCurrency);
 	const symbol = currency ? getCurrencySymbol(currency) : '';
-	const amount = p.amount ?? p.price_unit_config?.amount ?? '0';
 	const period = p.billing_period ? formatBillingPeriodForPrice(p.billing_period) : '';
 	return `${symbol}${formatAmount(amount)}${period ? ` / ${period}` : ''}`;
 }

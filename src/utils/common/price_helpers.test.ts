@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { formatPriceDisplay, NormalizedPriceDisplay } from './price_helpers';
-import { BILLING_MODEL, TIER_MODE, PRICE_UNIT_TYPE } from '@/models/Price';
+import {
+	formatPriceDisplay,
+	normalizePriceDisplay,
+	getBillingModelLabel,
+	getPriceTableCharge,
+	NormalizedPriceDisplay,
+} from './price_helpers';
+import { PERCENTAGE_BILLING_MODEL } from './percentage_price_helpers';
+import { BILLING_MODEL, Price, PRICE_TYPE, TIER_MODE, PRICE_UNIT_TYPE } from '@/models/Price';
 
 const base: NormalizedPriceDisplay = {
 	amount: '0',
@@ -45,5 +52,52 @@ describe('formatPriceDisplay', () => {
 				tiers: [{ up_to: 100, unit_amount: '0.066666666666667', flat_amount: '0' }],
 			}),
 		).toBe('starts at $0.066667 per unit');
+	});
+});
+
+const percentagePrice = (amount: string, overrides: Partial<Price> = {}): Price =>
+	({
+		amount,
+		currency: 'USD',
+		billing_model: BILLING_MODEL.FLAT_FEE,
+		tier_mode: TIER_MODE.VOLUME,
+		price_unit_type: PRICE_UNIT_TYPE.FIAT,
+		tiers: null,
+		transform_quantity: null,
+		metadata: { billing_model: 'percentage' },
+		...overrides,
+	}) as unknown as Price;
+
+describe('percentage charges', () => {
+	it('renders the stored decimal as the percentage the user entered', () => {
+		expect(formatPriceDisplay(normalizePriceDisplay(percentagePrice('0.05')))).toBe('5%');
+		expect(formatPriceDisplay(normalizePriceDisplay(percentagePrice('0.10')))).toBe('10%');
+		expect(formatPriceDisplay(normalizePriceDisplay(percentagePrice('0.025')))).toBe('2.5%');
+	});
+
+	it('surfaces the percentage billing model, not the flat fee it is stored as', () => {
+		expect(normalizePriceDisplay(percentagePrice('0.05')).billingModel).toBe(PERCENTAGE_BILLING_MODEL);
+		expect(getBillingModelLabel(PERCENTAGE_BILLING_MODEL)).toBe('Percentage Fee');
+	});
+
+	it('renders an untagged flat fee as a currency amount', () => {
+		expect(formatPriceDisplay(normalizePriceDisplay(percentagePrice('0.05', { metadata: null })))).toBe('$0.05');
+	});
+
+	it('renders a fixed percentage charge as a percentage in the price table', () => {
+		expect(getPriceTableCharge(percentagePrice('0.025', { type: PRICE_TYPE.FIXED }))).toBe('2.5%');
+	});
+
+	it('renders a usage percentage charge without the per-unit suffix in the price table', () => {
+		expect(getPriceTableCharge(percentagePrice('0.05', { type: PRICE_TYPE.USAGE }))).toBe('5%');
+	});
+
+	it('ignores a stale marker once the charge is overridden onto another billing model', () => {
+		const normalized = normalizePriceDisplay(percentagePrice('0.05'), {
+			billing_model: BILLING_MODEL.PACKAGE,
+			transform_quantity: { divide_by: 10 },
+		} as never);
+		expect(normalized.billingModel).toBe(BILLING_MODEL.PACKAGE);
+		expect(formatPriceDisplay(normalized)).toBe('$0.05 / 10 units');
 	});
 });

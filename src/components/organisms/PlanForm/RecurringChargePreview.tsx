@@ -8,6 +8,7 @@ import { Pencil } from 'lucide-react';
 import { InternalPrice } from './SetupChargesSection';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { ChargeValueCell } from '@/components/molecules';
+import { isPercentagePrice } from '@/utils/common/percentage_price_helpers';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -49,9 +50,10 @@ const RecurringChargePreview: FC<Props> = ({ charge, onEditClicked, onDeleteClic
 	const displayCurrency =
 		charge.price_unit_type === PRICE_UNIT_TYPE.CUSTOM ? charge.price_unit_config?.price_unit || charge.currency : charge.currency;
 
-	// Flat fee charges render a simple "amount / period" string; package and tiered charges
-	// reuse ChargeValueCell, which knows how to format package sizes and tier summaries.
-	const isFlatFee = !charge.billing_model || charge.billing_model === BILLING_MODEL.FLAT_FEE;
+	// Flat fee charges render a simple "amount / period" string; package, tiered and percentage
+	// charges reuse ChargeValueCell, which knows how to format package sizes, tier summaries, and the
+	// percentage a flat-fee amount stands for.
+	const isFlatFee = (!charge.billing_model || charge.billing_model === BILLING_MODEL.FLAT_FEE) && !isPercentagePrice(charge);
 
 	return (
 		<div className='gap-2 w-full flex justify-between group min-h-9 items-center rounded-md border bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground hover:bg-surface-subtle transition-colors mb-2'>
