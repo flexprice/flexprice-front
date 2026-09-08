@@ -603,6 +603,8 @@
 		"addonRequired": "الإضافة مطلوبة",
 		"columnCharge": "الرسوم",
 		"columnType": "النوع",
+		"columnQuantity": "الكمية",
+		"quantityUsage": "حسب الاستخدام",
 		"columnCommitment": "الالتزام",
 		"notAvailable": "غير متاح",
 		"configure": "تهيئة",

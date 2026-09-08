@@ -424,9 +424,11 @@
 			"columns": {
 				"charge": "Charge",
 				"type": "Type",
+				"quantity": "Quantity",
 				"commitment": "Commitment",
 				"price": "Price"
 			},
+			"quantityUsage": "pay as you go",
 			"chargeFallback": "Charge",
 			"commitmentNotAvailable": "Not available",
 			"noDescription": "No description",

@@ -10,9 +10,11 @@ import AddonApi from '@/api/AddonApi';
 import { getTotalPayableTextWithCoupons } from '@/utils/common/helper_functions';
 import { Price, PRICE_TYPE } from '@/models/Price';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { getCurrentPriceAmount, overrideLineItemsToMap, ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
+import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import { Coupon } from '@/models/Coupon';
 import { filterAddonPricesForSubscription } from '@/utils/subscription/addon_commitment_helpers';
+import { formatAddonQuantityDisplay, sumFixedAddonRecurringTotal } from '@/utils/subscription/addonQuantity';
+import type { OverrideLineItemRequest } from '@/types/dto/Subscription';
 
 interface Props {
 	data: AddAddonToSubscriptionRequest[];
@@ -28,6 +30,7 @@ interface Props {
 }
 const formatAddonCharges = (
 	prices: Price[] = [],
+	overrideLineItems: OverrideLineItemRequest[] = [],
 	priceOverrides: Record<string, ExtendedPriceOverride> = {},
 	coupons: Coupon[] = [],
 	t: TFunction<'common'>,
@@ -43,13 +46,14 @@ const formatAddonCharges = (
 		return hasUsage ? t('subscriptionAddon.dependsOnUsage') : t('labels.na');
 	}
 
-	// Calculate total recurring amount
-	const recurringTotal = recurringPrices.reduce((acc, charge) => {
-		const currentAmount = getCurrentPriceAmount(charge, priceOverrides);
-		return acc + parseFloat(currentAmount);
-	}, 0);
+	const fromLineItems = Object.fromEntries(
+		overrideLineItems.map((item) => [item.price_id, { quantity: item.quantity, amount: item.amount }]),
+	);
+	const fromPriceOverrides = Object.fromEntries(
+		Object.entries(priceOverrides).map(([id, override]) => [id, { quantity: override.quantity, amount: override.amount }]),
+	);
+	const recurringTotal = sumFixedAddonRecurringTotal(recurringPrices, { ...fromPriceOverrides, ...fromLineItems });
 
-	// Use the same helper as Preview component for consistent display
 	return getTotalPayableTextWithCoupons(recurringPrices, usagePrices, recurringTotal, coupons);
 };
 
@@ -147,15 +151,21 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 				},
 			},
 			{
+				title: t('subscriptionAddon.columnQuantity'),
+				render: (row) => {
+					const addonDetails = getAddonDetails(row.addon_id);
+					const prices = filterAddonPricesForSubscription(addonDetails?.prices || [], billingPeriod, currency, billingPeriodCount);
+					return formatAddonQuantityDisplay(prices, row.override_line_items ?? [], t('subscriptionAddon.quantityUsage'));
+				},
+			},
+			{
 				title: t('subscriptionAddon.columnCharges'),
 				render: (row) => {
 					const addonDetails = getAddonDetails(row.addon_id);
 					const prices = filterAddonPricesForSubscription(addonDetails?.prices || [], billingPeriod, currency, billingPeriodCount);
-					// Each addon row carries its own overrides (set via "Override Price" in the addon
-					// editor) - the shared `priceOverrides` prop is keyed for the base plan's prices and
-					// never covers per-addon overrides, so it must not be the only source used here.
-					const rowOverrides = { ...priceOverrides, ...overrideLineItemsToMap(row.override_line_items) };
-					return <span>{formatAddonCharges(prices, rowOverrides, coupons, t)}</span>;
+					// Per-addon overrides (amount + quantity) live on the row; plan-level
+					// `priceOverrides` never covers addon catalogue price ids.
+					return <span>{formatAddonCharges(prices, row.override_line_items ?? [], priceOverrides, coupons, t)}</span>;
 				},
 			},
 			// {

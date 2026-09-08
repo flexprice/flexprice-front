@@ -608,6 +608,8 @@
 		"addonRequired": "Addon is required",
 		"columnCharge": "Charge",
 		"columnType": "Type",
+		"columnQuantity": "Quantity",
+		"quantityUsage": "pay as you go",
 		"columnCommitment": "Commitment",
 		"notAvailable": "Not available",
 		"configure": "Configure",

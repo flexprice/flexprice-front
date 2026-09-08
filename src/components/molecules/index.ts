@@ -157,6 +157,8 @@ export type { RectangleRadiogroupOption } from './RectangleRadiogroup';
 export { default as DropdownMenu, getCopyIdOption } from './DropdownMenu';
 export type { DropdownMenuOption } from './DropdownMenu';
 export { ChargeValueCell } from './ChargeValueCell';
+export { PriceQuantityCell } from './PriceQuantityCell';
+export type { PriceQuantityCellProps } from './PriceQuantityCell';
 
 // Query & Search
 export { QueryBuilder, PropertyFilterQueryBuilder, FilterPopover, SortDropdown, FilterMultiSelect } from './QueryBuilder';

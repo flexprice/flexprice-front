@@ -435,8 +435,8 @@ export interface OverrideLineItemRequest {
 	// PriceID references the plan price to override
 	price_id: string;
 
-	// Quantity for this line item (optional)
-	quantity?: number;
+	// Quantity for this line item (optional). API expects a decimal string.
+	quantity?: number | string;
 
 	billing_model?: BILLING_MODEL;
 

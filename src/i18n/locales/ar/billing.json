@@ -424,9 +424,11 @@
 			"columns": {
 				"charge": "الرسم",
 				"type": "النوع",
+				"quantity": "الكمية",
 				"commitment": "الالتزام",
 				"price": "السعر"
 			},
+			"quantityUsage": "حسب الاستخدام",
 			"chargeFallback": "رسم",
 			"commitmentNotAvailable": "غير متاح",
 			"noDescription": "لا يوجد وصف",

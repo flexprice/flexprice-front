@@ -208,7 +208,7 @@ export function buildLineItemChangeRows(lineItems: ChangedLineItem[]): LineItemC
 			case SUBSCRIPTION_MODIFY_LINE_ITEM_ACTION.UPDATED:
 				return { id: li.id, kind: 'updated', label: 'Updated', quantityDisplay: qty, periodDisplay };
 			case SUBSCRIPTION_MODIFY_LINE_ITEM_ACTION.ENDED:
-				return { id: li.id, kind: 'ended', label: 'Ends', quantityDisplay: '—', periodDisplay };
+				return { id: li.id, kind: 'ended', label: 'Ends', quantityDisplay: qty, periodDisplay };
 			default:
 				return { id: li.id, kind: 'other', label: 'Change', quantityDisplay: qty, periodDisplay };
 		}

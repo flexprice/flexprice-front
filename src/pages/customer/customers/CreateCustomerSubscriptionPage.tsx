@@ -48,6 +48,7 @@ import { toSentenceCase } from '@/utils/common/helper_functions';
 import { ExtendedPriceOverride, getLineItemOverrides } from '@/utils/common/price_override_helpers';
 import { extractLineItemCommitments } from '@/utils/common/commitment_helpers';
 import { sanitizeAddonLineItemCommitmentsForApi, filterAddonPricesForSubscription } from '@/utils/subscription/addon_commitment_helpers';
+import { sanitizeAddonOverrideLineItemsForApi } from '@/utils/subscription/addonQuantity';
 import { extractSubscriptionBoundaries, extractFirstPhaseData } from '@/utils/subscription/phaseConversion';
 import { stripDisplayMeterFromLineItemRequest } from '@/utils/subscription/internalPriceToSubscriptionLineItemRequest';
 
@@ -677,9 +678,11 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 						// will actually be sent.
 						const prices = filterAddonPricesForSubscription(addonDetails?.prices as Price[] | undefined, billingPeriod, currency, 1);
 						const line_item_commitments = sanitizeAddonLineItemCommitmentsForApi(addon.line_item_commitments, prices);
+						const override_line_items = sanitizeAddonOverrideLineItemsForApi(addon.override_line_items, prices);
 						return {
 							...addon,
 							line_item_commitments,
+							override_line_items,
 						};
 					})
 				: undefined;

@@ -27,6 +27,8 @@ import { ChevronDown, Pencil, RotateCcw, Target } from 'lucide-react';
 import { BsThreeDots } from 'react-icons/bs';
 import { usePriceOverrides } from '@/hooks/usePriceOverrides';
 import { getLineItemOverrides } from '@/utils/common/price_override_helpers';
+import { sanitizeAddonOverrideLineItemsForApi } from '@/utils/subscription/addonQuantity';
+import { PriceQuantityCell } from '@/components/molecules/PriceQuantityCell';
 import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
 import ChargeValueCell from '@/components/molecules/ChargeValueCell/ChargeValueCell';
 import { DropdownMenu as UiDropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -100,7 +102,13 @@ const AddAddonDialog: React.FC<Props> = ({
 
 	// Reset form when modal opens/closes
 	const selectedAddonPrices = useMemo(
-		() => filterAddonPricesForSubscription((selectedAddonDetails?.prices as Price[]) || [], billingPeriod, currency, resolvedBillingPeriodCount),
+		() =>
+			filterAddonPricesForSubscription(
+				(selectedAddonDetails?.prices as Price[]) || [],
+				billingPeriod,
+				currency,
+				resolvedBillingPeriodCount,
+			),
 		[selectedAddonDetails, billingPeriod, currency, resolvedBillingPeriodCount],
 	);
 
@@ -179,12 +187,15 @@ const AddAddonDialog: React.FC<Props> = ({
 
 		setErrors({});
 		const line_item_commitments = sanitizeAddonLineItemCommitmentsForApi(lineItemCommitments, selectedAddonPrices);
-		const override_line_items = getLineItemOverrides(selectedAddonPrices, overriddenPrices);
+		const override_line_items = sanitizeAddonOverrideLineItemsForApi(
+			getLineItemOverrides(selectedAddonPrices, overriddenPrices),
+			selectedAddonPrices,
+		);
 		const addonData: AddAddonRequest = {
 			subscription_id: subscriptionId,
 			addon_id: formData.addon_id!,
 			line_item_commitments,
-			...(override_line_items.length > 0 ? { override_line_items } : {}),
+			...(override_line_items ? { override_line_items } : {}),
 			...(startDate ? { start_date: startDate.toISOString() } : {}),
 			...(cadence ? { cadence } : {}),
 			...(prorationBehavior ? { proration_behavior: prorationBehavior } : {}),
@@ -297,6 +308,19 @@ const AddAddonDialog: React.FC<Props> = ({
 				render: (row) => <span>{toSentenceCase(row.price.type || t('common:labels.na'))}</span>,
 			},
 			{
+				title: t('billing:subscriptions.addAddonDialog.columns.quantity'),
+				render: (row) => (
+					<PriceQuantityCell
+						price={row.price}
+						override={overriddenPrices[row.price.id]}
+						usageLabel={t('billing:subscriptions.addAddonDialog.quantityUsage')}
+						ariaLabel={t('billing:subscriptions.addAddonDialog.columns.quantity')}
+						onPriceOverride={overridePrice}
+						onResetOverride={resetOverride}
+					/>
+				),
+			},
+			{
 				title: t('billing:subscriptions.addAddonDialog.columns.price'),
 				render: (row) => <ChargeValueCell data={row.price} priceOverride={overriddenPrices[row.price.id]} />,
 			},
@@ -354,7 +378,7 @@ const AddAddonDialog: React.FC<Props> = ({
 				},
 			},
 		],
-		[lineItemCommitments, handleConfigureCommitment, handleConfigurePrice, overriddenPrices, resetOverride, t],
+		[lineItemCommitments, handleConfigureCommitment, handleConfigurePrice, overridePrice, overriddenPrices, resetOverride, t],
 	);
 
 	const filteredAddonOptions = useMemo(() => {

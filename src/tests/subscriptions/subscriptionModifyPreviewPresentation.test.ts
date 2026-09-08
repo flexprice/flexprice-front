@@ -165,7 +165,7 @@ describe('subscriptionModifyPreviewPresentation', () => {
 			expect(rows).toHaveLength(2);
 			expect(rows[0].kind).toBe('ended');
 			expect(rows[0].label).toBe('Ends');
-			expect(rows[0].quantityDisplay).toBe('—');
+			expect(rows[0].quantityDisplay).toBe('1');
 			expect(rows[1].kind).toBe('created');
 			expect(rows[1].label).toBe('New line');
 			expect(rows[1].quantityDisplay).toBe('45');
