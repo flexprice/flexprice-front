@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input, Select, Spacer } from '@/components/atoms';
 import {
@@ -52,6 +52,13 @@ const MeteredAllowanceFields: FC<Props> = ({ value, onChange, errors, unitLabel,
 	const { t } = useTranslation('catalog');
 	const mode = deriveAllowanceMode(value);
 
+	// Switching to a cycle-length window overwrites the unit, so the hour/day/week
+	// choice has to be remembered to survive a round trip back to recurring.
+	const lastRecurringUnit = useRef<ENTITLEMENT_GRANT_DURATION_UNIT>(ENTITLEMENT_GRANT_DURATION_UNIT.DAY);
+	if (value.grant_duration_unit && value.grant_duration_unit !== ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD) {
+		lastRecurringUnit.current = value.grant_duration_unit;
+	}
+
 	const durationUnit = value.grant_duration_unit ?? ENTITLEMENT_GRANT_DURATION_UNIT.DAY;
 	const measure = value.grant_measure ?? ENTITLEMENT_GRANT_MEASURE.QUANTITY;
 
@@ -78,7 +85,9 @@ const MeteredAllowanceFields: FC<Props> = ({ value, onChange, errors, unitLabel,
 	// yardstick for "how many of these will a customer see".
 	const preview = useMemo(() => {
 		if (mode !== 'recurring') return null;
-		const n = value.grant_duration_value ?? 1;
+		// The input accepts any number while typing; 0 would divide to Infinity.
+		const n = value.grant_duration_value;
+		if (n == null || n < 1) return null;
 		const hours = { hour: 1, day: 24, week: 168 }[durationUnit as 'hour' | 'day' | 'week'] ?? 24;
 		const windows = Math.max(1, Math.floor((30 * 24) / (n * hours)));
 		const quota = Number(value.grant_quota ?? 0);
@@ -94,7 +103,7 @@ const MeteredAllowanceFields: FC<Props> = ({ value, onChange, errors, unitLabel,
 						selected={mode === 'recurring'}
 						label={t('entitlements.addDrawer.modeRecurringLabel')}
 						description={t('entitlements.addDrawer.modeRecurringDescription')}
-						onSelect={() => onChange(patchForMode('recurring', value))}
+						onSelect={() => onChange(patchForMode('recurring', { ...value, grant_duration_unit: lastRecurringUnit.current }))}
 					/>
 					<RadioRow
 						selected={mode === 'period'}

@@ -6,11 +6,12 @@ import { Button, Card, CardHeader, Chip, Dialog, NoDataCard, Sheet } from '@/com
 import { FlexpriceTable, ColumnData, AddEntitlementDrawer, EditSubscriptionEntitlementDrawer } from '@/components/molecules';
 import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import GrantAllowanceMeter from './GrantAllowanceMeter';
-import { formatAggregatedAllowance } from '@/utils/entitlement/allowanceLabel';
+import { formatAggregatedAllowance, formatAllowanceValue, formatAllowanceReset } from '@/utils/entitlement/allowanceLabel';
+import type { SubscriptionEntitlementEffective } from '@/types/dto/Subscription';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import EntitlementApi from '@/api/EntitlementApi';
 import { FEATURE_TYPE } from '@/models/Feature';
-import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
+import { ENTITLEMENT_ENTITY_TYPE, type Entitlement } from '@/models/Entitlement';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { BsThreeDots } from 'react-icons/bs';
@@ -207,6 +208,14 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		return t(sourceKeys[source] ?? 'entitlements.subscriptionEdit.sourcePlan');
 	};
 
+	/** "1,000 calls / hour" for either shape, so a cadence change shows too. */
+	const describeAggregated = (e?: Partial<Entitlement> | SubscriptionEntitlementEffective) => {
+		if (!e) return undefined;
+		const value = formatAllowanceValue(e as Partial<Entitlement>, t);
+		const reset = formatAllowanceReset(e as Partial<Entitlement>, t);
+		return reset && reset !== '--' ? `${value} / ${reset}` : value;
+	};
+
 	const getEntitlementValue = (row: EnrichedSubscriptionEntitlement) => {
 		const featureType = row.feature_type;
 		const entitlementData = row.entitlement;
@@ -219,7 +228,14 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			const { value, reset } = formatAggregatedAllowance(entitlementData, row.feature?.unit_plural as string | undefined, t);
 			const valueText = reset && reset !== '--' ? `${value} / ${reset}` : value;
 
-			const hasChangedValue = row.isOverrideOfParent && limit !== originalLimit;
+			// Grant-backed rows carry no usage_limit on either side, so the legacy
+			// comparison never fires and the tooltip would read "Unlimited → Unlimited".
+			const isGrant = Boolean(entitlementData?.grant_duration_unit || entitlementData?.grant_quota != null);
+			const originalText = row.originalGrant ? describeAggregated(row.originalGrant) : undefined;
+			const currentText = describeAggregated(entitlementData);
+			const hasChangedValue = isGrant
+				? row.isOverrideOfParent && originalText != null && originalText !== currentText
+				: row.isOverrideOfParent && limit !== originalLimit;
 
 			return (
 				<div className='flex items-center gap-2'>
@@ -236,10 +252,15 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 									<div className='space-y-2'>
 										<div className='font-medium text-content'>{t('entitlements.overridesTable.overrideAppliedTitle')}</div>
 										<div className='text-sm text-content-tertiary'>
-											{t('entitlements.overridesTable.tooltipUsageLimit', {
-												from: formatUsageLimit(originalLimit),
-												to: formatUsageLimit(limit),
-											})}
+											{isGrant
+												? t('entitlements.overridesTable.tooltipAllowance', {
+														from: originalText ?? currentText,
+														to: currentText,
+													})
+												: t('entitlements.overridesTable.tooltipUsageLimit', {
+														from: formatUsageLimit(originalLimit),
+														to: formatUsageLimit(limit),
+													})}
 										</div>
 									</div>
 								</TooltipContent>

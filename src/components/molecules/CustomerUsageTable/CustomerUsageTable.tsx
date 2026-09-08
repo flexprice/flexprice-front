@@ -167,17 +167,22 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					const usage = Number(row?.current_usage);
 					const limit = row?.is_unlimited ? null : row?.total_limit ? Number(row.total_limit) : null;
 
+					// The ledger belongs on every grant-backed row, including unlimited ones —
+					// it was previously stranded after this early return.
 					if (row?.is_unlimited || !limit) {
 						return (
-							<Progress
-								label={t('usageTable.featureTypes.usageProgressUnlimited', {
-									usage: formatAmount(usage.toString()),
-								})}
-								value={0}
-								className='h-[6px]'
-								indicatorColor='bg-info'
-								backgroundColor='bg-info-line'
-							/>
+							<>
+								<Progress
+									label={t('usageTable.featureTypes.usageProgressUnlimited', {
+										usage: formatAmount(usage.toString()),
+									})}
+									value={0}
+									className='h-[6px]'
+									indicatorColor='bg-info'
+									backgroundColor='bg-info-line'
+								/>
+								<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} />
+							</>
 						);
 					}
 

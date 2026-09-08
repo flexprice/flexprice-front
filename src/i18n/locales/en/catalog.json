@@ -1010,7 +1010,13 @@
 			"previewPeriodFoot": "One allowance of {{quota}} for the whole billing period.",
 			"previewUnlimitedFoot": "No ceiling — usage is tracked but never billed.",
 			"grantUnavailable": "Recurring allowances are unavailable for this feature",
-			"durationBillingPeriod": "billing period"
+			"durationBillingPeriod": "billing period",
+			"durationHour_one": "hour",
+			"durationHour_other": "hours",
+			"durationDay_one": "day",
+			"durationDay_other": "days",
+			"durationWeek_one": "week",
+			"durationWeek_other": "weeks"
 		},
 		"displayCalculator": {
 			"titleFallback": "Display value",

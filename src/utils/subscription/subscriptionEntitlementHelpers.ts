@@ -23,6 +23,11 @@ export interface EnrichedSubscriptionEntitlement {
 	usage_reset_period?: string;
 	/** Live allowance for grant-backed features; absent for legacy rows. */
 	grant_state?: SubscriptionEntitlementEffective['grant_state'];
+	/**
+	 * The plan's grant config before any subscription override, so a changed
+	 * allowance can be shown as from → to. Absent when the plan row is legacy.
+	 */
+	originalGrant?: Pick<EntitlementResponse, 'grant_measure' | 'grant_quota' | 'grant_duration_value' | 'grant_duration_unit' | 'feature'>;
 }
 
 const normalizeEntityType = (entityType?: string) => entityType?.toLowerCase() ?? '';
@@ -95,6 +100,15 @@ export const enrichSubscriptionEntitlements = (
 			originalIsEnabled: resolvedOriginalIsEnabled,
 			usage_reset_period: item.entitlement?.usage_reset_period,
 			grant_state: item.entitlement?.grant_state,
+			originalGrant: planEnt
+				? {
+						grant_measure: planEnt.grant_measure,
+						grant_quota: planEnt.grant_quota,
+						grant_duration_value: planEnt.grant_duration_value,
+						grant_duration_unit: planEnt.grant_duration_unit,
+						feature: planEnt.feature,
+					}
+				: undefined,
 		};
 	});
 };

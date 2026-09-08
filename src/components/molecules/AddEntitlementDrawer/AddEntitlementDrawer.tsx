@@ -612,7 +612,14 @@ const AddEntitlementDrawer: FC<Props> = ({
 				isOpen={isCalculatorOpen}
 				onOpenChange={setIsCalculatorOpen}
 				unitValue={(() => {
-					if (activeFeature?.type === FEATURE_TYPE.METERED) return tempEntitlement.usage_limit ?? undefined;
+					// Metered allowances live in grant_quota (a string); usage_limit is no
+					// longer sent for them, so reading it here made the calculator a no-op.
+					if (activeFeature?.type === FEATURE_TYPE.METERED) {
+						const q = tempEntitlement.grant_quota;
+						if (q == null || q === '') return undefined;
+						const n = Number(q);
+						return Number.isFinite(n) ? n : undefined;
+					}
 					if (activeFeature?.type === FEATURE_TYPE.STATIC && tempEntitlement.static_value != null) {
 						const n =
 							typeof tempEntitlement.static_value === 'string'
@@ -626,7 +633,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 				baseUnitPlural={featureForForm?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
 				onConfirm={(unitValue) => {
 					if (activeFeature?.type === FEATURE_TYPE.METERED) {
-						setTempEntitlement((prev) => ({ ...prev, usage_limit: unitValue }));
+						setTempEntitlement((prev) => ({ ...prev, grant_quota: String(unitValue) }));
 					} else if (activeFeature?.type === FEATURE_TYPE.STATIC) {
 						setTempEntitlement((prev) => ({ ...prev, static_value: String(unitValue) }));
 					}

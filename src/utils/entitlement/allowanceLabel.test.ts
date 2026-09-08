@@ -47,7 +47,7 @@ describe('formatAllowanceReset', () => {
 				} as never,
 				t,
 			),
-		).toBe('5 entitlements.addDrawer.durationDays');
+		).toBe('5 entitlements.addDrawer.durationDay');
 	});
 
 	it('has nothing to reset when unlimited', () => {

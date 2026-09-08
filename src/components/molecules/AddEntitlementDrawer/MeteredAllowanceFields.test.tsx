@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import MeteredAllowanceFields from './MeteredAllowanceFields';
-import { deriveAllowanceMode, patchForMode } from './allowanceMode';
-import { ENTITLEMENT_GRANT_DURATION_UNIT } from '@/models/Entitlement';
+import { deriveAllowanceMode, patchForMode, toAllowanceDraft } from './allowanceMode';
+import { ENTITLEMENT_GRANT_DURATION_UNIT, ENTITLEMENT_GRANT_MEASURE } from '@/models/Entitlement';
 
 vi.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string) => key }),
@@ -62,5 +62,30 @@ describe('billing-period vs unlimited', () => {
 		const recurring = { ...patchForMode('recurring', {}), grant_quota: '250' };
 		expect(patchForMode('period', recurring).grant_quota).toBe('250');
 		expect(patchForMode('recurring', patchForMode('period', recurring)).grant_quota).toBe('250');
+	});
+});
+
+describe('review regressions', () => {
+	it('normalises a saved unlimited entitlement into an unlimited draft', () => {
+		// The API omits grant_quota on an unlimited allowance, but inside the form an
+		// absent quota means "not typed yet" — without normalising, the table said
+		// "Unlimited" while the drawer showed an empty billing-period field.
+		const saved = {
+			grant_measure: ENTITLEMENT_GRANT_MEASURE.QUANTITY,
+			grant_duration_unit: ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD,
+		};
+		expect(deriveAllowanceMode(saved)).toBe('period');
+		expect(deriveAllowanceMode(toAllowanceDraft(saved))).toBe('unlimited');
+	});
+
+	it('keeps a chosen duration unit when the caller supplies it', () => {
+		// patchForMode is pure, so the round trip through billing-period is only
+		// lossless because the component remembers the last recurring unit.
+		const hourly = { ...patchForMode('recurring', {}), grant_duration_unit: ENTITLEMENT_GRANT_DURATION_UNIT.HOUR };
+		const period = patchForMode('period', hourly);
+		expect(period.grant_duration_unit).toBe(ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD);
+
+		const back = patchForMode('recurring', { ...period, grant_duration_unit: ENTITLEMENT_GRANT_DURATION_UNIT.HOUR });
+		expect(back.grant_duration_unit).toBe(ENTITLEMENT_GRANT_DURATION_UNIT.HOUR);
 	});
 });

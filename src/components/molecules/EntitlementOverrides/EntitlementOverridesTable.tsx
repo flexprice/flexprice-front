@@ -152,7 +152,8 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({ entitle
 
 			// Check if there's an override and the value has changed (including null to number or vice versa)
 			const hasChangedValue = hasGrantConfig(entitlement)
-				? hasOverride && formatAllowanceValue(entitlement.displayGrant ?? entitlement, t) !== formatAllowanceValue(entitlement, t)
+				? // Compare the whole phrase so a cadence-only change counts too.
+					hasOverride && describeAllowance(entitlement.displayGrant ?? entitlement) !== describeAllowance(entitlement)
 				: hasOverride && limit !== originalLimit;
 
 			return (

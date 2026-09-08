@@ -25,10 +25,11 @@ export const formatGrantPeriod = (
 	t: TFunction<'catalog'>,
 ): string => {
 	const unit = entitlement.grant_duration_unit ?? ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD;
-	const label = t(durationKey[unit]);
 	const count = entitlement.grant_duration_value ?? 1;
-	if (unit === ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD || count === 1) return label;
-	return `${count} ${label}s`;
+	if (unit === ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD) return t(durationKey[unit]);
+	// i18next plural forms: appending a Latin "s" produced "5 يومs" in Arabic.
+	const label = t(durationKey[unit], { count });
+	return count === 1 ? label : `${count} ${label}`;
 };
 
 /**

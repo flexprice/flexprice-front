@@ -986,9 +986,9 @@
 			"measureQuantityDescription": "Counted in raw meter units.",
 			"measureAmountDescription": "Counted as money, priced through the billing pipeline.",
 			"refreshesEveryLabel": "Refreshes every",
-			"durationHour": "hour",
-			"durationDay": "day",
-			"durationWeek": "week",
+			"durationHour": "ساعة",
+			"durationDay": "يوم",
+			"durationWeek": "أسبوع",
 			"windowStartsLabel": "Window starts",
 			"windowStartsFirstUsage": "On first use",
 			"windowStartsFirstUsageDescription": "A rolling window anchored to the customer's first event",
@@ -1008,7 +1008,13 @@
 			"previewPeriodFoot": "One allowance of {{quota}} for the whole billing period.",
 			"previewUnlimitedFoot": "No ceiling — usage is tracked but never billed.",
 			"grantUnavailable": "Recurring allowances are unavailable for this feature",
-			"durationBillingPeriod": "billing period"
+			"durationBillingPeriod": "billing period",
+			"durationHour_one": "ساعة",
+			"durationHour_other": "ساعات",
+			"durationDay_one": "يوم",
+			"durationDay_other": "أيام",
+			"durationWeek_one": "أسبوع",
+			"durationWeek_other": "أسابيع"
 		},
 		"displayCalculator": {
 			"titleFallback": "القيمة المعروضة",

@@ -106,7 +106,11 @@ export interface UpdateEntitlementRequest {
 	grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
 	grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
 	aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
-	/** Drops the grant config entirely, returning the entitlement to a legacy quota. */
+	/**
+	 * @deprecated Being removed. Its only outcomes are an entitlement with no
+	 * ceiling — already expressible as a grant with `grant_quota` unset — or a
+	 * fall back to the legacy usage_limit model. Set the grant fields instead.
+	 */
 	clear_grant_config?: boolean;
 }
 

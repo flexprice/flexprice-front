@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { EnrichedEntitlementRow } from './EntitlementOverridesTable';
 import MeteredAllowanceFields, { type MeteredAllowanceErrors } from '@/components/molecules/AddEntitlementDrawer/MeteredAllowanceFields';
-import { deriveAllowanceMode } from '@/components/molecules/AddEntitlementDrawer/allowanceMode';
+import { deriveAllowanceMode, toAllowanceDraft } from '@/components/molecules/AddEntitlementDrawer/allowanceMode';
 import { Entitlement, hasGrantConfig } from '@/models/Entitlement';
 import { formatAllowanceValue, formatAllowanceReset } from '@/utils/entitlement/allowanceLabel';
 
@@ -54,15 +54,10 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 			setIsEnabled(entitlement.displayIsEnabled ?? entitlement.is_enabled ?? true);
 			setConfigValue(null);
 			setConfigInvalid(false);
-			// Seed from the plan's config so an untouched field keeps its value.
-			setGrantDraft({
-				grant_measure: entitlement.grant_measure,
-				grant_quota: entitlement.grant_quota,
-				grant_duration_value: entitlement.grant_duration_value,
-				grant_duration_unit: entitlement.grant_duration_unit,
-				grant_allocation_behavior: entitlement.grant_allocation_behavior,
-				aggregation_mode: entitlement.aggregation_mode,
-			});
+			// Seed from the merged view, not the plan's raw config: reopening a drawer
+			// on an existing override must show that override, or saving any other
+			// field silently reverts the quota to the plan's.
+			setGrantDraft(toAllowanceDraft(entitlement.displayGrant ?? entitlement));
 			setGrantErrors({});
 		}
 	}, [entitlement]);
