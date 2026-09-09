@@ -67,6 +67,12 @@ describe('LineItemGroupingSection', () => {
 		expect(onChange).toHaveBeenCalledWith(true);
 	});
 
+	it('associates the label with the switch, so clicking the text toggles it', async () => {
+		const { onChange } = renderSection();
+		await userEvent.click(screen.getByText('Combine into one line item per invoice'));
+		expect(onChange).toHaveBeenCalledWith(true);
+	});
+
 	it('reflects the checked state on the switch', () => {
 		renderSection({ checked: true });
 		expect(screen.getByRole('switch')).toBeChecked();

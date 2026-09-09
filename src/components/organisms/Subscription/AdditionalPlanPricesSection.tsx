@@ -70,8 +70,10 @@ const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle,
 				),
 				cadence: <Chip label={cadenceLabel} variant='default' />,
 				count: <span>{t('organisms.additionalPlanPrices.chargeCount', { count: group.prices.length })}</span>,
+				// Plain span so the cell inherits the table's own type scale — a smaller override
+				// here read as a different size from its neighbours in the same row.
 				fanout: (
-					<span className='text-xs text-content-muted'>
+					<span>
 						{fanout != null && fanout > 1
 							? t('organisms.additionalPlanPrices.fanoutHint', { count: fanout })
 							: t('organisms.additionalPlanPrices.noFanout')}
