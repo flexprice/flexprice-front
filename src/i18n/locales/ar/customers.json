@@ -554,6 +554,22 @@
 			"fanoutHint": "يُحتسب كلٌّ منها كـ {{count}} بنود لكل فاتورة اشتراك",
 			"noFanout": "بنفس دورة الاشتراك"
 		},
+		"lineItemGrouping": {
+			"title": "بنود الفاتورة",
+			"toggleLabel": "دمجها في بند واحد لكل فاتورة",
+			"explainer": "دورة فوترة هذا الاشتراك {{subCadence}}، لكنه يتضمّن رسوماً {{itemCadences}}. افتراضياً تظهر كل فترة رسوم كبند مستقل. الإجمالي واحد في الحالتين.",
+			"overageNote": "تبقى بنود التجاوز الناتجة عن الالتزامات التراكمية منفصلة — قد تُظهر الفاتورة المدمجة بنود تجاوز إلى جانب البند المدمج.",
+			"cadenceSeparator": "، ",
+			"cadenceWithCount": "{{count}}× {{cadence}}",
+			"cadence": {
+				"DAILY": "يومي",
+				"WEEKLY": "أسبوعي",
+				"MONTHLY": "شهري",
+				"QUARTERLY": "ربع سنوي",
+				"HALF_YEARLY": "نصف سنوي",
+				"ANNUAL": "سنوي"
+			}
+		},
 		"subscriptionTable": {
 			"planModifiedAria": "تم تعديل الخطة",
 			"hierarchyColumn": "التسلسل",

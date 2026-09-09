@@ -65,7 +65,9 @@ import {
 	partitionPricesForSubscription,
 	uniqueRecurringBillingPeriodsFromPrices,
 } from '@/utils/subscription/planPricesForSubscriptionUi';
+import { chargeSplitsAcrossBillingPeriod } from '@/utils/subscription/lineItemGrouping';
 import AdditionalPlanPricesSection from './AdditionalPlanPricesSection';
+import LineItemGroupingSection, { type GroupingCadence } from './LineItemGroupingSection';
 import { Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -235,6 +237,34 @@ const SubscriptionForm = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [additionalCadenceKeysStr, setState]);
 
+	// Cadences among the charges that will actually attach (primary + opted-in + inline extras)
+	// whose period is strictly shorter than the subscription's — i.e. the charges the backend
+	// fans out into several line items per invoice. Deduped, so one entry per cadence.
+	const splittingCadences = useMemo<GroupingCadence[]>(() => {
+		const addedPrices = (state.addedSubscriptionLineItems ?? [])
+			.map((item) => item.price)
+			.filter((price): price is NonNullable<typeof price> => !!price);
+		const byKey = new Map<string, GroupingCadence>();
+		for (const charge of [...currentPrices, ...addedPrices]) {
+			if (!chargeSplitsAcrossBillingPeriod(state.billingPeriod, 1, charge)) continue;
+			const count = Math.max(1, charge.billing_period_count ?? 1);
+			byKey.set(cadenceKey(charge.billing_period, count), { period: charge.billing_period, count });
+		}
+		return [...byKey.values()];
+	}, [currentPrices, state.addedSubscriptionLineItems, state.billingPeriod]);
+
+	// `line_item_grouping` is a no-op unless something actually splits, so the control only
+	// shows in single-phase mode with at least one splitting charge. (The phases branch of the
+	// create payload is not wired for it in this iteration.)
+	const showLineItemGrouping = phases.length === 0 && splittingCadences.length > 0;
+
+	// Drop the opt-in when the control disappears (plan/cadence/opt-in change) so a hidden
+	// toggle can never leak `per_billing_period` into the payload.
+	useEffect(() => {
+		if (showLineItemGrouping) return;
+		setState((prev) => (prev.combineLineItemsPerBillingPeriod ? { ...prev, combineLineItemsPerBillingPeriod: false } : prev));
+	}, [showLineItemGrouping, setState]);
+
 	// Price overrides functionality for subscription-level
 	const { overriddenPrices, overridePrice, resetOverride } = usePriceOverrides(currentPrices);
 
@@ -371,6 +401,7 @@ const SubscriptionForm = ({
 			// Reset cadence opt-ins so the new plan's additional prices require fresh consent
 			// rather than silently attaching just because the cadence key happens to match.
 			optedInAdditionalCadences: [],
+			combineLineItemsPerBillingPeriod: false,
 		}));
 	};
 
@@ -863,6 +894,23 @@ const SubscriptionForm = ({
 								}}
 								subPeriod={state.billingPeriod}
 								subCount={1}
+								disabled={isDisabled}
+							/>
+						</div>
+					)}
+
+					{/* Sits under the opt-in section: a charge can only bill more often than the
+					    subscription once a finer cadence is attached, so this appears as a direct
+					    follow-up to that choice. */}
+					{showLineItemGrouping && (
+						<div className='mt-6'>
+							<LineItemGroupingSection
+								checked={state.combineLineItemsPerBillingPeriod}
+								onChange={(checked) => setState((prev) => ({ ...prev, combineLineItemsPerBillingPeriod: checked }))}
+								subPeriod={state.billingPeriod}
+								subCount={1}
+								splittingCadences={splittingCadences}
+								showOverageNote={state.commitmentAmount.trim() !== ''}
 								disabled={isDisabled}
 							/>
 						</div>

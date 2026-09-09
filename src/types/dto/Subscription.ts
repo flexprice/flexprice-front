@@ -16,6 +16,7 @@ import {
 	COLLECTION_METHOD,
 	PAYMENT_TERMS,
 	SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE,
+	LINE_ITEM_GROUPING,
 	Metadata,
 	Subscription,
 	Pagination,
@@ -404,6 +405,17 @@ export interface CreateSubscriptionRequest {
 	 * "Also available on this plan" section; in that case it sends the full list (primary + opted-in).
 	 */
 	include_price_ids?: string[];
+
+	/**
+	 * How charges whose cadence is finer than the subscription's billing period are laid out
+	 * on the invoice. Presentation only — the invoice total is identical either way.
+	 *  - Omitted (default): backend uses `per_charge_period`; a monthly charge on a quarterly
+	 *    subscription bills as 3 line items.
+	 *  - `per_billing_period`: those collapse into 1 line item spanning the quarter.
+	 * Frontend sends this only when at least one attached charge actually splits (see
+	 * `subscriptionHasSplittingCharge`), since it is a no-op otherwise. Write-at-create today.
+	 */
+	line_item_grouping?: LINE_ITEM_GROUPING;
 }
 
 export interface SubscriptionPhaseCreateRequest {
