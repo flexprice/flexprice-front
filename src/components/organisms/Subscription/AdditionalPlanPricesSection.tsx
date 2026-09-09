@@ -20,8 +20,8 @@ interface Props {
 	/** Subscription cadence count — used for the fan-out hint per cadence group. */
 	subCount: number;
 	/**
-	 * Slotted inside this section's border, below the table. Used for the line-item-grouping
-	 * toggle, which only becomes meaningful once a finer cadence is opted in here.
+	 * Rendered below the table, outside its border. Used for the line-item-grouping toggle,
+	 * which only becomes meaningful once a finer cadence is opted in here.
 	 */
 	footer?: ReactNode;
 	disabled?: boolean;
@@ -107,8 +107,11 @@ const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle,
 				<div style={{ overflow: 'hidden' }}>
 					<FlexpriceTable columns={columns} data={rows} />
 				</div>
-				{footer}
 			</div>
+			{/* Outside the border on purpose: FlexpriceTable draws its own rounded border inside
+			    this one, so anything stacked within the box exposes the table's bottom corners
+			    and reads as another table row. */}
+			{footer && <div className='mt-4'>{footer}</div>}
 		</div>
 	);
 };

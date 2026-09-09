@@ -531,18 +531,8 @@
 		"lineItemGrouping": {
 			"title": "Invoice line items",
 			"toggleLabel": "Combine into one line item per invoice",
-			"explainer": "This subscription's billing period is {{subCadence}}, but it includes {{itemCadences}} charges. By default each charge period appears as its own line item. The total is the same either way.",
-			"overageNote": "Overage rows from cumulative commitments stay separate — a combined invoice can still show overage rows alongside the merged charge.",
-			"cadenceSeparator": ", ",
-			"cadenceWithCount": "{{count}}× {{cadence}}",
-			"cadence": {
-				"DAILY": "daily",
-				"WEEKLY": "weekly",
-				"MONTHLY": "monthly",
-				"QUARTERLY": "quarterly",
-				"HALF_YEARLY": "half-yearly",
-				"ANNUAL": "annual"
-			}
+			"explainer": "By default each charge period is its own line item. The total is the same either way.",
+			"overageNote": "Overage rows from cumulative commitments stay separate."
 		},
 		"subscriptionTable": {
 			"planModifiedAria": "Plan modified",

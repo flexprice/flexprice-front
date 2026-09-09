@@ -5,12 +5,10 @@ import '@testing-library/jest-dom';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { createInstance } from 'i18next';
 import type { i18n as I18nInstance } from 'i18next';
-import { BILLING_PERIOD } from '@/constants/constants';
 import LineItemGroupingSection from './LineItemGroupingSection';
 import customersEn from '@/i18n/locales/en/customers.json';
 
-// Real English catalogue so the explainer's interpolation is exercised against the
-// strings we actually ship, not a stand-in.
+// Real English catalogue so the copy under test is what we actually ship.
 let testI18n: I18nInstance;
 beforeAll(async () => {
 	const instance = createInstance();
@@ -29,36 +27,16 @@ const renderSection = (props: Partial<React.ComponentProps<typeof LineItemGroupi
 	const onChange = vi.fn();
 	render(
 		<I18nextProvider i18n={testI18n}>
-			<LineItemGroupingSection
-				checked={false}
-				onChange={onChange}
-				subPeriod={BILLING_PERIOD.QUARTERLY}
-				subCount={1}
-				splittingCadences={[{ period: BILLING_PERIOD.MONTHLY, count: 1 }]}
-				{...props}
-			/>
+			<LineItemGroupingSection checked={false} onChange={onChange} {...props} />
 		</I18nextProvider>,
 	);
 	return { onChange };
 };
 
 describe('LineItemGroupingSection', () => {
-	it('names the subscription and charge cadences in the explainer', () => {
+	it('states the default behaviour and that the total is unaffected', () => {
 		renderSection();
-		expect(screen.getByText(/This subscription's billing period is quarterly, but it includes monthly charges\./)).toBeInTheDocument();
-	});
-
-	it('lists every splitting cadence, with a count prefix for multi-count cadences', () => {
-		renderSection({
-			subPeriod: BILLING_PERIOD.ANNUAL,
-			splittingCadences: [
-				{ period: BILLING_PERIOD.MONTHLY, count: 1 },
-				{ period: BILLING_PERIOD.MONTHLY, count: 2 },
-			],
-		});
-		expect(
-			screen.getByText(/This subscription's billing period is annual, but it includes monthly, 2× monthly charges\./),
-		).toBeInTheDocument();
+		expect(screen.getByText('By default each charge period is its own line item. The total is the same either way.')).toBeInTheDocument();
 	});
 
 	it('reports toggle changes to the parent', async () => {
@@ -73,7 +51,12 @@ describe('LineItemGroupingSection', () => {
 		expect(onChange).toHaveBeenCalledWith(true);
 	});
 
-	it('renders bare in the default footer variant, so the host section owns the heading', () => {
+	it('reflects the checked state on the switch', () => {
+		renderSection({ checked: true });
+		expect(screen.getByRole('switch')).toBeChecked();
+	});
+
+	it('renders bare in the default trailing variant, so the host section owns the heading', () => {
 		renderSection();
 		expect(screen.queryByText('Invoice line items')).not.toBeInTheDocument();
 	});
@@ -83,27 +66,16 @@ describe('LineItemGroupingSection', () => {
 		expect(screen.getByText('Invoice line items')).toBeInTheDocument();
 	});
 
-	it('reflects the checked state on the switch', () => {
-		renderSection({ checked: true });
-		expect(screen.getByRole('switch')).toBeChecked();
-	});
-
 	it('shows the overage caveat only when the subscription carries a commitment', () => {
 		const { unmount } = render(
 			<I18nextProvider i18n={testI18n}>
-				<LineItemGroupingSection
-					checked={false}
-					onChange={vi.fn()}
-					subPeriod={BILLING_PERIOD.QUARTERLY}
-					subCount={1}
-					splittingCadences={[{ period: BILLING_PERIOD.MONTHLY, count: 1 }]}
-				/>
+				<LineItemGroupingSection checked={false} onChange={vi.fn()} />
 			</I18nextProvider>,
 		);
 		expect(screen.queryByText(/Overage rows from cumulative commitments/)).not.toBeInTheDocument();
 		unmount();
 
 		renderSection({ showOverageNote: true });
-		expect(screen.getByText(/Overage rows from cumulative commitments/)).toBeInTheDocument();
+		expect(screen.getByText('Overage rows from cumulative commitments stay separate.')).toBeInTheDocument();
 	});
 });
