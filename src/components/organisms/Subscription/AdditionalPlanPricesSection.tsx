@@ -19,6 +19,11 @@ interface Props {
 	subPeriod: BILLING_PERIOD;
 	/** Subscription cadence count — used for the fan-out hint per cadence group. */
 	subCount: number;
+	/**
+	 * Slotted inside this section's border, below the table. Used for the line-item-grouping
+	 * toggle, which only becomes meaningful once a finer cadence is opted in here.
+	 */
+	footer?: ReactNode;
 	disabled?: boolean;
 }
 
@@ -37,7 +42,7 @@ type Row = {
  * override / commitment / coupon controls on the merged prices. Rendered only when the
  * partition helper produced at least one additional group.
  */
-const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle, subPeriod, subCount, disabled = false }) => {
+const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle, subPeriod, subCount, footer, disabled = false }) => {
 	const { t } = useTranslation('customers');
 	const optedInSet = useMemo(() => new Set(optedInKeys), [optedInKeys]);
 
@@ -102,6 +107,7 @@ const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle,
 				<div style={{ overflow: 'hidden' }}>
 					<FlexpriceTable columns={columns} data={rows} />
 				</div>
+				{footer}
 			</div>
 		</div>
 	);

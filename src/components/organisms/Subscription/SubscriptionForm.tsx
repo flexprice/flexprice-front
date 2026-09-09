@@ -265,6 +265,22 @@ const SubscriptionForm = ({
 		setState((prev) => (prev.combineLineItemsPerBillingPeriod ? { ...prev, combineLineItemsPerBillingPeriod: false } : prev));
 	}, [showLineItemGrouping, setState]);
 
+	// Rendered as a footer inside the "Also available on this plan" border, since a charge can
+	// only bill more often than the subscription once a finer cadence is opted in there. The
+	// standalone form covers the one case that section can't host: an inline "Add charge" with
+	// a finer cadence when the plan itself has no additional cadences.
+	const lineItemGroupingProps = {
+		checked: state.combineLineItemsPerBillingPeriod,
+		onChange: (checked: boolean) => setState((prev) => ({ ...prev, combineLineItemsPerBillingPeriod: checked })),
+		subPeriod: state.billingPeriod,
+		subCount: 1,
+		splittingCadences,
+		showOverageNote: state.commitmentAmount.trim() !== '',
+		disabled: isDisabled,
+	};
+	const lineItemGroupingControl = <LineItemGroupingSection {...lineItemGroupingProps} />;
+	const lineItemGroupingControlStandalone = <LineItemGroupingSection {...lineItemGroupingProps} variant='section' />;
+
 	// Price overrides functionality for subscription-level
 	const { overriddenPrices, overridePrice, resetOverride } = usePriceOverrides(currentPrices);
 
@@ -895,26 +911,15 @@ const SubscriptionForm = ({
 								subPeriod={state.billingPeriod}
 								subCount={1}
 								disabled={isDisabled}
+								footer={showLineItemGrouping ? lineItemGroupingControl : undefined}
 							/>
 						</div>
 					)}
 
-					{/* Sits under the opt-in section: a charge can only bill more often than the
-					    subscription once a finer cadence is attached, so this appears as a direct
-					    follow-up to that choice. */}
-					{showLineItemGrouping && (
-						<div className='mt-6'>
-							<LineItemGroupingSection
-								checked={state.combineLineItemsPerBillingPeriod}
-								onChange={(checked) => setState((prev) => ({ ...prev, combineLineItemsPerBillingPeriod: checked }))}
-								subPeriod={state.billingPeriod}
-								subCount={1}
-								splittingCadences={splittingCadences}
-								showOverageNote={state.commitmentAmount.trim() !== ''}
-								disabled={isDisabled}
-							/>
-						</div>
-					)}
+					{/* Fallback placement: the splitting charge came from an inline "Add charge",
+					    so there is no cadence table to hang the control off. Carries its own
+					    heading and border instead of the shared one. */}
+					{showLineItemGrouping && additionalCadenceGroups.length === 0 && <div className='mt-6'>{lineItemGroupingControlStandalone}</div>}
 
 					{/* Subscription Level Discounts — divider above so it reads as a peer section
 					    to Charges (and separates from the Also-available sub-section under Charges). */}

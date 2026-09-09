@@ -73,6 +73,16 @@ describe('LineItemGroupingSection', () => {
 		expect(onChange).toHaveBeenCalledWith(true);
 	});
 
+	it('renders bare in the default footer variant, so the host section owns the heading', () => {
+		renderSection();
+		expect(screen.queryByText('Invoice line items')).not.toBeInTheDocument();
+	});
+
+	it('carries its own heading in the standalone section variant', () => {
+		renderSection({ variant: 'section' });
+		expect(screen.getByText('Invoice line items')).toBeInTheDocument();
+	});
+
 	it('reflects the checked state on the switch', () => {
 		renderSection({ checked: true });
 		expect(screen.getByRole('switch')).toBeChecked();

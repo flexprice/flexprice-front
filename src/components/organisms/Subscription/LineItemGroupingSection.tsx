@@ -25,6 +25,13 @@ interface Props {
 	 * unmerged by design — surface that so a combined invoice with extra rows isn't a surprise.
 	 */
 	showOverageNote?: boolean;
+	/**
+	 * `footer` (default) renders bare, to be slotted under the AdditionalPlanPricesSection table
+	 * inside that section's border. `section` renders its own heading and border for the case
+	 * where the splitting charge came from an inline "Add charge" and there is no cadence table
+	 * to hang off.
+	 */
+	variant?: 'footer' | 'section';
 	disabled?: boolean;
 }
 
@@ -37,10 +44,6 @@ const TOGGLE_ID = 'subscription-line-item-grouping';
  *
  * The parent renders this only when at least one attached charge actually splits (see
  * `subscriptionHasSplittingCharge`); otherwise the setting is a no-op and stays hidden.
- *
- * Structure deliberately mirrors AdditionalPlanPricesSection (title + explainer + bordered
- * control area) — the two read as a pair, since a charge can only bill more often than the
- * subscription once a finer cadence is opted in there.
  */
 const LineItemGroupingSection: FC<Props> = ({
 	checked,
@@ -49,6 +52,7 @@ const LineItemGroupingSection: FC<Props> = ({
 	subCount,
 	splittingCadences,
 	showOverageNote = false,
+	variant = 'footer',
 	disabled = false,
 }) => {
 	const { t } = useTranslation('customers');
@@ -76,20 +80,31 @@ const LineItemGroupingSection: FC<Props> = ({
 		});
 	}, [splittingCadences, subPeriod, subCount, cadenceLabel, t]);
 
+	// Label and switch share a row; the explainer (and the commitment caveat) sit underneath,
+	// so the sentence can wrap the full width instead of squeezing against the control.
+	const body = (
+		<div className='px-4 py-3'>
+			<div className='flex flex-row items-center justify-between gap-4'>
+				<Label htmlFor={TOGGLE_ID} label={t('organisms.lineItemGrouping.toggleLabel')} disabled={disabled} />
+				<Switch id={TOGGLE_ID} className='shrink-0' checked={checked} onCheckedChange={onChange} disabled={disabled} />
+			</div>
+			<p className='mt-1 text-sm leading-relaxed text-muted-foreground'>{explainer}</p>
+			{showOverageNote && (
+				<p className={cn(getTypographyClass('helper-text'), 'mt-2 leading-relaxed')}>{t('organisms.lineItemGrouping.overageNote')}</p>
+			)}
+		</div>
+	);
+
+	// Slotted into AdditionalPlanPricesSection's border — the divider is the only chrome it
+	// needs, since the parent already supplies the heading, explainer and outer border.
+	// border-line-slate is what FlexpriceTable uses between its own rows, so the divider reads
+	// as a continuation of the table rather than a seam.
+	if (variant === 'footer') return <div className='border-t border-line-slate'>{body}</div>;
+
 	return (
 		<div>
-			<FormHeader variant='form-component-title' title={t('organisms.lineItemGrouping.title')} subtitle={explainer} className='mb-3' />
-			<div className='rounded-[6px] border border-line-strong px-4 py-3'>
-				<div className={cn('flex flex-row justify-between gap-4', showOverageNote ? 'items-start' : 'items-center')}>
-					<div className='min-w-0 flex-1'>
-						<Label htmlFor={TOGGLE_ID} label={t('organisms.lineItemGrouping.toggleLabel')} disabled={disabled} />
-						{showOverageNote && (
-							<p className={cn(getTypographyClass('helper-text'), 'mt-1 leading-relaxed')}>{t('organisms.lineItemGrouping.overageNote')}</p>
-						)}
-					</div>
-					<Switch id={TOGGLE_ID} className='shrink-0' checked={checked} onCheckedChange={onChange} disabled={disabled} />
-				</div>
-			</div>
+			<FormHeader variant='form-component-title' title={t('organisms.lineItemGrouping.title')} className='mb-3' />
+			<div className='rounded-[6px] border border-line-strong'>{body}</div>
 		</div>
 	);
 };
