@@ -14,15 +14,55 @@ const heimdallClient = axios.create({
 	headers: { 'Content-Type': 'application/json' },
 });
 
-// Licensing token is session-bound and short-lived — cached in memory only, re-fetched on 401.
-let cachedToken: string | null = null;
+// Persisted so a page refresh reuses the still-valid token instead of minting a new one every load.
+const TOKEN_STORAGE_KEY = 'heimdall_licensing_token';
+// Tolerate small clock drift between browser and Heimdall's exp.
+const EXPIRY_SKEW_SECONDS = 10;
+
+// No signature verification needed client-side — we only read exp to decide whether to reuse it.
+function jwtExpiry(token: string): number | null {
+	try {
+		const payload = token.split('.')[1];
+		const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+		const json = JSON.parse(atob(base64));
+		return typeof json.exp === 'number' ? json.exp : null;
+	} catch {
+		return null;
+	}
+}
+
+function isTokenValid(token: string | null): token is string {
+	if (!token) return false;
+	const exp = jwtExpiry(token);
+	if (exp === null) return false;
+	return exp > Date.now() / 1000 + EXPIRY_SKEW_SECONDS;
+}
+
+function readStoredToken(): string | null {
+	try {
+		return localStorage.getItem(TOKEN_STORAGE_KEY);
+	} catch {
+		return null;
+	}
+}
+
+function storeToken(token: string) {
+	try {
+		localStorage.setItem(TOKEN_STORAGE_KEY, token);
+	} catch {
+		// ponytail: private mode / disabled storage — token still works for this in-memory session.
+	}
+}
 
 class LicenseApi {
 	public static async getLicensingToken(forceRefresh = false): Promise<string> {
-		if (cachedToken && !forceRefresh) return cachedToken;
+		if (!forceRefresh) {
+			const stored = readStoredToken();
+			if (isTokenValid(stored)) return stored;
+		}
 		const res = await AxiosClient.get<LicensingTokenResponse>('/licensing-token');
-		cachedToken = res.token;
-		return cachedToken;
+		storeToken(res.token);
+		return res.token;
 	}
 
 	private static async heimdallAuthHeaders(forceRefresh = false) {

@@ -6,6 +6,7 @@ import { BillingTab } from './billing';
 import { CustomerPortalTab } from './customer-portal';
 import { CustomerOnboardingTab } from './customer-onboarding';
 import { AlertsTab } from './alerts';
+import { LicenseTab } from './license';
 import { AppearanceTab } from './appearance';
 import { SamlSsoTab, useSamlConfig } from './saml-sso';
 
@@ -44,6 +45,11 @@ const SettingsDashboard = () => {
 						value: 'alerts',
 						label: t('alerts.tabs.alerts'),
 						content: <AlertsTab />,
+					},
+					{
+						value: 'license',
+						label: t('license.tabs.license'),
+						content: <LicenseTab />,
 					},
 					{
 						value: 'appearance',

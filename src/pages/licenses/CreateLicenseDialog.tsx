@@ -17,7 +17,6 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 	const { t } = useTranslation(['catalog', 'common']);
 	const { isProduction } = useEnvironment();
 	const [tier, setTier] = useState<LICENSE_TIER>(LICENSE_TIER.COMMUNITY);
-	const [customer, setCustomer] = useState('');
 	const [features, setFeatures] = useState('');
 	const [ttlDays, setTtlDays] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,7 +33,6 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 
 	const reset = () => {
 		setTier(LICENSE_TIER.COMMUNITY);
-		setCustomer('');
 		setFeatures('');
 		setTtlDays('');
 		setIssuedKey(null);
@@ -51,7 +49,6 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 			const res = await LicenseApi.mintLicense({
 				tier,
 				env: isProduction ? 'production' : 'sandbox',
-				customer: customer || undefined,
 				features: features
 					? features
 							.split(',')
@@ -96,12 +93,6 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 							options={tierOptions}
 							value={tier}
 							onChange={(v) => setTier(v as LICENSE_TIER)}
-						/>
-						<Input
-							label={t('catalog:licenses.createDialog.customer')}
-							value={customer}
-							onChange={setCustomer}
-							placeholder={t('catalog:licenses.createDialog.customerPlaceholder')}
 						/>
 						<Input
 							label={t('catalog:licenses.createDialog.features')}

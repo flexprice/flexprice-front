@@ -7,7 +7,6 @@ export interface LicensingTokenResponse {
 export interface MintLicenseRequest {
 	tier: LICENSE_TIER;
 	env: string;
-	customer?: string;
 	features?: string[];
 	ttl_days?: number;
 }

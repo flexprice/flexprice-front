@@ -366,6 +366,11 @@
 			}
 		}
 	},
+	"license": {
+		"tabs": {
+			"license": "الترخيص"
+		}
+	},
 	"appearance": {
 		"tabs": {
 			"appearance": "المظهر"

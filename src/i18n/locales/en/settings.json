@@ -360,6 +360,11 @@
 			}
 		}
 	},
+	"license": {
+		"tabs": {
+			"license": "License"
+		}
+	},
 	"appearance": {
 		"tabs": {
 			"appearance": "Appearance"

@@ -84,9 +84,6 @@ import {
 	Integrations,
 	IntegrationDetails,
 	Revenue,
-	Licenses as LicensesPage,
-	LicenseDetails,
-	CreateLicense as CreateLicensePage,
 	Exports,
 	S3Exports,
 	ExportManagement,
@@ -199,11 +196,6 @@ export const RouteNames = {
 
 	// checkout (public - multi-provider: Paddle and Moyasar)
 	checkout: '/checkout',
-
-	// license routes
-	licenses: '/licenses',
-	licenseDetails: '/licenses',
-	createLicense: '/licenses/create',
 };
 
 const DefaultRoute = () => {
@@ -679,22 +671,6 @@ export const MainRouter: any = createBrowserRouter([
 						handle: requirePermission('task', 'read'),
 					},
 				],
-			},
-			{
-				path: RouteNames.licenses,
-				element: <LicensesPage />,
-				// ['read', 'write'] — this list is the only navigable path to Create License.
-				handle: requirePermission('license', ['read', 'write']),
-			},
-			{
-				path: RouteNames.createLicense,
-				element: <CreateLicensePage />,
-				handle: requirePermission('license', 'write'),
-			},
-			{
-				path: `${RouteNames.licenseDetails}/:jti`,
-				element: <LicenseDetails />,
-				handle: requirePermission('license', 'read'),
 			},
 			{
 				path: RouteNames.settings,
