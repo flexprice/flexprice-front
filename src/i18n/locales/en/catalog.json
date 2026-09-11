@@ -1108,7 +1108,10 @@
 			"status": "Status",
 			"expires": "Expires",
 			"expiringSoon": "Expiring soon",
-			"expired": "Expired"
+			"expired": "Expired",
+			"issuedBy": "Issued by",
+			"issuedByFlexprice": "Flexprice",
+			"issuedByYou": "You"
 		},
 		"details": {
 			"title": "License Details",
@@ -1150,7 +1153,6 @@
 			"done": "Done",
 			"create": "Create",
 			"generate": "Generate License",
-			"generateExplainer": "Generate a community license for your deployment. The environment, tier, and expiry are set automatically — just click Generate.",
 			"enterpriseNudge": "Need enterprise features — SSO, advanced entitlements, longer terms?",
 			"enterpriseContactButton": "Contact us"
 		}

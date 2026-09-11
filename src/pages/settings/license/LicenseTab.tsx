@@ -1,9 +1,11 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useMemo, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { AddButton, Button, Chip, Loader, CopyIdButton } from '@/components/atoms';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
+import useUser from '@/hooks/useUser';
+import { useTenantMembers } from '@/pages/settings/team/useTenantMembers';
 import LicenseApi from '@/api/LicenseApi';
 import { License, LICENSE_STATUS } from '@/models/License';
 import { useQuery } from '@tanstack/react-query';
@@ -23,6 +25,18 @@ function expiryFlag(license: License): 'expired' | 'expiringSoon' | null {
 	return null;
 }
 
+function issuedByLabel(
+	license: License,
+	currentUserId: string | undefined,
+	memberNameById: Map<string, string>,
+	labels: { flexprice: string; you: string },
+): string {
+	if (!license.issued_by) return labels.flexprice;
+	if (currentUserId && license.issued_by === currentUserId) return labels.you;
+	// ponytail: uuid not among this tenant's team members (e.g. a removed user) — show raw uuid.
+	return memberNameById.get(license.issued_by) ?? license.issued_by;
+}
+
 interface DetailField {
 	label: string;
 	value: ReactNode;
@@ -39,6 +53,22 @@ const LicenseTab = () => {
 	const [revokeTarget, setRevokeTarget] = useState<License | null>(null);
 	const [detailsTarget, setDetailsTarget] = useState<License | null>(null);
 
+	const { user: currentUser } = useUser();
+	// Same source the Team tab uses — fetched once, cached, no per-row lookups.
+	const { members } = useTenantMembers();
+	const memberNameById = useMemo(() => {
+		const map = new Map<string, string>();
+		members.forEach((member) => map.set(member.id, member.name || member.email));
+		return map;
+	}, [members]);
+	const issuedByLabels = useMemo(
+		() => ({
+			flexprice: t('catalog:licenses.table.issuedByFlexprice'),
+			you: t('catalog:licenses.table.issuedByYou'),
+		}),
+		[t],
+	);
+
 	const {
 		data: licenses,
 		isLoading,
@@ -51,7 +81,7 @@ const LicenseTab = () => {
 	const columns: ColumnData<License>[] = [
 		{
 			title: t('catalog:licenses.table.jti'),
-			width: '28%',
+			width: '22%',
 			render: (row) => (
 				<div className='flex items-center gap-1 min-w-0'>
 					<code className='font-mono text-xs truncate' title={row.jti}>
@@ -65,22 +95,22 @@ const LicenseTab = () => {
 		},
 		{
 			title: t('catalog:licenses.table.tier'),
-			width: '12%',
+			width: '10%',
 			render: (row) => <Chip variant='default' label={row.tier} />,
 		},
 		{
 			title: t('catalog:licenses.table.environment'),
-			width: '14%',
+			width: '12%',
 			fieldName: 'env',
 		},
 		{
 			title: t('catalog:licenses.table.status'),
-			width: '12%',
+			width: '10%',
 			render: (row) => <Chip variant={row.status === LICENSE_STATUS.ACTIVE ? 'success' : 'default'} label={row.status} />,
 		},
 		{
 			title: t('catalog:licenses.table.expires'),
-			width: '22%',
+			width: '18%',
 			render: (row) => {
 				const flag = expiryFlag(row);
 				return (
@@ -98,8 +128,20 @@ const LicenseTab = () => {
 			},
 		},
 		{
+			title: t('catalog:licenses.table.issuedBy'),
+			width: '18%',
+			render: (row) => {
+				const label = issuedByLabel(row, currentUser?.id, memberNameById, issuedByLabels);
+				return (
+					<span className='truncate block text-xs' title={label}>
+						{label}
+					</span>
+				);
+			},
+		},
+		{
 			title: '',
-			width: '12%',
+			width: '10%',
 			render: (row) =>
 				row.status === LICENSE_STATUS.ACTIVE && canWrite ? (
 					<button
@@ -203,6 +245,14 @@ const LicenseTab = () => {
 								{
 									label: t('catalog:licenses.details.createdAt'),
 									value: detailsTarget.created_at ? formatDate(detailsTarget.created_at) : '—',
+								},
+								{
+									label: t('catalog:licenses.table.issuedBy'),
+									value: (
+										<span className='break-all [overflow-wrap:anywhere]'>
+											{issuedByLabel(detailsTarget, currentUser?.id, memberNameById, issuedByLabels)}
+										</span>
+									),
 								},
 								...(detailsTarget.status === LICENSE_STATUS.REVOKED && detailsTarget.revoked_at
 									? [{ label: t('catalog:licenses.details.revokedAt'), value: formatDate(detailsTarget.revoked_at) }]

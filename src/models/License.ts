@@ -23,4 +23,6 @@ export interface License {
 	exp: string;
 	created_at?: string;
 	revoked_at?: string;
+	// User uuid who minted it, or "" when Flexprice staff issued it.
+	issued_by?: string;
 }

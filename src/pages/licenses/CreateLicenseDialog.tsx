@@ -173,17 +173,14 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 						)}
 					</div>
 				) : (
-					<div className='space-y-4 py-2'>
-						<p className='text-sm text-content-zinc-secondary'>{t('catalog:licenses.createDialog.generateExplainer')}</p>
-						{isContactEnabled() && (
-							<div className='text-center pt-2 border-t border-line-hairline'>
-								<p className='text-sm text-content-tertiary mb-2'>{t('catalog:licenses.createDialog.enterpriseNudge')}</p>
-								<Button variant='outline' size='sm' onClick={() => setContactOpen(true)}>
-									{t('catalog:licenses.createDialog.enterpriseContactButton')}
-								</Button>
-							</div>
-						)}
-					</div>
+					isContactEnabled() && (
+						<div className='text-center py-2'>
+							<p className='text-sm text-content-tertiary mb-2'>{t('catalog:licenses.createDialog.enterpriseNudge')}</p>
+							<Button variant='outline' size='sm' onClick={() => setContactOpen(true)}>
+								{t('catalog:licenses.createDialog.enterpriseContactButton')}
+							</Button>
+						</div>
+					)
 				)}
 
 				<DialogFooter>

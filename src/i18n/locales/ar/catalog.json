@@ -1088,7 +1088,10 @@
 			"status": "الحالة",
 			"expires": "تاريخ الانتهاء",
 			"expiringSoon": "قريب الانتهاء",
-			"expired": "منتهي"
+			"expired": "منتهي",
+			"issuedBy": "صادر عن",
+			"issuedByFlexprice": "Flexprice",
+			"issuedByYou": "أنت"
 		},
 		"details": {
 			"title": "تفاصيل الترخيص",
@@ -1130,7 +1133,6 @@
 			"done": "تم",
 			"create": "إنشاء",
 			"generate": "إنشاء ترخيص",
-			"generateExplainer": "يُنشئ ترخيصاً مجتمعياً لنشرك. تُضبط البيئة والفئة وتاريخ الانتهاء تلقائياً — فقط اضغط إنشاء.",
 			"enterpriseNudge": "هل تحتاج ميزات مؤسسية — SSO، صلاحيات متقدمة، مدد أطول؟",
 			"enterpriseContactButton": "تواصل معنا"
 		}
