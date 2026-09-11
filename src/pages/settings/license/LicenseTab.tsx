@@ -47,8 +47,11 @@ interface DetailField {
 // over the list instead of navigating to a standalone /licenses/:id route.
 const LicenseTab = () => {
 	const { t } = useTranslation(['catalog', 'common']);
+	// Only the staff-only admin form (inside CreateLicenseDialog) is gated —
+	// on isAdmin() — by the is_admin JWT claim. Community self-serve has no
+	// backend RBAC entry, so it's open to anyone who can reach this tab.
 	const { can } = useCurrentUserPermissions();
-	const canWrite = can('license', 'write');
+	const canRevoke = can('license', 'write');
 	const [createOpen, setCreateOpen] = useState(false);
 	const [revokeTarget, setRevokeTarget] = useState<License | null>(null);
 	const [detailsTarget, setDetailsTarget] = useState<License | null>(null);
@@ -72,6 +75,7 @@ const LicenseTab = () => {
 	const {
 		data: licenses,
 		isLoading,
+		isError,
 		refetch,
 	} = useQuery({
 		queryKey: ['fetchLicenses'],
@@ -143,7 +147,7 @@ const LicenseTab = () => {
 			title: '',
 			width: '10%',
 			render: (row) =>
-				row.status === LICENSE_STATUS.ACTIVE && canWrite ? (
+				row.status === LICENSE_STATUS.ACTIVE && canRevoke ? (
 					<button
 						className='text-sm text-destructive hover:underline whitespace-nowrap'
 						onClick={(e) => {
@@ -160,11 +164,18 @@ const LicenseTab = () => {
 		<div className='flex flex-col gap-4'>
 			<div className='flex items-center justify-between'>
 				<h3 className='text-lg font-semibold text-content-zinc-bold'>{t('catalog:licenses.listPage.title')}</h3>
-				{canWrite && <AddButton onClick={() => setCreateOpen(true)} />}
+				<AddButton onClick={() => setCreateOpen(true)} />
 			</div>
 
 			{isLoading ? (
 				<Loader />
+			) : isError ? (
+				<div className='flex flex-col items-center justify-center gap-3 py-8 text-center'>
+					<p className='text-sm text-danger-strong'>{t('catalog:licenses.listPage.loadError')}</p>
+					<Button variant='outline' onClick={() => refetch()}>
+						{t('common:actions.retry')}
+					</Button>
+				</div>
 			) : licenses && licenses.length === 0 ? (
 				// LicenseTab renders a plain table, not QueryableDataArea — mirror its default
 				// empty-state styling (see QueryableDataArea/EmptyState.tsx) manually.
@@ -175,11 +186,9 @@ const LicenseTab = () => {
 					<div className='font-normal text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
 						{t('catalog:licenses.emptyState.description')}
 					</div>
-					{canWrite && (
-						<Button variant='outline' onClick={() => setCreateOpen(true)} className='!p-5 !bg-surface-panel !border-line-muted'>
-							{t('catalog:licenses.listPage.createButton')}
-						</Button>
-					)}
+					<Button variant='outline' onClick={() => setCreateOpen(true)} className='!p-5 !bg-surface-panel !border-line-muted'>
+						{t('catalog:licenses.listPage.createButton')}
+					</Button>
 				</div>
 			) : (
 				<FlexpriceTable

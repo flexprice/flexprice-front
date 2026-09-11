@@ -1094,7 +1094,8 @@
 	"licenses": {
 		"listPage": {
 			"title": "BYOC",
-			"createButton": "Create License"
+			"createButton": "Create License",
+			"loadError": "Could not load licenses."
 		},
 		"emptyState": {
 			"heading": "BYOC",
@@ -1128,7 +1129,8 @@
 		"revokeDialog": {
 			"title": "Revoke License",
 			"keyIdLabel": "Key ID:",
-			"confirmMessage": "This license will be marked as revoked in the control plane. It won't be re-issued, and once online revocation checks are supported, connected instances will stop validating it. Instances already running keep working until the license expires. This cannot be undone."
+			"confirmMessage": "This license will be marked as revoked in the control plane. It won't be re-issued, and once online revocation checks are supported, connected instances will stop validating it. Instances already running keep working until the license expires. This cannot be undone.",
+			"revokeSuccess": "License revoked"
 		},
 		"createDialog": {
 			"title": "Create License",
@@ -1154,7 +1156,8 @@
 			"create": "Create",
 			"generate": "Generate License",
 			"enterpriseNudge": "Need enterprise features — SSO, advanced entitlements, longer terms?",
-			"enterpriseContactButton": "Contact us"
+			"enterpriseContactButton": "Contact us",
+			"mintFailed": "Mint failed"
 		}
 	}
 }

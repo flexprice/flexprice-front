@@ -77,7 +77,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 			setIssuedKey(res.license_key);
 			onSuccess();
 		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : 'Mint failed';
+			const message = err instanceof Error ? err.message : t('catalog:licenses.createDialog.mintFailed');
 			toast.error(message);
 		} finally {
 			setIsSubmitting(false);
@@ -104,7 +104,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 			setIssuedKey(res.license_key);
 			onSuccess();
 		} catch (err: unknown) {
-			const message = err instanceof Error ? err.message : 'Mint failed';
+			const message = err instanceof Error ? err.message : t('catalog:licenses.createDialog.mintFailed');
 			toast.error(message);
 		} finally {
 			setIsSubmitting(false);

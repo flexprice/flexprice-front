@@ -20,7 +20,7 @@ const RevokeLicenseDialog: FC<Props> = ({ jti, open, onOpenChange, onSuccess }) 
 		setIsRevoking(true);
 		try {
 			await LicenseApi.revokeLicense(jti);
-			toast.success('License revoked');
+			toast.success(t('catalog:licenses.revokeDialog.revokeSuccess'));
 			onSuccess();
 			onOpenChange(false);
 		} catch (err: unknown) {
