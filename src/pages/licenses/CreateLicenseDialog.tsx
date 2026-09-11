@@ -1,9 +1,11 @@
 import { FC, useState, useMemo, useEffect } from 'react';
 import { Button, Input, Select, CopyIdButton, Loader } from '@/components/atoms';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import ContactUsDialog from '@/components/molecules/ContactUsDialog/ContactUsDialog';
 import toast from 'react-hot-toast';
 import LicenseApi from '@/api/LicenseApi';
 import { LICENSE_TIER } from '@/models/License';
+import { isContactEnabled } from '@/config/contact';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -26,6 +28,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 	const [ttlDays, setTtlDays] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [issuedKey, setIssuedKey] = useState<string | null>(null);
+	const [contactOpen, setContactOpen] = useState(false);
 
 	// Only known once the licensing token is fetched/decoded — gates full form vs single button.
 	useEffect(() => {
@@ -170,7 +173,17 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 						)}
 					</div>
 				) : (
-					<p className='text-sm text-content-zinc-secondary py-2'>{t('catalog:licenses.createDialog.generateExplainer')}</p>
+					<div className='space-y-4 py-2'>
+						<p className='text-sm text-content-zinc-secondary'>{t('catalog:licenses.createDialog.generateExplainer')}</p>
+						{isContactEnabled() && (
+							<div className='text-center pt-2 border-t border-line-hairline'>
+								<p className='text-sm text-content-tertiary mb-2'>{t('catalog:licenses.createDialog.enterpriseNudge')}</p>
+								<Button variant='outline' size='sm' onClick={() => setContactOpen(true)}>
+									{t('catalog:licenses.createDialog.enterpriseContactButton')}
+								</Button>
+							</div>
+						)}
+					</div>
 				)}
 
 				<DialogFooter>
@@ -199,6 +212,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 					) : null}
 				</DialogFooter>
 			</DialogContent>
+			<ContactUsDialog isOpen={contactOpen} onOpenChange={setContactOpen} />
 		</Dialog>
 	);
 };

@@ -1093,8 +1093,12 @@
 	},
 	"licenses": {
 		"listPage": {
-			"title": "Licenses",
+			"title": "BYOC",
 			"createButton": "Create License"
+		},
+		"emptyState": {
+			"heading": "BYOC",
+			"description": "Looking to self-host Flexprice? Generate a community key and get started in seconds."
 		},
 		"writeDeniedTooltip": "You don't have permission to manage licenses. Ask a tenant admin for access.",
 		"table": {
@@ -1146,7 +1150,9 @@
 			"done": "Done",
 			"create": "Create",
 			"generate": "Generate License",
-			"generateExplainer": "Generate a community license for your deployment. The environment, tier, and expiry are set automatically — just click Generate."
+			"generateExplainer": "Generate a community license for your deployment. The environment, tier, and expiry are set automatically — just click Generate.",
+			"enterpriseNudge": "Need enterprise features — SSO, advanced entitlements, longer terms?",
+			"enterpriseContactButton": "Contact us"
 		}
 	}
 }

@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { AddButton, Chip, Loader, CopyIdButton } from '@/components/atoms';
+import { AddButton, Button, Chip, Loader, CopyIdButton } from '@/components/atoms';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
@@ -123,6 +123,22 @@ const LicenseTab = () => {
 
 			{isLoading ? (
 				<Loader />
+			) : licenses && licenses.length === 0 ? (
+				// LicenseTab renders a plain table, not QueryableDataArea — mirror its default
+				// empty-state styling (see QueryableDataArea/EmptyState.tsx) manually.
+				<div className='bg-surface-faint border border-line-hairline dark:bg-surface dark:border-line rounded-[6px] w-full h-[360px] flex flex-col items-center justify-center mx-auto'>
+					<div className='font-medium text-[20px] leading-normal text-content-secondary mb-4 text-center'>
+						{t('catalog:licenses.emptyState.heading')}
+					</div>
+					<div className='font-normal text-[16px] leading-normal text-content-subtle mb-8 text-center max-w-[350px]'>
+						{t('catalog:licenses.emptyState.description')}
+					</div>
+					{canWrite && (
+						<Button variant='outline' onClick={() => setCreateOpen(true)} className='!p-5 !bg-surface-panel !border-line-muted'>
+							{t('catalog:licenses.listPage.createButton')}
+						</Button>
+					)}
+				</div>
 			) : (
 				<FlexpriceTable
 					columns={columns}
