@@ -28,6 +28,7 @@ export {
 	decimalAmountToPercentage,
 	isPercentageMetadata,
 	isPercentagePrice,
+	isPercentageOverride,
 	withPercentageMetadata,
 	withoutPercentageMetadata,
 } from './percentage_price_helpers';

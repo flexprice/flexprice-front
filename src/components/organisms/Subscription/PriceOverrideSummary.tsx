@@ -3,7 +3,7 @@ import { Price, PRICE_UNIT_TYPE } from '@/models/Price';
 import { SubscriptionLineItemOverrideRequest } from '@/utils/common/price_override_helpers';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
-import { isPercentagePrice } from '@/utils/common/percentage_price_helpers';
+import { isPercentageOverride, isPercentagePrice } from '@/utils/common/percentage_price_helpers';
 import { formatPercentageAmount } from '@/utils/common/price_helpers';
 import { Check } from 'lucide-react';
 import { Card } from '@/components/atoms';
@@ -38,21 +38,30 @@ const PriceOverrideSummary: FC<Props> = ({ overrides, prices, className }) => {
 		const descriptions: string[] = [];
 		const isCustomPriceUnit = price.price_unit_type === PRICE_UNIT_TYPE.CUSTOM;
 		const displaySymbol = getDisplaySymbol(price);
-		// A percentage charge stores the decimal equivalent - both sides of the arrow read as
-		// percentages, with no currency symbol.
-		const isPercentage = isPercentagePrice(price);
-		const formatMoney = (amount: string) => (isPercentage ? formatPercentageAmount(amount) : `${displaySymbol}${formatAmount(amount)}`);
+		// A percentage charge stores the decimal equivalent, so it reads as a percentage with no
+		// currency symbol. The two sides of the arrow are formatted independently: an override that
+		// switches the charge to PACKAGE/TIERED makes its amount a plain currency amount even though
+		// the price it replaces is still a percentage, and running that through the percentage
+		// conversion would show a stored `10` as `1000%`.
+		const baseIsPercentage = isPercentagePrice(price);
+		const overrideIsPercentage = isPercentageOverride(price, override);
+		const formatMoney = (amount: string, asPercentage: boolean) =>
+			asPercentage ? formatPercentageAmount(amount) : `${displaySymbol}${formatAmount(amount)}`;
 
 		// Handle amount/price_unit_amount based on price unit type
 		if (isCustomPriceUnit) {
 			// For CUSTOM prices, use price_unit_amount
 			if (override.price_unit_amount !== undefined) {
-				descriptions.push(`Amount: ${formatMoney(getDisplayAmount(price))} → ${formatMoney(override.price_unit_amount)}`);
+				descriptions.push(
+					`Amount: ${formatMoney(getDisplayAmount(price), baseIsPercentage)} → ${formatMoney(override.price_unit_amount, overrideIsPercentage)}`,
+				);
 			}
 		} else {
 			// For FIAT prices, use amount
 			if (override.amount !== undefined) {
-				descriptions.push(`Amount: ${formatMoney(price.amount)} → ${formatMoney(override.amount.toString())}`);
+				descriptions.push(
+					`Amount: ${formatMoney(price.amount, baseIsPercentage)} → ${formatMoney(override.amount.toString(), overrideIsPercentage)}`,
+				);
 			}
 		}
 
