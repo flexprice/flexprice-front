@@ -731,6 +731,7 @@
 		"orgUrlLabel": "رابط المنظمة",
 		"orgUrlPlaceholder": "https://example.com",
 		"orgUrlRequired": "رابط المنظمة مطلوب",
+		"orgUrlInvalid": "أدخل رابطًا صالحًا يبدأ بـ http:// أو https://",
 		"referralQuestion": "كيف عرفت عنا؟",
 		"referralPlaceholder": "من أين سمعت بنا؟",
 		"referralRequired": "يرجى اختيار كيف عرفت عنا",

@@ -736,6 +736,7 @@
 		"orgUrlLabel": "Organization URL",
 		"orgUrlPlaceholder": "https://example.com",
 		"orgUrlRequired": "Organization URL is required",
+		"orgUrlInvalid": "Enter a valid URL starting with http:// or https://",
 		"referralQuestion": "How did you find us?",
 		"referralPlaceholder": "Where did you hear about us?",
 		"referralRequired": "Please select how you found us",
