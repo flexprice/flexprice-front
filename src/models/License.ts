@@ -22,4 +22,5 @@ export interface License {
 	status: LICENSE_STATUS;
 	exp: string;
 	created_at?: string;
+	revoked_at?: string;
 }

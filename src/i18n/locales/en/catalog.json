@@ -1102,7 +1102,9 @@
 			"tier": "Tier",
 			"environment": "Environment",
 			"status": "Status",
-			"expires": "Expires"
+			"expires": "Expires",
+			"expiringSoon": "Expiring soon",
+			"expired": "Expired"
 		},
 		"details": {
 			"title": "License Details",
@@ -1113,6 +1115,7 @@
 			"customer": "Customer",
 			"features": "Features",
 			"createdAt": "Created At",
+			"revokedAt": "Revoked At",
 			"revoke": "Revoke"
 		},
 		"revokeDialog": {

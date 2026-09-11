@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { AddButton, Chip, Loader } from '@/components/atoms';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
@@ -10,6 +10,23 @@ import formatDate from '@/utils/common/format_date';
 import { useTranslation } from 'react-i18next';
 import CreateLicenseDialog from '@/pages/licenses/CreateLicenseDialog';
 import RevokeLicenseDialog from '@/pages/licenses/RevokeLicenseDialog';
+
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
+function expiryFlag(license: License): 'expired' | 'expiringSoon' | null {
+	const expMs = new Date(license.exp).getTime();
+	if (Number.isNaN(expMs)) return null;
+	const msLeft = expMs - Date.now();
+	if (msLeft <= 0) return 'expired';
+	if (license.status === LICENSE_STATUS.ACTIVE && msLeft < THIRTY_DAYS_MS) return 'expiringSoon';
+	return null;
+}
+
+interface DetailField {
+	label: string;
+	value: ReactNode;
+	fullWidth?: boolean;
+}
 
 // Settings tabs aren't routed pages, so license details/revoke render as dialogs
 // over the list instead of navigating to a standalone /licenses/:id route.
@@ -49,7 +66,20 @@ const LicenseTab = () => {
 		},
 		{
 			title: t('catalog:licenses.table.expires'),
-			render: (row) => formatDate(row.exp),
+			render: (row) => {
+				const flag = expiryFlag(row);
+				return (
+					<div className='flex items-center gap-2'>
+						<span className={flag ? 'text-amber-600' : undefined}>{formatDate(row.exp)}</span>
+						{flag && (
+							<Chip
+								variant='warning'
+								label={flag === 'expired' ? t('catalog:licenses.table.expired') : t('catalog:licenses.table.expiringSoon')}
+							/>
+						)}
+					</div>
+				);
+			},
 		},
 		{
 			title: '',
@@ -99,57 +129,62 @@ const LicenseTab = () => {
 					<DialogHeader>
 						<DialogTitle>{t('catalog:licenses.details.title')}</DialogTitle>
 					</DialogHeader>
-					{detailsTarget && (
-						<div className='space-y-4 py-2'>
-							<div className='rounded-md border border-line-strong bg-muted/40 p-3 text-sm text-muted-foreground'>
-								{detailsTarget.status === LICENSE_STATUS.REVOKED
-									? t('catalog:licenses.details.revokedNotice')
-									: t('catalog:licenses.details.jwtNotice')}
-							</div>
-							<div className='grid grid-cols-2 gap-4'>
-								<div className='space-y-1 col-span-2'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.table.jti')}</span>
-									<div className='text-sm break-all [overflow-wrap:anywhere]'>
+					{detailsTarget &&
+						(() => {
+							const fields: DetailField[] = [
+								{
+									label: t('catalog:licenses.table.jti'),
+									fullWidth: true,
+									value: (
 										<code className='font-mono bg-muted px-1.5 py-0.5 rounded text-xs break-all [overflow-wrap:anywhere]'>
 											{detailsTarget.jti}
 										</code>
-									</div>
-								</div>
-								<div className='space-y-1'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.table.tier')}</span>
-									<div>
-										<Chip variant='default' label={detailsTarget.tier} />
-									</div>
-								</div>
-								<div className='space-y-1'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.table.environment')}</span>
-									<div className='text-sm'>{detailsTarget.env}</div>
-								</div>
-								<div className='space-y-1'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.table.status')}</span>
-									<div>
+									),
+								},
+								{ label: t('catalog:licenses.table.tier'), value: <Chip variant='default' label={detailsTarget.tier} /> },
+								{ label: t('catalog:licenses.table.environment'), value: detailsTarget.env },
+								{
+									label: t('catalog:licenses.table.status'),
+									value: (
 										<Chip variant={detailsTarget.status === LICENSE_STATUS.ACTIVE ? 'success' : 'default'} label={detailsTarget.status} />
+									),
+								},
+								{
+									label: t('catalog:licenses.details.customer'),
+									value: <span className='break-all [overflow-wrap:anywhere]'>{detailsTarget.customer || '—'}</span>,
+								},
+								{
+									label: t('catalog:licenses.details.features'),
+									value: detailsTarget.features?.length ? detailsTarget.features.join(', ') : '—',
+								},
+								{ label: t('catalog:licenses.table.expires'), value: formatDate(detailsTarget.exp) },
+								{
+									label: t('catalog:licenses.details.createdAt'),
+									value: detailsTarget.created_at ? formatDate(detailsTarget.created_at) : '—',
+								},
+								...(detailsTarget.status === LICENSE_STATUS.REVOKED && detailsTarget.revoked_at
+									? [{ label: t('catalog:licenses.details.revokedAt'), value: formatDate(detailsTarget.revoked_at) }]
+									: []),
+							];
+
+							return (
+								<div className='space-y-4 py-2'>
+									<div className='rounded-md border border-line-strong bg-muted/40 p-3 text-sm text-muted-foreground'>
+										{detailsTarget.status === LICENSE_STATUS.REVOKED
+											? t('catalog:licenses.details.revokedNotice')
+											: t('catalog:licenses.details.jwtNotice')}
+									</div>
+									<div className='grid grid-cols-2 gap-4'>
+										{fields.map((field) => (
+											<div key={field.label} className={field.fullWidth ? 'space-y-1 col-span-2' : 'space-y-1'}>
+												<span className='text-sm font-medium text-muted-foreground'>{field.label}</span>
+												<div className='text-sm'>{field.value}</div>
+											</div>
+										))}
 									</div>
 								</div>
-								<div className='space-y-1 col-span-2'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.details.customer')}</span>
-									<div className='text-sm break-all [overflow-wrap:anywhere]'>{detailsTarget.customer || '—'}</div>
-								</div>
-								<div className='space-y-1'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.details.features')}</span>
-									<div className='text-sm'>{detailsTarget.features?.length ? detailsTarget.features.join(', ') : '—'}</div>
-								</div>
-								<div className='space-y-1'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.table.expires')}</span>
-									<div className='text-sm'>{formatDate(detailsTarget.exp)}</div>
-								</div>
-								<div className='space-y-1'>
-									<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.details.createdAt')}</span>
-									<div className='text-sm'>{detailsTarget.created_at ? formatDate(detailsTarget.created_at) : '—'}</div>
-								</div>
-							</div>
-						</div>
-					)}
+							);
+						})()}
 				</DialogContent>
 			</Dialog>
 		</div>

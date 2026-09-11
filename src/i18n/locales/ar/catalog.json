@@ -1082,7 +1082,9 @@
 			"tier": "الفئة",
 			"environment": "البيئة",
 			"status": "الحالة",
-			"expires": "تاريخ الانتهاء"
+			"expires": "تاريخ الانتهاء",
+			"expiringSoon": "قريب الانتهاء",
+			"expired": "منتهي"
 		},
 		"details": {
 			"title": "تفاصيل الترخيص",
@@ -1093,6 +1095,7 @@
 			"customer": "العميل",
 			"features": "الميزات",
 			"createdAt": "تاريخ الإنشاء",
+			"revokedAt": "تاريخ الإبطال",
 			"revoke": "إبطال"
 		},
 		"revokeDialog": {
