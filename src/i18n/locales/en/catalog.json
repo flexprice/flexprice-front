@@ -1098,7 +1098,7 @@
 		},
 		"writeDeniedTooltip": "You don't have permission to manage licenses. Ask a tenant admin for access.",
 		"table": {
-			"jti": "JTI",
+			"jti": "Key ID",
 			"tier": "Tier",
 			"environment": "Environment",
 			"status": "Status",
@@ -1120,7 +1120,8 @@
 		},
 		"revokeDialog": {
 			"title": "Revoke License",
-			"confirmMessage": "Marks <bold>{{jti}}</bold> as revoked in the control plane. It won't be re-issued, and once online revocation checks are supported, connected instances will stop validating it. Instances already running keep working until the license expires. This cannot be undone."
+			"keyIdLabel": "Key ID:",
+			"confirmMessage": "This license will be marked as revoked in the control plane. It won't be re-issued, and once online revocation checks are supported, connected instances will stop validating it. Instances already running keep working until the license expires. This cannot be undone."
 		},
 		"createDialog": {
 			"title": "Create License",
@@ -1128,16 +1129,23 @@
 			"tier": "Tier",
 			"tierCommunity": "Community",
 			"tierEnterprise": "Enterprise",
+			"tenantId": "Tenant ID",
+			"tenantIdPlaceholder": "tenant_...",
+			"tenantIdHint": "Mint for another tenant. Leave blank to mint for your own.",
+			"environment": "Environment",
+			"envSandbox": "Sandbox",
+			"envProduction": "Production",
 			"customer": "Customer (optional)",
 			"customerPlaceholder": "acme-corp",
 			"features": "Features (optional, comma-separated)",
 			"featuresPlaceholder": "sso, audit-log",
-			"ttl": "TTL in days (optional)",
+			"ttl": "TTL in days (optional, enterprise only)",
 			"ttlPlaceholder": "365",
 			"keySavedWarning": "Save this license key now — it will not be shown again. Heimdall does not store the signed token.",
 			"copyToastMessage": "License key copied to clipboard",
 			"done": "Done",
-			"create": "Create"
+			"create": "Create",
+			"generate": "Generate License"
 		}
 	}
 }

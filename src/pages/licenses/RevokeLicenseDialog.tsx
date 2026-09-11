@@ -1,9 +1,9 @@
 import { FC, useState, useCallback } from 'react';
-import { Button } from '@/components/atoms';
+import { Button, CopyIdButton } from '@/components/atoms';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import toast from 'react-hot-toast';
 import LicenseApi from '@/api/LicenseApi';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
 	jti: string;
@@ -38,15 +38,15 @@ const RevokeLicenseDialog: FC<Props> = ({ jti, open, onOpenChange, onSuccess }) 
 					<DialogTitle>{t('catalog:licenses.revokeDialog.title')}</DialogTitle>
 				</DialogHeader>
 
-				<div className='py-2'>
-					<p className='text-sm text-content-zinc-secondary'>
-						<Trans
-							ns='catalog'
-							i18nKey='licenses.revokeDialog.confirmMessage'
-							values={{ jti }}
-							components={{ bold: <span className='font-medium' /> }}
-						/>
-					</p>
+				<div className='py-2 space-y-3'>
+					<div className='space-y-1'>
+						<span className='text-sm font-medium text-muted-foreground'>{t('catalog:licenses.revokeDialog.keyIdLabel')}</span>
+						<div className='flex items-center gap-2 rounded-md border border-line-strong bg-muted/40 p-2'>
+							<code className='flex-1 break-all [overflow-wrap:anywhere] font-mono text-xs'>{jti}</code>
+							<CopyIdButton id={jti} toastMessage={t('catalog:licenses.createDialog.copyToastMessage')} />
+						</div>
+					</div>
+					<p className='text-sm text-content-zinc-secondary'>{t('catalog:licenses.revokeDialog.confirmMessage')}</p>
 				</div>
 
 				<DialogFooter>

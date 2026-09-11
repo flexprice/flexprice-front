@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { AddButton, Chip, Loader } from '@/components/atoms';
+import { AddButton, Chip, Loader, CopyIdButton } from '@/components/atoms';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
@@ -50,7 +50,14 @@ const LicenseTab = () => {
 	const columns: ColumnData<License>[] = [
 		{
 			title: t('catalog:licenses.table.jti'),
-			render: (row) => <code className='font-mono text-xs'>{row.jti}</code>,
+			render: (row) => (
+				<div className='flex items-center gap-1'>
+					<code className='font-mono text-xs'>{row.jti}</code>
+					<span onClick={(e) => e.stopPropagation()}>
+						<CopyIdButton id={row.jti} toastMessage={t('catalog:licenses.createDialog.copyToastMessage')} />
+					</span>
+				</div>
+			),
 		},
 		{
 			title: t('catalog:licenses.table.tier'),
@@ -136,9 +143,12 @@ const LicenseTab = () => {
 									label: t('catalog:licenses.table.jti'),
 									fullWidth: true,
 									value: (
-										<code className='font-mono bg-muted px-1.5 py-0.5 rounded text-xs break-all [overflow-wrap:anywhere]'>
-											{detailsTarget.jti}
-										</code>
+										<div className='flex items-center gap-1'>
+											<code className='font-mono bg-muted px-1.5 py-0.5 rounded text-xs break-all [overflow-wrap:anywhere]'>
+												{detailsTarget.jti}
+											</code>
+											<CopyIdButton id={detailsTarget.jti} toastMessage={t('catalog:licenses.createDialog.copyToastMessage')} />
+										</div>
 									),
 								},
 								{ label: t('catalog:licenses.table.tier'), value: <Chip variant='default' label={detailsTarget.tier} /> },

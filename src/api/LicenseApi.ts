@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { AxiosClient } from '@/core/axios/verbs';
 import { License } from '@/models/License';
-import { LicensingTokenResponse, MintLicenseRequest, MintLicenseResponse, ListLicensesResponse } from '@/types/dto/License';
+import {
+	LicensingTokenResponse,
+	MintLicenseRequest,
+	MintLicenseResponse,
+	ListLicensesResponse,
+	LicensingTokenClaims,
+} from '@/types/dto/License';
 
 // Heimdall is a separate host from the flexprice backend — it must NOT go through the shared
 // AxiosClient, which would leak the flexprice JWT + X-Environment-ID header to it. Separate
@@ -19,13 +25,12 @@ const TOKEN_STORAGE_KEY = 'heimdall_licensing_token';
 // Tolerate small clock drift between browser and Heimdall's exp.
 const EXPIRY_SKEW_SECONDS = 10;
 
-// No signature verification needed client-side — we only read exp to decide whether to reuse it.
-function jwtExpiry(token: string): number | null {
+// No signature verification needed client-side — we only read claims to decide token reuse / admin gating.
+function decodeJwtClaims(token: string): LicensingTokenClaims | null {
 	try {
 		const payload = token.split('.')[1];
 		const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-		const json = JSON.parse(atob(base64));
-		return typeof json.exp === 'number' ? json.exp : null;
+		return JSON.parse(atob(base64));
 	} catch {
 		return null;
 	}
@@ -33,8 +38,8 @@ function jwtExpiry(token: string): number | null {
 
 function isTokenValid(token: string | null): token is string {
 	if (!token) return false;
-	const exp = jwtExpiry(token);
-	if (exp === null) return false;
+	const exp = decodeJwtClaims(token)?.exp;
+	if (typeof exp !== 'number') return false;
 	return exp > Date.now() / 1000 + EXPIRY_SKEW_SECONDS;
 }
 
@@ -63,6 +68,13 @@ class LicenseApi {
 		const res = await AxiosClient.get<LicensingTokenResponse>('/licensing-token');
 		storeToken(res.token);
 		return res.token;
+	}
+
+	// Drives the create-form gate: full form (incl. tenant_id) for admins, single-button
+	// community mint for everyone else. Re-derived from whatever token is currently valid.
+	public static async isAdmin(): Promise<boolean> {
+		const token = await LicenseApi.getLicensingToken();
+		return decodeJwtClaims(token)?.is_admin === true;
 	}
 
 	private static async heimdallAuthHeaders(forceRefresh = false) {

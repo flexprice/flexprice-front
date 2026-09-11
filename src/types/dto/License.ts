@@ -6,9 +6,17 @@ export interface LicensingTokenResponse {
 
 export interface MintLicenseRequest {
 	tier: LICENSE_TIER;
-	env: string;
+	env?: string;
+	// Admin-only: mints for another tenant. Backend ignores it for non-admins.
+	tenant_id?: string;
 	features?: string[];
+	// Backend forces TTL for community; only enterprise honors this value.
 	ttl_days?: number;
+}
+
+export interface LicensingTokenClaims {
+	is_admin?: boolean;
+	exp?: number;
 }
 
 // license_key is shown once — Heimdall doesn't persist it, so it never appears again.
