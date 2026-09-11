@@ -20,7 +20,7 @@ export interface LicensingTokenClaims {
 	exp?: number;
 }
 
-// license_key is shown once — Heimdall doesn't persist it, so it never appears again.
+// license_key is shown once — the licensing service doesn't persist it, so it never appears again.
 export interface MintLicenseResponse {
 	license_key: string;
 	jti: string;

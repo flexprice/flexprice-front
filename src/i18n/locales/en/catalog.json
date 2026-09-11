@@ -1148,7 +1148,7 @@
 			"featuresPlaceholder": "sso, audit-log",
 			"ttl": "TTL in days (optional, enterprise only)",
 			"ttlPlaceholder": "365",
-			"keySavedWarning": "Save this license key now — it will not be shown again. Heimdall does not store the signed token.",
+			"keySavedWarning": "Save this license key now — it will not be shown again. The signed token is not stored.",
 			"copyToastMessage": "License key copied to clipboard",
 			"done": "Done",
 			"create": "Create",

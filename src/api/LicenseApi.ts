@@ -9,20 +9,20 @@ import {
 	LicensingTokenClaims,
 } from '@/types/dto/License';
 
-// Heimdall is a separate host from the flexprice backend — it must NOT go through the shared
-// AxiosClient, which would leak the flexprice JWT + X-Environment-ID header to it. Separate
-// instance, no interceptors, only the short-lived licensing token as Bearer.
-const HEIMDALL_URL = import.meta.env.VITE_HEIMDALL_URL ?? 'http://localhost:58080';
+// The licensing service is a separate host from the flexprice backend — it must NOT go through
+// the shared AxiosClient, which would leak the flexprice JWT + X-Environment-ID header to it.
+// Separate instance, no interceptors, only the short-lived licensing token as Bearer.
+const LICENSING_URL = import.meta.env.VITE_LICENSING_URL ?? 'http://localhost:58080';
 
-const heimdallClient = axios.create({
-	baseURL: `${HEIMDALL_URL}/v1`,
+const licensingClient = axios.create({
+	baseURL: `${LICENSING_URL}/v1`,
 	timeout: 30000,
 	headers: { 'Content-Type': 'application/json' },
 });
 
 // Persisted so a page refresh reuses the still-valid token instead of minting a new one every load.
-const TOKEN_STORAGE_KEY = 'heimdall_licensing_token';
-// Tolerate small clock drift between browser and Heimdall's exp.
+const TOKEN_STORAGE_KEY = 'licensing_token';
+// Tolerate small clock drift between browser and the licensing service's exp.
 const EXPIRY_SKEW_SECONDS = 10;
 
 // No signature verification needed client-side — we only read claims to decide token reuse / admin gating.
@@ -77,48 +77,48 @@ class LicenseApi {
 		return decodeJwtClaims(token)?.is_admin === true;
 	}
 
-	private static async heimdallAuthHeaders(forceRefresh = false) {
+	private static async licensingAuthHeaders(forceRefresh = false) {
 		const token = await LicenseApi.getLicensingToken(forceRefresh);
 		return { Authorization: `Bearer ${token}` };
 	}
 
-	// ponytail: one retry-on-401 rather than a generic interceptor — only Heimdall calls need it,
+	// ponytail: one retry-on-401 rather than a generic interceptor — only licensing calls need it,
 	// and there are exactly four of them.
-	private static async withHeimdallAuth<T>(fn: (headers: { Authorization: string }) => Promise<T>): Promise<T> {
+	private static async withLicensingAuth<T>(fn: (headers: { Authorization: string }) => Promise<T>): Promise<T> {
 		try {
-			return await fn(await LicenseApi.heimdallAuthHeaders());
+			return await fn(await LicenseApi.licensingAuthHeaders());
 		} catch (err) {
 			if (axios.isAxiosError(err) && err.response?.status === 401) {
-				return await fn(await LicenseApi.heimdallAuthHeaders(true));
+				return await fn(await LicenseApi.licensingAuthHeaders(true));
 			}
 			throw err;
 		}
 	}
 
 	public static async mintLicense(payload: MintLicenseRequest): Promise<MintLicenseResponse> {
-		return LicenseApi.withHeimdallAuth(async (headers) => {
-			const res = await heimdallClient.post<MintLicenseResponse>('/licenses/mint', payload, { headers });
+		return LicenseApi.withLicensingAuth(async (headers) => {
+			const res = await licensingClient.post<MintLicenseResponse>('/licenses/mint', payload, { headers });
 			return res.data;
 		});
 	}
 
 	public static async listLicenses(): Promise<License[]> {
-		return LicenseApi.withHeimdallAuth(async (headers) => {
-			const res = await heimdallClient.get<ListLicensesResponse>('/licenses', { headers });
+		return LicenseApi.withLicensingAuth(async (headers) => {
+			const res = await licensingClient.get<ListLicensesResponse>('/licenses', { headers });
 			return res.data.licenses;
 		});
 	}
 
 	public static async getLicense(jti: string): Promise<License> {
-		return LicenseApi.withHeimdallAuth(async (headers) => {
-			const res = await heimdallClient.get<License>(`/licenses/${jti}`, { headers });
+		return LicenseApi.withLicensingAuth(async (headers) => {
+			const res = await licensingClient.get<License>(`/licenses/${jti}`, { headers });
 			return res.data;
 		});
 	}
 
 	public static async revokeLicense(jti: string): Promise<void> {
-		return LicenseApi.withHeimdallAuth(async (headers) => {
-			await heimdallClient.post(`/licenses/${jti}/revoke`, undefined, { headers });
+		return LicenseApi.withLicensingAuth(async (headers) => {
+			await licensingClient.post(`/licenses/${jti}/revoke`, undefined, { headers });
 		});
 	}
 }

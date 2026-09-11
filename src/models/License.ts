@@ -9,7 +9,7 @@ export enum LICENSE_STATUS {
 	EXPIRED = 'expired',
 }
 
-// Metadata only — Heimdall never returns the signed token after mint.
+// Metadata only — the licensing service never returns the signed token after mint.
 export interface License {
 	jti: string;
 	tenant_id?: string;

@@ -50,9 +50,9 @@ describe('LicenseApi', () => {
 		stubLocalStorage();
 	});
 
-	it('fetches a flexprice licensing token before calling Heimdall, and reuses it on the next call', async () => {
+	it('fetches a flexprice licensing token before calling the licensing service, and reuses it on the next call', async () => {
 		getMock.mockResolvedValueOnce({ token: validToken }); // flexprice /licensing-token
-		getMock.mockResolvedValueOnce({ data: { licenses: [] } }); // heimdall /licenses
+		getMock.mockResolvedValueOnce({ data: { licenses: [] } }); // licensing /licenses
 
 		const { default: LicenseApi } = await import('./LicenseApi');
 		const licenses = await LicenseApi.listLicenses();
@@ -67,7 +67,7 @@ describe('LicenseApi', () => {
 		expect(getMock).toHaveBeenCalledTimes(3);
 	});
 
-	it('mints a license against Heimdall with the licensing token as Bearer', async () => {
+	it('mints a license against the licensing service with the licensing token as Bearer', async () => {
 		getMock.mockResolvedValueOnce({ token: validToken });
 		postMock.mockResolvedValueOnce({ data: { license_key: 'lic_secret', jti: 'jti_1' } });
 
