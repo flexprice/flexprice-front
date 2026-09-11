@@ -51,7 +51,7 @@ test.describe.serial('Wallet creation and alert thresholds @critical', () => {
 		await customerWalletPage.openAlertSettings();
 
 		await customerWalletPage.setAlertsEnabled(true);
-		await customerWalletPage.addThreshold('Critical Threshold', '10');
+		await customerWalletPage.setThreshold('Critical', '10');
 		await customerWalletPage.saveAlertSettings();
 
 		await app.expectToast('Alert settings updated successfully');
@@ -64,31 +64,29 @@ test.describe.serial('Wallet creation and alert thresholds @critical', () => {
 			'aria-pressed',
 			'true',
 		);
-		await expect(customerWalletPage.thresholdValue('Critical Threshold')).toHaveValue('10');
+		await expect(customerWalletPage.thresholdValue('Critical')).toHaveValue('10');
 	});
 
-	test('3. switching to Percentage is non-destructive and warns about ongoing balance', async ({ customerWalletPage }) => {
+	test('3. switching threshold type is non-destructive', async ({ customerWalletPage }) => {
 		await customerWalletPage.goto(customerId);
 		await customerWalletPage.openAlertSettings();
 
 		// Absolute "10" from step 2, confirmed by the same reopen check that step 2 ends on.
-		await expect(customerWalletPage.thresholdValue('Critical Threshold')).toHaveValue('10');
+		await expect(customerWalletPage.thresholdValue('Critical')).toHaveValue('10');
 
 		await customerWalletPage.chooseThresholdType('Percentage');
 
-		await expect(customerWalletPage.percentageWarningBanner).toBeVisible();
 		// A fresh mode starts with its own (empty) draft — the Absolute "10" is held
 		// separately, not shown or overwritten here.
-		await expect(customerWalletPage.card('Critical Threshold').getByRole('button', { name: 'Add' })).toBeVisible();
+		await expect(customerWalletPage.thresholdValue('Critical')).toHaveValue('');
 
-		await customerWalletPage.addThreshold('Critical Threshold', '25');
+		await customerWalletPage.setThreshold('Critical', '25');
 		await customerWalletPage.chooseThresholdType('Absolute');
 
-		await expect(customerWalletPage.percentageWarningBanner).toBeHidden();
-		await expect(customerWalletPage.thresholdValue('Critical Threshold')).toHaveValue('10');
+		await expect(customerWalletPage.thresholdValue('Critical')).toHaveValue('10');
 
 		await customerWalletPage.chooseThresholdType('Percentage');
-		await expect(customerWalletPage.thresholdValue('Critical Threshold')).toHaveValue('25');
+		await expect(customerWalletPage.thresholdValue('Critical')).toHaveValue('25');
 
 		// Neither switch was saved — only Save Changes persists a mode. Leaving the
 		// dialog without saving keeps step 2's Absolute "10" as what step 4 loads.
@@ -100,14 +98,14 @@ test.describe.serial('Wallet creation and alert thresholds @critical', () => {
 		await customerWalletPage.openAlertSettings();
 
 		await customerWalletPage.chooseThresholdType('Percentage');
-		await customerWalletPage.addThreshold('Critical Threshold', '150');
+		await customerWalletPage.setThreshold('Critical', '150');
 		await customerWalletPage.saveAlertSettings();
 
 		await app.expectToast('Critical threshold must be between 0 and 100.');
 		// Rejected client-side before any request — the dialog stays open on the
 		// invalid value rather than silently discarding it.
 		await expect(customerWalletPage.alertDialog).toBeVisible();
-		await expect(customerWalletPage.thresholdValue('Critical Threshold')).toHaveValue('150');
+		await expect(customerWalletPage.thresholdValue('Critical')).toHaveValue('150');
 	});
 
 	test('5. saves a valid percentage threshold', async ({ customerWalletPage, app }) => {
@@ -115,7 +113,7 @@ test.describe.serial('Wallet creation and alert thresholds @critical', () => {
 		await customerWalletPage.openAlertSettings();
 
 		await customerWalletPage.chooseThresholdType('Percentage');
-		await customerWalletPage.addThreshold('Critical Threshold', '25');
+		await customerWalletPage.setThreshold('Critical', '25');
 		await customerWalletPage.saveAlertSettings();
 
 		await app.expectToast('Alert settings updated successfully');
@@ -126,6 +124,6 @@ test.describe.serial('Wallet creation and alert thresholds @critical', () => {
 			'aria-pressed',
 			'true',
 		);
-		await expect(customerWalletPage.thresholdValue('Critical Threshold')).toHaveValue('25');
+		await expect(customerWalletPage.thresholdValue('Critical')).toHaveValue('25');
 	});
 });

@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { dialog } from '../utils/selectors';
 
-export type WalletAlertLevelTitle = 'Critical Threshold' | 'Warning Threshold' | 'Info Threshold';
+export type WalletAlertLevelTitle = 'Critical' | 'Warning' | 'Info';
 export type WalletAlertThresholdType = 'Absolute' | 'Percentage';
 
 /**
@@ -13,11 +13,10 @@ export type WalletAlertThresholdType = 'Absolute' | 'Percentage';
  * attribute rather than by role+name. Radix's own menu items do carry a proper
  * `role="menuitem"` and their visible text as accessible name.
  *
- * WalletAlertThresholdCard's field labels are plain `<label>` elements with no
- * `for` binding (unlike the rest of the app's Select atom), so a Critical/Warning/
- * Info card is scoped by its title text plus its Add/Remove button, then addressed
- * by role inside that scope — `spinbutton` for the `<input type="number">` and
- * `combobox` for the condition Select.
+ * The thresholds are three always-present rows (WalletAlertThresholdSection), not
+ * add/remove cards. Each row's input carries an explicit `aria-label` of
+ * "<Severity> — <condition copy>", so a level is addressed directly by that label
+ * rather than by scoping to a card and hunting for a role inside it.
  */
 export class CustomerWalletPage {
 	constructor(private readonly page: Page) {}
@@ -128,40 +127,25 @@ export class CustomerWalletPage {
 		await this.thresholdTypeControl.getByRole('button', { name: type, exact: true }).click();
 	}
 
-	get percentageWarningBanner(): Locator {
-		return this.alertDialog.getByText('Percentage alerts apply only to ongoing balance.', { exact: false });
+	/**
+	 * A level's threshold input.
+	 *
+	 * The row renders an explicit `aria-label` combining the severity and the fixed
+	 * condition copy ("Critical — Balance below"), which is a stable accessible name and
+	 * removes the need to scope to a container first. Note the input is a textbox, not a
+	 * `spinbutton`: the row uses the Input atom's `variant="number"` for keystroke
+	 * filtering but passes no `type`, so it renders as `<input type="text">`.
+	 */
+	thresholdValue(title: WalletAlertLevelTitle): Locator {
+		return this.alertDialog.getByLabel(`${title} — Balance below`);
 	}
 
 	/**
-	 * Scopes to one Critical/Warning/Info card.
-	 *
-	 * WalletAlertThresholdCard nests its title `<label>` three `div`s below the card
-	 * root (title wrapper -> header row -> card). `hasText`/`has` filters can't express
-	 * "closest enclosing" — every ancestor div up to the dialog root also contains the
-	 * title text and *an* Add/Remove button (there are three cards, each with one), so
-	 * `.first()`/`.last()` over a filtered set lands on whichever div that predicate
-	 * happens to match first or last, not the specific card. The XPath `ancestor` axis
-	 * is defined in reverse document order, so `ancestor::div[3]` is unambiguous: the
-	 * third-nearest div ancestor of the label, i.e. the card itself.
+	 * Sets a level's threshold. Every level is always present, so there is nothing to add
+	 * first — clearing the field is how a level is left unconfigured.
 	 */
-	card(title: WalletAlertLevelTitle): Locator {
-		return this.alertDialog.locator(`xpath=//label[normalize-space(text())="${title}"]/ancestor::div[3]`);
-	}
-
-	async addThreshold(title: WalletAlertLevelTitle, value: string, condition: 'Below' | 'Above' = 'Below'): Promise<void> {
-		const card = this.card(title);
-		await card.getByRole('button', { name: 'Add', exact: true }).click();
-		await card.getByRole('spinbutton').fill(value);
-		// The condition Select's <label> isn't `for`-bound (same as Threshold Value),
-		// so it is addressed by role within the card rather than via selectByLabel.
-		if (condition !== 'Below') {
-			await card.getByRole('combobox').click();
-			await this.page.getByRole('option', { name: condition, exact: true }).click();
-		}
-	}
-
-	thresholdValue(title: WalletAlertLevelTitle): Locator {
-		return this.card(title).getByRole('spinbutton');
+	async setThreshold(title: WalletAlertLevelTitle, value: string): Promise<void> {
+		await this.thresholdValue(title).fill(value);
 	}
 
 	get saveAlertSettingsButton(): Locator {

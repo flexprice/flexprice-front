@@ -528,6 +528,12 @@
 			"fanoutHint": "Each bills as {{count}} line items per subscription invoice",
 			"noFanout": "Same as subscription cadence"
 		},
+		"lineItemGrouping": {
+			"title": "Invoice line items",
+			"toggleLabel": "Combine into one line item per invoice",
+			"explainer": "By default each charge period is its own line item. The total is the same either way.",
+			"overageNote": "Overage rows from cumulative commitments stay separate."
+		},
 		"subscriptionTable": {
 			"planModifiedAria": "Plan modified",
 			"hierarchyColumn": "Hierarchy",

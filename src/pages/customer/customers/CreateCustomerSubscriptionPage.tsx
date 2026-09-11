@@ -27,6 +27,7 @@ import {
 	PRICE_TYPE,
 	ENTITY_STATUS,
 	Price,
+	LINE_ITEM_GROUPING,
 } from '@/models';
 import { InternalCreditGrantRequest, creditGrantToInternal, internalToCreateRequest } from '@/types/dto/CreditGrant';
 import { BILLING_PERIOD, PAYMENT_TERMS_NONE, SANDBOX_AUTO_CANCELLATION_DAYS } from '@/constants/constants';
@@ -62,6 +63,7 @@ import {
 	partitionPricesForSubscription,
 	uniqueRecurringBillingPeriodsFromPrices,
 } from '@/utils/subscription/planPricesForSubscriptionUi';
+import { subscriptionHasSplittingCharge } from '@/utils/subscription/lineItemGrouping';
 
 const SANDBOX_END_DATE_FORMAT: Intl.DateTimeFormatOptions = {
 	year: 'numeric',
@@ -144,6 +146,13 @@ export type SubscriptionFormState = {
 	 * every_price_in_opted_in_cadences]` so backend attaches exactly the user's selection.
 	 */
 	optedInAdditionalCadences: string[];
+	/**
+	 * User opted to collapse each finer-cadence charge into a single line item spanning the
+	 * subscription's billing period. Maps to `line_item_grouping` at the API boundary:
+	 * false → field omitted (backend default `per_charge_period`), true → `per_billing_period`.
+	 * Only offered when at least one attached charge actually splits; presentation only.
+	 */
+	combineLineItemsPerBillingPeriod: boolean;
 };
 
 const usePlans = () => {
@@ -322,6 +331,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		subscriptionTrialPeriodDays: '',
 		autoInvoiceThreshold: '',
 		optedInAdditionalCadences: [],
+		combineLineItemsPerBillingPeriod: false,
 	});
 
 	const { data: plans, isLoading: plansLoading, isError: plansError } = usePlans();
@@ -589,6 +599,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			subscriptionTrialPeriodDays,
 			autoInvoiceThreshold,
 			optedInAdditionalCadences,
+			combineLineItemsPerBillingPeriod,
 		} = subscriptionState;
 
 		const hasFixedSubscriptionChargePrice = subscriptionChargesHaveFixedPrice(prices, billingPeriod, currency, isPriceActive);
@@ -608,6 +619,12 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		 * include_price_ids unset for phases (backend default per phase).
 		 */
 		let finalIncludePriceIds: string[] | undefined;
+		/**
+		 * Sent only when the user turned on "Combine into one line item per invoice" AND at
+		 * least one attached charge actually splits across the billing period; omitted
+		 * otherwise so the backend keeps its `per_charge_period` default. Presentation only.
+		 */
+		let finalLineItemGrouping: LINE_ITEM_GROUPING | undefined;
 
 		if (phases.length > 0) {
 			// Multi-phase subscription: extract data from phases
@@ -641,14 +658,29 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			const activeItems = prices?.items?.filter((price) => isPriceActive(price)) || [];
 			const currentPrices = filterPlanPricesForSubscriptionCharges(activeItems, billingPeriod, currency);
 
+			// The plan prices that will actually attach: the primary partition plus every
+			// additional price whose (period, count) cadence key matches an opted-in cadence.
+			const { primary, additional } = partitionPricesForSubscription(activeItems, billingPeriod, 1, currency);
+			const optedSet = new Set(optedInAdditionalCadences);
+			const optedInPrices = additional.filter((p) => optedSet.has(cadenceKey(p.billing_period, p.billing_period_count)));
+
 			// Only send include_price_ids when the user opted in at least one additional-cadence
-			// bucket. Full authoritative list = primary partition IDs + every additional price
-			// whose (period, count) cadence key matches one of the opted-in cadences.
+			// bucket; otherwise the backend default (exact cadence + ONETIME) already matches.
 			if (optedInAdditionalCadences.length > 0) {
-				const optedSet = new Set(optedInAdditionalCadences);
-				const { primary, additional } = partitionPricesForSubscription(activeItems, billingPeriod, 1, currency);
-				const optedInPrices = additional.filter((p) => optedSet.has(cadenceKey(p.billing_period, p.billing_period_count)));
 				finalIncludePriceIds = [...primary.map((p) => p.id), ...optedInPrices.map((p) => p.id)];
+			}
+
+			// Re-check the split condition against what actually attaches (plan prices the
+			// backend will pick up + inline extras) rather than trusting the toggle alone: the
+			// form hides the control when nothing splits, and a stale `true` must not leak.
+			if (combineLineItemsPerBillingPeriod) {
+				const inlineCharges = addedSubscriptionLineItems
+					.map((item) => item.price)
+					.filter((price): price is NonNullable<typeof price> => !!price);
+				const attachedCharges = [...primary, ...optedInPrices, ...inlineCharges];
+				if (subscriptionHasSplittingCharge(billingPeriod, 1, attachedCharges)) {
+					finalLineItemGrouping = LINE_ITEM_GROUPING.PER_BILLING_PERIOD;
+				}
 			}
 
 			// Convert price overrides to line item overrides
@@ -739,6 +771,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			trial_period_days,
 			auto_invoice_threshold,
 			finalIncludePriceIds,
+			finalLineItemGrouping,
 		};
 	};
 
@@ -836,6 +869,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 			...(sanitized.trial_period_days !== undefined ? { trial_period_days: sanitized.trial_period_days } : {}),
 			...(sanitized.auto_invoice_threshold !== undefined ? { auto_invoice_threshold: sanitized.auto_invoice_threshold } : {}),
 			...(sanitized.finalIncludePriceIds !== undefined ? { include_price_ids: sanitized.finalIncludePriceIds } : {}),
+			...(sanitized.finalLineItemGrouping !== undefined ? { line_item_grouping: sanitized.finalLineItemGrouping } : {}),
 		};
 
 		setIsDraft(isDraftParam);

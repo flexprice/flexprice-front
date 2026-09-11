@@ -19,6 +19,11 @@ interface Props {
 	subPeriod: BILLING_PERIOD;
 	/** Subscription cadence count — used for the fan-out hint per cadence group. */
 	subCount: number;
+	/**
+	 * Rendered below the table, outside its border. Used for the line-item-grouping toggle,
+	 * which only becomes meaningful once a finer cadence is opted in here.
+	 */
+	footer?: ReactNode;
 	disabled?: boolean;
 }
 
@@ -37,7 +42,7 @@ type Row = {
  * override / commitment / coupon controls on the merged prices. Rendered only when the
  * partition helper produced at least one additional group.
  */
-const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle, subPeriod, subCount, disabled = false }) => {
+const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle, subPeriod, subCount, footer, disabled = false }) => {
 	const { t } = useTranslation('customers');
 	const optedInSet = useMemo(() => new Set(optedInKeys), [optedInKeys]);
 
@@ -70,8 +75,10 @@ const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle,
 				),
 				cadence: <Chip label={cadenceLabel} variant='default' />,
 				count: <span>{t('organisms.additionalPlanPrices.chargeCount', { count: group.prices.length })}</span>,
+				// Plain span so the cell inherits the table's own type scale — a smaller override
+				// here read as a different size from its neighbours in the same row.
 				fanout: (
-					<span className='text-xs text-content-muted'>
+					<span>
 						{fanout != null && fanout > 1
 							? t('organisms.additionalPlanPrices.fanoutHint', { count: fanout })
 							: t('organisms.additionalPlanPrices.noFanout')}
@@ -101,6 +108,10 @@ const AdditionalPlanPricesSection: FC<Props> = ({ groups, optedInKeys, onToggle,
 					<FlexpriceTable columns={columns} data={rows} />
 				</div>
 			</div>
+			{/* Outside the border on purpose: FlexpriceTable draws its own rounded border inside
+			    this one, so anything stacked within the box exposes the table's bottom corners
+			    and reads as another table row. */}
+			{footer && <div className='mt-4'>{footer}</div>}
 		</div>
 	);
 };
