@@ -198,3 +198,7 @@ export type { WalletBalance, RealtimeWalletBalance } from './WalletBalance';
 
 // WalletTransaction
 export type { WalletTransaction } from './WalletTransaction';
+
+// License
+export type { License } from './License';
+export { LICENSE_TIER, LICENSE_STATUS } from './License';

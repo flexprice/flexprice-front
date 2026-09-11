@@ -380,3 +380,5 @@ export type {
 } from './Workflow';
 
 export type { RevenueDashboardRequest, RevenueDashboardResponse, RevenueDashboardSummary, RevenueDashboardItem } from './RevenueDashboard';
+
+export type { LicensingTokenResponse, MintLicenseRequest, MintLicenseResponse, ListLicensesResponse } from './License';

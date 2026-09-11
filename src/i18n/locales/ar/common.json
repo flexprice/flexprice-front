@@ -300,7 +300,8 @@
 			"webhooks": "الويب هوكات",
 			"workflows": "سير العمل",
 			"integrations": "التكاملات",
-			"pricingWidget": "أداة التسعير"
+			"pricingWidget": "أداة التسعير",
+			"licenses": "التراخيص"
 		}
 	},
 	"versionCheck": {

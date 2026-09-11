@@ -1045,8 +1045,6 @@
 		"bucketSizePlaceholder": "بدون تجميع",
 		"bucketSizeSetOnMeter": "تم تعيينه بالفعل على العداد ({{bucketSize}}) - لا يمكن للسعر تعريف حجم خاص به فوق ذلك.",
 		"selectBillingModel": "اختر نموذج الفوترة",
-		"bucketSize": "حجم الدفعة (اختياري)",
-		"bucketSizePlaceholder": "بدون تجميع",
 		"overrideAmountLabel": "مبلغ التجاوز ({{unit}})",
 		"enterNewAmountOptional": "أدخل مبلغًا جديدًا (اختياري)",
 		"tiers": "الشرائح",
@@ -1072,5 +1070,50 @@
 		"toastScheduled": "سيسري {{name}} اعتبارًا من {{date}}.",
 		"toastUpdated": "تم تحديث {{name}} بنجاح.",
 		"fallbackPriceName": "سعر"
+	},
+	"licenses": {
+		"listPage": {
+			"title": "التراخيص",
+			"createButton": "إنشاء ترخيص"
+		},
+		"writeDeniedTooltip": "ليس لديك إذن لإدارة التراخيص. اطلب من مسؤول المستأجر الوصول.",
+		"table": {
+			"jti": "JTI",
+			"tier": "الفئة",
+			"environment": "البيئة",
+			"status": "الحالة",
+			"expires": "تاريخ الانتهاء"
+		},
+		"details": {
+			"title": "تفاصيل الترخيص",
+			"notFound": "الترخيص غير موجود",
+			"loadError": "تعذر تحميل هذا الترخيص.",
+			"jwtNotice": "يتم عرض رمز JWT الموقع للترخيص مرة واحدة فقط عند الإنشاء. لا يتم تخزينه على الخادم ولا يمكن استرجاعه هنا — إذا فُقد، قم بإبطال هذا الترخيص وإصدار ترخيص جديد.",
+			"customer": "العميل",
+			"features": "الميزات",
+			"createdAt": "تاريخ الإنشاء",
+			"revoke": "إبطال"
+		},
+		"revokeDialog": {
+			"title": "إبطال الترخيص",
+			"confirmMessage": "سيؤدي هذا إلى إبطال <bold>{{jti}}</bold> فورًا. ستتوقف الأنظمة التي تستخدم هذا الترخيص عن التحقق عند الفحص التالي. لا يمكن التراجع عن هذا."
+		},
+		"createDialog": {
+			"title": "إنشاء ترخيص",
+			"createdTitle": "تم إنشاء الترخيص",
+			"tier": "الفئة",
+			"tierCommunity": "مجتمعي",
+			"tierEnterprise": "مؤسسي",
+			"customer": "العميل (اختياري)",
+			"customerPlaceholder": "acme-corp",
+			"features": "الميزات (اختياري، مفصولة بفواصل)",
+			"featuresPlaceholder": "sso, audit-log",
+			"ttl": "مدة الصلاحية بالأيام (اختياري)",
+			"ttlPlaceholder": "365",
+			"keySavedWarning": "احفظ مفتاح الترخيص هذا الآن — لن يتم عرضه مرة أخرى. لا يقوم Heimdall بتخزين الرمز الموقع.",
+			"copyToastMessage": "تم نسخ مفتاح الترخيص إلى الحافظة",
+			"done": "تم",
+			"create": "إنشاء"
+		}
 	}
 }

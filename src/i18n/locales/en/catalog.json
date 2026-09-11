@@ -1065,8 +1065,6 @@
 		"bucketSizePlaceholder": "No bucketing",
 		"bucketSizeSetOnMeter": "Already set on the meter ({{bucketSize}}) - a price can't define its own on top of that.",
 		"selectBillingModel": "Select billing model",
-		"bucketSize": "Bucket Size (Optional)",
-		"bucketSizePlaceholder": "No bucketing",
 		"overrideAmountLabel": "Override Amount ({{unit}})",
 		"enterNewAmountOptional": "Enter new amount (optional)",
 		"tiers": "Tiers",
@@ -1092,5 +1090,50 @@
 		"toastScheduled": "{{name}} will be effective from {{date}}.",
 		"toastUpdated": "{{name}} has been updated successfully.",
 		"fallbackPriceName": "Price"
+	},
+	"licenses": {
+		"listPage": {
+			"title": "Licenses",
+			"createButton": "Create License"
+		},
+		"writeDeniedTooltip": "You don't have permission to manage licenses. Ask a tenant admin for access.",
+		"table": {
+			"jti": "JTI",
+			"tier": "Tier",
+			"environment": "Environment",
+			"status": "Status",
+			"expires": "Expires"
+		},
+		"details": {
+			"title": "License Details",
+			"notFound": "License not found",
+			"loadError": "Could not load this license.",
+			"jwtNotice": "The signed license JWT is shown only once, at creation time. It is not stored server-side and cannot be retrieved here — if it was lost, revoke this license and mint a new one.",
+			"customer": "Customer",
+			"features": "Features",
+			"createdAt": "Created At",
+			"revoke": "Revoke"
+		},
+		"revokeDialog": {
+			"title": "Revoke License",
+			"confirmMessage": "This immediately invalidates <bold>{{jti}}</bold>. Instances using this license will stop validating on their next check. This cannot be undone."
+		},
+		"createDialog": {
+			"title": "Create License",
+			"createdTitle": "License Created",
+			"tier": "Tier",
+			"tierCommunity": "Community",
+			"tierEnterprise": "Enterprise",
+			"customer": "Customer (optional)",
+			"customerPlaceholder": "acme-corp",
+			"features": "Features (optional, comma-separated)",
+			"featuresPlaceholder": "sso, audit-log",
+			"ttl": "TTL in days (optional)",
+			"ttlPlaceholder": "365",
+			"keySavedWarning": "Save this license key now — it will not be shown again. Heimdall does not store the signed token.",
+			"copyToastMessage": "License key copied to clipboard",
+			"done": "Done",
+			"create": "Create"
+		}
 	}
 }

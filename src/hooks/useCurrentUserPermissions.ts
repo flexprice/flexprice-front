@@ -40,7 +40,10 @@ export type RbacEntity =
 	| 'setting'
 	| 'oauth'
 	| 'checkoutsession'
-	| 'workflow';
+	| 'workflow'
+	// ponytail: no backend RBAC entry for this yet — add to internal/types/rbac.go's Entity
+	// constants when the backend gate exists; UI-level gate for now.
+	| 'license';
 
 interface CurrentUserPermissions {
 	roles: string[];

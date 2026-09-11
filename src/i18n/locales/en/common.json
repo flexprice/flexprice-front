@@ -318,7 +318,8 @@
 			"webhooks": "Webhooks",
 			"workflows": "Workflows",
 			"integrations": "Integrations",
-			"pricingWidget": "Pricing Widget"
+			"pricingWidget": "Pricing Widget",
+			"licenses": "Licenses"
 		}
 	},
 	"versionCheck": {

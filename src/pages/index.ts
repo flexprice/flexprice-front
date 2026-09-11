@@ -28,6 +28,9 @@ export * from './webhooks';
 // Home pages
 export * from './home';
 
+// License pages
+export * from './licenses';
+
 export * from './customer-portal';
 
 export * from './checkout';
