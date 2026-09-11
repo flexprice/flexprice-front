@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 import { AddButton, Chip, Loader, CopyIdButton } from '@/components/atoms';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
@@ -50,10 +51,13 @@ const LicenseTab = () => {
 	const columns: ColumnData<License>[] = [
 		{
 			title: t('catalog:licenses.table.jti'),
+			width: '28%',
 			render: (row) => (
-				<div className='flex items-center gap-1'>
-					<code className='font-mono text-xs'>{row.jti}</code>
-					<span onClick={(e) => e.stopPropagation()}>
+				<div className='flex items-center gap-1 min-w-0'>
+					<code className='font-mono text-xs truncate' title={row.jti}>
+						{row.jti}
+					</code>
+					<span className='shrink-0' onClick={(e) => e.stopPropagation()}>
 						<CopyIdButton id={row.jti} toastMessage={t('catalog:licenses.createDialog.copyToastMessage')} />
 					</span>
 				</div>
@@ -61,25 +65,30 @@ const LicenseTab = () => {
 		},
 		{
 			title: t('catalog:licenses.table.tier'),
+			width: '12%',
 			render: (row) => <Chip variant='default' label={row.tier} />,
 		},
 		{
 			title: t('catalog:licenses.table.environment'),
+			width: '14%',
 			fieldName: 'env',
 		},
 		{
 			title: t('catalog:licenses.table.status'),
+			width: '12%',
 			render: (row) => <Chip variant={row.status === LICENSE_STATUS.ACTIVE ? 'success' : 'default'} label={row.status} />,
 		},
 		{
 			title: t('catalog:licenses.table.expires'),
+			width: '22%',
 			render: (row) => {
 				const flag = expiryFlag(row);
 				return (
-					<div className='flex items-center gap-2'>
-						<span className={flag ? 'text-amber-600' : undefined}>{formatDate(row.exp)}</span>
+					<div className='flex items-center gap-1.5 flex-wrap'>
+						<span className={cn('whitespace-nowrap', flag && 'text-amber-600')}>{formatDate(row.exp)}</span>
 						{flag && (
 							<Chip
+								className='shrink-0'
 								variant='warning'
 								label={flag === 'expired' ? t('catalog:licenses.table.expired') : t('catalog:licenses.table.expiringSoon')}
 							/>
@@ -90,10 +99,11 @@ const LicenseTab = () => {
 		},
 		{
 			title: '',
+			width: '12%',
 			render: (row) =>
 				row.status === LICENSE_STATUS.ACTIVE && canWrite ? (
 					<button
-						className='text-sm text-destructive hover:underline'
+						className='text-sm text-destructive hover:underline whitespace-nowrap'
 						onClick={(e) => {
 							e.stopPropagation();
 							setRevokeTarget(row);
@@ -114,7 +124,13 @@ const LicenseTab = () => {
 			{isLoading ? (
 				<Loader />
 			) : (
-				<FlexpriceTable columns={columns} data={licenses ?? []} showEmptyRow onRowClick={(row) => setDetailsTarget(row)} />
+				<FlexpriceTable
+					columns={columns}
+					data={licenses ?? []}
+					showEmptyRow
+					onRowClick={(row) => setDetailsTarget(row)}
+					tableClassName='table-fixed w-full'
+				/>
 			)}
 
 			<CreateLicenseDialog open={createOpen} onOpenChange={setCreateOpen} onSuccess={() => refetch()} />

@@ -7,8 +7,9 @@ export interface LicensingTokenResponse {
 export interface MintLicenseRequest {
 	tier: LICENSE_TIER;
 	env?: string;
-	// Admin-only: mints for another tenant. Backend ignores it for non-admins.
+	// Admin-only: mints for another tenant. Backend ignores both for non-admins.
 	tenant_id?: string;
+	customer?: string;
 	features?: string[];
 	// Backend forces TTL for community; only enterprise honors this value.
 	ttl_days?: number;

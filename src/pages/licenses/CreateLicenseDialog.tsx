@@ -19,6 +19,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 	const { t } = useTranslation(['catalog', 'common']);
 	const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 	const [tenantId, setTenantId] = useState('');
+	const [customer, setCustomer] = useState('');
 	const [tier, setTier] = useState<LICENSE_TIER>(LICENSE_TIER.COMMUNITY);
 	const [env, setEnv] = useState(ENV_SANDBOX);
 	const [features, setFeatures] = useState('');
@@ -52,6 +53,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 
 	const reset = () => {
 		setTenantId('');
+		setCustomer('');
 		setTier(LICENSE_TIER.COMMUNITY);
 		setEnv(ENV_SANDBOX);
 		setFeatures('');
@@ -86,6 +88,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 				tier,
 				env,
 				tenant_id: tenantId.trim() || undefined,
+				customer: customer.trim() || undefined,
 				features: features
 					? features
 							.split(',')
@@ -137,6 +140,12 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 							placeholder={t('catalog:licenses.createDialog.tenantIdPlaceholder')}
 							description={t('catalog:licenses.createDialog.tenantIdHint')}
 						/>
+						<Input
+							label={t('catalog:licenses.createDialog.customer')}
+							value={customer}
+							onChange={setCustomer}
+							placeholder={t('catalog:licenses.createDialog.customerPlaceholder')}
+						/>
 						<Select
 							label={t('catalog:licenses.createDialog.tier')}
 							options={tierOptions}
@@ -161,7 +170,7 @@ const CreateLicenseDialog: FC<Props> = ({ open, onOpenChange, onSuccess }) => {
 						)}
 					</div>
 				) : (
-					<div className='py-4' />
+					<p className='text-sm text-content-zinc-secondary py-2'>{t('catalog:licenses.createDialog.generateExplainer')}</p>
 				)}
 
 				<DialogFooter>

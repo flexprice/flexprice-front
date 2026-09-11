@@ -1145,7 +1145,8 @@
 			"copyToastMessage": "License key copied to clipboard",
 			"done": "Done",
 			"create": "Create",
-			"generate": "Generate License"
+			"generate": "Generate License",
+			"generateExplainer": "Generate a community license for your deployment. The environment, tier, and expiry are set automatically — just click Generate."
 		}
 	}
 }
