@@ -68,6 +68,9 @@
 			"state": "المحافظة",
 			"city": "المدينة",
 			"postalCode": "الرمز البريدي",
+			"taxTreatment": "المعاملة الضريبية",
+			"taxTreatmentExempt": "معفى",
+			"taxTreatmentTaxable": "خاضع للضريبة",
 			"timezone": "المنطقة الزمنية",
 			"subscriptionAmount": "مبلغ الاشتراك",
 			"subscriptionStartDate": "تاريخ بدء الاشتراك"

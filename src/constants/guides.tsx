@@ -4,6 +4,8 @@ import type { TFunction } from 'i18next';
 /** Doc deep links opened from tutorial cards */
 export enum DOCS_LINKS {
 	SETTINGS_CUSTOM_CURRENCY = 'https://docs.flexprice.io/docs/settings/settings#custom-currency-configuration',
+	SETTINGS_SUBSCRIPTION = 'https://docs.flexprice.io/docs/settings/settings#subscription-configuration',
+	SETTINGS_INVOICE = 'https://docs.flexprice.io/docs/settings/settings#invoice-configuration',
 
 	FEATURE_CREATE = 'https://docs.flexprice.io/docs/product-catalogue/features/create',
 	FEATURE_PLANS = 'https://docs.flexprice.io/docs/product-catalogue/features/linking-to-plans',

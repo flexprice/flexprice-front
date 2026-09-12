@@ -1,15 +1,21 @@
 /**
  * Posts a Playwright run summary to Slack.
  *
- * Silence is the default: a passing run sends nothing, because a channel that
- * receives a green tick every thirty minutes is a channel nobody reads. Only a
- * failing run — or the first pass after a failing one — is worth an interruption.
+ * A failing run gets the full breakdown: which journey, which assertion, what was
+ * expected, which artifacts exist. A passing run gets one line naming the flows that
+ * ran and nothing else — enough to confirm the suite is alive without turning the
+ * channel into a wall of green ticks nobody reads.
+ *
+ * The scheduled monitor is the exception and still stays silent while green: a tick
+ * every thirty minutes is noise, so it passes --status recovered only on the
+ * transition back from a failure.
  *
  * Slack is the notification layer, never the source of truth. Every message links
  * back to the workflow run, whose HTML report and traces carry the actual detail.
  *
  * Usage:
  *   node scripts/e2e-slack-notify.mjs --status failure --context "PR #123"
+ *   node scripts/e2e-slack-notify.mjs --status success --context "Post-deploy smoke"
  *
  * Environment:
  *   SLACK_WEBHOOK_URL   required; the message is skipped (not failed) when unset,
@@ -139,6 +145,35 @@ function failureLocation(test) {
 	return `${test.file}${test.line ? `:${test.line}` : ''}`;
 }
 
+/**
+ * The human-facing name of each flow that ran, for the success line.
+ *
+ * Playwright's JSON nests describe blocks under a file-level suite, so the ancestry
+ * reads "e2e/journeys/wallet/x.spec.ts › Wallet creation and alert thresholds". The
+ * file segment is an implementation detail to anyone reading Slack, and the `@critical`
+ * grep tags are for selecting tests, not for describing them — both are dropped so the
+ * message reads as "Wallet creation and alert thresholds worked well".
+ */
+function flowNames(tests) {
+	const names = new Set();
+	for (const test of tests) {
+		const segment = test.journey
+			.split(' › ')
+			.map((part) => part.trim())
+			.find((part) => part && !part.includes('/') && !part.endsWith('.spec.ts'));
+		if (!segment) continue;
+		const label = segment.replace(/@\S+/g, '').replace(/\s+/g, ' ').trim();
+		if (label) names.add(label);
+	}
+	return [...names];
+}
+
+/** "a", "a and b", "a, b and c" — a list that reads as a sentence. */
+function listPhrase(items) {
+	if (items.length <= 1) return items[0] ?? '';
+	return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+}
+
 function section(text) {
 	return { type: 'section', text: { type: 'mrkdwn', text } };
 }
@@ -226,10 +261,26 @@ async function main() {
 	}
 
 	const stats = report.stats ?? {};
-	const failures = collectTests(report.suites).filter((t) => t.status === 'unexpected');
+	const tests = collectTests(report.suites);
+	const failures = tests.filter((t) => t.status === 'unexpected');
 
 	if (failures.length === 0 && (stats.unexpected ?? 0) === 0) {
-		console.log('No failures — skipping Slack notification.');
+		// The monitor deliberately stays quiet while green — it runs on a timer, so a tick
+		// every half hour is exactly the noise that gets a channel muted. Everything else
+		// gets one line confirming which flows ran, which is also the only signal that the
+		// suite is still running at all rather than silently skipping.
+		if (status !== 'success') {
+			console.log('No failures — skipping Slack notification.');
+			return;
+		}
+
+		const flows = flowNames(tests.filter((t) => t.status === 'expected'));
+		const subject = flows.length > 0 ? listPhrase(flows) : context;
+		const verb = flows.length > 1 ? 'flows worked well' : 'flow worked well';
+		const counts = `${stats.expected ?? 0} passed${stats.flaky ? ` · ${stats.flaky} flaky` : ''}${stats.skipped ? ` · ${stats.skipped} skipped` : ''}`;
+		const line = `✅ *${subject}* ${verb} on ${environment} — ${counts}${runUrl ? ` · <${runUrl}|view run>` : ''}`;
+
+		await post(webhook, { text: `${subject} ${verb} — ${context}`, blocks: [section(line)] });
 		return;
 	}
 

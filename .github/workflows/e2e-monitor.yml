@@ -13,7 +13,9 @@
 # broken" every thirty minutes trains people to mute the channel.
 #
 # Required repository secrets:
-#   E2E_STAGING_URL                      base URL to monitor
+#   E2E_API_URL                          base URL to monitor (E2E_STAGING_URL still
+#                                        wins if it is set, for the case where the app
+#                                        and the API are not the same host)
 #   E2E_USER_EMAIL / E2E_USER_PASSWORD   the dedicated test account
 #   SLACK_WEBHOOK_URL                    where alerts go
 
@@ -48,7 +50,12 @@ jobs:
 
     env:
       CI: 'true'
-      E2E_BASE_URL: ${{ secrets.E2E_STAGING_URL }}
+      # The URL to monitor is resolved in the guard step below rather than inline here.
+      # Two secret references joined by a fallback operator read to secret scanners as one
+      # opaque high-entropy assignment and trip their generic detector; GitGuardian flagged
+      # exactly that here. Passing the references separately and choosing between them in
+      # shell is equivalent, and puts the fallback somewhere a reader can actually see it.
+      E2E_STAGING_URL: ${{ secrets.E2E_STAGING_URL }}
       # Enables environment isolation; without it the run writes to the account default.
       E2E_API_URL: ${{ secrets.E2E_API_URL }}
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
@@ -63,8 +70,13 @@ jobs:
       - name: Check configuration
         id: guard
         run: |
-          if [ -z "${E2E_BASE_URL}" ] || [ -z "${E2E_USER_EMAIL}" ] || [ -z "${E2E_USER_PASSWORD}" ]; then
-            echo "::notice::Monitoring is not configured yet (needs E2E_STAGING_URL, E2E_USER_EMAIL, E2E_USER_PASSWORD) — skipping."
+          # E2E_STAGING_URL wins when set, for the case where the app and the API are not
+          # the same host; otherwise the API URL is the environment to monitor.
+          base_url="${E2E_STAGING_URL:-$E2E_API_URL}"
+          echo "E2E_BASE_URL=${base_url}" >> "$GITHUB_ENV"
+
+          if [ -z "${base_url}" ] || [ -z "${E2E_USER_EMAIL}" ] || [ -z "${E2E_USER_PASSWORD}" ]; then
+            echo "::notice::Monitoring is not configured yet (needs E2E_API_URL, E2E_USER_EMAIL, E2E_USER_PASSWORD) — skipping."
             echo "configured=false" >> "$GITHUB_OUTPUT"
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { ExternalLinkIcon } from 'lucide-react';
 import { Card, CardHeader, FieldWithInfo, Input, Loader } from '@/components/atoms';
 import { SettingsToggleRow } from '@/components/molecules';
 import { cn } from '@/lib/utils';
 import type { SubscriptionConfig } from '@/types/dto/BillingSettings';
 import { useSubscriptionConfiguration } from './useSubscriptionConfiguration';
 import SettingsFormActions from '../SettingsFormActions';
+import { DOCS_LINKS } from '@/constants/guides';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
 const SubscriptionConfigurationSection = () => {
@@ -58,7 +60,21 @@ const SubscriptionConfigurationSection = () => {
 
 	return (
 		<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
-			<CardHeader title={t('billing.subscriptionConfiguration.title')} titleClassName='text-lg font-medium text-content-zinc-strong' />
+			<CardHeader
+				title={t('billing.subscriptionConfiguration.title')}
+				titleClassName='text-lg font-medium text-content-zinc-strong'
+				cta={
+					<a
+						href={DOCS_LINKS.SETTINGS_SUBSCRIPTION}
+						target='_blank'
+						rel='noopener noreferrer'
+						className='inline-flex h-5 items-center gap-1 text-xs text-content-slate-muted transition-colors hover:text-content-slate-secondary'
+						title={t('billing.subscriptionConfiguration.actions.docsTitle')}>
+						{t('billing.subscriptionConfiguration.actions.docs')}
+						<ExternalLinkIcon className='size-3.5' />
+					</a>
+				}
+			/>
 			{isLoading ? (
 				<div className='flex min-h-[200px] items-center justify-center'>
 					<Loader />

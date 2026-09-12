@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import CustomerApi from '@/api/CustomerApi';
-import Customer from '@/models/Customer';
+import Customer, { TAX_TREATMENT } from '@/models/Customer';
 import { CreateCustomerRequest, UpdateCustomerRequest } from '@/types/dto/Customer';
 import { Plus } from 'lucide-react';
 import { Country, State, City, IState } from 'country-state-city';
@@ -99,6 +99,10 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 				})
 			: trigger;
 
+	const taxTreatmentOptions: SelectOption[] = [
+		{ value: TAX_TREATMENT.TAXABLE, label: t('form.drawer.taxTreatmentTaxable') },
+		{ value: TAX_TREATMENT.EXEMPT, label: t('form.drawer.taxTreatmentExempt') },
+	];
 	const countriesOptions: SelectOption[] = Country.getAllCountries().map(({ name, isoCode }) => ({ label: name, value: isoCode }));
 	const statesOptions: SelectOption[] = formData.address_country
 		? State.getStatesOfCountry(formData.address_country).map(({ name, isoCode }) => ({
@@ -180,6 +184,7 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 			address_state: uiState.activeState?.name || undefined,
 			address_postal_code: formData.address_postal_code || undefined,
 			address_country: formData.address_country || undefined,
+			tax_treatment: formData.tax_treatment || undefined,
 		};
 
 		// Remove undefined values
@@ -266,6 +271,13 @@ const CreateCustomerDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) 
 								value={formData.email || ''}
 								onChange={(e) => handleChange('email', e)}
 								error={errors.email}
+							/>
+							<Select
+								label={t('form.drawer.taxTreatmentLabel')}
+								options={taxTreatmentOptions}
+								value={formData.tax_treatment || TAX_TREATMENT.TAXABLE}
+								onChange={(e) => handleChange('tax_treatment', e as TAX_TREATMENT)}
+								description={t('form.drawer.taxTreatmentHint')}
 							/>
 						</div>
 					</div>

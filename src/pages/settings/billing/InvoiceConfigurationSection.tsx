@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { ExternalLinkIcon } from 'lucide-react';
 import { Card, CardHeader, FieldWithInfo, Input, Loader, Select } from '@/components/atoms';
 import type { FinalizationDelayUnit, InvoiceConfig, InvoiceNumberFormat } from '@/types/dto/BillingSettings';
 import {
@@ -14,6 +15,7 @@ import {
 import { useInvoiceConfiguration } from './useInvoiceConfiguration';
 import { buildInvoiceNumberPreview } from './invoicePreview';
 import SettingsFormActions from '../SettingsFormActions';
+import { DOCS_LINKS } from '@/constants/guides';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
 const DATE_FORMAT_OPTIONS: InvoiceNumberFormat[] = ['YYYYMM', 'YYYY', 'YYYYMMDD', 'YYMMDD', 'YY'];
@@ -130,7 +132,21 @@ const InvoiceConfigurationSection = () => {
 
 	return (
 		<Card variant='default' className='rounded-xl border border-line bg-surface shadow-sm'>
-			<CardHeader title={t('billing.invoiceConfiguration.title')} titleClassName='text-lg font-medium text-content-zinc-strong' />
+			<CardHeader
+				title={t('billing.invoiceConfiguration.title')}
+				titleClassName='text-lg font-medium text-content-zinc-strong'
+				cta={
+					<a
+						href={DOCS_LINKS.SETTINGS_INVOICE}
+						target='_blank'
+						rel='noopener noreferrer'
+						className='inline-flex h-5 items-center gap-1 text-xs text-content-slate-muted transition-colors hover:text-content-slate-secondary'
+						title={t('billing.invoiceConfiguration.actions.docsTitle')}>
+						{t('billing.invoiceConfiguration.actions.docs')}
+						<ExternalLinkIcon className='size-3.5' />
+					</a>
+				}
+			/>
 			{isLoading ? (
 				<div className='flex min-h-[200px] items-center justify-center'>
 					<Loader />

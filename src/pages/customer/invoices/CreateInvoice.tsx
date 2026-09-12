@@ -90,6 +90,7 @@ const CreateInvoicePage: FC = () => {
 					currency: item.currency?.toLowerCase(),
 					auto_apply: item.auto_apply,
 					priority: item.priority,
+					tax_behavior: item.tax_behavior,
 				})),
 			);
 		}

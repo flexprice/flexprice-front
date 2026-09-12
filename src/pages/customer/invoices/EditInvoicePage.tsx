@@ -794,6 +794,7 @@ const EditInvoicePage: FC = () => {
 								total_prepaid_credits_applied={invoice.total_prepaid_credits_applied}
 								discount={invoice.total_discount}
 								total_tax={invoice.total_tax}
+								tax_summary={invoice.tax_summary}
 								amount_paid={invoice.amount_paid}
 								overpaid_amount={invoice.overpaid_amount}
 								amount_remaining={Number(invoice.amount_remaining)}

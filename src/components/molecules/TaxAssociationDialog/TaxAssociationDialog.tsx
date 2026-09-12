@@ -1,8 +1,8 @@
-import { FC, useState, useCallback } from 'react';
+import { FC, useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Input, Select, SelectOption, Toggle, Dialog } from '@/components/atoms';
 import TaxApi from '@/api/TaxApi';
-import { TAXRATE_ENTITY_TYPE } from '@/models/Tax';
+import { TAX_BEHAVIOR, TAXRATE_ENTITY_TYPE } from '@/models/Tax';
 import { CreateTaxAssociationRequest, TaxRateResponse } from '@/types/dto/tax';
 import { ENTITY_STATUS } from '@/models';
 import { currencyOptions } from '@/constants/constants';
@@ -24,6 +24,7 @@ interface FormData {
 	priority: number;
 	currency: string;
 	auto_apply: boolean;
+	tax_behavior: TAX_BEHAVIOR;
 }
 
 interface FormErrors {
@@ -47,9 +48,24 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 		tax_rate_code: data?.tax_rate_code || '',
 		priority: data?.priority || 1,
 		currency: data?.currency || 'usd',
-		auto_apply: data?.auto_apply || true,
+		auto_apply: data?.auto_apply ?? true,
+		tax_behavior: data?.tax_behavior || TAX_BEHAVIOR.EXCLUSIVE,
 	});
 	const [errors, setErrors] = useState<FormErrors>({});
+
+	// The parents keep this dialog mounted while the selected row changes, so without this the
+	// form would still hold the previously edited override.
+	useEffect(() => {
+		if (!open) return;
+		setFormData({
+			tax_rate_code: data?.tax_rate_code || '',
+			priority: data?.priority || 1,
+			currency: data?.currency || 'usd',
+			auto_apply: data?.auto_apply ?? true,
+			tax_behavior: data?.tax_behavior || TAX_BEHAVIOR.EXCLUSIVE,
+		});
+		setErrors({});
+	}, [open, data?.tax_rate_code, data?.priority, data?.currency, data?.auto_apply, data?.tax_behavior]);
 
 	// Fetch published tax rates
 	const { data: taxRatesData, isLoading: isLoadingTaxRates } = useQuery({
@@ -115,6 +131,7 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 				priority: formData.priority,
 				currency: formData.currency,
 				auto_apply: formData.auto_apply,
+				tax_behavior: formData.tax_behavior,
 			};
 
 			onSave(payload);
@@ -128,11 +145,25 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 			priority: 1,
 			currency: '',
 			auto_apply: true,
+			tax_behavior: TAX_BEHAVIOR.EXCLUSIVE,
 		});
 		setErrors({});
 		onCancel();
 		onOpenChange(false);
 	}, [onCancel, onOpenChange]);
+
+	const taxBehaviorOptions: SelectOption[] = [
+		{
+			value: TAX_BEHAVIOR.EXCLUSIVE,
+			label: t('taxAssociation.taxBehaviorExclusive'),
+			description: t('taxAssociation.taxBehaviorExclusiveHint'),
+		},
+		{
+			value: TAX_BEHAVIOR.INCLUSIVE,
+			label: t('taxAssociation.taxBehaviorInclusive'),
+			description: t('taxAssociation.taxBehaviorInclusiveHint'),
+		},
+	];
 
 	const taxRateOptions: SelectOption[] = (taxRatesData?.items || []).map((taxRate: TaxRateResponse) => ({
 		label: `${taxRate.name} (${taxRate.code})`,
@@ -182,6 +213,16 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 							placeholder={t('taxAssociation.placeholderCurrency')}
 							error={errors.currency}
 						/>
+					</div>
+
+					<div className='space-y-2'>
+						<Select
+							label={t('taxAssociation.labelTaxBehavior')}
+							value={formData.tax_behavior}
+							onChange={(value: string) => handleFieldChange('tax_behavior', value as TAX_BEHAVIOR)}
+							options={taxBehaviorOptions}
+						/>
+						<p className='text-sm text-content-muted'>{t('taxAssociation.taxBehaviorHint')}</p>
 					</div>
 
 					<div className='space-y-2'>
