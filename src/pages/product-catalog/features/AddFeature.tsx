@@ -13,6 +13,7 @@ import { FEATURE_TYPE } from '@/models/Feature';
 import { METER_AGGREGATION_TYPE, METER_USAGE_RESET_PERIOD } from '@/models/Meter';
 import FeatureApi from '@/api/FeatureApi';
 import { CreateFeatureRequest, CreateMeterRequest, FeatureFormData } from '@/types/dto';
+import { buildMeterRequest } from './AddFeature.utils';
 import { useMutation } from '@tanstack/react-query';
 import { Gauge, Settings2, SquareCheckBig, Wrench } from 'lucide-react';
 import { useMemo, useState, useCallback, useEffect } from 'react';
@@ -955,25 +956,12 @@ const AddFeaturePage = () => {
 
 	const { isPending, mutate: createFeature } = useMutation({
 		mutationFn: async (featureData: FeatureFormData = data) => {
-			// Build CreateMeterRequest with proper structure if metered
+			// Build CreateMeterRequest with proper structure if metered. Trims
+			// whitespace from event name, aggregation field/expression, and
+			// event filter keys/values so nothing accidental reaches the API.
 			const meterRequest: CreateMeterRequest | undefined =
 				featureData.type === FEATURE_TYPE.METERED && featureData.meter
-					? {
-							name: featureData.meter.name || featureData.name || '',
-							event_name: featureData.meter.event_name || '',
-							aggregation: {
-								type: featureData.meter.aggregation?.type || METER_AGGREGATION_TYPE.SUM,
-								// XOR with field — the toggle handler clears the inactive side,
-								// so at most one of these is populated at submit time.
-								...(featureData.meter.aggregation?.expression?.trim()
-									? { expression: featureData.meter.aggregation.expression.trim() }
-									: { field: featureData.meter.aggregation?.field?.trim() || '' }),
-								multiplier: featureData.meter.aggregation?.multiplier,
-								group_by: featureData.meter.aggregation?.group_by,
-							},
-							reset_usage: featureData.meter.reset_usage || METER_USAGE_RESET_PERIOD.BILLING_PERIOD,
-							filters: featureData.meter.filters?.filter((filter) => filter.key !== '' && filter.values.length > 0),
-						}
+					? buildMeterRequest(featureData.meter, featureData.name || '')
 					: undefined;
 
 			const ru = featureData.reporting_unit;
