@@ -598,6 +598,12 @@
 		"placeholderCurrency": "Select currency",
 		"labelAutoApply": "Auto Apply",
 		"autoApplyHint": "Automatically apply this tax rate when applicable",
+		"labelTaxBehavior": "Tax Behavior",
+		"taxBehaviorHint": "Exclusive adds the tax on top of the price. Inclusive treats the price as already containing it.",
+		"taxBehaviorExclusive": "Exclusive",
+		"taxBehaviorExclusiveHint": "Added on top of the price",
+		"taxBehaviorInclusive": "Inclusive",
+		"taxBehaviorInclusiveHint": "Already included in the price",
 		"submitLink": "Link Tax Rate"
 	},
 	"subscriptionAddon": {

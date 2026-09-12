@@ -3,7 +3,7 @@ import { FC } from 'react';
 import FlexpriceTable, { ColumnData, RedirectCell, TooltipCell } from '../Table';
 import { TaxApplied } from '@/models/Tax';
 import { formatDateShort } from '@/utils/common/helper_functions';
-import { TAX_RATE_TYPE } from '@/models/Tax';
+import { TAX_BEHAVIOR, TAX_RATE_TYPE } from '@/models/Tax';
 import { useQuery } from '@tanstack/react-query';
 import TaxApi from '@/api/TaxApi';
 import { TaxRateResponse } from '@/types/dto/tax';
@@ -93,6 +93,11 @@ const AppliedTaxesTable: FC<Props> = ({ data }) => {
 				const taxRate = taxRatesMap.get(row.tax_rate_id);
 				return formatTaxValue(taxRate);
 			},
+		},
+		{
+			title: 'Behavior',
+			render: (row) =>
+				row.tax_behavior === TAX_BEHAVIOR.INCLUSIVE ? t('taxAssociation.taxBehaviorInclusive') : t('taxAssociation.taxBehaviorExclusive'),
 		},
 		{
 			title: 'Taxable Amount',
