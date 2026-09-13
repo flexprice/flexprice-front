@@ -157,6 +157,82 @@ describe('TopUpWidget', () => {
 		expect(toast.error).not.toHaveBeenCalled();
 	});
 
+	// A blocked top-up comes back 200 with a complete, live session — the one
+	// already in flight. Nothing was created for this request, so opening that
+	// session's link would hand the customer a checkout for a different amount.
+	describe('when a checkout is already pending', () => {
+		const BLOCKED = {
+			checkout_session: {
+				id: 'cs_existing',
+				checkout_status: 'pending',
+				payment_action: { type: 'checkout_url', url: 'https://checkout.test/existing' },
+				entity_creation_result: { status: 'failed_already_exists', entity_id: 'cs_existing' },
+			},
+		};
+
+		it('asks the customer instead of following the blocking session', async () => {
+			vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue(BLOCKED as never);
+
+			renderWidget();
+			await enterCredits('10');
+			await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
+
+			expect(await screen.findByText('A payment is already in progress')).toBeInTheDocument();
+			expect(openSpy).not.toHaveBeenCalled();
+			expect(toast.success).not.toHaveBeenCalled();
+		});
+
+		it('supersedes only after the customer says so, reusing the idempotency key', async () => {
+			vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue(BLOCKED as never);
+
+			renderWidget();
+			await enterCredits('10');
+			await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
+			await screen.findByText('A payment is already in progress');
+
+			const [, firstPayload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
+			expect(firstPayload.checkout?.entity_creation_options).toBeUndefined();
+
+			vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({
+				checkout_session: {
+					id: 'cs_new',
+					payment_action: { type: 'checkout_url', url: 'https://checkout.test/new' },
+					entity_creation_result: { status: 'superseded', entity_id: 'cs_new' },
+				},
+			} as never);
+			await userEvent.click(screen.getByRole('button', { name: /cancel it and start over/i }));
+
+			await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalledTimes(2));
+			const [, retryPayload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[1];
+			expect(retryPayload.checkout?.entity_creation_options).toEqual({
+				entity_creation_conflict_policies: { on_existing_entity: 'supersede' },
+			});
+			// The rejected attempt created nothing, so this is still the same top-up.
+			expect(retryPayload.idempotency_key).toBe(firstPayload.idempotency_key);
+
+			await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://checkout.test/new', '_blank', expect.any(String)));
+		});
+
+		// A superseded session is a success, not a conflict: the retry must fall
+		// through to the normal hand-off rather than reopening the dialog.
+		it('treats a superseded session as a fresh checkout', async () => {
+			vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({
+				checkout_session: {
+					id: 'cs_new',
+					payment_action: { type: 'checkout_url', url: 'https://checkout.test/new' },
+					entity_creation_result: { status: 'superseded', entity_id: 'cs_new' },
+				},
+			} as never);
+
+			renderWidget();
+			await enterCredits('10');
+			await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
+
+			await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://checkout.test/new', '_blank', expect.any(String)));
+			expect(screen.queryByText('A payment is already in progress')).not.toBeInTheDocument();
+		});
+	});
+
 	it('reports the gateway reason when the session failed', async () => {
 		vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({
 			checkout_session: { id: 'cs_1', checkout_status: 'failed', failure_reason: 'card declined' },

@@ -9,6 +9,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import { FC, useMemo } from 'react';
 import useAllUsers from '@/hooks/useAllUsers';
 import { useTranslation } from 'react-i18next';
+import { transactionAmountToneClass } from './transactionStatusTone';
 
 const TX_AMOUNT_PRIMARY = 'text-base font-medium';
 const TX_AMOUNT_SECONDARY = 'text-sm';
@@ -43,8 +44,7 @@ const AllWalletTransactionsTable: FC<Props> = ({ data }) => {
 			className?: string;
 			status?: string;
 		}) => {
-			const isPending = status?.toLowerCase() === 'pending';
-			const colorClass = isPending ? 'text-accent-yellow-brand' : type === 'credit' ? 'text-accent-teal-brand' : 'text-content-zinc-bold';
+			const colorClass = transactionAmountToneClass({ status, type });
 
 			return (
 				<span className={cn(colorClass, className)}>

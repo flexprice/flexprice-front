@@ -12,6 +12,7 @@ import {
 	AutoTopup,
 } from '@/models';
 import { TypedBackendFilter, TypedBackendSort } from '../formatters/QueryBuilder';
+import type { EntityCreationOptions, EntityCreationResult } from './EntityCreation';
 
 export interface WalletConfig {
 	allowed_price_types: WALLET_CONFIG_PRICE_TYPE[];
@@ -46,6 +47,11 @@ export interface TopupCheckoutParams {
 	cancel_url?: string;
 	/** Omitted for one-off top-ups — no recurring-debit mandate is needed. */
 	max_mandate_limit?: string;
+	/**
+	 * Omit to have a checkout session already in flight reject this top-up; send
+	 * `supersede` to cancel that session and start a fresh one in its place.
+	 */
+	entity_creation_options?: EntityCreationOptions;
 }
 
 /** Mirrors dto.TopUpWalletResponse: the wallet plus, for checkout top-ups, the session. */
@@ -55,8 +61,17 @@ export interface TopupWalletResponse {
 	wallet?: WalletResponse;
 	checkout_session?: {
 		id: string;
+		checkout_status?: string;
+		expires_at?: string;
 		payment_url?: string;
-		payment_action?: { type?: string; redirect_url?: string };
+		/** `url` is what the API sends; the other two are kept for older payloads. */
+		payment_action?: { type?: string; url?: string; redirect_url?: string };
+		/**
+		 * Outcome of this call, not state of the session: `failed_already_exists`
+		 * means nothing was created and the session above is the one already in
+		 * flight that blocked the top-up.
+		 */
+		entity_creation_result?: EntityCreationResult;
 	};
 }
 

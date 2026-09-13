@@ -9,7 +9,9 @@ import { Button, Input, Toggle } from '@/components/atoms';
 import { refreshAfterPayment } from '../refetchPortalQueries';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { formatMoney } from '@/utils/common/formatBalance';
-import type { PaymentGatewayType, PortalTopUpRequest, SavedPaymentMethod } from '@/types/dto/CustomerPortalBilling';
+import type { PaymentGatewayType, PortalCheckoutSession, PortalTopUpRequest, SavedPaymentMethod } from '@/types/dto/CustomerPortalBilling';
+import { isBlockedByExistingEntity, supersedeExistingEntity } from '@/utils/common/entityCreation';
+import PendingCheckoutDialog from './PendingCheckoutDialog';
 import { WalletResponse } from '@/types/dto/Wallet';
 import { portalPaymentMethodsQueryKey } from '../queryKeys';
 import { rememberPendingCheckout } from '../useCheckoutReturn';
@@ -48,6 +50,9 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 	// rejected, if the first call actually succeeded and only its response was lost.
 	const [idempotencyKey, setIdempotencyKey] = useState(() => crypto.randomUUID());
 	const [submittedPayload, setSubmittedPayload] = useState<string | null>(null);
+	// The session that blocked the last attempt. Held rather than turned into a
+	// toast because the customer has a real choice to make about it.
+	const [blockingSession, setBlockingSession] = useState<PortalCheckoutSession | null>(null);
 
 	const payloadFingerprint = `${credits}|${description}|${useSavedMethod}`;
 	// An edit after a failed submit invalidates the key for the next attempt.
@@ -87,8 +92,15 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 			? t('topUp.savedMethodNone')
 			: undefined;
 
-	const { mutate: topUp, isPending } = useMutation({
-		mutationFn: async () => {
+	// `supersede` is the retry the customer authorises from PendingCheckoutDialog;
+	// the first attempt always goes out under the server's default (reject) so a
+	// payment already in flight is never cancelled without them saying so.
+	const {
+		mutate: topUp,
+		isPending,
+		variables: lastAttemptSuperseded,
+	} = useMutation({
+		mutationFn: async (supersede?: boolean) => {
 			// Recorded so an unchanged retry reuses this key while an edited one does not.
 			setSubmittedPayload(payloadFingerprint);
 			setIdempotencyKey(keyForSubmission);
@@ -106,11 +118,24 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 					use_saved_method: useSavedMethod && !!chargeableMethod,
 					success_url: portalReturnUrl(),
 					cancel_url: portalReturnUrl(),
+					// Reusing the idempotency key is safe and wanted: the rejected attempt
+					// created nothing, so this is still the same top-up, only now allowed
+					// to displace the stale session.
+					...(supersede ? { entity_creation_options: supersedeExistingEntity } : {}),
 				},
 			};
 			return CustomerPortalApi.topUpWallet(wallet.id, payload);
 		},
 		onSuccess: async (response) => {
+			// Read before the action URL, and before the status: a blocked response is a
+			// complete, healthy-looking session — the one already in flight — so every
+			// branch below would otherwise treat someone else's checkout as this one's.
+			if (isBlockedByExistingEntity(response.checkout_session?.entity_creation_result)) {
+				setBlockingSession(response.checkout_session ?? null);
+				return;
+			}
+			setBlockingSession(null);
+
 			const action = response.checkout_session?.payment_action;
 
 			// use_saved_method can settle outright, and some providers vault
@@ -242,11 +267,22 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 			    payment setup to the customer told them about the tenant's configuration
 			    rather than about anything they can do, and blocked an action that works. */}
 			<div className='pt-1'>
-				<Button className='w-full' onClick={() => topUp()} disabled={!isValid || isPending} isLoading={isPending}>
+				<Button className='w-full' onClick={() => topUp(false)} disabled={!isValid || isPending} isLoading={isPending}>
 					{t('topUp.payNow')}
 				</Button>
 				{canCheckout && <p className='mt-2 text-center text-xs text-content-tertiary'>{t('topUp.cardSavedNotice')}</p>}
 			</div>
+
+			{/* Kept inside the form rather than lifted to the callers: the retry is this
+			    form's mutation, and both callers already render the form inside a dialog
+			    of their own — every Dialog here is modal={false} and portalled, so this
+			    stacks over whichever one is open. */}
+			<PendingCheckoutDialog
+				session={blockingSession}
+				onOpenChange={(open) => !open && setBlockingSession(null)}
+				onStartNew={() => topUp(true)}
+				isStartingNew={isPending && lastAttemptSuperseded === true}
+			/>
 		</div>
 	);
 };

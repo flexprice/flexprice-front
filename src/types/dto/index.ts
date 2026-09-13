@@ -1,4 +1,12 @@
 export type {
+	EntityCreationStatus,
+	EntityCreationResult,
+	OnExistingEntityPolicy,
+	EntityCreationConflictPolicies,
+	EntityCreationOptions,
+} from './EntityCreation';
+
+export type {
 	CreateAlertSettingsRequest,
 	UpdateAlertSettingsRequest,
 	AlertSettingResponse,

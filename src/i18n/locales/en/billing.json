@@ -944,6 +944,16 @@
 			"generateInvoiceAction": "Generate invoice",
 			"checkoutLink": "Checkout link"
 		},
+		"pendingCheckout": {
+			"title": "A checkout is already pending for this wallet",
+			"description": "Nothing was created for this top-up. The customer has an unfinished checkout on this wallet, and it has to be settled or cancelled before another one can start.",
+			"sessionId": "Pending session",
+			"expiresAt": "Expires",
+			"link": "Link",
+			"openExisting": "Open pending checkout",
+			"cancelAndRetry": "Cancel it and start a new checkout",
+			"cancelHint": "Cancelling voids the pending checkout link. If the customer is paying it right now, that payment may still land — check the wallet before creating another."
+		},
 		"debit": {
 			"title": "Manual Debit",
 			"description": "Manually debit the credits from your wallet. This action will reduce the wallet balance.",
