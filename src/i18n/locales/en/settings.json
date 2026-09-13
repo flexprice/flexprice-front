@@ -1217,9 +1217,7 @@
 					"sections": {
 						"overview": {
 							"title": "Overview",
-							"paragraphs": [
-								"The Flexprice Stripe app enables invoicing, tax collection, and payment via Stripe."
-							]
+							"paragraphs": ["The Flexprice Stripe app enables invoicing, tax collection, and payment via Stripe."]
 						},
 						"stripeInvoicing": {
 							"title": "Stripe Invoicing",
@@ -1313,9 +1311,7 @@
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
-							"paragraphs": [
-								"Push invoices from Flexprice to HubSpot to keep your CRM up to date with billing information."
-							]
+							"paragraphs": ["Push invoices from Flexprice to HubSpot to keep your CRM up to date with billing information."]
 						},
 						"customerSync": {
 							"title": "Customer Sync",
@@ -1325,15 +1321,11 @@
 						},
 						"paymentsSync": {
 							"title": "Payments Sync",
-							"paragraphs": [
-								"Keep payment records synchronized between both platforms for accurate financial reporting."
-							]
+							"paragraphs": ["Keep payment records synchronized between both platforms for accurate financial reporting."]
 						},
 						"revenueReporting": {
 							"title": "Revenue Calculations on HubSpot",
-							"paragraphs": [
-								"Leverage HubSpot's reporting capabilities with accurate revenue data synced from Flexprice."
-							]
+							"paragraphs": ["Leverage HubSpot's reporting capabilities with accurate revenue data synced from Flexprice."]
 						}
 					}
 				},
@@ -1357,9 +1349,7 @@
 						},
 						"createInvoice": {
 							"title": "Create Invoice in Zoho Books",
-							"paragraphs": [
-								"Generate Zoho Books invoices seamlessly from Flexprice usage data or billing triggers, reducing manual work."
-							]
+							"paragraphs": ["Generate Zoho Books invoices seamlessly from Flexprice usage data or billing triggers, reducing manual work."]
 						},
 						"transformInvoice": {
 							"title": "Transform Flexprice Invoice to Zoho Books Invoice",
@@ -1532,9 +1522,7 @@
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
-							"paragraphs": [
-								"When invoice sync is enabled, Flexprice automatically pushes finalized invoices to Tabs."
-							]
+							"paragraphs": ["When invoice sync is enabled, Flexprice automatically pushes finalized invoices to Tabs."]
 						}
 					}
 				},
@@ -1604,9 +1592,7 @@
 						},
 						"usageReporting": {
 							"title": "Usage Reporting",
-							"paragraphs": [
-								"Once connected, a scheduled job reports usage per subscription to Azure Marketplace's usage event API."
-							]
+							"paragraphs": ["Once connected, a scheduled job reports usage per subscription to Azure Marketplace's usage event API."]
 						}
 					}
 				}

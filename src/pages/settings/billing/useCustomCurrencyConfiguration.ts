@@ -29,10 +29,7 @@ export function useCustomCurrencyConfiguration() {
 	});
 
 	// Memoised because the section copies it into a draft from an effect keyed on it.
-	const savedConfiguration = useMemo(
-		() => (query.data ? toCustomCurrencyDraft(query.data) : EMPTY_CUSTOM_CURRENCY_DRAFT),
-		[query.data],
-	);
+	const savedConfiguration = useMemo(() => (query.data ? toCustomCurrencyDraft(query.data) : EMPTY_CUSTOM_CURRENCY_DRAFT), [query.data]);
 
 	const updateConfiguration = useMutation({
 		mutationFn: async (draft: CustomCurrencyDraft) => {

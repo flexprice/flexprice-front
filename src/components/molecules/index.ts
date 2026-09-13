@@ -86,6 +86,7 @@ export { default as RecordPaymentTopup } from './RecordPaymentTopup';
 // Wallet Management
 export { default as WalletTransactionsTable, AllWalletTransactionsTable } from './Wallet';
 export { default as TopupCard } from './WalletTopupCard';
+export { default as PendingCheckoutSessionDialog } from './PendingCheckoutSessionDialog';
 export { default as DebitCard } from './WalletDebitCard';
 export { default as WalletAlertDialog } from './WalletAlertDialog';
 export { default as AlertSettingsDialog } from './AlertSettingsDialog';
