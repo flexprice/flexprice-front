@@ -48,10 +48,16 @@ const SignupConfirmation = () => {
 				return;
 			}
 
+			const baseMetadata = getPersistedSignupMetadata() ?? buildSignupMetadata();
+			const userFullName = user.data.user?.user_metadata?.full_name || '';
+
 			const signupResponse = await AuthApi.Signup({
 				email: user.data.user?.email || '',
 				token: session?.access_token || '',
-				metadata: getPersistedSignupMetadata() ?? buildSignupMetadata(),
+				metadata: {
+					...baseMetadata,
+					...(userFullName && { user_full_name: userFullName }),
+				},
 			});
 			await supabase.auth.refreshSession();
 			return signupResponse;
