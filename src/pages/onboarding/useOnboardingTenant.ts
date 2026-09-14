@@ -9,7 +9,7 @@ import OnboardingApi from '@/api/OnboardingApi';
 import { TenantMetadataKey } from '@/models';
 import useUser from '@/hooks/useUser';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { findBannedOrgNameWord, type OnboardingFormErrors } from './onboardingConstants';
+import { findBannedOrgNameWord, isValidHttpUrl, type OnboardingFormErrors } from './onboardingConstants';
 
 const useOnboardingTenant = () => {
 	const navigate = useNavigate();
@@ -83,7 +83,12 @@ const useOnboardingTenant = () => {
 			}
 		}
 
-		if (!orgUrl.trim()) next.orgUrl = t('tenantSetup.orgUrlRequired');
+		const trimmedOrgUrl = orgUrl.trim();
+		if (!trimmedOrgUrl) {
+			next.orgUrl = t('tenantSetup.orgUrlRequired');
+		} else if (!isValidHttpUrl(trimmedOrgUrl)) {
+			next.orgUrl = t('tenantSetup.orgUrlInvalid');
+		}
 
 		if (!referralSource) next.referralSource = t('tenantSetup.referralRequired');
 
