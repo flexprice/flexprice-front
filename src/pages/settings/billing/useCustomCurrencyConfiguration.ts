@@ -49,7 +49,10 @@ export function useCustomCurrencyConfiguration() {
 
 	return {
 		savedConfiguration,
-		isLoading: query.isLoading,
+		// A disabled query is not "loading" in TanStack v5 (isLoading is isPending && isFetching), so
+		// without the environment guard the section renders an empty draft as if it were the saved
+		// config — and saving that blank form wipes the tenant's configured currencies.
+		isLoading: !environmentId || query.isPending,
 		isError: query.isError,
 		updateConfiguration,
 	};
