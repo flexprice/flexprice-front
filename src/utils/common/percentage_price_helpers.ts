@@ -76,6 +76,21 @@ export const isPercentageMetadata = (metadata?: Metadata | null): boolean =>
 export const isPercentagePrice = (price: { billing_model?: BILLING_MODEL | string; metadata?: Metadata | null }): boolean =>
 	isPercentageMetadata(price.metadata) && (price.billing_model === undefined || price.billing_model === BILLING_MODEL.FLAT_FEE);
 
+/**
+ * True when the *effective* charge - a price plus whatever override sits on top of it - still reads
+ * as a percentage.
+ *
+ * The percentage marker lives in the price's metadata and an override cannot touch it, so the only
+ * thing an override can do is move the charge off FLAT_FEE. Once it does (PACKAGE / TIERED /
+ * SLAB_TIERED) the overridden amount is a plain currency amount and must not go through the
+ * percentage conversion, or a stored `10` reads as `1000%`. An override that leaves the billing
+ * model alone keeps the price's own answer.
+ */
+export const isPercentageOverride = (
+	price: { billing_model?: BILLING_MODEL | string; metadata?: Metadata | null },
+	override?: { billing_model?: BILLING_MODEL | string | null } | null,
+): boolean => isPercentagePrice({ metadata: price.metadata, billing_model: override?.billing_model || price.billing_model });
+
 /** Adds the percentage marker to existing metadata, leaving other keys intact. */
 export const withPercentageMetadata = (metadata?: Metadata | null): Metadata => ({
 	...(metadata ?? {}),
