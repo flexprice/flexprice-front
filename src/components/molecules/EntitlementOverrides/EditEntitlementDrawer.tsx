@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Sheet, Label, Input, Button, Checkbox, Chip } from '@/components/atoms';
+import { Dialog, Label, Input, Button, Checkbox, Chip } from '@/components/atoms';
 import { Switch } from '@/components/ui/switch';
 import { FEATURE_TYPE } from '@/models';
 import { EntitlementOverrideRequest } from '@/types/dto/Subscription';
@@ -9,6 +9,11 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import type { EnrichedEntitlementRow } from './EntitlementOverridesTable';
+import MeteredAllowanceFields, { type MeteredAllowanceErrors } from '@/components/molecules/AddEntitlementDrawer/MeteredAllowanceFields';
+import { toAllowanceDraft } from '@/components/molecules/AddEntitlementDrawer/allowanceMode';
+import { toGrantOverrideFields } from '@/components/molecules/AddEntitlementDrawer/grantOverridePayload';
+import { Entitlement, hasGrantConfig } from '@/models/Entitlement';
+import { formatAllowanceValue, formatAllowanceReset } from '@/utils/entitlement/allowanceLabel';
 
 interface EditEntitlementDrawerProps {
 	isOpen: boolean;
@@ -27,6 +32,10 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 	const [isEnabled, setIsEnabled] = useState<boolean>(true);
 	const [configValue, setConfigValue] = useState<JsonObject | null>(null);
 	const [configInvalid, setConfigInvalid] = useState<boolean>(false);
+	// Grant-backed entitlements are edited as an allowance, not a usage limit.
+	const [grantDraft, setGrantDraft] = useState<Partial<Entitlement>>({});
+	const [grantErrors, setGrantErrors] = useState<MeteredAllowanceErrors>({});
+	const isGrantBacked = hasGrantConfig(entitlement ?? undefined);
 
 	// Derived synchronously so JsonEditor always mounts with the correct value on first open
 	const initialConfigValue = useMemo((): JsonObject | null => {
@@ -46,6 +55,11 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 			setIsEnabled(entitlement.displayIsEnabled ?? entitlement.is_enabled ?? true);
 			setConfigValue(null);
 			setConfigInvalid(false);
+			// Seed from the merged view, not the plan's raw config: reopening a drawer
+			// on an existing override must show that override, or saving any other
+			// field silently reverts the quota to the plan's.
+			setGrantDraft(toAllowanceDraft(entitlement.displayGrant ?? entitlement));
+			setGrantErrors({});
 		}
 	}, [entitlement]);
 
@@ -56,7 +70,13 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 			entitlement_id: entitlement.id,
 		};
 
-		if (entitlement.feature_type === FEATURE_TYPE.METERED) {
+		if (entitlement.feature_type === FEATURE_TYPE.METERED && isGrantBacked) {
+			if (toGrantOverrideFields(grantDraft) == null) {
+				setGrantErrors({ grant_quota: t('entitlements.validation.allowanceRequired') });
+				return;
+			}
+			Object.assign(override, toGrantOverrideFields(grantDraft));
+		} else if (entitlement.feature_type === FEATURE_TYPE.METERED) {
 			if (isInfinite) {
 				override.usage_limit = null;
 			} else {
@@ -137,6 +157,12 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 		}
 	};
 
+	const planAllowanceLabel = isGrantBacked
+		? `${formatAllowanceValue(entitlement, t)}${
+				formatAllowanceReset(entitlement, t) !== '--' ? ` / ${formatAllowanceReset(entitlement, t)}` : ''
+			}`
+		: '';
+
 	const originalUsageLabel =
 		entitlement.usage_limit === null
 			? t('entitlements.addDrawer.unlimitedDisplay')
@@ -146,19 +172,35 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 					: '');
 
 	return (
-		<Sheet
+		<Dialog
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
 			title={t('entitlements.editDrawer.title', { name: featureName })}
 			description={t('entitlements.editDrawer.description')}
-			size='md'>
-			<div className='flex flex-col gap-6 p-6'>
+			className='w-full max-w-3xl'>
+			<div className='flex flex-col gap-6'>
 				<div className='space-y-2'>
 					<Label label={t('entitlements.editDrawer.featureType')} />
 					<div>{getFeatureTypeChip(entitlement.feature_type)}</div>
 				</div>
 
-				{entitlement.feature_type === FEATURE_TYPE.METERED && (
+				{entitlement.feature_type === FEATURE_TYPE.METERED && isGrantBacked && (
+					<div className='space-y-3'>
+						<p className='text-xs text-muted-foreground'>{t('entitlements.editDrawer.planAllowance', { value: planAllowanceLabel })}</p>
+						<MeteredAllowanceFields
+							value={grantDraft}
+							onChange={(patch) => {
+								setGrantDraft((prev) => ({ ...prev, ...patch }));
+								setGrantErrors({});
+							}}
+							errors={grantErrors}
+							unitLabel={entitlement.feature?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
+						/>
+						<p className='text-xs text-muted-foreground'>{t('entitlements.editDrawer.allowanceHelp')}</p>
+					</div>
+				)}
+
+				{entitlement.feature_type === FEATURE_TYPE.METERED && !isGrantBacked && (
 					<div className='space-y-4'>
 						<Input
 							id='edit-entitlement-usage-limit'
@@ -244,7 +286,7 @@ const EditEntitlementDrawer: FC<EditEntitlementDrawerProps> = ({ isOpen, onOpenC
 					<Button onClick={handleSave}>{t('entitlements.editDrawer.saveOverride')}</Button>
 				</div>
 			</div>
-		</Sheet>
+		</Dialog>
 	);
 };
 

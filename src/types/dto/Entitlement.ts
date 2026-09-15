@@ -2,6 +2,10 @@ import {
 	Entitlement,
 	ENTITLEMENT_ENTITY_TYPE,
 	ENTITLEMENT_USAGE_RESET_PERIOD,
+	ENTITLEMENT_GRANT_MEASURE,
+	ENTITLEMENT_GRANT_DURATION_UNIT,
+	ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR,
+	ENTITLEMENT_AGGREGATION_MODE,
 	Pagination,
 	Plan,
 	Addon,
@@ -68,6 +72,22 @@ export interface CreateEntitlementRequest {
 	parent_entitlement_id?: string;
 	start_date?: string;
 	end_date?: string;
+
+	// --- Grant config ---
+	// All-or-nothing on metered features. Omit `grant_quota` (with a
+	// subscription_period duration) for an unlimited allowance.
+	grant_measure?: ENTITLEMENT_GRANT_MEASURE;
+	grant_quota?: string;
+	grant_duration_value?: number;
+	grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
+	grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
+	aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
+	/**
+	 * Asks for an allowance with no ceiling. Explicit rather than inferred from an
+	 * absent `grant_quota`, so a dropped field cannot silently create a feature
+	 * that never bills. Requires a `subscription_period` duration.
+	 */
+	grant_unlimited?: boolean;
 }
 
 export interface UpdateEntitlementRequest {
@@ -82,6 +102,28 @@ export interface UpdateEntitlementRequest {
 	config_value?: JsonObject;
 	entity_type?: ENTITLEMENT_ENTITY_TYPE;
 	entity_id?: string;
+
+	// --- Grant config ---
+	// All-or-nothing on metered features. Omit `grant_quota` (with a
+	// subscription_period duration) for an unlimited allowance.
+	grant_measure?: ENTITLEMENT_GRANT_MEASURE;
+	grant_quota?: string;
+	grant_duration_value?: number;
+	grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
+	grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
+	aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
+	/**
+	 * Clears a ceiling. Needed because an omitted `grant_quota` means "leave
+	 * alone" on update, so a bounded allowance could not otherwise become
+	 * unlimited. Setting it false requires `grant_quota` in the same request.
+	 */
+	grant_unlimited?: boolean;
+	/**
+	 * @deprecated Use `grant_unlimited` to remove a ceiling. This only remains for
+	 * the "back to a legacy usage_limit" case, which metered entitlements are
+	 * moving off entirely.
+	 */
+	clear_grant_config?: boolean;
 }
 
 export interface CreateBulkEntitlementRequest {

@@ -1,6 +1,7 @@
 import { EntitlementResponse } from '@/types/dto/Entitlement';
-import { SubscriptionEntitlementFeature, SubscriptionEntitlementSource } from '@/types/dto/Subscription';
+import { SubscriptionEntitlementEffective, SubscriptionEntitlementFeature, SubscriptionEntitlementSource } from '@/types/dto/Subscription';
 import { JsonObject } from '@/types/common';
+import type { GrantOverrideFields } from '@/components/molecules/AddEntitlementDrawer/grantOverridePayload';
 
 export interface EnrichedSubscriptionEntitlement {
 	feature: SubscriptionEntitlementFeature['feature'];
@@ -21,6 +22,13 @@ export interface EnrichedSubscriptionEntitlement {
 	originalStaticValue?: string;
 	originalIsEnabled?: boolean;
 	usage_reset_period?: string;
+	/** Live allowance for grant-backed features; absent for legacy rows. */
+	grant_state?: SubscriptionEntitlementEffective['grant_state'];
+	/**
+	 * The plan's grant config before any subscription override, so a changed
+	 * allowance can be shown as from → to. Absent when the plan row is legacy.
+	 */
+	originalGrant?: Pick<EntitlementResponse, 'grant_measure' | 'grant_quota' | 'grant_duration_value' | 'grant_duration_unit' | 'feature'>;
 }
 
 const normalizeEntityType = (entityType?: string) => entityType?.toLowerCase() ?? '';
@@ -92,11 +100,21 @@ export const enrichSubscriptionEntitlements = (
 			originalStaticValue: resolvedOriginalStaticValue,
 			originalIsEnabled: resolvedOriginalIsEnabled,
 			usage_reset_period: item.entitlement?.usage_reset_period,
+			grant_state: item.entitlement?.grant_state,
+			originalGrant: planEnt
+				? {
+						grant_measure: planEnt.grant_measure,
+						grant_quota: planEnt.grant_quota,
+						grant_duration_value: planEnt.grant_duration_value,
+						grant_duration_unit: planEnt.grant_duration_unit,
+						feature: planEnt.feature,
+					}
+				: undefined,
 		};
 	});
 };
 
-export interface SubscriptionEntitlementOverrideValues {
+export interface SubscriptionEntitlementOverrideValues extends GrantOverrideFields {
 	usage_limit?: number | null;
 	static_value?: string;
 	is_enabled?: boolean;
