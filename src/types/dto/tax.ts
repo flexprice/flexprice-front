@@ -1,6 +1,15 @@
 import { FilterCondition } from '@/components/molecules/QueryBuilder';
 import { SortOption } from '@/components/molecules/Table/Toolbar';
-import { Pagination, TAX_RATE_TYPE, TAX_RATE_STATUS, TAX_RATE_SCOPE, TAXRATE_ENTITY_TYPE, TaxRate, ENTITY_STATUS } from '@/models';
+import {
+	Pagination,
+	TAX_RATE_TYPE,
+	TAX_RATE_STATUS,
+	TAX_RATE_SCOPE,
+	TAX_BEHAVIOR,
+	TAXRATE_ENTITY_TYPE,
+	TaxRate,
+	ENTITY_STATUS,
+} from '@/models';
 import { QueryFilter } from './base';
 
 // CreateTaxRateRequest represents the request to create a tax rate
@@ -95,6 +104,10 @@ export interface CreateTaxAssociationRequest {
 	// auto_apply determines if the tax should be automatically applied
 	auto_apply?: boolean;
 
+	// tax_behavior is whether the tax is added to the price or already inside it.
+	// Defaults to exclusive when omitted.
+	tax_behavior?: TAX_BEHAVIOR;
+
 	// metadata contains additional key-value pairs for storing extra information
 	metadata?: Record<string, string>;
 }
@@ -106,6 +119,9 @@ export interface TaxAssociationUpdateRequest {
 
 	// auto_apply determines if the tax should be automatically applied
 	auto_apply?: boolean;
+
+	// tax_behavior is whether the tax is added to the price or already inside it
+	tax_behavior?: TAX_BEHAVIOR;
 
 	// metadata contains updated key-value pairs that will replace existing metadata
 	metadata?: Record<string, string>;
@@ -119,6 +135,7 @@ export interface TaxAssociationResponse {
 	entity_id: string;
 	priority: number;
 	auto_apply: boolean;
+	tax_behavior?: TAX_BEHAVIOR;
 	valid_from?: string;
 	valid_to?: string;
 	currency: string;
@@ -146,6 +163,10 @@ export interface TaxRateOverride {
 
 	// auto_apply determines if the tax should be automatically applied
 	auto_apply?: boolean;
+
+	// tax_behavior is whether the tax is added to the price or already inside it.
+	// Defaults to exclusive when omitted.
+	tax_behavior?: TAX_BEHAVIOR;
 
 	// metadata contains additional key-value pairs for storing extra information
 	metadata?: Record<string, string>;
@@ -202,6 +223,7 @@ export interface TaxAppliedResponse {
 	tax_association_id?: string;
 	taxable_amount: number;
 	tax_amount: number;
+	tax_behavior: TAX_BEHAVIOR;
 	currency: string;
 	applied_at: string;
 	metadata?: Record<string, string>;

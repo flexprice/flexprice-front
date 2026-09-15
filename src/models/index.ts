@@ -44,6 +44,7 @@ export { CREDIT_NOTE_STATUS, CREDIT_NOTE_REASON, CREDIT_NOTE_TYPE } from './Cred
 
 // Customer
 export type { default as Customer } from './Customer';
+export { TAX_TREATMENT } from './Customer';
 
 // CustomerEntitlement
 export type { CustomerEntitlement } from './CustomerEntitlement';
@@ -97,7 +98,7 @@ export {
 export type { Integration } from './Integration';
 
 // Invoice
-export type { Invoice, LineItem } from './Invoice';
+export type { Invoice, LineItem, InvoiceTaxSummary } from './Invoice';
 export {
 	INVOICE_STATUS,
 	INVOICE_BILLING_REASON,
@@ -175,7 +176,7 @@ export {
 
 // Tax
 export type { TaxRate, TaxAssociation, TaxApplied } from './Tax';
-export { TAX_RATE_TYPE, TAX_RATE_STATUS, TAX_RATE_SCOPE, TAXRATE_ENTITY_TYPE } from './Tax';
+export { TAX_RATE_TYPE, TAX_RATE_STATUS, TAX_RATE_SCOPE, TAXRATE_ENTITY_TYPE, TAX_BEHAVIOR } from './Tax';
 
 // Tenant
 export type { Tenant, TenantAddress, TenantBillingDetails } from './Tenant';

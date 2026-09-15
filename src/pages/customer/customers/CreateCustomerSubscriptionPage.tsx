@@ -289,6 +289,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 						currency: item.currency.toLowerCase(),
 						auto_apply: item.auto_apply,
 						priority: item.priority,
+						tax_behavior: item.tax_behavior,
 						tax_rate_name: item.tax_rate?.name ?? '',
 					})),
 			}));

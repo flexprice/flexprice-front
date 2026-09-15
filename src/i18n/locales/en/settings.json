@@ -6,6 +6,10 @@
 	"info": {
 		"ariaLabel": "More information about {{field}}"
 	},
+	"docs": {
+		"docsLink": "Docs",
+		"openDocsTitle": "Open {{name}} docs"
+	},
 	"superAdmin": {
 		"writeDeniedTooltip": "Only a Super Admin can change this setting. Ask a tenant admin for access."
 	},
@@ -131,6 +135,10 @@
 			"resetToDefaults": "Reset to defaults"
 		},
 		"invoiceConfiguration": {
+			"actions": {
+				"docs": "Docs",
+				"docsTitle": "Open invoice configuration docs"
+			},
 			"title": "Invoice configuration",
 			"previewLabel": "Preview",
 			"nextInvoiceNumber": "Next invoice number",
@@ -181,6 +189,10 @@
 			}
 		},
 		"subscriptionConfiguration": {
+			"actions": {
+				"docs": "Docs",
+				"docsTitle": "Open subscription configuration docs"
+			},
 			"title": "Subscription configuration",
 			"previewLabel": "Configuration preview",
 			"saveSuccess": "Subscription configuration saved",

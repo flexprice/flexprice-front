@@ -18,6 +18,17 @@
 #
 # Required repository secrets: VERCEL_TOKEN, VERCEL_ORG_ID, DEPLOYMENTS_CONFIG
 # DEPLOYMENTS_CONFIG may also be stored as a repository Variable (falls back automatically).
+#
+# Optional repository secret: DEPLOYMENT_STATUS_TOKEN
+# A PAT (classic "repo" scope, or fine-grained with "Deployments: write") used to report
+# each successful deploy to GitHub as a Deployment + success status, which is what fires
+# `deployment_status` and triggers E2E (post-deploy smoke) (e2e-staging.yml). This can't
+# use the default GITHUB_TOKEN: GitHub does not let events caused by GITHUB_TOKEN trigger
+# other workflows (the standard anti-recursion rule, same reason a GITHUB_TOKEN push
+# doesn't retrigger push-based workflows) - a status created with it would sit there
+# silently and never start the E2E run. Without this secret set, deployment reporting is
+# skipped (a notice, not a failure) and the app still deploys normally; that's the only
+# effect of leaving it unset.
 
 name: Deploy
 
@@ -58,6 +69,8 @@ jobs:
           npm install
 
       - name: Deploy matching targets
+        env:
+          GH_TOKEN: ${{ secrets.DEPLOYMENT_STATUS_TOKEN }}
         run: |
           set -uo pipefail
 
@@ -139,6 +152,10 @@ jobs:
 
             echo "::group::Deploy ${name}"
 
+            # vercel deploy writes only the resulting URL to stdout (progress/logs go to
+            # stderr) - captured here, alongside the normal streamed output, so it can be
+            # reported to GitHub below without re-running anything.
+            deploy_url_file="$(mktemp)"
             deploy_ok=true
             (
               set -e
@@ -148,7 +165,7 @@ jobs:
               fi
               export NODE_OPTIONS="--max-old-space-size=4096"
               vercel build --prod --token="$VERCEL_TOKEN"
-              vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+              vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN" | tee "$deploy_url_file"
             ) || deploy_ok=false
 
             echo "::endgroup::"
@@ -156,6 +173,37 @@ jobs:
             if [ "$deploy_ok" = "true" ]; then
               pass_count=$((pass_count + 1))
               echo "| \`${name}\` | ✅ Deployed |" >> "$results_file"
+
+              # Report the deployment to GitHub so `deployment_status` fires and
+              # E2E (post-deploy smoke) picks it up - it tests this exact URL, no rebuild.
+              # Limited to develop while the suite is still earning trust: every other
+              # branch deploys exactly as before and simply reports no deployment.
+              # Every target reports under the same fixed "e2e-fe" environment (not
+              # $name/deployment_name) so repeated pushes reuse one Environment entry in
+              # GitHub Settings instead of minting a new one per deploy.
+              if [ "${GITHUB_REF_NAME}" != "develop" ]; then
+                echo "::notice::Post-deploy E2E is limited to develop for now - not reporting a deployment status for ${name} on ${GITHUB_REF_NAME}. The deploy itself is unaffected."
+              elif [ -z "${GH_TOKEN:-}" ]; then
+                echo "::notice::DEPLOYMENT_STATUS_TOKEN is not set - skipping deployment status reporting for ${name}. E2E (post-deploy smoke) will not trigger, but the deploy itself is unaffected."
+              else
+                deploy_url="$(tail -n 1 "$deploy_url_file" | tr -d '[:space:]')"
+                if [[ "$deploy_url" == https://* ]]; then
+                  deployment_id="$(jq -n --arg ref "$GITHUB_SHA" \
+                      --arg desc "Deployed ${name} via Vercel CLI" \
+                      '{ref: $ref, environment: "e2e-fe", description: $desc, auto_merge: false, required_contexts: []}' \
+                    | gh api "repos/${GITHUB_REPOSITORY}/deployments" --input - --jq '.id' 2>/dev/null)" || deployment_id=""
+
+                  if [ -n "$deployment_id" ]; then
+                    jq -n --arg url "$deploy_url" '{state: "success", environment_url: $url, description: "Deployed via Vercel CLI"}' \
+                      | gh api "repos/${GITHUB_REPOSITORY}/deployments/${deployment_id}/statuses" --input - >/dev/null \
+                      || echo "::warning::Deployed ${name} OK, but failed to report its status to GitHub - E2E (post-deploy smoke) will not trigger for this deploy."
+                  else
+                    echo "::warning::Deployed ${name} OK, but failed to create a GitHub deployment record - E2E (post-deploy smoke) will not trigger for this deploy."
+                  fi
+                else
+                  echo "::warning::Deployed ${name} OK, but could not read its URL from the Vercel CLI output - E2E (post-deploy smoke) will not trigger for this deploy."
+                fi
+              fi
             else
               fail_count=$((fail_count + 1))
               echo "| \`${name}\` | ❌ Failed |" >> "$results_file"

@@ -401,15 +401,27 @@ there — `test.yml` already runs vitest on every pull request as its own check.
 
 ### Required secrets
 
-| Secret                | Used by           | What it is                                            |
-| --------------------- | ----------------- | ----------------------------------------------------- |
-| `E2E_API_URL`         | PR                | Backend the test tenant lives in, including `/v1`     |
-| `E2E_STAGING_URL`     | monitor           | Base URL to monitor (manual runs only for now)        |
-| `E2E_USER_EMAIL`      | all authenticated | The dedicated admin test account                      |
-| `E2E_USER_PASSWORD`   | all authenticated | Its password                                          |
-| `E2E_VIEWER_EMAIL`    | RBAC              | Optional read-only account                            |
-| `E2E_VIEWER_PASSWORD` | RBAC              | Its password                                          |
-| `SLACK_WEBHOOK_URL`   | staging, monitor  | Optional — alerts are skipped, not failed, without it |
+| Secret                | Used by           | What it is                                                                                                                                                                                  |
+| --------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `E2E_API_URL`         | all               | Backend the test tenant lives in, including `/v1`. Also the default target for the monitor and the post-deploy smoke, so no separate URL secret is needed when the app and API share a host |
+| `E2E_STAGING_URL`     | monitor, staging  | Optional — set only if the app is on a different host from `E2E_API_URL`; it wins when present                                                                                              |
+| `E2E_USER_EMAIL`      | all authenticated | The dedicated admin test account                                                                                                                                                            |
+| `E2E_USER_PASSWORD`   | all authenticated | Its password                                                                                                                                                                                |
+| `E2E_VIEWER_EMAIL`    | RBAC              | Optional read-only account                                                                                                                                                                  |
+| `E2E_VIEWER_PASSWORD` | RBAC              | Its password                                                                                                                                                                                |
+| `SLACK_WEBHOOK_URL`   | staging, monitor  | Optional — alerts are skipped, not failed, without it                                                                                                                                       |
+
+The post-deploy smoke posts to Slack on success as well as failure: one line naming the
+flows that ran ("Wallet creation and alert thresholds flow worked well on … — 16 passed").
+While the suite is still earning trust, a green run is the signal worth seeing, because a
+guard that skips silently otherwise makes "everything passed" and "it never ran" look
+identical. The scheduled monitor stays quiet while green, since a tick every thirty
+minutes is the noise that gets a channel muted.
+
+**Scope while the suite is being trusted.** The PR suite only runs on pull requests into
+`develop`, and only `develop` deploys report a deployment status, so the post-deploy smoke
+does not fire for other branches. Both are one-line changes to widen once it has been green
+long enough.
 
 Without the credential secrets the PR workflow runs the `public` suite only and stays
 green, so a fork or a half-finished setup does not produce a wall of timeouts.

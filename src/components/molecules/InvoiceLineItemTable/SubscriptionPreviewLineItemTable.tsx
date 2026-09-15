@@ -1,9 +1,10 @@
 import { Button, FormHeader, Toggle } from '@/components/atoms';
-import { LineItem, INVOICE_TYPE } from '@/models/Invoice';
+import { LineItem, INVOICE_TYPE, InvoiceTaxSummary } from '@/models/Invoice';
 import { formatBillingPeriod } from '@/utils/common/format_date';
 import { getCurrencySymbol, getPriceTypeLabel } from '@/utils/common/helper_functions';
 import { FC } from 'react';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Info } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTranslation } from 'react-i18next';
 interface Props {
 	data: LineItem[];
@@ -11,6 +12,7 @@ interface Props {
 	total?: number;
 	subtotal?: number;
 	tax?: number;
+	tax_summary?: InvoiceTaxSummary;
 	discount?: number;
 	amount_due?: number;
 	title?: string;
@@ -34,6 +36,7 @@ const SubscriptionPreviewLineItemTable: FC<Props> = ({
 	invoiceType,
 	subtitle,
 	tax,
+	tax_summary,
 	discount,
 	amount_due,
 	subtotal,
@@ -143,11 +146,49 @@ const SubscriptionPreviewLineItemTable: FC<Props> = ({
 							<div className='flex-1 text-end text-sm text-content font-medium'>−{formatAmount(Number(discount), currency ?? '')}</div>
 						</div>
 					)}
-					{/* Tax - only show if provided and > 0 */}
-					{tax !== undefined && tax !== null && Number(tax) !== 0 && (
+					{/* Tax - only show if provided and > 0, or the customer is exempt */}
+					{(Number(tax ?? 0) !== 0 || tax_summary?.exemption) && (
 						<div className='flex flex-row justify-end items-center py-1'>
-							<div className='w-40 text-end text-base font-medium text-content'>{t(`${li}.tax`)}</div>
-							<div className='flex-1 text-end text-sm text-content font-medium'>{formatAmount(Number(tax), currency ?? '')}</div>
+							<div className='w-40 flex items-center justify-end gap-1.5 text-base font-medium text-content'>
+								<span>{t(`${li}.tax`)}</span>
+								{tax_summary && (
+									<TooltipProvider delayDuration={0}>
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<button
+													type='button'
+													aria-label={t('invoices.details.lineItemsTable.taxBreakdownAria')}
+													className='inline-flex items-center'>
+													<Info className='h-3.5 w-3.5 text-content-subtle hover:text-content-tertiary transition-colors cursor-help' />
+												</button>
+											</TooltipTrigger>
+											<TooltipContent
+												sideOffset={5}
+												className='bg-surface-inverse text-xs text-content-inverse px-2.5 py-1.5 rounded-[6px] max-w-[280px]'>
+												{tax_summary.exemption ? (
+													tax_summary.exemption.reason
+												) : (
+													<div className='space-y-1'>
+														<div className='flex justify-between gap-6'>
+															<span>{t(`${li}.taxInclusiveTotal`)}</span>
+															<span>{formatAmount(Number(tax_summary.inclusive_tax), currency ?? '')}</span>
+														</div>
+														<div className='flex justify-between gap-6'>
+															<span>{t(`${li}.taxExclusiveTotal`)}</span>
+															<span>{formatAmount(Number(tax_summary.exclusive_tax), currency ?? '')}</span>
+														</div>
+														<div className='flex justify-between gap-6 pt-1 border-t border-white/20 font-medium'>
+															<span>{t(`${li}.taxTotal`)}</span>
+															<span>{formatAmount(Number(tax_summary.total_tax), currency ?? '')}</span>
+														</div>
+													</div>
+												)}
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								)}
+							</div>
+							<div className='flex-1 text-end text-sm text-content font-medium'>{formatAmount(Number(tax ?? 0), currency ?? '')}</div>
 						</div>
 					)}
 

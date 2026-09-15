@@ -1,6 +1,7 @@
 import {
 	BILLING_CADENCE,
 	LineItem as InvoiceLineItem,
+	InvoiceTaxSummary,
 	BILLING_CYCLE,
 	SUBSCRIPTION_STATUS,
 	GROUPED_INVOICING_MODIFY_ACTION,
@@ -144,6 +145,7 @@ export interface GetSubscriptionPreviewResponse {
 	voided_at: string;
 	total_discount: number;
 	total_tax: number;
+	tax_summary?: InvoiceTaxSummary;
 }
 
 // Subscription Change Types

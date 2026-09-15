@@ -547,6 +547,7 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 								currency={data?.currency}
 								amount_due={data?.amount_due}
 								tax={data?.total_tax}
+							tax_summary={data?.tax_summary}
 								title={t('subscriptionDetail.upcomingInvoicesTitle')}
 								subtitle={t('subscriptionDetail.upcomingInvoicesSubtitle', {
 									date: formatDateShort(subscriptionDetails?.current_period_end ?? ''),
