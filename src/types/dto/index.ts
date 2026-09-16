@@ -28,6 +28,7 @@ export type {
 	GetEventsRequest,
 	GetEventsResponse,
 	GetEventDebugResponse,
+	EventLookupItem,
 	EventProcessedEvent,
 	EventDebugStatus,
 	DebugTrackerStatus,
