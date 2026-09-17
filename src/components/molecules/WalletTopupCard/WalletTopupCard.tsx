@@ -1,12 +1,13 @@
 import { Button, DatePicker, Input, Spacer } from '@/components/atoms';
 import { FC, useState, useCallback, useMemo } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import WalletApi from '@/api/WalletApi';
+import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { getCurrencySymbol } from '@/utils';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { WALLET_TRANSACTION_REASON } from '@/models';
+import { WALLET_TRANSACTION_REASON, CONNECTION_PROVIDER_TYPE } from '@/models';
 import { getCurrencyAmountFromCredits } from '@/utils';
 import { TopupWalletPayload } from '@/types';
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
@@ -86,6 +87,19 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		reference_id: undefined,
 		description: undefined,
 	});
+
+	// Checkout hard-codes payment_provider: 'razorpay' below, so it only ever works when a
+	// Razorpay connection exists — a tenant with, say, only Stripe connected would see a
+	// working-looking Checkout link that always fails. Only fetch once the dialog can
+	// actually show the button (purchased credits).
+	const { data: connectionsResponse } = useQuery({
+		queryKey: ['connections', 'published'],
+		queryFn: () => ConnectionApi.ListPublished(),
+		enabled: topupPayload.credits_type === CreditsType.PurchasedCredits,
+	});
+	const hasRazorpayConnection = (connectionsResponse?.connections || []).some(
+		(connection) => connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY,
+	);
 
 	// Determine transaction reason based on credits type and invoice generation
 	const getTransactionReason = useCallback(
@@ -213,6 +227,10 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		},
 		onError: (error: Error) => {
 			toast.error(error.message || 'Failed to topup wallet');
+			// reference_id doubles as this request's idempotency key (see the field's
+			// description below). Clear it so an immediate retry doesn't resend the same
+			// key against the failed attempt and get rejected as a duplicate.
+			setTopupPayload((prev) => ({ ...prev, reference_id: undefined }));
 		},
 	});
 
@@ -392,12 +410,14 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 							disabled={isPending}>
 							{t('wallet.topup.generateInvoiceAction')}
 						</Button>
-						<Button
-							isLoading={isPending && pendingMode === TopupMode.Checkout}
-							onClick={() => handleTopup(TopupMode.Checkout)}
-							disabled={isPending}>
-							{t('wallet.topup.checkoutLink')}
-						</Button>
+						{hasRazorpayConnection && (
+							<Button
+								isLoading={isPending && pendingMode === TopupMode.Checkout}
+								onClick={() => handleTopup(TopupMode.Checkout)}
+								disabled={isPending}>
+								{t('wallet.topup.checkoutLink')}
+							</Button>
+						)}
 					</>
 				) : (
 					<Button

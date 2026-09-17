@@ -68,6 +68,9 @@
 			"state": "State",
 			"city": "City",
 			"postalCode": "Postal Code",
+			"taxTreatment": "Tax Treatment",
+			"taxTreatmentExempt": "Exempt",
+			"taxTreatmentTaxable": "Taxable",
 			"timezone": "Timezone",
 			"subscriptionAmount": "Subscription Amount",
 			"subscriptionStartDate": "Subscription Start Date"
@@ -92,7 +95,11 @@
 			"addBillingDetail": "Add Billing Detail",
 			"billingSectionBadge": "Billing Details",
 			"saving": "Saving...",
-			"save": "Save"
+			"save": "Save",
+			"taxTreatmentLabel": "Tax Treatment",
+			"taxTreatmentHint": "Exempt customers are never charged tax on their invoices.",
+			"taxTreatmentTaxable": "Taxable",
+			"taxTreatmentExempt": "Exempt"
 		},
 		"billingFields": {
 			"country": "Country",

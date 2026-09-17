@@ -154,51 +154,56 @@ const CustomCurrencyConfigurationSection = () => {
 							/>
 						</FieldWithInfo>
 
-						<FieldWithInfo
-							label={conversionLabel}
-							description={
-								<>
-									{t('billing.customCurrencyConfiguration.hints.conversionCurrencies')}
-									<strong className='mt-1.5 block font-semibold'>{t('billing.customCurrencyConfiguration.hints.conversionFormula')}</strong>
-								</>
-							}
-							infoAriaLabel={t('info.ariaLabel', { field: conversionLabel })}
-							disabled={isDisabled}>
-							<div className='flex flex-wrap items-center gap-2'>
-								{draft.fiatCurrencies.map((fiat) => (
-									<span key={fiat} className='inline-flex h-8 items-center gap-2 rounded-md border border-line px-3 text-sm uppercase'>
-										{fiat}
-										{fiat === draft.defaultFiatCurrency ? (
-											<span className='text-xs normal-case text-content-zinc-subtle'>
-												{t('billing.customCurrencyConfiguration.fields.defaultBadge')}
-											</span>
-										) : (
-											<button
-												type='button'
-												onClick={() => removeFiat(fiat)}
-												disabled={isDisabled}
-												aria-label={t('billing.customCurrencyConfiguration.actions.removeConversionCurrency', {
-													currency: fiat.toUpperCase(),
-												})}
-												className='text-content-zinc-subtle hover:text-content-zinc-bold disabled:opacity-50'>
-												<Trash2 className='h-3.5 w-3.5' />
-											</button>
-										)}
-									</span>
-								))}
-								{addableFiatOptions.length > 0 && draft.defaultFiatCurrency ? (
-									<Select
-										options={addableFiatOptions}
-										value=''
-										onChange={addFiat}
-										disabled={isDisabled}
-										placeholder={t('billing.customCurrencyConfiguration.actions.addConversionCurrency')}
-										className='w-40'
-										ariaLabel={t('billing.customCurrencyConfiguration.actions.addConversionCurrency')}
-									/>
-								) : null}
-							</div>
-						</FieldWithInfo>
+						{/* Nothing to convert into until a settlement currency exists, so the label would head an empty box. */}
+						{draft.defaultFiatCurrency ? (
+							<FieldWithInfo
+								label={conversionLabel}
+								description={
+									<>
+										{t('billing.customCurrencyConfiguration.hints.conversionCurrencies')}
+										<strong className='mt-1.5 block font-semibold'>
+											{t('billing.customCurrencyConfiguration.hints.conversionFormula')}
+										</strong>
+									</>
+								}
+								infoAriaLabel={t('info.ariaLabel', { field: conversionLabel })}
+								disabled={isDisabled}>
+								<div className='flex flex-wrap items-center gap-2'>
+									{draft.fiatCurrencies.map((fiat) => (
+										<span key={fiat} className='inline-flex h-8 items-center gap-2 rounded-md border border-line px-3 text-sm uppercase'>
+											{fiat}
+											{fiat === draft.defaultFiatCurrency ? (
+												<span className='text-xs normal-case text-content-zinc-subtle'>
+													{t('billing.customCurrencyConfiguration.fields.defaultBadge')}
+												</span>
+											) : (
+												<button
+													type='button'
+													onClick={() => removeFiat(fiat)}
+													disabled={isDisabled}
+													aria-label={t('billing.customCurrencyConfiguration.actions.removeConversionCurrency', {
+														currency: fiat.toUpperCase(),
+													})}
+													className='text-content-zinc-subtle hover:text-content-zinc-bold disabled:opacity-50'>
+													<Trash2 className='h-3.5 w-3.5' />
+												</button>
+											)}
+										</span>
+									))}
+									{addableFiatOptions.length > 0 ? (
+										<Select
+											options={addableFiatOptions}
+											value=''
+											onChange={addFiat}
+											disabled={isDisabled}
+											placeholder={t('billing.customCurrencyConfiguration.actions.addConversionCurrency')}
+											className='w-40'
+											ariaLabel={t('billing.customCurrencyConfiguration.actions.addConversionCurrency')}
+										/>
+									) : null}
+								</div>
+							</FieldWithInfo>
+						) : null}
 					</div>
 
 					<hr className='my-6 border-line' />

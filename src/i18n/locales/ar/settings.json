@@ -6,6 +6,10 @@
 	"info": {
 		"ariaLabel": "مزيد من المعلومات حول {{field}}"
 	},
+	"docs": {
+		"docsLink": "المستندات",
+		"openDocsTitle": "فتح مستندات {{name}}"
+	},
 	"superAdmin": {
 		"writeDeniedTooltip": "يمكن فقط لمسؤول متميز (Super Admin) تغيير هذا الإعداد. اطلب الوصول من مسؤول المستأجر."
 	},
@@ -137,6 +141,10 @@
 			"resetToDefaults": "إعادة التعيين إلى الافتراضي"
 		},
 		"invoiceConfiguration": {
+			"actions": {
+				"docs": "المستندات",
+				"docsTitle": "فتح مستندات إعدادات الفواتير"
+			},
 			"title": "إعداد الفواتير",
 			"previewLabel": "معاينة",
 			"nextInvoiceNumber": "رقم الفاتورة التالي",
@@ -187,6 +195,10 @@
 			}
 		},
 		"subscriptionConfiguration": {
+			"actions": {
+				"docs": "المستندات",
+				"docsTitle": "فتح مستندات إعدادات الاشتراكات"
+			},
 			"title": "إعداد الاشتراكات",
 			"previewLabel": "معاينة الإعداد",
 			"saveSuccess": "تم حفظ إعداد الاشتراكات",
