@@ -60,7 +60,15 @@ describe('TopUpWidget', () => {
 		vi.stubGlobal('open', openSpy);
 		vi.mocked(CustomerPortalApi.getWallets).mockResolvedValue([WALLET] as never);
 		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
-			payment_integrations: [{ provider: 'chargebee', capabilities: [{ type: 'checkout', is_default: true }] }],
+			payment_integrations: [
+				{
+					provider: 'chargebee',
+					capabilities: [
+						{ type: 'checkout', is_default: true },
+						{ type: 'auto_charge', is_default: true },
+					],
+				},
+			],
 		} as never);
 		vi.mocked(CustomerPortalApi.getPaymentMethods).mockResolvedValue({ providers: [] } as never);
 		// jsdom's location is not writable; replace it so the redirect is observable.
@@ -184,37 +192,216 @@ describe('TopUpWidget', () => {
 		expect(toast.error).not.toHaveBeenCalled();
 	});
 
-	// The saved-card option stays visible but disabled when nothing can use it, so
-	// the customer sees a state to resolve rather than a missing feature.
-	it('disables the saved-card toggle when no provider can charge off-session', async () => {
+	// Array-based test cases for saved-card toggle availability based on provider configuration and saved methods
+	it.each([
+		{
+			scenario: 'no saved cards exist',
+			providers: [],
+			expectToggle: false,
+		},
+		{
+			scenario: 'saved card exists but cannot auto-charge',
+			providers: [
+				{
+					provider: 'chargebee',
+					items: [
+						{
+							id: 'pm_1',
+							provider: 'chargebee',
+							type: 'card',
+							status: 'ACTIVE',
+							can_auto_charge: false,
+							is_default: true,
+							card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
+						},
+					],
+				},
+			],
+			expectToggle: false,
+		},
+		{
+			scenario: 'saved card exists but is not ACTIVE',
+			providers: [
+				{
+					provider: 'chargebee',
+					items: [
+						{
+							id: 'pm_1',
+							provider: 'chargebee',
+							type: 'card',
+							status: 'INACTIVE',
+							can_auto_charge: true,
+							is_default: true,
+							card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
+						},
+					],
+				},
+			],
+			expectToggle: false,
+		},
+		{
+			scenario: 'active auto-chargeable saved card exists for selected provider',
+			providers: [
+				{
+					provider: 'chargebee',
+					items: [
+						{
+							id: 'pm_1',
+							provider: 'chargebee',
+							type: 'card',
+							status: 'ACTIVE',
+							can_auto_charge: true,
+							is_default: true,
+							card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
+						},
+					],
+				},
+			],
+			expectToggle: true,
+		},
+		{
+			scenario: 'selected provider lacks auto_charge capability',
+			integrations: [
+				{
+					provider: 'chargebee',
+					capabilities: [{ type: 'checkout', is_default: true }],
+				},
+			],
+			providers: [
+				{
+					provider: 'chargebee',
+					items: [
+						{
+							id: 'pm_1',
+							provider: 'chargebee',
+							type: 'card',
+							status: 'ACTIVE',
+							can_auto_charge: true,
+							is_default: true,
+							card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
+						},
+					],
+				},
+			],
+			expectToggle: false,
+		},
+	])('handles saved-card toggle visibility when $scenario', async ({ providers, integrations, expectToggle }) => {
+		if (integrations) {
+			vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({ payment_integrations: integrations } as never);
+		}
+		vi.mocked(CustomerPortalApi.getPaymentMethods).mockResolvedValue({ providers } as never);
 		renderWidget();
 		await screen.findByRole('button', { name: /pay now/i });
 
-		// findBy, not getBy: supports() is false while /integrations is in flight, so
-		// a synchronous read would pass on the loading state rather than the answer.
-		expect(await screen.findByText(/does not support charging a saved card/i)).toBeInTheDocument();
-		expect(screen.getByRole('switch')).toBeDisabled();
+		if (expectToggle) {
+			const toggle = await screen.findByRole('switch');
+			expect(toggle).toBeInTheDocument();
+			expect(screen.getByText(/visa •••• 4242/i)).toBeInTheDocument();
+		} else {
+			expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+		}
 	});
 
-	it('explains a missing saved card separately from an unsupported provider', async () => {
-		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
-			payment_integrations: [
+	it('allows toggling saved method and sending use_saved_method: true', async () => {
+		vi.mocked(CustomerPortalApi.getPaymentMethods).mockResolvedValue({
+			providers: [
 				{
 					provider: 'chargebee',
-					capabilities: [
-						{ type: 'checkout', is_default: true },
-						{ type: 'auto_charge', is_default: true },
+					items: [
+						{
+							id: 'pm_1',
+							provider: 'chargebee',
+							type: 'card',
+							status: 'ACTIVE',
+							can_auto_charge: true,
+							is_default: true,
+							card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
+						},
 					],
 				},
 			],
 		} as never);
+		vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({} as never);
 
 		renderWidget();
 		await screen.findByRole('button', { name: /pay now/i });
 
-		expect(await screen.findByText(/no saved card yet/i)).toBeInTheDocument();
-		expect(screen.getByRole('switch')).toBeDisabled();
+		const toggle = await screen.findByRole('switch');
+		expect(toggle).toHaveAttribute('aria-checked', 'false');
+
+		await userEvent.click(toggle);
+		expect(toggle).toHaveAttribute('aria-checked', 'true');
+
+		await enterCredits('10');
+		await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
+
+		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalled());
+		const [, payload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
+		expect(payload.checkout?.use_saved_method).toBe(true);
+		expect(payload.checkout?.payment_provider).toBe('chargebee');
 	});
+
+	it.each([
+		{
+			fromProvider: 'chargebee',
+			toProvider: 'razorpay',
+			chargebeeHasSavedCard: true,
+			razorpayHasSavedCard: false,
+		},
+	])(
+		'hides saved-card toggle and resets use_saved_method when switching from $fromProvider to $toProvider',
+		async ({ toProvider }) => {
+			vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
+				payment_integrations: [
+					{ provider: 'chargebee', capabilities: [{ type: 'checkout', is_default: true }, { type: 'auto_charge', is_default: true }] },
+					{ provider: 'razorpay', capabilities: [{ type: 'checkout', is_default: false }] },
+				],
+			} as never);
+			vi.mocked(CustomerPortalApi.getPaymentMethods).mockResolvedValue({
+				providers: [
+					{
+						provider: 'chargebee',
+						items: [
+							{
+								id: 'pm_1',
+								provider: 'chargebee',
+								type: 'card',
+								status: 'ACTIVE',
+								can_auto_charge: true,
+								is_default: true,
+								card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
+							},
+						],
+					},
+				],
+			} as never);
+			vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({} as never);
+
+			renderWidget();
+			await screen.findByRole('button', { name: /pay now/i });
+
+			// Initially Chargebee is selected and toggle is visible
+			const toggle = await screen.findByRole('switch');
+			expect(toggle).toBeInTheDocument();
+			await userEvent.click(toggle);
+			expect(toggle).toHaveAttribute('aria-checked', 'true');
+
+			// Switch provider to Razorpay
+			await userEvent.click(screen.getByRole('radio', { name: 'Razorpay' }));
+
+			// Toggle should disappear
+			expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+
+			// Submit top up with Razorpay
+			await enterCredits('10');
+			await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
+
+			await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalled());
+			const [, payload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
+			expect(payload.checkout?.payment_provider).toBe(toProvider);
+			expect(payload.checkout?.use_saved_method).toBe(false);
+		},
+	);
 
 	// The resolver refuses to guess between two capable gateways, returning
 	// "Specify which payment provider to use", so one is always named.
@@ -282,6 +469,38 @@ describe('TopUpWidget', () => {
 		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalled());
 		const [, payload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
 		expect(payload.checkout?.payment_provider).toBe('razorpay');
+	});
+
+	it('regenerates idempotency key when switching providers after submission', async () => {
+		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
+			payment_integrations: [
+				{ provider: 'chargebee', capabilities: [{ type: 'checkout', is_default: true }] },
+				{ provider: 'razorpay', capabilities: [{ type: 'checkout', is_default: false }] },
+			],
+		} as never);
+		vi.mocked(CustomerPortalApi.topUpWallet).mockRejectedValueOnce(new Error('charge failed')).mockResolvedValueOnce({} as never);
+
+		renderWidget();
+		await screen.findByText('Payment provider');
+		await enterCredits('10');
+
+		// First attempt with default provider (Chargebee)
+		const payButton = screen.getByRole('button', { name: /pay now/i });
+		await userEvent.click(payButton);
+
+		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalledTimes(1));
+		const [, firstPayload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
+		expect(firstPayload.checkout?.payment_provider).toBe('chargebee');
+		const firstKey = firstPayload.idempotency_key;
+
+		// Switch provider to Razorpay without changing amount
+		await userEvent.click(screen.getByRole('radio', { name: 'Razorpay' }));
+		await userEvent.click(payButton);
+
+		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalledTimes(2));
+		const [, secondPayload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[1];
+		expect(secondPayload.checkout?.payment_provider).toBe('razorpay');
+		expect(secondPayload.idempotency_key).not.toBe(firstKey);
 	});
 
 	// Portal checkouts always vault, so no save flag may be sent from here.

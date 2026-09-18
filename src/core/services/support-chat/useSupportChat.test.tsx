@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { SupportChatProvider } from '@/models/SupportChat';
 import type { SupportChatAdapter, SupportChatVisibilityHandlers } from './SupportChatAdapter';
 
@@ -48,9 +48,9 @@ function createFakeAdapter() {
 	const adapter: SupportChatAdapter & {
 		emitShow: () => void;
 		emitHide: () => void;
-		initMock: ReturnType<typeof vi.fn>;
-		showMock: ReturnType<typeof vi.fn>;
-		disposeMock: ReturnType<typeof vi.fn>;
+		initMock: Mock<(...args: any[]) => any>;
+		showMock: Mock<(...args: any[]) => any>;
+		disposeMock: Mock<(...args: any[]) => any>;
 	} = {
 		initMock: vi.fn().mockResolvedValue(undefined),
 		showMock: vi.fn(),

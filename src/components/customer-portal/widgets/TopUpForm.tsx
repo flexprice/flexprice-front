@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
@@ -38,7 +38,7 @@ const describeCard = (method: SavedPaymentMethod) =>
  */
 const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 	const { t } = useTranslation('customer-portal');
-	const { maySupport, supports, providersFor } = usePortalIntegrations();
+	const { maySupport, providersFor } = usePortalIntegrations();
 	const [credits, setCredits] = useState('');
 	const [description, setDescription] = useState('');
 	const [useSavedMethod, setUseSavedMethod] = useState(false);
@@ -49,14 +49,6 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 	const [idempotencyKey, setIdempotencyKey] = useState(() => crypto.randomUUID());
 	const [submittedPayload, setSubmittedPayload] = useState<string | null>(null);
 
-	const payloadFingerprint = `${credits}|${description}|${useSavedMethod}`;
-	// An edit after a failed submit invalidates the key for the next attempt.
-	const keyForSubmission = submittedPayload !== null && submittedPayload !== payloadFingerprint ? crypto.randomUUID() : idempotencyKey;
-
-	// Optimistic: only hidden when /integrations has loaded and names no checkout
-	// provider. A slow or failing integrations call must not remove the pay button.
-	const canCheckout = maySupport('checkout');
-
 	// The resolver refuses to guess: with more than one checkout-capable gateway it
 	// returns "Specify which payment provider to use" rather than falling back to a
 	// default, so the provider is always named explicitly.
@@ -65,27 +57,31 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 	// providersFor sorts the capability default first, so [0] is the tenant's pick.
 	const effectiveProvider = selectedProvider || checkoutProviders[0];
 
+	const payloadFingerprint = `${credits}|${description}|${useSavedMethod}|${effectiveProvider ?? ''}`;
+	// An edit after a failed submit invalidates the key for the next attempt.
+	const keyForSubmission = submittedPayload !== null && submittedPayload !== payloadFingerprint ? crypto.randomUUID() : idempotencyKey;
+
+	// Optimistic: only hidden when /integrations has loaded and names no checkout
+	// provider. A slow or failing integrations call must not remove the pay button.
+	const canCheckout = maySupport('checkout');
+
 	const { data: methods } = useQuery({
 		queryKey: portalPaymentMethodsQueryKey,
 		queryFn: () => CustomerPortalApi.getPaymentMethods(),
 		enabled: canCheckout,
 	});
 
-	// Only a method that can be charged unattended is worth offering here.
-	const chargeableMethod = (methods?.providers ?? [])
-		.flatMap((group) => group.items)
-		.find((method) => method.can_auto_charge && method.status === 'ACTIVE' && method.is_default);
+	// Only an active, auto-chargeable method for a provider that supports auto_charge is eligible.
+	const providerSupportsAutoCharge = providersFor('auto_charge').includes(effectiveProvider);
+	const providerMethods = (methods?.providers ?? []).find((group) => group.provider === effectiveProvider);
+	const chargeableMethod = providerSupportsAutoCharge
+		? (providerMethods?.items.find((method) => method.can_auto_charge && method.status === 'ACTIVE' && method.is_default) ??
+		   providerMethods?.items.find((method) => method.can_auto_charge && method.status === 'ACTIVE'))
+		: undefined;
 
-	// Two independent reasons this can be unavailable, and they need different
-	// wording: no connected provider can charge off-session, or the customer has
-	// no saved card yet. Shown disabled either way rather than hidden, so the
-	// option reads as a state to resolve instead of a feature that does not exist.
-	const providerCanAutoCharge = supports('auto_charge');
-	const savedMethodDisabledReason = !providerCanAutoCharge
-		? t('topUp.savedMethodUnsupported')
-		: !chargeableMethod
-			? t('topUp.savedMethodNone')
-			: undefined;
+	useEffect(() => {
+		setUseSavedMethod(false);
+	}, [effectiveProvider]);
 
 	const { mutate: topUp, isPending } = useMutation({
 		mutationFn: async () => {
@@ -225,15 +221,13 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 				</div>
 			)}
 
-			{canCheckout && (
+			{canCheckout && chargeableMethod && (
 				<Toggle
-					label={
-						chargeableMethod ? t('topUp.useSavedMethod', { method: describeCard(chargeableMethod) }) : t('topUp.useSavedMethodEmptyLabel')
-					}
-					description={savedMethodDisabledReason ?? t('topUp.useSavedMethodHint')}
-					checked={useSavedMethod && !savedMethodDisabledReason}
+					label={t('topUp.useSavedMethod', { method: describeCard(chargeableMethod) })}
+					description={t('topUp.useSavedMethodHint')}
+					checked={useSavedMethod}
 					onChange={setUseSavedMethod}
-					disabled={isPending || !!savedMethodDisabledReason}
+					disabled={isPending}
 				/>
 			)}
 
