@@ -49,14 +49,6 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 	const [idempotencyKey, setIdempotencyKey] = useState(() => crypto.randomUUID());
 	const [submittedPayload, setSubmittedPayload] = useState<string | null>(null);
 
-	const payloadFingerprint = `${credits}|${description}|${useSavedMethod}`;
-	// An edit after a failed submit invalidates the key for the next attempt.
-	const keyForSubmission = submittedPayload !== null && submittedPayload !== payloadFingerprint ? crypto.randomUUID() : idempotencyKey;
-
-	// Optimistic: only hidden when /integrations has loaded and names no checkout
-	// provider. A slow or failing integrations call must not remove the pay button.
-	const canCheckout = maySupport('checkout');
-
 	// The resolver refuses to guess: with more than one checkout-capable gateway it
 	// returns "Specify which payment provider to use" rather than falling back to a
 	// default, so the provider is always named explicitly.
@@ -64,6 +56,14 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 	const [selectedProvider, setSelectedProvider] = useState<PaymentGatewayType | ''>('');
 	// providersFor sorts the capability default first, so [0] is the tenant's pick.
 	const effectiveProvider = selectedProvider || checkoutProviders[0];
+
+	const payloadFingerprint = `${credits}|${description}|${useSavedMethod}|${effectiveProvider ?? ''}`;
+	// An edit after a failed submit invalidates the key for the next attempt.
+	const keyForSubmission = submittedPayload !== null && submittedPayload !== payloadFingerprint ? crypto.randomUUID() : idempotencyKey;
+
+	// Optimistic: only hidden when /integrations has loaded and names no checkout
+	// provider. A slow or failing integrations call must not remove the pay button.
+	const canCheckout = maySupport('checkout');
 
 	const { data: methods } = useQuery({
 		queryKey: portalPaymentMethodsQueryKey,

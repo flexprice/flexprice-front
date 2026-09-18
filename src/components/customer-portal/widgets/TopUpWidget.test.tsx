@@ -471,6 +471,38 @@ describe('TopUpWidget', () => {
 		expect(payload.checkout?.payment_provider).toBe('razorpay');
 	});
 
+	it('regenerates idempotency key when switching providers after submission', async () => {
+		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
+			payment_integrations: [
+				{ provider: 'chargebee', capabilities: [{ type: 'checkout', is_default: true }] },
+				{ provider: 'razorpay', capabilities: [{ type: 'checkout', is_default: false }] },
+			],
+		} as never);
+		vi.mocked(CustomerPortalApi.topUpWallet).mockRejectedValueOnce(new Error('charge failed')).mockResolvedValueOnce({} as never);
+
+		renderWidget();
+		await screen.findByText('Payment provider');
+		await enterCredits('10');
+
+		// First attempt with default provider (Chargebee)
+		const payButton = screen.getByRole('button', { name: /pay now/i });
+		await userEvent.click(payButton);
+
+		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalledTimes(1));
+		const [, firstPayload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
+		expect(firstPayload.checkout?.payment_provider).toBe('chargebee');
+		const firstKey = firstPayload.idempotency_key;
+
+		// Switch provider to Razorpay without changing amount
+		await userEvent.click(screen.getByRole('radio', { name: 'Razorpay' }));
+		await userEvent.click(payButton);
+
+		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalledTimes(2));
+		const [, secondPayload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[1];
+		expect(secondPayload.checkout?.payment_provider).toBe('razorpay');
+		expect(secondPayload.idempotency_key).not.toBe(firstKey);
+	});
+
 	// Portal checkouts always vault, so no save flag may be sent from here.
 	it('sends no provider config and no save-card flag', async () => {
 		vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({} as never);
