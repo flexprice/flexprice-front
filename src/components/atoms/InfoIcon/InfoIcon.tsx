@@ -17,7 +17,7 @@ const InfoIcon = ({ description, ariaLabel, disabled, className }: InfoIconProps
 		align='start'
 		sideOffset={6}
 		className='max-w-xs'
-		content={<span className='block max-w-xs text-xs font-normal leading-relaxed'>{description}</span>}>
+		content={<span className='block max-w-xs whitespace-pre-line text-xs font-normal leading-relaxed'>{description}</span>}>
 		<span
 			tabIndex={0}
 			aria-label={ariaLabel}

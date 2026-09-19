@@ -210,7 +210,16 @@
 			"dash": "--",
 			"usageProgressUnlimited": "{{usage}} / Unlimited"
 		},
-		"fallback": "--"
+		"fallback": "--",
+		"windowsTitle": "Value windows this cycle",
+		"windowsToggle": "{{count}} windows",
+		"windowOverage": "over by {{amount}}",
+		"windowNone": "—",
+		"windowOpen": "open",
+		"windowsButton": "History",
+		"windowsDialogDescription": "Each window is measured and billed on its own.",
+		"windowsColumnPeriod": "Window",
+		"windowsColumnUsage": "Used"
 	},
 	"subscriptionCreate": {
 		"selectCustomerLabel": "Customer",

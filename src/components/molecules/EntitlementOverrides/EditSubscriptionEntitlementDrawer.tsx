@@ -1,10 +1,14 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Sheet, Label, Input, Button, Checkbox } from '@/components/atoms';
+import { Dialog, Label, Input, Button, Checkbox } from '@/components/atoms';
 import { Switch } from '@/components/ui/switch';
 import { JsonEditor } from '@/components/molecules/JsonEditor';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
 import { JsonObject } from '@/types/common';
-import { ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
+import { Entitlement, ENTITLEMENT_ENTITY_TYPE, hasGrantConfig } from '@/models/Entitlement';
+import MeteredAllowanceFields, { type MeteredAllowanceErrors } from '@/components/molecules/AddEntitlementDrawer/MeteredAllowanceFields';
+import { toAllowanceDraft } from '@/components/molecules/AddEntitlementDrawer/allowanceMode';
+import { toGrantOverrideFields } from '@/components/molecules/AddEntitlementDrawer/grantOverridePayload';
+import { formatAllowanceValue } from '@/utils/entitlement/allowanceLabel';
 import EntitlementApi from '@/api/EntitlementApi';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -41,6 +45,29 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 	const [isEnabled, setIsEnabled] = useState<boolean>(true);
 	const [configValue, setConfigValue] = useState<JsonObject | null>(null);
 	const [configInvalid, setConfigInvalid] = useState<boolean>(false);
+	const [grantDraft, setGrantDraft] = useState<Partial<Entitlement>>({});
+	const [grantErrors, setGrantErrors] = useState<MeteredAllowanceErrors>({});
+
+	// Legacy rows have no allowance to edit. Converting them here would change a
+	// live customer's billing model as a side effect of adjusting a number, so they
+	// keep the old field until a deliberate backfill moves them across.
+	// What is stored, and the window running against it — the form needs both to say
+	// when an edit it cannot apply now will actually land.
+	const savedGrant = useMemo(
+		() => toAllowanceDraft((entitlement?.entitlement ?? entitlement?.originalGrant ?? {}) as unknown as Partial<Entitlement>),
+		[entitlement],
+	);
+	const liveWindow = useMemo(() => {
+		const open = (entitlement?.grant_state?.windows ?? []).find((w) => w.is_active);
+		return open ? { valid_to: open.valid_to, usage: open.usage } : undefined;
+	}, [entitlement]);
+
+	const isGrantBacked = useMemo(
+		() =>
+			hasGrantConfig((entitlement?.entitlement ?? {}) as Partial<Entitlement>) ||
+			hasGrantConfig((entitlement?.originalGrant ?? {}) as Partial<Entitlement>),
+		[entitlement],
+	);
 
 	const initialConfigValue = useMemo((): JsonObject | null => {
 		const raw = getEffectiveConfigValue(entitlement?.sources ?? []);
@@ -59,6 +86,11 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 			setIsEnabled(entitlement.entitlement?.is_enabled ?? true);
 			setConfigValue(null);
 			setConfigInvalid(false);
+			// Seed from the row in force, not the plan's: reopening on an existing
+			// override must show that override, or saving any other field would
+			// silently revert the allowance to the plan's.
+			setGrantDraft(toAllowanceDraft((entitlement.entitlement ?? entitlement.originalGrant ?? {}) as unknown as Partial<Entitlement>));
+			setGrantErrors({});
 		}
 	}, [entitlement]);
 
@@ -102,7 +134,14 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 
 		const values: SubscriptionEntitlementOverrideValues = {};
 
-		if (entitlement.feature_type === FEATURE_TYPE.METERED) {
+		if (entitlement.feature_type === FEATURE_TYPE.METERED && isGrantBacked) {
+			const grant = toGrantOverrideFields(grantDraft);
+			if (grant == null) {
+				setGrantErrors({ grant_quota: t('entitlements.validation.allowanceRequired') });
+				return;
+			}
+			Object.assign(values, grant);
+		} else if (entitlement.feature_type === FEATURE_TYPE.METERED) {
 			if (isInfinite) {
 				// Backend maps usage_limit=0 to unlimited on PUT; POST accepts null
 				values.usage_limit = entitlement.subscriptionEntitlementId ? 0 : null;
@@ -168,22 +207,50 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 	const originalStatic = entitlement.originalStaticValue;
 	const originalEnabled = entitlement.originalIsEnabled;
 	const resetPeriod = entitlement.usage_reset_period;
+	// What the plan grants, so a customer-specific allowance reads as a change from
+	// something rather than a number out of nowhere.
+	const planAllowanceLabel = entitlement.originalGrant
+		? formatAllowanceValue(entitlement.originalGrant as unknown as Partial<Entitlement>, t)
+		: undefined;
 	const canReset = entitlement.isOverrideOfParent && !!entitlement.subscriptionEntitlementId && !!onReset;
 
 	return (
-		<Sheet
+		<Dialog
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
 			title={t('entitlements.editDrawer.title', { name: featureName })}
 			description={t('entitlements.editDrawer.description')}
-			size='md'>
-			<div className='space-y-5 p-6'>
+			scrollBody
+			className='w-full max-w-3xl'>
+			<div className='space-y-5'>
 				<div className='space-y-2'>
 					<Label label={t('entitlements.editDrawer.featureType')} />
 					<div className='text-sm text-content-tertiary capitalize'>{entitlement.feature_type?.toLowerCase()}</div>
 				</div>
 
-				{entitlement.feature_type === FEATURE_TYPE.METERED && (
+				{entitlement.feature_type === FEATURE_TYPE.METERED && isGrantBacked && (
+					<div className='space-y-3'>
+						{planAllowanceLabel && (
+							<p className='text-xs text-muted-foreground'>{t('entitlements.editDrawer.planAllowance', { value: planAllowanceLabel })}</p>
+						)}
+						<MeteredAllowanceFields
+							value={grantDraft}
+							onChange={(patch) => {
+								setGrantDraft((prev) => ({ ...prev, ...patch }));
+								setGrantErrors({});
+							}}
+							errors={grantErrors}
+							savedValue={savedGrant}
+							liveWindow={liveWindow}
+							unitLabel={
+								(entitlement.feature as { unit_plural?: string } | undefined)?.unit_plural?.trim() ||
+								t('entitlements.addDrawer.unitsFallback')
+							}
+						/>
+					</div>
+				)}
+
+				{entitlement.feature_type === FEATURE_TYPE.METERED && !isGrantBacked && (
 					<div className='space-y-4'>
 						<Input
 							id='subscription-edit-entitlement-usage-limit'
@@ -282,7 +349,7 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 					</Button>
 				</div>
 			</div>
-		</Sheet>
+		</Dialog>
 	);
 };
 

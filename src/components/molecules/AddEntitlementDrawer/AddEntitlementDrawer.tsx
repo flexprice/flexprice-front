@@ -1,15 +1,17 @@
-import { Button, Checkbox, Dialog, FormHeader, Input, Select, SelectFeature, Spacer, Toggle } from '@/components/atoms';
-import { Sheet as ShadcnSheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { useSheetOutsideDismissGuards } from '@/components/atoms/Sheet/Sheet';
+import { Button, Dialog, FormHeader, Input, Label, SelectFeature, Spacer } from '@/components/atoms';
 import { JsonObject } from '@/types/common';
 import { JsonEditor } from '@/components/molecules/JsonEditor';
 import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
+import MeteredAllowanceFields from './MeteredAllowanceFields';
+import { deriveAllowanceMode, patchForMode } from './allowanceMode';
+import { toCreateEntitlementRequest } from './entitlementRequest';
+import { blocksAnotherEntitlement } from './parallelEntitlements';
+import { formatAllowanceValue } from '@/utils/entitlement/allowanceLabel';
 
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { Entitlement, ENTITLEMENT_ENTITY_TYPE, ENTITLEMENT_USAGE_RESET_PERIOD } from '@/models/Entitlement';
+import { Entitlement, ENTITLEMENT_AGGREGATION_MODE, ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
-import { METER_USAGE_RESET_PERIOD } from '@/models/Meter';
 import EntitlementApi from '@/api/EntitlementApi';
 import FeatureApi from '@/api/FeatureApi';
 import { CreateBulkEntitlementRequest, CreateEntitlementRequest } from '@/types/dto/Entitlement';
@@ -19,9 +21,6 @@ import { FC, useState, useEffect, useCallback, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import type { TFunction } from 'i18next';
 import { Trans, useTranslation } from 'react-i18next';
-import { cn } from '@/lib/utils';
-import { useLocaleStore } from '@/store/useLocaleStore';
-import { Direction } from '@/config/branding';
 
 interface Props {
 	isOpen: boolean;
@@ -36,6 +35,8 @@ interface Props {
 
 interface ValidationErrors {
 	usage_limit?: string;
+	grant_quota?: string;
+	grant_duration_value?: string;
 	static_value?: string;
 	config_value?: string;
 	usage_reset_period?: string;
@@ -57,28 +58,22 @@ const validateMeteredFeature = (
 		return newErrors;
 	}
 
-	const isInfinite = tempEntitlement.usage_limit === null;
-	const isResetNever = activeFeature?.meter?.reset_usage === METER_USAGE_RESET_PERIOD.NEVER;
+	// Unlimited is the absence of a ceiling, so it has nothing else to validate.
+	const mode = deriveAllowanceMode(tempEntitlement);
+	if (mode === 'unlimited') return newErrors;
 
-	// If reset period is set to NEVER, usage limit is required (cannot be infinite)
-	if (isResetNever) {
-		if (tempEntitlement.usage_limit !== undefined && tempEntitlement.usage_limit !== null && tempEntitlement.usage_limit < 0) {
-			newErrors.usage_limit = t('entitlements.validation.usageLimitNegative');
-		}
-	} else {
-		// Normal validation for usage limit when reset is not NEVER
-		if (tempEntitlement.usage_limit === undefined) {
-			newErrors.usage_limit = t('entitlements.validation.usageLimitRequired');
-		} else if (tempEntitlement.usage_limit !== null && tempEntitlement.usage_limit < 0) {
-			newErrors.usage_limit = t('entitlements.validation.usageLimitNegative');
-		}
+	const quota = tempEntitlement.grant_quota;
+	if (quota == null || quota === '') {
+		newErrors.grant_quota = t('entitlements.validation.allowanceRequired');
+	} else if (Number(quota) <= 0) {
+		newErrors.grant_quota = t('entitlements.validation.allowancePositive');
 	}
 
-	// If user sets to infinite, don't require usage reset period
-	// If reset is NEVER, usage reset period is not applicable
-	if (!isInfinite && !isResetNever) {
-		if (!tempEntitlement.usage_reset_period) {
-			newErrors.usage_reset_period = t('entitlements.validation.usageResetRequired');
+	// A recurring window needs a length; a billing-period one derives it from the cycle.
+	if (mode === 'recurring') {
+		const durationValue = tempEntitlement.grant_duration_value;
+		if (durationValue == null || durationValue < 1) {
+			newErrors.grant_duration_value = t('entitlements.validation.durationRequired');
 		}
 	}
 
@@ -264,21 +259,6 @@ const AddEntitlementDrawer: FC<Props> = ({
 }) => {
 	const { t } = useTranslation('catalog');
 	const queryClient = useQueryClient();
-	const direction = useLocaleStore((s) => s.direction);
-	const sheetSide = direction === Direction.RTL ? 'left' : 'right';
-
-	const entitlementUsageResetOptions = useMemo(
-		() => [
-			{ label: t('entitlements.usageResetPeriod.DAILY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.DAILY },
-			{ label: t('entitlements.usageResetPeriod.WEEKLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.WEEKLY },
-			{ label: t('entitlements.usageResetPeriod.MONTHLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.MONTHLY },
-			{ label: t('entitlements.usageResetPeriod.QUARTERLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.QUARTERLY },
-			{ label: t('entitlements.usageResetPeriod.HALF_YEARLY'), value: ENTITLEMENT_USAGE_RESET_PERIOD.HALF_YEARLY },
-			{ label: t('entitlements.usageResetPeriod.ANNUAL'), value: ENTITLEMENT_USAGE_RESET_PERIOD.ANNUAL },
-			{ label: t('entitlements.usageResetPeriod.NEVER'), value: ENTITLEMENT_USAGE_RESET_PERIOD.NEVER },
-		],
-		[t],
-	);
 
 	const [entitlements, setEntitlements] = useState<Partial<Entitlement>[]>([]);
 	const [errors, setErrors] = useState<ValidationErrors>({});
@@ -299,7 +279,18 @@ const AddEntitlementDrawer: FC<Props> = ({
 	const featureForForm = fullFeature ?? activeFeature;
 
 	// Memoize existing feature IDs to prevent unnecessary recalculations
-	const existingFeatureIds = useMemo(() => initialEntitlements?.map((ent) => ent.feature_id) || [], [initialEntitlements]);
+	const existingFeatureIds = useMemo(
+		() => (initialEntitlements ?? []).filter(blocksAnotherEntitlement).map((ent) => ent.feature_id) as string[],
+		[initialEntitlements],
+	);
+
+	// Features already carrying a parallel entitlement: a second one has to match,
+	// since a feature's entitlements are either all additive or all parallel.
+	const parallelFeatureIds = useMemo(() => {
+		const existing = (initialEntitlements ?? []).filter((ent) => !blocksAnotherEntitlement(ent)).map((ent) => ent.feature_id);
+		const drafted = entitlements.filter((ent) => !blocksAnotherEntitlement(ent)).map((ent) => ent.feature_id);
+		return new Set([...existing, ...drafted].filter(Boolean) as string[]);
+	}, [initialEntitlements, entitlements]);
 
 	// Reset all states when drawer closes
 	const resetState = useCallback(() => {
@@ -314,11 +305,12 @@ const AddEntitlementDrawer: FC<Props> = ({
 
 	// Memoize already added feature IDs (from entitlements + initial entitlements)
 	const alreadyAddedFeatureIds = useMemo(() => {
-		const currentEntitlementFeatureIds = entitlements.map((ent) => ent.feature_id).filter(Boolean) as string[];
-		return [...new Set([...currentEntitlementFeatureIds, ...existingFeatureIds])];
+		const drafted = entitlements
+			.filter(blocksAnotherEntitlement)
+			.map((ent) => ent.feature_id)
+			.filter(Boolean) as string[];
+		return [...new Set([...drafted, ...existingFeatureIds])];
 	}, [entitlements, existingFeatureIds]);
-
-	const outsideDismissGuards = useSheetOutsideDismissGuards(isOpen);
 
 	const handleDrawerClose = (open: boolean) => {
 		if (!open) {
@@ -350,20 +342,9 @@ const AddEntitlementDrawer: FC<Props> = ({
 				throw new Error(t('entitlements.errors.entityIdRequired'));
 			}
 
-			// Convert entitlements to CreateEntitlementRequest format
-			const entitlementRequests: CreateEntitlementRequest[] = entitlements.map((entitlement) => ({
-				plan_id: planId,
-				feature_id: entitlement.feature_id!,
-				feature_type: entitlement.feature_type! as FEATURE_TYPE,
-				is_enabled: entitlement.is_enabled,
-				usage_limit: entitlement.usage_limit,
-				usage_reset_period: entitlement.usage_reset_period as ENTITLEMENT_USAGE_RESET_PERIOD | undefined,
-				is_soft_limit: entitlement.is_soft_limit,
-				static_value: entitlement.static_value,
-				config_value: entitlement.config_value ?? undefined,
-				entity_type: entityType,
-				entity_id: entityId,
-			}));
+			const entitlementRequests: CreateEntitlementRequest[] = entitlements.map((entitlement) =>
+				toCreateEntitlementRequest(entitlement, { planId, entityType, entityId }),
+			);
 
 			const bulkRequest: CreateBulkEntitlementRequest = {
 				items: entitlementRequests,
@@ -468,238 +449,209 @@ const AddEntitlementDrawer: FC<Props> = ({
 
 	return (
 		<div>
-			<ShadcnSheet open={isOpen} onOpenChange={handleDrawerClose} modal={false}>
-				<SheetContent
-					side={sheetSide}
-					className={cn('h-screen overflow-y-auto rounded-[10px] sm:max-w-sm bg-surface')}
-					{...outsideDismissGuards}>
-					<SheetHeader>
-						<SheetTitle>{t('entitlements.addDrawer.title')}</SheetTitle>
-						<SheetDescription>{t('entitlements.addDrawer.description')}</SheetDescription>
-					</SheetHeader>
-					<div className='space-y-4 mt-6'>
-						{ErrorDisplay}
+			<Dialog
+				isOpen={isOpen}
+				onOpenChange={handleDrawerClose}
+				title={t('entitlements.addDrawer.title')}
+				description={t('entitlements.addDrawer.description')}
+				scrollBody
+				className='w-full max-w-3xl'>
+				<div className='space-y-4'>
+					{ErrorDisplay}
 
-						{entitlements.map((entitlement, index) => (
-							<div
-								key={`${entitlement.feature_id}-${index}`}
-								className='rounded-md border !p-2 !px-3 flex w-full justify-between items-center'>
-								<p className='text-content-zinc-bold text-sm font-medium'>{entitlement.feature?.name}</p>
-								<button
-									onClick={() => {
-										setEntitlements((prev) => prev.filter((_, i) => i !== index));
-										setSelectedFeatures((prev) => prev.filter((feature) => feature.id !== entitlement.feature?.id));
-									}}>
-									<X className='size-4' />
-								</button>
+					{/* A list, not a stack of input-shaped boxes: one bordered group with a
+					    heading, so it reads as "what you have added" rather than as another
+					    field sitting above the feature picker. */}
+					{entitlements.length > 0 && (
+						<div className='space-y-1.5'>
+							<Label label={t('entitlements.addDrawer.addedLabel')} />
+							<div className='divide-y divide-line rounded-md border border-line'>
+								{entitlements.map((entitlement, index) => (
+									<div key={`${entitlement.feature_id}-${index}`} className='flex w-full items-center gap-3 px-3 py-2'>
+										<span className='shrink-0'>{getFeatureIcon(entitlement.feature_type ?? '')}</span>
+										<p className='min-w-0 flex-1 truncate text-sm font-medium text-content-zinc-bold'>{entitlement.feature?.name}</p>
+										<span className='shrink-0 text-sm text-muted-foreground'>{formatAllowanceValue(entitlement, t)}</span>
+										<button
+											type='button'
+											aria-label={t('entitlements.addDrawer.removeAriaLabel', { name: entitlement.feature?.name ?? '' })}
+											className='-me-1 flex size-7 shrink-0 items-center justify-center rounded-md text-content-muted transition-colors hover:bg-surface-muted hover:text-content'
+											onClick={() => {
+												setEntitlements((prev) => prev.filter((_, i) => i !== index));
+												setSelectedFeatures((prev) => prev.filter((feature) => feature.id !== entitlement.feature?.id));
+											}}>
+											<X className='size-4' />
+										</button>
+									</div>
+								))}
 							</div>
-						))}
+						</div>
+					)}
 
-						{showSelect && (
-							<SelectFeature
-								disabledFeatures={alreadyAddedFeatureIds}
-								onChange={(feature) => {
-									// Seed cache so SelectFeature can show the selected label immediately
-									// (it resolves display value via ['fetchFeatureById', id]).
-									queryClient.setQueryData(['fetchFeatureById', feature.id], feature);
+					{showSelect && (
+						<SelectFeature
+							disabledFeatures={alreadyAddedFeatureIds}
+							onChange={(feature) => {
+								// Seed cache so SelectFeature can show the selected label immediately
+								// (it resolves display value via ['fetchFeatureById', id]).
+								queryClient.setQueryData(['fetchFeatureById', feature.id], feature);
 
-									if (feature.type === FEATURE_TYPE.BOOLEAN) {
-										// Automatically add boolean features
-										const booleanEntitlement: Partial<Entitlement> = {
-											feature: feature,
-											feature_id: feature.id,
-											feature_type: feature.type,
-											is_enabled: true,
-										};
-										setEntitlements((prev) => [...prev, booleanEntitlement]);
-										setSelectedFeatures((prev) => [...prev, feature]);
-										setShowSelect(true);
-										setErrors({});
-									} else {
-										// For non-boolean features, show the configuration form
-										setActiveFeature(feature);
-										setSelectedFeatures((prev) => [...prev, feature]);
-										setShowSelect(false);
-										setErrors({});
-									}
-								}}
-								label={t('entitlements.addDrawer.featuresLabel')}
-								placeholder={t('entitlements.addDrawer.selectFeaturePlaceholder')}
-								value={activeFeature?.id}
-							/>
-						)}
+								if (feature.type === FEATURE_TYPE.BOOLEAN) {
+									// Automatically add boolean features
+									const booleanEntitlement: Partial<Entitlement> = {
+										feature: feature,
+										feature_id: feature.id,
+										feature_type: feature.type,
+										is_enabled: true,
+									};
+									setEntitlements((prev) => [...prev, booleanEntitlement]);
+									setSelectedFeatures((prev) => [...prev, feature]);
+									setShowSelect(true);
+									setErrors({});
+								} else {
+									// For non-boolean features, show the configuration form
+									setActiveFeature(feature);
+									// Seed the grant defaults the form already displays. Without this the
+									// state holds only what the user touched, so typing a quota produces a
+									// partial config (no measure) that the API rejects.
+									setTempEntitlement(
+										feature.type === FEATURE_TYPE.METERED
+											? {
+													...patchForMode('recurring', {}),
+													// Match the siblings, or the API rejects a mixed feature.
+													...(parallelFeatureIds.has(feature.id) ? { aggregation_mode: ENTITLEMENT_AGGREGATION_MODE.PARALLEL } : {}),
+												}
+											: {},
+									);
+									setSelectedFeatures((prev) => [...prev, feature]);
+									setShowSelect(false);
+									setErrors({});
+								}
+							}}
+							label={t('entitlements.addDrawer.featuresLabel')}
+							placeholder={t('entitlements.addDrawer.selectFeaturePlaceholder')}
+							value={activeFeature?.id}
+						/>
+					)}
 
-						{activeFeature && (
-							<div className='card p-4'>
-								{FeatureErrorDisplay}
-								<div className='flex justify-between items-start gap-4'>
-									<FormHeader title={activeFeature?.name} variant='sub-header' />
-									<span className='mt-1'>{getFeatureIcon(activeFeature?.type)}</span>
-								</div>
-
-								{/* metered feature */}
-								{activeFeature.type === FEATURE_TYPE.METERED && (
-									<div>
-										{/* {activeFeature.type === FeatureType.metered && activeFeature.meter_id && (
-										<div className='w-full flex justify-between items-center'>
-											<span className='text-muted-foreground text-sm font-sans'>Meter</span>
-											<span className='text-content-zinc text-sm font-sans'>{activeFeature.meter?.name}</span>
-										</div>
-									)} */}
-										{/* <Spacer className='!my-6' /> */}
-										<Input
-											error={errors.usage_limit}
-											label={t('entitlements.addDrawer.valueLabel')}
-											placeholder={t('entitlements.addDrawer.enterValuePlaceholder')}
-											disabled={tempEntitlement.usage_limit === null}
-											variant='formatted-number'
-											value={
-												tempEntitlement.usage_limit === null
-													? t('entitlements.addDrawer.unlimitedDisplay')
-													: tempEntitlement.usage_limit?.toString() || ''
-											}
-											onChange={(value) => {
-												const numValue = value === '' ? undefined : Number(value);
-												setTempEntitlement((prev) => ({
-													...prev,
-													usage_limit: numValue,
-												}));
-											}}
-											suffix={
-												<div className='flex items-center gap-1.5'>
-													<span className='text-muted-foreground text-xs font-sans'>
-														{featureForForm?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
-													</span>
-													{featureForForm?.reporting_unit != null && (
-														<Button
-															type='button'
-															variant='ghost'
-															size='icon'
-															className='size-7 shrink-0 text-muted-foreground hover:text-foreground'
-															onClick={() => setIsCalculatorOpen(true)}
-															aria-label={t('entitlements.addDrawer.calculatorAriaLabel')}>
-															<Calculator className='size-4' />
-														</Button>
-													)}
-												</div>
-											}
-										/>
-										<Spacer className='!my-4' />
-										<Checkbox
-											id='set-infinite'
-											label={t('entitlements.addDrawer.setInfiniteLabel')}
-											checked={tempEntitlement.usage_limit === null}
-											onCheckedChange={(e) => {
-												setTempEntitlement((prev) => ({
-													...prev,
-													usage_limit: e ? null : undefined,
-													usage_reset_period: e ? null : undefined,
-												}));
-											}}
-										/>
-										<Spacer className='!my-4' />
-										<Select
-											disabled={tempEntitlement.usage_limit === null || activeFeature.meter?.reset_usage === METER_USAGE_RESET_PERIOD.NEVER}
-											error={errors.usage_reset_period}
-											label={t('entitlements.addDrawer.usageResetLabel')}
-											placeholder={t('entitlements.addDrawer.usageResetPlaceholder')}
-											options={entitlementUsageResetOptions}
-											description={t('entitlements.addDrawer.usageResetDescription')}
-											value={tempEntitlement.usage_reset_period ?? ''}
-											onChange={(value) => {
-												setTempEntitlement((prev) => ({
-													...prev,
-													usage_reset_period: value as ENTITLEMENT_USAGE_RESET_PERIOD,
-												}));
-											}}
-										/>
-										<Spacer className='!my-4' />
-										<Toggle
-											checked={tempEntitlement.is_soft_limit ?? false}
-											label={t('entitlements.addDrawer.softLimitLabel')}
-											description={t('entitlements.addDrawer.softLimitDescription')}
-											onChange={(value) => {
-												setTempEntitlement((prev) => ({
-													...prev,
-													is_soft_limit: value,
-												}));
-											}}
-										/>
-									</div>
-								)}
-
-								{/* config features */}
-								{activeFeature.type === FEATURE_TYPE.CONFIG && (
-									<div>
-										<Spacer height='12px' />
-										<JsonEditor
-											key={activeFeature.id}
-											value={(tempEntitlement.config_value as JsonObject) ?? null}
-											onChange={(parsed) => {
-												setTempEntitlement((prev) => ({ ...prev, config_value: parsed ?? undefined }));
-											}}
-										/>
-										{errors.config_value && <p className='text-xs text-danger-bright mt-1'>{errors.config_value}</p>}
-									</div>
-								)}
-
-								{/* static features */}
-								{activeFeature.type === FEATURE_TYPE.STATIC && (
-									<div>
-										<Input
-											error={errors.static_value}
-											label={t('entitlements.addDrawer.valueLabel')}
-											value={tempEntitlement.static_value === undefined ? '' : tempEntitlement.static_value.toString()}
-											placeholder={t('entitlements.addDrawer.enterValuePlaceholder')}
-											onChange={(value) => {
-												setTempEntitlement((prev) => ({
-													...prev,
-													static_value: value === '' ? undefined : value,
-												}));
-											}}
-											suffix={
-												featureForForm?.reporting_unit != null ? (
-													<Button
-														type='button'
-														variant='ghost'
-														size='icon'
-														className='size-7 shrink-0 text-muted-foreground hover:text-foreground'
-														onClick={() => setIsCalculatorOpen(true)}
-														aria-label={t('entitlements.addDrawer.calculatorAriaLabel')}>
-														<Calculator className='size-4' />
-													</Button>
-												) : undefined
-											}
-										/>
-									</div>
-								)}
-
-								<div className='w-full mt-6 flex justify-end gap-2'>
-									<Button onClick={handleCancel} variant={'outline'}>
-										{t('entitlements.addDrawer.cancel')}
-									</Button>
-									<Button onClick={handleAdd}>{t('entitlements.addDrawer.add')}</Button>
-								</div>
+					{activeFeature && (
+						<div className='card p-4'>
+							{FeatureErrorDisplay}
+							<div className='flex justify-between items-start gap-4'>
+								<FormHeader title={activeFeature?.name} variant='sub-header' />
+								<span className='mt-1'>{getFeatureIcon(activeFeature?.type)}</span>
 							</div>
-						)}
-					</div>
 
-					<div className='!space-y-4 mt-4'>
-						{!showSelect && !activeFeature && (
+							{/* metered feature — every mode produces a grant config */}
+							{activeFeature.type === FEATURE_TYPE.METERED && (
+								<div>
+									<Spacer className='!my-4' />
+									<MeteredAllowanceFields
+										value={tempEntitlement}
+										onChange={(patch) => setTempEntitlement((prev) => ({ ...prev, ...patch }))}
+										errors={{ grant_quota: errors.grant_quota, grant_duration_value: errors.grant_duration_value }}
+										unitLabel={featureForForm?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
+										quotaSuffix={
+											featureForForm?.reporting_unit != null ? (
+												<Button
+													type='button'
+													variant='ghost'
+													size='icon'
+													className='size-7 shrink-0 text-muted-foreground hover:text-foreground'
+													onClick={() => setIsCalculatorOpen(true)}
+													aria-label={t('entitlements.addDrawer.calculatorAriaLabel')}>
+													<Calculator className='size-4' />
+												</Button>
+											) : undefined
+										}
+									/>
+								</div>
+							)}
+
+							{/* config features */}
+							{activeFeature.type === FEATURE_TYPE.CONFIG && (
+								<div>
+									<Spacer height='12px' />
+									<JsonEditor
+										key={activeFeature.id}
+										value={(tempEntitlement.config_value as JsonObject) ?? null}
+										onChange={(parsed) => {
+											setTempEntitlement((prev) => ({ ...prev, config_value: parsed ?? undefined }));
+										}}
+									/>
+									{errors.config_value && <p className='text-xs text-danger-bright mt-1'>{errors.config_value}</p>}
+								</div>
+							)}
+
+							{/* static features */}
+							{activeFeature.type === FEATURE_TYPE.STATIC && (
+								<div>
+									<Input
+										error={errors.static_value}
+										label={t('entitlements.addDrawer.valueLabel')}
+										value={tempEntitlement.static_value === undefined ? '' : tempEntitlement.static_value.toString()}
+										placeholder={t('entitlements.addDrawer.enterValuePlaceholder')}
+										onChange={(value) => {
+											setTempEntitlement((prev) => ({
+												...prev,
+												static_value: value === '' ? undefined : value,
+											}));
+										}}
+										suffix={
+											featureForForm?.reporting_unit != null ? (
+												<Button
+													type='button'
+													variant='ghost'
+													size='icon'
+													className='size-7 shrink-0 text-muted-foreground hover:text-foreground'
+													onClick={() => setIsCalculatorOpen(true)}
+													aria-label={t('entitlements.addDrawer.calculatorAriaLabel')}>
+													<Calculator className='size-4' />
+												</Button>
+											) : undefined
+										}
+									/>
+								</div>
+							)}
+
+							<div className='w-full mt-6 flex justify-end gap-2'>
+								<Button onClick={handleCancel} variant={'outline'}>
+									{t('entitlements.addDrawer.cancel')}
+								</Button>
+								<Button onClick={handleAdd}>{t('entitlements.addDrawer.add')}</Button>
+							</div>
+						</div>
+					)}
+				</div>
+
+				{/* While a feature is being configured the only actions are its own Cancel/Add,
+				    so the outer row is hidden rather than shown holding a disabled Save — that
+				    row plus its rule was what pushed the dialog into scrolling. */}
+				{!activeFeature && (
+					<div className='mt-6 flex items-center justify-between gap-2'>
+						{!showSelect ? (
 							<AddChargesButton onClick={() => setShowSelect(true)} label={t('entitlements.addDrawer.addAnotherFeature')} />
+						) : (
+							<span />
 						)}
-						<Button isLoading={isPending} onClick={handleSubmit} disabled={isPending || (!showSelect && !!activeFeature)}>
+						<Button isLoading={isPending} onClick={handleSubmit} disabled={isPending}>
 							{t('entitlements.addDrawer.save')}
 						</Button>
 					</div>
-				</SheetContent>
-			</ShadcnSheet>
+				)}
+			</Dialog>
 
 			<DisplayValueCalculatorDialog
 				isOpen={isCalculatorOpen}
 				onOpenChange={setIsCalculatorOpen}
 				unitValue={(() => {
-					if (activeFeature?.type === FEATURE_TYPE.METERED) return tempEntitlement.usage_limit ?? undefined;
+					// Metered allowances live in grant_quota (a string); usage_limit is no
+					// longer sent for them, so reading it here made the calculator a no-op.
+					if (activeFeature?.type === FEATURE_TYPE.METERED) {
+						const q = tempEntitlement.grant_quota;
+						if (q == null || q === '') return undefined;
+						const n = Number(q);
+						return Number.isFinite(n) ? n : undefined;
+					}
 					if (activeFeature?.type === FEATURE_TYPE.STATIC && tempEntitlement.static_value != null) {
 						const n =
 							typeof tempEntitlement.static_value === 'string'
@@ -713,7 +665,7 @@ const AddEntitlementDrawer: FC<Props> = ({
 				baseUnitPlural={featureForForm?.unit_plural?.trim() || t('entitlements.addDrawer.unitsFallback')}
 				onConfirm={(unitValue) => {
 					if (activeFeature?.type === FEATURE_TYPE.METERED) {
-						setTempEntitlement((prev) => ({ ...prev, usage_limit: unitValue }));
+						setTempEntitlement((prev) => ({ ...prev, grant_quota: String(unitValue) }));
 					} else if (activeFeature?.type === FEATURE_TYPE.STATIC) {
 						setTempEntitlement((prev) => ({ ...prev, static_value: String(unitValue) }));
 					}

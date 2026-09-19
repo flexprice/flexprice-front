@@ -206,7 +206,16 @@
 			"dash": "—",
 			"usageProgressUnlimited": "{{usage}} / غير محدود"
 		},
-		"fallback": "--"
+		"fallback": "--",
+		"windowsTitle": "Value windows this cycle",
+		"windowsToggle": "{{count}} windows",
+		"windowOverage": "over by {{amount}}",
+		"windowNone": "—",
+		"windowOpen": "open",
+		"windowsButton": "السجل",
+		"windowsDialogDescription": "تُقاس كل نافذة وتُفوتر على حدة.",
+		"windowsColumnPeriod": "النافذة",
+		"windowsColumnUsage": "المستخدم"
 	},
 	"subscriptionCreate": {
 		"selectCustomerLabel": "العميل",

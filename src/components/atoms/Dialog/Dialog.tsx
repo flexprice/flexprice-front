@@ -21,6 +21,12 @@ interface Props {
 	 * in-dialog clicks never trigger the row behind it. Default off — no effect on other dialogs.
 	 */
 	interactiveContent?: boolean;
+	/**
+	 * Scroll the body instead of the whole dialog, so the title and whatever the
+	 * content puts last (usually its actions) stay put. Off by default — the
+	 * whole-dialog scroll is what every existing caller expects.
+	 */
+	scrollBody?: boolean;
 }
 
 const Dialog: FC<Props> = ({
@@ -34,6 +40,7 @@ const Dialog: FC<Props> = ({
 	descriptionClassName,
 	showCloseButton = true,
 	interactiveContent = false,
+	scrollBody = false,
 }) => {
 	const outsideDismissGuards = useSheetOutsideDismissGuards(isOpen);
 
@@ -64,18 +71,22 @@ const Dialog: FC<Props> = ({
 	return (
 		<ShadcnDialog open={isOpen} onOpenChange={onOpenChange} modal={false}>
 			<DialogContent
-				className={cn('bg-surface rounded-[10px] max-h-[80vh] overflow-y-auto', className)}
+				className={cn(
+					'bg-surface rounded-[10px]',
+					scrollBody ? 'flex max-h-[88vh] flex-col overflow-hidden' : 'max-h-[80vh] overflow-y-auto',
+					className,
+				)}
 				showCloseButton={showCloseButton}
 				data-interactive={interactiveContent ? 'true' : undefined}
 				onClick={interactiveContent ? (e: React.MouseEvent) => e.stopPropagation() : undefined}
 				{...outsideDismissGuards}>
-				<DialogHeader className=''>
+				<DialogHeader className={cn(scrollBody && 'shrink-0')}>
 					<DialogTitle className={cn('font-medium text-xl', titleClassName)}>
 						{typeof title === 'string' ? title : <>{title}</>}
 					</DialogTitle>
 					{description && <DialogDescription className={cn('mt-6', descriptionClassName)}>{description}</DialogDescription>}
 				</DialogHeader>
-				<div className='mt-4 w-full min-w-0'>{children}</div>
+				<div className={cn('mt-4 w-full min-w-0', scrollBody && 'min-h-0 flex-1 overflow-y-auto')}>{children}</div>
 			</DialogContent>
 		</ShadcnDialog>
 	);

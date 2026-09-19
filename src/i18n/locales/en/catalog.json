@@ -942,7 +942,10 @@
 			"selectFeature": "Please select a feature",
 			"invalidFeatureType": "Invalid feature type",
 			"featureAlreadyAdded": "This feature is already added",
-			"addAtLeastOne": "Please add at least one entitlement"
+			"addAtLeastOne": "Please add at least one entitlement",
+			"allowanceRequired": "Enter a value",
+			"allowancePositive": "Value must be greater than zero",
+			"durationRequired": "Enter how often the value refreshes"
 		},
 		"errors": {
 			"entityIdRequired": "Entity ID is required"
@@ -971,12 +974,53 @@
 			"unlimitedDisplay": "Unlimited",
 			"calculatorAriaLabel": "Display value calculator",
 			"unitsFallback": "units",
-			"configValueRequired": "A valid JSON object is required for config features"
+			"configValueRequired": "A valid JSON object is required for config features",
+			"measureAmount": "currency",
+			"durationHour": "hour",
+			"durationDay": "day",
+			"durationWeek": "week",
+			"windowStartsLabel": "Window starts",
+			"stackingLabel": "Stacking",
+			"stackingAdditive": "Additive",
+			"stackingParallel": "Parallel",
+			"overageHint": "Usage beyond the value is billed at the plan's usage price",
+			"previewRecurringFoot": "Opens {{windows}} windows in a 30-day cycle — {{total}} in total, {{quota}} at a time.",
+			"previewPeriodFoot": "{{quota}} for the whole billing period.",
+			"previewUnlimitedFoot": "No ceiling — usage is tracked but never billed.",
+			"grantUnavailable": "Recurring values are unavailable for this feature",
+			"durationBillingPeriod": "billing period",
+			"durationHour_one": "hour",
+			"durationHour_other": "hours",
+			"durationDay_one": "day",
+			"durationDay_other": "days",
+			"durationWeek_one": "week",
+			"durationWeek_other": "weeks",
+			"allowanceTypeLabel": "Value Type",
+			"typeQuantity": "Quantity",
+			"typeAmount": "Amount",
+			"allowanceValueLabel": "Value",
+			"refreshPeriodLabel": "Usage resets",
+			"noLimitLabel": "Unlimited",
+			"windowStartsCardFirstUsage": "On first use",
+			"windowStartsCardUnitStart": "Calendar boundary",
+			"advancedLabel": "Advanced",
+			"cadenceHourly": "Hourly",
+			"cadenceDaily": "Daily",
+			"cadenceWeekly": "Weekly",
+			"cadenceBillingPeriod": "Every billing period",
+			"infoAria": "More about {{field}}",
+			"typeInfo": "Quantity — counted in meter units.\nAmount — counted in currency.",
+			"windowStartsInfo": "On first use — starts at the customer's first event.\nCalendar boundary — starts at each hour, day or week.",
+			"stackingInfo": "Additive — plan and add-ons share one pool.\nParallel — each source gets its own window.",
+			"addedLabel": "Added",
+			"removeAriaLabel": "Remove {{name}}",
+			"deferredCadence": "Takes effect when the current window ends, {{when}}.",
+			"deferredCut": "Below the {{used}} already used this window, so it takes effect when the current window ends, {{when}}."
 		},
 		"displayCalculator": {
 			"titleFallback": "Display value",
 			"noDisplayUnit": "No display unit configured for this feature.",
-			"title": "Set Entitlement in Display Units",
+			"title": "Set Value in Display Units",
 			"description": "Enter a value in <strongDisplay>{{displayUnit}}</strongDisplay> to see the equivalent usage limit in <strongBase>{{baseUnit}}</strongBase>.",
 			"valueInDisplayUnitLabel": "Value in Display Unit",
 			"enterValuePlaceholder": "Enter Value",
@@ -1004,7 +1048,9 @@
 			"originalBooleanPrefix": "Original:",
 			"cancel": "Cancel",
 			"resetToDefault": "Reset to Default",
-			"saveOverride": "Save Override"
+			"saveOverride": "Save Override",
+			"planAllowance": "Plan value: {{value}}",
+			"allowanceHelp": "Overriding this replaces the plan's value for this customer only."
 		},
 		"overridesTable": {
 			"columnFeatureName": "Feature Name",
@@ -1026,7 +1072,8 @@
 			"unlimited": "Unlimited",
 			"enabled": "Enabled",
 			"disabled": "Disabled",
-			"unknownFeature": "Unknown Feature"
+			"unknownFeature": "Unknown Feature",
+			"tooltipAllowance": "Value: {{from}} → {{to}}"
 		},
 		"subscriptionEdit": {
 			"columnSource": "Source",
@@ -1043,6 +1090,13 @@
 			"deleteSuccess": "Entitlement removed successfully",
 			"deleteFailed": "Failed to remove entitlement",
 			"createRequiresParent": "Cannot create override without a parent entitlement"
+		},
+		"allowance": {
+			"unlimited": "Unlimited",
+			"perPeriod": "{{amount}} / {{period}}",
+			"separateAllowances": "separate",
+			"backedByGrant": "grant",
+			"backedByLegacy": "legacy"
 		}
 	},
 	"premiumFeature": {

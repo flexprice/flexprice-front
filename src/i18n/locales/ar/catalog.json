@@ -940,7 +940,10 @@
 			"selectFeature": "يُرجى اختيار ميزة",
 			"invalidFeatureType": "نوع الميزة غير صالح",
 			"featureAlreadyAdded": "هذه الميزة مضافة مسبقًا",
-			"addAtLeastOne": "يُرجى إضافة استحقاق واحد على الأقل"
+			"addAtLeastOne": "يُرجى إضافة استحقاق واحد على الأقل",
+			"allowanceRequired": "Enter a value",
+			"allowancePositive": "Value must be greater than zero",
+			"durationRequired": "Enter how often the value refreshes"
 		},
 		"errors": {
 			"entityIdRequired": "معرّف الكيان مطلوب"
@@ -969,12 +972,53 @@
 			"unlimitedDisplay": "غير محدود",
 			"calculatorAriaLabel": "آلة حاسبة للقيمة المعروضة",
 			"unitsFallback": "وحدات",
-			"configValueRequired": "كائن JSON صالح مطلوب لميزات الإعداد"
+			"configValueRequired": "كائن JSON صالح مطلوب لميزات الإعداد",
+			"measureAmount": "currency",
+			"durationHour": "ساعة",
+			"durationDay": "يوم",
+			"durationWeek": "أسبوع",
+			"windowStartsLabel": "Window starts",
+			"stackingLabel": "التجميع",
+			"stackingAdditive": "تراكمي",
+			"stackingParallel": "متوازٍ",
+			"overageHint": "يُفوتر الاستخدام الزائد عن القيمة بسعر الاستخدام في الخطة",
+			"previewRecurringFoot": "يفتح {{windows}} نافذة في دورة مدتها 30 يومًا — {{total}} إجمالًا، {{quota}} في كل مرة.",
+			"previewPeriodFoot": "{{quota}} لفترة الفوترة بأكملها.",
+			"previewUnlimitedFoot": "بلا حد أقصى — يُتتبع الاستخدام دون فوترته.",
+			"grantUnavailable": "Recurring values are unavailable for this feature",
+			"durationBillingPeriod": "billing period",
+			"durationHour_one": "ساعة",
+			"durationHour_other": "ساعات",
+			"durationDay_one": "يوم",
+			"durationDay_other": "أيام",
+			"durationWeek_one": "أسبوع",
+			"durationWeek_other": "أسابيع",
+			"allowanceTypeLabel": "نوع القيمة",
+			"typeQuantity": "الكمية",
+			"typeAmount": "المبلغ",
+			"allowanceValueLabel": "القيمة",
+			"refreshPeriodLabel": "إعادة تعيين الاستخدام",
+			"noLimitLabel": "غير محدود",
+			"windowStartsCardFirstUsage": "عند أول استخدام",
+			"windowStartsCardUnitStart": "حدود التقويم",
+			"advancedLabel": "إعدادات متقدمة",
+			"cadenceHourly": "كل ساعة",
+			"cadenceDaily": "يوميًا",
+			"cadenceWeekly": "أسبوعيًا",
+			"cadenceBillingPeriod": "كل فترة فوترة",
+			"infoAria": "مزيد من المعلومات عن {{field}}",
+			"typeInfo": "الكمية — تُحسب بوحدات العداد.\nالمبلغ — يُحسب بالعملة.",
+			"windowStartsInfo": "عند أول استخدام — تبدأ عند أول حدث للعميل.\nحدود التقويم — تبدأ مع كل ساعة أو يوم أو أسبوع.",
+			"stackingInfo": "التراكمي — الخطة والإضافات تتشارك مجمّعًا واحدًا.\nالمتوازي — لكل مصدر نافذته الخاصة.",
+			"addedLabel": "المضافة",
+			"removeAriaLabel": "إزالة {{name}}",
+			"deferredCadence": "يسري عند انتهاء النافذة الحالية، {{when}}.",
+			"deferredCut": "أقل من {{used}} المستخدمة في هذه النافذة، لذا يسري عند انتهاء النافذة الحالية، {{when}}."
 		},
 		"displayCalculator": {
 			"titleFallback": "القيمة المعروضة",
 			"noDisplayUnit": "لم يُضبط وحدة عرض لهذه الميزة.",
-			"title": "تعيين الاستحقاق بوحدات العرض",
+			"title": "تعيين القيمة بوحدات العرض",
 			"description": "أدخل قيمة بـ <strongDisplay>{{displayUnit}}</strongDisplay> لمعرفة حد الاستخدام المكافئ بـ <strongBase>{{baseUnit}}</strongBase>.",
 			"valueInDisplayUnitLabel": "القيمة بوحدة العرض",
 			"enterValuePlaceholder": "أدخل القيمة",
@@ -1002,7 +1046,9 @@
 			"originalBooleanPrefix": "الأصلي:",
 			"cancel": "إلغاء",
 			"resetToDefault": "إعادة للافتراضي",
-			"saveOverride": "حفظ التجاوز"
+			"saveOverride": "حفظ التجاوز",
+			"planAllowance": "Plan value: {{value}}",
+			"allowanceHelp": "Overriding this replaces the plan's value for this customer only."
 		},
 		"overridesTable": {
 			"columnFeatureName": "اسم الميزة",
@@ -1024,7 +1070,15 @@
 			"unlimited": "غير محدود",
 			"enabled": "مفعّل",
 			"disabled": "معطّل",
-			"unknownFeature": "ميزة غير معروفة"
+			"unknownFeature": "ميزة غير معروفة",
+			"tooltipAllowance": "Value: {{from}} → {{to}}"
+		},
+		"allowance": {
+			"unlimited": "Unlimited",
+			"perPeriod": "{{amount}} / {{period}}",
+			"separateAllowances": "separate",
+			"backedByGrant": "grant",
+			"backedByLegacy": "legacy"
 		}
 	},
 	"premiumFeature": {
