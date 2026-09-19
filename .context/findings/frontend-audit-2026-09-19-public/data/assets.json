@@ -1,0 +1,357 @@
+[
+  {
+    "path": "public/ic_rounded_flexprice.svg",
+    "bytes": 860,
+    "sha256": "9ebd9fb5272e657d943d6151118923afc9c5bb4ea3f372a26872f3e3691cb538"
+  },
+  {
+    "path": "public/newlogobrowser.png",
+    "bytes": 79416,
+    "sha256": "c9a0dbce8ed144d703c6a17bd5867d41fb26e2582d9bc0aedcb94026f635caa1"
+  },
+  {
+    "path": "public/comicon.png",
+    "bytes": 80240,
+    "sha256": "99b71713a87484f3d2bb9598cb8e53c41ce61d5c9ec35420364ce735cd64f0a0"
+  },
+  {
+    "path": "public/assets/vapilogo.png",
+    "bytes": 3342,
+    "sha256": "1254320ba5bee4c47eab063cd8559c9702833e286fb4d63798fb4450946f9e27"
+  },
+  {
+    "path": "public/assets/apollo-logo.png",
+    "bytes": 22277,
+    "sha256": "91c4540cfdc0390d1993eadd452fac238f440f6fed21168cabf7c1850e5c1a1e"
+  },
+  {
+    "path": "public/assets/onboarding.png",
+    "bytes": 271953,
+    "sha256": "1e35f1f6fa23f958d3fc408f812afb5a911f1bbc909bb45d1b7bbfb5409e3421"
+  },
+  {
+    "path": "public/assets/cursor-logo.png",
+    "bytes": 7346,
+    "sha256": "b02a6a6e017997979219059da57d82ddbec32be5269a1482951c072d8fbd73c9"
+  },
+  {
+    "path": "public/assets/v4bgagentic.png",
+    "bytes": 298018,
+    "sha256": "0ebf5ef0b09f1618ae48e3b127fe66d33b3ff37751ae5f09ba357c3437bce889"
+  },
+  {
+    "path": "public/assets/gemini-logo.png",
+    "bytes": 8410,
+    "sha256": "b8bbcd9814a8f1e9936e53566d5b0bf7b4020688ae859a60a70947d06cbd3feb"
+  },
+  {
+    "path": "public/assets/railwaylogo.png",
+    "bytes": 4344,
+    "sha256": "6590efe29ad04ed3d552f3f93647d27e2a22895628acbe7c13e7d3f1b3eb3445"
+  },
+  {
+    "path": "public/assets/logo/google-cloud.png",
+    "bytes": 16072,
+    "sha256": "1ef7f37a6c27decc31612ac6b38d353ade30fd9addb1e612fcee3a617d359c23"
+  },
+  {
+    "path": "public/assets/logo/slack-logo.png",
+    "bytes": 87775,
+    "sha256": "963556084e8c9f780f331ac44b0ca621797039cceb871a4a7539a3caac38c99c"
+  },
+  {
+    "path": "public/assets/logo/nomod-logo.svg",
+    "bytes": 204663,
+    "sha256": "1acdfd35b32f3854ccc968cac3fc464f903f92f408e21733d1a475551792ad66"
+  },
+  {
+    "path": "public/assets/logo/logo.png",
+    "bytes": 25847,
+    "sha256": "c699bc52c00f78e98b3ddbc5ee01a5657dbc39bd59fb7f38d38030039ee0a7f5"
+  },
+  {
+    "path": "public/assets/logo/moyasarlogo.svg",
+    "bytes": 932,
+    "sha256": "d6a06c3ac5e63221b65cec8b047dc18bf3d74c06f9fcbd609e02d3d899262241"
+  },
+  {
+    "path": "public/assets/logo/Azure.png",
+    "bytes": 23264,
+    "sha256": "dd7e2773fe57510af8be4661bc2849c328bb82a867acc4d0f71b026bd9d25d3d"
+  },
+  {
+    "path": "public/assets/logo/chargebee.png",
+    "bytes": 2882,
+    "sha256": "0509a9e28adab7b8f5c56683e31bc83deafe71e785334837a64fa0ab03802233"
+  },
+  {
+    "path": "public/assets/logo/Marketplace-AWS.png",
+    "bytes": 6882,
+    "sha256": "fe25cd87b08423d6adce4b8321e358062c8f0d9919d5abe07c54d9d3af66eceb"
+  },
+  {
+    "path": "public/assets/logo/tabs.png",
+    "bytes": 2362,
+    "sha256": "9ce23c7ee9a870d86a85158e40b633ab6f8f23070802f61f9c86de491d158b06"
+  },
+  {
+    "path": "public/assets/logo/paddle.png",
+    "bytes": 1940,
+    "sha256": "225922b8ec9d18747ad3ac20489ed794795728262f4ac00068b78dc2c263fc4d"
+  },
+  {
+    "path": "public/assets/company-logo/faciliologo.png",
+    "bytes": 5285,
+    "sha256": "d6bb4c1c487b52dffb41753f3237186a3390f97d39dfa8c39b78a12357dd3819"
+  },
+  {
+    "path": "public/assets/company-logo/vapilogo.png",
+    "bytes": 51236,
+    "sha256": "2c6a17dfb6ce617b6fe91edcbaccf21de92fde7b2af74b1d1b488bc7559c5d1d"
+  },
+  {
+    "path": "public/assets/company-logo/giginlogo.png",
+    "bytes": 32788,
+    "sha256": "6b0f3a3562857bdaae1638d189dade721757ae018c20c1d155410a96aab2586b"
+  },
+  {
+    "path": "public/assets/company-logo/Y_Combinator_logo.svg.png",
+    "bytes": 8501,
+    "sha256": "1ca4e37a0b9701e246d2b0db3a34b54fbe92a10c4f0378111353017ce7c1db74"
+  },
+  {
+    "path": "public/assets/company-logo/Clueso Logo.png",
+    "bytes": 6912,
+    "sha256": "73345312e070d1e3c4255327b8bee6786f563518b5360dc6861b4a7dcf265584"
+  },
+  {
+    "path": "public/assets/company-logo/quickbooks.svg",
+    "bytes": 742,
+    "sha256": "85549938101e346a1781755cf5c28c6c1148b679055dd1598bc077feb244ca83"
+  },
+  {
+    "path": "public/assets/company-logo/krutrim-logo 1.png",
+    "bytes": 9317,
+    "sha256": "a3ecd18b52f6b60352c7c237c5697f2727134418aae387a377bedde9fa4275c8"
+  },
+  {
+    "path": "public/assets/company-logo/optimality.png",
+    "bytes": 259426,
+    "sha256": "c0627b2916e1dd875d3cfc33f959643ebdc64050fcb3af826b08bc8ebff937c1"
+  },
+  {
+    "path": "public/assets/company-logo/krutrim logo.png",
+    "bytes": 3388,
+    "sha256": "0479a700c94fbfaa5fed49818faba4756cff80e0921c47be9c185f700154e17b"
+  },
+  {
+    "path": "public/assets/company-logo/aftershoot.webp",
+    "bytes": 3572,
+    "sha256": "13d5f646beecfb747c89cfdb75cd6a02462246007470538ccacb4799652bce39"
+  },
+  {
+    "path": "public/assets/company-logo/vapidarklogo.png",
+    "bytes": 7311,
+    "sha256": "1ecb02880de1f3f28a0b7ff35a890b62f26e4c8b5ceb1e90efc455dd661f6249"
+  },
+  {
+    "path": "public/assets/company-logo/Simplismart logo.png",
+    "bytes": 11873,
+    "sha256": "c1f541d6655531482220bf5d29faa7a82975c2431a87386c77538f86660085e9"
+  },
+  {
+    "path": "public/assets/company-logo/Truffle AI Logo.png",
+    "bytes": 3579,
+    "sha256": "0045701b46332c1b3dad7bd07908fd8611a285ba8c6a894276e91a499e231569"
+  },
+  {
+    "path": "public/assets/company-logo/aftershoot copy.png",
+    "bytes": 8445,
+    "sha256": "cdb9314236c1d99d5156ea2e15a341da90614ac42267400c715a321a7b56c784"
+  },
+  {
+    "path": "public/assets/company-logo/aftershoot copy 1.png",
+    "bytes": 100680,
+    "sha256": "4b5afdf6606d1a1068aee079c5fb67e9ce2b4be602448400e62a06d1ac3f9f65"
+  },
+  {
+    "path": "public/assets/company-logo/cbdklogo.png",
+    "bytes": 81971,
+    "sha256": "12cff34a93fc659ca813ae699e6fa5f1c9dca5a60479217f84dddfb792ca583c"
+  },
+  {
+    "path": "public/assets/svg/whop_favicon_orange.png",
+    "bytes": 19723,
+    "sha256": "88c3f3b3eb16c3174e5214dbf8d3831234ae91b0c70a496c5810bf14af5d535a"
+  },
+  {
+    "path": "public/assets/svg/chevron-up-svgrepo-com.svg",
+    "bytes": 241,
+    "sha256": "708ce475cd49c86c7fba54eeb465f4c54864879da774104a16ad3769618249f3"
+  },
+  {
+    "path": "public/assets/svg/truffle-ai.svg",
+    "bytes": 39896,
+    "sha256": "63a3c1e7974e651004b4158fa8973b60dc41ee81336f2fc0534047c6c8bb8e15"
+  },
+  {
+    "path": "public/assets/svg/wizcommerce-ic.svg",
+    "bytes": 180300,
+    "sha256": "5ca49c0d84d4082a0f3dcbafdb1082840f701fe179ff73f6bbf2c19568dff0c6"
+  },
+  {
+    "path": "public/assets/svg/goodmeetings_logo.svg",
+    "bytes": 455919,
+    "sha256": "3008bedb640b041faed981e9d713c3afac6607715d72e9ffa10032ecc944eab7"
+  },
+  {
+    "path": "public/assets/svg/digibee-logo-dark 1.svg",
+    "bytes": 7198,
+    "sha256": "36fc5ec31c2bb5bc11e5e6656a8f444630ddbf4ed4fd588b62bc7f33b1ca730f"
+  },
+  {
+    "path": "public/assets/svg/clueso.svg",
+    "bytes": 389986,
+    "sha256": "a38d151655ea5626e86e39325b16192cd117efdb517b80d667d7129cff149e5e"
+  },
+  {
+    "path": "public/assets/svg/krutrim.svg",
+    "bytes": 4040,
+    "sha256": "664829f206575bd0106a6777c7ee0be13c6bf6fc5a6364f3c3965626c41d409c"
+  },
+  {
+    "path": "public/assets/svg/expand-all-svgrepo-com.svg",
+    "bytes": 296,
+    "sha256": "c9138d85629edff1c0f8851396a3eb7596356b786e8eac7f9e5ae2249a26201e"
+  },
+  {
+    "path": "public/assets/svg/collapse-all-svgrepo-com.svg",
+    "bytes": 270,
+    "sha256": "9a602160661e4ee00428785c9185f518ed64ccc90669d46aeba08d355fa94bfe"
+  },
+  {
+    "path": "public/assets/svg/wizcommerce_logo.svg",
+    "bytes": 180311,
+    "sha256": "2494e2457f3ca34a5a24c0cd95f22cfc09f5b93e6cec191d26d230bb79715ecf"
+  },
+  {
+    "path": "public/assets/svg/supervity_logo.svg",
+    "bytes": 86811,
+    "sha256": "9676ec49f3198affbd25ea4891a08e685a53ce08b903a5a1889d9d6800673323"
+  },
+  {
+    "path": "public/assets/svg/chevron-down-svgrepo-com.svg",
+    "bytes": 240,
+    "sha256": "d385fad34ab2c443423b008a4a81b518d69003ec8af6ce4d96fb5b6e63129c18"
+  },
+  {
+    "path": "public/assets/svg/simplismart_logo.svg",
+    "bytes": 10074,
+    "sha256": "0d74fc2edc8fcec19d0c4a89be3d9a46983329b0a6c0567279d10f266a9978ed"
+  },
+  {
+    "path": "public/assets/svg/aftershoot_logo.svg",
+    "bytes": 58562,
+    "sha256": "4cf15bbe08ad102478e22f3bcd6ed588710744cce8224ac921219fe31e08ae2f"
+  },
+  {
+    "path": "public/assets/svg/wizcommerce.svg",
+    "bytes": 180476,
+    "sha256": "1e32bbf5eca0e72a3b4ad97841e487b85cde70c45fe46d61ed524a16d2a86843"
+  },
+  {
+    "path": "public/assets/svg/onboarding_hero.svg",
+    "bytes": 497611,
+    "sha256": "366c32230a8bd1d3260cc519a56df7bf8a6df21ed9a52279cc5e78cc158ea67e"
+  },
+  {
+    "path": "public/assets/png/aftershoot.png",
+    "bytes": 8607,
+    "sha256": "8d013a4d587f34a51e266376aa2a03dd7ae106ca878b476535dad1654630aaff"
+  },
+  {
+    "path": "public/assets/png/ic_login_bg.png",
+    "bytes": 151430,
+    "sha256": "ec8251569313b47e5e52cabeb79b17bcd6347240c09d110ca3937966cab146b1"
+  },
+  {
+    "path": "public/assets/company-founders/truffleai.png",
+    "bytes": 3620,
+    "sha256": "6d2091b2853f3ee22605aaae103647c26314efc5593ee18c4d32b9dc1393d0ac"
+  },
+  {
+    "path": "public/assets/company-founders/calioptimality.jpeg",
+    "bytes": 31372,
+    "sha256": "aad62dfec6534e6599c48c5fef6c7bf786efaa21619aa66c6240ca4f8767b3c9"
+  },
+  {
+    "path": "public/assets/company-founders/wizcommerce.png",
+    "bytes": 3277,
+    "sha256": "c562e80d831051c5197cabe93b926a02221e40c7d7a85b5d726d3c3326dbffe8"
+  },
+  {
+    "path": "public/assets/company-founders/wizcommerce.webp",
+    "bytes": 32172,
+    "sha256": "742d7c536b1c8002f57dd00c83ffc90e6748b21f276f7298382120a593438d41"
+  },
+  {
+    "path": "public/assets/company-founders/publive.webp",
+    "bytes": 54848,
+    "sha256": "cc9e99e67f7ca60120224ec16965d47a14d96bf94cdcf87feb69de0c623caced"
+  },
+  {
+    "path": "public/assets/company-founders/clueso.png",
+    "bytes": 3401,
+    "sha256": "25269866cdd3953e3ac41e7ec8fe8854b3eed924d388ac10623945a5d176259c"
+  },
+  {
+    "path": "public/assets/company-founders/1747891553125.jpeg",
+    "bytes": 28364,
+    "sha256": "81727bad26d06e2122b938c3b66b7a3da80babd648657c4f70db575d5da38441"
+  },
+  {
+    "path": "public/assets/company-founders/ramavapi.png",
+    "bytes": 33253,
+    "sha256": "62b5aa64361a38e188c5a3181cc2cc768c677e4a2730d822a0768a8a71983f10"
+  },
+  {
+    "path": "public/assets/company-founders/1732115195410.jpeg",
+    "bytes": 14624,
+    "sha256": "2cd735633e4b96f2358a827ca6373624a3a3849179f86feb045ec05797ecde6f"
+  },
+  {
+    "path": "public/assets/company-founders/chaabi.webp",
+    "bytes": 95590,
+    "sha256": "61410ab8bea70a65509dd8619d0a4df09735c49a0fa53795fdcd61689b34a47a"
+  },
+  {
+    "path": "public/assets/company-founders/verniq.webp",
+    "bytes": 73392,
+    "sha256": "99bb6561750393509effd838e6a35814f495f18eca80175b160c10b3b9edd021"
+  },
+  {
+    "path": "public/assets/company-founders/martincb.jpeg",
+    "bytes": 32364,
+    "sha256": "4b4fff812d589537749ccb2922dc2aaea5f5df8ab3a12e59cc0d5573edcaffa4"
+  },
+  {
+    "path": "public/assets/company-founders/aftershoot.png",
+    "bytes": 2652,
+    "sha256": "4ba111863b9511fc640bd6bacfaed78fc4254c8cec2a33d3f871c0ffb3d7df3f"
+  },
+  {
+    "path": "public/assets/company-founders/simplismart.png",
+    "bytes": 3753,
+    "sha256": "3bda9c457e1de2cae326a2e06d9ce43341e4b8b07f26ba441971cb0db3210133"
+  },
+  {
+    "path": "public/assets/company-founders/simplismart.webp",
+    "bytes": 280398,
+    "sha256": "a7bd8cd7822b744f8a1525266a7d5b06f26a9dc84828183bb43a242e54431f0e"
+  },
+  {
+    "path": "public/assets/company-founders/krutrim.png",
+    "bytes": 3173,
+    "sha256": "9c189d7518d8d408fdbbab4d8673468a8f5d3fa4f925a868e9c9f9070faf3ed5"
+  }
+]
