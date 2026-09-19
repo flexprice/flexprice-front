@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { History } from 'lucide-react';
 import { Chip, Dialog, Progress } from '@/components/atoms';
 import { GrantState, ENTITLEMENT_GRANT_STATUS } from '@/models/Entitlement';
-import { cn } from '@/lib/utils';
 
 interface Props {
 	state?: GrantState;
@@ -55,23 +54,19 @@ const GrantWindowLedger: FC<Props> = ({ state, unitLabel, featureName }) => {
 
 					<div className='divide-y divide-line'>
 						{windows.map((w) => {
-							// A replaced window was re-issued after an edit and never reaches an
-							// invoice, so showing it as overage would misread as money owed.
-							const replaced = w.status === ENTITLEMENT_GRANT_STATUS.SUPERSEDED;
 							const usage = Number(w.usage ?? 0);
 							const quota = Number(w.quota ?? 0);
-							const overage = replaced || w.unlimited ? 0 : Math.max(0, usage - quota);
+							const overage = w.unlimited ? 0 : Math.max(0, usage - quota);
 							const pct = w.unlimited || !quota ? 0 : Math.min(100, (usage / quota) * 100);
 
 							return (
-								<div key={w.grant_id} className={cn('px-4 py-3', replaced && 'bg-surface-subtle/50')}>
+								<div key={w.grant_id} className='px-4 py-3'>
 									<div className='flex items-baseline justify-between gap-4'>
 										<div className='flex items-center gap-2'>
-											<span className={cn('text-sm', replaced ? 'text-content-muted' : 'text-content')}>{stamp(w.valid_from)}</span>
+											<span className='text-sm text-content'>{stamp(w.valid_from)}</span>
 											{w.is_active && <Chip variant='success' label={t('usageTable.windowOpen')} className='px-1.5 py-0 text-[10px]' />}
-											{replaced && <Chip variant='default' label={t('usageTable.windowReplaced')} className='px-1.5 py-0 text-[10px]' />}
 										</div>
-										<span className={cn('text-sm tabular-nums', replaced ? 'text-content-muted' : 'text-content')}>
+										<span className='text-sm tabular-nums text-content'>
 											{fmt(usage)} <span className='text-content-muted'>/ {w.unlimited ? '∞' : fmt(quota)}</span>
 										</span>
 									</div>
@@ -80,7 +75,7 @@ const GrantWindowLedger: FC<Props> = ({ state, unitLabel, featureName }) => {
 										<Progress
 											value={pct}
 											className='mt-2 h-1'
-											indicatorColor={overage > 0 ? 'bg-danger' : replaced ? 'bg-line-strong' : 'bg-info'}
+											indicatorColor={overage > 0 || w.status === ENTITLEMENT_GRANT_STATUS.EXHAUSTED ? 'bg-danger' : 'bg-info'}
 											backgroundColor='bg-line'
 										/>
 									)}

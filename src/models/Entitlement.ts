@@ -47,8 +47,6 @@ export enum ENTITLEMENT_AGGREGATION_MODE {
 export enum ENTITLEMENT_GRANT_STATUS {
 	ACTIVE = 'active',
 	EXHAUSTED = 'exhausted',
-	/** Replaced by a later window after the entitlement was edited; never billed. */
-	SUPERSEDED = 'superseded',
 }
 
 export enum ENTITLEMENT_ENTITY_TYPE {
@@ -105,11 +103,12 @@ export interface GrantWindowState {
 	readonly grant_id: string;
 	readonly entitlement_id: string;
 	readonly measure: ENTITLEMENT_GRANT_MEASURE;
-	/** No ceiling: `quota` and `remaining` are meaningless, render "Unlimited". */
+	/** No ceiling: `quota` is meaningless and `remaining` is absent — render "Unlimited". */
 	readonly unlimited: boolean;
 	readonly quota: string;
 	readonly usage: string;
-	readonly remaining: string;
+	/** Absent on an unlimited window: there is no ceiling to measure against. */
+	readonly remaining?: string;
 	readonly valid_from: string;
 	readonly valid_to: string;
 	readonly status: ENTITLEMENT_GRANT_STATUS;
