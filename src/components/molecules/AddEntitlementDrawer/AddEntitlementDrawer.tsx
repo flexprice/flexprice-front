@@ -290,7 +290,6 @@ const AddEntitlementDrawer: FC<Props> = ({
 		const existing = (initialEntitlements ?? []).filter((ent) => !blocksAnotherEntitlement(ent)).map((ent) => ent.feature_id);
 		const drafted = entitlements.filter((ent) => !blocksAnotherEntitlement(ent)).map((ent) => ent.feature_id);
 		return new Set([...existing, ...drafted].filter(Boolean) as string[]);
-		 
 	}, [initialEntitlements, entitlements]);
 
 	// Reset all states when drawer closes
@@ -311,7 +310,6 @@ const AddEntitlementDrawer: FC<Props> = ({
 			.map((ent) => ent.feature_id)
 			.filter(Boolean) as string[];
 		return [...new Set([...drafted, ...existingFeatureIds])];
-		 
 	}, [entitlements, existingFeatureIds]);
 
 	const handleDrawerClose = (open: boolean) => {
