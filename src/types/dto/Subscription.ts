@@ -826,6 +826,8 @@ export interface EntitlementOverrideRequest {
 export interface SubscriptionEntitlementSource {
 	entity_type: string;
 	entity_id: string;
+	/** Plan or addon name; an override carries the name of the entitlement it replaced. */
+	entity_name?: string;
 	entitlement_id: string;
 	usage_limit?: number | null;
 	static_value?: string;

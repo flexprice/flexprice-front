@@ -1079,6 +1079,10 @@
 			"separateAllowances": "separate",
 			"backedByGrant": "grant",
 			"backedByLegacy": "legacy"
+		},
+		"subscriptionEdit": {
+			"editBlockedMultipleSources": "This allowance is made up of several entitlements ({{sources}}), so there is no single value to edit here. Change it on the plan or addon, or remove one of them from this subscription.",
+			"editBlockedSourcesFallback": "more than one source"
 		}
 	},
 	"premiumFeature": {

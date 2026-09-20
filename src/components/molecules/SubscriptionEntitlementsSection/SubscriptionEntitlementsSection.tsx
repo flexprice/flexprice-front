@@ -427,11 +427,21 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 				}
 
 				const canDelete = !!row.subscriptionEntitlementId;
-				const canEdit = true;
+				// One field per feature can only address one entitlement. With several
+				// contributing, the field would silently pick one of them: additive pools
+				// them into a single window, so the total stops matching what was typed,
+				// and parallel gives each its own window with nothing to say which is meant.
+				const contributors = row.sources?.length ?? 0;
+				const canEdit = contributors <= 1;
 
 				if (!canEdit && !canDelete) {
 					return null;
 				}
+
+				const contributorNames = (row.sources ?? [])
+					.map((source) => source.entity_name)
+					.filter(Boolean)
+					.join(', ');
 
 				return (
 					<div
@@ -447,17 +457,32 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 								</button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align='end'>
-								<DropdownMenuItem
-									disabled={!canWriteEntitlement}
-									onSelect={(e) => {
-										e.preventDefault();
-										if (!canWriteEntitlement) return;
-										handleEdit(row);
-									}}
-									className={`flex gap-2 items-center cursor-pointer ${!canWriteEntitlement ? 'opacity-50 cursor-not-allowed' : ''}`}>
-									<Pencil className='h-4 w-4' />
-									<span>{t('entitlements.overridesTable.edit')}</span>
-								</DropdownMenuItem>
+								<TooltipProvider delayDuration={0}>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<div>
+												<DropdownMenuItem
+													disabled={!canWriteEntitlement || !canEdit}
+													onSelect={(e) => {
+														e.preventDefault();
+														if (!canWriteEntitlement || !canEdit) return;
+														handleEdit(row);
+													}}
+													className={`flex gap-2 items-center cursor-pointer ${!canWriteEntitlement || !canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}>
+													<Pencil className='h-4 w-4' />
+													<span>{t('entitlements.overridesTable.edit')}</span>
+												</DropdownMenuItem>
+											</div>
+										</TooltipTrigger>
+										{!canEdit && (
+											<TooltipContent side='left' className='max-w-[280px]'>
+												{t('entitlements.subscriptionEdit.editBlockedMultipleSources', {
+													sources: contributorNames || t('entitlements.subscriptionEdit.editBlockedSourcesFallback'),
+												})}
+											</TooltipContent>
+										)}
+									</Tooltip>
+								</TooltipProvider>
 								{canDelete && (
 									<DropdownMenuItem
 										disabled={!canWriteEntitlement}
