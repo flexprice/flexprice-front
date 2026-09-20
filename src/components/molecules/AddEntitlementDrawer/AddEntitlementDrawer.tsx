@@ -513,14 +513,14 @@ const AddEntitlementDrawer: FC<Props> = ({
 									// Seed the grant defaults the form already displays. Without this the
 									// state holds only what the user touched, so typing a quota produces a
 									// partial config (no measure) that the API rejects.
+									// Match the siblings, or the API rejects a mixed feature. This is not
+									// metered-only: a static or config feature can have parallel siblings too,
+									// and leaving it on the server's additive default mixes modes on one feature.
+									const parallelPatch = parallelFeatureIds.has(feature.id)
+										? { aggregation_mode: ENTITLEMENT_AGGREGATION_MODE.PARALLEL }
+										: {};
 									setTempEntitlement(
-										feature.type === FEATURE_TYPE.METERED
-											? {
-													...patchForMode('recurring', {}),
-													// Match the siblings, or the API rejects a mixed feature.
-													...(parallelFeatureIds.has(feature.id) ? { aggregation_mode: ENTITLEMENT_AGGREGATION_MODE.PARALLEL } : {}),
-												}
-											: {},
+										feature.type === FEATURE_TYPE.METERED ? { ...patchForMode('recurring', {}), ...parallelPatch } : parallelPatch,
 									);
 									setSelectedFeatures((prev) => [...prev, feature]);
 									setShowSelect(false);

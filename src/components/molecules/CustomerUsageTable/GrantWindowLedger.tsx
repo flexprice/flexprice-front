@@ -1,6 +1,5 @@
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { History } from 'lucide-react';
 import { Chip, Dialog, Progress } from '@/components/atoms';
 import { GrantState, ENTITLEMENT_GRANT_STATUS } from '@/models/Entitlement';
 
@@ -8,6 +7,8 @@ interface Props {
 	state?: GrantState;
 	unitLabel?: string;
 	featureName?: string;
+	/** The usage cell itself, which doubles as the trigger. */
+	children: ReactNode;
 }
 
 const fmt = (v: string | number) => Number(v ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -20,24 +21,25 @@ const stamp = (iso: string) =>
  * bills per window, so "2,000 used against 1,000" only makes sense once you can
  * see which windows went over and by how much.
  *
- * In a dialog rather than inline: a table row is a scannable summary, and an
- * expanded ledger pushed every other row off the screen.
+ * The usage cell is the trigger: a row that has windows behind it is the row you
+ * want to open, so a separate control next to it was one target too many.
+ * Rows with no windows render the cell untouched rather than as a dead button.
  */
-const GrantWindowLedger: FC<Props> = ({ state, unitLabel, featureName }) => {
+const GrantWindowLedger: FC<Props> = ({ state, unitLabel, featureName, children }) => {
 	const { t } = useTranslation('customers');
 	const [open, setOpen] = useState(false);
 
 	const windows = state?.windows ?? [];
-	if (!windows.length) return null;
+	if (!windows.length) return <>{children}</>;
 
 	return (
 		<>
 			<button
 				type='button'
 				onClick={() => setOpen(true)}
-				className='mt-1.5 flex items-center gap-1.5 text-xs text-content-muted transition-colors hover:text-content'>
-				<History className='size-3.5' />
-				{t('usageTable.windowsButton')}
+				aria-label={featureName ? t('usageTable.windowsAriaLabel', { feature: featureName }) : t('usageTable.windowsButton')}
+				className='-mx-2 -my-1 block w-full rounded-md px-2 py-1 text-left transition-colors hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-fill'>
+				{children}
 			</button>
 
 			<Dialog

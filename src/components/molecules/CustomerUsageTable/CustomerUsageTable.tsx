@@ -171,7 +171,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					// it was previously stranded after this early return.
 					if (row?.is_unlimited || !limit) {
 						return (
-							<>
+							<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} featureName={row.feature?.name}>
 								<Progress
 									label={t('usageTable.featureTypes.usageProgressUnlimited', {
 										usage: formatAmount(usage.toString()),
@@ -181,8 +181,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 									indicatorColor='bg-info'
 									backgroundColor='bg-info-line'
 								/>
-								<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} featureName={row.feature?.name} />
-							</>
+							</GrantWindowLedger>
 						);
 					}
 
@@ -193,7 +192,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					const backgroundColor = value >= 100 ? 'bg-danger-muted' : 'bg-info-line';
 
 					return (
-						<>
+						<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} featureName={row.feature?.name}>
 							<Progress
 								label={`${formatAmount(usage.toString())} / ${formatAmount(limit.toString())}`}
 								value={value}
@@ -201,8 +200,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 								indicatorColor={indicatorColor}
 								backgroundColor={backgroundColor}
 							/>
-							<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} featureName={row.feature?.name} />
-						</>
+						</GrantWindowLedger>
 					);
 				},
 			},
