@@ -1090,8 +1090,7 @@
 			"deleteSuccess": "Entitlement removed successfully",
 			"deleteFailed": "Failed to remove entitlement",
 			"createRequiresParent": "Cannot create override without a parent entitlement",
-			"editBlockedMultipleSources": "This allowance is made up of several entitlements ({{sources}}), so there is no single value to edit here. Change it on the plan or addon, or remove one of them from this subscription.",
-			"editBlockedSourcesFallback": "more than one source"
+			"editBlockedMultipleSources": "This allowance comes from more than one entitlement. Change it on the plan or addon instead."
 		},
 		"allowance": {
 			"unlimited": "Unlimited",

@@ -438,11 +438,6 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 					return null;
 				}
 
-				const contributorNames = (row.sources ?? [])
-					.map((source) => source.entity_name)
-					.filter(Boolean)
-					.join(', ');
-
 				return (
 					<div
 						data-interactive='true'
@@ -476,9 +471,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 										</TooltipTrigger>
 										{!canEdit && (
 											<TooltipContent side='left' className='max-w-[280px]'>
-												{t('entitlements.subscriptionEdit.editBlockedMultipleSources', {
-													sources: contributorNames || t('entitlements.subscriptionEdit.editBlockedSourcesFallback'),
-												})}
+												{t('entitlements.subscriptionEdit.editBlockedMultipleSources')}
 											</TooltipContent>
 										)}
 									</Tooltip>
