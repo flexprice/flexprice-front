@@ -35,6 +35,8 @@ export interface FlexpriceTableProps<T> {
 	columns: ColumnData<T>[];
 	data: T[];
 	onRowClick?: (row: T) => void;
+	/** Gates `onRowClick` per row, so rows with nothing to open don't get a pointer they can't use. */
+	isRowClickable?: (row: T) => boolean;
 	showEmptyRow?: boolean;
 	hideBottomBorder?: boolean;
 	variant?: 'default' | 'no-bordered';
@@ -169,6 +171,7 @@ const CellContent: FC<{
 // Main FlexpriceTable Component
 const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 	onRowClick,
+	isRowClickable,
 	columns,
 	data,
 	showEmptyRow,
@@ -182,6 +185,10 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 
 		// Don't trigger row click if the click was on or within an interactive element
 		if (isInteractiveElement(target)) {
+			return;
+		}
+
+		if (isRowClickable && !isRowClickable(row)) {
 			return;
 		}
 
@@ -246,7 +253,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 				className={cn(
 					'transition-colors hover:bg-muted/50',
 					variant === 'default' && !lastRow && 'border-b border-line-slate',
-					onRowClick && 'cursor-pointer hover:bg-muted/50',
+					onRowClick && (!isRowClickable || isRowClickable(row)) && 'cursor-pointer hover:bg-muted/50',
 					lastRow && hideBottomBorder && 'border-b-0',
 					'!py-1',
 				)}

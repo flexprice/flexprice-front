@@ -3,7 +3,7 @@ import { ColumnData, FlexpriceTable, RedirectCell } from '@/components/molecules
 import GrantWindowLedger from './GrantWindowLedger';
 import { RouteNames } from '@/core/routes/Routes';
 import { FEATURE_TYPE } from '@/models/Feature';
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import CustomerUsage, { EntitlementSource, ENTITLEMENT_SOURCE_ENTITY_TYPE } from '@/models/CustomerUsage';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { useTranslation } from 'react-i18next';
@@ -41,8 +41,12 @@ const getEntityName = (source: EntitlementSource | undefined): string => {
 	return source?.entity_name || source?.plan_name || i18n.t('usageTable.fallback', { ns: CUSTOMERS_NS });
 };
 
+/** A row is worth opening only when there are windows behind it. */
+const hasWindows = (row: CustomerUsage) => Boolean(row.grant_state?.windows?.length);
+
 const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 	const { t } = useTranslation('customers');
+	const [ledgerRow, setLedgerRow] = useState<CustomerUsage | null>(null);
 
 	const columnData: ColumnData<CustomerUsage>[] = useMemo(() => {
 		const getFeatureValue = (usageRow: CustomerUsage) => {
@@ -171,17 +175,15 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					// it was previously stranded after this early return.
 					if (row?.is_unlimited || !limit) {
 						return (
-							<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} featureName={row.feature?.name}>
-								<Progress
-									label={t('usageTable.featureTypes.usageProgressUnlimited', {
-										usage: formatAmount(usage.toString()),
-									})}
-									value={0}
-									className='h-[6px]'
-									indicatorColor='bg-info'
-									backgroundColor='bg-info-line'
-								/>
-							</GrantWindowLedger>
+							<Progress
+								label={t('usageTable.featureTypes.usageProgressUnlimited', {
+									usage: formatAmount(usage.toString()),
+								})}
+								value={0}
+								className='h-[6px]'
+								indicatorColor='bg-info'
+								backgroundColor='bg-info-line'
+							/>
 						);
 					}
 
@@ -192,15 +194,13 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					const backgroundColor = value >= 100 ? 'bg-danger-muted' : 'bg-info-line';
 
 					return (
-						<GrantWindowLedger state={row.grant_state} unitLabel={row.feature?.unit_plural} featureName={row.feature?.name}>
-							<Progress
-								label={`${formatAmount(usage.toString())} / ${formatAmount(limit.toString())}`}
-								value={value}
-								className='h-[6px]'
-								indicatorColor={indicatorColor}
-								backgroundColor={backgroundColor}
-							/>
-						</GrantWindowLedger>
+						<Progress
+							label={`${formatAmount(usage.toString())} / ${formatAmount(limit.toString())}`}
+							value={value}
+							className='h-[6px]'
+							indicatorColor={indicatorColor}
+							backgroundColor={backgroundColor}
+						/>
 					);
 				},
 			},
@@ -209,7 +209,21 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 
 	return (
 		<div>
-			<FlexpriceTable showEmptyRow data={data} columns={columnData} variant='no-bordered' />
+			<FlexpriceTable
+				showEmptyRow
+				data={data}
+				columns={columnData}
+				variant='no-bordered'
+				isRowClickable={hasWindows}
+				onRowClick={setLedgerRow}
+			/>
+			<GrantWindowLedger
+				state={ledgerRow?.grant_state}
+				unitLabel={ledgerRow?.feature?.unit_plural}
+				featureName={ledgerRow?.feature?.name}
+				isOpen={Boolean(ledgerRow)}
+				onOpenChange={(open) => !open && setLedgerRow(null)}
+			/>
 		</div>
 	);
 };

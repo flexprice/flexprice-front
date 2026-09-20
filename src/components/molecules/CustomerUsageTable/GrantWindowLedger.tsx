@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Chip, Dialog, Progress } from '@/components/atoms';
 import { GrantState, ENTITLEMENT_GRANT_STATUS } from '@/models/Entitlement';
@@ -7,8 +7,8 @@ interface Props {
 	state?: GrantState;
 	unitLabel?: string;
 	featureName?: string;
-	/** The usage cell itself, which doubles as the trigger. */
-	children: ReactNode;
+	isOpen: boolean;
+	onOpenChange: (open: boolean) => void;
 }
 
 const fmt = (v: string | number) => Number(v ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -21,30 +21,20 @@ const stamp = (iso: string) =>
  * bills per window, so "2,000 used against 1,000" only makes sense once you can
  * see which windows went over and by how much.
  *
- * The usage cell is the trigger: a row that has windows behind it is the row you
- * want to open, so a separate control next to it was one target too many.
- * Rows with no windows render the cell untouched rather than as a dead button.
+ * The whole row is the trigger, so this is a controlled dialog the table owns:
+ * one instance for the table rather than one per row.
  */
-const GrantWindowLedger: FC<Props> = ({ state, unitLabel, featureName, children }) => {
+const GrantWindowLedger: FC<Props> = ({ state, unitLabel, featureName, isOpen, onOpenChange }) => {
 	const { t } = useTranslation('customers');
-	const [open, setOpen] = useState(false);
 
 	const windows = state?.windows ?? [];
-	if (!windows.length) return <>{children}</>;
+	if (!windows.length) return null;
 
 	return (
 		<>
-			<button
-				type='button'
-				onClick={() => setOpen(true)}
-				aria-label={featureName ? t('usageTable.windowsAriaLabel', { feature: featureName }) : t('usageTable.windowsButton')}
-				className='-mx-2 -my-1 block w-full rounded-md px-2 py-1 text-left transition-colors hover:bg-surface-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-fill'>
-				{children}
-			</button>
-
 			<Dialog
-				isOpen={open}
-				onOpenChange={setOpen}
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
 				title={featureName ? `${t('usageTable.windowsTitle')} · ${featureName}` : t('usageTable.windowsTitle')}
 				description={t('usageTable.windowsDialogDescription')}
 				className='w-full max-w-xl'>
