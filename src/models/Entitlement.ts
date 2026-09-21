@@ -99,7 +99,7 @@ export const isUnlimitedGrant = (e?: Partial<Entitlement> | null): boolean => ha
  * `usage` is a snapshot refreshed by a background pass — render `last_computed_at`
  * rather than implying it is live.
  */
-export interface GrantWindowState {
+export interface GrantAllowanceState {
 	readonly grant_id: string;
 	readonly entitlement_id: string;
 	readonly measure: ENTITLEMENT_GRANT_MEASURE;
@@ -125,5 +125,5 @@ export interface GrantState {
 	 * makes a period total explicable. The live balance is the entry (or entries, for
 	 * parallel features) with `is_active`.
 	 */
-	readonly windows: GrantWindowState[];
+	readonly allowances: GrantAllowanceState[];
 }

@@ -58,7 +58,7 @@ const EditSubscriptionEntitlementDrawer: FC<EditSubscriptionEntitlementDrawerPro
 		[entitlement],
 	);
 	const liveWindow = useMemo(() => {
-		const open = (entitlement?.grant_state?.windows ?? []).find((w) => w.is_active);
+		const open = (entitlement?.grant_state?.allowances ?? []).find((w) => w.is_active);
 		return open ? { valid_to: open.valid_to, usage: open.usage } : undefined;
 	}, [entitlement]);
 

@@ -42,7 +42,7 @@ const getEntityName = (source: EntitlementSource | undefined): string => {
 };
 
 /** A row is worth opening only when there are windows behind it. */
-const hasWindows = (row: CustomerUsage) => Boolean(row.grant_state?.windows?.length);
+const hasAllowances = (row: CustomerUsage) => Boolean(row.grant_state?.allowances?.length);
 
 const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 	const { t } = useTranslation('customers');
@@ -214,7 +214,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 				data={data}
 				columns={columnData}
 				variant='no-bordered'
-				isRowClickable={hasWindows}
+				isRowClickable={hasAllowances}
 				onRowClick={setLedgerRow}
 			/>
 			<GrantWindowLedger
