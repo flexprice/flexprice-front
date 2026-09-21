@@ -41,14 +41,13 @@ const useOnboardingTenant = () => {
 			});
 
 			// Telemetry must not block dashboard navigation after a successful tenant update.
+			// Only the fields this form actually collects. `website` / `role` / `teamSize` /
+			// `pricingType` used to be sent as empty strings after the redesign dropped those
+			// steps, which kept writing permanently blank columns to the sheet.
 			void OnboardingApi.recordOnboardingData({
 				orgName: orgName.trim(),
 				orgUrl: orgUrl.trim(),
-				website: '',
-				role: '',
-				teamSize: '',
 				referralSource,
-				pricingType: '',
 				userEmail: user?.email || '',
 				tenantId: user?.tenant?.id || '',
 				timestamp: new Date().toISOString(),
