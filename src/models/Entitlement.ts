@@ -117,20 +117,13 @@ export interface GrantWindowState {
 	readonly last_computed_at?: string;
 }
 
-export interface GrantCycleTotals {
-	readonly windows: number;
-	readonly total_quota: string;
-	readonly total_usage: string;
-	readonly total_overage: string;
-}
-
 export interface GrantState {
 	/**
-	 * Every window overlapping the current billing period, closed ones included,
-	 * oldest first — the ledger behind `cycle_totals`. A grant-backed feature
-	 * bills per window, so this is what makes a cycle total explicable. The live
-	 * balance is the entry (or entries, for parallel features) with `active`.
+	 * The current billing period's ledger, closed windows included and oldest first,
+	 * capped at the most recent few per entitlement — an hourly allowance on a monthly
+	 * cycle has hundreds. A grant-backed feature bills per window, so this is what
+	 * makes a period total explicable. The live balance is the entry (or entries, for
+	 * parallel features) with `is_active`.
 	 */
 	readonly windows: GrantWindowState[];
-	readonly cycle_totals?: GrantCycleTotals;
 }

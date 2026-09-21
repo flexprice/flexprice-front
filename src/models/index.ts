@@ -53,7 +53,7 @@ export type { default as CustomerUsage, EntitlementSource } from './CustomerUsag
 export { ENTITLEMENT_SOURCE_ENTITY_TYPE } from './CustomerUsage';
 
 // Entitlement
-export type { Entitlement, GrantState, GrantWindowState, GrantCycleTotals } from './Entitlement';
+export type { Entitlement, GrantState, GrantWindowState } from './Entitlement';
 export {
 	ENTITLEMENT_GRANT_MEASURE,
 	ENTITLEMENT_GRANT_DURATION_UNIT,
