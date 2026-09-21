@@ -5,6 +5,7 @@ import { WALLET_TRANSACTION_REASON } from '@/models/Wallet';
 import { WalletTransaction } from '@/models/WalletTransaction';
 import { User } from '@/models/User';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
+import { getWalletTransactionAmountColorClass } from '@/utils/common/walletTransactionColor';
 import { RouteNames } from '@/core/routes/Routes';
 import { FC, useMemo } from 'react';
 import useAllUsers from '@/hooks/useAllUsers';
@@ -43,8 +44,7 @@ const AllWalletTransactionsTable: FC<Props> = ({ data }) => {
 			className?: string;
 			status?: string;
 		}) => {
-			const isPending = status?.toLowerCase() === 'pending';
-			const colorClass = isPending ? 'text-accent-yellow-brand' : type === 'credit' ? 'text-accent-teal-brand' : 'text-content-zinc-bold';
+			const colorClass = getWalletTransactionAmountColorClass(type, status);
 
 			return (
 				<span className={cn(colorClass, className)}>

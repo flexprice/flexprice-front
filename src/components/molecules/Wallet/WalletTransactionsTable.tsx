@@ -4,6 +4,7 @@ import { WALLET_TRANSACTION_REASON } from '@/models/Wallet';
 import { WalletTransaction } from '@/models/WalletTransaction';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { formatCredits, formatMoney } from '@/utils/common/formatBalance';
+import { getWalletTransactionAmountColorClass } from '@/utils/common/walletTransactionColor';
 import { FC, useMemo } from 'react';
 import { useWalletTransactionsTableT } from './WalletTransactionsTable.i18n';
 import { PortalDataTable } from '@/components/atoms/PortalTable/PortalTable';
@@ -34,8 +35,7 @@ const WalletTransactionsTable: FC<Props> = ({ data, chrome = 'dashboard' }) => {
 			className?: string;
 			status?: string;
 		}) => {
-			const isPending = status?.toLowerCase() === 'pending';
-			const colorClass = isPending ? 'text-accent-yellow-brand' : type === 'credit' ? 'text-accent-teal-brand' : 'text-content-zinc-bold';
+			const colorClass = getWalletTransactionAmountColorClass(type, status);
 			const sign = type === 'credit' ? '+' : '-';
 
 			// Raw amounts carry full float precision and must be rounded before display.

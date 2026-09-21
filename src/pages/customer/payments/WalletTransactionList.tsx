@@ -19,6 +19,7 @@ import { WalletTransaction } from '@/models/WalletTransaction';
 import { WALLET_TRANSACTION_REASON, WALLET_TRANSACTION_TYPE } from '@/models/Wallet';
 import { User } from '@/models/User';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
+import { getWalletTransactionAmountColorClass } from '@/utils/common/walletTransactionColor';
 import { RouteNames } from '@/core/routes/Routes';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { useCallback, useMemo } from 'react';
@@ -29,7 +30,7 @@ import { useTranslation } from 'react-i18next';
 const WALLET_AMOUNT_PRIMARY_ROW_CLASS = 'text-base font-medium';
 const WALLET_AMOUNT_SECONDARY_ROW_CLASS = 'text-sm';
 
-const formatAmount = ({
+export const formatAmount = ({
 	type,
 	amount,
 	currency,
@@ -44,8 +45,7 @@ const formatAmount = ({
 	status?: string;
 	creditsSuffix: string;
 }) => {
-	const isPending = status?.toLowerCase() === 'pending';
-	const colorClass = isPending ? 'text-accent-yellow-brand' : type === 'credit' ? 'text-accent-teal-brand' : 'text-content-zinc-bold';
+	const colorClass = getWalletTransactionAmountColorClass(type, status);
 
 	return (
 		<span className={cn(colorClass, className)}>

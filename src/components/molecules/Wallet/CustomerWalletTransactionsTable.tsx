@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { WALLET_TRANSACTION_REASON } from '@/models/Wallet';
 import { WalletTransaction } from '@/models/WalletTransaction';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
+import { getWalletTransactionAmountColorClass } from '@/utils/common/walletTransactionColor';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -30,8 +31,7 @@ const CustomerWalletTransactionsTable: FC<Props> = ({ data }) => {
 			className?: string;
 			status?: string;
 		}) => {
-			const isPending = status?.toLowerCase() === 'pending';
-			const colorClass = isPending ? 'text-accent-yellow-brand' : type === 'credit' ? 'text-accent-teal-brand' : 'text-content-zinc-bold';
+			const colorClass = getWalletTransactionAmountColorClass(type, status);
 
 			return (
 				<span className={cn(colorClass, className)}>
