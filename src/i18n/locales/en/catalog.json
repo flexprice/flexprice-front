@@ -975,7 +975,6 @@
 			"calculatorAriaLabel": "Display value calculator",
 			"unitsFallback": "units",
 			"configValueRequired": "A valid JSON object is required for config features",
-			"measureAmount": "currency",
 			"durationHour": "hour",
 			"durationDay": "day",
 			"durationWeek": "week",
@@ -1073,7 +1072,10 @@
 			"enabled": "Enabled",
 			"disabled": "Disabled",
 			"unknownFeature": "Unknown Feature",
-			"tooltipAllowance": "Value: {{from}} → {{to}}"
+			"tooltipAllowance": "Value: {{from}} → {{to}}",
+			"columnMeasure": "Measure",
+			"measureAmountLabel": "Amount",
+			"measureQuantityLabel": "Quantity"
 		},
 		"subscriptionEdit": {
 			"columnSource": "Source",

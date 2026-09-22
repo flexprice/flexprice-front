@@ -6,6 +6,7 @@ import { Plus } from 'lucide-react';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 import JsonCodeBlock from '@/components/molecules/Events/JsonCodeBlock';
 import { EntitlementApi } from '@/api';
+import { ENTITLEMENT_GRANT_MEASURE } from '@/models/Entitlement';
 import { FlexpriceTable, ColumnData, RedirectCell, AddEntitlementDrawer } from '@/components/molecules';
 import { formatAllowanceValue, formatAllowanceReset, isParallelAllowance } from '@/utils/entitlement/allowanceLabel';
 import { getFeatureTypeChips } from '@/components/molecules/CustomerUsageTable/CustomerUsageTable';
@@ -93,6 +94,17 @@ const PlanEntitlementsTab = () => {
 						{isParallelAllowance(row) && <Chip variant='default' label={t('entitlements.allowance.separateAllowances')} />}
 					</span>
 				);
+			},
+		},
+		{
+			// The value column carries no unit word, so this says what it counts.
+			title: t('entitlements.overridesTable.columnMeasure'),
+			render(row) {
+				if ((row.feature_type as FEATURE_TYPE) !== FEATURE_TYPE.METERED) return '--';
+				if (!row.grant_measure) return '--';
+				return row.grant_measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT
+					? t('entitlements.overridesTable.measureAmountLabel')
+					: t('entitlements.overridesTable.measureQuantityLabel');
 			},
 		},
 		{

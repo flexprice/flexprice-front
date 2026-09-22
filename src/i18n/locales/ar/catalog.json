@@ -973,7 +973,6 @@
 			"calculatorAriaLabel": "آلة حاسبة للقيمة المعروضة",
 			"unitsFallback": "وحدات",
 			"configValueRequired": "كائن JSON صالح مطلوب لميزات الإعداد",
-			"measureAmount": "currency",
 			"durationHour": "ساعة",
 			"durationDay": "يوم",
 			"durationWeek": "أسبوع",
@@ -1071,7 +1070,10 @@
 			"enabled": "مفعّل",
 			"disabled": "معطّل",
 			"unknownFeature": "ميزة غير معروفة",
-			"tooltipAllowance": "Value: {{from}} → {{to}}"
+			"tooltipAllowance": "Value: {{from}} → {{to}}",
+			"columnMeasure": "Measure",
+			"measureAmountLabel": "Amount",
+			"measureQuantityLabel": "Quantity"
 		},
 		"allowance": {
 			"unlimited": "Unlimited",

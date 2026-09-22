@@ -189,7 +189,8 @@
 			"feature": "Feature",
 			"plan": "Plan",
 			"value": "Value",
-			"usage": "Usage"
+			"usage": "Usage",
+			"measure": "Measure"
 		},
 		"units": "units",
 		"unlimitedLabel": "Unlimited",
@@ -213,7 +214,9 @@
 		"windowsAriaLabel": "Usage history for {{feature}}",
 		"windowsDialogDescription": "Each window is measured and billed on its own.",
 		"windowsColumnPeriod": "Window",
-		"windowsColumnUsage": "Used"
+		"windowsColumnUsage": "Used",
+		"measureAmount": "Amount",
+		"measureQuantity": "Quantity"
 	},
 	"subscriptionCreate": {
 		"selectCustomerLabel": "Customer",

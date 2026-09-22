@@ -51,13 +51,8 @@ export const formatAllowanceValue = (entitlement: Partial<Entitlement>, t: TFunc
 		return t('entitlements.allowance.unlimited');
 	}
 
-	const unit =
-		entitlement.grant_measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT
-			? t('entitlements.addDrawer.measureAmount')
-			: (entitlement.feature?.unit_plural?.trim() ?? '');
-
 	const amount = hasGrantConfig(entitlement) ? Number(entitlement.grant_quota ?? 0) : Number(entitlement.usage_limit ?? 0);
-	return `${amount.toLocaleString()}${unit ? ` ${unit}` : ''}`;
+	return amount.toLocaleString();
 };
 
 /**
@@ -92,18 +87,13 @@ export const formatAllowance = (entitlement: Partial<Entitlement>, t: TFunction<
 		return t('entitlements.allowance.unlimited');
 	}
 
-	const unit =
-		entitlement.grant_measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT
-			? t('entitlements.addDrawer.measureAmount')
-			: (entitlement.feature?.unit_plural?.trim() ?? '');
-
 	if (hasGrantConfig(entitlement)) {
-		const amount = `${Number(entitlement.grant_quota ?? 0).toLocaleString()}${unit ? ` ${unit}` : ''}`;
+		const amount = Number(entitlement.grant_quota ?? 0).toLocaleString();
 		return t('entitlements.allowance.perPeriod', { amount, period: formatGrantPeriod(entitlement, t) });
 	}
 
 	// Legacy row: usage_limit with a cycle reset period.
-	const amount = `${Number(entitlement.usage_limit ?? 0).toLocaleString()}${unit ? ` ${unit}` : ''}`;
+	const amount = Number(entitlement.usage_limit ?? 0).toLocaleString();
 	const period = entitlement.usage_reset_period
 		? String(entitlement.usage_reset_period).toLowerCase()
 		: t('entitlements.addDrawer.durationBillingPeriod');
@@ -128,15 +118,12 @@ export const formatAggregatedAllowance = (
 				grant_unlimited?: boolean;
 		  }
 		| undefined,
-	unitPlural: string | undefined,
 	t: TFunction<'catalog'>,
 ): { value: string; reset: string } => {
 	if (!agg) return { value: '--', reset: '--' };
 
 	const isGrant = Boolean(agg.grant_duration_unit || agg.grant_quota != null || agg.grant_unlimited);
-	const unit =
-		agg.grant_measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT ? t('entitlements.addDrawer.measureAmount') : (unitPlural?.trim() ?? '');
-	const withUnit = (n: number) => `${n.toLocaleString()}${unit ? ` ${unit}` : ''}`;
+	const withUnit = (n: number) => n.toLocaleString();
 
 	if (isGrant) {
 		if (agg.grant_unlimited) return { value: t('entitlements.allowance.unlimited'), reset: '--' };

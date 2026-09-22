@@ -104,7 +104,7 @@ const MeteredAllowanceFields: FC<Props> = ({ value, onChange, errors, unitLabel,
 	const windowStart = value.grant_allocation_behavior ?? ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR.FIRST_USAGE;
 	const stacking = value.aggregation_mode ?? ENTITLEMENT_AGGREGATION_MODE.ADDITIVE;
 
-	const valueUnit = measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT ? t('entitlements.addDrawer.measureAmount') : unitLabel;
+	const valueUnit = measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT ? '' : unitLabel;
 
 	// Only the amount can re-cut a running window. A cadence, measure or stacking
 	// change reshapes it, and a value below what is already consumed leaves nothing
@@ -122,7 +122,7 @@ const MeteredAllowanceFields: FC<Props> = ({ value, onChange, errors, unitLabel,
 		const used = Number(liveWindow.usage ?? 0);
 		const quota = Number(value.grant_quota ?? 0);
 		if (!unlimited && value.grant_quota != null && value.grant_quota !== '' && quota < used) {
-			return t('entitlements.addDrawer.deferredCut', { used: `${used.toLocaleString()} ${valueUnit}`, when });
+			return t('entitlements.addDrawer.deferredCut', { used: [used.toLocaleString(), valueUnit].filter(Boolean).join(' '), when });
 		}
 
 		const reshaped =
@@ -140,12 +140,13 @@ const MeteredAllowanceFields: FC<Props> = ({ value, onChange, errors, unitLabel,
 		if (unlimited) return t('entitlements.addDrawer.previewUnlimitedFoot');
 		const quota = Number(value.grant_quota ?? 0);
 		if (!quota) return null;
-		if (isCycleWindow) return t('entitlements.addDrawer.previewPeriodFoot', { quota: `${quota.toLocaleString()} ${valueUnit}` });
+		if (isCycleWindow)
+			return t('entitlements.addDrawer.previewPeriodFoot', { quota: [quota.toLocaleString(), valueUnit].filter(Boolean).join(' ') });
 		if (!preview) return null;
 		return t('entitlements.addDrawer.previewRecurringFoot', {
 			windows: preview.windows,
-			total: `${preview.total.toLocaleString()} ${valueUnit}`,
-			quota: `${quota.toLocaleString()} ${valueUnit}`,
+			total: [preview.total.toLocaleString(), valueUnit].filter(Boolean).join(' '),
+			quota: [quota.toLocaleString(), valueUnit].filter(Boolean).join(' '),
 		});
 	})();
 

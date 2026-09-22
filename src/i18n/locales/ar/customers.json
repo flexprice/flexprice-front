@@ -189,7 +189,8 @@
 			"feature": "الميزة",
 			"plan": "الخطة",
 			"value": "القيمة",
-			"usage": "الاستخدام"
+			"usage": "الاستخدام",
+			"measure": "Measure"
 		},
 		"units": "وحدات",
 		"unlimitedLabel": "غير محدود",
@@ -213,7 +214,9 @@
 		"windowsAriaLabel": "سجل الاستخدام لـ {{feature}}",
 		"windowsDialogDescription": "تُقاس كل نافذة وتُفوتر على حدة.",
 		"windowsColumnPeriod": "النافذة",
-		"windowsColumnUsage": "المستخدم"
+		"windowsColumnUsage": "المستخدم",
+		"measureAmount": "Amount",
+		"measureQuantity": "Quantity"
 	},
 	"subscriptionCreate": {
 		"selectCustomerLabel": "العميل",

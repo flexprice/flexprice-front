@@ -7,7 +7,7 @@ const t = ((key: string) => key) as never;
 const feature = { unit_plural: 'calls' };
 
 describe('formatAllowanceValue', () => {
-	it('shows a grant quota with the feature unit', () => {
+	it('shows a grant quota as a bare number — the Measure column names what it counts', () => {
 		expect(
 			formatAllowanceValue(
 				{
@@ -19,7 +19,7 @@ describe('formatAllowanceValue', () => {
 				} as never,
 				t,
 			),
-		).toBe('1,000 calls');
+		).toBe('1,000');
 	});
 
 	it('shows unlimited for a grant with no ceiling and for a legacy null limit', () => {

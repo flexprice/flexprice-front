@@ -91,13 +91,12 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 					return usageRow.sources?.[0]?.static_value ?? t('usageTable.fallback');
 				case FEATURE_TYPE.METERED:
 					return (
-						<span className='flex items-end gap-1'>
+						<span>
 							{usageRow.is_unlimited
 								? t('usageTable.unlimitedLabel')
 								: usageRow.total_limit
 									? formatAmount(usageRow.total_limit?.toString())
 									: t('usageTable.unlimitedLabel')}
-							<span className='text-content-slate-muted text-sm font-normal font-sans'>{t('usageTable.units')}</span>
 						</span>
 					);
 				case FEATURE_TYPE.BOOLEAN:
@@ -216,15 +215,25 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 				render(row) {
 					if (row.budget) {
 						return (
-							<span className='flex items-end gap-1'>
+							<span>
 								{row.budget.grant_unlimited || !row.budget.grant_quota
 									? t('usageTable.unlimitedLabel')
 									: formatAmount(row.budget.grant_quota)}
-								<span className='text-content-slate-muted text-sm font-normal font-sans'>{t('usageTable.units')}</span>
 							</span>
 						);
 					}
 					return getFeatureValue(row.usage);
+				},
+			},
+			{
+				title: t('usageTable.columns.measure'),
+				render(row) {
+					// What the number counts: the feature's own units, or money. The value
+					// column carries no unit word, so this is what tells them apart.
+					if (row.usage.feature?.type !== FEATURE_TYPE.METERED) return t('usageTable.fallback');
+					const measure = row.budget?.grant_measure ?? row.usage.grant_state?.allowances?.[0]?.measure;
+					if (!measure) return t('usageTable.fallback');
+					return measure === 'amount' ? t('usageTable.measureAmount') : t('usageTable.measureQuantity');
 				},
 			},
 			{

@@ -10,7 +10,7 @@ import type { SubscriptionEntitlementEffective } from '@/types/dto/Subscription'
 import SubscriptionApi from '@/api/SubscriptionApi';
 import EntitlementApi from '@/api/EntitlementApi';
 import { FEATURE_TYPE } from '@/models/Feature';
-import { ENTITLEMENT_ENTITY_TYPE, type Entitlement } from '@/models/Entitlement';
+import { ENTITLEMENT_ENTITY_TYPE, ENTITLEMENT_GRANT_MEASURE, type Entitlement } from '@/models/Entitlement';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { BsThreeDots } from 'react-icons/bs';
@@ -224,7 +224,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			const originalLimit = row.originalUsageLimit;
 			// Grant-backed features carry no usage_limit, so reading it alone printed
 			// "unlimited" for every allowance.
-			const { value, reset } = formatAggregatedAllowance(entitlementData, row.feature?.unit_plural as string | undefined, t);
+			const { value, reset } = formatAggregatedAllowance(entitlementData, t);
 			const valueText = reset && reset !== '--' ? `${value} / ${reset}` : value;
 
 			// Grant-backed rows carry no usage_limit on either side, so the legacy
@@ -411,6 +411,18 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		{
 			title: t('entitlements.overridesTable.columnFeatureType'),
 			render: (row) => getFeatureTypeChip(row.feature_type),
+		},
+		{
+			title: t('entitlements.overridesTable.columnMeasure'),
+			render: (row) => {
+				// The value column carries no unit word, so this says what it counts.
+				if ((row.feature_type as FEATURE_TYPE) !== FEATURE_TYPE.METERED) return '--';
+				const measure = row.entitlement?.grant_measure;
+				if (!measure) return '--';
+				return measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT
+					? t('entitlements.overridesTable.measureAmountLabel')
+					: t('entitlements.overridesTable.measureQuantityLabel');
+			},
 		},
 		{
 			title: t('entitlements.overridesTable.columnValue'),
