@@ -22,6 +22,24 @@ interface CustomerUsage extends BaseModel {
 	readonly sources: EntitlementSource[];
 	/** Per-window ledger for grant-backed features; absent for legacy entitlements. */
 	readonly grant_state?: GrantState;
+	/**
+	 * One entry per independent budget on a parallel feature. The scalars above cannot
+	 * describe several at once — a sum is not spendable from any one of them — so a
+	 * parallel feature is rendered from these. Absent for additive features.
+	 */
+	readonly buckets?: EntitlementBudget[];
+}
+
+/** One independent budget within a parallel feature. */
+export interface EntitlementBudget {
+	readonly entitlement_id: string;
+	readonly source_entity_id: string;
+	readonly usage_limit?: number | null;
+	readonly grant_measure?: string;
+	readonly grant_quota?: string;
+	readonly grant_duration_value?: number;
+	readonly grant_duration_unit?: string;
+	readonly grant_unlimited?: boolean;
 }
 
 export interface EntitlementSource {

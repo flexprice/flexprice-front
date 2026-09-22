@@ -1,12 +1,15 @@
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Chip, Dialog, Progress } from '@/components/atoms';
-import { GrantState, ENTITLEMENT_GRANT_STATUS } from '@/models/Entitlement';
+import { GrantAllowanceState, ENTITLEMENT_GRANT_STATUS } from '@/models/Entitlement';
 
 interface Props {
-	state?: GrantState;
+	/** The windows to show: one budget's on a parallel feature, the feature's otherwise. */
+	allowances: GrantAllowanceState[];
 	unitLabel?: string;
 	featureName?: string;
+	/** Names the budget when a parallel feature has more than one. */
+	budgetName?: string;
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 }
@@ -24,18 +27,19 @@ const stamp = (iso: string) =>
  * The whole row is the trigger, so this is a controlled dialog the table owns:
  * one instance for the table rather than one per row.
  */
-const GrantWindowLedger: FC<Props> = ({ state, unitLabel, featureName, isOpen, onOpenChange }) => {
+const GrantWindowLedger: FC<Props> = ({ allowances, unitLabel, featureName, budgetName, isOpen, onOpenChange }) => {
 	const { t } = useTranslation('customers');
 
-	const allowances = state?.allowances ?? [];
 	if (!allowances.length) return null;
+
+	const scope = [featureName, budgetName].filter(Boolean).join(' · ');
 
 	return (
 		<>
 			<Dialog
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
-				title={featureName ? `${t('usageTable.windowsTitle')} · ${featureName}` : t('usageTable.windowsTitle')}
+				title={scope ? `${t('usageTable.windowsTitle')} · ${scope}` : t('usageTable.windowsTitle')}
 				description={t('usageTable.windowsDialogDescription')}
 				className='w-full max-w-xl'>
 				<div className='overflow-hidden rounded-md border border-line'>
