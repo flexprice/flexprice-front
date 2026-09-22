@@ -56,3 +56,4 @@ export {
 	bucketPriceContextFromPrice,
 } from './commitment_helpers';
 export type { ExtractLineItemCommitmentsOptions, CommitmentValidationTarget, CommitmentTimeBucketConstraints } from './commitment_helpers';
+export { isBlockedByExistingEntity, supersedeExistingEntity } from './entityCreation';

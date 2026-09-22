@@ -41,6 +41,17 @@ const openDropdown = () => {
 	return { wrapper, content };
 };
 
+/** Stands in for a second Dialog (e.g. a line-item editor) opened on top of another. */
+const openNestedDialog = () => {
+	const content = document.createElement('div');
+	content.setAttribute('role', 'dialog');
+	content.setAttribute('data-state', 'open');
+	const child = document.createElement('button');
+	content.appendChild(child);
+	document.body.appendChild(content);
+	return { content, child };
+};
+
 const outsideEvent = (target: EventTarget) => {
 	const event = new Event('pointerdown', { cancelable: true });
 	Object.defineProperty(event, 'target', { value: target });
@@ -87,5 +98,26 @@ describe('useSheetOutsideDismissGuards', () => {
 		const later = outsideEvent(document.body);
 		result.current.onInteractOutside(later);
 		expect(later.defaultPrevented).toBe(false);
+	});
+
+	// ConfigureAddonDialog's charges-table Dialog stays open behind a line-item editor Dialog it
+	// opens on top of itself. A click inside that editor reaches the table dialog's dismissable
+	// layer as an "outside" event (different portal subtree) and must not close it.
+	it('does not dismiss when the outside-detected click lands inside a nested dialog', () => {
+		const { child } = openNestedDialog();
+		const { result } = renderHook(() => useSheetOutsideDismissGuards(true));
+
+		const event = outsideEvent(child);
+		result.current.onPointerDownOutside(event);
+		expect(event.defaultPrevented).toBe(true);
+	});
+
+	it('still dismisses on a click outside everything, even while a nested dialog exists elsewhere in the DOM', () => {
+		openNestedDialog();
+		const { result } = renderHook(() => useSheetOutsideDismissGuards(true));
+
+		const event = outsideEvent(document.body);
+		result.current.onPointerDownOutside(event);
+		expect(event.defaultPrevented).toBe(false);
 	});
 });

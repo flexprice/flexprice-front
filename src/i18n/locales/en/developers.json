@@ -45,6 +45,7 @@
 		"timestamp": "Timestamp",
 		"response": "Response",
 		"eventDetails": "Event Details",
+		"ingestedAt": "Ingested at",
 		"eventFilter": "Event Filter",
 		"roleRequiredHint": "Roles",
 		"placeholders": {
@@ -419,10 +420,13 @@
 			"noTrackerData": "No tracker data available for this event.",
 			"couldNotResolveCustomer": "Could not resolve customer for this subscription",
 			"openSubscriptionFailed": "Failed to open subscription",
-			"propertiesCopied": "Properties copied to clipboard!"
+			"propertiesCopied": "Properties copied to clipboard!",
+			"ingestedVersionsTitle": "Ingested versions",
+			"ingestedVersionNumber": "Version {{n}}",
+			"duplicateEventIdHint": "This event id was ingested more than once. Stored meter usage is from the first processed ingest, not necessarily the latest version."
 		},
 		"processed": {
-			"eventNumber": "Event #{{n}}"
+			"eventNumber": "Processed usage #{{n}}"
 		},
 		"tracker": {
 			"ingested": "Ingested",

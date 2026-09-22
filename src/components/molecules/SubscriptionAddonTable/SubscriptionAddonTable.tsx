@@ -1,18 +1,16 @@
 import { AddAddonToSubscriptionRequest } from '@/types/dto/Addon';
 import React, { useCallback, useMemo, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { TFunction } from 'i18next';
 import { AddButton, FormHeader, ActionButton } from '@/components/atoms';
 import FlexpriceTable, { ColumnData } from '../Table';
 import SubscriptionAddonModal from './SubscriptionAddonModal';
 import { useQuery } from '@tanstack/react-query';
 import AddonApi from '@/api/AddonApi';
-import { getTotalPayableTextWithCoupons } from '@/utils/common/helper_functions';
-import { Price, PRICE_TYPE } from '@/models/Price';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { getCurrentPriceAmount, overrideLineItemsToMap, ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
+import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import { Coupon } from '@/models/Coupon';
 import { filterAddonPricesForSubscription } from '@/utils/subscription/addon_commitment_helpers';
+import { formatAddonCharges, formatAddonQuantityDisplay } from '@/utils/subscription/addonQuantity';
 
 interface Props {
 	data: AddAddonToSubscriptionRequest[];
@@ -26,32 +24,6 @@ interface Props {
 	billingPeriodCount?: number;
 	currency?: string;
 }
-const formatAddonCharges = (
-	prices: Price[] = [],
-	priceOverrides: Record<string, ExtendedPriceOverride> = {},
-	coupons: Coupon[] = [],
-	t: TFunction<'common'>,
-): string => {
-	if (!prices || prices.length === 0) return t('labels.na');
-
-	const recurringPrices = prices.filter((p) => p.type === PRICE_TYPE.FIXED);
-	const usagePrices = prices.filter((p) => p.type === PRICE_TYPE.USAGE);
-
-	const hasUsage = usagePrices.length > 0;
-
-	if (recurringPrices.length === 0) {
-		return hasUsage ? t('subscriptionAddon.dependsOnUsage') : t('labels.na');
-	}
-
-	// Calculate total recurring amount
-	const recurringTotal = recurringPrices.reduce((acc, charge) => {
-		const currentAmount = getCurrentPriceAmount(charge, priceOverrides);
-		return acc + parseFloat(currentAmount);
-	}, 0);
-
-	// Use the same helper as Preview component for consistent display
-	return getTotalPayableTextWithCoupons(recurringPrices, usagePrices, recurringTotal, coupons);
-};
 
 interface ExtendedAddon extends AddAddonToSubscriptionRequest {
 	internal_id: number;
@@ -147,15 +119,28 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 				},
 			},
 			{
+				title: t('subscriptionAddon.columnQuantity'),
+				render: (row) => {
+					const addonDetails = getAddonDetails(row.addon_id);
+					const prices = filterAddonPricesForSubscription(addonDetails?.prices || [], billingPeriod, currency, billingPeriodCount);
+					return formatAddonQuantityDisplay(prices, row.override_line_items ?? [], t('subscriptionAddon.quantityUsage'));
+				},
+			},
+			{
 				title: t('subscriptionAddon.columnCharges'),
 				render: (row) => {
 					const addonDetails = getAddonDetails(row.addon_id);
 					const prices = filterAddonPricesForSubscription(addonDetails?.prices || [], billingPeriod, currency, billingPeriodCount);
-					// Each addon row carries its own overrides (set via "Override Price" in the addon
-					// editor) - the shared `priceOverrides` prop is keyed for the base plan's prices and
-					// never covers per-addon overrides, so it must not be the only source used here.
-					const rowOverrides = { ...priceOverrides, ...overrideLineItemsToMap(row.override_line_items) };
-					return <span>{formatAddonCharges(prices, rowOverrides, coupons, t)}</span>;
+					// Per-addon overrides (amount + quantity) live on the row; plan-level
+					// `priceOverrides` never covers addon catalogue price ids.
+					return (
+						<span>
+							{formatAddonCharges(prices, row.override_line_items ?? [], priceOverrides, coupons, {
+								empty: t('labels.na'),
+								dependsOnUsage: t('subscriptionAddon.dependsOnUsage'),
+							})}
+						</span>
+					);
 				},
 			},
 			// {

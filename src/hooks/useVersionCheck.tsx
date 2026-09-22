@@ -37,7 +37,7 @@ export default function useVersionCheck(intervalMs = 5 * 60 * 1000) {
 					console.info(`[VersionCheck][${timestamp}] New version detected. Current: ${currentVersion}, Latest: ${latestVersion}`);
 					toast(
 						(toastCtx) => (
-							<div className='bg-surface border-line w-80'>
+							<div className='w-80 rounded-lg border border-line bg-surface p-4 shadow-lg'>
 								{/* Header */}
 								<div className='flex items-center justify-between mb-3'>
 									<div className='flex items-center gap-3'>
@@ -83,6 +83,9 @@ export default function useVersionCheck(intervalMs = 5 * 60 * 1000) {
 							duration: Infinity,
 							id: 'version-check-notification',
 							position: 'bottom-right',
+							// The default toast shell is hard-coded white, so it ignores dark mode;
+							// neutralize it and let the themed card above provide the surface.
+							style: { background: 'transparent', boxShadow: 'none', padding: 0, border: 'none' },
 						},
 					);
 				} else {

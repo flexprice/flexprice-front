@@ -25,6 +25,20 @@ export interface EventProcessedEvent {
 	processed_at?: string;
 }
 
+/** One raw `events` row from GET /events/lookup. Newest `ingested_at` first. */
+export interface EventLookupItem {
+	id: string;
+	external_customer_id: string;
+	customer_id: string;
+	event_name: string;
+	timestamp: string;
+	ingested_at?: string;
+	properties: Record<string, unknown>;
+	source: string;
+	environment_id: string;
+	idempotency_key?: string;
+}
+
 export interface EventDebugCustomerLookupResult {
 	status: DebugTrackerStatus;
 	customer?: {
@@ -104,7 +118,10 @@ export interface EventDebugTracker {
 }
 
 export interface GetEventDebugResponse {
+	/** Newest raw row. Compat only — prefer `events[]` for the details pane. */
 	event: Event;
+	/** All raw `events` rows for this id, max 50, newest `ingested_at` first. */
+	events?: EventLookupItem[];
 	status: EventDebugStatus;
 	processed_events?: EventProcessedEvent[];
 	debug_tracker?: EventDebugTracker;

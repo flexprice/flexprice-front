@@ -7,11 +7,13 @@ import {
 	CurrencyPriceUnitOption,
 	CurrencyPriceUnitSelection,
 	currencyToOption,
+	customCurrencyConfigToOptions,
 	priceUnitToOption,
 	isCurrencyOption,
 	isPriceUnitOption,
 } from '@/types/common/PriceUnitSelector';
 import { ENTITY_STATUS } from '@/models';
+import useCustomCurrencyConfig from '@/hooks/useCustomCurrencyConfig';
 import { cn } from '@/lib/utils';
 import { Loader } from '@/components/atoms';
 import { Coins, Layers } from 'lucide-react';
@@ -48,15 +50,24 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 		},
 	});
 
+	// A tenant currency is an ordinary currency on the price, not a price unit: selecting
+	// one sets `currency` directly with no conversion. It is grouped with the price units
+	// only because both are things the tenant defined.
+	const { config: customCurrencyConfig } = useCustomCurrencyConfig();
+
+	const customCurrencyOptions = useMemo(() => customCurrencyConfigToOptions(customCurrencyConfig), [customCurrencyConfig]);
+
+	const customCurrencyCodes = useMemo(() => new Set(customCurrencyOptions.map((option) => option.value)), [customCurrencyOptions]);
+
 	const allOptions: CurrencyPriceUnitOption[] = useMemo(() => {
 		const currencyOpts = currencyOptions.map(currencyToOption);
 		const priceUnitOpts = (priceUnitsData?.items || []).map(priceUnitToOption);
-		return [...priceUnitOpts, ...currencyOpts];
-	}, [priceUnitsData]);
+		return [...priceUnitOpts, ...customCurrencyOptions, ...currencyOpts];
+	}, [priceUnitsData, customCurrencyOptions]);
 
 	const currencyOptionsList = useMemo(() => {
-		return allOptions.filter(isCurrencyOption);
-	}, [allOptions]);
+		return allOptions.filter(isCurrencyOption).filter((option) => !customCurrencyCodes.has(option.value));
+	}, [allOptions, customCurrencyCodes]);
 
 	const priceUnitOptionsList = useMemo(() => {
 		return allOptions.filter(isPriceUnitOption);
@@ -106,9 +117,28 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 						</SelectItem>
 					) : (
 						<>
-							{priceUnitOptionsList.length > 0 && (
+							{(priceUnitOptionsList.length > 0 || customCurrencyOptions.length > 0) && (
 								<SelectGroup>
 									<SelectLabel>{t('catalog:priceUnits.selector.custom')}</SelectLabel>
+									{customCurrencyOptions.map((option) => {
+										const settlement = customCurrencyConfig.default_fiat_currency;
+										const rate = customCurrencyConfig.custom_currencies[option.value]?.fiat_conversion_factors?.[settlement];
+										return (
+											<SelectItem key={option.value} value={option.value}>
+												<div className='flex items-center gap-2'>
+													<Layers className='h-4 w-4 text-info flex-shrink-0' />
+													<div className='flex flex-col min-w-0'>
+														<span className='truncate'>{option.label}</span>
+														{rate && settlement ? (
+															<span className='text-xs text-muted-foreground'>
+																1 {option.code.toUpperCase()} = {rate} {settlement.toUpperCase()}
+															</span>
+														) : null}
+													</div>
+												</div>
+											</SelectItem>
+										);
+									})}
 									{priceUnitOptionsList.map((option) => (
 										<SelectItem key={option.value} value={option.value}>
 											<div className='flex items-center gap-2'>
@@ -126,7 +156,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 							)}
 
 							{currencyOptionsList.length > 0 &&
-								(priceUnitOptionsList.length > 0 ? (
+								(priceUnitOptionsList.length > 0 || customCurrencyOptions.length > 0 ? (
 									<SelectGroup>
 										<SelectLabel>{t('catalog:priceUnits.selector.standard')}</SelectLabel>
 										{currencyOptionsList.map((option) => (

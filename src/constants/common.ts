@@ -1,3 +1,4 @@
+import { getCustomCurrencySymbol } from '@/utils/common/custom_currency';
 // =============================================================================
 // COMMON CONSTANTS & UTILITIES
 // =============================================================================
@@ -6,16 +7,31 @@
 // CURRENCY FORMATTERS
 // =============================================================================
 
+/** Any well-formed ISO code works as a scaffold: only its currency part is kept, and that part is replaced. */
+const ISO_FORMAT_PLACEHOLDER = 'USD';
+
 export const formatCurrency = (amount: number | string, currency: string): string => {
 	const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
 	if (isNaN(numAmount)) return `${getCurrencySymbol(currency)}0.00`;
 
-	return new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: currency,
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
-	}).format(numAmount);
+	// Intl only accepts a well-formed ISO code and throws on anything else, so a custom
+	// currency is formatted against a placeholder and its symbol swapped into the result.
+	const customSymbol = getCustomCurrencySymbol(currency);
+	const formatCode = customSymbol ? ISO_FORMAT_PLACEHOLDER : currency;
+
+	let parts: Intl.NumberFormatPart[];
+	try {
+		parts = new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: formatCode,
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		}).formatToParts(numAmount);
+	} catch {
+		return `${getCurrencySymbol(currency)}${numAmount.toFixed(2)}`;
+	}
+
+	return parts.map((part) => (part.type === 'currency' && customSymbol ? customSymbol : part.value)).join('');
 };
 
 export const formatAmount = (amount: number | string, currency?: string): string => {
@@ -30,6 +46,10 @@ export const formatAmount = (amount: number | string, currency?: string): string
 };
 
 export const getCurrencySymbol = (currency: string): string => {
+	// A tenant-defined currency is not an ISO code, so Intl cannot resolve it.
+	const customSymbol = getCustomCurrencySymbol(currency);
+	if (customSymbol) return customSymbol;
+
 	try {
 		return (
 			new Intl.NumberFormat('en-US', {

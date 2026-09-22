@@ -6,6 +6,10 @@
 	"info": {
 		"ariaLabel": "More information about {{field}}"
 	},
+	"docs": {
+		"docsLink": "Docs",
+		"openDocsTitle": "Open {{name}} docs"
+	},
 	"superAdmin": {
 		"writeDeniedTooltip": "Only a Super Admin can change this setting. Ask a tenant admin for access."
 	},
@@ -131,6 +135,10 @@
 			"resetToDefaults": "Reset to defaults"
 		},
 		"invoiceConfiguration": {
+			"actions": {
+				"docs": "Docs",
+				"docsTitle": "Open invoice configuration docs"
+			},
 			"title": "Invoice configuration",
 			"previewLabel": "Preview",
 			"nextInvoiceNumber": "Next invoice number",
@@ -181,6 +189,10 @@
 			}
 		},
 		"subscriptionConfiguration": {
+			"actions": {
+				"docs": "Docs",
+				"docsTitle": "Open subscription configuration docs"
+			},
 			"title": "Subscription configuration",
 			"previewLabel": "Configuration preview",
 			"saveSuccess": "Subscription configuration saved",
@@ -209,6 +221,49 @@
 				"description1": "Subscription is cancelled immediately - not at period end",
 				"description2": "A subscription.cancelled webhook fires so downstream systems stay in sync",
 				"description3": "Future credit grants are cancelled, a final invoice is generated for the partial period"
+			}
+		},
+		"customCurrencyConfiguration": {
+			"title": "Custom currency configuration",
+			"saveSuccess": "Custom currency configuration saved",
+			"saveError": "Failed to save custom currency configuration",
+			"fields": {
+				"settlementCurrency": "Settlement currency",
+				"settlementPlaceholder": "Select a currency",
+				"conversionCurrencies": "Conversion currencies",
+				"defaultBadge": "default",
+				"code": "Code",
+				"name": "Name",
+				"symbol": "Symbol",
+				"rate": "Rate to {{fiat}}",
+				"codePlaceholder": "crd",
+				"namePlaceholder": "Credits",
+				"symbolPlaceholder": "CR",
+				"ratePlaceholder": "0.00"
+			},
+			"hints": {
+				"settlementCurrency": "Invoices are issued and paid in this currency. Amounts priced in your custom currency are converted into it.",
+				"conversionCurrencies": "Every custom currency needs a rate for each of these. Enter what one unit of your currency is worth there, not the other way round.",
+				"conversionFormula": "1 CRD = 0.10 USD, so the rate is 0.10",
+				"code": "Used wherever a currency is set on a price, subscription or wallet. It cannot be changed later."
+			},
+			"actions": {
+				"addCurrency": "Add currency",
+				"addConversionCurrency": "Add currency",
+				"docs": "Docs",
+				"docsTitle": "Open custom currency docs",
+				"removeCurrency": "Remove {{currency}}",
+				"removeConversionCurrency": "Remove {{currency}}"
+			},
+			"errors": {
+				"loadFailed": "Could not load the current configuration. Reload before making changes.",
+				"defaultFiatRequired": "Select a settlement currency.",
+				"codeLength": "Currency codes must be 3 characters.",
+				"codeDuplicate": "Each currency code can only be used once.",
+				"codeMatchesFiat": "A currency code cannot match a conversion currency.",
+				"nameRequired": "Every currency needs a name.",
+				"symbolRequired": "Every currency needs a symbol.",
+				"factorInvalid": "Every rate must be greater than 0."
 			}
 		}
 	},
@@ -333,10 +388,6 @@
 		"walletAlerts": {
 			"title": "Wallet Alert Settings",
 			"description": "Monitor wallet balance against configured thresholds",
-			"thresholdValue": "Threshold Value ({{currency}})",
-			"condition": "Condition",
-			"remove": "Remove",
-			"add": "Add",
 			"amountPlaceholder": "0.00",
 			"saveChanges": "Save changes",
 			"saveSuccess": "Wallet alert settings saved",
@@ -346,28 +397,25 @@
 				"warning": "Warning",
 				"info": "Info"
 			},
-			"levelDescriptions": {
-				"critical": "Alert at critical level",
-				"warning": "Alert at warning level",
-				"info": "Alert at info level"
-			},
-			"conditions": {
-				"below": "Below",
-				"above": "Above"
-			},
 			"validation": {
 				"atLeastOneThreshold": "Please configure at least one threshold level when alerts are enabled",
 				"invalidCriticalThreshold": "Please enter a valid critical threshold value",
 				"invalidWarningThreshold": "Please enter a valid warning threshold value",
 				"invalidInfoThreshold": "Please enter a valid info threshold value",
+				"criticalThresholdOutOfRange": "Critical threshold must be between 0 and 100.",
+				"warningThresholdOutOfRange": "Warning threshold must be between 0 and 100.",
+				"infoThresholdOutOfRange": "Info threshold must be between 0 and 100.",
 				"criticalRequiredForWarning": "A critical threshold is required when a warning threshold is set",
-				"warningMustBeLessThanCritical": "For \"Above\" alerts, the warning threshold must be less than the critical threshold",
-				"warningMustBeGreaterThanCritical": "For \"Below\" alerts, the warning threshold must be greater than the critical threshold",
-				"infoMustBeLessThanWarning": "For \"Above\" alerts, the info threshold must be less than the warning threshold",
-				"infoMustBeGreaterThanWarning": "For \"Below\" alerts, the info threshold must be greater than the warning threshold",
-				"infoMustBeLessThanCritical": "For \"Above\" alerts, the info threshold must be less than the critical threshold",
-				"infoMustBeGreaterThanCritical": "For \"Below\" alerts, the info threshold must be greater than the critical threshold"
-			}
+				"warningMustBeGreaterThanCritical": "The warning threshold must be greater than the critical threshold",
+				"infoMustBeGreaterThanWarning": "The info threshold must be greater than the warning threshold",
+				"infoMustBeGreaterThanCritical": "The info threshold must be greater than the critical threshold"
+			},
+			"rowDescription": "Balance below",
+			"thresholdTypeLabel": "Threshold type",
+			"thresholdTypeAbsolute": "Absolute",
+			"thresholdTypePercentage": "Percentage",
+			"thresholdTypeTooltipAbsolute": "Absolute: alerts trigger when the wallet balance falls below a fixed amount.",
+			"thresholdTypeTooltipPercentage": "Percentage: alerts trigger on the ongoing balance, measured as a percentage of the credits granted during the current billing period. If there is no active subscription, lifetime credits are used."
 		}
 	},
 	"appearance": {

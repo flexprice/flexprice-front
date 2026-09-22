@@ -46,6 +46,8 @@ export { default as DateRangePicker } from './DateRangePicker';
 export { default as CodePreview } from './CodePreview';
 
 export { default as Toggle } from './Toggle';
+export { default as SegmentedControl } from './SegmentedControl';
+export type { SegmentedControlOption, SegmentedControlProps } from './SegmentedControl/SegmentedControl';
 
 export { default as MultiSelect } from './MultiSelect';
 

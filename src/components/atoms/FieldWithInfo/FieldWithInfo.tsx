@@ -4,7 +4,7 @@ import { InfoIcon } from '../InfoIcon';
 
 export interface FieldWithInfoProps {
 	label: string;
-	description: string;
+	description: ReactNode;
 	infoAriaLabel: string;
 	disabled?: boolean;
 	className?: string;

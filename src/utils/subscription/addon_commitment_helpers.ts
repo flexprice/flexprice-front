@@ -24,7 +24,9 @@ export function filterAddonPricesForSubscription(
 		filtered = filtered.filter((p) => p.currency?.toLowerCase() === currency.toLowerCase());
 	}
 	if (billingPeriod) {
-		filtered = filtered.filter((p) => isOneTimePlanPrice(p) || isCadenceCompatible(billingPeriod, billingPeriodCount, p.billing_period, p.billing_period_count));
+		filtered = filtered.filter(
+			(p) => isOneTimePlanPrice(p) || isCadenceCompatible(billingPeriod, billingPeriodCount, p.billing_period, p.billing_period_count),
+		);
 	}
 	return filtered;
 }

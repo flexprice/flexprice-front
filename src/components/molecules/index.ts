@@ -86,10 +86,11 @@ export { default as RecordPaymentTopup } from './RecordPaymentTopup';
 // Wallet Management
 export { default as WalletTransactionsTable, AllWalletTransactionsTable } from './Wallet';
 export { default as TopupCard } from './WalletTopupCard';
+export { default as PendingCheckoutSessionDialog } from './PendingCheckoutSessionDialog';
 export { default as DebitCard } from './WalletDebitCard';
 export { default as WalletAlertDialog } from './WalletAlertDialog';
 export { default as AlertSettingsDialog } from './AlertSettingsDialog';
-export { default as WalletAlertThresholdCard } from './WalletAlertThresholdCard';
+export { default as WalletAlertThresholdSection } from './WalletAlertThresholdSection';
 export { default as WalletAutoTopup } from './WalletAutoTopup';
 export { default as TerminateWalletModal } from './TerminateWalletModal';
 
@@ -157,6 +158,8 @@ export type { RectangleRadiogroupOption } from './RectangleRadiogroup';
 export { default as DropdownMenu, getCopyIdOption } from './DropdownMenu';
 export type { DropdownMenuOption } from './DropdownMenu';
 export { ChargeValueCell } from './ChargeValueCell';
+export { PriceQuantityCell } from './PriceQuantityCell';
+export type { PriceQuantityCellProps } from './PriceQuantityCell';
 
 // Query & Search
 export { QueryBuilder, PropertyFilterQueryBuilder, FilterPopover, SortDropdown, FilterMultiSelect } from './QueryBuilder';

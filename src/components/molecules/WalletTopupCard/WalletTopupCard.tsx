@@ -1,18 +1,22 @@
 import { Button, DatePicker, Input, Spacer } from '@/components/atoms';
 import { FC, useState, useCallback, useMemo } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import WalletApi from '@/api/WalletApi';
+import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { getCurrencySymbol } from '@/utils';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { WALLET_TRANSACTION_REASON } from '@/models';
+import { WALLET_TRANSACTION_REASON, CONNECTION_PROVIDER_TYPE } from '@/models';
 import { getCurrencyAmountFromCredits } from '@/utils';
 import { TopupWalletPayload } from '@/types';
 import { DialogContent, DialogHeader, DialogTitle } from '@/components/ui';
 import { PaymentUrlSuccessDialog } from '@/components/atoms';
 import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
 import { useMinCreditExpiryDate, toDateOnlyUtc } from '@/hooks/useMinCreditExpiryDate';
+import PendingCheckoutSessionDialog from '../PendingCheckoutSessionDialog';
+import { isBlockedByExistingEntity, supersedeExistingEntity } from '@/utils/common/entityCreation';
+import type { TopupWalletResponse } from '@/types';
 import { useTranslation } from 'react-i18next';
 
 // Enum for credits type with more descriptive names
@@ -77,6 +81,11 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	// State management with more explicit typing
 	const [checkoutPopup, setCheckoutPopup] = useState({ isOpen: false, paymentUrl: '', isCopied: false });
 
+	// The session that blocked the last checkout attempt. Kept in state rather than
+	// raised as a toast: cancelling a payment the customer may be completing right
+	// now is a decision, not a notification.
+	const [blockingSession, setBlockingSession] = useState<NonNullable<TopupWalletResponse['checkout_session']> | null>(null);
+
 	const [topupPayload, setTopupPayload] = useState<TopupPayload>({
 		credits_type: CreditsType.FreeCredit,
 		credits_to_add: undefined,
@@ -86,6 +95,19 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		reference_id: undefined,
 		description: undefined,
 	});
+
+	// Checkout hard-codes payment_provider: 'razorpay' below, so it only ever works when a
+	// Razorpay connection exists — a tenant with, say, only Stripe connected would see a
+	// working-looking Checkout link that always fails. Only fetch once the dialog can
+	// actually show the button (purchased credits).
+	const { data: connectionsResponse } = useQuery({
+		queryKey: ['connections', 'published'],
+		queryFn: () => ConnectionApi.ListPublished(),
+		enabled: topupPayload.credits_type === CreditsType.PurchasedCredits,
+	});
+	const hasRazorpayConnection = (connectionsResponse?.connections || []).some(
+		(connection) => connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY,
+	);
 
 	// Determine transaction reason based on credits type and invoice generation
 	const getTransactionReason = useCallback(
@@ -147,13 +169,16 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	}, [topupPayload, minExpiryDate]);
 
 	// Wallet topup mutation with improved error handling
+	// `supersede` only ever comes from the operator confirming it in
+	// PendingCheckoutSessionDialog; a first attempt always goes out under the
+	// server default, which is to be rejected by a session already in flight.
 	const {
 		isPending,
 		mutate: topupWallet,
-		variables: pendingMode,
+		variables: pendingAttempt,
 	} = useMutation({
 		mutationKey: ['topupWallet', walletId],
-		mutationFn: (mode: TopupMode) => {
+		mutationFn: ({ mode, supersede }: { mode: TopupMode; supersede?: boolean }) => {
 			// Comprehensive validation before topup
 			if (!walletId) {
 				throw new Error('Wallet ID is required');
@@ -179,13 +204,29 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 								// mandate, and requiring one would block the customer at checkout.
 								success_url: window.location.href,
 								cancel_url: window.location.href,
+								// The rejected attempt created nothing, so the reference id stays
+								// valid as the idempotency key for this retry.
+								...(supersede ? { entity_creation_options: supersedeExistingEntity } : {}),
 							},
 						}
 					: {}),
 			});
 		},
-		onSuccess: async (response, mode) => {
-			const checkoutUrl = response?.checkout_session?.payment_action?.redirect_url ?? response?.checkout_session?.payment_url;
+		onSuccess: async (response, { mode }) => {
+			// Checked first. A blocked response is a 200 carrying a complete, live
+			// session — the one already in flight — so every branch below would
+			// otherwise hand the operator another top-up's checkout link to pass on to
+			// the customer, for an amount they never entered.
+			if (isBlockedByExistingEntity(response?.checkout_session?.entity_creation_result)) {
+				setBlockingSession(response?.checkout_session ?? null);
+				return;
+			}
+			setBlockingSession(null);
+
+			const checkoutUrl =
+				response?.checkout_session?.payment_action?.url ??
+				response?.checkout_session?.payment_action?.redirect_url ??
+				response?.checkout_session?.payment_url;
 			if (mode === TopupMode.Checkout && checkoutUrl) {
 				// Show the link first, then try to open it. The open runs in an async
 				// callback rather than directly in the click, so a popup blocker will often
@@ -213,14 +254,18 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		},
 		onError: (error: Error) => {
 			toast.error(error.message || 'Failed to topup wallet');
+			// reference_id doubles as this request's idempotency key (see the field's
+			// description below). Clear it so an immediate retry doesn't resend the same
+			// key against the failed attempt and get rejected as a duplicate.
+			setTopupPayload((prev) => ({ ...prev, reference_id: undefined }));
 		},
 	});
 
 	// Handle topup submission
 	const handleTopup = useCallback(
-		(mode: TopupMode) => {
+		(mode: TopupMode, supersede?: boolean) => {
 			if (validateTopup() && walletId) {
-				topupWallet(mode);
+				topupWallet({ mode, supersede });
 			}
 		},
 		[validateTopup, walletId, topupWallet],
@@ -245,7 +290,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	};
 
 	return (
-		<DialogContent className='bg-white sm:max-w-[600px]'>
+		<DialogContent className='bg-surface sm:max-w-[600px]'>
 			<PaymentUrlSuccessDialog
 				isOpen={checkoutPopup.isOpen}
 				paymentUrl={checkoutPopup.paymentUrl}
@@ -253,6 +298,15 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				onClose={() => setCheckoutPopup({ isOpen: false, paymentUrl: '', isCopied: false })}
 				onCopyUrl={handleCopyCheckoutUrl}
 				onGoToLink={() => openPaymentUrl(checkoutPopup.paymentUrl)}
+			/>
+			<PendingCheckoutSessionDialog
+				isOpen={blockingSession !== null}
+				sessionId={blockingSession?.id}
+				paymentUrl={blockingSession?.payment_action?.url ?? blockingSession?.payment_action?.redirect_url ?? blockingSession?.payment_url}
+				expiresAt={blockingSession?.expires_at}
+				isSuperseding={isPending && pendingAttempt?.supersede === true}
+				onClose={() => setBlockingSession(null)}
+				onSupersede={() => handleTopup(TopupMode.Checkout, true)}
 			/>
 			<DialogHeader>
 				<DialogTitle>{t('wallet.topup.dialogTitle')}</DialogTitle>
@@ -380,24 +434,26 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 					<>
 						<Button
 							variant='outline'
-							isLoading={isPending && pendingMode === TopupMode.SkipInvoice}
+							isLoading={isPending && pendingAttempt?.mode === TopupMode.SkipInvoice}
 							onClick={() => handleTopup(TopupMode.SkipInvoice)}
 							disabled={isPending}>
 							{t('wallet.topup.skipInvoice')}
 						</Button>
 						<Button
 							variant='outline'
-							isLoading={isPending && pendingMode === TopupMode.Invoice}
+							isLoading={isPending && pendingAttempt?.mode === TopupMode.Invoice}
 							onClick={() => handleTopup(TopupMode.Invoice)}
 							disabled={isPending}>
 							{t('wallet.topup.generateInvoiceAction')}
 						</Button>
-						<Button
-							isLoading={isPending && pendingMode === TopupMode.Checkout}
-							onClick={() => handleTopup(TopupMode.Checkout)}
-							disabled={isPending}>
-							{t('wallet.topup.checkoutLink')}
-						</Button>
+						{hasRazorpayConnection && (
+							<Button
+								isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
+								onClick={() => handleTopup(TopupMode.Checkout)}
+								disabled={isPending}>
+								{t('wallet.topup.checkoutLink')}
+							</Button>
+						)}
 					</>
 				) : (
 					<Button

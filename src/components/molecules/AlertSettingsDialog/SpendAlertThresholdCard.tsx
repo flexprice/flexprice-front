@@ -2,7 +2,13 @@ import { Button, InfoIcon, Input, Select } from '@/components/atoms';
 import type { WalletAlertThreshold } from '@/models/Wallet';
 import { cn } from '@/lib/utils';
 
-export interface WalletAlertThresholdCardLabels {
+/**
+ * The add/remove threshold card used by subscription and line-item spend alerts. Wallet balance
+ * alerts moved to WalletAlertThresholdSection's row layout; spend alerts keep this shape because
+ * their thresholds stay individually addable and their condition is fixed to 'above'.
+ */
+
+export interface SpendAlertThresholdCardLabels {
 	title: string;
 	description: string;
 	add: string;
@@ -14,9 +20,9 @@ export interface WalletAlertThresholdCardLabels {
 	amountPlaceholder: string;
 }
 
-export interface WalletAlertThresholdCardProps {
+export interface SpendAlertThresholdCardProps {
 	threshold: WalletAlertThreshold | null | undefined;
-	labels: WalletAlertThresholdCardLabels;
+	labels: SpendAlertThresholdCardLabels;
 	conditionDisabled?: boolean;
 	disabled?: boolean;
 	onAdd: () => void;
@@ -25,7 +31,7 @@ export interface WalletAlertThresholdCardProps {
 	onConditionChange: (value: 'above' | 'below') => void;
 }
 
-const WalletAlertThresholdCard = ({
+const SpendAlertThresholdCard = ({
 	threshold,
 	labels,
 	conditionDisabled,
@@ -34,7 +40,7 @@ const WalletAlertThresholdCard = ({
 	onRemove,
 	onThresholdChange,
 	onConditionChange,
-}: WalletAlertThresholdCardProps) => {
+}: SpendAlertThresholdCardProps) => {
 	const conditionOptions = [
 		{ label: labels.conditionBelow, value: 'below' },
 		{ label: labels.conditionAbove, value: 'above' },
@@ -86,4 +92,4 @@ const WalletAlertThresholdCard = ({
 	);
 };
 
-export default WalletAlertThresholdCard;
+export default SpendAlertThresholdCard;

@@ -24,6 +24,10 @@ name: E2E (PR)
 
 on:
   pull_request:
+    # Scoped to develop while the suite is still being trusted. Widen this list (or drop
+    # it) once it has been green long enough to gate the release PR into main too.
+    branches:
+      - develop
     paths:
       - 'src/**'
       - 'e2e/**'

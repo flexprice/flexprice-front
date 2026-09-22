@@ -2,7 +2,8 @@ import { Button, Tooltip } from '@/components/atoms';
 import { useTranslation } from 'react-i18next';
 
 interface SettingsFormActionsProps {
-	onReset: () => void;
+	/** Omit to hide the reset button, for a section with no defaults to fall back to. */
+	onReset?: () => void;
 	onSave: () => void;
 	isSaving?: boolean;
 	disabled?: boolean;
@@ -21,9 +22,11 @@ const SettingsFormActions = ({ onReset, onSave, isSaving, disabled, disabledReas
 
 	return (
 		<div className='mt-8 flex justify-end gap-2'>
-			<Button variant='outline' onClick={onReset} disabled={disabled || isSaving}>
-				{t('billing.actions.resetToDefaults')}
-			</Button>
+			{onReset ? (
+				<Button variant='outline' onClick={onReset} disabled={disabled || isSaving}>
+					{t('billing.actions.resetToDefaults')}
+				</Button>
+			) : null}
 			{disabled && disabledReason ? (
 				<Tooltip content={disabledReason}>
 					<span tabIndex={0} className='inline-block'>

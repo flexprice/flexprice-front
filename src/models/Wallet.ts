@@ -22,11 +22,36 @@ export interface WalletAlertThreshold {
 	condition: 'above' | 'below';
 }
 
+/**
+ * Whether a wallet's critical/warning/info thresholds are read as currency amounts or as a
+ * percentage. Backend note: only the low_ongoing_balance alert type evaluates percentage
+ * mode — the low_credit_balance alert type silently skips evaluation while it's selected.
+ * Missing/undefined always means 'absolute' (see getWalletAlertThresholdType).
+ */
+export type WalletAlertThresholdType = 'absolute' | 'percentage';
+
 export interface WalletAlertSettings {
 	critical?: WalletAlertThreshold | null;
 	warning?: WalletAlertThreshold | null;
 	info?: WalletAlertThreshold | null;
 	alert_enabled?: boolean;
+	alert_threshold_type?: WalletAlertThresholdType;
+}
+
+/** Just the per-level thresholds, without alert_enabled/alert_threshold_type — one "side" of a WalletAlertDraft. */
+export type WalletAlertLevels = Pick<WalletAlertSettings, 'critical' | 'warning' | 'info'>;
+
+/**
+ * Editing-time state for a wallet alert form. Absolute and percentage thresholds are kept as
+ * two independent sets so switching alert_threshold_type never discards either one — only the
+ * active side's values (plus alert_threshold_type) end up in the saved WalletAlertSettings.
+ * Built/read via walletAlertUtils.ts's toWalletAlertDraft / fromWalletAlertDraftForSave.
+ */
+export interface WalletAlertDraft {
+	alert_enabled: boolean;
+	alert_threshold_type: WalletAlertThresholdType;
+	absolute: WalletAlertLevels;
+	percentage: WalletAlertLevels;
 }
 
 export enum WalletAlertLevel {

@@ -267,7 +267,7 @@
 		"timezoneUtc": "UTC",
 		"timezoneSectionAriaLabel": "المنطقة الزمنية",
 		"timezoneSectionLabel": "المنطقة الزمنية",
-		"clear": "مسح التاريخ"
+		"clear": "مسح"
 	},
 	"breadcrumb": {
 		"navAriaLabel": "مسار التنقل",
@@ -603,6 +603,8 @@
 		"addonRequired": "الإضافة مطلوبة",
 		"columnCharge": "الرسوم",
 		"columnType": "النوع",
+		"columnQuantity": "الكمية",
+		"quantityUsage": "حسب الاستخدام",
 		"columnCommitment": "الالتزام",
 		"notAvailable": "غير متاح",
 		"configure": "تهيئة",

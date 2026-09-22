@@ -56,7 +56,21 @@ const PORTALED_OVERLAY_SELECTOR = [
 	'[data-radix-popover-content][data-state="open"]',
 ].join(', ');
 
-const isPortaledOverlayTarget = (target: EventTarget | null) => target instanceof Element && !!target.closest(PORTALED_OVERLAY_SELECTOR);
+/**
+ * A second, fully open Dialog/AlertDialog (e.g. an editor opened on top of a table that's shown
+ * inside another Dialog, like ConfigureAddonDialog's charges table + line-item editor). Kept out
+ * of PORTALED_OVERLAY_SELECTOR/hasOpenPortaledOverlay deliberately: that function is used as a
+ * "some overlay is open somewhere" check with no way to exclude the current dialog's own content,
+ * and a Dialog's own root always matches `[role="dialog"][data-state="open"]` while it's mounted -
+ * folding this in there would make every Dialog perpetually see "an overlay is open" (itself) and
+ * never dismiss on a genuine outside click. It's only safe to check by event target: Radix already
+ * only invokes onPointerDownOutside/onInteractOutside for a target outside the dialog's own DOM
+ * subtree, so a target that closest()-matches this selector is necessarily a *different* dialog.
+ */
+const NESTED_DIALOG_SELECTOR = '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"]';
+
+const isPortaledOverlayTarget = (target: EventTarget | null) =>
+	target instanceof Element && (!!target.closest(PORTALED_OVERLAY_SELECTOR) || !!target.closest(NESTED_DIALOG_SELECTOR));
 
 const hasOpenPortaledOverlay = () => !!document.querySelector(PORTALED_OVERLAY_SELECTOR);
 

@@ -16,6 +16,8 @@ import {
 	removePriceOverride,
 	updatePriceOverride,
 } from '@/utils/common/price_override_helpers';
+import { sanitizeAddonOverrideLineItemsForApi } from '@/utils/subscription/addonQuantity';
+import { PriceQuantityCell } from '@/components/molecules/PriceQuantityCell';
 import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
 import ChargeValueCell from '@/components/molecules/ChargeValueCell/ChargeValueCell';
 import { DropdownMenu as UiDropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -138,13 +140,16 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 
 		const commitments = (formData.line_item_commitments || {}) as LineItemCommitmentsMap;
 		const hasCommitments = Object.keys(commitments).length > 0;
-		const override_line_items = getLineItemOverrides(selectedAddonPrices, overriddenPrices);
+		const override_line_items = sanitizeAddonOverrideLineItemsForApi(
+			getLineItemOverrides(selectedAddonPrices, overriddenPrices),
+			selectedAddonPrices,
+		);
 		const addonData: AddAddonToSubscriptionRequest = {
 			addon_id: formData.addon_id!,
 			start_date: formData.start_date,
 			metadata: formData.metadata || {},
 			line_item_commitments: hasCommitments ? commitments : undefined,
-			override_line_items: override_line_items.length > 0 ? override_line_items : undefined,
+			override_line_items,
 		};
 
 		onSave(addonData);
@@ -241,6 +246,19 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 				render: (row) => <span>{toSentenceCase(row.price.type || t('labels.na'))}</span>,
 			},
 			{
+				title: t('subscriptionAddon.columnQuantity'),
+				render: (row) => (
+					<PriceQuantityCell
+						price={row.price}
+						override={overriddenPrices[row.price.id]}
+						usageLabel={t('subscriptionAddon.quantityUsage')}
+						ariaLabel={t('subscriptionAddon.columnQuantity')}
+						onPriceOverride={handlePriceOverride}
+						onResetOverride={handleResetOverride}
+					/>
+				),
+			},
+			{
 				title: t('subscriptionAddon.columnPrice'),
 				render: (row) => <ChargeValueCell data={row.price} priceOverride={overriddenPrices[row.price.id]} />,
 			},
@@ -298,7 +316,7 @@ const SubscriptionAddonModal: React.FC<Props> = ({
 				},
 			},
 		],
-		[commitmentMap, handleConfigureCommitment, handleConfigurePrice, handleResetOverride, overriddenPrices, t],
+		[commitmentMap, handleConfigureCommitment, handleConfigurePrice, handlePriceOverride, handleResetOverride, overriddenPrices, t],
 	);
 
 	// const handleDateChange = useCallback(

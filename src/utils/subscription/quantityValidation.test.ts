@@ -1,5 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { isValidNonNegativeQuantityString } from './quantityValidation';
+import { isValidNonNegativeQuantityString, parseNonNegativeQuantity } from './quantityValidation';
+
+describe('parseNonNegativeQuantity', () => {
+	it('parses numbers and decimal strings', () => {
+		expect(parseNonNegativeQuantity(5)).toBe(5);
+		expect(parseNonNegativeQuantity('7')).toBe(7);
+		expect(parseNonNegativeQuantity(0)).toBe(0);
+	});
+
+	it('returns undefined for missing or invalid values', () => {
+		expect(parseNonNegativeQuantity(undefined)).toBeUndefined();
+		expect(parseNonNegativeQuantity('')).toBeUndefined();
+		expect(parseNonNegativeQuantity('abc')).toBeUndefined();
+		expect(parseNonNegativeQuantity(-1)).toBeUndefined();
+	});
+});
 
 describe('isValidNonNegativeQuantityString', () => {
 	it('accepts zero', () => {

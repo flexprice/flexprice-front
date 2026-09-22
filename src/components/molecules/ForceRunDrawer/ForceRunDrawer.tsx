@@ -4,6 +4,7 @@ import { DateTimePicker } from '@/components/atoms';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { useSheetOutsideDismissGuards } from '@/lib/modal-scroll-lock';
 import { useTranslation } from 'react-i18next';
 
 interface ForceRunDrawerProps {
@@ -31,6 +32,7 @@ const ForceRunDrawer: FC<ForceRunDrawerProps> = ({ isOpen, onOpenChange, onConfi
 	const [startTime, setStartTime] = useState<Date | undefined>(undefined);
 	const [endTime, setEndTime] = useState<Date | undefined>(undefined);
 	const [errors, setErrors] = useState<ValidationErrors>({});
+	const outsideDismissGuards = useSheetOutsideDismissGuards(isOpen);
 
 	const validate = useCallback((): ValidationErrors => {
 		const newErrors: ValidationErrors = {};
@@ -49,6 +51,13 @@ const ForceRunDrawer: FC<ForceRunDrawerProps> = ({ isOpen, onOpenChange, onConfi
 		setErrors({});
 		onOpenChange(false);
 	}, [onOpenChange]);
+
+	const handleOpenChange = useCallback(
+		(open: boolean) => {
+			if (!open) handleClose();
+		},
+		[handleClose],
+	);
 
 	const handleConfirm = useCallback(() => {
 		if (runType === RunType.CURRENT) {
@@ -78,8 +87,8 @@ const ForceRunDrawer: FC<ForceRunDrawerProps> = ({ isOpen, onOpenChange, onConfi
 	}, []);
 
 	return (
-		<Dialog open={isOpen} onOpenChange={handleClose}>
-			<DialogContent className='w-full max-w-md bg-surface'>
+		<Dialog open={isOpen} onOpenChange={handleOpenChange} modal={false}>
+			<DialogContent className='w-full max-w-md bg-surface' {...outsideDismissGuards}>
 				<DialogHeader>
 					<DialogTitle>{t('forceRun.title')}</DialogTitle>
 					<DialogDescription>{t('forceRun.description')}</DialogDescription>

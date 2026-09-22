@@ -65,7 +65,9 @@ import {
 	partitionPricesForSubscription,
 	uniqueRecurringBillingPeriodsFromPrices,
 } from '@/utils/subscription/planPricesForSubscriptionUi';
+import { subscriptionHasSplittingCharge } from '@/utils/subscription/lineItemGrouping';
 import AdditionalPlanPricesSection from './AdditionalPlanPricesSection';
+import LineItemGroupingSection from './LineItemGroupingSection';
 import { Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -235,6 +237,39 @@ const SubscriptionForm = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [additionalCadenceKeysStr, setState]);
 
+	// Does anything the subscription attaches (primary + opted-in + inline extras) bill more
+	// often than the subscription itself? `line_item_grouping` is a no-op unless something
+	// splits, so the control only shows in single-phase mode when something does. (The phases
+	// branch of the create payload is not wired for it in this iteration.)
+	const hasSplittingCharge = useMemo(() => {
+		const addedPrices = (state.addedSubscriptionLineItems ?? [])
+			.map((item) => item.price)
+			.filter((price): price is NonNullable<typeof price> => !!price);
+		return subscriptionHasSplittingCharge(state.billingPeriod, 1, [...currentPrices, ...addedPrices]);
+	}, [currentPrices, state.addedSubscriptionLineItems, state.billingPeriod]);
+
+	const showLineItemGrouping = phases.length === 0 && hasSplittingCharge;
+
+	// Drop the opt-in when the control disappears (plan/cadence/opt-in change) so a hidden
+	// toggle can never leak `per_billing_period` into the payload.
+	useEffect(() => {
+		if (showLineItemGrouping) return;
+		setState((prev) => (prev.combineLineItemsPerBillingPeriod ? { ...prev, combineLineItemsPerBillingPeriod: false } : prev));
+	}, [showLineItemGrouping, setState]);
+
+	// Rendered as a footer inside the "Also available on this plan" border, since a charge can
+	// only bill more often than the subscription once a finer cadence is opted in there. The
+	// standalone form covers the one case that section can't host: an inline "Add charge" with
+	// a finer cadence when the plan itself has no additional cadences.
+	const lineItemGroupingProps = {
+		checked: state.combineLineItemsPerBillingPeriod,
+		onChange: (checked: boolean) => setState((prev) => ({ ...prev, combineLineItemsPerBillingPeriod: checked })),
+		showOverageNote: state.commitmentAmount.trim() !== '',
+		disabled: isDisabled,
+	};
+	const lineItemGroupingControl = <LineItemGroupingSection {...lineItemGroupingProps} />;
+	const lineItemGroupingControlStandalone = <LineItemGroupingSection {...lineItemGroupingProps} variant='section' />;
+
 	// Price overrides functionality for subscription-level
 	const { overriddenPrices, overridePrice, resetOverride } = usePriceOverrides(currentPrices);
 
@@ -371,6 +406,7 @@ const SubscriptionForm = ({
 			// Reset cadence opt-ins so the new plan's additional prices require fresh consent
 			// rather than silently attaching just because the cadence key happens to match.
 			optedInAdditionalCadences: [],
+			combineLineItemsPerBillingPeriod: false,
 		}));
 	};
 
@@ -864,9 +900,14 @@ const SubscriptionForm = ({
 								subPeriod={state.billingPeriod}
 								subCount={1}
 								disabled={isDisabled}
+								footer={showLineItemGrouping ? lineItemGroupingControl : undefined}
 							/>
 						</div>
 					)}
+
+					{/* Fallback placement: the splitting charge came from an inline "Add charge",
+					    so the cadence table isn't on screen to trail. Carries its own heading. */}
+					{showLineItemGrouping && additionalCadenceGroups.length === 0 && <div className='mt-6'>{lineItemGroupingControlStandalone}</div>}
 
 					{/* Subscription Level Discounts — divider above so it reads as a peer section
 					    to Charges (and separates from the Also-available sub-section under Charges). */}

@@ -5,6 +5,7 @@ export const SETTINGS_KEYS = {
 	INVOICE_CONFIG: 'invoice_config',
 	SUBSCRIPTION_CONFIG: 'subscription_config',
 	SAML_CONFIG: 'saml_config',
+	CUSTOM_CURRENCY_CONFIG: 'custom_currency_config',
 } as const;
 
 export const SETTINGS_MEMBERS_PAGE_SIZE = 10;

@@ -6,6 +6,7 @@ import { PlansPage } from '../pages/PlansPage';
 import { SubscriptionsPage } from '../pages/SubscriptionsPage';
 import { FeaturesPage } from '../pages/FeaturesPage';
 import { AddonsPage } from '../pages/AddonsPage';
+import { CustomerWalletPage } from '../pages/CustomerWalletPage';
 import { customerFixtures } from './customer';
 
 /**
@@ -24,6 +25,7 @@ interface PageFixtures {
 	subscriptionsPage: SubscriptionsPage;
 	featuresPage: FeaturesPage;
 	addonsPage: AddonsPage;
+	customerWalletPage: CustomerWalletPage;
 }
 
 export const test = customerFixtures.extend<PageFixtures>({
@@ -47,6 +49,9 @@ export const test = customerFixtures.extend<PageFixtures>({
 	},
 	addonsPage: async ({ page }, use) => {
 		await use(new AddonsPage(page));
+	},
+	customerWalletPage: async ({ page }, use) => {
+		await use(new CustomerWalletPage(page));
 	},
 });
 

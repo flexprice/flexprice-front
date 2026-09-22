@@ -1,12 +1,12 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { ColumnData, FlexpriceTable, LineItemCoupon } from '@/components/molecules';
+import { ColumnData, FlexpriceTable, LineItemCoupon, PriceQuantityCell } from '@/components/molecules';
 import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
 import CommitmentConfigDialog from '@/components/molecules/CommitmentConfigDialog';
-import { Price, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models';
+import { Price, PRICE_UNIT_TYPE } from '@/models';
 import type { PriceBucketSize } from '@/models/Meter';
 import { ChevronDownIcon, ChevronUpIcon, Copy, Pencil, RotateCcw, Tag, Target, Trash2 } from 'lucide-react';
-import { FormHeader, DecimalUsageInput, AddButton, Chip } from '@/components/atoms';
+import { FormHeader, AddButton, Chip } from '@/components/atoms';
 import { ChargeValueCell } from '@/components/molecules';
 import { capitalize } from 'es-toolkit';
 import { Coupon } from '@/models';
@@ -27,18 +27,11 @@ import { BILLING_PERIOD, BUCKET_SIZE_NONE } from '@/constants/constants';
 import { isCadenceCompatible } from '@/utils/subscription/cadenceCompatibility';
 import { isOneTimePlanPrice } from '@/utils/subscription/planPricesForSubscriptionUi';
 import { useTranslation } from 'react-i18next';
+import { resolveQuantityFromInput } from '@/utils/subscription/quantityValidation';
+
+export { resolveQuantityFromInput };
 
 const DEFAULT_ROW_LIMIT = 5;
-
-/**
- * Resolves the committed quantity from a table-cell input string.
- * Falls back to `minQuantity` only when the input doesn't parse to a
- * number at all — a typed "0" must resolve to 0, not fall back.
- */
-export function resolveQuantityFromInput(value: string, minQuantity: number): number {
-	const parsed = parseInt(value, 10);
-	return Number.isNaN(parsed) ? minQuantity : parsed;
-}
 
 /**
  * Whether a price belongs in the table for the selected subscription billing period.
@@ -152,87 +145,6 @@ const PriceActionMenu: FC<PriceActionMenuProps> = ({
 					)}
 				</DropdownMenuContent>
 			</DropdownMenu>
-		</div>
-	);
-};
-
-interface PriceQuantityCellProps {
-	price: Price;
-	override?: ExtendedPriceOverride;
-	lineItemCoupon: Coupon | null | undefined;
-	quantityInput: string | undefined;
-	disabled: boolean;
-	/** Pass string to set transient input (including '' for empty); pass null to clear transient after commit. */
-	onQuantityChange: (value: string | null) => void;
-	onResetOverride: (priceId: string) => void;
-	onPriceOverride: (priceId: string, override: Partial<ExtendedPriceOverride>) => void;
-	onClearCoupon: (priceId: string) => void;
-}
-
-const PriceQuantityCell: FC<PriceQuantityCellProps> = ({
-	price,
-	override,
-	lineItemCoupon,
-	quantityInput,
-	disabled,
-	onQuantityChange,
-	onResetOverride,
-	onPriceOverride,
-	onClearCoupon,
-}) => {
-	const { t } = useTranslation('customers');
-	const minQuantity = price.min_quantity ?? 1;
-	const currentQuantity = override?.quantity ?? minQuantity;
-	const displayQuantity = quantityInput ?? currentQuantity.toString();
-
-	// Clear transient only when override was removed (e.g. Reset Override) so we show minQuantity.
-	// We do not clear when override.quantity matches quantityInput, to avoid clearing right after user types.
-	useEffect(() => {
-		if (override !== undefined || quantityInput == null || quantityInput === '') {
-			return;
-		}
-		onQuantityChange(null);
-	}, [override, quantityInput, onQuantityChange]);
-
-	if (price.type !== PRICE_TYPE.FIXED) {
-		return <>{t('organisms.subscriptionPriceTable.payAsYouGo')}</>;
-	}
-
-	return (
-		<div className='w-20' data-interactive='true'>
-			<DecimalUsageInput
-				value={displayQuantity}
-				onChange={(value) => {
-					if (value === '') {
-						onQuantityChange('');
-						return;
-					}
-					const quantity = resolveQuantityFromInput(value, minQuantity);
-
-					if (quantity === minQuantity) {
-						const onlyQuantityOverride =
-							override &&
-							((Object.keys(override).length === 1 && override.quantity !== undefined) ||
-								(Object.keys(override).length === 2 && override.price_id && override.quantity));
-						if (onlyQuantityOverride) {
-							onResetOverride(price.id);
-						} else if (override) {
-							const { quantity: _q, ...rest } = override;
-							onPriceOverride(price.id, rest);
-						}
-					} else {
-						if (lineItemCoupon) onClearCoupon(price.id);
-						onPriceOverride(price.id, { quantity });
-						// Keep transient value so display doesn't snap back before parent re-renders
-						onQuantityChange(quantity.toString());
-						return;
-					}
-					onQuantityChange(value === quantity.toString() ? null : value);
-				}}
-				placeholder={minQuantity.toString()}
-				disabled={disabled}
-				precision={0}
-			/>
 		</div>
 	);
 };

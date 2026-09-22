@@ -44,6 +44,7 @@
 		"timestamp": "الطابع الزمني",
 		"response": "الاستجابة",
 		"eventDetails": "تفاصيل الحدث",
+		"ingestedAt": "وقت الاستلام",
 		"eventFilter": "مرشح الأحداث",
 		"roleRequiredHint": "الأدوار",
 		"placeholders": {
@@ -255,10 +256,13 @@
 			"noTrackerData": "لا تتوفر بيانات متتبع لهذا الحدث.",
 			"couldNotResolveCustomer": "تعذّر تحديد العميل لهذا الاشتراك",
 			"openSubscriptionFailed": "فشل فتح الاشتراك",
-			"propertiesCopied": "تم نسخ الخصائص إلى الحافظة!"
+			"propertiesCopied": "تم نسخ الخصائص إلى الحافظة!",
+			"ingestedVersionsTitle": "الإصدارات المستلمة",
+			"ingestedVersionNumber": "الإصدار {{n}}",
+			"duplicateEventIdHint": "تم استلام معرّف الحدث هذا أكثر من مرة. استخدام العداد المخزّن يأتي من أول معالجة، وليس بالضرورة من أحدث إصدار."
 		},
 		"processed": {
-			"eventNumber": "الحدث رقم {{n}}"
+			"eventNumber": "استخدام معالج رقم {{n}}"
 		},
 		"tracker": {
 			"ingested": "مُستلام",

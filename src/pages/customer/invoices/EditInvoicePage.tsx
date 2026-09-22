@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
-import { Info, Trash2 } from 'lucide-react';
+import { Check, Pencil, Trash2, X } from 'lucide-react';
 import {
 	Button,
 	Checkbox,
@@ -111,15 +111,6 @@ const rowsToMetadata = (rows: MetadataRow[]): Record<string, string> => {
 	return metadata;
 };
 
-const isValidUrl = (value: string): boolean => {
-	try {
-		const url = new URL(value);
-		return url.protocol === 'http:' || url.protocol === 'https:';
-	} catch {
-		return false;
-	}
-};
-
 /** Fires the load-error toast once from an effect so renders stay side-effect free. */
 const LoadErrorNotice: FC<{ message: string }> = ({ message }) => {
 	useEffect(() => {
@@ -135,7 +126,6 @@ const EditInvoicePage: FC = () => {
 	const { updateBreadcrumb } = useBreadcrumbsStore();
 
 	const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
-	const [pdfUrl, setPdfUrl] = useState('');
 	const [metadataRows, setMetadataRows] = useState<MetadataRow[]>([]);
 	const [applyDiscount, setApplyDiscount] = useState(false);
 	const [paymentStatus, setPaymentStatus] = useState('');
@@ -163,7 +153,6 @@ const EditInvoicePage: FC = () => {
 	useEffect(() => {
 		if (!invoice) return;
 		setDueDate(invoice.due_date ? new Date(invoice.due_date) : undefined);
-		setPdfUrl(invoice.invoice_pdf_url ?? '');
 		setMetadataRows(toMetadataRows(invoice));
 		setApplyDiscount(false);
 		setPaymentStatus(invoice.payment_status ?? '');
@@ -186,7 +175,6 @@ const EditInvoicePage: FC = () => {
 
 	const originalDueDateMs = useMemo(() => (invoice?.due_date ? new Date(invoice.due_date).getTime() : undefined), [invoice]);
 	const dueDateChanged = !!invoice && dueDate?.getTime() !== originalDueDateMs;
-	const pdfUrlChanged = !!invoice && pdfUrl.trim() !== (invoice.invoice_pdf_url ?? '');
 	const metadataChanged = useMemo(() => {
 		if (!invoice) return false;
 		return JSON.stringify(rowsToMetadata(metadataRows)) !== JSON.stringify(rowsToMetadata(toMetadataRows(invoice)));
@@ -250,8 +238,7 @@ const EditInvoicePage: FC = () => {
 
 	const lineItemsChanged = lineItemOps.removes.length > 0 || lineItemOps.updates.length > 0 || lineItemOps.adds.length > 0;
 
-	const hasChanges =
-		dueDateChanged || pdfUrlChanged || metadataChanged || applyDiscount || paymentStatusChanged || lineItemsChanged || invoiceStatusChanged;
+	const hasChanges = dueDateChanged || metadataChanged || applyDiscount || paymentStatusChanged || lineItemsChanged || invoiceStatusChanged;
 
 	const { mutate: updateInvoice, isPending } = useMutation({
 		mutationFn: async ({
@@ -343,14 +330,6 @@ const EditInvoicePage: FC = () => {
 				return null;
 			}
 			payload.due_date = dueDate.toISOString();
-		}
-		if (pdfUrlChanged) {
-			const trimmed = pdfUrl.trim();
-			if (trimmed && !isValidUrl(trimmed)) {
-				toast.error(t('invoices.edit.pdfUrlInvalid'));
-				return null;
-			}
-			payload.invoice_pdf_url = trimmed;
 		}
 		if (metadataChanged) {
 			payload.metadata = rowsToMetadata(metadataRows);
@@ -507,43 +486,102 @@ const EditInvoicePage: FC = () => {
 					</div>
 				</Dialog>
 				<div className='rounded-xl border border-line bg-transparent p-6'>
-					{/* read-only invoice context */}
+					{/* invoice details — the editing surface: read-only fields render as plain
+					    text, and only genuinely editable fields render controls */}
 					<div className='p-4'>
 						<FormHeader className='!mb-0' title={t('invoices.edit.detailsTitle')} variant='sub-header' titleClassName='font-semibold' />
 						<Spacer className='!my-6' />
-						<div className='w-full grid grid-cols-4 gap-4'>
-							<p className={readonlyLabelClass}>{t('invoices.edit.invoiceNumber')}</p>
-							<p className={readonlyLabelClass}>{t('invoices.edit.customer')}</p>
-							<p className={readonlyLabelClass}>{t('invoices.edit.issueDate')}</p>
-							<p className={readonlyLabelClass}>{t('invoices.edit.currency')}</p>
-						</div>
-						<div className='w-full grid grid-cols-4 gap-4 mt-1'>
-							<p className={readonlyValueClass}>{invoice.invoice_number || na}</p>
-							<RedirectCell redirectUrl={`${RouteNames.customers}/${invoice.customer_id}`}>
-								<p className={readonlyValueClass}>{invoice.customer?.name || na}</p>
-							</RedirectCell>
-							<p className={readonlyValueClass}>{invoice.issue_date ? formatDate(invoice.issue_date, i18n.language) : na}</p>
-							<p className={cn(readonlyValueClass, 'uppercase')}>{invoice.currency || na}</p>
-						</div>
-						<Spacer className='!my-4' />
-						<div className='w-full grid grid-cols-4 gap-4'>
-							<p className={readonlyLabelClass}>{t('invoices.edit.status')}</p>
-							<p className={readonlyLabelClass}>{t('invoices.edit.paymentStatus')}</p>
-						</div>
-						<div className='w-full grid grid-cols-4 gap-4 mt-1'>
-							<div>{getStatusChip(invoice.invoice_status ?? '', t)}</div>
-							<div>{getPaymentStatusChip(invoice.payment_status ?? '', t)}</div>
-						</div>
-						<Spacer className='!my-4' />
-						<div className='w-full grid grid-cols-4 gap-4'>
-							<p className={cn(readonlyLabelClass, 'col-span-2')}>{t('invoices.edit.description')}</p>
-							<p className={readonlyLabelClass}>{t('invoices.edit.periodStart')}</p>
-							<p className={readonlyLabelClass}>{t('invoices.edit.periodEnd')}</p>
-						</div>
-						<div className='w-full grid grid-cols-4 gap-4 mt-1'>
-							<p className={cn(readonlyValueClass, 'col-span-2 break-words')}>{invoice.description || na}</p>
-							<p className={readonlyValueClass}>{invoice.period_start ? formatDate(invoice.period_start, i18n.language) : na}</p>
-							<p className={readonlyValueClass}>{invoice.period_end ? formatDate(invoice.period_end, i18n.language) : na}</p>
+						<div className='grid grid-cols-3 gap-x-6 gap-y-5 max-w-4xl items-start'>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.invoiceNumber')}</p>
+								<p className={cn(readonlyValueClass, 'mt-1')}>{invoice.invoice_number || na}</p>
+							</div>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.customer')}</p>
+								<RedirectCell redirectUrl={`${RouteNames.customers}/${invoice.customer_id}`}>
+									<p className={cn(readonlyValueClass, 'mt-1')}>{invoice.customer?.name || na}</p>
+								</RedirectCell>
+							</div>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.issueDate')}</p>
+								<p className={cn(readonlyValueClass, 'mt-1')}>{invoice.issue_date ? formatDate(invoice.issue_date, i18n.language) : na}</p>
+							</div>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.invoiceStatus')}</p>
+								{isInvoiceStatusEditable ? (
+									<div className='mt-1'>
+										<Select
+											value={invoiceStatus}
+											options={[
+												{
+													value: INVOICE_STATUS.DRAFT,
+													label: t('invoices.status.draft'),
+													disabled: invoice.invoice_status !== INVOICE_STATUS.DRAFT,
+												},
+												{
+													value: INVOICE_STATUS.FINALIZED,
+													label: t('invoices.status.finalized'),
+													disabled: invoice.invoice_status !== INVOICE_STATUS.FINALIZED && !canFinalize,
+												},
+												{
+													value: INVOICE_STATUS.VOIDED,
+													label: t('invoices.status.void'),
+													disabled: !canVoid,
+												},
+											]}
+											onChange={setInvoiceStatus}
+											description={
+												invoiceStatus === INVOICE_STATUS.VOIDED && invoiceStatusChanged ? t('invoices.edit.voidOnSaveHint') : undefined
+											}
+										/>
+									</div>
+								) : (
+									<div className='mt-1.5'>{getStatusChip(invoice.invoice_status ?? '', t)}</div>
+								)}
+							</div>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.paymentStatus')}</p>
+								{isPaymentStatusEditable ? (
+									<div className='mt-1'>
+										<Select
+											value={paymentStatus}
+											options={[
+												{ value: PAYMENT_STATUS.PENDING, label: t('invoices.details.paymentStatusModal.pendingLabel') },
+												{ value: PAYMENT_STATUS.SUCCEEDED, label: t('invoices.details.paymentStatusModal.succeededLabel') },
+												{ value: PAYMENT_STATUS.FAILED, label: t('invoices.details.paymentStatusModal.failedLabel') },
+											]}
+											onChange={setPaymentStatus}
+										/>
+									</div>
+								) : (
+									<div className='mt-1.5'>{getPaymentStatusChip(invoice.payment_status ?? '', t)}</div>
+								)}
+							</div>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.currency')}</p>
+								<p className={cn(readonlyValueClass, 'mt-1 uppercase')}>{invoice.currency || na}</p>
+							</div>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.dueDate')}</p>
+								{isEditable ? (
+									<div className='mt-1'>
+										<DateTimePicker date={dueDate} setDate={setDueDate} placeholder={t('invoices.edit.dueDatePlaceholder')} />
+									</div>
+								) : (
+									<p className={cn(readonlyValueClass, 'mt-1')}>{invoice.due_date ? formatDate(invoice.due_date, i18n.language) : na}</p>
+								)}
+							</div>
+							<div>
+								<p className={readonlyLabelClass}>{t('invoices.edit.period')}</p>
+								<p className={cn(readonlyValueClass, 'mt-1')}>
+									{invoice.period_start && invoice.period_end ? formatBillingPeriod(invoice.period_start, invoice.period_end) : na}
+								</p>
+							</div>
+							<div />
+							<div className='col-span-3'>
+								<p className={readonlyLabelClass}>{t('invoices.edit.description')}</p>
+								<p className={cn(readonlyValueClass, 'mt-1 break-words')}>{invoice.description || na}</p>
+							</div>
 						</div>
 					</div>
 
@@ -555,99 +593,10 @@ const EditInvoicePage: FC = () => {
 
 					<Divider className='my-4' />
 
-					{/* editable fields */}
-					<div className='p-4'>
-						<FormHeader title={t('invoices.edit.editableTitle')} variant='sub-header' titleClassName='font-semibold' />
-						<div className='mt-6 grid grid-cols-2 gap-6 max-w-3xl'>
-							<DateTimePicker
-								title={t('invoices.edit.dueDate')}
-								date={dueDate}
-								setDate={setDueDate}
-								placeholder={t('invoices.edit.dueDatePlaceholder')}
-								disabled={!isEditable}
-							/>
-							<Input
-								label={t('invoices.edit.pdfUrl')}
-								value={pdfUrl}
-								onChange={setPdfUrl}
-								placeholder={t('invoices.edit.pdfUrlPlaceholder')}
-								description={t('invoices.edit.pdfUrlHint')}
-								disabled={!isEditable}
-							/>
-							<Select
-								label={t('invoices.edit.paymentStatus')}
-								value={paymentStatus}
-								options={[
-									{ value: PAYMENT_STATUS.PENDING, label: t('invoices.details.paymentStatusModal.pendingLabel') },
-									{ value: PAYMENT_STATUS.SUCCEEDED, label: t('invoices.details.paymentStatusModal.succeededLabel') },
-									{ value: PAYMENT_STATUS.FAILED, label: t('invoices.details.paymentStatusModal.failedLabel') },
-								]}
-								onChange={setPaymentStatus}
-								disabled={!isPaymentStatusEditable}
-								description={!isPaymentStatusEditable && isEditable ? t('invoices.edit.paymentStatusLockedHint') : undefined}
-							/>
-							<Select
-								label={t('invoices.edit.invoiceStatus')}
-								value={invoiceStatus}
-								options={[
-									{
-										value: INVOICE_STATUS.DRAFT,
-										label: t('invoices.status.draft'),
-										disabled: invoice.invoice_status !== INVOICE_STATUS.DRAFT,
-									},
-									{
-										value: INVOICE_STATUS.FINALIZED,
-										label: t('invoices.status.finalized'),
-										disabled: invoice.invoice_status !== INVOICE_STATUS.FINALIZED && !canFinalize,
-									},
-									{
-										value: INVOICE_STATUS.VOIDED,
-										label: t('invoices.status.void'),
-										disabled: !canVoid,
-									},
-								]}
-								onChange={setInvoiceStatus}
-								disabled={!isInvoiceStatusEditable}
-								description={
-									isInvoiceStatusEditable
-										? invoiceStatus === INVOICE_STATUS.VOIDED && invoiceStatusChanged
-											? t('invoices.edit.voidOnSaveHint')
-											: undefined
-										: isEditable
-											? t('invoices.edit.invoiceStatusLockedHint')
-											: undefined
-								}
-							/>
-						</div>
-						{isEditable && (
-							<div
-								className={cn(
-									'mt-6 max-w-3xl rounded-lg border p-4 transition-colors',
-									applyDiscount ? 'border-primary bg-muted/40' : 'border-line hover:bg-muted/20',
-								)}>
-								<Checkbox
-									id='apply-discount'
-									checked={applyDiscount}
-									onCheckedChange={(checked) => setApplyDiscount(!!checked)}
-									label={t('invoices.edit.applyDiscount')}
-									description={t('invoices.edit.applyDiscountDescription')}
-								/>
-							</div>
-						)}
-					</div>
-
-					<Divider className='my-4' />
-
 					{/* line items — editable for drafts and finalized invoices through the invoice modify API.
 					    Rows read as an invoice table; clicking a row expands it into an inline editor. */}
 					{isEditable ? (
 						<div className='p-4'>
-							{isFinalized && (
-								<div className='mb-4 flex items-start gap-2.5 rounded-lg border border-line bg-muted/40 px-4 py-3'>
-									<Info className='mt-0.5 size-4 shrink-0 text-content-zinc-muted' />
-									<p className='text-sm text-content-zinc-muted'>{t('invoices.edit.finalizedEditHint')}</p>
-								</div>
-							)}
 							<div className='flex items-start justify-between gap-4'>
 								<FormHeader
 									title={t('invoices.edit.lineItemsTitle')}
@@ -665,22 +614,24 @@ const EditInvoicePage: FC = () => {
 							</div>
 							<div className='mt-4 overflow-hidden rounded-lg border border-line'>
 								<div className='overflow-x-auto'>
-									<table className='w-full border-collapse'>
+									{/* fixed layout: the header widths govern, so editor inputs can't widen
+									    columns and push the row actions out of the viewport */}
+									<table className='w-full table-fixed border-collapse'>
 										<thead>
 											<tr className='border-b border-line'>
 												<th className='py-2.5 px-4 text-start text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
 													{t('invoices.edit.itemColumn')}
 												</th>
-												<th className='py-2.5 px-4 text-end text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
+												<th className='w-28 py-2.5 px-3 text-end text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
 													{t('createInvoice.quantity')}
 												</th>
-												<th className='py-2.5 px-4 text-end text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
+												<th className='w-28 py-2.5 px-4 text-end text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
 													{t('createInvoice.amount')}
 												</th>
-												<th className='py-2.5 px-4 text-start text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
+												<th className='w-[210px] py-2.5 px-4 text-start text-xs font-medium uppercase tracking-wide text-content-zinc-muted'>
 													{t('invoices.edit.servicePeriod')}
 												</th>
-												<th className='w-12' />
+												<th className='w-20' />
 											</tr>
 										</thead>
 										<tbody>
@@ -693,58 +644,63 @@ const EditInvoicePage: FC = () => {
 											)}
 											{lineItemRows.map((row, index) =>
 												!isRowVisible(row, index) ? null : rowEditor?.index === index ? (
+													// The editing row keeps the table's own columns, so the header row doubles as the field labels.
 													<tr key={row.id ?? `new-${index}`} className='border-b border-line-subtle bg-muted/20'>
-														<td colSpan={5} className='p-4'>
-															<div className='max-w-3xl'>
-																<div className='grid grid-cols-2 gap-4'>
-																	<Input
-																		label={t('createInvoice.itemName')}
-																		value={row.display_name}
-																		onChange={(value) => handleLineItemChange(index, 'display_name', value)}
-																		placeholder={t('createInvoice.itemNamePlaceholder')}
-																	/>
-																	<Input
-																		label={t('invoices.edit.description')}
-																		value={row.description}
-																		onChange={(value) => handleLineItemChange(index, 'description', value)}
-																		placeholder={t('invoices.edit.lineItemDescriptionPlaceholder')}
-																	/>
-																	<Input
-																		label={t('createInvoice.quantity')}
-																		value={row.quantity}
-																		onChange={(value) => handleLineItemChange(index, 'quantity', value)}
-																		variant='integer'
-																		placeholder='1'
-																	/>
-																	<Input
-																		label={t('createInvoice.amount')}
-																		value={row.amount}
-																		onChange={(value) => handleLineItemChange(index, 'amount', value)}
-																		variant='formatted-number'
-																		placeholder={t('creditNotes.amountPlaceholder')}
-																	/>
-																	<DateRangePicker
-																		title={t('invoices.edit.servicePeriod')}
-																		startDate={row.period_start ? new Date(row.period_start) : undefined}
-																		endDate={row.period_end ? new Date(row.period_end) : undefined}
-																		onChange={(dates) => handleLineItemPeriodChange(index, dates)}
-																	/>
-																</div>
-																<div className='mt-4 flex items-center justify-between'>
-																	<Button
-																		variant='ghost'
-																		className='text-content-zinc-muted'
-																		onClick={() => handleRemoveLineItemRow(index)}>
-																		<Trash2 className='me-2 size-4' />
-																		{t('invoices.edit.removeLineItem')}
-																	</Button>
-																	<div className='flex gap-3'>
-																		<Button variant='outline' onClick={handleRowEditorCancel}>
-																			{t('common:actions.cancel')}
-																		</Button>
-																		<Button onClick={() => setRowEditor(null)}>{t('common:actions.done')}</Button>
-																	</div>
-																</div>
+														<td className='py-3 px-4 align-top'>
+															<div className='max-w-sm space-y-2'>
+																<Input
+																	value={row.display_name}
+																	onChange={(value) => handleLineItemChange(index, 'display_name', value)}
+																	placeholder={t('createInvoice.itemNamePlaceholder')}
+																/>
+																<Input
+																	value={row.description}
+																	onChange={(value) => handleLineItemChange(index, 'description', value)}
+																	placeholder={t('invoices.edit.lineItemDescriptionPlaceholder')}
+																/>
+															</div>
+														</td>
+														<td className='py-3 px-4 align-top'>
+															<Input
+																value={row.quantity}
+																onChange={(value) => handleLineItemChange(index, 'quantity', value)}
+																variant='integer'
+																placeholder='1'
+															/>
+														</td>
+														<td className='py-3 px-4 align-top'>
+															<Input
+																value={row.amount}
+																onChange={(value) => handleLineItemChange(index, 'amount', value)}
+																variant='formatted-number'
+																placeholder={t('creditNotes.amountPlaceholder')}
+															/>
+														</td>
+														<td className='py-3 px-4 align-top'>
+															<DateRangePicker
+																startDate={row.period_start ? new Date(row.period_start) : undefined}
+																endDate={row.period_end ? new Date(row.period_end) : undefined}
+																onChange={(dates) => handleLineItemPeriodChange(index, dates)}
+																className='w-full min-w-0'
+																popoverTriggerClassName='w-full'
+															/>
+														</td>
+														<td className='py-3 px-2 align-top'>
+															<div className='flex justify-end gap-1'>
+																<Button
+																	variant='ghost'
+																	className='size-8'
+																	aria-label={t('common:actions.done')}
+																	onClick={() => setRowEditor(null)}>
+																	<Check className='size-4' />
+																</Button>
+																<Button
+																	variant='ghost'
+																	className='size-8'
+																	aria-label={t('common:actions.cancel')}
+																	onClick={handleRowEditorCancel}>
+																	<X className='size-4' />
+																</Button>
 															</div>
 														</td>
 													</tr>
@@ -777,16 +733,28 @@ const EditInvoicePage: FC = () => {
 															{row.period_start && row.period_end ? formatBillingPeriod(row.period_start, row.period_end) : na}
 														</td>
 														<td className='py-3 px-2 text-end'>
-															<Button
-																variant='ghost'
-																className='size-8 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
-																aria-label={t('invoices.edit.removeLineItem')}
-																onClick={(e) => {
-																	e.stopPropagation();
-																	handleRemoveLineItemRow(index);
-																}}>
-																<Trash2 className='size-4' />
-															</Button>
+															<div className='flex justify-end gap-1'>
+																<Button
+																	variant='ghost'
+																	className='size-8 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
+																	aria-label={t('invoices.edit.editLineItem')}
+																	onClick={(e) => {
+																		e.stopPropagation();
+																		handleOpenRowEditor(index);
+																	}}>
+																	<Pencil className='size-4' />
+																</Button>
+																<Button
+																	variant='ghost'
+																	className='size-8 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100'
+																	aria-label={t('invoices.edit.removeLineItem')}
+																	onClick={(e) => {
+																		e.stopPropagation();
+																		handleRemoveLineItemRow(index);
+																	}}>
+																	<Trash2 className='size-4' />
+																</Button>
+															</div>
 														</td>
 													</tr>
 												),
@@ -805,6 +773,15 @@ const EditInvoicePage: FC = () => {
 									<AddChargesButton onClick={handleAddLineItem} label={t('createInvoice.addLineItem')} />
 								</div>
 							</div>
+							{/* discount reapplication sits below the table, separated by its own rule */}
+							<Divider className='my-5' />
+							<Checkbox
+								id='apply-discount'
+								checked={applyDiscount}
+								onCheckedChange={(checked) => setApplyDiscount(!!checked)}
+								label={t('invoices.edit.applyDiscount')}
+								description={t('invoices.edit.applyDiscountDescription')}
+							/>
 						</div>
 					) : (
 						<div className='px-4 pb-4'>
@@ -817,6 +794,7 @@ const EditInvoicePage: FC = () => {
 								total_prepaid_credits_applied={invoice.total_prepaid_credits_applied}
 								discount={invoice.total_discount}
 								total_tax={invoice.total_tax}
+								tax_summary={invoice.tax_summary}
 								amount_paid={invoice.amount_paid}
 								overpaid_amount={invoice.overpaid_amount}
 								amount_remaining={Number(invoice.amount_remaining)}
@@ -832,7 +810,8 @@ const EditInvoicePage: FC = () => {
 					{/* metadata */}
 					<div className='p-4'>
 						<FormHeader title={t('invoices.edit.metadata')} variant='sub-header' titleClassName='font-semibold' />
-						<div className='mt-6 flex flex-col gap-4 max-w-3xl'>
+						{/* full width so the row's delete action lines up with the line-item table's edge */}
+						<div className='mt-6 flex flex-col gap-4'>
 							{metadataRows.map((row, index) => (
 								<div key={index} className='flex gap-2 items-start'>
 									<div className='flex-[3] min-w-0'>

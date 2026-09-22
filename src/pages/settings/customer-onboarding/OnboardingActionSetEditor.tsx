@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FieldWithInfo, Input, Select } from '@/components/atoms';
 import { SettingsToggleRow } from '@/components/molecules';
-import { billingCycleOptions, currencyOptions, DEFAULT_CURRENCY_CODE } from '@/constants/constants';
+import { billingCycleOptions, DEFAULT_CURRENCY_CODE } from '@/constants/constants';
+import useCurrencyOptions from '@/hooks/useCurrencyOptions';
 import { cn } from '@/lib/utils';
 import { CREDIT_GRANT_PERIOD_UNIT } from '@/models/CreditGrant';
 import { BILLING_CYCLE } from '@/models/Subscription';
@@ -39,6 +40,8 @@ const OnboardingActionSetEditor = ({
 }: OnboardingActionSetEditorProps) => {
 	const { t } = useTranslation(['settings', 'common']);
 	const showCreditsExpiry = Number(value.walletInitialCreditsToLoad) > 0;
+
+	const currencyOptions = useCurrencyOptions();
 
 	const resolvedPlanOptions = useMemo(() => {
 		if (value.subscriptionPlanId && !planOptions.some((option) => option.value === value.subscriptionPlanId)) {

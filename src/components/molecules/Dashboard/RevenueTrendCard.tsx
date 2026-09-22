@@ -6,6 +6,7 @@ import { getTypographyClass } from '@/lib/typography';
 import { Info, AlertCircle } from 'lucide-react';
 import { currencyOptions } from '@/constants/constants';
 import { useTranslation } from 'react-i18next';
+import { getCustomCurrencySymbol } from '@/utils/common/custom_currency';
 
 interface RevenueMonth {
 	month: string;
@@ -15,12 +16,15 @@ interface RevenueMonth {
 
 function formatDashboardRevenueAmount(revenue: number, currencyCode: string, notAvailableLabel: string): string {
 	if (revenue === 0) return notAvailableLabel;
-	return new Intl.NumberFormat(undefined, {
+	const parts = new Intl.NumberFormat(undefined, {
 		style: 'currency',
 		currency: currencyCode,
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
-	}).format(revenue);
+	}).formatToParts(revenue);
+
+	const customSymbol = getCustomCurrencySymbol(currencyCode);
+	return parts.map((part) => (part.type === 'currency' && customSymbol ? customSymbol : part.value)).join('');
 }
 
 interface RevenueTrendCardProps {

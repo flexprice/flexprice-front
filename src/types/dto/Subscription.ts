@@ -1,6 +1,7 @@
 import {
 	BILLING_CADENCE,
 	LineItem as InvoiceLineItem,
+	InvoiceTaxSummary,
 	BILLING_CYCLE,
 	SUBSCRIPTION_STATUS,
 	GROUPED_INVOICING_MODIFY_ACTION,
@@ -16,6 +17,7 @@ import {
 	COLLECTION_METHOD,
 	PAYMENT_TERMS,
 	SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE,
+	LINE_ITEM_GROUPING,
 	Metadata,
 	Subscription,
 	Pagination,
@@ -148,6 +150,7 @@ export interface GetSubscriptionPreviewResponse {
 	voided_at: string;
 	total_discount: number;
 	total_tax: number;
+	tax_summary?: InvoiceTaxSummary;
 }
 
 // Subscription Change Types
@@ -409,6 +412,17 @@ export interface CreateSubscriptionRequest {
 	 * "Also available on this plan" section; in that case it sends the full list (primary + opted-in).
 	 */
 	include_price_ids?: string[];
+
+	/**
+	 * How charges whose cadence is finer than the subscription's billing period are laid out
+	 * on the invoice. Presentation only — the invoice total is identical either way.
+	 *  - Omitted (default): backend uses `per_charge_period`; a monthly charge on a quarterly
+	 *    subscription bills as 3 line items.
+	 *  - `per_billing_period`: those collapse into 1 line item spanning the quarter.
+	 * Frontend sends this only when at least one attached charge actually splits (see
+	 * `subscriptionHasSplittingCharge`), since it is a no-op otherwise. Write-at-create today.
+	 */
+	line_item_grouping?: LINE_ITEM_GROUPING;
 }
 
 export interface SubscriptionPhaseCreateRequest {
@@ -440,8 +454,8 @@ export interface OverrideLineItemRequest {
 	// PriceID references the plan price to override
 	price_id: string;
 
-	// Quantity for this line item (optional)
-	quantity?: number;
+	// Quantity for this line item (optional). API expects a decimal string.
+	quantity?: number | string;
 
 	billing_model?: BILLING_MODEL;
 

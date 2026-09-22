@@ -6,6 +6,10 @@
 	"info": {
 		"ariaLabel": "مزيد من المعلومات حول {{field}}"
 	},
+	"docs": {
+		"docsLink": "المستندات",
+		"openDocsTitle": "فتح مستندات {{name}}"
+	},
 	"superAdmin": {
 		"writeDeniedTooltip": "يمكن فقط لمسؤول متميز (Super Admin) تغيير هذا الإعداد. اطلب الوصول من مسؤول المستأجر."
 	},
@@ -137,6 +141,10 @@
 			"resetToDefaults": "إعادة التعيين إلى الافتراضي"
 		},
 		"invoiceConfiguration": {
+			"actions": {
+				"docs": "المستندات",
+				"docsTitle": "فتح مستندات إعدادات الفواتير"
+			},
 			"title": "إعداد الفواتير",
 			"previewLabel": "معاينة",
 			"nextInvoiceNumber": "رقم الفاتورة التالي",
@@ -187,6 +195,10 @@
 			}
 		},
 		"subscriptionConfiguration": {
+			"actions": {
+				"docs": "المستندات",
+				"docsTitle": "فتح مستندات إعدادات الاشتراكات"
+			},
 			"title": "إعداد الاشتراكات",
 			"previewLabel": "معاينة الإعداد",
 			"saveSuccess": "تم حفظ إعداد الاشتراكات",
@@ -215,6 +227,49 @@
 				"description1": "يُلغى الاشتراك فوراً — وليس في نهاية الفترة",
 				"description2": "يُرسل webhook من نوع subscription.cancelled لمزامنة الأنظمة الأخرى",
 				"description3": "تُلغى منح الائتمان المستقبلية، وتُنشأ فاتورة نهائية للفترة الجزئية"
+			}
+		},
+		"customCurrencyConfiguration": {
+			"title": "إعدادات العملة المخصصة",
+			"saveSuccess": "تم حفظ إعدادات العملة المخصصة",
+			"saveError": "تعذر حفظ إعدادات العملة المخصصة",
+			"fields": {
+				"settlementCurrency": "عملة التسوية",
+				"settlementPlaceholder": "اختر عملة",
+				"conversionCurrencies": "عملات التحويل",
+				"defaultBadge": "افتراضي",
+				"code": "الرمز",
+				"name": "الاسم",
+				"symbol": "الرمز المعروض",
+				"rate": "السعر مقابل {{fiat}}",
+				"codePlaceholder": "crd",
+				"namePlaceholder": "Credits",
+				"symbolPlaceholder": "CR",
+				"ratePlaceholder": "0.00"
+			},
+			"hints": {
+				"settlementCurrency": "تُصدر الفواتير وتُدفع بهذه العملة. وتُحوَّل إليها المبالغ المسعَّرة بعملتك المخصصة.",
+				"conversionCurrencies": "تحتاج كل عملة مخصصة إلى سعر مقابل كل واحدة من هذه العملات. أدخل قيمة وحدة واحدة من عملتك بتلك العملة، وليس العكس.",
+				"conversionFormula": "1 CRD = 0.10 USD، أي أن السعر هو 0.10",
+				"code": "يُستخدم أينما تُحدَّد العملة على سعر أو اشتراك أو محفظة. ولا يمكن تغييره لاحقًا."
+			},
+			"actions": {
+				"addCurrency": "إضافة عملة",
+				"addConversionCurrency": "إضافة عملة",
+				"docs": "الوثائق",
+				"docsTitle": "فتح وثائق العملة المخصصة",
+				"removeCurrency": "إزالة {{currency}}",
+				"removeConversionCurrency": "إزالة {{currency}}"
+			},
+			"errors": {
+				"loadFailed": "تعذر تحميل الإعدادات الحالية. أعد التحميل قبل إجراء أي تغييرات.",
+				"defaultFiatRequired": "اختر عملة التسوية.",
+				"codeLength": "يجب أن تتكون رموز العملات من 3 أحرف.",
+				"codeDuplicate": "لا يمكن استخدام رمز العملة أكثر من مرة.",
+				"codeMatchesFiat": "لا يمكن أن يطابق رمز العملة إحدى عملات التحويل.",
+				"nameRequired": "كل عملة تحتاج إلى اسم.",
+				"symbolRequired": "كل عملة تحتاج إلى رمز معروض.",
+				"factorInvalid": "يجب أن يكون كل سعر أكبر من 0."
 			}
 		}
 	},
@@ -339,10 +394,6 @@
 		"walletAlerts": {
 			"title": "إعدادات تنبيه المحفظة",
 			"description": "راقب رصيد المحفظة مقابل العتبات المُعدّة",
-			"thresholdValue": "قيمة العتبة ({{currency}})",
-			"condition": "الشرط",
-			"remove": "إزالة",
-			"add": "إضافة",
 			"amountPlaceholder": "0.00",
 			"saveChanges": "حفظ التغييرات",
 			"saveSuccess": "تم حفظ إعدادات تنبيه المحفظة",
@@ -352,28 +403,25 @@
 				"warning": "تحذير",
 				"info": "معلومات"
 			},
-			"levelDescriptions": {
-				"critical": "تنبيه عند المستوى الحرج",
-				"warning": "تنبيه عند مستوى التحذير",
-				"info": "تنبيه عند مستوى المعلومات"
-			},
-			"conditions": {
-				"below": "أقل من",
-				"above": "أكبر من"
-			},
 			"validation": {
 				"atLeastOneThreshold": "يرجى تكوين مستوى عتبة واحد على الأقل عند تفعيل التنبيهات",
 				"invalidCriticalThreshold": "يرجى إدخال قيمة عتبة حرجة صالحة",
 				"invalidWarningThreshold": "يرجى إدخال قيمة عتبة تحذير صالحة",
 				"invalidInfoThreshold": "يرجى إدخال قيمة عتبة معلومات صالحة",
+				"criticalThresholdOutOfRange": "يجب أن تكون العتبة الحرجة بين 0 و100.",
+				"warningThresholdOutOfRange": "يجب أن تكون عتبة التحذير بين 0 و100.",
+				"infoThresholdOutOfRange": "يجب أن تكون عتبة المعلومات بين 0 و100.",
 				"criticalRequiredForWarning": "عتبة حرجة مطلوبة عند تعيين عتبة تحذير",
-				"warningMustBeLessThanCritical": "لتنبيهات \"أكبر من\"، يجب أن تكون عتبة التحذير أقل من العتبة الحرجة",
-				"warningMustBeGreaterThanCritical": "لتنبيهات \"أقل من\"، يجب أن تكون عتبة التحذير أكبر من العتبة الحرجة",
-				"infoMustBeLessThanWarning": "لتنبيهات \"أكبر من\"، يجب أن تكون عتبة المعلومات أقل من عتبة التحذير",
-				"infoMustBeGreaterThanWarning": "لتنبيهات \"أقل من\"، يجب أن تكون عتبة المعلومات أكبر من عتبة التحذير",
-				"infoMustBeLessThanCritical": "لتنبيهات \"أكبر من\"، يجب أن تكون عتبة المعلومات أقل من العتبة الحرجة",
-				"infoMustBeGreaterThanCritical": "لتنبيهات \"أقل من\"، يجب أن تكون عتبة المعلومات أكبر من العتبة الحرجة"
-			}
+				"warningMustBeGreaterThanCritical": "يجب أن تكون عتبة التحذير أكبر من العتبة الحرجة",
+				"infoMustBeGreaterThanWarning": "يجب أن تكون عتبة المعلومات أكبر من عتبة التحذير",
+				"infoMustBeGreaterThanCritical": "يجب أن تكون عتبة المعلومات أكبر من العتبة الحرجة"
+			},
+			"rowDescription": "الرصيد أقل من",
+			"thresholdTypeLabel": "نوع العتبة",
+			"thresholdTypeAbsolute": "مطلق",
+			"thresholdTypePercentage": "نسبة مئوية",
+			"thresholdTypeTooltipAbsolute": "مطلق: تُفعَّل التنبيهات عند انخفاض رصيد المحفظة عن مبلغ ثابت.",
+			"thresholdTypeTooltipPercentage": "نسبة مئوية: تُفعَّل التنبيهات على الرصيد الجاري، مقيسًا كنسبة مئوية من الأرصدة الممنوحة خلال فترة الفوترة الحالية. في حال عدم وجود اشتراك نشط، يُستخدم إجمالي الأرصدة الممنوحة طوال الوقت."
 		}
 	},
 	"appearance": {

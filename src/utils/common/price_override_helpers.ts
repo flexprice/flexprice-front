@@ -5,6 +5,7 @@ import { BUCKET_SIZE_NONE } from '@/constants/constants';
 import { LineItemCommitmentConfig } from '@/types/dto/LineItemCommitmentConfig';
 import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
 import type { OverrideLineItemRequest } from '@/types/dto/Subscription';
+import { parseNonNegativeQuantity } from '@/utils/subscription/quantityValidation';
 
 /**
  * Interface for line item overrides that will be sent to the backend
@@ -228,7 +229,7 @@ export const overrideLineItemsToMap = (items?: OverrideLineItemRequest[]): Recor
 		map[o.price_id] = {
 			price_id: o.price_id,
 			...(o.amount !== undefined ? { amount: String(o.amount) } : {}),
-			...(o.quantity !== undefined ? { quantity: o.quantity } : {}),
+			...(o.quantity !== undefined ? { quantity: parseNonNegativeQuantity(o.quantity) } : {}),
 			...(o.billing_model ? { billing_model: isSlab ? ('SLAB_TIERED' as const) : o.billing_model } : {}),
 			...(o.tier_mode && !isSlab ? { tier_mode: o.tier_mode } : {}),
 			...(o.tiers ? { tiers: o.tiers } : {}),

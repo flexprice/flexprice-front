@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 import { COUPON_TYPE, COUPON_CADENCE } from '@/types/common/Coupon';
 import { CreateCouponRequest, UpdateCouponRequest } from '@/types/dto/Coupon';
 import { RouteNames } from '@/core/routes/Routes';
-import { getCurrencyOptions } from '@/constants/constants';
+import useCurrencyOptions from '@/hooks/useCurrencyOptions';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -147,10 +147,12 @@ const CouponDrawer: FC<Props> = ({ data, open, onOpenChange, trigger, refetchQue
 		{ label: t('coupons.drawer.cadenceForever'), value: COUPON_CADENCE.FOREVER },
 	];
 
-	const currencyOptions: SelectOption[] = getCurrencyOptions().map((currency) => {
+	const availableCurrencies = useCurrencyOptions();
+
+	const currencyOptions: SelectOption[] = availableCurrencies.map((currency) => {
 		return {
-			label: currency.currency,
-			value: currency.currency.toLowerCase(),
+			label: currency.label,
+			value: currency.value.toLowerCase(),
 		};
 	});
 

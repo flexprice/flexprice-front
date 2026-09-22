@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { CalendarIcon, X } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { Button, Calendar, Popover, PopoverContent, PopoverTrigger } from '@/components/ui';
 import type { CalendarTimezone } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -85,6 +85,11 @@ const DateRangePicker = ({
 		[selectedRange, timezone, onChange],
 	);
 
+	const handleClear = useCallback(() => {
+		setSelectedRange(undefined);
+		onChange({ startDate: undefined, endDate: undefined });
+	}, [onChange]);
+
 	useEffect(() => {
 		if (startDate && endDate) {
 			setSelectedRange({ from: startDate, to: endDate });
@@ -120,39 +125,23 @@ const DateRangePicker = ({
 			<div className={cn('inline-block', popoverTriggerClassName)}>
 				<div className='flex flex-col '>
 					{title && <div className={cn('text-sm font-medium mb-1 w-full text-start', labelClassName)}>{title}</div>}
-					<div className='relative'>
-						<PopoverTrigger asChild disabled={disabled}>
-							<Button
-								variant='outline'
-								className={cn(
-									' justify-start text-start font-normal !h-10',
-									!selectedRange?.from || !selectedRange?.to
-										? 'text-muted-foreground opacity-70 hover:text-muted-foreground'
-										: 'text-content-black',
-									!className && (selectedRange?.from && selectedRange?.to ? 'w-[260px]' : 'w-[240px]'),
-									// The clear affordance is absolutely positioned over this button, so
-									// the label must reserve room for it. Without this a caller that sizes
-									// to content — the portal passes w-auto — renders the X on top of the
-									// last characters of the range.
-									selectedRange?.from && selectedRange?.to && 'pe-8',
-									'transition-all duration-300 ease-in-out',
-									className,
-								)}>
-								<CalendarIcon className='mr-0 h-4 w-4' />
-								<span>{displayLabel}</span>
-							</Button>
-						</PopoverTrigger>
-						{selectedRange?.from && selectedRange?.to && (
-							<X
-								className='h-4 w-4 absolute end-2 top-[12px] cursor-pointer'
-								onClick={(e) => {
-									e.stopPropagation();
-									setSelectedRange(undefined);
-									onChange({ startDate: undefined, endDate: undefined });
-								}}
-							/>
-						)}
-					</div>
+					<PopoverTrigger asChild disabled={disabled}>
+						<Button
+							variant='outline'
+							className={cn(
+								' justify-start text-start font-normal !h-10',
+								!selectedRange?.from || !selectedRange?.to
+									? 'text-muted-foreground opacity-70 hover:text-muted-foreground'
+									: 'text-content-black',
+								!className && 'w-[240px]',
+								'transition-all duration-300 ease-in-out',
+								className,
+							)}>
+							<CalendarIcon className='mr-0 h-4 w-4 shrink-0' />
+							{/* min-w-0 lets the flex item shrink so a long range ellipsizes instead of widening the trigger */}
+							<span className='min-w-0 truncate'>{displayLabel}</span>
+						</Button>
+					</PopoverTrigger>
 				</div>
 			</div>
 
@@ -160,6 +149,9 @@ const DateRangePicker = ({
 				<Calendar
 					disabled={disabled || (dateBounds.length ? dateBounds : undefined)}
 					mode='range'
+					// Clicking an already-selected day must not clear the selection — clearing
+					// only happens through the explicit footer action below.
+					required
 					selected={displayRange}
 					onSelect={handleSelect}
 					startMonth={minDate}
@@ -168,6 +160,7 @@ const DateRangePicker = ({
 					numberOfMonths={2}
 					timezone={timezone}
 					onTimezoneChange={handleTimezoneChange}
+					onClear={selectedRange?.from && selectedRange?.to ? handleClear : undefined}
 				/>
 			</PopoverContent>
 		</Popover>

@@ -10,6 +10,9 @@
 # any environment, which is how you check production after an incident.
 #
 # Required repository secrets:
+#   E2E_API_URL                          the deployed environment under test; also used
+#                                        as the fallback target when a deployment reports
+#                                        no environment_url
 #   E2E_USER_EMAIL / E2E_USER_PASSWORD   the dedicated test account
 #   SLACK_WEBHOOK_URL                    optional; without it the run still gates,
 #                                        it just does not announce itself
@@ -39,7 +42,7 @@ jobs:
 
     env:
       CI: 'true'
-      E2E_BASE_URL: ${{ github.event.inputs.target_url || github.event.deployment_status.environment_url }}
+      E2E_BASE_URL: ${{ github.event.inputs.target_url || github.event.deployment_status.environment_url || secrets.E2E_API_URL }}
       # Enables environment isolation; without it the run writes to the account default.
       E2E_API_URL: ${{ secrets.E2E_API_URL }}
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
@@ -105,6 +108,18 @@ jobs:
         run: |
           node scripts/e2e-slack-notify.mjs \
             --status failure \
+            --context "Post-deploy smoke" \
+            --environment "${E2E_BASE_URL}"
+
+      # One line naming the flows that ran. While the suite is still being trusted, a
+      # green run is itself the signal worth seeing — it is the only way to tell
+      # "everything passed" apart from "the workflow never ran", which is exactly the
+      # question a guard that skips silently makes hard to answer.
+      - name: Notify Slack on success
+        if: success() && steps.guard.outputs.configured == 'true'
+        run: |
+          node scripts/e2e-slack-notify.mjs \
+            --status success \
             --context "Post-deploy smoke" \
             --environment "${E2E_BASE_URL}"
 

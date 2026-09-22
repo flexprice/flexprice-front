@@ -1,9 +1,10 @@
+import type React from 'react';
 import { Info } from 'lucide-react';
 import Tooltip from '../Tooltip';
 import { cn } from '@/lib/utils';
 
 export interface InfoIconProps {
-	description: string;
+	description: React.ReactNode;
 	ariaLabel: string;
 	disabled?: boolean;
 	className?: string;

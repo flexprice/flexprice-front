@@ -111,6 +111,9 @@ export interface Subscription extends BaseModel {
 
 	/** IANA timezone for billing period calculations; defaults to UTC when unset. */
 	readonly timezone?: string;
+
+	/** How finer-cadence charges are grouped on the invoice. Write-at-create; presentation only. */
+	readonly line_item_grouping?: LINE_ITEM_GROUPING;
 }
 
 export interface SubscriptionUsage extends BaseModel {
@@ -299,6 +302,18 @@ export enum PAYMENT_TERMS {
 	NET_60 = '60 NET',
 	NET_75 = '75 NET',
 	NET_90 = '90 NET',
+}
+
+/**
+ * LineItemGrouping controls how charges finer than the subscription's billing period are
+ * presented on the invoice. Presentation only — the invoice total is identical either way.
+ * Omit the field on create to keep the backend default (`PER_CHARGE_PERIOD`).
+ */
+export enum LINE_ITEM_GROUPING {
+	/** Default. A monthly charge on a quarterly subscription bills as 3 line items. */
+	PER_CHARGE_PERIOD = 'per_charge_period',
+	/** Those 3 collapse into 1 line item spanning the quarter. */
+	PER_BILLING_PERIOD = 'per_billing_period',
 }
 
 // SubscriptionLineItemEntityType is the type of the source of a subscription line item

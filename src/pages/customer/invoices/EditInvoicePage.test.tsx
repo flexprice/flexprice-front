@@ -17,6 +17,7 @@ const mockModifyInvoice = vi.hoisted(() => vi.fn());
 const mockVoidInvoice = vi.hoisted(() => vi.fn());
 const mockFinalizeInvoice = vi.hoisted(() => vi.fn());
 const mockNavigate = vi.hoisted(() => vi.fn());
+const FUTURE_DUE_DATE = vi.hoisted(() => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
 
 vi.mock('@/api/InvoiceApi', () => ({
 	default: {
@@ -62,7 +63,11 @@ vi.mock('@/components/atoms', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('@/components/atoms')>();
 	return {
 		...actual,
-		DateTimePicker: ({ title }: { title?: string }) => <div>{title}</div>,
+		// Sets a known future date so tests can exercise the due-date save path
+		// (the page rejects past due dates).
+		DateTimePicker: ({ setDate }: { setDate?: (date: Date) => void }) => (
+			<button onClick={() => setDate?.(FUTURE_DUE_DATE)}>set-due-date</button>
+		),
 		// Radix Select doesn't open in jsdom; a native select keeps the page wiring testable.
 		Select: ({
 			label,
@@ -184,15 +189,14 @@ describe('EditInvoicePage', () => {
 		const user = userEvent.setup();
 		renderPage();
 
-		const pdfInput = await screen.findByPlaceholderText('https://example.com/invoice.pdf');
-		await user.type(pdfInput, 'https://example.com/inv.pdf');
+		await user.click(await screen.findByRole('button', { name: 'set-due-date' }));
 
 		const saveButton = screen.getByRole('button', { name: 'Save Changes' });
 		expect(saveButton).toBeEnabled();
 		await user.click(saveButton);
 
 		await waitFor(() => expect(mockUpdateInvoice).toHaveBeenCalledTimes(1));
-		expect(mockUpdateInvoice).toHaveBeenCalledWith('inv_1', { invoice_pdf_url: 'https://example.com/inv.pdf' });
+		expect(mockUpdateInvoice).toHaveBeenCalledWith('inv_1', { due_date: FUTURE_DUE_DATE.toISOString() });
 		await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/billing/invoices/inv_1'));
 	});
 
@@ -229,8 +233,9 @@ describe('EditInvoicePage', () => {
 		const user = userEvent.setup();
 		renderPage();
 
+		// Grid order: Invoice Status renders before Payment Status.
 		const selects = await screen.findAllByRole('combobox');
-		await user.selectOptions(selects[0], 'SUCCEEDED');
+		await user.selectOptions(selects[selects.length - 1], 'SUCCEEDED');
 		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
 		await waitFor(() => expect(mockUpdatePaymentStatus).toHaveBeenCalledWith('inv_1', { payment_status: 'SUCCEEDED' }));
@@ -238,12 +243,13 @@ describe('EditInvoicePage', () => {
 		await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/billing/invoices/inv_1'));
 	});
 
-	it('locks the payment status select once payment has succeeded', async () => {
+	it('renders payment status as a read-only chip once payment has succeeded', async () => {
 		mockGetInvoiceById.mockResolvedValue(makeInvoice({ payment_status: 'SUCCEEDED' }));
 		renderPage();
 
+		// Only the invoice-status select remains; the locked payment status is a chip, not a control.
 		const selects = await screen.findAllByRole('combobox');
-		expect(selects[0]).toBeDisabled();
+		expect(selects).toHaveLength(1);
 	});
 
 	it('voids the invoice through the status dropdown on save', async () => {
@@ -253,7 +259,7 @@ describe('EditInvoicePage', () => {
 		renderPage();
 
 		const selects = await screen.findAllByRole('combobox');
-		await user.selectOptions(selects[selects.length - 1], 'VOIDED');
+		await user.selectOptions(selects[0], 'VOIDED');
 		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
 		await waitFor(() => expect(mockVoidInvoice).toHaveBeenCalledWith('inv_1'));
@@ -267,7 +273,7 @@ describe('EditInvoicePage', () => {
 		renderPage();
 
 		const selects = await screen.findAllByRole('combobox');
-		await user.selectOptions(selects[selects.length - 1], 'FINALIZED');
+		await user.selectOptions(selects[0], 'FINALIZED');
 		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
 		await waitFor(() => expect(mockFinalizeInvoice).toHaveBeenCalledWith('inv_1'));
@@ -286,7 +292,7 @@ describe('EditInvoicePage', () => {
 		await user.clear(nameInput);
 		await user.type(nameInput, 'Consulting hours');
 		const selects = screen.getAllByRole('combobox');
-		await user.selectOptions(selects[selects.length - 1], 'VOIDED');
+		await user.selectOptions(selects[0], 'VOIDED');
 		await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
 		expect(mockVoidInvoice).not.toHaveBeenCalled();
@@ -395,6 +401,26 @@ describe('EditInvoicePage', () => {
 		await user.click(screen.getByRole('switch'));
 		expect(screen.getByText('Free tier')).toBeInTheDocument();
 		expect(screen.queryByText('Zero-amount line items hidden (1)')).not.toBeInTheDocument();
+	});
+
+	it('opens the row editor from the pencil action and commits with the tick', async () => {
+		mockGetInvoiceById.mockResolvedValue(
+			makeInvoice({ line_items: [{ id: 'li_1', display_name: 'Consulting', quantity: '2', amount: 300 }] }),
+		);
+		const user = userEvent.setup();
+		renderPage();
+
+		await screen.findByText('Consulting');
+		await user.click(screen.getByRole('button', { name: 'Edit line item' }));
+		const nameInput = await screen.findByDisplayValue('Consulting');
+		await user.clear(nameInput);
+		await user.type(nameInput, 'Consulting hours');
+
+		// Tick (in the pencil's place) commits and collapses back to a display row.
+		await user.click(screen.getByRole('button', { name: 'Done' }));
+		expect(screen.getByText('Consulting hours')).toBeInTheDocument();
+		expect(screen.queryByDisplayValue('Consulting hours')).not.toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Save Changes' })).toBeEnabled();
 	});
 
 	it('cancelling the row editor restores the original line item values', async () => {

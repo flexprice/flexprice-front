@@ -1,5 +1,6 @@
 import { PriceUnit } from '@/models/PriceUnit';
 import { PRICE_UNIT_TYPE } from '@/models/Price';
+import type { CustomCurrencyConfig } from '@/types/dto/CustomCurrency';
 
 /**
  * Represents a currency option (FIAT type)
@@ -80,4 +81,15 @@ export const isCurrencyOption = (option: CurrencyPriceUnitOption): option is Cur
  */
 export const isPriceUnitOption = (option: CurrencyPriceUnitOption): option is PriceUnitOption => {
 	return option.type === PRICE_UNIT_TYPE.CUSTOM;
+};
+
+/**
+ * Tenant-defined currencies as ordinary currency options. Selecting one sets `currency`
+ * on the price with no conversion, unlike a price unit, so they are FIAT options even
+ * though the selector groups them beside the price units.
+ */
+export const customCurrencyConfigToOptions = (config: CustomCurrencyConfig): CurrencyOption[] => {
+	return Object.entries(config.custom_currencies).map(([code, definition]) =>
+		currencyToOption({ label: `${code.toUpperCase()} (${definition.symbol})`, value: code, symbol: definition.symbol }),
+	);
 };

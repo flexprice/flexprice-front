@@ -197,6 +197,14 @@
 		"providerHint": "Choose which provider to complete this payment with.",
 		"paid": "Payment complete — your credits have been added."
 	},
+	"pendingCheckout": {
+		"title": "A payment is already in progress",
+		"description": "You started a top-up for this wallet that has not finished yet. Finish that payment, or cancel it and start a new one.",
+		"continueExisting": "Continue that payment",
+		"noLink": "That payment is being processed and cannot be reopened from here.",
+		"startNew": "Cancel it and start over",
+		"startNewHint": "The earlier payment is cancelled. If you have already been charged for it, do not start over — those credits are on their way."
+	},
 	"autoTopUp": {
 		"title": "Auto top-up",
 		"description": "Automatically add credits when your balance runs low.",

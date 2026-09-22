@@ -2,6 +2,7 @@ import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import FlexpriceTable, { ColumnData, RedirectCell } from '../Table';
 import { TaxAssociationResponse } from '@/types/dto/tax';
+import { TAX_BEHAVIOR } from '@/models';
 import { Chip, ActionButton, Card, CardHeader, AddButton, NoDataCard, Tooltip } from '@/components/atoms';
 import { DropdownMenu, getCopyIdOption } from '@/components/molecules';
 import { formatDateShort } from '@/utils/common/helper_functions';
@@ -88,6 +89,22 @@ const TaxAssociationTable: FC<Props> = ({ data, onAdd, showDelete = true, refetc
 		{
 			title: 'Priority',
 			render: (row) => row.priority,
+		},
+		{
+			title: 'Tax Behavior',
+			render: (row) =>
+				row.tax_behavior ? (
+					<Chip
+						variant='default'
+						label={
+							row.tax_behavior === TAX_BEHAVIOR.INCLUSIVE
+								? t('taxAssociation.taxBehaviorInclusive')
+								: t('taxAssociation.taxBehaviorExclusive')
+						}
+					/>
+				) : (
+					'—'
+				),
 		},
 		{
 			title: 'Auto Apply',

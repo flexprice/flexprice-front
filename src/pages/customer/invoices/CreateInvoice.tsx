@@ -5,7 +5,8 @@ import CustomerApi from '@/api/CustomerApi';
 import { useParams, useNavigate } from 'react-router';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import useUser from '@/hooks/useUser';
-import { currencyOptions } from '@/constants/constants';
+import { DEFAULT_CURRENCY_CODE } from '@/constants/constants';
+import useCurrencyOptions from '@/hooks/useCurrencyOptions';
 import { getCurrencySymbol, calculateCouponDiscount } from '@/utils/common/helper_functions';
 import InvoiceApi from '@/api/InvoiceApi';
 import toast from 'react-hot-toast';
@@ -39,7 +40,8 @@ const CreateInvoicePage: FC = () => {
 
 	const { user } = useUser();
 	const { updateBreadcrumb } = useBreadcrumbsStore();
-	const [currency, setCurrency] = useState(currencyOptions[0].value);
+	const currencyOptions = useCurrencyOptions();
+	const [currency, setCurrency] = useState(DEFAULT_CURRENCY_CODE);
 
 	const [lineItems, setLineItems] = useState<LineItem[]>([
 		{
@@ -88,6 +90,7 @@ const CreateInvoicePage: FC = () => {
 					currency: item.currency?.toLowerCase(),
 					auto_apply: item.auto_apply,
 					priority: item.priority,
+					tax_behavior: item.tax_behavior,
 				})),
 			);
 		}

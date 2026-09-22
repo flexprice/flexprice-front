@@ -5,7 +5,7 @@ import Chip from '@/components/atoms/Chip';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { WalletAlertSettings } from '@/models/Wallet';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
-import { computeWalletAlertStatus } from '@/utils/wallet/walletAlertUtils';
+import { computeWalletAlertStatus, getWalletAlertThresholdType } from '@/utils/wallet/walletAlertUtils';
 
 type ChipVariant = 'info' | 'warning' | 'failed';
 
@@ -36,7 +36,11 @@ const WalletAlertStatusBadge: FC<WalletAlertStatusBadgeProps> = ({ balance, aler
 	const StatusIcon = STATUS_ICONS[status.state];
 	const conditionLabel =
 		status.triggeredThreshold.condition === 'above' ? t('wallet.alerts.conditionAbove') : t('wallet.alerts.conditionBelow');
-	const threshold = `${getCurrencySymbol(currency ?? '')}${formatAmount(status.triggeredThreshold.threshold)}`;
+	// A percentage threshold is not an amount in the wallet's currency — never prefix it with a symbol.
+	const threshold =
+		getWalletAlertThresholdType(alertSettings) === 'percentage'
+			? `${status.triggeredThreshold.threshold}%`
+			: `${getCurrencySymbol(currency ?? '')}${formatAmount(status.triggeredThreshold.threshold)}`;
 
 	return (
 		<Chip

@@ -182,6 +182,39 @@ export class ApiClient {
 	}
 
 	/**
+	 * Terminates every wallet on a customer, best-effort. The backend has no wallet
+	 * DELETE — `terminate` is the closest thing — and refuses to delete a customer that
+	 * still has one, so this must run before `deleteCustomer` in a spec's cleanup.
+	 */
+	async terminateWalletsForCustomer(customerId: string): Promise<void> {
+		try {
+			const response = await this.context.get(`customers/wallets?id=${customerId}`);
+			if (!response.ok()) {
+				console.warn(`Cleanup: GET customer wallets returned ${response.status()}`);
+				return;
+			}
+			const wallets = JSON.parse(await response.text()) as { id: string }[];
+			for (const wallet of wallets) {
+				try {
+					const res = await this.context.post(`wallets/${wallet.id}/terminate`, { data: {} });
+					if (!res.ok() && res.status() !== 404) {
+						console.warn(`Cleanup: terminate wallet ${wallet.id} returned ${res.status()}`);
+					}
+				} catch (error) {
+					// A constant format string, with the id passed as its own argument rather
+					// than interpolated: Semgrep's unsafe-formatstring check flags a template
+					// literal used as console.warn's first argument alongside a second one,
+					// since a `%` in the interpolated value would otherwise be taken as a
+					// format specifier for that second argument.
+					console.warn('Cleanup: terminate wallet threw:', wallet.id, error);
+				}
+			}
+		} catch (error) {
+			console.warn('Cleanup: could not list wallets for customer:', customerId, error);
+		}
+	}
+
+	/**
 	 * Resolves an entity created through the UI — which never told the test its id —
 	 * by name, then deletes it.
 	 */

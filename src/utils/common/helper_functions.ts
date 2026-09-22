@@ -3,9 +3,14 @@ import { BILLING_MODEL, Price, PRICE_TYPE } from '@/models/Price';
 import { BUCKET_SIZE } from '@/models/Meter';
 import { getAllISOCodes } from 'iso-country-currency';
 import { v4 as uuidv4 } from 'uuid';
+import { getCustomCurrencyName, getCustomCurrencySymbol } from './custom_currency';
 import toast from 'react-hot-toast';
 
 export function getCurrencySymbol(currency: string): string {
+	// A tenant-defined currency is not an ISO code, so its symbol comes from config.
+	const customSymbol = getCustomCurrencySymbol(currency);
+	if (customSymbol) return customSymbol;
+
 	try {
 		const info = getAllISOCodes().filter((code) => code.currency === currency.toUpperCase());
 		return info[0]?.symbol || currency;
@@ -16,6 +21,9 @@ export function getCurrencySymbol(currency: string): string {
 }
 
 export function getCurrencyName(currency: string): string {
+	const customName = getCustomCurrencyName(currency);
+	if (customName) return customName;
+
 	try {
 		const info = getAllISOCodes().filter((code) => code.currency === currency.toUpperCase());
 		return info[0]?.countryName || currency;

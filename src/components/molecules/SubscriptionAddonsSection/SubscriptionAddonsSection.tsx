@@ -1,27 +1,28 @@
-import { FC, useState, useMemo, useCallback, ReactNode } from 'react';
+import { FC, useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Settings2, Trash2, Copy } from 'lucide-react';
-import { Button, Card, CardHeader, Chip, DatePicker, Dialog, AddButton, Select, Tooltip, NoDataCard } from '@/components/atoms';
+import { Button, Card, CardHeader, DatePicker, Dialog, AddButton, Select, Tooltip, NoDataCard } from '@/components/atoms';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BsThreeDots } from 'react-icons/bs';
 import SubscriptionApi from '@/api/SubscriptionApi';
-import { ADDON_ASSOCIATION_STATUS } from '@/models/AddonAssociation';
 import { AddonAssociationResponse, SubscriptionLineItemListItem, SubscriptionResponse } from '@/types/dto/Subscription';
 import { EXPAND } from '@/models';
 import { ADDON_PRORATION_BEHAVIOR } from '@/types/dto/Addon';
 import { BILLING_PERIOD } from '@/constants/constants';
-import { toSentenceCase, copyToClipboard } from '@/utils/common/helper_functions';
-import { Price, PRICE_TYPE } from '@/models/Price';
+import { copyToClipboard } from '@/utils/common/helper_functions';
 import { getCurrentPriceAmount } from '@/utils/common/price_override_helpers';
-import { getTotalPayableTextWithCoupons } from '@/utils/common/helper_functions';
+import {
+	attachedAddonLinesToDisplayInput,
+	formatAddonCharges,
+	formatAddonQuantityDisplay,
+	type AttachedAddonChargeLine,
+} from '@/utils/subscription/addonQuantity';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import AddAddonDialog from './AddAddonDialog';
 import ConfigureAddonDialog from './ConfigureAddonDialog';
-import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
@@ -40,113 +41,6 @@ interface SubscriptionAddonsSectionProps {
 	subscriptionCurrentPeriodStart?: string;
 	subscriptionCurrentPeriodEnd?: string;
 }
-
-const formatAddonCharges = (prices: Price[] = []): string => {
-	if (!prices || prices.length === 0) return '--';
-
-	const recurringPrices = prices.filter((p) => p.type === PRICE_TYPE.FIXED);
-	const usagePrices = prices.filter((p) => p.type === PRICE_TYPE.USAGE);
-
-	const hasUsage = usagePrices.length > 0;
-
-	if (recurringPrices.length === 0) {
-		return hasUsage ? 'Depends on usage' : '--';
-	}
-
-	// Calculate total recurring amount
-	const recurringTotal = recurringPrices.reduce((acc, charge) => {
-		const currentAmount = getCurrentPriceAmount(charge, {});
-		return acc + parseFloat(currentAmount);
-	}, 0);
-
-	// Use the same helper as Preview component for consistent display
-	return getTotalPayableTextWithCoupons(recurringPrices, usagePrices, recurringTotal, []);
-};
-
-type AddonStatus = `${ADDON_ASSOCIATION_STATUS}`;
-
-const getStatusVariant = (status: AddonStatus): 'info' | 'default' | 'success' => {
-	switch (status) {
-		case 'upcoming':
-		case 'pending':
-		case 'scheduled':
-			return 'info';
-		case 'inactive':
-		case 'cancelled':
-			return 'default';
-		case 'active':
-		default:
-			return 'success';
-	}
-};
-
-const formatAddonAssociationTooltip = (association: AddonAssociationResponse, t: TFunction): ReactNode => {
-	const { start_date, end_date } = association;
-	const items: ReactNode[] = [];
-
-	if (start_date && start_date.trim() !== '') {
-		const parsed = new Date(start_date);
-		if (!isNaN(parsed.getTime())) {
-			items.push(
-				<div key='start' className='flex items-center gap-2'>
-					<span className='text-xs font-medium text-content-muted'>{t('labels.start')}</span>
-					<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(parsed)}</span>
-				</div>,
-			);
-		}
-	}
-
-	if (end_date && end_date.trim() !== '') {
-		const parsed = new Date(end_date);
-		if (!isNaN(parsed.getTime())) {
-			items.push(
-				<div key='end' className='flex items-center gap-2'>
-					<span className='text-xs font-medium text-content-muted'>{t('labels.end')}</span>
-					<span className='text-sm font-medium'>{formatDateTimeWithSecondsAndTimezone(parsed)}</span>
-				</div>,
-			);
-		}
-	}
-
-	if (items.length === 0) {
-		return <span className='text-sm'>{t('labels.noDateInformation')}</span>;
-	}
-
-	return <div className='flex flex-col gap-2'>{items}</div>;
-};
-
-interface AddonAssociationWithStatus extends AddonAssociationResponse {
-	precomputedStatus: AddonStatus;
-	statusVariant: 'info' | 'default' | 'success';
-	statusLabel: string;
-	tooltipContent: ReactNode;
-}
-
-const computeAssociationStatus = (association: AddonAssociationResponse): AddonStatus => {
-	const raw = association.addon_status?.toLowerCase() as AddonStatus | undefined;
-	if (
-		raw === ADDON_ASSOCIATION_STATUS.CANCELLED ||
-		raw === ADDON_ASSOCIATION_STATUS.INACTIVE ||
-		raw === ADDON_ASSOCIATION_STATUS.ACTIVE ||
-		raw === ADDON_ASSOCIATION_STATUS.UPCOMING ||
-		raw === ADDON_ASSOCIATION_STATUS.PENDING ||
-		raw === ADDON_ASSOCIATION_STATUS.SCHEDULED
-	) {
-		return raw;
-	}
-
-	// Fallback to date-based computation
-	const now = new Date();
-	if (association.start_date && association.start_date.trim() !== '') {
-		const start = new Date(association.start_date);
-		if (!isNaN(start.getTime()) && start > now) return 'upcoming';
-	}
-	if (association.end_date && association.end_date.trim() !== '') {
-		const end = new Date(association.end_date);
-		if (!isNaN(end.getTime()) && end < now) return 'inactive';
-	}
-	return 'active';
-};
 
 const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 	subscriptionId,
@@ -251,33 +145,50 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 		enabled: !!subscriptionId,
 	});
 
-	const pricesByAddonAssociationId = useMemo<Record<string, Price[]>>(() => {
-		const grouped: Record<string, Price[]> = {};
+	const chargeLinesByAddonAssociationId = useMemo<Record<string, AttachedAddonChargeLine[]>>(() => {
+		const grouped: Record<string, AttachedAddonChargeLine[]> = {};
 		for (const item of addonLineItems ?? []) {
 			if (!item.addon_association_id || !item.price) continue;
-			(grouped[item.addon_association_id] ??= []).push(item.price);
+			const unitAmount = parseFloat(getCurrentPriceAmount(item.price, {}));
+			(grouped[item.addon_association_id] ??= []).push({
+				priceType: item.price_type ?? item.price.type,
+				quantity: item.quantity,
+				unitAmount: Number.isFinite(unitAmount) ? unitAmount : 0,
+				startDate: item.start_date,
+				endDate: item.end_date,
+				price: item.price,
+			});
 		}
 		return grouped;
 	}, [addonLineItems]);
 
 	const isLoading = isLoadingAddons || isLoadingAddonLineItems;
 
-	const processedAddonAssociations = useMemo<AddonAssociationWithStatus[]>(() => {
-		return addonAssociations.map((association) => {
-			const status = computeAssociationStatus(association);
-			const statusVariant = getStatusVariant(status);
-			const statusLabel = toSentenceCase(status || 'active');
-			const tooltipContent = formatAddonAssociationTooltip(association, t);
+	const getAddonDisplayInput = useCallback(
+		(association: AddonAssociationResponse) => {
+			const lines = chargeLinesByAddonAssociationId[association.id];
+			if (lines) {
+				return attachedAddonLinesToDisplayInput(lines);
+			}
+			// Falls back to the catalog default only if this association genuinely has no matching
+			// line items. When the line-items fetch itself failed we cannot tell the two apart, and
+			// showing the catalog price would pass off a possibly-stale number as current — so show
+			// nothing instead.
+			if (isErrorAddonLineItems) {
+				return { prices: [], overrideLineItems: [] };
+			}
+			return { prices: association.addon?.prices ?? [], overrideLineItems: [] };
+		},
+		[chargeLinesByAddonAssociationId, isErrorAddonLineItems],
+	);
 
-			return {
-				...association,
-				precomputedStatus: status,
-				statusVariant,
-				statusLabel,
-				tooltipContent,
-			};
-		});
-	}, [addonAssociations, t]);
+	const chargeLabels = useMemo(
+		() => ({
+			empty: t('common:labels.na'),
+			dependsOnUsage: t('common:subscriptionAddon.dependsOnUsage'),
+		}),
+		[t],
+	);
 
 	const addonNameToCancel = useMemo(() => {
 		if (!addonToCancel) return 'this addon';
@@ -337,36 +248,24 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 		setCancelProrationBehavior('');
 	}, []);
 
-	const columns: ColumnData<AddonAssociationWithStatus>[] = useMemo(
+	const columns: ColumnData<AddonAssociationResponse>[] = useMemo(
 		() => [
 			{
-				title: 'Name',
+				title: t('common:subscriptionAddon.columnName'),
 				render: (row) => <span>{row.addon?.name || row.addon_id}</span>,
 			},
 			{
-				title: 'Status',
-				render: (row) => (
-					<Tooltip
-						content={row.tooltipContent}
-						delayDuration={0}
-						sideOffset={5}
-						className='bg-surface border border-line shadow-lg text-sm text-content px-4 py-3 rounded-lg max-w-[320px]'>
-						<span>
-							<Chip label={row.statusLabel} variant={row.statusVariant} />
-						</span>
-					</Tooltip>
-				),
+				title: t('common:subscriptionAddon.columnQuantity'),
+				render: (row) => {
+					const { prices, overrideLineItems } = getAddonDisplayInput(row);
+					return formatAddonQuantityDisplay(prices, overrideLineItems, t('common:subscriptionAddon.quantityUsage'));
+				},
 			},
 			{
-				title: 'Charges',
+				title: t('common:subscriptionAddon.columnCharges'),
 				render: (row) => {
-					// Falls back to the catalog default only if this association genuinely has no
-					// matching line items — the common case reads the real, possibly-overridden line
-					// item prices grouped above. When the line-items fetch itself failed, showing the
-					// catalog price would silently pass off a possibly-stale number as current, so
-					// show nothing instead.
-					const prices = pricesByAddonAssociationId[row.id] ?? (isErrorAddonLineItems ? [] : row.addon?.prices) ?? [];
-					return <span>{formatAddonCharges(prices)}</span>;
+					const { prices, overrideLineItems } = getAddonDisplayInput(row);
+					return <span>{formatAddonCharges(prices, overrideLineItems, {}, [], chargeLabels)}</span>;
 				},
 			},
 			{
@@ -436,7 +335,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 				},
 			},
 		],
-		[dropdownOpen, handleCancel, readOnly, canWriteAddon, t, pricesByAddonAssociationId, isErrorAddonLineItems],
+		[dropdownOpen, handleCancel, readOnly, canWriteAddon, t, getAddonDisplayInput, chargeLabels],
 	);
 
 	const addButton = readOnly ? undefined : canWriteAddon ? (
@@ -466,10 +365,10 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 
 	return (
 		<>
-			{processedAddonAssociations.length > 0 ? (
+			{addonAssociations.length > 0 ? (
 				<Card variant='notched'>
 					<CardHeader title={t('labels.addons')} cta={addButton} />
-					<FlexpriceTable showEmptyRow data={processedAddonAssociations} columns={columns} variant='no-bordered' />
+					<FlexpriceTable showEmptyRow data={addonAssociations} columns={columns} variant='no-bordered' />
 				</Card>
 			) : (
 				<NoDataCard title={t('labels.addons')} subtitle={t('labels.noAddonsAddedYet')} cta={addButton} />

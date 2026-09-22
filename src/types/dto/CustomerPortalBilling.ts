@@ -7,6 +7,8 @@
  * them appear here.
  */
 
+import type { EntityCreationOptions, EntityCreationResult } from './EntityCreation';
+
 // ─── Providers and capabilities ───────────────────────────────────────────────
 
 export type PaymentGatewayType = 'stripe' | 'razorpay' | 'chargebee' | 'nomod' | 'moyasar' | 'paddle' | 'whop';
@@ -54,6 +56,12 @@ export interface PortalCheckoutSession {
 	completed_at?: string;
 	cancelled_at?: string;
 	failure_reason?: string;
+	/**
+	 * Describes the call that returned this session, not the session itself. On
+	 * `failed_already_exists` the session below is one already in flight and
+	 * nothing was created for this request.
+	 */
+	entity_creation_result?: EntityCreationResult;
 }
 
 // ─── Top up ───────────────────────────────────────────────────────────────────
@@ -77,6 +85,8 @@ export interface PortalCheckoutParams {
 	cancel_url?: string;
 	failure_url?: string;
 	metadata?: Record<string, string>;
+	/** Omit to let a pending session reject this request; send `supersede` to cancel it. */
+	entity_creation_options?: EntityCreationOptions;
 }
 
 export interface PortalTopUpRequest {

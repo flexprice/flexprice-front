@@ -68,6 +68,9 @@
 			"state": "State",
 			"city": "City",
 			"postalCode": "Postal Code",
+			"taxTreatment": "Tax Treatment",
+			"taxTreatmentExempt": "Exempt",
+			"taxTreatmentTaxable": "Taxable",
 			"timezone": "Timezone",
 			"subscriptionAmount": "Subscription Amount",
 			"subscriptionStartDate": "Subscription Start Date"
@@ -92,7 +95,11 @@
 			"addBillingDetail": "Add Billing Detail",
 			"billingSectionBadge": "Billing Details",
 			"saving": "Saving...",
-			"save": "Save"
+			"save": "Save",
+			"taxTreatmentLabel": "Tax Treatment",
+			"taxTreatmentHint": "Exempt customers are never charged tax on their invoices.",
+			"taxTreatmentTaxable": "Taxable",
+			"taxTreatmentExempt": "Exempt"
 		},
 		"billingFields": {
 			"country": "Country",
@@ -540,6 +547,12 @@
 			"chargeCount_other": "{{count}} charges",
 			"fanoutHint": "Each bills as {{count}} line items per subscription invoice",
 			"noFanout": "Same as subscription cadence"
+		},
+		"lineItemGrouping": {
+			"title": "Invoice line items",
+			"toggleLabel": "Combine into one line item per invoice",
+			"explainer": "By default each charge period is its own line item. The total is the same either way.",
+			"overageNote": "Overage rows from cumulative commitments stay separate."
 		},
 		"subscriptionTable": {
 			"planModifiedAria": "Plan modified",

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, Button, Toggle } from '@/components/atoms';
 import toast from 'react-hot-toast';
-import { WalletAlertThresholdCard } from '@/components/molecules';
-import type { WalletAlertThresholdCardLabels } from '@/components/molecules/WalletAlertThresholdCard';
+import SpendAlertThresholdCard from './SpendAlertThresholdCard';
+import type { SpendAlertThresholdCardLabels } from './SpendAlertThresholdCard';
 import { WalletAlertLevel, WalletAlertSettings } from '@/models/Wallet';
 import { getWalletAlertValidationErrorKey, normalizeWalletAlertSettingsForSave } from '@/utils/wallet/walletAlertUtils';
 import { ALERT_ENTITY_TYPE } from '@/models/AlertSetting';
@@ -21,12 +21,12 @@ interface AlertSettingsDialogProps {
 	currency?: string;
 }
 
-// Reuses WalletAlertThresholdCard verbatim (same add/remove interaction as Wallet Alert
-// Settings). AlertSettingsConfig (the backend DTO shape) and WalletAlertSettings are structurally
-// identical ({critical,warning,info,alert_enabled} / {threshold,condition}), so no adapter is
-// needed. The one difference: the backend only accepts "above" for subscription/line-item spend
-// alerts, so every threshold's condition is fixed to "above" and the condition Select is always
-// disabled (unlike wallet, where the user picks above/below).
+// AlertSettingsConfig (the backend DTO shape) and WalletAlertSettings are structurally identical
+// ({critical,warning,info,alert_enabled} / {threshold,condition}), so the wallet validation and
+// normalization helpers are reused with no adapter. The backend only accepts "above" for
+// subscription/line-item spend alerts, so SPEND_ALERT_CONDITION is passed to both helpers (whose
+// default is the wallet's "below") and the condition Select is always disabled.
+const SPEND_ALERT_CONDITION = 'above' as const;
 const ALERT_LEVELS = [WalletAlertLevel.CRITICAL, WalletAlertLevel.WARNING, WalletAlertLevel.INFO] as const;
 
 const EMPTY_CONFIG: WalletAlertSettings = {
@@ -95,11 +95,11 @@ const AlertSettingsDialog: React.FC<AlertSettingsDialogProps> = ({ open, onClose
 	const changeThresholdValue = (level: WalletAlertLevel, value: string) =>
 		setLocalConfig((prev) => ({ ...prev, [level]: { threshold: value, condition: 'above' } }));
 
-	const getLevelLabels = (level: WalletAlertLevel): WalletAlertThresholdCardLabels => {
+	const getLevelLabels = (level: WalletAlertLevel): SpendAlertThresholdCardLabels => {
 		const titleKey = {
-			[WalletAlertLevel.CRITICAL]: 'wallet.alerts.criticalTitle',
-			[WalletAlertLevel.WARNING]: 'wallet.alerts.warningTitle',
-			[WalletAlertLevel.INFO]: 'wallet.alerts.infoTitle',
+			[WalletAlertLevel.CRITICAL]: 'spendAlerts.criticalTitle',
+			[WalletAlertLevel.WARNING]: 'spendAlerts.warningTitle',
+			[WalletAlertLevel.INFO]: 'spendAlerts.infoTitle',
 		} as const;
 		const descriptionKey = {
 			[WalletAlertLevel.CRITICAL]: 'spendAlerts.criticalDescription',
@@ -110,13 +110,13 @@ const AlertSettingsDialog: React.FC<AlertSettingsDialogProps> = ({ open, onClose
 		return {
 			title: t(titleKey[level]),
 			description: t(descriptionKey[level]),
-			add: t('wallet.alerts.add'),
-			remove: t('wallet.alerts.remove'),
-			thresholdValue: t('wallet.alerts.thresholdValueLabel', { currencySuffix: currency ? ` (${currency})` : '' }),
-			condition: t('wallet.alerts.conditionLabel'),
-			conditionBelow: t('wallet.alerts.conditionBelow'),
-			conditionAbove: t('wallet.alerts.conditionAbove'),
-			amountPlaceholder: t('wallet.alerts.amountPlaceholder'),
+			add: t('spendAlerts.add'),
+			remove: t('spendAlerts.remove'),
+			thresholdValue: t('spendAlerts.thresholdValueLabel', { currencySuffix: currency ? ` (${currency})` : '' }),
+			condition: t('spendAlerts.conditionLabel'),
+			conditionBelow: t('spendAlerts.conditionBelow'),
+			conditionAbove: t('spendAlerts.conditionAbove'),
+			amountPlaceholder: t('spendAlerts.amountPlaceholder'),
 		};
 	};
 
@@ -144,13 +144,16 @@ const AlertSettingsDialog: React.FC<AlertSettingsDialogProps> = ({ open, onClose
 	const handleSave = () => {
 		if (isSaving) return;
 
-		const validationErrorKey = getWalletAlertValidationErrorKey(localConfig);
+		const validationErrorKey = getWalletAlertValidationErrorKey(localConfig, SPEND_ALERT_CONDITION);
 		if (validationErrorKey) {
+			// Validation copy is shared with wallet alerts on purpose — the rules and their error
+			// keys come from the same helper. Every other label here lives under `spendAlerts`, so
+			// wallet-side copy changes cannot blank out this dialog again.
 			toast.error(t(`wallet.alerts.validation.${validationErrorKey}`));
 			return;
 		}
 
-		saveAlertSettings(normalizeWalletAlertSettingsForSave(localConfig));
+		saveAlertSettings(normalizeWalletAlertSettingsForSave(localConfig, SPEND_ALERT_CONDITION));
 	};
 
 	const handleClose = () => {
@@ -183,7 +186,7 @@ const AlertSettingsDialog: React.FC<AlertSettingsDialogProps> = ({ open, onClose
 				{localConfig.alert_enabled && (
 					<div className='space-y-4'>
 						{ALERT_LEVELS.map((level) => (
-							<WalletAlertThresholdCard
+							<SpendAlertThresholdCard
 								key={level}
 								threshold={localConfig[level]}
 								labels={getLevelLabels(level)}

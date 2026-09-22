@@ -10,6 +10,7 @@ import { Coupon } from '@/models/Coupon';
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import { BILLING_MODEL, TIER_MODE, PRICE_TYPE } from '@/models/Price';
 import { convertSubscriptionToPhaseData } from '@/utils/subscription/phaseConversion';
+import { parseNonNegativeQuantity } from '@/utils/subscription/quantityValidation';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import { useTranslation } from 'react-i18next';
 
@@ -239,7 +240,7 @@ const PhaseList: React.FC<PhaseListProps> = ({
 				priceOverrides[override.price_id] = {
 					price_id: override.price_id,
 					amount: override.amount?.toString(),
-					quantity: override.quantity,
+					quantity: parseNonNegativeQuantity(override.quantity),
 					billing_model: billingModel,
 					tier_mode: override.tier_mode,
 					tiers: override.tiers,
