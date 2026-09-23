@@ -53,26 +53,45 @@ export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, place
 		setMinuteInput(pad(zt.minutes));
 	}, [date, tz]);
 
+	// minDate/maxDate disable whole days in the calendar below, but a day inside the
+	// allowed range can still produce an out-of-range instant once an hour is applied
+	// (e.g. the same day as minDate, at an earlier hour) — clamp so the two bounds are
+	// enforced on the full instant, not just the day.
+	const clampToBounds = React.useCallback(
+		(candidate: Date): Date => {
+			if (minDate && candidate.getTime() < minDate.getTime()) return minDate;
+			if (maxDate && candidate.getTime() > maxDate.getTime()) return maxDate;
+			return candidate;
+		},
+		[minDate, maxDate],
+	);
+
 	const applyTime = React.useCallback(
 		(h: number, m: number) => {
 			if (!date) return;
 			const { year, month, date: d } = getCalendarDayInZone(date, tz);
-			setDate(dateTimeInZone(year, month, d, h, m, 0, tz));
+			setDate(clampToBounds(dateTimeInZone(year, month, d, h, m, 0, tz)));
 		},
-		[date, tz, setDate],
+		[date, tz, setDate, clampToBounds],
 	);
 
 	const handleDateSelect = React.useCallback(
 		(selectedDate: Date | undefined) => {
-			if (!selectedDate) return;
+			if (!selectedDate) {
+				// react-day-picker passes undefined when the selected day is clicked again
+				// (mode='single' toggle) — clear the field instead of no-op'ing, so an
+				// optional field (e.g. an end date) can go back to open-ended.
+				setDate(undefined);
+				return;
+			}
 			const y = selectedDate.getFullYear();
 			const mo = selectedDate.getMonth();
 			const d = selectedDate.getDate();
 			const h = Math.min(23, Math.max(0, parseInt(hourInput) || 0));
 			const m = Math.min(59, Math.max(0, parseInt(minuteInput) || 0));
-			setDate(dateTimeInZone(y, mo, d, h, m, 0, tz));
+			setDate(clampToBounds(dateTimeInZone(y, mo, d, h, m, 0, tz)));
 		},
-		[hourInput, minuteInput, tz, setDate],
+		[hourInput, minuteInput, tz, setDate, clampToBounds],
 	);
 
 	const handleHourBlur = React.useCallback(() => {
