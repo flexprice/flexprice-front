@@ -30,9 +30,9 @@ const getRedirectUrl = (source: EntitlementSource | undefined, customerId?: stri
 			return `${RouteNames.plan}/${source.entity_id}`;
 		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.ADDON) {
 			return `${RouteNames.addonDetails}/${source.entity_id}`;
-		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.SUBSCRIPTION && customerId) {
+		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.SUBSCRIPTION && getSubscriptionRedirectUrl) {
 			// A mid-cycle override lives on the subscription, so that is what the row names.
-			return `${RouteNames.customers}/${customerId}/subscription/${source.entity_id}`;
+			return getSubscriptionRedirectUrl(source.entity_id);
 		}
 	}
 
