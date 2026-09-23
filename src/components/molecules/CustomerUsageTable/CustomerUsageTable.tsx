@@ -10,6 +10,7 @@ import { formatAmount } from '@/components/atoms/Input/Input';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { getFeatureTypeChips } from './getFeatureTypeChips';
+import { formatGrantPeriod } from '@/utils/entitlement/allowanceLabel';
 
 interface Props {
 	data: CustomerUsage[];
@@ -76,9 +77,6 @@ const allowancesOf = (row: UsageRow): GrantAllowanceState[] => {
 /** A row is worth opening only when there are windows behind it. */
 const hasAllowances = (row: UsageRow) => allowancesOf(row).length > 0;
 
-/** The rule a row's windows are cut from: the budget's own, or the feature's. */
-const configOf = (row: UsageRow) => row.budget ?? row.usage;
-
 /** The source that funds a budget, so its row can name and link to it. */
 const sourceOf = (row: UsageRow): EntitlementSource | undefined => {
 	if (!row.budget) return row.usage.sources?.[0];
@@ -87,6 +85,8 @@ const sourceOf = (row: UsageRow): EntitlementSource | undefined => {
 
 const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId }) => {
 	const { t } = useTranslation('customers');
+	// The cadence words ('day', 'billing period') live in the catalog bundle.
+	const { t: tCatalog } = useTranslation('catalog');
 	const [ledgerRow, setLedgerRow] = useState<UsageRow | null>(null);
 	// Sampled on the click rather than during render, so the ledger's rows all agree
 	// on which window is current.
@@ -103,20 +103,18 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 	);
 
 	const columnData: ColumnData<UsageRow>[] = useMemo(() => {
+		// "50" alone does not say what it renews against; the cadence is half the rule.
+		const withPeriod = (amount: string, cfg: Pick<EntitlementBudget, 'grant_duration_value' | 'grant_duration_unit'>) =>
+			cfg.grant_duration_unit ? tCatalog('entitlements.allowance.perPeriod', { amount, period: formatGrantPeriod(cfg, tCatalog) }) : amount;
+
 		const getFeatureValue = (usageRow: CustomerUsage) => {
 			switch (usageRow.feature.type) {
 				case FEATURE_TYPE.STATIC:
 					return usageRow.sources?.[0]?.static_value ?? t('usageTable.fallback');
-				case FEATURE_TYPE.METERED:
-					return (
-						<span>
-							{usageRow.is_unlimited
-								? t('usageTable.unlimitedLabel')
-								: usageRow.total_limit
-									? formatAmount(usageRow.total_limit?.toString())
-									: t('usageTable.unlimitedLabel')}
-						</span>
-					);
+				case FEATURE_TYPE.METERED: {
+					if (usageRow.is_unlimited || !usageRow.total_limit) return <span>{t('usageTable.unlimitedLabel')}</span>;
+					return <span>{withPeriod(formatAmount(usageRow.total_limit.toString()), usageRow)}</span>;
+				}
 				case FEATURE_TYPE.BOOLEAN:
 					return usageRow.is_enabled ? t('usageTable.booleanTrue') : t('usageTable.booleanFalse');
 				case FEATURE_TYPE.CONFIG: {
@@ -232,15 +230,18 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 				title: t('usageTable.columns.value'),
 				render(row) {
 					if (row.budget) {
-						return (
-							<span>
-								{row.budget.grant_unlimited || !row.budget.grant_quota
-									? t('usageTable.unlimitedLabel')
-									: formatAmount(row.budget.grant_quota)}
-							</span>
-						);
+						if (row.budget.grant_unlimited || !row.budget.grant_quota) return <span>{t('usageTable.unlimitedLabel')}</span>;
+						return <span>{withPeriod(formatAmount(row.budget.grant_quota), row.budget)}</span>;
 					}
 					return getFeatureValue(row.usage);
+				},
+			},
+			{
+				title: t('usageTable.columns.mode'),
+				render(row) {
+					if (row.usage.feature?.type !== FEATURE_TYPE.METERED) return t('usageTable.fallback');
+					// Only a parallel feature is sent as buckets; anything else pools into one figure.
+					return row.usage.buckets?.length ? t('usageTable.modeParallel') : t('usageTable.modeAdditive');
 				},
 			},
 			{
@@ -307,7 +308,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 				},
 			},
 		];
-	}, [allowRedirect, customerId, t]);
+	}, [allowRedirect, customerId, t, tCatalog]);
 
 	return (
 		<div>
@@ -324,10 +325,6 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 			/>
 			<GrantWindowLedger
 				allowances={ledgerRow ? allowancesOf(ledgerRow) : []}
-				config={ledgerRow ? configOf(ledgerRow) : undefined}
-				sourceName={ledgerRow ? getEntityName(sourceOf(ledgerRow)) : undefined}
-				featureName={ledgerRow?.usage.feature?.name}
-				budgetName={ledgerRow?.budget ? getEntityName(sourceOf(ledgerRow)) : undefined}
 				now={ledgerOpenedAt}
 				isOpen={Boolean(ledgerRow)}
 				onOpenChange={(open) => !open && setLedgerRow(null)}

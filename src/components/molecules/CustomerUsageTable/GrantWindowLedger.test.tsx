@@ -4,14 +4,8 @@ import '@testing-library/jest-dom';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import enCustomers from '@/i18n/locales/en/customers.json';
-import enCatalog from '@/i18n/locales/en/catalog.json';
 import GrantWindowLedger from './GrantWindowLedger';
-import {
-	ENTITLEMENT_GRANT_DURATION_UNIT,
-	ENTITLEMENT_GRANT_MEASURE,
-	ENTITLEMENT_GRANT_STATUS,
-	GrantAllowanceState,
-} from '@/models/Entitlement';
+import { ENTITLEMENT_GRANT_MEASURE, ENTITLEMENT_GRANT_STATUS, GrantAllowanceState } from '@/models/Entitlement';
 
 const NOW = new Date('2026-09-23T03:00:00Z').getTime();
 
@@ -32,19 +26,19 @@ const allowance = (over: Partial<GrantAllowanceState>): GrantAllowanceState =>
 
 // Rendering through the real locale files also asserts the new keys resolve — a
 // missing one would surface here as raw `usageTable.grantsTitle` text.
-const renderLedger = (allowances: GrantAllowanceState[], config?: Parameters<typeof GrantWindowLedger>[0]['config']) => {
+const renderLedger = (allowances: GrantAllowanceState[]) => {
 	const i18n = createInstance();
 	i18n.init({
 		lng: 'en',
 		fallbackLng: 'en',
-		ns: ['customers', 'catalog'],
+		ns: ['customers'],
 		defaultNS: 'customers',
-		resources: { en: { customers: enCustomers, catalog: enCatalog } },
+		resources: { en: { customers: enCustomers } },
 		interpolation: { escapeValue: false },
 	});
 	return render(
 		<I18nextProvider i18n={i18n}>
-			<GrantWindowLedger allowances={allowances} config={config} sourceName='Starter' isOpen now={NOW} onOpenChange={() => {}} />
+			<GrantWindowLedger allowances={allowances} isOpen now={NOW} onOpenChange={() => {}} />
 		</I18nextProvider>,
 	);
 };
@@ -76,23 +70,10 @@ describe('GrantWindowLedger', () => {
 		expect(screen.getByText('Scheduled')).toBeInTheDocument();
 	});
 
-	it('shows the rule the windows were cut from', () => {
-		renderLedger([allowance({})], {
-			grant_quota: '100',
-			grant_duration_value: 1,
-			grant_duration_unit: ENTITLEMENT_GRANT_DURATION_UNIT.HOUR,
-			grant_measure: ENTITLEMENT_GRANT_MEASURE.QUANTITY,
-		});
-
-		expect(screen.getByText('100 / hour')).toBeInTheDocument();
-		expect(screen.getByText('Quantity')).toBeInTheDocument();
-		expect(screen.getByText('Starter')).toBeInTheDocument();
-	});
-
 	it('renders an unlimited window without a ceiling to measure against', () => {
-		renderLedger([allowance({ unlimited: true, usage: '10000', quota: '0', is_active: true })], { grant_unlimited: true });
+		renderLedger([allowance({ unlimited: true, usage: '10000', quota: '0', is_active: true })]);
 
-		expect(screen.getByText('/ ∞')).toBeInTheDocument();
-		expect(screen.getByText('Unlimited')).toBeInTheDocument();
+		expect(screen.getByText('10,000 / Unlimited')).toBeInTheDocument();
+		expect(screen.getByText('Active')).toBeInTheDocument();
 	});
 });
