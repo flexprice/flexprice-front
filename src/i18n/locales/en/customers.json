@@ -196,6 +196,7 @@
 			"feature": "Feature",
 			"source": "Source",
 			"value": "Value",
+			"mode": "Mode",
 			"usage": "Usage",
 			"measure": "Measure"
 		},
@@ -213,7 +214,7 @@
 		},
 		"fallback": "--",
 		"grantsTitle": "Grants",
-		"grantsTitleHint": "A grant is one allowance window. Each is measured and billed on its own — unused quota does not carry into the next.",
+		"grantsTitleHint": "One allowance window. Each is measured and billed on its own.",
 		"grantsColumnStart": "Start",
 		"grantsColumnEnd": "End",
 		"grantsColumnStatus": "Status",
@@ -224,13 +225,14 @@
 			"exhausted": "Exhausted",
 			"closed": "Closed"
 		},
-		"grantExhaustedAt": "Exhausted {{at}}",
 		"grantDetailAllowance": "Allowance",
 		"grantDetailMeasure": "Measure",
 		"grantDetailSource": "Source",
 		"windowOverage": "over by {{amount}}",
 		"measureAmount": "Amount",
-		"measureQuantity": "Quantity"
+		"measureQuantity": "Quantity",
+		"modeParallel": "Parallel",
+		"modeAdditive": "Additive"
 	},
 	"subscriptionCreate": {
 		"selectCustomerLabel": "Customer",
