@@ -20,6 +20,14 @@ interface Props {
 
 const CUSTOMERS_NS = 'customers';
 
+const getSubscriptionRedirectUrl = (customerId: string | undefined, subscriptionId: string): string | undefined => {
+	if (!customerId) {
+		return undefined;
+	}
+
+	return `${RouteNames.customers}/${customerId}/subscription/${subscriptionId}`;
+};
+
 const getRedirectUrl = (source: EntitlementSource | undefined, customerId?: string): string | undefined => {
 	if (!source) {
 		return undefined;
@@ -30,9 +38,8 @@ const getRedirectUrl = (source: EntitlementSource | undefined, customerId?: stri
 			return `${RouteNames.plan}/${source.entity_id}`;
 		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.ADDON) {
 			return `${RouteNames.addonDetails}/${source.entity_id}`;
-		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.SUBSCRIPTION && getSubscriptionRedirectUrl) {
-			// A mid-cycle override lives on the subscription, so that is what the row names.
-			return getSubscriptionRedirectUrl(source.entity_id);
+		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.SUBSCRIPTION) {
+			return getSubscriptionRedirectUrl(customerId, source.entity_id);
 		}
 	}
 
