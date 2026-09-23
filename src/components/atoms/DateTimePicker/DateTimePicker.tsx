@@ -24,11 +24,13 @@ interface Props {
 	placeholder?: string;
 	disabled?: boolean;
 	title?: string;
+	minDate?: Date;
+	maxDate?: Date;
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, placeholder, title }) => {
+export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, placeholder, title, minDate, maxDate }) => {
 	const { t } = useTranslation('common');
 	const defaultPlaceholder = t('dateTime.placeholderFormat');
 	const [isOpen, setIsOpen] = React.useState(false);
@@ -97,6 +99,7 @@ export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, place
 
 	const displayDate = date ? toCalendarDisplayDate(date, tz) : undefined;
 	const displayLabel = date ? formatDateTimeInZone(date, tz) : (placeholder ?? defaultPlaceholder);
+	const dateBounds = [...(minDate ? [{ before: minDate }] : []), ...(maxDate ? [{ after: maxDate }] : [])];
 
 	return (
 		<div className='space-y-1'>
@@ -119,7 +122,15 @@ export const DateTimePicker: React.FC<Props> = ({ date, setDate, disabled, place
 					</button>
 				</PopoverTrigger>
 				<PopoverContent className='w-auto p-0 z-[60] pointer-events-auto' align='start'>
-					<Calendar mode='single' selected={displayDate} onSelect={handleDateSelect} autoFocus />
+					<Calendar
+						mode='single'
+						disabled={dateBounds.length ? dateBounds : undefined}
+						selected={displayDate}
+						onSelect={handleDateSelect}
+						autoFocus
+						startMonth={minDate}
+						endMonth={maxDate}
+					/>
 					{/* Time + timezone row — no nested browser picker */}
 					<div className='border-t border-border px-3 py-3 flex items-center gap-2'>
 						<span className='text-xs text-muted-foreground font-medium w-10'>{t('dateTime.timeLabel')}</span>
