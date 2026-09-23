@@ -192,6 +192,7 @@
 			"feature": "الميزة",
 			"plan": "الخطة",
 			"value": "القيمة",
+			"mode": "الوضع",
 			"usage": "الاستخدام",
 			"measure": "Measure"
 		},
@@ -209,7 +210,7 @@
 		},
 		"fallback": "--",
 		"grantsTitle": "المنح",
-		"grantsTitleHint": "المنحة هي نافذة سماح واحدة. تُقاس وتُفوتر كل نافذة على حدة — ولا تُرحَّل الحصة غير المستخدمة إلى التالية.",
+		"grantsTitleHint": "نافذة سماح واحدة. تُقاس وتُفوتر كل نافذة على حدة.",
 		"grantsColumnStart": "البداية",
 		"grantsColumnEnd": "النهاية",
 		"grantsColumnStatus": "الحالة",
@@ -220,13 +221,14 @@
 			"exhausted": "مستنفدة",
 			"closed": "مغلقة"
 		},
-		"grantExhaustedAt": "استُنفدت في {{at}}",
 		"grantDetailAllowance": "السماح",
 		"grantDetailMeasure": "المقياس",
 		"grantDetailSource": "المصدر",
 		"windowOverage": "over by {{amount}}",
 		"measureAmount": "Amount",
-		"measureQuantity": "Quantity"
+		"measureQuantity": "Quantity",
+		"modeParallel": "متوازٍ",
+		"modeAdditive": "تراكمي"
 	},
 	"subscriptionCreate": {
 		"selectCustomerLabel": "العميل",

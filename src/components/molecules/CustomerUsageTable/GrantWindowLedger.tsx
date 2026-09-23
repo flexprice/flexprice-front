@@ -1,23 +1,13 @@
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Info } from 'lucide-react';
-import { Chip, Dialog, Tooltip } from '@/components/atoms';
+import { Chip, Dialog, Progress, Tooltip } from '@/components/atoms';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
-import { GrantAllowanceState, ENTITLEMENT_GRANT_STATUS, ENTITLEMENT_GRANT_MEASURE } from '@/models/Entitlement';
-import { formatGrantPeriod } from '@/utils/entitlement/allowanceLabel';
-import { EntitlementBudget } from '@/models/CustomerUsage';
+import { GrantAllowanceState, ENTITLEMENT_GRANT_STATUS } from '@/models/Entitlement';
 
 interface Props {
 	/** The windows to show: one budget's on a parallel feature, the feature's otherwise. */
 	allowances: GrantAllowanceState[];
-	/** The rule the windows are cut from, shown above them. */
-	config?: Pick<EntitlementBudget, 'grant_quota' | 'grant_duration_value' | 'grant_duration_unit' | 'grant_measure' | 'grant_unlimited'>;
-	/** Where the entitlement comes from — a plan, an addon, or the subscription itself. */
-	sourceName?: string;
-	featureName?: string;
-	/** Names the budget when a parallel feature has more than one. */
-	budgetName?: string;
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	/** Sampled when the row was clicked, so every row here agrees on what "now" is. */
@@ -54,10 +44,8 @@ const CHIP_VARIANT: Record<WindowState, 'default' | 'success' | 'failed'> = {
  * The whole row is the trigger, so this is a controlled dialog the table owns:
  * one instance for the table rather than one per row.
  */
-const GrantWindowLedger: FC<Props> = ({ allowances, config, sourceName, featureName, budgetName, isOpen, onOpenChange, now }) => {
+const GrantWindowLedger: FC<Props> = ({ allowances, isOpen, onOpenChange, now }) => {
 	const { t } = useTranslation('customers');
-	// The cadence words ('day', 'billing period') live in the catalog bundle.
-	const { t: tCatalog } = useTranslation('catalog');
 
 	const columns: ColumnData<GrantAllowanceState>[] = useMemo(
 		() => [
@@ -86,10 +74,7 @@ const GrantWindowLedger: FC<Props> = ({ allowances, config, sourceName, featureN
 					// Only exhaustion has something the row does not already show: when it ran out.
 					if (state !== 'exhausted' || !a.quota_crossed_at) return chip;
 					return (
-						<Tooltip
-							content={t('usageTable.grantExhaustedAt', { at: formatDateTimeWithSecondsAndTimezone(a.quota_crossed_at) })}
-							delayDuration={0}
-							sideOffset={5}>
+						<Tooltip content={formatDateTimeWithSecondsAndTimezone(a.quota_crossed_at)} delayDuration={0} sideOffset={5}>
 							<span>{chip}</span>
 						</Tooltip>
 					);
@@ -97,21 +82,40 @@ const GrantWindowLedger: FC<Props> = ({ allowances, config, sourceName, featureN
 			},
 			{
 				title: t('usageTable.grantsColumnUsage'),
-				align: 'right',
 				render: (a) => {
 					const usage = Number(a.usage ?? 0);
 					const quota = Number(a.quota ?? 0);
-					const overage = a.unlimited ? 0 : Math.max(0, usage - quota);
-					const cell = (
-						<span className={`tabular-nums ${overage > 0 ? 'text-danger' : 'text-content'}`}>
-							{fmt(usage)} <span className='text-content-muted'>/ {a.unlimited ? '∞' : fmt(quota)}</span>
-						</span>
+
+					if (a.unlimited || !quota) {
+						return (
+							<Progress
+								label={t('usageTable.featureTypes.usageProgressUnlimited', { usage: fmt(usage) })}
+								value={0}
+								className='h-[6px]'
+								indicatorColor='bg-info'
+								backgroundColor='bg-info-line'
+							/>
+						);
+					}
+
+					const value = Math.ceil((usage / quota) * 100);
+					const bar = (
+						<Progress
+							label={`${fmt(usage)} / ${fmt(quota)}`}
+							value={value}
+							className='h-[6px]'
+							indicatorColor={
+								value >= 100 ? 'bg-gradient-to-r from-danger to-danger-soft' : 'bg-gradient-to-r from-accent-indigo-soft to-info'
+							}
+							backgroundColor={value >= 100 ? 'bg-danger-muted' : 'bg-info-line'}
+						/>
 					);
 
-					if (overage <= 0) return cell;
+					const overage = usage - quota;
+					if (overage <= 0) return bar;
 					return (
 						<Tooltip content={t('usageTable.windowOverage', { amount: fmt(overage) })} delayDuration={0} sideOffset={5}>
-							{cell}
+							<span className='block'>{bar}</span>
 						</Tooltip>
 					);
 				},
@@ -122,54 +126,13 @@ const GrantWindowLedger: FC<Props> = ({ allowances, config, sourceName, featureN
 
 	if (!allowances.length) return null;
 
-	const scope = [featureName, budgetName].filter(Boolean).join(' · ');
-
-	const allowanceLabel = config?.grant_unlimited
-		? t('usageTable.unlimitedLabel')
-		: config?.grant_quota != null
-			? tCatalog('entitlements.allowance.perPeriod', {
-					amount: fmt(config.grant_quota),
-					period: formatGrantPeriod(config, tCatalog),
-				})
-			: undefined;
-
-	const measureLabel = config?.grant_measure
-		? config.grant_measure === ENTITLEMENT_GRANT_MEASURE.AMOUNT
-			? t('usageTable.measureAmount')
-			: t('usageTable.measureQuantity')
-		: undefined;
-
-	const details: { label: string; value: string }[] = [
-		...(allowanceLabel ? [{ label: t('usageTable.grantDetailAllowance'), value: allowanceLabel }] : []),
-		...(measureLabel ? [{ label: t('usageTable.grantDetailMeasure'), value: measureLabel }] : []),
-		...(sourceName ? [{ label: t('usageTable.grantDetailSource'), value: sourceName }] : []),
-	];
-
 	return (
 		<Dialog
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
-			title={
-				<span className='flex items-center gap-1.5'>
-					{t('usageTable.grantsTitle')}
-					<Tooltip content={t('usageTable.grantsTitleHint')} delayDuration={0} sideOffset={5}>
-						<Info className='h-4 w-4 text-content-zinc-subtle transition-colors duration-150 hover:text-content-zinc-tertiary' />
-					</Tooltip>
-				</span>
-			}
-			description={scope || undefined}
+			title={t('usageTable.grantsTitle')}
+			description={t('usageTable.grantsTitleHint')}
 			className='w-full max-w-2xl'>
-			{details.length > 0 && (
-				<dl className='mb-4 grid grid-cols-3 gap-4 rounded-md border border-line bg-surface-subtle px-4 py-3'>
-					{details.map((d) => (
-						<div key={d.label} className='flex flex-col gap-0.5'>
-							<dt className='text-xs font-medium text-content-tertiary'>{d.label}</dt>
-							<dd className='truncate text-sm text-content'>{d.value}</dd>
-						</div>
-					))}
-				</dl>
-			)}
-
 			<div className='overflow-hidden rounded-md border border-line'>
 				<FlexpriceTable columns={columns} data={allowances} variant='no-bordered' hideBottomBorder />
 			</div>
