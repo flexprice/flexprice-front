@@ -14,11 +14,13 @@ import { getFeatureTypeChips } from './getFeatureTypeChips';
 interface Props {
 	data: CustomerUsage[];
 	allowRedirect?: boolean;
+	/** Needed to link a subscription source — its route is nested under the customer. */
+	customerId?: string;
 }
 
 const CUSTOMERS_NS = 'customers';
 
-const getRedirectUrl = (source: EntitlementSource | undefined): string | undefined => {
+const getRedirectUrl = (source: EntitlementSource | undefined, customerId?: string): string | undefined => {
 	if (!source) {
 		return undefined;
 	}
@@ -28,6 +30,9 @@ const getRedirectUrl = (source: EntitlementSource | undefined): string | undefin
 			return `${RouteNames.plan}/${source.entity_id}`;
 		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.ADDON) {
 			return `${RouteNames.addonDetails}/${source.entity_id}`;
+		} else if (source.entity_type === ENTITLEMENT_SOURCE_ENTITY_TYPE.SUBSCRIPTION && customerId) {
+			// A mid-cycle override lives on the subscription, so that is what the row names.
+			return `${RouteNames.customers}/${customerId}/subscription/${source.entity_id}`;
 		}
 	}
 
@@ -70,7 +75,7 @@ const sourceOf = (row: UsageRow): EntitlementSource | undefined => {
 	return (row.usage.sources ?? []).find((s) => s.entity_id === row.budget!.source_entity_id);
 };
 
-const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
+const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId }) => {
 	const { t } = useTranslation('customers');
 	const [ledgerRow, setLedgerRow] = useState<UsageRow | null>(null);
 
@@ -133,12 +138,12 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 				},
 			},
 			{
-				title: t('usageTable.columns.plan'),
+				title: t('usageTable.columns.source'),
 				render(row) {
 					// A budget names the one source that funds it; only a folded row has several.
 					if (row.budget) {
 						const source = sourceOf(row);
-						const redirectUrl = getRedirectUrl(source);
+						const redirectUrl = getRedirectUrl(source, customerId);
 						const entityName = getEntityName(source);
 						return redirectUrl ? (
 							<RedirectCell allowRedirect={allowRedirect} redirectUrl={redirectUrl}>
@@ -157,7 +162,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 
 					if (sources.length === 1) {
 						const source = sources[0];
-						const redirectUrl = getRedirectUrl(source);
+						const redirectUrl = getRedirectUrl(source, customerId);
 						const entityName = getEntityName(source);
 
 						if (redirectUrl) {
@@ -186,7 +191,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 						<div className='flex flex-col gap-2 max-w-xs'>
 							{sources.map((source, index) => {
 								const sourceName = getEntityName(source);
-								const sourceRedirectUrl = getRedirectUrl(source);
+								const sourceRedirectUrl = getRedirectUrl(source, customerId);
 
 								return (
 									<div key={source.entitlement_id || index} className='flex items-center gap-2'>
@@ -289,7 +294,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true }) => {
 				},
 			},
 		];
-	}, [allowRedirect, t]);
+	}, [allowRedirect, customerId, t]);
 
 	return (
 		<div>

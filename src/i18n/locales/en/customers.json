@@ -194,7 +194,7 @@
 	"usageTable": {
 		"columns": {
 			"feature": "Feature",
-			"plan": "Plan",
+			"source": "Source",
 			"value": "Value",
 			"usage": "Usage",
 			"measure": "Measure"

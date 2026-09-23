@@ -325,7 +325,7 @@ const CustomerOverviewTab = () => {
 			{(usageData?.features?.length || 0) > 0 && (
 				<Card variant='notched'>
 					<CardHeader title={t('tabPanels.overview.entitlementsCardTitle')} />
-					<CustomerUsageTable data={usageData?.features ?? []} />
+					<CustomerUsageTable data={usageData?.features ?? []} customerId={customerId} />
 				</Card>
 			)}
 

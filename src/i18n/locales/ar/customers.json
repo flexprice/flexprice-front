@@ -190,7 +190,7 @@
 	"usageTable": {
 		"columns": {
 			"feature": "الميزة",
-			"plan": "الخطة",
+			"source": "المصدر",
 			"value": "القيمة",
 			"usage": "الاستخدام",
 			"measure": "Measure"
