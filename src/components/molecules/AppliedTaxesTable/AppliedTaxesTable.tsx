@@ -3,7 +3,7 @@ import { FC } from 'react';
 import FlexpriceTable, { ColumnData, RedirectCell, TooltipCell } from '../Table';
 import { TaxApplied } from '@/models/Tax';
 import { formatDateShort } from '@/utils/common/helper_functions';
-import { TAX_BEHAVIOR, TAX_RATE_TYPE } from '@/models/Tax';
+import { TAX_BEHAVIOR, TAX_RATE_TYPE, TAX_TRANSACTION_TYPE } from '@/models/Tax';
 import { useQuery } from '@tanstack/react-query';
 import TaxApi from '@/api/TaxApi';
 import { TaxRateResponse } from '@/types/dto/tax';
@@ -37,10 +37,17 @@ const formatTaxValue = (taxRate: TaxRateResponse | undefined, currency: string =
 	return '--';
 };
 
-const AppliedTaxesTable: FC<Props> = ({ data }) => {
+// An external engine resolved the rate itself, so the row carries the answer and there is no
+// Flexprice rate to look up.
+const isExternal = (row: TaxApplied) => Boolean(row.external_tax_details);
+
+const AppliedTaxesTable: FC<Props> = ({ data: rows }) => {
 	const { t } = useTranslation('common');
-	// Fetch tax rate details for each applied tax
-	const taxRateIds = [...new Set(data.map((tax) => tax.tax_rate_id))];
+	// A reversal records tax being un-filed when the invoice was voided, not a tax it charges.
+	const data = rows.filter((row) => row.tax_transaction_type !== TAX_TRANSACTION_TYPE.REVERSAL);
+	// Fetch tax rate details for each applied tax. External rows have no rate id, and asking
+	// for one would be a request per row that can only 404.
+	const taxRateIds = [...new Set(data.map((tax) => tax.tax_rate_id).filter((id): id is string => Boolean(id)))];
 
 	const { data: taxRatesData } = useQuery({
 		queryKey: ['fetchTaxRatesForApplied', taxRateIds],
@@ -69,29 +76,45 @@ const AppliedTaxesTable: FC<Props> = ({ data }) => {
 		{
 			title: 'Tax Name',
 			render: (row) => {
-				const taxRate = taxRatesMap.get(row.tax_rate_id);
+				if (isExternal(row)) {
+					return row.external_tax_details?.display_name || '--';
+				}
+				const taxRate = taxRatesMap.get(row.tax_rate_id!);
 				return <RedirectCell redirectUrl={`${RouteNames.taxes}/${row.tax_rate_id}`}>{taxRate?.name || row.tax_rate_id}</RedirectCell>;
 			},
 		},
 		{
 			title: 'Code',
 			render: (row) => {
-				const taxRate = taxRatesMap.get(row.tax_rate_id);
-				return <TooltipCell tooltipContent={taxRate?.code || '--'} tooltipText={taxRate?.code || '--'} />;
+				const code = isExternal(row) ? row.external_tax_details?.tax_code : taxRatesMap.get(row.tax_rate_id!)?.code;
+				return <TooltipCell tooltipContent={code || '--'} tooltipText={code || '--'} />;
 			},
+		},
+		{
+			title: 'Jurisdiction',
+			render: (row) => row.external_tax_details?.jurisdiction?.display_name || '--',
 		},
 		{
 			title: 'Type',
 			render: (row) => {
-				const taxRate = taxRatesMap.get(row.tax_rate_id);
-				return getTaxTypeLabel(taxRate?.tax_rate_type || TAX_RATE_TYPE.PERCENTAGE);
+				if (isExternal(row)) {
+					// The engine reports a percentage or nothing at all, and an assumed
+					// percentage would claim a rate that was never imposed.
+					return row.external_tax_details?.percentage ? getTaxTypeLabel(TAX_RATE_TYPE.PERCENTAGE) : '--';
+				}
+				const taxRate = taxRatesMap.get(row.tax_rate_id!);
+				return taxRate ? getTaxTypeLabel(taxRate.tax_rate_type) : '--';
 			},
 		},
 		{
 			title: 'Rate',
 			render: (row) => {
-				const taxRate = taxRatesMap.get(row.tax_rate_id);
-				return formatTaxValue(taxRate);
+				if (isExternal(row)) {
+					// Stripe sends "18.0"; drop the trailing zero without touching a real 8.375.
+					const percentage = row.external_tax_details?.percentage;
+					return percentage ? `${parseFloat(percentage)}%` : '--';
+				}
+				return formatTaxValue(taxRatesMap.get(row.tax_rate_id!));
 			},
 		},
 		{

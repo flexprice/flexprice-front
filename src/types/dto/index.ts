@@ -249,6 +249,8 @@ export type {
 export type {
 	GetAllCreditNotesPayload,
 	CreateCreditNoteParams,
+	PreviewCreditNoteParams,
+	CreditNotePreviewResponse,
 	CreateCreditNoteLineItemRequest,
 	ProcessDraftCreditNoteParams,
 	VoidCreditNoteParams,
