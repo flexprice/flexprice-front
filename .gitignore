@@ -34,6 +34,7 @@ tsconfig.app.tsbuildinfo
 
 # build
 vite.config.js
+vite.config.d.ts
 
 
 # env files
