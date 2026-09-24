@@ -10,7 +10,12 @@ import { BUCKET_SIZE_NONE, priceBucketSizeOptions } from '@/constants/constants'
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import VolumeTieredPricingForm from '@/components/organisms/PlanForm/VolumeTieredPricingForm';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
-import { decimalAmountToPercentage, isPercentagePrice, percentageToDecimalAmount } from '@/utils/common/percentage_price_helpers';
+import {
+	decimalAmountToPercentage,
+	isPercentageOverride,
+	isPercentagePrice,
+	percentageToDecimalAmount,
+} from '@/utils/common/percentage_price_helpers';
 import { formatPercentageAmount } from '@/utils/common/price_helpers';
 import { useTranslation } from 'react-i18next';
 import type { LineItem } from '@/models/Subscription';
@@ -142,17 +147,22 @@ const PriceOverrideDialog: FC<Props> = ({
 		setIsOverridden(isCurrentlyOverridden);
 
 		if (isCurrentlyOverridden) {
+			// Seed the field from the EFFECTIVE billing model, not the price's. An override that moved the
+			// charge to PACKAGE/TIERED stores a plain currency amount, and `showAsPercentage` (which drives
+			// the save conversion) is false for it - converting on the way in would leave the two
+			// asymmetric and persist a 100x-inflated amount on the next save.
+			const overrideIsPercentage = isPercentageOverride({ billing_model: price.billing_model, metadata: price.metadata }, currentOverride);
 			// Initialize from override or original price based on price unit type
 			if (isCustomPriceUnit) {
 				setOverrideAmount(
 					toAmountFieldValue(
 						currentOverride.price_unit_amount || price.price_unit_amount || price.price_unit_config?.amount || '',
-						isPercentage,
+						overrideIsPercentage,
 					),
 				);
 				setOverrideTiers(currentOverride.price_unit_tiers || price.price_unit_tiers || []);
 			} else {
-				setOverrideAmount(toAmountFieldValue(currentOverride.amount || price.amount, isPercentage));
+				setOverrideAmount(toAmountFieldValue(currentOverride.amount || price.amount, overrideIsPercentage));
 				setOverrideTiers(currentOverride.tiers || price.tiers || []);
 			}
 			setOverrideQuantity(currentOverride.quantity);
@@ -241,6 +251,7 @@ const PriceOverrideDialog: FC<Props> = ({
 		price.price_unit_tiers,
 		price.price_unit_config,
 		price.bucket_size,
+		price.metadata,
 		showEffectiveFrom,
 		isCustomPriceUnit,
 		isPercentage,
@@ -415,17 +426,20 @@ const PriceOverrideDialog: FC<Props> = ({
 	const handleCancel = () => {
 		const currentOverride = overriddenPrices[price.id];
 		if (currentOverride) {
+			// Same effective-model rule as the initialization effect: only convert while the override
+			// leaves the charge on the price's own percentage FLAT_FEE.
+			const overrideIsPercentage = isPercentageOverride(price, currentOverride);
 			// Restore from override based on price unit type
 			if (isCustomPriceUnit) {
 				setOverrideAmount(
 					toAmountFieldValue(
 						currentOverride.price_unit_amount || price.price_unit_amount || price.price_unit_config?.amount || '',
-						isPercentage,
+						overrideIsPercentage,
 					),
 				);
 				setOverrideTiers(currentOverride.price_unit_tiers || price.price_unit_tiers || []);
 			} else {
-				setOverrideAmount(toAmountFieldValue(currentOverride.amount || price.amount, isPercentage));
+				setOverrideAmount(toAmountFieldValue(currentOverride.amount || price.amount, overrideIsPercentage));
 				setOverrideTiers(currentOverride.tiers || price.tiers || []);
 			}
 			setOverrideQuantity(currentOverride.quantity);

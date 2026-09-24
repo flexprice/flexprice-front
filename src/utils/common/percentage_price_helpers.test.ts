@@ -3,6 +3,7 @@ import {
 	PERCENTAGE_BILLING_MODEL,
 	decimalAmountToPercentage,
 	isPercentageMetadata,
+	isPercentageOverride,
 	isPercentagePrice,
 	percentageToDecimalAmount,
 	shiftDecimalString,
@@ -81,6 +82,35 @@ describe('isPercentageMetadata / isPercentagePrice', () => {
 	it('ignores a stale marker on a charge that has moved to another billing model', () => {
 		expect(isPercentagePrice({ billing_model: BILLING_MODEL.TIERED, metadata: { billing_model: 'percentage' } })).toBe(false);
 		expect(isPercentagePrice({ billing_model: BILLING_MODEL.PACKAGE, metadata: { billing_model: 'percentage' } })).toBe(false);
+	});
+});
+
+describe('isPercentageOverride', () => {
+	const percentageFlatFee = { billing_model: BILLING_MODEL.FLAT_FEE, metadata: { billing_model: 'percentage' } };
+
+	it('keeps a percentage charge percentage when the override leaves the billing model alone', () => {
+		expect(isPercentageOverride(percentageFlatFee, { billing_model: BILLING_MODEL.FLAT_FEE })).toBe(true);
+		expect(isPercentageOverride(percentageFlatFee, {})).toBe(true);
+		expect(isPercentageOverride(percentageFlatFee, undefined)).toBe(true);
+		expect(isPercentageOverride(percentageFlatFee, null)).toBe(true);
+	});
+
+	it('stops reading as a percentage once the override moves the charge off flat fee', () => {
+		// The override's amount is then a plain currency amount - converting it would turn 10 into 1000%.
+		expect(isPercentageOverride(percentageFlatFee, { billing_model: BILLING_MODEL.PACKAGE })).toBe(false);
+		expect(isPercentageOverride(percentageFlatFee, { billing_model: BILLING_MODEL.TIERED })).toBe(false);
+		expect(isPercentageOverride(percentageFlatFee, { billing_model: 'SLAB_TIERED' })).toBe(false);
+	});
+
+	it('never invents a percentage for a price that was never marked as one', () => {
+		const plainFlatFee = { billing_model: BILLING_MODEL.FLAT_FEE, metadata: { source: 'import' } };
+		expect(isPercentageOverride(plainFlatFee, { billing_model: BILLING_MODEL.FLAT_FEE })).toBe(false);
+		expect(isPercentageOverride(plainFlatFee, undefined)).toBe(false);
+	});
+
+	it('agrees with isPercentagePrice when there is no override', () => {
+		expect(isPercentageOverride(percentageFlatFee)).toBe(isPercentagePrice(percentageFlatFee));
+		expect(isPercentageOverride({ billing_model: BILLING_MODEL.PACKAGE, metadata: { billing_model: 'percentage' } })).toBe(false);
 	});
 });
 
