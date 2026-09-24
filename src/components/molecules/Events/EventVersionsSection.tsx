@@ -25,6 +25,7 @@ const EventVersionsSection: FC<EventVersionsSectionProps> = ({ events }) => {
 
 			{events.map((row, idx) => {
 				const ingestedAt = row.ingested_at ? formatDateTimeWithSecondsAndTimezone(row.ingested_at) : null;
+				const timestamp = row.timestamp ? formatDateTimeWithSecondsAndTimezone(row.timestamp) : null;
 				const versionNumber = events.length - idx;
 
 				return (
@@ -35,18 +36,33 @@ const EventVersionsSection: FC<EventVersionsSectionProps> = ({ events }) => {
 							<span className='text-xs font-semibold text-content-slate-strong shrink-0'>
 								{t('events.debugger.ingestedVersionNumber', { n: versionNumber })}
 							</span>
-							<div className='flex items-center gap-1.5 text-xs text-content-slate-muted min-w-0'>
-								<Clock className='w-3.5 h-3.5 shrink-0' />
-								<span className='truncate'>
-									{ingestedAt ? (
-										<>
-											<span className='me-1.5 text-content-slate-tertiary'>{t('labels.ingestedAt')}</span>
-											{ingestedAt}
-										</>
-									) : (
-										t('labels.missingValue')
-									)}
-								</span>
+							<div className='flex flex-col items-end gap-1 min-w-0'>
+								<div className='flex items-center gap-1.5 text-xs text-content-slate-muted min-w-0'>
+									<Clock className='w-3.5 h-3.5 shrink-0' />
+									<span className='truncate'>
+										{ingestedAt ? (
+											<>
+												<span className='me-1.5 text-content-slate-tertiary'>{t('labels.ingestedAt')}</span>
+												{ingestedAt}
+											</>
+										) : (
+											t('labels.missingValue')
+										)}
+									</span>
+								</div>
+								<div className='flex items-center gap-1.5 text-xs text-content-slate-muted min-w-0'>
+									<Clock className='w-3.5 h-3.5 shrink-0' />
+									<span className='truncate'>
+										{timestamp ? (
+											<>
+												<span className='me-1.5 text-content-slate-tertiary'>{t('labels.timestamp')}</span>
+												{timestamp}
+											</>
+										) : (
+											t('labels.missingValue')
+										)}
+									</span>
+								</div>
 							</div>
 						</div>
 
