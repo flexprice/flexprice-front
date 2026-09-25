@@ -20,8 +20,8 @@ const usePortalIntegrations = () => {
 	const integrations = data?.payment_integrations ?? [];
 
 	/** Providers supporting a capability, defaults first so callers can take [0]. */
-	const providersFor = (capability: IntegrationCapabilityType): PaymentGatewayType[] =>
-		integrations
+	const providersFor = (capability: IntegrationCapabilityType): PaymentGatewayType[] => {
+		const matched = integrations
 			.filter((integration) => integration.capabilities.some((c) => c.type === capability))
 			.sort((a, b) => {
 				const aDefault = a.capabilities.some((c) => c.type === capability && c.is_default);
@@ -29,6 +29,8 @@ const usePortalIntegrations = () => {
 				return Number(bDefault) - Number(aDefault);
 			})
 			.map((integration) => integration.provider);
+		return Array.from(new Set(matched));
+	};
 
 	const supports = (capability: IntegrationCapabilityType) => providersFor(capability).length > 0;
 
