@@ -7,6 +7,8 @@ import {
 	VoidCreditNoteParams,
 	ListCreditNotesResponse,
 	CreditNote,
+	CreditNotePreviewResponse,
+	PreviewCreditNoteParams,
 } from '@/types/dto';
 
 class CreditNoteApi {
@@ -35,6 +37,14 @@ class CreditNoteApi {
 	 */
 	static async createCreditNote(params: CreateCreditNoteParams): Promise<CreditNote> {
 		return await AxiosClient.post<CreditNote, CreateCreditNoteParams>(this.baseUrl, params);
+	}
+
+	/**
+	 * Quote what a credit note would come to, tax included. Writes nothing.
+	 * POST /creditnotes/preview
+	 */
+	static async previewCreditNote(params: PreviewCreditNoteParams): Promise<CreditNotePreviewResponse> {
+		return await AxiosClient.post<CreditNotePreviewResponse, PreviewCreditNoteParams>(`${this.baseUrl}/preview`, params);
 	}
 
 	/**
