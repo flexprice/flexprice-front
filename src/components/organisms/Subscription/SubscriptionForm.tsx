@@ -4,6 +4,7 @@ import {
 	Label,
 	DecimalUsageInput,
 	DatePicker,
+	DateTimePicker,
 	Input,
 	Accordion,
 	AccordionContent,
@@ -824,7 +825,7 @@ const SubscriptionForm = ({
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-6'>
 						<div>
 							<Label label={t('organisms.subscriptionForm.subscriptionStartRequired')} />
-							<DatePicker
+							<DateTimePicker
 								date={new Date(state.startDate)}
 								setDate={(date) => {
 									if (date) {
@@ -836,7 +837,7 @@ const SubscriptionForm = ({
 						</div>
 						<div>
 							<Label label={t('organisms.subscriptionForm.subscriptionEnd')} />
-							<DatePicker
+							<DateTimePicker
 								date={state.endDate ? new Date(state.endDate) : undefined}
 								setDate={(date) => {
 									setState((prev) => ({ ...prev, endDate: date ? date.toISOString() : undefined }));
