@@ -41,7 +41,6 @@ import CreditGrantApi from '@/api/CreditGrantApi';
 import { PriceApi } from '@/api/PriceApi';
 import EntitlementApi from '@/api/EntitlementApi';
 import AddonApi from '@/api/AddonApi';
-import { AddAddonToSubscriptionRequest } from '@/types/dto/Addon';
 import { SubscriptionDiscountTable, EntitlementOverridesTable } from '@/components/molecules';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 import SubscriptionTaxAssociationTable from '@/components/molecules/SubscriptionTaxAssociationTable';
@@ -447,14 +446,6 @@ const SubscriptionForm = ({
 			priority: 0,
 			metadata: {},
 			subscription_id: uniqueId('sub_'),
-		};
-	};
-
-	const getEmptyAddon = (): Partial<AddAddonToSubscriptionRequest> => {
-		return {
-			addon_id: '',
-			start_date: undefined,
-			metadata: {},
 		};
 	};
 
@@ -1115,7 +1106,6 @@ const SubscriptionForm = ({
 			{state.selectedPlan && !isLoadingPlanDetails && (
 				<div className='mt-6 pt-6 border-t border-line'>
 					<SubscriptionAddonTable
-						getEmptyAddon={getEmptyAddon}
 						data={state.addons || []}
 						onChange={(data) => {
 							setState((prev) => ({ ...prev, addons: data }));

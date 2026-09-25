@@ -226,6 +226,7 @@ export enum SUBSCRIPTION_MODIFY_TYPE {
 	GROUPED_INVOICING = 'grouped_invoicing',
 	COUPON = 'coupon',
 	TAX = 'tax',
+	ADDON = 'addon',
 }
 
 /** Payload `grouped_invoicing_params.action` for {@link SUBSCRIPTION_MODIFY_TYPE.GROUPED_INVOICING}. */

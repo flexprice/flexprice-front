@@ -37,7 +37,8 @@
 		"linking": "جارٍ الربط...",
 		"unlink": "إلغاء الربط",
 		"unlinking": "جارٍ إلغاء الربط...",
-		"rowActions": "إجراءات الصف"
+		"rowActions": "إجراءات الصف",
+		"modify": "تعديل"
 	},
 	"status": {
 		"active": "نشط",
@@ -611,7 +612,7 @@
 		"edit": "تعديل",
 		"noDescription": "لا يوجد وصف",
 		"editAddonTitle": "تعديل الإضافة",
-		"addAddonTitle": "إضافة إضافة",
+		"addAddonTitle": "إضافة إضافات",
 		"labelAddon": "الإضافة",
 		"placeholderSelectAddon": "اختر إضافة",
 		"addonChargesHeading": "رسوم الإضافة",
@@ -621,11 +622,12 @@
 		"noChargesForPeriod": "لا توجد رسوم لهذه الفترة/العملة.",
 		"commitmentUsageOnlyHint": "يمكن تهيئة الالتزامات فقط للرسوم المعتمدة على الاستخدام.",
 		"saveChanges": "حفظ التغييرات",
-		"submitAddAddon": "إضافة إضافة",
+		"submitAddAddon": "إضافة الإضافات",
 		"chargeFallbackLabel": "رسوم",
 		"columnPrice": "السعر",
 		"labelStartDate": "تاريخ البدء (اختياري)",
-		"placeholderStartDate": "اختر تاريخ البدء"
+		"placeholderStartDate": "اختر تاريخ البدء",
+		"removedSuccess": "تمت إزالة الإضافة بنجاح"
 	},
 	"priceTooltip": {
 		"volumeTierPricing": "تسعير الشرائح بالحجم",

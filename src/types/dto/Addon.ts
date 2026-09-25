@@ -16,6 +16,19 @@ export enum ADDON_PRORATION_BEHAVIOR {
 	NONE = 'none',
 }
 
+/** When an addon attach takes effect (request `change_at`). Mutually exclusive with `start_date`. */
+export enum ADDON_CHANGE_AT {
+	IMMEDIATE = 'immediate',
+	END_OF_PERIOD = 'end_of_period',
+}
+
+/** UI-only timing for an addon attach or removal: a named `change_at`, or a custom date (`start_date` / `effective_date`). */
+export enum ADDON_CHANGE_TIMING {
+	IMMEDIATE = 'immediate',
+	END_OF_PERIOD = 'end_of_period',
+	CUSTOM = 'custom',
+}
+
 export interface ExtendedAddon extends Addon {
 	prices: Price[];
 	entitlements: Entitlement[];

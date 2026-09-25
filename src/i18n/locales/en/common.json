@@ -37,7 +37,8 @@
 		"linking": "Linking...",
 		"unlink": "Unlink",
 		"unlinking": "Unlinking...",
-		"rowActions": "Row actions"
+		"rowActions": "Row actions",
+		"modify": "Modify"
 	},
 	"status": {
 		"active": "Active",
@@ -622,7 +623,7 @@
 		"edit": "Edit",
 		"noDescription": "No description",
 		"editAddonTitle": "Edit Addon",
-		"addAddonTitle": "Add Addon",
+		"addAddonTitle": "Add addons",
 		"labelAddon": "Addon",
 		"placeholderSelectAddon": "Select addon",
 		"addonChargesHeading": "Addon Charges",
@@ -632,11 +633,12 @@
 		"noChargesForPeriod": "No charges for this billing period/currency.",
 		"commitmentUsageOnlyHint": "Commitments can be configured only for usage-based charges.",
 		"saveChanges": "Save Changes",
-		"submitAddAddon": "Add Addon",
+		"submitAddAddon": "Add addons",
 		"chargeFallbackLabel": "Charge",
 		"columnPrice": "Price",
 		"labelStartDate": "Start Date (optional)",
-		"placeholderStartDate": "Select start date"
+		"placeholderStartDate": "Select start date",
+		"removedSuccess": "Addon removed successfully"
 	},
 	"priceTooltip": {
 		"volumeTierPricing": "Volume Tier Pricing",

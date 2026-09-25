@@ -1,6 +1,7 @@
 import { AddAddonToSubscriptionRequest } from '@/types/dto/Addon';
 import React, { useCallback, useMemo, useState, memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 import { AddButton, FormHeader, ActionButton } from '@/components/atoms';
 import FlexpriceTable, { ColumnData } from '../Table';
 import SubscriptionAddonModal from './SubscriptionAddonModal';
@@ -16,7 +17,6 @@ interface Props {
 	data: AddAddonToSubscriptionRequest[];
 	onChange: (data: AddAddonToSubscriptionRequest[]) => void;
 	disabled?: boolean;
-	getEmptyAddon: () => Partial<AddAddonToSubscriptionRequest>;
 	priceOverrides?: Record<string, ExtendedPriceOverride>;
 	coupons?: Coupon[];
 	billingPeriod?: BILLING_PERIOD;
@@ -33,7 +33,6 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 	data,
 	onChange,
 	disabled,
-	getEmptyAddon,
 	priceOverrides = {},
 	coupons = [],
 	billingPeriod,
@@ -70,24 +69,18 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 	const getAddonDetails = useCallback((addonId: string) => addonsById[addonId], [addonsById]);
 
 	const handleSave = useCallback(
-		(newAddon: AddAddonToSubscriptionRequest) => {
+		(newAddons: AddAddonToSubscriptionRequest[]) => {
 			if (selectedAddon) {
-				// Update specific instance using internal_id
-				const updatedData = extendedData.map((addon) =>
-					addon.internal_id === selectedAddon.internal_id ? { ...newAddon, internal_id: addon.internal_id } : addon,
-				);
-				// Strip internal_id before passing to parent
-				onChange(updatedData.map(({ internal_id, ...rest }) => rest));
+				// Editing replaces that one instance (the modal returns exactly one addon)
+				const [edited] = newAddons;
+				onChange(extendedData.map(({ internal_id, ...rest }) => (internal_id === selectedAddon.internal_id && edited ? edited : rest)));
 			} else {
-				// Add new instance with next available internal_id
-				const nextId = extendedData.length > 0 ? Math.max(...extendedData.map((a) => a.internal_id)) + 1 : 0;
-				const newData = [...extendedData, { ...newAddon, internal_id: nextId }];
-				// Strip internal_id before passing to parent
-				onChange(newData.map(({ internal_id, ...rest }) => rest));
+				// Adding appends every addon staged in the modal
+				onChange([...data, ...newAddons]);
 			}
 			setSelectedAddon(null);
 		},
-		[extendedData, onChange, selectedAddon],
+		[data, extendedData, onChange, selectedAddon],
 	);
 
 	const handleDelete = useCallback(
@@ -95,8 +88,11 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 			const filteredData = extendedData.filter((addon) => addon.internal_id !== internalId);
 			// Strip internal_id before passing to parent
 			onChange(filteredData.map(({ internal_id, ...rest }) => rest));
+			// Toast here, not in ActionButton: removing re-indexes the rows, so by the time its
+			// onSuccess runs that row already shows the next addon's name.
+			toast.success(t('subscriptionAddon.removedSuccess'));
 		},
-		[extendedData, onChange],
+		[extendedData, onChange, t],
 	);
 
 	const handleEdit = useCallback((addon: ExtendedAddon) => {
@@ -161,6 +157,7 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 							id={row.addon_id}
 							copyId={{ entityType: 'Addon' }}
 							deleteMutationFn={() => handleDelete(row.internal_id)}
+							disableToast
 							refetchQueryKey='addons'
 							entityName={addonDetails?.name || row.addon_id}
 							edit={{
@@ -182,7 +179,6 @@ const SubscriptionAddonTable: React.FC<Props> = ({
 	return (
 		<>
 			<SubscriptionAddonModal
-				getEmptyAddon={getEmptyAddon}
 				data={selectedAddon || undefined}
 				isOpen={isOpen}
 				onOpenChange={setIsOpen}

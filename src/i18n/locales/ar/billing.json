@@ -427,7 +427,15 @@
 			},
 			"toast": {
 				"addonAddedSuccess": "تمت إضافة الإضافة بنجاح",
-				"addonAddFailed": "فشلت إضافة الإضافة"
+				"addonAddFailed": "فشلت إضافة الإضافة",
+				"addonsAddedSuccess_zero": "تمت إضافة الإضافات بنجاح",
+				"addonsAddedSuccess_one": "تمت إضافة الإضافة بنجاح",
+				"addonsAddedSuccess_two": "تمت إضافة إضافتين بنجاح",
+				"addonsAddedSuccess_few": "تمت إضافة {{count}} إضافات بنجاح",
+				"addonsAddedSuccess_many": "تمت إضافة {{count}} إضافة بنجاح",
+				"addonsAddedSuccess_other": "تمت إضافة {{count}} إضافة بنجاح",
+				"addonsUpdatedSuccess": "تم تحديث الإضافات بنجاح",
+				"addonsUpdateFailed": "فشل تحديث الإضافات"
 			},
 			"columns": {
 				"charge": "الرسم",
@@ -455,7 +463,45 @@
 				"none": "بدون تناسب",
 				"noneDescription": "لا تسويات تناسب."
 			},
-			"adding": "جارٍ الإضافة…"
+			"adding": "جارٍ الإضافة…",
+			"titleAdd": "إضافة إضافات",
+			"titleModify": "تعديل الإضافات",
+			"addAnotherAddon": "إضافة إضافة أخرى",
+			"chargesCount_zero": "لا توجد رسوم",
+			"chargesCount_one": "رسم واحد",
+			"chargesCount_two": "رسمان",
+			"chargesCount_few": "{{count}} رسوم",
+			"chargesCount_many": "{{count}} رسمًا",
+			"chargesCount_other": "{{count}} رسم",
+			"removeAddon": "إزالة {{name}}",
+			"maxAddonsReached": "يمكنك إضافة ما يصل إلى {{max}} إضافة في تغيير واحد.",
+			"changeAt": {
+				"label": "يبدأ",
+				"immediate": "الآن",
+				"immediateDescription": "إرفاق الإضافة فورًا.",
+				"endOfPeriod": "نهاية الفترة الحالية",
+				"endOfPeriodDescription": "إرفاق الإضافة عند انتهاء فترة الفوترة الحالية.",
+				"endOfPeriodDescriptionWithDate": "إرفاق الإضافة في {{date}}، عند انتهاء فترة الفوترة الحالية.",
+				"custom": "تاريخ مخصص",
+				"customDescription": "اختر تاريخ بدء الإضافة.",
+				"datePlaceholder": "اختر تاريخ البدء",
+				"dateRequired": "اختر تاريخ البدء"
+			},
+			"currentAddons": "الإضافات الحالية",
+			"addAddon": "إضافة إضافة",
+			"removing": "قيد الإزالة",
+			"undoRemoval": "تراجع",
+			"endAt": {
+				"label": "ينتهي",
+				"immediateDescription": "إزالة الإضافة فورًا.",
+				"endOfPeriodDescription": "إزالة الإضافة عند انتهاء فترة الفوترة الحالية.",
+				"endOfPeriodDescriptionWithDate": "إزالة الإضافة في {{date}}، عند انتهاء فترة الفوترة الحالية.",
+				"customDescription": "اختر تاريخ انتهاء الإضافة.",
+				"dateRequired": "اختر تاريخ الانتهاء",
+				"summaryNow": "ينتهي الآن",
+				"summaryPeriodEnd": "ينتهي في نهاية الفترة",
+				"summaryOn": "ينتهي في {{date}}"
+			}
 		},
 		"editDetailsHeader": {
 			"title": "تفاصيل الاشتراك",

@@ -38,7 +38,7 @@ import {
 import { PriceUnitConfig, PriceResponse } from '@/types/dto/Price';
 import { BILLING_PERIOD, BUCKET_SIZE_NONE } from '@/constants/constants';
 import { QueryFilter, TimeRangeFilter } from './base';
-import { AddAddonToSubscriptionRequest, ADDON_CADENCE, ADDON_PRORATION_BEHAVIOR } from './Addon';
+import { AddAddonToSubscriptionRequest, ADDON_CADENCE, ADDON_CHANGE_AT, ADDON_PRORATION_BEHAVIOR } from './Addon';
 export { ADDON_CADENCE as AddonCadence, ADDON_PRORATION_BEHAVIOR as ProrationBehavior } from './Addon';
 import { Invoice } from '@/models/Invoice';
 import type { WalletTransaction } from '@/models/WalletTransaction';
@@ -243,6 +243,18 @@ export interface SubModifyGroupedInvoicingParams {
 	child_subscription_ids: string[];
 }
 
+/** One addon attach inside `addon_bulk_params.adds` — the single add request minus the subscription id (it comes from the URL). */
+export type SubModifyAddonAdd = Omit<AddAddonRequest, 'subscription_id'>;
+
+/** One addon removal inside `addon_bulk_params.removes`. */
+export type SubModifyAddonRemove = RemoveAddonRequest;
+
+/** Payload when type is `addon` — add and/or remove several addons as one change (max 20 entries in total). */
+export interface SubModifyAddonBulkParams {
+	adds?: SubModifyAddonAdd[];
+	removes?: SubModifyAddonRemove[];
+}
+
 /** Unified body for modify preview and execute (exactly one params object must match `type`). */
 export interface ExecuteSubscriptionModifyRequest {
 	type: SubscriptionModifyType;
@@ -251,6 +263,7 @@ export interface ExecuteSubscriptionModifyRequest {
 	grouped_invoicing_params?: SubModifyGroupedInvoicingParams;
 	coupon_params?: SubModifyCouponParams;
 	tax_params?: SubModifyTaxParams;
+	addon_bulk_params?: SubModifyAddonBulkParams;
 }
 
 export interface ChangedLineItem {
@@ -591,6 +604,8 @@ export interface AddAddonRequest {
 	subscription_id: string;
 	addon_id: string;
 	start_date?: string;
+	/** When the attach applies. Mutually exclusive with `start_date`; omit both to attach now. */
+	change_at?: ADDON_CHANGE_AT;
 	cadence?: ADDON_CADENCE;
 	proration_behavior?: ADDON_PRORATION_BEHAVIOR;
 	metadata?: Metadata;
@@ -603,7 +618,9 @@ export interface RemoveAddonRequest {
 	addon_association_id: string;
 	reason?: string;
 	proration_behavior?: ADDON_PRORATION_BEHAVIOR;
+	/** Custom end date. Mutually exclusive with `change_at`; omit both to remove at period end. */
 	effective_date?: string;
+	change_at?: ADDON_CHANGE_AT;
 }
 
 export interface AddonAssociationResponse {

@@ -427,7 +427,11 @@
 			},
 			"toast": {
 				"addonAddedSuccess": "Addon added successfully",
-				"addonAddFailed": "Failed to add addon"
+				"addonAddFailed": "Failed to add addon",
+				"addonsAddedSuccess_one": "Addon added successfully",
+				"addonsAddedSuccess_other": "{{count}} addons added successfully",
+				"addonsUpdatedSuccess": "Addons updated successfully",
+				"addonsUpdateFailed": "Failed to update addons"
 			},
 			"columns": {
 				"charge": "Charge",
@@ -455,7 +459,41 @@
 				"none": "No proration",
 				"noneDescription": "No proration adjustments."
 			},
-			"adding": "Adding..."
+			"adding": "Adding...",
+			"titleAdd": "Add addons",
+			"titleModify": "Modify addons",
+			"addAnotherAddon": "Add another addon",
+			"chargesCount_one": "{{count}} charge",
+			"chargesCount_other": "{{count}} charges",
+			"removeAddon": "Remove {{name}}",
+			"maxAddonsReached": "You can add up to {{max}} addons in one change.",
+			"changeAt": {
+				"label": "Starts",
+				"immediate": "Now",
+				"immediateDescription": "Attach the addon right away.",
+				"endOfPeriod": "End of current period",
+				"endOfPeriodDescription": "Attach when the current billing period ends.",
+				"endOfPeriodDescriptionWithDate": "Attach on {{date}}, when the current billing period ends.",
+				"custom": "Custom date",
+				"customDescription": "Pick the date the addon starts.",
+				"datePlaceholder": "Select start date",
+				"dateRequired": "Select a start date"
+			},
+			"currentAddons": "Current addons",
+			"addAddon": "Add addon",
+			"removing": "Removing",
+			"undoRemoval": "Undo",
+			"endAt": {
+				"label": "Ends",
+				"immediateDescription": "Remove the addon right away.",
+				"endOfPeriodDescription": "Remove when the current billing period ends.",
+				"endOfPeriodDescriptionWithDate": "Remove on {{date}}, when the current billing period ends.",
+				"customDescription": "Pick the date the addon ends.",
+				"dateRequired": "Select an end date",
+				"summaryNow": "Ends now",
+				"summaryPeriodEnd": "Ends at period end",
+				"summaryOn": "Ends {{date}}"
+			}
 		},
 		"editDetailsHeader": {
 			"title": "Subscription Details",

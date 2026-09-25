@@ -1,14 +1,14 @@
 import { FC, useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-import { Settings2, Trash2, Copy } from 'lucide-react';
+import { Settings2, Trash2, Copy, Pencil } from 'lucide-react';
 import { Button, Card, CardHeader, DatePicker, Dialog, AddButton, Select, Tooltip, NoDataCard } from '@/components/atoms';
 import { FlexpriceTable, ColumnData } from '@/components/molecules';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BsThreeDots } from 'react-icons/bs';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { AddonAssociationResponse, SubscriptionLineItemListItem, SubscriptionResponse } from '@/types/dto/Subscription';
-import { EXPAND } from '@/models';
+import { EXPAND, SUBSCRIPTION_MODIFY_TYPE } from '@/models';
 import { ADDON_PRORATION_BEHAVIOR } from '@/types/dto/Addon';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { copyToClipboard } from '@/utils/common/helper_functions';
@@ -164,6 +164,17 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 
 	const isLoading = isLoadingAddons || isLoadingAddonLineItems;
 
+	const chargesCountByAssociationId = useMemo(
+		() =>
+			Object.fromEntries(
+				addonAssociations.map((association) => [
+					association.id,
+					chargeLinesByAddonAssociationId[association.id]?.length ?? association.addon?.prices?.length ?? 0,
+				]),
+			),
+		[addonAssociations, chargeLinesByAddonAssociationId],
+	);
+
 	const getAddonDisplayInput = useCallback(
 		(association: AddonAssociationResponse) => {
 			const lines = chargeLinesByAddonAssociationId[association.id];
@@ -197,16 +208,26 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 
 	// Cancel addon mutation
 	const { mutate: cancelAddon, isPending: isCancellingAddon } = useMutation({
+		// Single removals go through the same batch modify API as the Modify dialog.
 		mutationFn: async (payload: { addonAssociationId: string; effectiveDate?: string; prorationBehavior?: ADDON_PRORATION_BEHAVIOR }) => {
-			return await SubscriptionApi.removeAddonFromSubscription({
-				addon_association_id: payload.addonAssociationId,
-				...(payload.effectiveDate ? { effective_date: payload.effectiveDate } : {}),
-				...(payload.prorationBehavior ? { proration_behavior: payload.prorationBehavior } : {}),
+			return await SubscriptionApi.executeSubscriptionModify(subscriptionId, {
+				type: SUBSCRIPTION_MODIFY_TYPE.ADDON,
+				addon_bulk_params: {
+					removes: [
+						{
+							addon_association_id: payload.addonAssociationId,
+							// No effective_date means the backend ends it at period end.
+							...(payload.effectiveDate ? { effective_date: payload.effectiveDate } : {}),
+							...(payload.prorationBehavior ? { proration_behavior: payload.prorationBehavior } : {}),
+						},
+					],
+				},
 			});
 		},
 		onSuccess: () => {
 			toast.success('Addon cancelled successfully');
 			queryClient.invalidateQueries({ queryKey: ['subscriptionActiveAddons', subscriptionId] });
+			queryClient.invalidateQueries({ queryKey: ['subscriptionAddonLineItems', subscriptionId] });
 			void refetchQueries(['subscriptionEdit', subscriptionId]);
 			queryClient.invalidateQueries({ queryKey: ['subscriptionEntitlements', subscriptionId] });
 			setIsCancelDialogOpen(false);
@@ -338,12 +359,23 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 		[dropdownOpen, handleCancel, readOnly, canWriteAddon, t, getAddonDisplayInput, chargeLabels],
 	);
 
+	// "Add" on an empty subscription, "Modify" once addons exist; both open the same batch dialog.
+	const hasAddons = addonAssociations.length > 0;
+	const renderAddonCta = (disabled: boolean) =>
+		hasAddons ? (
+			<Button prefixIcon={<Pencil />} className='gap-1' disabled={disabled} onClick={() => setIsAddDialogOpen(true)}>
+				{t('actions.modify')}
+			</Button>
+		) : (
+			<AddButton disabled={disabled} onClick={() => setIsAddDialogOpen(true)} />
+		);
+
 	const addButton = readOnly ? undefined : canWriteAddon ? (
-		<AddButton onClick={() => setIsAddDialogOpen(true)} />
+		renderAddonCta(false)
 	) : (
 		<Tooltip content={t('labels.addonWriteDeniedTooltip')}>
 			<span tabIndex={0} className='inline-block'>
-				<AddButton disabled />
+				{renderAddonCta(true)}
 			</span>
 		</Tooltip>
 	);
@@ -365,7 +397,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 
 	return (
 		<>
-			{addonAssociations.length > 0 ? (
+			{hasAddons ? (
 				<Card variant='notched'>
 					<CardHeader title={t('labels.addons')} cta={addButton} />
 					<FlexpriceTable showEmptyRow data={addonAssociations} columns={columns} variant='no-bordered' />
@@ -379,6 +411,9 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 					isOpen={isAddDialogOpen}
 					onOpenChange={setIsAddDialogOpen}
 					subscriptionId={subscriptionId}
+					mode={hasAddons ? 'modify' : 'add'}
+					existingAddons={addonAssociations}
+					chargesCountByAssociationId={chargesCountByAssociationId}
 					billingPeriod={subscriptionDetails?.billing_period}
 					billingPeriodCount={
 						subscriptionBillingPeriodCount ??
@@ -388,6 +423,7 @@ const SubscriptionAddonsSection: FC<SubscriptionAddonsSectionProps> = ({
 					}
 					currency={subscriptionDetails?.currency}
 					currentPeriodEndIso={subscriptionDetails?.current_period_end}
+					currentPeriodStartIso={subscriptionDetails?.current_period_start}
 				/>
 			)}
 

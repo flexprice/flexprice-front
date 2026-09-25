@@ -1,42 +1,38 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, DatePicker, Select } from '@/components/atoms';
+import toast from 'react-hot-toast';
+import { Button, Select } from '@/components/atoms';
 import Dialog from '@/components/atoms/Dialog';
 import AddonApi from '@/api/AddonApi';
 import SubscriptionApi from '@/api/SubscriptionApi';
-import { toSentenceCase } from '@/utils/common/helper_functions';
-import { AddAddonRequest, SubscriptionResponse } from '@/types/dto/Subscription';
-import { AddonResponse, ADDON_CADENCE, ADDON_PRORATION_BEHAVIOR } from '@/types/dto/Addon';
-import toast from 'react-hot-toast';
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
-import { ColumnData, FlexpriceTable } from '@/components/molecules';
-import { Price, PRICE_TYPE } from '@/models/Price';
 import { BILLING_PERIOD } from '@/constants/constants';
-import type { CommitmentTimeBucket } from '@/types/dto/CommitmentTimeBucket';
-import { LineItemCommitmentConfig, LineItemCommitmentsMap } from '@/types/dto/LineItemCommitmentConfig';
-import CommitmentConfigDialog from '@/components/molecules/CommitmentConfigDialog';
-import { formatCommitmentSummary } from '@/utils/common/commitment_helpers';
+import { Price } from '@/models/Price';
+import { AddonResponse } from '@/types/dto/Addon';
+import { AddonAssociationResponse, ExecuteSubscriptionModifyRequest, SubscriptionResponse } from '@/types/dto/Subscription';
+import { filterAddonPricesForSubscription } from '@/utils/subscription/addon_commitment_helpers';
 import {
-	buildCommitmentConfigOnSave,
-	filterAddonPricesForSubscription,
-	sanitizeAddonLineItemCommitmentsForApi,
-} from '@/utils/subscription/addon_commitment_helpers';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, Pencil, RotateCcw, Target } from 'lucide-react';
-import { BsThreeDots } from 'react-icons/bs';
-import { usePriceOverrides } from '@/hooks/usePriceOverrides';
-import { getLineItemOverrides } from '@/utils/common/price_override_helpers';
-import { sanitizeAddonOverrideLineItemsForApi } from '@/utils/subscription/addonQuantity';
-import { PriceQuantityCell } from '@/components/molecules/PriceQuantityCell';
-import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
-import ChargeValueCell from '@/components/molecules/ChargeValueCell/ChargeValueCell';
-import { DropdownMenu as UiDropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+	AddonRemovalDraft,
+	buildAddonBulkModifyRequest,
+	createAddonRemovalDraft,
+	isAddonRemovalMissingCustomDate,
+	MAX_ADDON_BULK_ENTRIES,
+} from '@/utils/subscription/buildAddonBulkModifyRequest';
+import { useAddonDraftList } from '@/hooks/useAddonDraftList';
+import AddonDraftCard from './AddonDraftCard';
+import ExistingAddonRow from './ExistingAddonRow';
 
 interface Props {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	subscriptionId: string;
+	/** `modify` when the subscription already has addons: lists them so they can be removed in the same change. */
+	mode?: 'add' | 'modify';
+	/** Addons currently on the subscription (modify mode). */
+	existingAddons?: AddonAssociationResponse[];
+	/** Charges each existing addon holds on this subscription, keyed by addon association id. */
+	chargesCountByAssociationId?: Record<string, number>;
 	billingPeriod?: BILLING_PERIOD;
 	/**
 	 * Subscription's billing_period_count paired with billingPeriod for the cadence-compat filter.
@@ -47,34 +43,43 @@ interface Props {
 	currency?: string;
 	/** When provided, skips GET subscription for defaults (subscription edit passes from core fetch). */
 	currentPeriodEndIso?: string;
+	currentPeriodStartIso?: string;
 }
 
-interface FormErrors {
-	addon_id?: string;
-}
-
+/**
+ * Stage addons to attach and existing addons to remove, then apply them in a single
+ * POST /subscriptions/:id/modify/execute (type `addon`, `addon_bulk_params.adds` / `.removes`),
+ * so the whole set settles as one netted change.
+ */
 const AddAddonDialog: React.FC<Props> = ({
 	isOpen,
 	onOpenChange,
 	subscriptionId,
+	mode = 'add',
+	existingAddons = [],
+	chargesCountByAssociationId = {},
 	billingPeriod,
 	billingPeriodCount,
 	currency,
 	currentPeriodEndIso,
+	currentPeriodStartIso,
 }) => {
-	const { t } = useTranslation(['billing', 'common', 'customers']);
-	const [formData, setFormData] = useState<Partial<AddAddonRequest>>({});
-	const [errors, setErrors] = useState<FormErrors>({});
-	const [selectedAddonDetails, setSelectedAddonDetails] = useState<AddonResponse | null>(null);
-	const [lineItemCommitments, setLineItemCommitments] = useState<LineItemCommitmentsMap>({});
-	const [selectedCommitmentPrice, setSelectedCommitmentPrice] = useState<Price | null>(null);
-	const [isCommitmentDialogOpen, setIsCommitmentDialogOpen] = useState(false);
-	const [selectedOverridePrice, setSelectedOverridePrice] = useState<Price | null>(null);
-	const [isOverrideDialogOpen, setIsOverrideDialogOpen] = useState(false);
-	const [advancedOpen, setAdvancedOpen] = useState(false);
-	const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-	const [cadence, setCadence] = useState<ADDON_CADENCE | ''>('');
-	const [prorationBehavior, setProrationBehavior] = useState<ADDON_PRORATION_BEHAVIOR | ''>('');
+	const { t } = useTranslation(['billing', 'common']);
+	const {
+		drafts,
+		openKeys,
+		invalidKeys,
+		reset: resetDrafts,
+		stage,
+		update: updateDraft,
+		remove: removeDraft,
+		setOpen: setDraftOpen,
+		validate,
+	} = useAddonDraftList();
+	const [pickerError, setPickerError] = useState<string>();
+	const [removals, setRemovals] = useState<Record<string, AddonRemovalDraft>>({});
+	const [openRemovalIds, setOpenRemovalIds] = useState<Set<string>>(new Set());
+	const [invalidRemovalIds, setInvalidRemovalIds] = useState<Set<string>>(new Set());
 
 	const shouldFetchSubscription = !!subscriptionId && isOpen && !currentPeriodEndIso;
 
@@ -92,7 +97,6 @@ const AddAddonDialog: React.FC<Props> = ({
 	const resolvedBillingPeriodCount =
 		billingPeriodCount ?? (subscriptionDetails as SubscriptionResponse | undefined)?.billing_period_count ?? 1;
 
-	// Fetch available addons
 	const { data: addonsResponse } = useQuery({
 		queryKey: ['subaddons', subscriptionId],
 		queryFn: async () => {
@@ -100,71 +104,53 @@ const AddAddonDialog: React.FC<Props> = ({
 		},
 	});
 
-	// Reset form when modal opens/closes
-	const selectedAddonPrices = useMemo(
-		() =>
-			filterAddonPricesForSubscription(
-				(selectedAddonDetails?.prices as Price[]) || [],
+	const addonsById = useMemo(
+		() => new Map((addonsResponse?.items ?? []).map((addon: AddonResponse) => [addon.id, addon])),
+		[addonsResponse?.items],
+	);
+
+	// Prices each staged addon will actually attach: same currency and a compatible cadence.
+	const pricesByAddonId = useMemo(() => {
+		const result: Record<string, Price[]> = {};
+		for (const draft of drafts) {
+			result[draft.addonId] = filterAddonPricesForSubscription(
+				(addonsById.get(draft.addonId)?.prices as Price[]) || [],
 				billingPeriod,
 				currency,
 				resolvedBillingPeriodCount,
-			),
-		[selectedAddonDetails, billingPeriod, currency, resolvedBillingPeriodCount],
-	);
+			);
+		}
+		return result;
+	}, [drafts, addonsById, billingPeriod, currency, resolvedBillingPeriodCount]);
 
-	const { overriddenPrices, overridePrice, resetOverride, resetAllOverrides } = usePriceOverrides(selectedAddonPrices);
+	const resolvedPeriodStartRaw = currentPeriodStartIso ?? (subscriptionDetails as SubscriptionResponse | undefined)?.current_period_start;
+
+	const currentPeriodEndDate = useMemo(() => parseDate(resolvedPeriodEndRaw), [resolvedPeriodEndRaw]);
+	const currentPeriodStartDate = useMemo(() => parseDate(resolvedPeriodStartRaw), [resolvedPeriodStartRaw]);
 
 	useEffect(() => {
 		if (isOpen) {
-			setFormData({});
-			setErrors({});
-			setSelectedAddonDetails(null);
-			setLineItemCommitments({});
-			setSelectedCommitmentPrice(null);
-			setIsCommitmentDialogOpen(false);
-			setSelectedOverridePrice(null);
-			setIsOverrideDialogOpen(false);
-			resetAllOverrides();
-			setAdvancedOpen(false);
-			setStartDate(undefined);
-			setCadence('');
-			setProrationBehavior('');
+			resetDrafts();
+			setPickerError(undefined);
+			setRemovals({});
+			setOpenRemovalIds(new Set());
+			setInvalidRemovalIds(new Set());
 		}
-	}, [isOpen, resetAllOverrides]);
+	}, [isOpen, resetDrafts]);
 
-	const currentPeriodEndDate = useMemo(() => {
-		const raw = resolvedPeriodEndRaw;
-		if (!raw) return undefined;
-		const parsed = new Date(raw);
-		return isNaN(parsed.getTime()) ? undefined : parsed;
-	}, [resolvedPeriodEndRaw]);
+	const removalList = useMemo(() => Object.values(removals), [removals]);
+	const changeCount = drafts.length + removalList.length;
 
-	const applyAdvancedDefaults = useCallback(() => {
-		setCadence((prev) => (prev ? prev : ADDON_CADENCE.RECURRING));
-		setProrationBehavior((prev) => (prev ? prev : ADDON_PRORATION_BEHAVIOR.NONE));
-		setStartDate((prev) => (prev ? prev : currentPeriodEndDate));
-	}, [currentPeriodEndDate]);
-
-	const validateForm = useCallback((): { isValid: boolean; errors: FormErrors } => {
-		const newErrors: FormErrors = {};
-
-		if (!formData.addon_id) {
-			newErrors.addon_id = t('billing:subscriptions.addAddonDialog.validation.addonRequired');
-		}
-
-		return {
-			isValid: Object.keys(newErrors).length === 0,
-			errors: newErrors,
-		};
-	}, [formData, t]);
-
-	// Add addon mutation
-	const { mutateAsync: addAddon, isPending: isAddingAddon } = useMutation({
-		mutationFn: async (payload: AddAddonRequest) => {
-			return await SubscriptionApi.addAddonToSubscription(payload);
+	const { mutateAsync: executeModify, isPending } = useMutation({
+		mutationFn: async (payload: ExecuteSubscriptionModifyRequest) => {
+			return await SubscriptionApi.executeSubscriptionModify(subscriptionId, payload);
 		},
 		onSuccess: () => {
-			toast.success(t('billing:subscriptions.addAddonDialog.toast.addonAddedSuccess'));
+			toast.success(
+				removalList.length > 0
+					? t('billing:subscriptions.addAddonDialog.toast.addonsUpdatedSuccess')
+					: t('billing:subscriptions.addAddonDialog.toast.addonsAddedSuccess', { count: drafts.length }),
+			);
 			refetchQueries(['subscriptionActiveAddons', subscriptionId]);
 			refetchQueries(['subscriptionAddonLineItems', subscriptionId]);
 			refetchQueries(['subscriptionDetails', subscriptionId]);
@@ -172,384 +158,193 @@ const AddAddonDialog: React.FC<Props> = ({
 			refetchQueries(['subscriptionEntitlements', subscriptionId]);
 		},
 		onError: (error: Error) => {
-			toast.error(error.message || t('billing:subscriptions.addAddonDialog.toast.addonAddFailed'));
+			toast.error(
+				error.message ||
+					(removalList.length > 0
+						? t('billing:subscriptions.addAddonDialog.toast.addonsUpdateFailed')
+						: t('billing:subscriptions.addAddonDialog.toast.addonAddFailed')),
+			);
 		},
 	});
 
+	const stageAddon = useCallback(
+		(addonId: string) => {
+			stage(addonId);
+			setPickerError(undefined);
+		},
+		[stage],
+	);
+
+	const markForRemoval = useCallback((associationId: string) => {
+		setRemovals((prev) => ({ ...prev, [associationId]: createAddonRemovalDraft(associationId) }));
+		setOpenRemovalIds((prev) => new Set([...prev, associationId]));
+	}, []);
+
+	const undoRemoval = useCallback((associationId: string) => {
+		setRemovals((prev) => {
+			const next = { ...prev };
+			delete next[associationId];
+			return next;
+		});
+		setInvalidRemovalIds((prev) => withoutKey(prev, associationId));
+	}, []);
+
+	const updateRemoval = useCallback((associationId: string, patch: Partial<AddonRemovalDraft>) => {
+		setRemovals((prev) => (prev[associationId] ? { ...prev, [associationId]: { ...prev[associationId], ...patch } } : prev));
+		setInvalidRemovalIds((prev) => withoutKey(prev, associationId));
+	}, []);
+
+	const setRemovalOpen = useCallback((associationId: string, open: boolean) => {
+		setOpenRemovalIds((prev) => (open ? new Set([...prev, associationId]) : withoutKey(prev, associationId)));
+	}, []);
+
 	const handleSave = useCallback(async () => {
-		if (isAddingAddon) return;
+		if (isPending) return;
 
-		const validation = validateForm();
-
-		if (!validation.isValid) {
-			setErrors(validation.errors);
+		if (changeCount === 0) {
+			setPickerError(t('billing:subscriptions.addAddonDialog.validation.addonRequired'));
 			return;
 		}
 
-		setErrors({});
-		const line_item_commitments = sanitizeAddonLineItemCommitmentsForApi(lineItemCommitments, selectedAddonPrices);
-		const override_line_items = sanitizeAddonOverrideLineItemsForApi(
-			getLineItemOverrides(selectedAddonPrices, overriddenPrices),
-			selectedAddonPrices,
-		);
-		const addonData: AddAddonRequest = {
-			subscription_id: subscriptionId,
-			addon_id: formData.addon_id!,
-			line_item_commitments,
-			...(override_line_items ? { override_line_items } : {}),
-			...(startDate ? { start_date: startDate.toISOString() } : {}),
-			...(cadence ? { cadence } : {}),
-			...(prorationBehavior ? { proration_behavior: prorationBehavior } : {}),
-		};
+		const draftsValid = validate();
+		const invalidRemovals = new Set(removalList.filter(isAddonRemovalMissingCustomDate).map((r) => r.addonAssociationId));
+		setInvalidRemovalIds(invalidRemovals);
+		if (invalidRemovals.size > 0) setOpenRemovalIds((prev) => new Set([...prev, ...invalidRemovals]));
+		if (!draftsValid || invalidRemovals.size > 0) return;
 
 		try {
-			await addAddon(addonData);
-			setFormData({});
-			setErrors({});
+			await executeModify(buildAddonBulkModifyRequest(drafts, pricesByAddonId, removalList));
 			onOpenChange(false);
 		} catch {
 			// Keep dialog open so the user can fix and retry.
 		}
-	}, [
-		formData,
-		validateForm,
-		subscriptionId,
-		addAddon,
-		lineItemCommitments,
-		selectedAddonPrices,
-		startDate,
-		cadence,
-		prorationBehavior,
-		isAddingAddon,
-		onOpenChange,
-		overriddenPrices,
-	]);
-
-	const handleCancel = useCallback(() => {
-		if (isAddingAddon) return;
-		setFormData({});
-		setErrors({});
-		onOpenChange(false);
-	}, [onOpenChange, isAddingAddon]);
+	}, [changeCount, drafts, executeModify, isPending, onOpenChange, pricesByAddonId, removalList, t, validate]);
 
 	const handleDialogOpenChange = useCallback(
 		(open: boolean) => {
-			if (!open && isAddingAddon) return;
+			if (!open && isPending) return;
 			onOpenChange(open);
 		},
-		[onOpenChange, isAddingAddon],
+		[onOpenChange, isPending],
 	);
 
-	const handleAddonSelect = useCallback(
-		(addonId: string) => {
-			const addonDetails = (addonsResponse?.items || []).find((addon: AddonResponse) => addon.id === addonId) || null;
-			setSelectedAddonDetails(addonDetails);
-			// Reset commitments and price overrides when switching addons to avoid leaking configs across addons
-			setLineItemCommitments({});
-			resetAllOverrides();
-			// Reset advanced config when switching addons
-			setStartDate(undefined);
-			setCadence('');
-			setProrationBehavior('');
-			setFormData((prev) => ({ ...prev, addon_id: addonId }));
-			// Clear error for this field when user selects
-			if (errors.addon_id) {
-				setErrors((prev) => ({ ...prev, addon_id: undefined }));
-			}
-		},
-		[errors.addon_id, addonsResponse?.items],
-	);
+	// An addon can be staged once per change; it drops out of the picker after it's picked.
+	const addonOptions = useMemo(() => {
+		const staged = new Set(drafts.map((draft) => draft.addonId));
+		return (addonsResponse?.items || [])
+			.filter((addon: AddonResponse) => !staged.has(addon.id))
+			.map((addon: AddonResponse) => ({
+				label: addon.name,
+				value: addon.id,
+				description: addon.description || t('billing:subscriptions.addAddonDialog.noDescription'),
+			}));
+	}, [addonsResponse, drafts, t]);
 
-	type AddonChargeRow = { price: Price };
-
-	const handleConfigureCommitment = useCallback((price: Price) => {
-		if (price.type !== PRICE_TYPE.USAGE) return;
-		setSelectedCommitmentPrice(price);
-		setIsCommitmentDialogOpen(true);
-	}, []);
-
-	const handleConfigurePrice = useCallback((price: Price) => {
-		setSelectedOverridePrice(price);
-		setIsOverrideDialogOpen(true);
-	}, []);
-
-	const setCommitmentForPrice = useCallback((priceId: string, config: LineItemCommitmentConfig | null) => {
-		setLineItemCommitments((prev) => {
-			const next: LineItemCommitmentsMap = { ...(prev || {}) };
-			if (!config) {
-				delete next[priceId];
-			} else {
-				next[priceId] = config;
-			}
-			return next;
-		});
-	}, []);
-
-	const handleCommitmentSave = useCallback(
-		(priceId: string, config: LineItemCommitmentConfig | null, timeBuckets?: CommitmentTimeBucket[]) => {
-			if (!config) {
-				setCommitmentForPrice(priceId, null);
-				return;
-			}
-			setCommitmentForPrice(priceId, buildCommitmentConfigOnSave(config, timeBuckets));
-		},
-		[setCommitmentForPrice],
-	);
-
-	const addonChargeColumns: ColumnData<AddonChargeRow>[] = useMemo(
-		() => [
-			{
-				title: t('billing:subscriptions.addAddonDialog.columns.charge'),
-				render: (row) => (
-					<span>{row.price.display_name || row.price.meter?.name || t('billing:subscriptions.addAddonDialog.chargeFallback')}</span>
-				),
-			},
-			{
-				title: t('billing:subscriptions.addAddonDialog.columns.type'),
-				render: (row) => <span>{toSentenceCase(row.price.type || t('common:labels.na'))}</span>,
-			},
-			{
-				title: t('billing:subscriptions.addAddonDialog.columns.quantity'),
-				render: (row) => (
-					<PriceQuantityCell
-						price={row.price}
-						override={overriddenPrices[row.price.id]}
-						usageLabel={t('billing:subscriptions.addAddonDialog.quantityUsage')}
-						ariaLabel={t('billing:subscriptions.addAddonDialog.columns.quantity')}
-						onPriceOverride={overridePrice}
-						onResetOverride={resetOverride}
-					/>
-				),
-			},
-			{
-				title: t('billing:subscriptions.addAddonDialog.columns.price'),
-				render: (row) => <ChargeValueCell data={row.price} priceOverride={overriddenPrices[row.price.id]} />,
-			},
-			{
-				title: t('billing:subscriptions.addAddonDialog.columns.commitment'),
-				render: (row) => {
-					if (row.price.type !== PRICE_TYPE.USAGE) {
-						return <span className='text-sm text-content-subtle'>{t('billing:subscriptions.addAddonDialog.commitmentNotAvailable')}</span>;
-					}
-					const config = lineItemCommitments[row.price.id];
-					return config ? <span className='text-sm text-content-tertiary'>{formatCommitmentSummary(config)}</span> : <span>—</span>;
-				},
-			},
-			{
-				fieldVariant: 'interactive',
-				hideOnEmpty: true,
-				title: '',
-				width: 60,
-				align: 'right',
-				render: (row) => {
-					const isOverridden = overriddenPrices[row.price.id] !== undefined;
-					const hasCommitment = lineItemCommitments[row.price.id] !== undefined;
-					const canConfigureCommitment = row.price.type === PRICE_TYPE.USAGE;
-					return (
-						<UiDropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<button type='button' aria-label={t('billing:subscriptions.configure')}>
-									<BsThreeDots className='text-base size-4' />
-								</button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align='end' className='w-48'>
-								<DropdownMenuItem onClick={() => handleConfigurePrice(row.price)}>
-									<Pencil className='me-2 h-4 w-4' />
-									{isOverridden
-										? t('customers:organisms.subscriptionPriceTable.editOverride')
-										: t('customers:organisms.subscriptionPriceTable.overridePrice')}
-								</DropdownMenuItem>
-								{isOverridden && (
-									<DropdownMenuItem onClick={() => resetOverride(row.price.id)}>
-										<RotateCcw className='me-2 h-4 w-4' />
-										{t('customers:organisms.subscriptionPriceTable.resetOverride')}
-									</DropdownMenuItem>
-								)}
-								{canConfigureCommitment && (
-									<DropdownMenuItem onClick={() => handleConfigureCommitment(row.price)}>
-										<Target className='me-2 h-4 w-4' />
-										{hasCommitment
-											? t('customers:organisms.subscriptionPriceTable.editCommitment')
-											: t('customers:organisms.subscriptionPriceTable.configureCommitment')}
-									</DropdownMenuItem>
-								)}
-							</DropdownMenuContent>
-						</UiDropdownMenu>
-					);
-				},
-			},
-		],
-		[lineItemCommitments, handleConfigureCommitment, handleConfigurePrice, overridePrice, overriddenPrices, resetOverride, t],
-	);
-
-	const filteredAddonOptions = useMemo(() => {
-		return (addonsResponse?.items || []).map((addon: AddonResponse) => ({
-			label: addon.name,
-			value: addon.id,
-			description: addon.description || t('billing:subscriptions.addAddonDialog.noDescription'),
-		}));
-	}, [addonsResponse, t]);
+	const isAtLimit = changeCount >= MAX_ADDON_BULK_ENTRIES;
 
 	return (
 		<Dialog
 			isOpen={isOpen}
 			showCloseButton={false}
 			onOpenChange={handleDialogOpenChange}
-			title={t('common:actions.add')}
+			title={mode === 'modify' ? t('billing:subscriptions.addAddonDialog.titleModify') : t('billing:subscriptions.addAddonDialog.titleAdd')}
 			className='sm:max-w-[900px]'>
 			<div className='grid gap-4 mt-3'>
+				{mode === 'modify' && existingAddons.length > 0 && (
+					<div className='space-y-2'>
+						<p className='text-sm font-medium text-content-secondary'>{t('billing:subscriptions.addAddonDialog.currentAddons')}</p>
+						{existingAddons.map((association) => (
+							<ExistingAddonRow
+								key={association.id}
+								association={association}
+								chargesCount={chargesCountByAssociationId[association.id] ?? 0}
+								removal={removals[association.id]}
+								isOpen={openRemovalIds.has(association.id)}
+								onOpenChange={(open) => setRemovalOpen(association.id, open)}
+								onMarkForRemoval={() => markForRemoval(association.id)}
+								onUndoRemoval={() => undoRemoval(association.id)}
+								onChange={(patch) => updateRemoval(association.id, patch)}
+								currentPeriodStart={currentPeriodStartDate}
+								currentPeriodEnd={currentPeriodEndDate}
+								endDateError={
+									invalidRemovalIds.has(association.id) ? t('billing:subscriptions.addAddonDialog.endAt.dateRequired') : undefined
+								}
+								disableRemove={isAtLimit}
+								disabled={isPending}
+							/>
+						))}
+					</div>
+				)}
+
 				<div className='space-y-2'>
 					<Select
-						label={t('billing:subscriptions.addon')}
+						label={
+							drafts.length > 0
+								? t('billing:subscriptions.addAddonDialog.addAnotherAddon')
+								: mode === 'modify'
+									? t('billing:subscriptions.addAddonDialog.addAddon')
+									: t('billing:subscriptions.addon')
+						}
 						placeholder={t('billing:subscriptions.selectAddon')}
-						options={filteredAddonOptions}
-						value={formData.addon_id || ''}
-						onChange={handleAddonSelect}
-						error={errors.addon_id}
+						options={addonOptions}
+						// Always reset: picking an option stages it rather than holding a selection.
+						value=''
+						onChange={stageAddon}
+						error={pickerError}
+						disabled={isAtLimit || isPending}
 					/>
+					{isAtLimit && (
+						<p className='text-xs text-content-muted'>
+							{t('billing:subscriptions.addAddonDialog.maxAddonsReached', { max: MAX_ADDON_BULK_ENTRIES })}
+						</p>
+					)}
 				</div>
 
-				{/* Addon Charges & Commitments */}
-				{formData.addon_id && (
+				{drafts.length > 0 && (
 					<div className='space-y-3'>
-						<div className='flex items-center justify-between'>
-							<div>
-								<p className='text-sm font-medium text-content-secondary'>{t('common:labels.charges')}</p>
-							</div>
-						</div>
-						{selectedAddonPrices.length > 0 ? (
-							<div className='rounded-xl border border-line'>
-								<FlexpriceTable columns={addonChargeColumns} data={selectedAddonPrices.map((p) => ({ price: p }))} />
-							</div>
-						) : (
-							<div className='rounded-xl border border-line p-4'>
-								<p className='text-sm text-content-tertiary'>{t('billing:subscriptions.addAddonDialog.emptyNoChargesForPeriodCurrency')}</p>
-							</div>
-						)}
-
-						{/* Advanced options (optional) */}
-						<Collapsible
-							open={advancedOpen}
-							onOpenChange={(open) => {
-								setAdvancedOpen(open);
-								if (open) {
-									applyAdvancedDefaults();
-								}
-							}}>
-							<div className='rounded-xl border border-line bg-surface'>
-								<CollapsibleTrigger asChild>
-									<button
-										type='button'
-										className='w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-content-heading hover:bg-surface-subtle rounded-xl'>
-										<span>{t('billing:subscriptions.addAddonDialog.advancedOptions')}</span>
-										<ChevronDown
-											className={`h-4 w-4 text-content-muted transition-transform ${advancedOpen ? 'rotate-180' : 'rotate-0'}`}
-										/>
-									</button>
-								</CollapsibleTrigger>
-								<CollapsibleContent>
-									<div className='px-4 pb-4 pt-1'>
-										<div className='flex flex-col gap-3'>
-											<DatePicker
-												label={t('billing:subscriptions.startDateOptional')}
-												placeholder={t('billing:subscriptions.startDate')}
-												date={startDate}
-												setDate={setStartDate}
-												className='w-full'
-												popoverTriggerClassName='w-full'
-											/>
-											<Select
-												label={t('billing:subscriptions.cadenceOptional')}
-												placeholder={t('common:labels.default')}
-												options={[
-													{
-														label: t('billing:subscriptions.addAddonDialog.cadence.recurring'),
-														value: ADDON_CADENCE.RECURRING,
-														description: t('billing:subscriptions.addAddonDialog.cadence.recurringDescription'),
-													},
-													{
-														label: t('billing:subscriptions.addAddonDialog.cadence.onetime'),
-														value: ADDON_CADENCE.ONETIME,
-														description: t('billing:subscriptions.addAddonDialog.cadence.onetimeDescription'),
-													},
-												]}
-												value={cadence}
-												onChange={(v) => setCadence(v as ADDON_CADENCE)}
-											/>
-											<Select
-												label={t('billing:subscriptions.prorationOptional')}
-												placeholder={t('common:labels.default')}
-												options={[
-													{
-														label: t('billing:subscriptions.addAddonDialog.proration.prorate'),
-														value: ADDON_PRORATION_BEHAVIOR.CREATE_PRORATIONS,
-														description: t('billing:subscriptions.addAddonDialog.proration.prorateDescription'),
-													},
-													{
-														label: t('billing:subscriptions.addAddonDialog.proration.none'),
-														value: ADDON_PRORATION_BEHAVIOR.NONE,
-														description: t('billing:subscriptions.addAddonDialog.proration.noneDescription'),
-													},
-												]}
-												value={prorationBehavior}
-												onChange={(v) => setProrationBehavior(v as ADDON_PRORATION_BEHAVIOR)}
-											/>
-										</div>
-										<div className='pt-3'>
-											<button
-												type='button'
-												className='text-xs text-content-muted hover:text-content-secondary'
-												onClick={() => {
-													setStartDate(undefined);
-													setCadence(ADDON_CADENCE.RECURRING);
-													setProrationBehavior(ADDON_PRORATION_BEHAVIOR.NONE);
-												}}>
-												{t('billing:subscriptions.addAddonDialog.resetAdvancedOptions')}
-											</button>
-										</div>
-									</div>
-								</CollapsibleContent>
-							</div>
-						</Collapsible>
+						{drafts.map((draft) => (
+							<AddonDraftCard
+								key={draft.key}
+								draft={draft}
+								addon={addonsById.get(draft.addonId)}
+								prices={pricesByAddonId[draft.addonId] ?? []}
+								isOpen={openKeys.has(draft.key)}
+								onOpenChange={(open) => setDraftOpen(draft.key, open)}
+								onChange={(patch) => updateDraft(draft.key, patch)}
+								onRemove={() => removeDraft(draft.key)}
+								billingPeriod={billingPeriod}
+								currentPeriodEnd={currentPeriodEndDate}
+								startDateError={invalidKeys.has(draft.key) ? t('billing:subscriptions.addAddonDialog.changeAt.dateRequired') : undefined}
+								disabled={isPending}
+							/>
+						))}
 					</div>
 				)}
 			</div>
 
-			{/* Price Override Dialog */}
-			{selectedOverridePrice && (
-				<PriceOverrideDialog
-					isOpen={isOverrideDialogOpen}
-					onOpenChange={setIsOverrideDialogOpen}
-					price={selectedOverridePrice}
-					onPriceOverride={overridePrice}
-					onResetOverride={resetOverride}
-					overriddenPrices={overriddenPrices}
-				/>
-			)}
-
-			{/* Commitment Configuration Dialog */}
-			{selectedCommitmentPrice && (
-				<CommitmentConfigDialog
-					isOpen={isCommitmentDialogOpen}
-					onOpenChange={setIsCommitmentDialogOpen}
-					price={selectedCommitmentPrice}
-					onSave={handleCommitmentSave}
-					currentConfig={lineItemCommitments[selectedCommitmentPrice.id]}
-					currentTimeBuckets={lineItemCommitments[selectedCommitmentPrice.id]?.commitment_time_buckets}
-					billingPeriod={billingPeriod}
-				/>
-			)}
-
 			<div className='flex justify-end gap-2 mt-6'>
-				<Button variant='outline' onClick={handleCancel} disabled={isAddingAddon}>
+				<Button variant='outline' onClick={() => handleDialogOpenChange(false)} disabled={isPending}>
 					{t('common:actions.cancel')}
 				</Button>
-				<Button onClick={handleSave} isLoading={isAddingAddon} disabled={isAddingAddon}>
-					{t('common:actions.add')}
+				<Button onClick={handleSave} isLoading={isPending} disabled={isPending || changeCount === 0}>
+					{mode === 'modify' ? t('common:actions.save') : t('common:actions.add')}
 				</Button>
 			</div>
 		</Dialog>
 	);
+};
+
+const parseDate = (raw?: string): Date | undefined => {
+	if (!raw) return undefined;
+	const parsed = new Date(raw);
+	return isNaN(parsed.getTime()) ? undefined : parsed;
+};
+
+const withoutKey = (set: Set<string>, key: string): Set<string> => {
+	if (!set.has(key)) return set;
+	const next = new Set(set);
+	next.delete(key);
+	return next;
 };
 
 export default AddAddonDialog;
