@@ -244,7 +244,11 @@
 				"customHeaders": "Custom Headers",
 				"headerKeyPlaceholder": "Key",
 				"headerValuePlaceholder": "Value",
-				"headersSaveFailed": "Failed to update custom headers"
+				"headersSaveFailed": "Failed to update custom headers",
+				"headerValueHidden": "Value hidden",
+				"headerValueHiddenHint": "This header is treated as sensitive, so its value is never returned. Re-enter the key above with a new value to replace it.",
+				"addHeader": "Add header",
+				"removeHeader": "Remove header {{key}}"
 			},
 			"testing": {
 				"heading": "Example Webhook",

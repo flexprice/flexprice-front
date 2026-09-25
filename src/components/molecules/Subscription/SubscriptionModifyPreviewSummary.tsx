@@ -1,28 +1,23 @@
-import { Fragment, type FC } from 'react';
+import type { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { SubscriptionModifyResponse } from '@/types/dto/Subscription';
 import {
 	buildBillingImpactRows,
 	buildLineItemChangeRows,
-	getQuantityChangePreviewCopy,
+	formatLineItemRowPrice,
 	hasAnyChangedResources,
 	type QuantityChangePreviewContext,
 } from '@/utils/subscription/subscriptionModifyPreviewPresentation';
 
 export interface SubscriptionModifyPreviewSummaryProps {
 	data: SubscriptionModifyResponse | null;
-	/** When set (e.g. quantity modify dialog), drives the primary “what changes” block. */
+	/** When set (line item modify dialog), supplies the before/after price for the line item table. */
 	quantityChangeContext?: QuantityChangePreviewContext;
 }
 
 const SubscriptionModifyPreviewSummary: FC<SubscriptionModifyPreviewSummaryProps> = ({ data, quantityChangeContext }) => {
 	const { t } = useTranslation(['billing', 'common']);
 
-	function directionShortLabel(direction: 'increase' | 'decrease' | 'unchanged'): string | null {
-		if (direction === 'increase') return t('subscriptions.modifyPreview.directionIncrease');
-		if (direction === 'decrease') return t('subscriptions.modifyPreview.directionDecrease');
-		return null;
-	}
 	if (!data) {
 		return <p className='text-sm text-content-muted'>{t('subscriptions.modifyPreview.noData')}</p>;
 	}
@@ -36,51 +31,39 @@ const SubscriptionModifyPreviewSummary: FC<SubscriptionModifyPreviewSummaryProps
 	const billingRows = buildBillingImpactRows(invoices, data.subscription?.latest_invoice ?? null);
 	const lineRows = buildLineItemChangeRows(lineItems);
 
-	const quantityCopy = quantityChangeContext ? getQuantityChangePreviewCopy(quantityChangeContext) : null;
-	const directionHint = quantityCopy ? directionShortLabel(quantityCopy.direction) : null;
-
 	const showLineSection = lineRows.length > 0;
+	const showPriceColumn = quantityChangeContext?.previousAmount !== undefined;
 	const showBillingSection = billingRows.length > 0;
-	const showDividerBeforeLines = Boolean(quantityCopy && showLineSection);
-	const showDividerBeforeBilling = Boolean(showBillingSection && (quantityCopy || showLineSection));
+	const showDividerBeforeBilling = showBillingSection && showLineSection;
 
 	return (
 		<div className='space-y-4 text-sm text-content-heading'>
-			{quantityCopy && quantityChangeContext && (
-				<div>
-					<p className='font-medium leading-snug text-content'>{quantityChangeContext.lineItemDisplayName}</p>
-					<p className='mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-content-tertiary'>
-						<span className='tabular-nums font-semibold text-content'>{quantityCopy.fromDisplay}</span>
-						<span className='text-content-subtle' aria-hidden>
-							→
-						</span>
-						<span className='tabular-nums font-semibold text-content'>{quantityCopy.toDisplay}</span>
-						{directionHint && <span className='text-xs font-normal text-content-muted'>{directionHint}</span>}
-					</p>
-				</div>
-			)}
-
 			{showLineSection && (
-				<div className={showDividerBeforeLines ? 'border-t border-line-subtle pt-4' : undefined}>
-					<div className='grid grid-cols-[auto_auto_1fr] gap-x-4 gap-y-1.5'>
-						<span className='border-b border-line-subtle pb-1.5 text-xs text-content-muted'>
-							{t('subscriptions.modifyPreview.columnType')}
-						</span>
-						<span className='border-b border-line-subtle pb-1.5 text-xs tabular-nums text-content-muted'>
-							{t('subscriptions.modifyPreview.columnQty')}
-						</span>
-						<span className='border-b border-line-subtle pb-1.5 text-xs text-content-muted'>
-							{t('subscriptions.modifyPreview.columnPeriod')}
-						</span>
-						{lineRows.map((row) => (
-							<Fragment key={row.id}>
-								<span className='py-1 text-content-tertiary'>{row.label}</span>
-								<span className='py-1 tabular-nums text-content'>{row.quantityDisplay}</span>
-								<span className='py-1 text-content-tertiary'>{row.periodDisplay ?? t('common:labels.na')}</span>
-							</Fragment>
+				<table className='w-full text-left'>
+					<thead>
+						<tr className='border-b border-line-subtle text-xs text-content-muted'>
+							<th className='pb-2 pr-6 font-normal'>{t('subscriptions.modifyPreview.columnType')}</th>
+							<th className='pb-2 pr-6 font-normal'>{t('subscriptions.modifyPreview.columnQty')}</th>
+							{showPriceColumn && <th className='pb-2 pr-6 font-normal'>{t('subscriptions.modifyPreview.columnPrice')}</th>}
+							<th className='pb-2 font-normal'>{t('subscriptions.modifyPreview.columnPeriod')}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{/* Preview returns placeholder ids like "(preview-ended)", so key by position too. */}
+						{lineRows.map((row, index) => (
+							<tr key={`${row.id}-${index}`}>
+								<td className='whitespace-nowrap py-2 pr-6 text-content-tertiary'>{row.label}</td>
+								<td className='py-2 pr-6 tabular-nums text-content'>{row.quantityDisplay}</td>
+								{showPriceColumn && (
+									<td className='whitespace-nowrap py-2 pr-6 tabular-nums text-content'>
+										{formatLineItemRowPrice(row.kind, quantityChangeContext)}
+									</td>
+								)}
+								<td className='py-2 text-content-tertiary'>{row.periodDisplay ?? t('common:labels.na')}</td>
+							</tr>
 						))}
-					</div>
-				</div>
+					</tbody>
+				</table>
 			)}
 
 			{showBillingSection && (
@@ -106,11 +89,11 @@ const SubscriptionModifyPreviewSummary: FC<SubscriptionModifyPreviewSummaryProps
 				</p>
 			)}
 
-			{quantityCopy && !anyResources && (
+			{quantityChangeContext && !anyResources && (
 				<p className='text-sm text-content-tertiary'>{t('subscriptions.modifyPreview.noExtraBillingDetails')}</p>
 			)}
 
-			{!quantityCopy && !anyResources && (
+			{!quantityChangeContext && !anyResources && (
 				<p className='text-sm text-content-tertiary'>{t('subscriptions.modifyPreview.noBillingChanges')}</p>
 			)}
 		</div>

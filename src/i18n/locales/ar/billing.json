@@ -373,6 +373,7 @@
 			"removing": "جارٍ الإزالة…"
 		},
 		"changeQuantity": "تغيير الكمية",
+		"editCharge": "تعديل الرسم",
 		"reviewChanges": "مراجعة التغييرات",
 		"quantity": "الكمية",
 		"quantityPlaceholder": "مثلاً 10",
@@ -380,6 +381,9 @@
 		"selectDate": "اختر تاريخاً",
 		"quantityModify": {
 			"updatingDescription": "أنت تُحدّث الكمية لـ <highlight>{{name}}</highlight>.",
+			"updatingChargeDescription": "أنت تُحدّث <highlight>{{name}}</highlight>.",
+			"pricePerUnit": "السعر",
+			"pricePlaceholder": "مثلاً 20.00",
 			"effectiveDateHint": "يعتمد افتراضياً على بداية الفترة الحالية لرسوم المتأخرات، أو نهاية الفترة للرسوم المقدمة، لضمان سريان الرسم في هذه الفترة. امسح التاريخ للتطبيق فوراً.",
 			"preview": "معاينة",
 			"applyChanges": "تطبيق التغييرات"
@@ -388,9 +392,8 @@
 			"noData": "لا توجد بيانات معاينة.",
 			"columnType": "النوع",
 			"columnQty": "الكمية",
+			"columnPrice": "السعر",
 			"columnPeriod": "الفترة",
-			"directionIncrease": "زيادة",
-			"directionDecrease": "تخفيض",
 			"subscriptionUpdated": "سيتم تحديث <bold>الاشتراك</bold> ليعكس هذه التغييرات.",
 			"noExtraBillingDetails": "لم تُضمَّن تفاصيل فوترة إضافية في هذه المعاينة.",
 			"noBillingChanges": "لم تُرجَع تغييرات فوترة لهذه المعاينة."

@@ -373,6 +373,7 @@
 			"removing": "Removing…"
 		},
 		"changeQuantity": "Change quantity",
+		"editCharge": "Edit charge",
 		"reviewChanges": "Review changes",
 		"quantity": "Quantity",
 		"quantityPlaceholder": "e.g. 10",
@@ -380,6 +381,9 @@
 		"selectDate": "Select date",
 		"quantityModify": {
 			"updatingDescription": "You are updating quantity for <highlight>{{name}}</highlight>.",
+			"updatingChargeDescription": "You are updating <highlight>{{name}}</highlight>.",
+			"pricePerUnit": "Price",
+			"pricePlaceholder": "e.g. 20.00",
 			"effectiveDateHint": "Defaults to the current period start for arrear charges, or the current period end for advance charges, ensuring the charge takes effect this period. Clear the date to apply immediately.",
 			"preview": "Preview",
 			"applyChanges": "Apply changes"
@@ -388,9 +392,8 @@
 			"noData": "No preview data.",
 			"columnType": "Type",
 			"columnQty": "Qty",
+			"columnPrice": "Price",
 			"columnPeriod": "Period",
-			"directionIncrease": "Increase",
-			"directionDecrease": "Decrease",
 			"subscriptionUpdated": "<bold>Subscription</bold> will be updated to reflect these changes.",
 			"noExtraBillingDetails": "No additional billing details were included in this preview.",
 			"noBillingChanges": "No billing changes returned for this preview."

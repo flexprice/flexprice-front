@@ -5,6 +5,7 @@ import { Button, Card, Input } from '@/components/atoms';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { Plus, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface Props {
 	endpoint: EndpointOut;
@@ -83,25 +84,45 @@ const EndpointThrottling: FC<Props> = ({ endpoint, onUpdated }) => {
 	);
 };
 
+/** A header row, plus whether Svix withheld its value for being sensitive. */
+interface HeaderRow {
+	key: string;
+	value: string;
+	sensitive: boolean;
+}
+
 const CustomHeaders: FC<{ endpointId: string }> = ({ endpointId }) => {
 	const { t } = useTranslation('developers');
-	const { data, reload, updateEndpointHeaders } = useEndpointHeaders(endpointId);
-	const [rows, setRows] = useState<{ key: string; value: string }[]>([]);
+	const { data, reload, patchEndpointHeaders } = useEndpointHeaders(endpointId);
+	const [rows, setRows] = useState<HeaderRow[]>([]);
 	const [newKey, setNewKey] = useState('');
 	const [newValue, setNewValue] = useState('');
 	const [isSaving, setIsSaving] = useState(false);
 
 	useEffect(() => {
-		if (data?.headers) {
-			setRows(Object.entries(data.headers).map(([key, value]) => ({ key, value })));
-		}
-	}, [data?.headers]);
+		if (!data) return;
+		// Svix splits the response in two: `headers` carries name and value, while `sensitive`
+		// carries only the *names* of headers whose values it refuses to hand back — Authorization
+		// among them. Reading `headers` alone left every sensitive header invisible here: the
+		// endpoint had one configured, the response said so, and the list rendered empty.
+		const visible: HeaderRow[] = Object.entries(data.headers ?? {}).map(([key, value]) => ({ key, value, sensitive: false }));
+		const withheld: HeaderRow[] = (data.sensitive ?? []).map((key) => ({ key, value: '', sensitive: true }));
+		setRows([...visible, ...withheld].sort((a, b) => a.key.localeCompare(b.key)));
+	}, [data]);
 
-	const persist = async (nextRows: { key: string; value: string }[]) => {
+	/**
+	 * Applies one targeted change, rather than rewriting the whole header set.
+	 *
+	 * `updateEndpointHeaders` is a PUT that replaces every header with whatever it is handed.
+	 * A sensitive header's value never reaches the client, so it could never be included in that
+	 * payload — which meant adding or removing any header silently deleted the sensitive ones.
+	 * PATCH addresses a single header and leaves the rest alone, including the ones whose values
+	 * we are not allowed to see.
+	 */
+	const applyPatch = async (patch: { headers: Record<string, string>; deleteHeaders?: string[] }, nextRows: HeaderRow[]) => {
 		setIsSaving(true);
 		try {
-			const headers = Object.fromEntries(nextRows.filter((r) => r.key).map((r) => [r.key, r.value]));
-			await updateEndpointHeaders({ headers });
+			await patchEndpointHeaders(patch);
 			setRows(nextRows);
 			reload();
 		} catch {
@@ -113,17 +134,22 @@ const CustomHeaders: FC<{ endpointId: string }> = ({ endpointId }) => {
 
 	const handleAdd = () => {
 		if (!newKey) return;
-		const existing = rows.find((row) => row.key === newKey);
+		const existing = rows.some((row) => row.key === newKey);
+		// Re-entering a sensitive header's key is how its value gets replaced — the row stops
+		// being withheld only once the server says so, so leave `sensitive` to the reload.
 		const nextRows = existing
-			? rows.map((row) => (row.key === newKey ? { key: newKey, value: newValue } : row))
-			: [...rows, { key: newKey, value: newValue }];
+			? rows.map((row) => (row.key === newKey ? { ...row, value: newValue } : row))
+			: [...rows, { key: newKey, value: newValue, sensitive: false }];
 		setNewKey('');
 		setNewValue('');
-		persist(nextRows);
+		applyPatch({ headers: { [newKey]: newValue } }, nextRows);
 	};
 
 	const handleRemove = (key: string) => {
-		persist(rows.filter((r) => r.key !== key));
+		applyPatch(
+			{ headers: {}, deleteHeaders: [key] },
+			rows.filter((row) => row.key !== key),
+		);
 	};
 
 	return (
@@ -132,19 +158,48 @@ const CustomHeaders: FC<{ endpointId: string }> = ({ endpointId }) => {
 			<div className='flex flex-col gap-2'>
 				{rows.map((row) => (
 					<div key={row.key} className='flex items-center gap-2 text-sm'>
-						<span className='flex-1 font-mono text-xs bg-surface-subtle border border-border rounded px-2 py-1.5 truncate'>{row.key}</span>
-						<span className='flex-1 font-mono text-xs bg-surface-subtle border border-border rounded px-2 py-1.5 truncate'>
-							{row.value}
+						{/* min-w-0 lets a cell shrink past its content so `truncate` engages; without it a long
+						    header name widens the row instead of ellipsing inside the card. */}
+						<span className='min-w-0 flex-1 font-mono text-xs bg-surface-subtle border border-border rounded px-2 py-1.5 truncate'>
+							{row.key}
 						</span>
-						<Button variant='outline' size='sm' disabled={isSaving} onClick={() => handleRemove(row.key)}>
+						<span
+							title={row.sensitive ? t('webhooks.endpoints.detail.headerValueHiddenHint') : undefined}
+							className={cn(
+								'min-w-0 flex-1 font-mono text-xs bg-surface-subtle border border-border rounded px-2 py-1.5 truncate',
+								row.sensitive && 'italic text-content-muted',
+							)}>
+							{row.sensitive ? t('webhooks.endpoints.detail.headerValueHidden') : row.value}
+						</span>
+						<Button
+							variant='outline'
+							size='sm'
+							className='shrink-0'
+							disabled={isSaving}
+							aria-label={t('webhooks.endpoints.detail.removeHeader', { key: row.key })}
+							onClick={() => handleRemove(row.key)}>
 							<X className='w-3.5 h-3.5' />
 						</Button>
 					</div>
 				))}
 				<div className='flex items-center gap-2'>
-					<Input placeholder={t('webhooks.endpoints.detail.headerKeyPlaceholder')} value={newKey} onChange={setNewKey} />
-					<Input placeholder={t('webhooks.endpoints.detail.headerValuePlaceholder')} value={newValue} onChange={setNewValue} />
-					<Button variant='outline' size='sm' disabled={!newKey || isSaving} isLoading={isSaving} onClick={handleAdd}>
+					{/* `Input` renders a `w-full` wrapper, so two side by side each ask for the whole row and
+					    spill past the card once the gaps and button are added. A shrinkable cell around each
+					    makes them share the width at any screen size. */}
+					<div className='min-w-0 flex-1'>
+						<Input placeholder={t('webhooks.endpoints.detail.headerKeyPlaceholder')} value={newKey} onChange={setNewKey} />
+					</div>
+					<div className='min-w-0 flex-1'>
+						<Input placeholder={t('webhooks.endpoints.detail.headerValuePlaceholder')} value={newValue} onChange={setNewValue} />
+					</div>
+					<Button
+						variant='outline'
+						size='sm'
+						className='shrink-0'
+						disabled={!newKey || isSaving}
+						isLoading={isSaving}
+						aria-label={t('webhooks.endpoints.detail.addHeader')}
+						onClick={handleAdd}>
 						<Plus className='w-3.5 h-3.5' />
 					</Button>
 				</div>

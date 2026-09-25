@@ -7,37 +7,32 @@ import {
 	buildBillingImpactRows,
 	buildLineItemChangeRows,
 	formatCompactLineItemPeriod,
-	getQuantityChangePreviewCopy,
-	getQuantityDeltaDirection,
+	formatLineItemRowPrice,
 	resolveInvoiceAmountSource,
 } from '@/utils/subscription/subscriptionModifyPreviewPresentation';
 
 describe('subscriptionModifyPreviewPresentation', () => {
-	describe('getQuantityDeltaDirection', () => {
-		test('increase', () => {
-			expect(getQuantityDeltaDirection('1', '2')).toBe('increase');
-			expect(getQuantityDeltaDirection('10', '10.5')).toBe('increase');
-		});
-		test('decrease', () => {
-			expect(getQuantityDeltaDirection('5', '3')).toBe('decrease');
-		});
-		test('unchanged', () => {
-			expect(getQuantityDeltaDirection('2', '2')).toBe('unchanged');
-		});
-	});
+	describe('formatLineItemRowPrice', () => {
+		const ctx = {
+			lineItemDisplayName: 'Seats',
+			previousQuantity: '1',
+			newQuantity: '3',
+			currency: 'USD',
+			previousAmount: '60',
+			newAmount: '80',
+		};
 
-	describe('getQuantityChangePreviewCopy', () => {
-		test('labels decrease', () => {
-			const c = getQuantityChangePreviewCopy({
-				lineItemDisplayName: 'Seats',
-				previousQuantity: '10',
-				newQuantity: '5',
-				currency: 'USD',
-			});
-			expect(c.direction).toBe('decrease');
-			expect(c.directionLabel).toBe('Quantity decrease');
-			expect(c.fromDisplay).toBe('10');
-			expect(c.toDisplay).toBe('5');
+		test('ended line shows old price, new line shows new price', () => {
+			expect(formatLineItemRowPrice('ended', ctx)).toMatch(/60/);
+			expect(formatLineItemRowPrice('created', ctx)).toMatch(/80/);
+		});
+
+		test('keeps small prices exact instead of exponent form', () => {
+			expect(formatLineItemRowPrice('created', { ...ctx, newAmount: '0.0000001' })).toBe('$0.0000001');
+		});
+
+		test('null without price context', () => {
+			expect(formatLineItemRowPrice('created', { ...ctx, previousAmount: undefined, newAmount: undefined })).toBeNull();
 		});
 	});
 
@@ -125,6 +120,36 @@ describe('subscriptionModifyPreviewPresentation', () => {
 		});
 	});
 
+	describe('embedded change amounts', () => {
+		test('wallet credit reads wallet_transaction.amount over latest_invoice', () => {
+			const changed = [
+				{
+					id: '',
+					action: SUBSCRIPTION_MODIFY_INVOICE_RESOURCE_ACTION.WALLET_CREDIT,
+					status: 'preview',
+					wallet_transaction: { amount: 25 },
+				},
+			] as ChangedInvoice[];
+			const latest = { id: 'inv_old', total: 999, currency: 'USD' } as Invoice;
+			const rows = buildBillingImpactRows(changed, latest);
+			expect(rows[0].amountText).toMatch(/25/);
+			expect(rows[0].amountText).not.toMatch(/999/);
+		});
+
+		test('created invoice reads the embedded invoice', () => {
+			const changed = [
+				{
+					id: '',
+					action: SUBSCRIPTION_MODIFY_INVOICE_RESOURCE_ACTION.CREATED,
+					status: 'preview',
+					invoice: { total: 12, amount_due: 12, currency: 'USD' },
+				},
+			] as ChangedInvoice[];
+			const rows = buildBillingImpactRows(changed, null);
+			expect(rows[0].amountText).toMatch(/12/);
+		});
+	});
+
 	describe('formatCompactLineItemPeriod', () => {
 		test('joins start and end with en dash', () => {
 			const li = {
@@ -164,7 +189,7 @@ describe('subscriptionModifyPreviewPresentation', () => {
 			const rows = buildLineItemChangeRows(items);
 			expect(rows).toHaveLength(2);
 			expect(rows[0].kind).toBe('ended');
-			expect(rows[0].label).toBe('Ends');
+			expect(rows[0].label).toBe('Ending line');
 			expect(rows[0].quantityDisplay).toBe('1');
 			expect(rows[1].kind).toBe('created');
 			expect(rows[1].label).toBe('New line');

@@ -443,60 +443,63 @@ describe('TopUpWidget', () => {
 			chargebeeHasSavedCard: true,
 			razorpayHasSavedCard: false,
 		},
-	])(
-		'hides saved-card toggle and resets use_saved_method when switching from $fromProvider to $toProvider',
-		async ({ toProvider }) => {
-			vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
-				payment_integrations: [
-					{ provider: 'chargebee', capabilities: [{ type: 'checkout', is_default: true }, { type: 'auto_charge', is_default: true }] },
-					{ provider: 'razorpay', capabilities: [{ type: 'checkout', is_default: false }] },
-				],
-			} as never);
-			vi.mocked(CustomerPortalApi.getPaymentMethods).mockResolvedValue({
-				providers: [
-					{
-						provider: 'chargebee',
-						items: [
-							{
-								id: 'pm_1',
-								provider: 'chargebee',
-								type: 'card',
-								status: 'ACTIVE',
-								can_auto_charge: true,
-								is_default: true,
-								card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
-							},
-						],
-					},
-				],
-			} as never);
-			vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({} as never);
+	])('hides saved-card toggle and resets use_saved_method when switching from $fromProvider to $toProvider', async ({ toProvider }) => {
+		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
+			payment_integrations: [
+				{
+					provider: 'chargebee',
+					capabilities: [
+						{ type: 'checkout', is_default: true },
+						{ type: 'auto_charge', is_default: true },
+					],
+				},
+				{ provider: 'razorpay', capabilities: [{ type: 'checkout', is_default: false }] },
+			],
+		} as never);
+		vi.mocked(CustomerPortalApi.getPaymentMethods).mockResolvedValue({
+			providers: [
+				{
+					provider: 'chargebee',
+					items: [
+						{
+							id: 'pm_1',
+							provider: 'chargebee',
+							type: 'card',
+							status: 'ACTIVE',
+							can_auto_charge: true,
+							is_default: true,
+							card: { brand: 'visa', last4: '4242', exp_month: 12, exp_year: 2030 },
+						},
+					],
+				},
+			],
+		} as never);
+		vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue({} as never);
 
-			renderWidget();
-			await screen.findByRole('button', { name: /pay now/i });
+		renderWidget();
+		await screen.findByRole('button', { name: /pay now/i });
 
-			// Initially Chargebee is selected and toggle is visible
-			const toggle = await screen.findByRole('switch');
-			expect(toggle).toBeInTheDocument();
-			await userEvent.click(toggle);
-			expect(toggle).toHaveAttribute('aria-checked', 'true');
+		// Initially Chargebee is selected and toggle is visible
+		const toggle = await screen.findByRole('switch');
+		expect(toggle).toBeInTheDocument();
+		await userEvent.click(toggle);
+		expect(toggle).toHaveAttribute('aria-checked', 'true');
 
-			// Switch provider to Razorpay
-			await userEvent.click(screen.getByRole('radio', { name: 'Razorpay' }));
+		// Switch provider to Razorpay
+		await userEvent.click(screen.getByRole('radio', { name: 'Razorpay' }));
 
-			// Toggle should disappear
-			expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+		// Toggle should disappear
+		expect(screen.queryByRole('switch')).not.toBeInTheDocument();
 
-			// Submit top up with Razorpay
-			await enterCredits('10');
-			await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
+		// Submit top up with Razorpay
+		await enterCredits('10');
+		await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
 
-			await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalled());
-			const [, payload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
-			expect(payload.checkout?.payment_provider).toBe(toProvider);
-			expect(payload.checkout?.use_saved_method).toBe(false);
-		},
-	);
+		await waitFor(() => expect(CustomerPortalApi.topUpWallet).toHaveBeenCalled());
+		const [, payload] = vi.mocked(CustomerPortalApi.topUpWallet).mock.calls[0];
+		expect(payload.checkout?.payment_provider).toBe(toProvider);
+		expect(payload.checkout?.use_saved_method).toBe(false);
+	});
 
 	// The resolver refuses to guess between two capable gateways, returning
 	// "Specify which payment provider to use", so one is always named.
@@ -573,7 +576,9 @@ describe('TopUpWidget', () => {
 				{ provider: 'razorpay', capabilities: [{ type: 'checkout', is_default: false }] },
 			],
 		} as never);
-		vi.mocked(CustomerPortalApi.topUpWallet).mockRejectedValueOnce(new Error('charge failed')).mockResolvedValueOnce({} as never);
+		vi.mocked(CustomerPortalApi.topUpWallet)
+			.mockRejectedValueOnce(new Error('charge failed'))
+			.mockResolvedValueOnce({} as never);
 
 		renderWidget();
 		await screen.findByText('Payment provider');

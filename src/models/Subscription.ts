@@ -221,7 +221,8 @@ export enum SUBSCRIPTION_HIERARCHY_DISPLAY_KIND {
 /** Mid-cycle modify API: `POST /subscriptions/:id/modify/preview|execute` body `type`. */
 export enum SUBSCRIPTION_MODIFY_TYPE {
 	INHERITANCE = 'inheritance',
-	QUANTITY_CHANGE = 'quantity_change',
+	/** Change a fixed charge's quantity, price, or both. Replaces the deprecated `quantity_change`. */
+	LINE_ITEM_CHANGE = 'line_item_change',
 	GROUPED_INVOICING = 'grouped_invoicing',
 	COUPON = 'coupon',
 	TAX = 'tax',

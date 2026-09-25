@@ -81,7 +81,7 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 	const providerMethods = (methods?.providers ?? []).find((group) => group.provider === effectiveProvider);
 	const chargeableMethod = providerSupportsAutoCharge
 		? (providerMethods?.items.find((method) => method.can_auto_charge && method.status === 'ACTIVE' && method.is_default) ??
-		   providerMethods?.items.find((method) => method.can_auto_charge && method.status === 'ACTIVE'))
+			providerMethods?.items.find((method) => method.can_auto_charge && method.status === 'ACTIVE'))
 		: undefined;
 
 	useEffect(() => {

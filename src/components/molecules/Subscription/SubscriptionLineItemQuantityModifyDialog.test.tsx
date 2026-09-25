@@ -10,7 +10,8 @@ import { initReactI18next } from 'react-i18next';
 import billingEn from '@/i18n/locales/en/billing.json';
 import commonEn from '@/i18n/locales/en/common.json';
 import { ENTITY_STATUS } from '@/models/base';
-import { PRICE_TYPE } from '@/models/Price';
+import { BILLING_MODEL, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
+import type { Price } from '@/models/Price';
 import { SUBSCRIPTION_MODIFY_TYPE } from '@/models/Subscription';
 import type { LineItem } from '@/models/Subscription';
 import SubscriptionLineItemQuantityModifyDialog from './SubscriptionLineItemQuantityModifyDialog';
@@ -83,14 +84,18 @@ beforeEach(() => {
 	vi.clearAllMocks();
 });
 
-const renderDialog = () =>
+const withPrice = (price: Partial<Price>): LineItem => ({ ...lineItem, price: price as Price });
+
+const flatFeeLineItem = withPrice({ amount: '100', billing_model: BILLING_MODEL.FLAT_FEE, price_unit_type: PRICE_UNIT_TYPE.FIAT });
+
+const renderDialog = (li: LineItem = lineItem) =>
 	render(
 		<Wrapper>
 			<SubscriptionLineItemQuantityModifyDialog
 				isOpen={true}
 				onOpenChange={vi.fn()}
 				subscriptionId='sub_1'
-				lineItem={lineItem}
+				lineItem={li}
 				currentPeriodStart='2026-01-01T00:00:00Z'
 				currentPeriodEnd='2026-02-01T00:00:00Z'
 			/>
@@ -107,8 +112,8 @@ describe('SubscriptionLineItemQuantityModifyDialog', () => {
 
 		await waitFor(() => {
 			expect(mockPreview).toHaveBeenCalledWith('sub_1', {
-				type: SUBSCRIPTION_MODIFY_TYPE.QUANTITY_CHANGE,
-				quantity_change_params: { line_items: [{ id: 'li_1', quantity: '0' }] },
+				type: SUBSCRIPTION_MODIFY_TYPE.LINE_ITEM_CHANGE,
+				line_item_change_params: { line_items: [{ id: 'li_1', quantity: '0' }] },
 			});
 		});
 		expect(screen.queryByText(/enter a valid quantity/i)).not.toBeInTheDocument();
@@ -124,5 +129,85 @@ describe('SubscriptionLineItemQuantityModifyDialog', () => {
 			expect(screen.getByText('Enter a valid quantity — zero or greater.')).toBeInTheDocument();
 		});
 		expect(mockPreview).not.toHaveBeenCalled();
+	});
+
+	it('sends only amount when just the price changes on a flat-fee charge', async () => {
+		mockPreview.mockResolvedValue({ changed_resources: {} });
+		renderDialog(flatFeeLineItem);
+
+		fireEvent.change(screen.getByPlaceholderText('e.g. 20.00'), { target: { value: '150' } });
+		fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
+
+		await waitFor(() => {
+			expect(mockPreview).toHaveBeenCalledWith('sub_1', {
+				type: SUBSCRIPTION_MODIFY_TYPE.LINE_ITEM_CHANGE,
+				line_item_change_params: { line_items: [{ id: 'li_1', amount: '150' }] },
+			});
+		});
+	});
+
+	it('sends quantity and amount together when both change', async () => {
+		mockPreview.mockResolvedValue({ changed_resources: {} });
+		renderDialog(flatFeeLineItem);
+
+		fireEvent.change(screen.getByPlaceholderText('e.g. 10'), { target: { value: '7' } });
+		fireEvent.change(screen.getByPlaceholderText('e.g. 20.00'), { target: { value: '80.50' } });
+		fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
+
+		await waitFor(() => {
+			expect(mockPreview).toHaveBeenCalledWith('sub_1', {
+				type: SUBSCRIPTION_MODIFY_TYPE.LINE_ITEM_CHANGE,
+				line_item_change_params: { line_items: [{ id: 'li_1', quantity: '7', amount: '80.50' }] },
+			});
+		});
+	});
+
+	it('blocks preview when neither quantity nor price changed', async () => {
+		renderDialog(flatFeeLineItem);
+
+		fireEvent.change(screen.getByPlaceholderText('e.g. 20.00'), { target: { value: '100.00' } });
+		fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
+
+		await waitFor(() => {
+			expect(screen.getByText('Change the quantity or the price to continue.')).toBeInTheDocument();
+		});
+		expect(mockPreview).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		['tiered', { amount: '100', billing_model: BILLING_MODEL.TIERED, price_unit_type: PRICE_UNIT_TYPE.FIAT }],
+		['custom price unit', { amount: '100', billing_model: BILLING_MODEL.FLAT_FEE, price_unit_type: PRICE_UNIT_TYPE.CUSTOM }],
+	])('hides the price field for a %s price', (_label, price) => {
+		renderDialog(withPrice(price));
+
+		expect(screen.getByPlaceholderText('e.g. 10')).toBeInTheDocument();
+		expect(screen.queryByPlaceholderText('e.g. 20.00')).not.toBeInTheDocument();
+	});
+
+	it.each(['1,20', '0x10', '1e3', '-5'])('rejects ambiguous price input %s without calling preview', async (value) => {
+		renderDialog(flatFeeLineItem);
+
+		fireEvent.change(screen.getByPlaceholderText('e.g. 20.00'), { target: { value } });
+		fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
+
+		await waitFor(() => {
+			expect(screen.getByText(/Enter a valid price/)).toBeInTheDocument();
+		});
+		expect(mockPreview).not.toHaveBeenCalled();
+	});
+
+	it('accepts correctly grouped thousands in the price', async () => {
+		mockPreview.mockResolvedValue({ changed_resources: {} });
+		renderDialog(flatFeeLineItem);
+
+		fireEvent.change(screen.getByPlaceholderText('e.g. 20.00'), { target: { value: '1,200.50' } });
+		fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
+
+		await waitFor(() => {
+			expect(mockPreview).toHaveBeenCalledWith('sub_1', {
+				type: SUBSCRIPTION_MODIFY_TYPE.LINE_ITEM_CHANGE,
+				line_item_change_params: { line_items: [{ id: 'li_1', amount: '1200.50' }] },
+			});
+		});
 	});
 });

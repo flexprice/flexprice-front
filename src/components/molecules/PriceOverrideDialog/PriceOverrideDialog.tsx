@@ -25,6 +25,7 @@ import {
 	lineItemWindowCommitmentStateFromBuckets,
 } from '@/utils/subscription/subscription_line_item_commitment_helpers';
 import { resolveBucketSize } from '@/utils/common/commitment_helpers';
+import { billingModelSelectValueFromPrice } from '@/utils/common/commitment_time_bucket_draft';
 import { useCommitmentTimeBucketPrices } from '@/hooks/useCommitmentTimeBucketPrices';
 import { useMeterForCommitment } from '@/hooks/useMeterForCommitment';
 import { convertPriceOverrideToLineItemUpdate } from '@/utils/subscription/priceOverrideToLineItemUpdate';
@@ -96,7 +97,7 @@ const PriceOverrideDialog: FC<Props> = ({
 
 	const [overrideAmount, setOverrideAmount] = useState('');
 	const [overrideQuantity, setOverrideQuantity] = useState<number | undefined>(undefined);
-	const [overrideBillingModel, setOverrideBillingModel] = useState<BILLING_MODEL | 'SLAB_TIERED'>(price.billing_model);
+	const [overrideBillingModel, setOverrideBillingModel] = useState<BILLING_MODEL | 'SLAB_TIERED'>(billingModelSelectValueFromPrice(price));
 	const [overrideTierMode, setOverrideTierMode] = useState<TIER_MODE>(price.tier_mode || TIER_MODE.VOLUME);
 	const [overrideTiers, setOverrideTiers] = useState<CreatePriceTier[]>([]);
 	const [overrideTransformQuantity, setOverrideTransformQuantity] = useState<TransformQuantity>({
@@ -156,7 +157,7 @@ const PriceOverrideDialog: FC<Props> = ({
 				setOverrideTiers(currentOverride.tiers || price.tiers || []);
 			}
 			setOverrideQuantity(currentOverride.quantity);
-			setOverrideBillingModel(currentOverride.billing_model || price.billing_model);
+			setOverrideBillingModel(currentOverride.billing_model || billingModelSelectValueFromPrice(price));
 			setOverrideTierMode(currentOverride.tier_mode || price.tier_mode || TIER_MODE.VOLUME);
 			setOverrideTransformQuantity(currentOverride.transform_quantity || { divide_by: 1, round: 'up' });
 			if (showEffectiveFrom && currentOverride.effective_from) {
@@ -170,7 +171,7 @@ const PriceOverrideDialog: FC<Props> = ({
 		} else {
 			// Prefill with original price values
 			setOverrideQuantity(1); // Default quantity for usage-based prices
-			setOverrideBillingModel(price.billing_model);
+			setOverrideBillingModel(billingModelSelectValueFromPrice(price));
 			setOverrideTierMode(price.tier_mode || TIER_MODE.VOLUME);
 
 			// Initialize amount and tiers based on price unit type
@@ -271,8 +272,10 @@ const PriceOverrideDialog: FC<Props> = ({
 			override.quantity = overrideQuantity;
 		}
 
-		// Billing model override
-		if (overrideBillingModel !== price.billing_model) {
+		// Billing model override. Compare against the resolved select-value (which maps TIERED + SLAB
+		// tier mode to 'SLAB_TIERED') rather than the raw price.billing_model, so a slab-tiered charge
+		// left untouched isn't reported as a billing-model change.
+		if (overrideBillingModel !== billingModelSelectValueFromPrice(price)) {
 			override.billing_model = overrideBillingModel;
 		}
 
@@ -360,7 +363,7 @@ const PriceOverrideDialog: FC<Props> = ({
 	const handleReset = () => {
 		onResetOverride(price.id);
 		setOverrideQuantity(undefined);
-		setOverrideBillingModel(price.billing_model);
+		setOverrideBillingModel(billingModelSelectValueFromPrice(price));
 
 		// Reset amount and tiers based on price unit type
 		if (isCustomPriceUnit) {
@@ -429,7 +432,7 @@ const PriceOverrideDialog: FC<Props> = ({
 				setOverrideTiers(currentOverride.tiers || price.tiers || []);
 			}
 			setOverrideQuantity(currentOverride.quantity);
-			setOverrideBillingModel(currentOverride.billing_model || price.billing_model);
+			setOverrideBillingModel(currentOverride.billing_model || billingModelSelectValueFromPrice(price));
 			setOverrideTransformQuantity(currentOverride.transform_quantity || { divide_by: 1, round: 'up' });
 			if (showEffectiveFrom && currentOverride.effective_from) {
 				setEffectiveFrom(new Date(currentOverride.effective_from));
@@ -481,7 +484,7 @@ const PriceOverrideDialog: FC<Props> = ({
 				}
 			}
 			setOverrideQuantity(undefined);
-			setOverrideBillingModel(price.billing_model);
+			setOverrideBillingModel(billingModelSelectValueFromPrice(price));
 			// Reset to original transform_quantity or default
 			setOverrideTransformQuantity(price.transform_quantity || { divide_by: 1, round: 'up' });
 			if (showEffectiveFrom) {

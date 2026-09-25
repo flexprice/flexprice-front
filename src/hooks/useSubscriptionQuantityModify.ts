@@ -45,7 +45,7 @@ export function useSubscriptionQuantityModify(subscriptionId: string | undefined
 			return SubscriptionApi.executeSubscriptionModify(subscriptionId, payload);
 		},
 		onSuccess: async () => {
-			toast.success('Quantity updated successfully');
+			toast.success('Charge updated successfully');
 			resetPreview();
 			if (subscriptionId) {
 				await refetchQueries(['subscriptionEdit', subscriptionId]);

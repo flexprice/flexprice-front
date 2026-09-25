@@ -2,7 +2,9 @@ import { Button, DatePicker, Dialog, Input } from '@/components/atoms';
 import { useTranslation, Trans } from 'react-i18next';
 import type { LineItem } from '@/models/Subscription';
 import { useSubscriptionQuantityModify } from '@/hooks/useSubscriptionQuantityModify';
-import { buildQuantityChangeModifyRequest } from '@/utils/subscription/buildQuantityChangeModifyRequest';
+import { buildLineItemChangeModifyRequest } from '@/utils/subscription/buildLineItemChangeModifyRequest';
+import { getEditableLineItemAmount, isSameDecimal, isValidPriceString } from '@/utils/subscription/lineItemPriceEdit';
+import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { isValidNonNegativeQuantityString } from '@/utils/subscription/quantityValidation';
 import type { ExecuteSubscriptionModifyRequest } from '@/types/dto/Subscription';
 import type { FC } from 'react';
@@ -41,6 +43,7 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 	const { t } = useTranslation(['billing', 'common']);
 	const [step, setStep] = useState<Step>('form');
 	const [quantityInput, setQuantityInput] = useState('');
+	const [amountInput, setAmountInput] = useState('');
 	const [effectiveDate, setEffectiveDate] = useState<Date | undefined>(undefined);
 	const [confirmedPayload, setConfirmedPayload] = useState<ExecuteSubscriptionModifyRequest | null>(null);
 	const [formError, setFormError] = useState<string | null>(null);
@@ -48,10 +51,15 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 	const { preview, execute, previewResult, reset, isPreviewPending, isExecutePending } = useSubscriptionQuantityModify(subscriptionId);
 
 	const invoiceCadenceRaw = getInvoiceCadenceRawFromLineItem(lineItem);
+	/** Undefined when the price can't be edited (non flat-fee or custom price unit) — only quantity is offered then. */
+	const currentAmount = getEditableLineItemAmount(lineItem);
+	const currentQuantity = lineItem.quantity != null ? String(lineItem.quantity) : '';
+	const currency = lineItem.currency || 'USD';
 
 	useEffect(() => {
 		if (!isOpen) return;
-		setQuantityInput(lineItem.quantity != null ? String(lineItem.quantity) : '');
+		setQuantityInput(currentQuantity);
+		setAmountInput(currentAmount ?? '');
 		setStep('form');
 		setEffectiveDate(getDefaultEffectiveDateForQuantityModify(lineItem, currentPeriodStart, currentPeriodEnd));
 		setConfirmedPayload(null);
@@ -60,7 +68,8 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 	}, [
 		isOpen,
 		lineItem.id,
-		lineItem.quantity,
+		currentQuantity,
+		currentAmount,
 		lineItem.start_date,
 		lineItem.end_date,
 		invoiceCadenceRaw,
@@ -80,9 +89,23 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 		onOpenChange(open);
 	};
 
+	const normalizedQuantity = quantityInput.trim().replace(/,/g, '');
+	const normalizedAmount = amountInput.trim().replace(/,/g, '');
+
 	const buildPayloadFromForm = useCallback((): ExecuteSubscriptionModifyRequest | null => {
 		if (!isValidNonNegativeQuantityString(quantityInput)) {
 			setFormError('Enter a valid quantity — zero or greater.');
+			return null;
+		}
+		if (currentAmount !== undefined && !isValidPriceString(amountInput)) {
+			setFormError('Enter a valid price, e.g. 1200.50 — use "." for decimals.');
+			return null;
+		}
+		// Send only what changed; an omitted field keeps its current value on the backend.
+		const quantityChanged = !isSameDecimal(normalizedQuantity, currentQuantity);
+		const amountChanged = currentAmount !== undefined && !isSameDecimal(normalizedAmount, currentAmount);
+		if (!quantityChanged && !amountChanged) {
+			setFormError(currentAmount !== undefined ? 'Change the quantity or the price to continue.' : 'Change the quantity to continue.');
 			return null;
 		}
 		if (effectiveDate && !isEffectiveDateWithinLineItemWindow(lineItem, effectiveDate)) {
@@ -98,12 +121,24 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 		}
 		setFormError(null);
 		const effectiveIso = effectiveDate ? buildEffectiveDateIsoForQuantityModify(lineItem, effectiveDate, currentPeriodEnd) : undefined;
-		return buildQuantityChangeModifyRequest({
+		return buildLineItemChangeModifyRequest({
 			lineItemId: lineItem.id,
-			quantity: quantityInput.trim().replace(/,/g, ''),
+			quantity: quantityChanged ? normalizedQuantity : undefined,
+			amount: amountChanged ? normalizedAmount : undefined,
 			effectiveDateIso: effectiveIso,
 		});
-	}, [quantityInput, effectiveDate, lineItem, currentPeriodStart, currentPeriodEnd]);
+	}, [
+		quantityInput,
+		amountInput,
+		normalizedQuantity,
+		normalizedAmount,
+		currentQuantity,
+		currentAmount,
+		effectiveDate,
+		lineItem,
+		currentPeriodStart,
+		currentPeriodEnd,
+	]);
 
 	const handlePreview = async () => {
 		const payload = buildPayloadFromForm();
@@ -139,13 +174,23 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 		<Dialog
 			isOpen={isOpen}
 			onOpenChange={handleOpenChange}
-			title={step === 'form' ? t('subscriptions.changeQuantity') : t('subscriptions.reviewChanges')}
+			title={
+				step === 'form'
+					? currentAmount !== undefined
+						? t('subscriptions.editCharge')
+						: t('subscriptions.changeQuantity')
+					: t('subscriptions.reviewChanges')
+			}
 			description={
 				step === 'form' ? (
 					<span className='text-sm text-content-tertiary'>
 						<Trans
 							ns='billing'
-							i18nKey='subscriptions.quantityModify.updatingDescription'
+							i18nKey={
+								currentAmount !== undefined
+									? 'subscriptions.quantityModify.updatingChargeDescription'
+									: 'subscriptions.quantityModify.updatingDescription'
+							}
 							values={{ name: lineItem.display_name }}
 							components={{ highlight: <span className='font-medium text-content' /> }}
 						/>
@@ -167,8 +212,21 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 									placeholder={t('subscriptions.quantityPlaceholder')}
 									disabled={busy}
 								/>
-								{formError && <p className='text-sm text-danger'>{formError}</p>}
 							</div>
+							{currentAmount !== undefined && (
+								<div className='space-y-2'>
+									<Input
+										label={t('subscriptions.quantityModify.pricePerUnit')}
+										variant='text'
+										value={amountInput}
+										onChange={(e) => setAmountInput(e)}
+										inputPrefix={<span className='text-sm text-content-secondary'>{getCurrencySymbol(currency)}</span>}
+										placeholder={t('subscriptions.quantityModify.pricePlaceholder')}
+										disabled={busy}
+									/>
+								</div>
+							)}
+							{formError && <p className='text-sm text-danger'>{formError}</p>}
 							<div className='w-full space-y-3'>
 								<DatePicker
 									label={t('subscriptions.effectiveDate')}
@@ -203,9 +261,11 @@ const SubscriptionLineItemQuantityModifyDialog: FC<SubscriptionLineItemQuantityM
 							data={previewResult}
 							quantityChangeContext={{
 								lineItemDisplayName: lineItem.display_name,
-								previousQuantity: lineItem.quantity != null ? String(lineItem.quantity) : '',
-								newQuantity: quantityInput.trim().replace(/,/g, '') || (lineItem.quantity != null ? String(lineItem.quantity) : ''),
-								currency: lineItem.currency || 'USD',
+								previousQuantity: currentQuantity,
+								newQuantity: normalizedQuantity || currentQuantity,
+								currency,
+								previousAmount: currentAmount,
+								newAmount: currentAmount !== undefined ? normalizedAmount || currentAmount : undefined,
 							}}
 						/>
 						<div className='flex justify-end gap-3 border-t border-line-subtle pt-4'>

@@ -197,7 +197,7 @@ export interface ExecuteSubscriptionChangeResponse {
 }
 
 // =============================================================================
-// SUBSCRIPTION MID-CYCLE MODIFICATION (inheritance | quantity_change | grouped_invoicing)
+// SUBSCRIPTION MID-CYCLE MODIFICATION (inheritance | line_item_change | grouped_invoicing)
 // POST /subscriptions/:id/modify/preview | /modify/execute
 // Enums live in @/models/Subscription; re-exported here for dto module consumers.
 // =============================================================================
@@ -216,17 +216,23 @@ export interface SubModifyInheritanceRequest {
 	external_customer_ids_to_inherit_subscription?: string[];
 }
 
-/** Single line item quantity change; quantity is a decimal string in API JSON. */
-export interface LineItemQuantityChange {
+/**
+ * Single fixed-charge edit. At least one of `quantity` / `amount` must be set;
+ * an omitted field keeps its current value. Decimals are strings in API JSON.
+ */
+export interface LineItemChange {
+	/** Subscription line item id (not the price id). */
 	id: string;
-	quantity: string;
-	/** ISO 8601; omit for effective immediately. */
+	quantity?: string;
+	/** New per-unit price in the subscription currency. Flat-fee, fiat prices only. */
+	amount?: string;
+	/** ISO 8601, inside the current billing period; omit for effective immediately. */
 	effective_date?: string;
 }
 
-/** Payload when type is `quantity_change`. */
-export interface SubModifyQuantityChangeRequest {
-	line_items: LineItemQuantityChange[];
+/** Payload when type is `line_item_change`. */
+export interface SubModifyLineItemChangeRequest {
+	line_items: LineItemChange[];
 }
 
 /** Payload when type is `grouped_invoicing` — add or remove grouped-invoicing child subscriptions. */
@@ -241,7 +247,7 @@ export interface SubModifyGroupedInvoicingParams {
 export interface ExecuteSubscriptionModifyRequest {
 	type: SubscriptionModifyType;
 	inheritance_params?: SubModifyInheritanceRequest;
-	quantity_change_params?: SubModifyQuantityChangeRequest;
+	line_item_change_params?: SubModifyLineItemChangeRequest;
 	grouped_invoicing_params?: SubModifyGroupedInvoicingParams;
 	coupon_params?: SubModifyCouponParams;
 	tax_params?: SubModifyTaxParams;
