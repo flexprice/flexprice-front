@@ -33,6 +33,16 @@ const axiosClient: AxiosInstance = axios.create({
 // useEnvironment()'s own fetch has resolved, and the backend 403s without the header.
 const ENV_GATE_EXEMPT_PATHS = ['/environments', '/users/me'];
 
+// Exact match on the pathname (ignoring any query string) - a substring check would also
+// exempt nested environment endpoints like /environments/{id} or /environments/{id}/clone,
+// which are reached after an active environment is already known and should still carry
+// X-Environment-ID like any other request.
+const isEnvGateExempt = (url?: string): boolean => {
+	if (!url) return false;
+	const path = url.split('?')[0];
+	return ENV_GATE_EXEMPT_PATHS.includes(path);
+};
+
 axiosClient.interceptors.request.use(
 	async (config: InternalAxiosRequestConfig) => {
 		// Customer portal mode: only X-Session-Token needed
@@ -45,7 +55,7 @@ axiosClient.interceptors.request.use(
 		const token = await AuthService.getAcessToken();
 		// add active environment to the request
 		let activeEnvId = EnvironmentApi.getActiveEnvironmentId();
-		if (!activeEnvId && !ENV_GATE_EXEMPT_PATHS.some((path) => config.url?.includes(path))) {
+		if (!activeEnvId && !isEnvGateExempt(config.url)) {
 			await EnvironmentApi.waitForActiveEnvironment();
 			activeEnvId = EnvironmentApi.getActiveEnvironmentId();
 		}
