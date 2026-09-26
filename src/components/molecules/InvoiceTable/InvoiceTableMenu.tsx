@@ -4,6 +4,7 @@ import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownMenu, RecordPaymentTopup } from '..';
 import InvoiceDownloadFormatDialog from '../InvoiceDownloadFormatDialog/InvoiceDownloadFormatDialog';
+import { Button, Dialog } from '@/components/atoms';
 import { DropdownMenuOption, getCopyIdOption } from '../DropdownMenu/DropdownMenu';
 import { useMutation } from '@tanstack/react-query';
 import InvoiceApi from '@/api/InvoiceApi';
@@ -29,6 +30,11 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 	const { can } = useCurrentUserPermissions();
 	const canWrite = can('invoice', 'write');
 	const writeDeniedReason = canWrite ? undefined : t('invoices.writeDenied');
+	// /compute accepts DRAFT and SKIPPED only (anything else is a 400); /recalculate takes it
+	// from there for a FINALIZED invoice. A voided invoice is the end of the line for both, and
+	// one already replaced must not be replaced again.
+	const computesInPlace = data.invoice_status === INVOICE_STATUS.DRAFT || data.invoice_status === INVOICE_STATUS.SKIPPED;
+	const isRecalculable = (computesInPlace || data.invoice_status === INVOICE_STATUS.FINALIZED) && !data.recalculated_invoice_id;
 	// PUT /invoices/:id only accepts DRAFT and FINALIZED invoices.
 	const isEditableStatus = data.invoice_status === INVOICE_STATUS.DRAFT || data.invoice_status === INVOICE_STATUS.FINALIZED;
 
@@ -79,7 +85,8 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 			return await InvoiceApi.recalculateInvoice(invoice_id);
 		},
 		onSuccess: () => {
-			toast.success('Invoice recalculation has been triggered. The replacement invoice will be available once the process completes.');
+			toast.success(t('invoices.recompute.replacementQueued'));
+			setIsRecomputeOpen(false);
 			void refetchInvoiceQueries();
 		},
 		onError: (error: Error) => {
@@ -87,6 +94,26 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 		},
 	});
 
+	// Recomputes a DRAFT in place from current pricing and usage. Separate from the recalculate
+	// above, which replaces a FINALIZED invoice with a new one.
+	const { mutate: computeInvoice, isPending: isComputing } = useMutation({
+		mutationFn: async (invoice_id: string) => {
+			return await InvoiceApi.computeInvoice(invoice_id);
+		},
+		onSuccess: () => {
+			toast.success(t('invoices.recompute.success'));
+			setIsRecomputeOpen(false);
+			void refetchInvoiceQueries();
+		},
+		onError: (error: Error) => {
+			// A hand-edited invoice is refused by the backend and there is no flag to pre-empt it,
+			// so the server's reason is the only thing that explains the refusal.
+			toast.error(error.message || t('invoices.recompute.failed'));
+		},
+	});
+
+	const [isRecomputeOpen, setIsRecomputeOpen] = useState(false);
+	const isRecalculationPending = isComputing || isRecalculating;
 	const [isDownloadFormatOpen, setIsDownloadFormatOpen] = useState(false);
 
 	const [state, setState] = useState<{
@@ -180,17 +207,25 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 			},
 		},
 		{
-			label: 'Recalculate Invoice',
+			label: t('invoices.recompute.menuLabel'),
 			group: 'Actions',
-			disabled:
-				!canWrite ||
-				data?.invoice_status === INVOICE_STATUS.DRAFT ||
-				data?.invoice_type !== INVOICE_TYPE.SUBSCRIPTION ||
-				!!data?.recalculated_invoice_id ||
-				isRecalculating,
-			disabledReason: writeDeniedReason,
+			// One action, two endpoints. A draft (or skipped) invoice is rewritten in place by
+			// /compute; a finalized one cannot be, so it is voided and reissued by /recalculate.
+			// Both are "recalculate this invoice" to the person clicking — the split is ours.
+			disabled: !canWrite || !isRecalculable || data?.invoice_type !== INVOICE_TYPE.SUBSCRIPTION || isRecalculationPending,
+			// Every disabled path needs its own reason: a greyed item with no tooltip on an
+			// invoice that plainly *is* a draft reads as a broken button.
+			disabledReason:
+				writeDeniedReason ??
+				(data?.invoice_type !== INVOICE_TYPE.SUBSCRIPTION
+					? t('invoices.recompute.menuDisabledType')
+					: data?.recalculated_invoice_id
+						? t('invoices.recompute.menuDisabledAlready')
+						: !isRecalculable
+							? t('invoices.recompute.menuDisabledStatus')
+							: undefined),
 			onSelect: () => {
-				recalculateInvoice(data.id);
+				setIsRecomputeOpen(true);
 			},
 		},
 		{
@@ -214,6 +249,29 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 	};
 	return (
 		<div>
+			<Dialog
+				isOpen={isRecomputeOpen}
+				onOpenChange={setIsRecomputeOpen}
+				// Rendered inside clickable table rows, which would otherwise navigate on any click.
+				interactiveContent
+				title={t('invoices.recompute.confirmTitle')}
+				description={
+					// The two paths differ in a way the user must know before confirming: one edits
+					// this invoice, the other voids it and issues a replacement with a new number.
+					computesInPlace ? t('invoices.recompute.confirmDescription') : t('invoices.recompute.confirmDescriptionFinalized')
+				}>
+				<div className='flex justify-end gap-2 pt-4'>
+					<Button variant='outline' disabled={isRecalculationPending} onClick={() => setIsRecomputeOpen(false)}>
+						{tc('actions.cancel')}
+					</Button>
+					<Button
+						isLoading={isRecalculationPending}
+						disabled={isRecalculationPending}
+						onClick={() => (computesInPlace ? computeInvoice(data.id) : recalculateInvoice(data.id))}>
+						{t('invoices.recompute.confirmAction')}
+					</Button>
+				</div>
+			</Dialog>
 			<InvoiceDownloadFormatDialog
 				open={isDownloadFormatOpen}
 				onOpenChange={setIsDownloadFormatOpen}

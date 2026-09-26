@@ -106,6 +106,31 @@ class InvoiceApi {
 		return await AxiosClient.post<RecalculateInvoiceResponse>(`${this.baseurl}/${invoiceId}/recalculate`);
 	}
 
+	/**
+	 * Recompute a DRAFT invoice in place from current pricing and usage.
+	 *
+	 * Distinct from {@link recalculateInvoice}, which voids a FINALIZED invoice and issues a
+	 * replacement: this one rewrites the same draft and returns it.
+	 *
+	 * `sync=true` makes the backend finish the recomputation before responding, so the caller can
+	 * refetch and show the new totals immediately rather than polling for a workflow to land.
+	 *
+	 * Accepted only for DRAFT and SKIPPED invoices; anything else is refused with HTTP 400 and
+	 * "Only draft or skipped invoices can be computed" (verified against api-dev).
+	 *
+	 * The backend also refuses an invoice whose line items were edited by hand — a manual edit
+	 * marks the invoice and disables compute, so recomputing cannot silently discard that work.
+	 * Nothing on the invoice payload reports that state, so callers surface the rejection instead
+	 * of disabling the action up front.
+	 *
+	 * Returns void deliberately. The success body is `{ invoice: { … } }` — wrapped, with amounts
+	 * as strings — rather than a bare Invoice, so typing it as one would be wrong. Callers refetch
+	 * instead of reading it, so nothing here needs that shape.
+	 */
+	public static async computeInvoice(invoiceId: string): Promise<void> {
+		await AxiosClient.post(`${this.baseurl}/${invoiceId}/compute?sync=true`);
+	}
+
 	public static async getInvoicePdf(invoiceId: string, invoiceNo?: string) {
 		const downloadFileName = invoiceNo ? `invoice-${invoiceNo}.pdf` : `invoice-${invoiceId}.pdf`;
 

@@ -186,7 +186,19 @@
 			"billingPeriod": "Billing Period",
 			"total": "Total"
 		},
-		"writeDenied": "You don't have permission to modify invoices"
+		"writeDenied": "You don't have permission to modify invoices",
+		"recompute": {
+			"menuLabel": "Recalculate Invoice",
+			"menuDisabledStatus": "Only draft, skipped or finalized invoices can be recalculated",
+			"confirmTitle": "Recalculate this invoice?",
+			"confirmDescription": "Line items and totals will be recomputed from the current pricing and usage data. If this invoice's line items were edited by hand, recalculation will be refused so those edits are not lost.",
+			"confirmAction": "Recalculate",
+			"success": "Invoice recalculated from current pricing and usage.",
+			"failed": "Unable to recalculate invoice",
+			"menuDisabledType": "Only subscription invoices can be recalculated — a one-off invoice has no usage to recompute from",
+			"menuDisabledAlready": "This invoice has already been replaced by a recalculated one",
+			"confirmDescriptionFinalized": "This invoice will be voided and replaced by a new one, recalculated from the current pricing and usage data. The replacement gets its own invoice number and appears once the process completes."
+		}
 	},
 	"creditNotes": {
 		"title": "Credit Notes",
