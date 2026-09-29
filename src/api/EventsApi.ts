@@ -27,11 +27,16 @@ class EventsApi {
 	}
 
 	/**
-	 * Event debugger response for a single event
-	 * GET /events/lookup?id=... (query param avoids issues with `/` in event IDs)
+	 * Event debugger response for a single event.
+	 * GET /events/lookup?id=...&external_customer_id=...
+	 * The id is a query param so `/` in event IDs stays intact.
+	 * external_customer_id is required: an id-only lookup cannot use the events sort key.
 	 */
-	public static async getEventDebug(eventId: string): Promise<GetEventDebugResponse> {
-		const url = generateQueryParams(`${EventsApi.baseUrl}/lookup`, { id: eventId });
+	public static async getEventDebug(eventId: string, externalCustomerId: string): Promise<GetEventDebugResponse> {
+		const url = generateQueryParams(`${EventsApi.baseUrl}/lookup`, {
+			id: eventId,
+			external_customer_id: externalCustomerId,
+		});
 		return await AxiosClient.get<GetEventDebugResponse>(url);
 	}
 

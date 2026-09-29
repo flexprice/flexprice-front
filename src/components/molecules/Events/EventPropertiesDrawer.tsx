@@ -33,9 +33,9 @@ const EventPropertiesDrawer: FC<Props> = ({ isOpen, onOpenChange, event }) => {
 		isLoading: loading,
 		error: loadError,
 	} = useQuery<GetEventDebugResponse, Error>({
-		queryKey: ['eventDebug', event?.id],
-		queryFn: () => EventsApi.getEventDebug(event!.id),
-		enabled: isOpen && !!event?.id,
+		queryKey: ['eventDebug', event?.id, event?.external_customer_id],
+		queryFn: () => EventsApi.getEventDebug(event!.id, event!.external_customer_id),
+		enabled: isOpen && !!event?.id && !!event.external_customer_id,
 	});
 
 	const displayEvent = debugResponse?.event ?? event;
