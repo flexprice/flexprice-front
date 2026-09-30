@@ -268,7 +268,11 @@
 		"rowActions": "إجراءات {{method}}",
 		"alreadyDefault": "هذه بطاقتك الافتراضية بالفعل.",
 		"setDefaultUnsupported": "مزوّد الدفع لديك لا يدعم تعيين بطاقة كطريقة دفع افتراضية.",
-		"expiredCannotDefault": "لا يمكن تعيين بطاقة منتهية كافتراضية."
+		"expiredCannotDefault": "لا يمكن تعيين بطاقة منتهية كافتراضية.",
+		"allProviders": "جميع المزوّدين",
+		"addForProvider": "إضافة بطاقة ({{provider}})",
+		"providerEmptyTitle": "لا توجد بطاقات محفوظة لدى {{provider}}",
+		"providerEmptyDescription": "أضف بطاقة عبر {{provider}} لدفع الفواتير وتفعيل الشحن التلقائي"
 	},
 	"invoiceDetail": {
 		"title": "الفاتورة",
