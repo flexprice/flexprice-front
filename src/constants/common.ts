@@ -8,7 +8,7 @@ import { getCustomCurrencySymbol } from '@/utils/common/custom_currency';
 // =============================================================================
 
 /** Any well-formed ISO code works as a scaffold: only its currency part is kept, and that part is replaced. */
-const ISO_FORMAT_PLACEHOLDER = 'USD';
+export const ISO_FORMAT_PLACEHOLDER = 'USD';
 
 export const formatCurrency = (amount: number | string, currency: string): string => {
 	const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;

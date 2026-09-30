@@ -86,7 +86,10 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 			if (isCustomPriceUnit) {
 				// For CUSTOM prices, use price_unit_amount and price_unit_tiers
 				const initialAmount = price.price_unit_amount || price.price_unit_config?.amount || '';
-				setOverrideAmount(initialAmount);
+				// The save path converts a percentage back to its decimal form for CUSTOM prices too,
+				// so seeding the field with the raw stored value made every open/save cycle divide the
+				// amount again: 0.025 opened as "0.025%" and re-saved as 0.00025.
+				setOverrideAmount(isPercentage ? decimalAmountToPercentage(initialAmount) : initialAmount);
 
 				if (price.price_unit_tiers && price.price_unit_tiers.length > 0) {
 					setOverrideTiers(
