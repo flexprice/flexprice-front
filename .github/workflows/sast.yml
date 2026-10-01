@@ -23,6 +23,7 @@ jobs:
   semgrep:
     name: Semgrep
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       # Pinned to a full commit SHA — tags are mutable and can be repointed.

@@ -52,6 +52,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       DEPLOYMENTS_CONFIG: ${{ secrets.DEPLOYMENTS_CONFIG || vars.DEPLOYMENTS_CONFIG }}
       VERCEL_TOKEN_DEFAULT: ${{ secrets.VERCEL_TOKEN }}
