@@ -28,6 +28,14 @@ on:
         required: true
         type: string
 
+# Grouped by the environment under test, so a staging deploy and a production
+# deploy never cancel each other. Within one environment the newest deployment
+# is the only one worth smoking — an older run is testing a URL that has
+# already been replaced, so it is superseded rather than queued.
+concurrency:
+  group: e2e-smoke-${{ github.event.deployment_status.environment || inputs.target_url || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke:
     name: Smoke

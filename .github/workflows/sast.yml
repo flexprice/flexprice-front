@@ -15,6 +15,10 @@ permissions:
   contents: read
   security-events: write # upload-sarif writes to the code-scanning API
 
+concurrency:
+  group: sast-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   semgrep:
     name: Semgrep

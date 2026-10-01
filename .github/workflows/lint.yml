@@ -1,11 +1,24 @@
 name: Lint
 
 on:
+  # Scoped to the long-lived branches on purpose. Unfiltered, this ran on every
+  # push to all 48 branches on the remote *and* again on the pull request, so
+  # every commit on a feature branch paid for two identical runs. Pull requests
+  # cover the feature branches; this covers what is merged.
   push:
+    branches:
+      - main
+      - develop
   pull_request:
 
 permissions:
   contents: read
+
+# Supersede, do not queue. Pushing three commits in a row should leave one run
+# standing, not three competing for the same answer.
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
@@ -13,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
