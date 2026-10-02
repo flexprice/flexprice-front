@@ -3,10 +3,16 @@ import { Skeleton } from '@/components/ui';
 import { useBreadcrumbsStore } from '@/store';
 import InvoiceApi from '@/api/InvoiceApi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { CreditNote } from '@/models';
-import { CreateCreditNoteLineItemRequest, CreateCreditNoteParams, CREDIT_NOTE_REASON, CREDIT_NOTE_TYPE } from '@/types';
+import {
+	CreateCreditNoteLineItemRequest,
+	CreateCreditNoteParams,
+	PreviewCreditNoteParams,
+	CREDIT_NOTE_REASON,
+	CREDIT_NOTE_TYPE,
+} from '@/types';
 import CreditNoteApi from '@/api/CreditNoteApi';
 import { PAYMENT_STATUS, formatCurrency, getCurrencySymbol, toSentenceCase } from '@/constants';
 import toast from 'react-hot-toast';
@@ -124,7 +130,8 @@ const AddCreditNotePage = () => {
 	});
 
 	// Calculate totals - only include line items with amount > 0
-	const validLineItems = lineItems.filter((item) => item.amount > 0);
+	// Memoised because the quote below is re-asked whenever this changes identity.
+	const validLineItems = useMemo(() => lineItems.filter((item) => item.amount > 0), [lineItems]);
 	const totalCreditAmount = validLineItems.reduce((sum, item) => sum + item.amount, 0);
 
 	const creditNotePreview = useMemo((): CreditNotePreview => {
@@ -166,27 +173,71 @@ const AddCreditNotePage = () => {
 		);
 	};
 
-	// Handle form submission
-	const handleSubmit = () => {
-		if (!selectedReason || validLineItems.length === 0 || !invoice_id) {
-			return;
+	const creditNoteLineItems = useMemo(
+		(): CreateCreditNoteLineItemRequest[] =>
+			validLineItems.map((item) => ({
+				invoice_line_item_id: item.id,
+				display_name: item.display_name,
+				amount: item.amount,
+			})),
+		[validLineItems],
+	);
+
+	const buildParams = useCallback((): CreateCreditNoteParams | null => {
+		if (!selectedReason || creditNoteLineItems.length === 0 || !invoice_id) {
+			return null;
 		}
 
-		const creditNoteLineItems: CreateCreditNoteLineItemRequest[] = validLineItems.map((item) => ({
-			invoice_line_item_id: item.id,
-			display_name: item.display_name,
-			amount: item.amount,
-		}));
-
-		const params: CreateCreditNoteParams = {
+		return {
 			invoice_id: invoice_id,
 			reason: selectedReason as CREDIT_NOTE_REASON,
 			memo: memo || undefined,
 			line_items: creditNoteLineItems,
 			process_credit_note: true,
 		};
+	}, [creditNoteLineItems, selectedReason, memo, invoice_id]);
 
-		createCreditNoteMutation.mutate(params);
+	// Quoted by the engine rather than summed here, because the tax on a credit is only known
+	// once it has been asked. Keyed on the amounts alone, so the figures are on screen before a
+	// reason is picked and a change of reason or memo does not re-ask. Debounced: every call is
+	// a real calculation at the provider, and a keystroke is not a decision.
+	const previewParams = useMemo((): PreviewCreditNoteParams | null => {
+		if (creditNoteLineItems.length === 0 || !invoice_id) {
+			return null;
+		}
+		return { invoice_id: invoice_id, line_items: creditNoteLineItems };
+	}, [creditNoteLineItems, invoice_id]);
+
+	const [debouncedPreviewParams, setDebouncedPreviewParams] = useState<PreviewCreditNoteParams | null>(null);
+	useEffect(() => {
+		const timer = setTimeout(() => setDebouncedPreviewParams(previewParams), 400);
+		return () => clearTimeout(timer);
+	}, [previewParams]);
+
+	const { data: creditNoteQuote, isFetching: isQuoting } = useQuery({
+		queryKey: ['creditNotePreview', debouncedPreviewParams],
+		queryFn: async () => await CreditNoteApi.previewCreditNote(debouncedPreviewParams!),
+		enabled: Boolean(debouncedPreviewParams),
+		// A quote is only good for the amounts that produced it, so it is never served stale.
+		staleTime: 0,
+		retry: false,
+	});
+
+	// A quote is only good for the amounts that produced it. While it lags a keystroke the
+	// subtotal it was asked for no longer matches what is typed, so the pre-tax sum is the only
+	// honest figure to show until the next one lands.
+	const quotedTax = Number(creditNoteQuote?.total_tax ?? 0);
+	const quotedTotal = Number(creditNoteQuote?.total_amount ?? 0);
+	const quoteIsCurrent = Boolean(creditNoteQuote) && Math.abs(Number(creditNoteQuote?.subtotal ?? 0) - totalCreditAmount) < 0.005;
+	const showTax = quoteIsCurrent && quotedTax > 0;
+	const displayedTotal = quoteIsCurrent ? quotedTotal : totalCreditAmount;
+
+	// Handle form submission
+	const handleSubmit = () => {
+		const params = buildParams();
+		if (params) {
+			createCreditNoteMutation.mutate(params);
+		}
 	};
 
 	if (isLoading) {
@@ -216,8 +267,19 @@ const AddCreditNotePage = () => {
 							/>
 						</div>
 						<div className='flex justify-between items-center'>
+							<span className='text-sm text-content-tertiary'>{t('creditNotes.subtotalLabel')}</span>
+							<span className='text-sm font-medium'>{formatCurrency(totalCreditAmount, invoiceCurrency)}</span>
+						</div>
+						{/* Only shown when an engine actually taxed the credit. */}
+						{showTax && (
+							<div className='flex justify-between items-center'>
+								<span className='text-sm text-content-tertiary'>{t('creditNotes.taxLabel')}</span>
+								<span className='text-sm font-medium'>{formatCurrency(quotedTax, invoiceCurrency)}</span>
+							</div>
+						)}
+						<div className='flex justify-between items-center'>
 							<span className='text-sm text-content-tertiary'>{t('creditNotes.totalAmountLabel')}</span>
-							<span className='text-sm font-medium'>{formatCurrency(creditNotePreview.totalAmount, invoiceCurrency)}</span>
+							<span className='text-sm font-semibold'>{formatCurrency(displayedTotal, invoiceCurrency)}</span>
 						</div>
 					</div>
 					<div className=' border border-info-line rounded-lg p-4'>
@@ -343,6 +405,19 @@ const AddCreditNotePage = () => {
 									<span className='text-sm text-content font-medium'>{formatCurrency(totalCreditAmount, invoiceCurrency)}</span>
 								</div>
 
+								{/* Only present when an engine actually taxed the credit, and only once the
+								    quote on screen is the one for the amounts on screen. */}
+								{(showTax || isQuoting) && (
+									<div className='flex justify-between items-center py-1'>
+										<span className='text-sm text-content-tertiary'>{t('creditNotes.taxLabel')}</span>
+										{isQuoting ? (
+											<span className='text-sm text-content-muted'>{t('creditNotes.calculatingTax')}</span>
+										) : (
+											<span className='text-sm text-content font-medium'>{formatCurrency(quotedTax, invoiceCurrency)}</span>
+										)}
+									</div>
+								)}
+
 								{/* Final total with different styling */}
 								<div className='flex justify-between items-center py-3 border-t border-line'>
 									<span className='text-base font-medium text-content'>
@@ -350,7 +425,7 @@ const AddCreditNotePage = () => {
 											? t('creditNotes.amountToBeRefunded')
 											: t('creditNotes.amountToBeAdjusted')}
 									</span>
-									<span className='text-base font-semibold text-content'>{formatCurrency(totalCreditAmount, invoiceCurrency)}</span>
+									<span className='text-base font-semibold text-content'>{formatCurrency(displayedTotal, invoiceCurrency)}</span>
 								</div>
 							</div>
 						</div>
@@ -362,7 +437,7 @@ const AddCreditNotePage = () => {
 					<Button
 						isLoading={createCreditNoteMutation.isPending}
 						onClick={() => setShowConfirmModal(true)}
-						disabled={!selectedReason || validLineItems.length === 0 || createCreditNoteMutation.isPending}>
+						disabled={!selectedReason || validLineItems.length === 0 || isQuoting || createCreditNoteMutation.isPending}>
 						{t('creditNotes.createCreditNoteCta')}
 					</Button>
 				</div>
