@@ -45,7 +45,8 @@
 			"information": "المعلومات",
 			"taxAssociation": "الضرائب",
 			"analytics": "التحليلات",
-			"usageEvents": "أحداث الاستخدام"
+			"usageEvents": "أحداث الاستخدام",
+			"activity": "النشاط"
 		},
 		"invoiceTabs": {
 			"overview": "نظرة عامة",

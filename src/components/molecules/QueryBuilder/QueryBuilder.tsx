@@ -36,13 +36,16 @@ interface Props {
 	className?: string;
 }
 
+const EMPTY_SORTS: SortOption[] = [];
+const NOOP = () => {};
+
 const QueryBuilder = ({
 	filterOptions: fields,
 	onFilterChange,
 	filters,
-	sortOptions = [],
-	onSortChange = () => {},
-	selectedSorts = [],
+	sortOptions = EMPTY_SORTS,
+	onSortChange = NOOP,
+	selectedSorts = EMPTY_SORTS,
 	debounceTime = 500,
 	children,
 	className,

@@ -67,6 +67,7 @@ export const CommandPaletteCommandId = {
 	navIntegrationMoyasar: 'nav-integration-moyasar',
 	navIntegrationPaddle: 'nav-integration-paddle',
 	navPricingWidget: 'nav-pricing-widget',
+	navActivityLog: 'nav-activity-log',
 } as const;
 
 export type CommandPaletteCommandIdType = (typeof CommandPaletteCommandId)[keyof typeof CommandPaletteCommandId];
