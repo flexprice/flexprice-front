@@ -4,10 +4,11 @@ import { GetServiceAccountsResponse } from '@/types/dto/UserApi';
 
 export const USE_ALL_USERS_QUERY_KEY = ['getAllUsers'] as const;
 
-const useAllUsers = () => {
+const useAllUsers = (options: { enabled?: boolean } = {}) => {
 	const { data, isLoading, isError, error } = useQuery<GetServiceAccountsResponse>({
 		queryKey: USE_ALL_USERS_QUERY_KEY,
 		queryFn: () => UserApi.getAllUsers(),
+		enabled: options.enabled ?? true,
 	});
 
 	return {

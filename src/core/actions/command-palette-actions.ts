@@ -7,14 +7,17 @@
  * - Built-in handlers (e.g. open URL) run immediately when dispatching; no subscriber needed.
  */
 
+import { docsUrl } from '@/config/docs';
+import { brandConfig } from '@/config/branding';
+
 export const COMMAND_PALETTE_ACTION_EVENT_PREFIX = 'command-palette:action:';
 
-/** URLs and mailto used by built-in developer-help actions. */
+/** URLs and mailto used by built-in developer-help actions — the active brand's. */
 export const COMMAND_PALETTE_ACTION_URLS = {
-	documentation: 'https://docs.flexprice.io',
-	contactEmail: 'mailto:support@flexprice.io',
-	bookCall: 'https://calendly.com/nikhil-flexprice/30min',
-	slackCommunity: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
+	documentation: docsUrl(),
+	contactEmail: `mailto:${brandConfig.supportEmail}`,
+	bookCall: brandConfig.links.bookCall,
+	slackCommunity: brandConfig.links.community,
 } as const;
 
 /** All executable action IDs. Add new ones here and keep in sync with command config. */
@@ -69,10 +72,11 @@ function runBuiltInHandler(actionId: string): void {
 			window.open(COMMAND_PALETTE_ACTION_URLS.contactEmail, '_blank', 'noopener,noreferrer');
 			break;
 		case CommandPaletteActionId.BookCall:
-			window.open(COMMAND_PALETTE_ACTION_URLS.bookCall, '_blank', 'noopener,noreferrer');
+			if (COMMAND_PALETTE_ACTION_URLS.bookCall) window.open(COMMAND_PALETTE_ACTION_URLS.bookCall, '_blank', 'noopener,noreferrer');
 			break;
 		case CommandPaletteActionId.JoinSlackCommunity:
-			window.open(COMMAND_PALETTE_ACTION_URLS.slackCommunity, '_blank', 'noopener,noreferrer');
+			if (COMMAND_PALETTE_ACTION_URLS.slackCommunity)
+				window.open(COMMAND_PALETTE_ACTION_URLS.slackCommunity, '_blank', 'noopener,noreferrer');
 			break;
 		default:
 			break;

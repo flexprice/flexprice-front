@@ -32,8 +32,8 @@ import { getSupportChatCommandLabel } from '@/config/support-chat';
 
 import { CommandPaletteCommandId, type CommandPaletteCommandIdType, CommandPaletteGroup, type CommandPaletteGroupType } from './ids';
 import { commandPalettePaths } from './paths';
-
-const DOCS_BASE = 'https://docs.flexprice.io';
+import { docsUrl } from '@/config/docs';
+import { brandConfig } from '@/config/branding';
 
 export interface CommandPaletteCommand {
 	id: CommandPaletteCommandIdType;
@@ -50,7 +50,7 @@ export interface CommandPaletteCommand {
 
 const P = commandPalettePaths;
 
-export const commandPaletteCommands: CommandPaletteCommand[] = [
+const allCommands: CommandPaletteCommand[] = [
 	// Actions (quick create / entry points)
 	{
 		id: CommandPaletteCommandId.actionCreateFeature,
@@ -130,7 +130,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docWelcome,
 		label: 'Docs: Welcome & overview',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/welcome-to-flexprice`,
+		externalUrl: docsUrl('/docs/welcome-to-flexprice'),
 		keywords: ['docs', 'welcome', 'intro', 'overview', 'getting started'],
 		icon: BookOpen,
 	},
@@ -138,7 +138,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docCreatingMeteredFeature,
 		label: 'Docs: Creating a metered feature',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/event-ingestion/creating-a-metered-feature`,
+		externalUrl: docsUrl('/docs/event-ingestion/creating-a-metered-feature'),
 		keywords: ['docs', 'metered', 'feature', 'events', 'usage'],
 		icon: BookOpen,
 	},
@@ -146,7 +146,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docSendingEvents,
 		label: 'Docs: Sending events',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/event-ingestion/sending-events`,
+		externalUrl: docsUrl('/docs/event-ingestion/sending-events'),
 		keywords: ['docs', 'events', 'ingest', 'usage', 'api'],
 		icon: BookOpen,
 	},
@@ -154,7 +154,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docCreatingPlan,
 		label: 'Docs: Creating a plan',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/product-catalogue/plans/create`,
+		externalUrl: docsUrl('/docs/product-catalogue/plans/create'),
 		keywords: ['docs', 'plan', 'pricing', 'product catalog'],
 		icon: BookOpen,
 	},
@@ -162,7 +162,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docCreatingFeature,
 		label: 'Docs: Creating a feature',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/product-catalogue/features/create`,
+		externalUrl: docsUrl('/docs/product-catalogue/features/create'),
 		keywords: ['docs', 'feature', 'product catalog'],
 		icon: BookOpen,
 	},
@@ -170,7 +170,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docCreatingCustomer,
 		label: 'Docs: Creating a customer',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/customers/create`,
+		externalUrl: docsUrl('/docs/customers/create'),
 		keywords: ['docs', 'customer', 'billing'],
 		icon: BookOpen,
 	},
@@ -178,7 +178,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docCreateSubscription,
 		label: 'Docs: Create subscription for customer',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/subscriptions/customers-create-subscription`,
+		externalUrl: docsUrl('/docs/subscriptions/customers-create-subscription'),
 		keywords: ['docs', 'subscription', 'billing', 'customer'],
 		icon: BookOpen,
 	},
@@ -186,7 +186,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docCreatingWallet,
 		label: 'Docs: Creating a wallet',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/wallet/create`,
+		externalUrl: docsUrl('/docs/wallet/create'),
 		keywords: ['docs', 'wallet', 'credits', 'prepaid'],
 		icon: BookOpen,
 	},
@@ -194,7 +194,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docInvoicesOverview,
 		label: 'Docs: Invoices overview',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/invoices/overview`,
+		externalUrl: docsUrl('/docs/invoices/overview'),
 		keywords: ['docs', 'invoices', 'billing'],
 		icon: BookOpen,
 	},
@@ -202,7 +202,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docApiReference,
 		label: 'Docs: API Reference',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/api-reference/introduction`,
+		externalUrl: docsUrl('/api-reference/introduction'),
 		keywords: ['docs', 'api', 'reference', 'developer'],
 		icon: CodeXml,
 	},
@@ -210,7 +210,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docWebhooks,
 		label: 'Docs: Webhooks',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/webhook/webhooks`,
+		externalUrl: docsUrl('/docs/webhook/webhooks'),
 		keywords: ['docs', 'webhooks', 'developer'],
 		icon: BookOpen,
 	},
@@ -218,7 +218,7 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		id: CommandPaletteCommandId.docApiKeys,
 		label: 'Docs: Manage API Keys',
 		group: CommandPaletteGroup.Documentation,
-		externalUrl: `${DOCS_BASE}/docs/rbac/api`,
+		externalUrl: docsUrl('/docs/rbac/api'),
 		keywords: ['docs', 'api keys', 'rbac', 'developer'],
 		icon: BookOpen,
 	},
@@ -518,3 +518,11 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		icon: GalleryHorizontalEnd,
 	},
 ];
+
+/** Help actions a brand has no link for are left out rather than opening someone else's page. */
+const unlinked = new Set<string>([
+	...(brandConfig.links.bookCall ? [] : [CommandPaletteActionId.BookCall]),
+	...(brandConfig.links.community ? [] : [CommandPaletteActionId.JoinSlackCommunity]),
+]);
+
+export const commandPaletteCommands: CommandPaletteCommand[] = allCommands.filter((c) => !c.actionId || !unlinked.has(c.actionId));

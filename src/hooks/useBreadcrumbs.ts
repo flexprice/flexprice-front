@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
+import { getBreadcrumbLabelForSegment } from '@/i18n/breadcrumbSegments';
 
 export interface BreadcrumbItem {
 	label: string;
@@ -17,6 +19,7 @@ const formatPathSegment = (segment: string): string => {
 
 export const useBreadcrumbs = () => {
 	const location = useLocation();
+	const { t, i18n } = useTranslation('common');
 	const { setBreadcrumbs, setLoading } = useBreadcrumbsStore();
 
 	useEffect(() => {
@@ -26,7 +29,7 @@ export const useBreadcrumbs = () => {
 		const newBreadcrumbs = pathSegments.map((segment, index, arr) => {
 			const path = `/${arr.slice(0, index + 1).join('/')}`;
 
-			const label = formatPathSegment(segment);
+			const label = getBreadcrumbLabelForSegment(segment, t) ?? formatPathSegment(segment);
 
 			return {
 				label,
@@ -36,5 +39,5 @@ export const useBreadcrumbs = () => {
 
 		setBreadcrumbs(newBreadcrumbs);
 		setLoading(false);
-	}, [location.pathname, setBreadcrumbs, setLoading]);
+	}, [location.pathname, setBreadcrumbs, setLoading, t, i18n.language]);
 };

@@ -1,8 +1,9 @@
 import animatePlugin from 'tailwindcss-animate';
+import { resolveBrandDir } from './scripts/vite-brand.mjs';
 
 export default {
 	darkMode: ['class'],
-	content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}'],
+	content: ['./index.html', './src/**/*.{ts,tsx,js,jsx}', `${resolveBrandDir()}/**/*.{ts,tsx,js,jsx}`],
 	theme: {
 		extend: {
 			fontSize: {
