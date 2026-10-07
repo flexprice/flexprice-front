@@ -11,6 +11,7 @@ import { initI18n } from './i18n/index.ts';
 import { DirectionProvider } from '@radix-ui/react-direction';
 import { useLocaleStore } from './store/useLocaleStore.ts';
 import { initTheme } from './store/useThemeStore.ts';
+import { initRecoveryLanding } from './utils/auth/recoveryLanding.ts';
 import React from 'react';
 
 // svix's browser bundle references the bare `process` identifier (not `typeof process`) inside
@@ -19,6 +20,12 @@ import React from 'react';
 if (typeof process === 'undefined') {
 	(window as unknown as { process: { env: Record<string, string> } }).process = { env: {} };
 }
+
+// Before anything async, and before the Supabase client can consume it: records
+// whether this page load arrived from a password-reset link. supabase-js strips
+// the `#…type=recovery` fragment once it reads it, so a component asking later
+// may find it already gone.
+initRecoveryLanding();
 
 registerWebMCPTools();
 

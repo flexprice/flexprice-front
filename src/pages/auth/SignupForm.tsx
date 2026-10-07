@@ -13,6 +13,7 @@ import GoogleSignin from './GoogleSignin';
 import { AuthTab } from './authTabs';
 import { useTranslation } from 'react-i18next';
 import { buildSignupMetadata, persistSignupMetadata } from '@/utils/auth/signupMetadata';
+import { buildAuthRedirect } from '@/utils/auth/authRedirect';
 
 interface SignupFormProps {
 	switchTab: (tab: AuthTab) => void;
@@ -132,7 +133,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ switchTab }) => {
 				email: signupData.email,
 				password: signupData.password,
 				options: {
-					emailRedirectTo: `${window.location.origin}${RouteNames.signupConfirmation}`,
+					emailRedirectTo: buildAuthRedirect(RouteNames.signupConfirmation),
 				},
 			});
 			setIsLoading(false);
