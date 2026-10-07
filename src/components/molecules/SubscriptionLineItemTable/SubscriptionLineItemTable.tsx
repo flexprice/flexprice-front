@@ -11,6 +11,7 @@ import {
 	AlertSettingsDialog,
 } from '@/components/molecules';
 import { PriceTooltip } from '@/components/molecules/PriceTooltip';
+import { formatPriceDisplay, normalizePriceDisplay } from '@/utils/common/price_helpers';
 import { LineItem, SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE } from '@/models/Subscription';
 import { ALERT_ENTITY_TYPE } from '@/models/AlertSetting';
 import { FC, useState, useCallback, useMemo } from 'react';
@@ -583,7 +584,13 @@ const SubscriptionLineItemTable: FC<Props> = ({
 						row.price.entity_type === PRICE_ENTITY_TYPE.SUBSCRIPTION && row.entity_type === SUBSCRIPTION_LINE_ITEM_ENTITY_TYPE.PLAN;
 					return (
 						<div className='flex min-w-0 items-center gap-2'>
-							<ChargeValueCell data={row.price} />
+							{isSubscriptionOverride ? (
+								<span className='min-w-0 truncate' title={formatPriceDisplay(normalizePriceDisplay(row.price))}>
+									{formatPriceDisplay(normalizePriceDisplay(row.price))}
+								</span>
+							) : (
+								<ChargeValueCell data={row.price} />
+							)}
 							{isSubscriptionOverride && <PriceTooltip data={row.price} isSubscriptionOverride={true} />}
 						</div>
 					);

@@ -12,6 +12,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import GoogleSignin from './GoogleSignin';
 import SamlSignin, { SSO_TENANT_PARAM, resolveSsoTenantId } from './SamlSignin';
 import { AuthTab } from './authTabs';
+import { sanitizeRedirect } from './safeRedirect';
 import { useTranslation } from 'react-i18next';
 
 interface LoginFormProps {
@@ -96,7 +97,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 				}
 
 				userContext.setUser(authData.user);
-				navigate('/');
+				// A page that needs a session sends the user here with the way back.
+				navigate(sanitizeRedirect(searchParams.get('redirect')) ?? '/');
 				toast.success('Login successful');
 			} catch (error) {
 				// Belt-and-suspenders: a thrown error here (e.g. a misconfigured auth client)

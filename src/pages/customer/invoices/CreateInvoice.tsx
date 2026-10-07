@@ -243,7 +243,9 @@ const CreateInvoicePage: FC = () => {
 						<div className='text-left'>
 							<FormHeader className='!mb-2' title={user?.tenant.name} variant='sub-header' titleClassName='font-semibold' />
 							<p className='text-sm text-content-zinc-muted mb-[2px]'>{user?.tenant.name}</p>
-							<p className='text-sm text-content-zinc-muted mb-[2px]'>{user?.email}</p>
+							{user?.tenant.billing_details?.email ? (
+								<p className='text-sm text-content-zinc-muted mb-[2px]'>{user.tenant.billing_details.email}</p>
+							) : null}
 							<p className='text-sm text-content-zinc-muted mb-[2px]'>{tenantAddress}</p>
 						</div>
 

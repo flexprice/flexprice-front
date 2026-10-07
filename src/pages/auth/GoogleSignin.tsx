@@ -2,16 +2,24 @@ import { Button } from '@/components/atoms';
 import supabase from '@/core/services/supbase/config';
 import toast from 'react-hot-toast';
 import { useMutation } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
 import { useTranslation } from 'react-i18next';
 import { buildSignupMetadata, persistSignupMetadata } from '@/utils/auth/signupMetadata';
+import { RETURN_PATH_KEY, sanitizeRedirect } from './safeRedirect';
 
 const GoogleSignin = () => {
 	const { t } = useTranslation('auth');
+	const [searchParams] = useSearchParams();
 	// Use React Query for Google auth mutation
 	const googleAuthMutation = useMutation({
 		mutationFn: async () => {
 			persistSignupMetadata(buildSignupMetadata({ signup_method: 'google' }));
+
+			// Google always returns to the confirmation page, so keep the way back for it.
+			const returnPath = sanitizeRedirect(searchParams.get('redirect'));
+			if (returnPath) sessionStorage.setItem(RETURN_PATH_KEY, returnPath);
+			else sessionStorage.removeItem(RETURN_PATH_KEY);
 
 			// Get the current site URL (to handle different environments)
 			const siteUrl = window.location.origin;

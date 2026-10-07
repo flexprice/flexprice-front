@@ -88,7 +88,9 @@ const OrganizationInfoCard = () => {
 								/>
 							) : null}
 						</div>
-						{user?.email ? <p className='text-sm text-content-zinc-muted'>{user.email}</p> : null}
+						{user?.tenant?.billing_details?.email ? (
+							<p className='text-sm text-content-zinc-muted'>{user.tenant.billing_details.email}</p>
+						) : null}
 					</div>
 				</div>
 

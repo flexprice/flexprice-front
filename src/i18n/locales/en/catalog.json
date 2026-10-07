@@ -1145,6 +1145,7 @@
 		"updatePrice": "Update Price",
 		"failedUpdateToast": "Failed to update price",
 		"toastScheduled": "{{name}} will be effective from {{date}}.",
+		"scheduleNeedsChange": "Change the price to schedule an update",
 		"toastUpdated": "{{name}} has been updated successfully.",
 		"fallbackPriceName": "Price",
 		"overridePercentageLabel": "Override percentage",

@@ -2,18 +2,25 @@ import supabase from '@/core/services/supbase/config';
 import { useUser } from '@/hooks/UserContext';
 import AuthApi from '@/api/AuthApi';
 import { useMutation } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { buildSignupMetadata, getPersistedSignupMetadata } from '@/utils/auth/signupMetadata';
 import { config } from '@/config/config';
+import { RETURN_PATH_KEY, sanitizeRedirect } from './safeRedirect';
 
 const SignupConfirmation = () => {
 	const userContext = useUser();
 	const navigate = useNavigate();
 	const { t } = useTranslation('auth');
 	const signupEnabled = config.platform.signup.enabled;
+	// Way back kept by GoogleSignin; read once, since both success paths navigate.
+	const [returnPath] = useState(() => {
+		const path = sanitizeRedirect(sessionStorage.getItem(RETURN_PATH_KEY));
+		sessionStorage.removeItem(RETURN_PATH_KEY);
+		return path ?? '/';
+	});
 
 	const { mutate, isPending } = useMutation({
 		mutationFn: async () => {
@@ -31,7 +38,7 @@ const SignupConfirmation = () => {
 
 			// Existing Google users land here after OAuth — always allow login through.
 			if (user.data.user?.app_metadata.tenant_id) {
-				navigate('/');
+				navigate(returnPath);
 				return;
 			}
 
@@ -58,7 +65,7 @@ const SignupConfirmation = () => {
 		},
 		onSuccess: async () => {
 			await supabase.auth.refreshSession();
-			navigate('/');
+			navigate(returnPath);
 		},
 		onError: async (error: Error) => {
 			await supabase.auth.signOut();

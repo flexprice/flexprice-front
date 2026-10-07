@@ -4,14 +4,14 @@ import { Dialog } from '@/components/atoms';
 import { Input, Button, Select, SelectOption, DatePicker } from '@/components/atoms';
 import { Price, BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
 import { PriceBucketSize } from '@/models/Meter';
-import { formatAmount, removeFormatting } from '@/components/atoms/Input/Input';
+import { removeFormatting } from '@/components/atoms/Input/Input';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { BUCKET_SIZE_NONE, priceBucketSizeOptions } from '@/constants/constants';
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import VolumeTieredPricingForm from '@/components/organisms/PlanForm/VolumeTieredPricingForm';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
 import { decimalAmountToPercentage, isPercentagePrice, percentageToDecimalAmount } from '@/utils/common/percentage_price_helpers';
-import { formatPercentageAmount } from '@/utils/common/price_helpers';
+import { formatPriceDisplay, normalizePriceDisplay } from '@/utils/common/price_helpers';
 import { useTranslation } from 'react-i18next';
 import type { LineItem } from '@/models/Subscription';
 import type { UpdateSubscriptionLineItemRequest } from '@/types/dto/Subscription';
@@ -249,6 +249,10 @@ const PriceOverrideDialog: FC<Props> = ({
 
 	const buildPriceOverride = (): Partial<ExtendedPriceOverride> => {
 		const override: Partial<ExtendedPriceOverride> = {};
+		const sourceBillingModel = billingModelSelectValueFromPrice(price);
+		const billingModelChanged = overrideBillingModel !== sourceBillingModel;
+		// A switch sends the amount even if unchanged, except a tiered price's placeholder "0".
+		const sendAmountOnSwitch = billingModelChanged && sourceBillingModel !== BILLING_MODEL.TIERED && sourceBillingModel !== 'SLAB_TIERED';
 
 		// Handle amount/price_unit_amount based on price unit type and billing model
 		if (overrideBillingModel !== BILLING_MODEL.TIERED && overrideBillingModel !== 'SLAB_TIERED') {
@@ -256,12 +260,12 @@ const PriceOverrideDialog: FC<Props> = ({
 			if (isCustomPriceUnit) {
 				// For CUSTOM prices, use price_unit_amount
 				const originalAmount = price.price_unit_amount || price.price_unit_config?.amount || '';
-				if (enteredAmount && enteredAmount !== originalAmount) {
+				if (enteredAmount && (sendAmountOnSwitch || enteredAmount !== originalAmount)) {
 					override.price_unit_amount = enteredAmount;
 				}
 			} else {
 				// For FIAT prices, use amount
-				if (enteredAmount && enteredAmount !== price.amount) {
+				if (enteredAmount && (sendAmountOnSwitch || enteredAmount !== price.amount)) {
 					override.amount = enteredAmount;
 				}
 			}
@@ -275,7 +279,7 @@ const PriceOverrideDialog: FC<Props> = ({
 		// Billing model override. Compare against the resolved select-value (which maps TIERED + SLAB
 		// tier mode to 'SLAB_TIERED') rather than the raw price.billing_model, so a slab-tiered charge
 		// left untouched isn't reported as a billing-model change.
-		if (overrideBillingModel !== billingModelSelectValueFromPrice(price)) {
+		if (billingModelChanged) {
 			override.billing_model = overrideBillingModel;
 		}
 
@@ -353,7 +357,18 @@ const PriceOverrideDialog: FC<Props> = ({
 		}
 
 		if (Object.keys(override).length > 0) {
-			onPriceOverride(price.id, override);
+			// Overrides merge, so clear pricing fields an earlier edit set that this one doesn't.
+			const cleared = {
+				amount: undefined,
+				price_unit_amount: undefined,
+				billing_model: undefined,
+				tier_mode: undefined,
+				tiers: undefined,
+				price_unit_tiers: undefined,
+				transform_quantity: undefined,
+				bucket_size: undefined,
+			};
+			onPriceOverride(price.id, { ...cleared, ...override });
 		} else {
 			onResetOverride(price.id);
 		}
@@ -570,13 +585,6 @@ const PriceOverrideDialog: FC<Props> = ({
 	};
 
 	// Get display amount and symbol based on price unit type
-	const getDisplayAmount = () => {
-		if (isCustomPriceUnit) {
-			return price.price_unit_amount || price.price_unit_config?.amount || price.amount || '0';
-		}
-		return price.amount || '0';
-	};
-
 	const getDisplaySymbol = () => {
 		if (isCustomPriceUnit) {
 			// Try to get price unit symbol from pricing_unit if available (from PriceResponse)
@@ -586,9 +594,8 @@ const PriceOverrideDialog: FC<Props> = ({
 		return getCurrencySymbol(price.currency);
 	};
 
-	const originalFormatted = formatAmount(getDisplayAmount());
 	const displaySymbol = getDisplaySymbol();
-	const originalPriceDisplay = isPercentage ? formatPercentageAmount(getDisplayAmount()) : `${displaySymbol}${originalFormatted}`;
+	const originalPriceDisplay = formatPriceDisplay(normalizePriceDisplay(price));
 	const chargeDisplayName = price.meter?.name || price.description || t('priceDialogs.thisChargeFallback');
 
 	const handleDialogOpenChange = (open: boolean) => {

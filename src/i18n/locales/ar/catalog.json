@@ -1129,6 +1129,7 @@
 		"updatePrice": "تحديث السعر",
 		"failedUpdateToast": "فشل تحديث السعر",
 		"toastScheduled": "سيسري {{name}} اعتبارًا من {{date}}.",
+		"scheduleNeedsChange": "غيّر السعر لجدولة التحديث",
 		"toastUpdated": "تم تحديث {{name}} بنجاح.",
 		"fallbackPriceName": "سعر",
 		"overridePercentageLabel": "تجاوز النسبة المئوية",

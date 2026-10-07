@@ -1,4 +1,5 @@
 import type { UpdateSubscriptionLineItemRequest } from '@/types/dto/Subscription';
+import { resolveBillingModelFromSelect } from '@/utils/common/commitment_time_bucket_draft';
 import type { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 
 /**
@@ -17,8 +18,12 @@ export function convertPriceOverrideToLineItemUpdate(
 		}
 	}
 
-	if (override.billing_model && override.billing_model !== 'SLAB_TIERED') {
-		updateData.billing_model = override.billing_model;
+	if (override.price_unit_amount != null && override.price_unit_amount !== '') {
+		updateData.price_unit_amount = override.price_unit_amount;
+	}
+
+	if (override.billing_model) {
+		Object.assign(updateData, resolveBillingModelFromSelect(override.billing_model));
 	}
 
 	if (override.tier_mode) {
@@ -27,6 +32,10 @@ export function convertPriceOverrideToLineItemUpdate(
 
 	if (override.tiers) {
 		updateData.tiers = override.tiers;
+	}
+
+	if (override.price_unit_tiers) {
+		updateData.price_unit_tiers = override.price_unit_tiers;
 	}
 
 	if (override.transform_quantity) {

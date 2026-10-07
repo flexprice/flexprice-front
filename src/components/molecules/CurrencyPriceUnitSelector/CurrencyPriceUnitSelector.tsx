@@ -75,7 +75,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 
 	const selectedOption = useMemo(() => {
 		if (!value) return null;
-		return allOptions.find((opt) => opt.value === value) || null;
+		return allOptions.find((opt) => opt.value.toLowerCase() === value.toLowerCase()) || null;
 	}, [value, allOptions]);
 
 	const handleValueChange = (newValue: string) => {
@@ -100,7 +100,7 @@ const CurrencyPriceUnitSelector: FC<Props> = ({ value, onChange, label, descript
 				</label>
 			)}
 
-			<Select value={value || ''} onValueChange={handleValueChange} disabled={disabled || isLoading}>
+			<Select value={selectedOption?.value ?? ''} onValueChange={handleValueChange} disabled={disabled || isLoading}>
 				<SelectTrigger className={cn(disabled && 'cursor-not-allowed')}>
 					<span className={cn('truncate', value ? '' : 'text-muted-foreground')}>
 						{isLoading ? t('common:table.loading') : selectedOption ? selectedOption.label : resolvedPlaceholder}

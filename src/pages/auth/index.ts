@@ -4,6 +4,7 @@ export { default as EmailVerification } from './EmailVerification';
 export { default as ForgotPasswordForm } from './ForgotPasswordForm';
 export { default as GoogleSignin } from './GoogleSignin';
 export { default as LoginForm } from './LoginForm';
+export { default as OAuthConsent } from './OAuthConsent';
 export { default as ResendVerification } from './ResendVerification';
 export { default as ResetPasswordForm } from './ResetPasswordForm';
 export { default as SamlCallback } from './SamlCallback';

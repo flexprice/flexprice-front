@@ -65,6 +65,9 @@ interface FormState {
 			address_postal_code: string;
 			address_country: string;
 		};
+		email: string;
+		help_email: string;
+		phone: string;
 	};
 	name: string;
 }
@@ -88,6 +91,9 @@ const useUpdateTenantForm = (tenantSchema: z.ZodTypeAny, initialData?: User) => 
 				address_postal_code: initialData?.tenant?.billing_details?.address?.address_postal_code || '',
 				address_country: initialData?.tenant?.billing_details?.address?.address_country || '',
 			},
+			email: initialData?.tenant?.billing_details?.email || '',
+			help_email: initialData?.tenant?.billing_details?.help_email || '',
+			phone: initialData?.tenant?.billing_details?.phone || '',
 		},
 		name: initialData?.tenant?.name || '',
 	});
@@ -102,13 +108,18 @@ const useUpdateTenantForm = (tenantSchema: z.ZodTypeAny, initialData?: User) => 
 					address: {
 						...initialData.tenant.billing_details.address,
 					},
+					email: initialData.tenant.billing_details.email || '',
+					help_email: initialData.tenant.billing_details.help_email || '',
+					phone: initialData.tenant.billing_details.phone || '',
 				},
 				name: initialData.tenant.name,
 			});
 
 			if (initialData.tenant.billing_details.address.address_country && initialData.tenant.billing_details.address.address_state) {
 				const stateObj = State.getStatesOfCountry(initialData.tenant.billing_details.address.address_country).find(
-					(state) => state.name === initialData.tenant.billing_details.address.address_state,
+					(state) =>
+						state.isoCode === initialData.tenant.billing_details.address.address_state ||
+						state.name === initialData.tenant.billing_details.address.address_state,
 				);
 				if (stateObj) {
 					setActiveState(stateObj);
@@ -153,27 +164,11 @@ const useUpdateTenantForm = (tenantSchema: z.ZodTypeAny, initialData?: User) => 
 		return true;
 	};
 
-	const preparePayload = (): ApiUpdateTenantPayload => {
-		const payload: ApiUpdateTenantPayload = {
-			name: formData.name,
-		};
-
-		// Only include non-empty fields in the payload
-		const address: ApiAddress = {};
-		Object.entries(formData.billing_details.address).forEach(([key, value]) => {
-			if (value) {
-				address[key as keyof Address] = value;
-			}
-		});
-
-		if (Object.keys(address).length > 0) {
-			payload.billing_details = {
-				address,
-			};
-		}
-
-		return payload;
-	};
+	// Send every field, including '' for cleared inputs, so the backend can clear them.
+	const preparePayload = (): ApiUpdateTenantPayload => ({
+		name: formData.name,
+		billing_details: formData.billing_details,
+	});
 
 	return {
 		formData,
@@ -226,8 +221,8 @@ const UpdateTenantDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) =>
 								address_country: z.string().optional(),
 							})
 							.optional(),
-						email: z.string().email().optional(),
-						help_email: z.string().email().optional(),
+						email: z.string().email().or(z.literal('')).optional(),
+						help_email: z.string().email().or(z.literal('')).optional(),
 						phone: z.string().optional(),
 					})
 					.optional(),
@@ -320,6 +315,24 @@ const UpdateTenantDrawer: FC<Props> = ({ data, onOpenChange, open, trigger }) =>
 							{t('tenant.drawer.billingSection')}
 						</span>
 						<div className='space-y-4'>
+							<Input
+								label={t('tenant.drawer.billingEmail')}
+								value={formData.billing_details.email}
+								onChange={(e) => handleChange('billing_details.email', e)}
+								error={errors['billing_details.email']}
+							/>
+							<Input
+								label={t('tenant.drawer.helpEmail')}
+								value={formData.billing_details.help_email}
+								onChange={(e) => handleChange('billing_details.help_email', e)}
+								error={errors['billing_details.help_email']}
+							/>
+							<Input
+								label={t('tenant.drawer.phone')}
+								value={formData.billing_details.phone}
+								onChange={(e) => handleChange('billing_details.phone', e)}
+								error={errors['billing_details.phone']}
+							/>
 							<Select
 								label={t('tenant.drawer.country')}
 								placeholder={t('tenant.drawer.selectCountry')}

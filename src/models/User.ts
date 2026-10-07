@@ -12,6 +12,9 @@ export interface User {
 				address_postal_code: string;
 				address_country: string;
 			};
+			email?: string;
+			help_email?: string;
+			phone?: string;
 		};
 		status: string;
 		created_at: string;

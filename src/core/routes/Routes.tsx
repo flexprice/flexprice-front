@@ -14,6 +14,7 @@ import {
 	ResendVerification,
 	EmailVerification,
 	SamlCallback,
+	OAuthConsent,
 	// Customer pages
 	CustomerListPage as CustomerPage,
 	Subscriptions as SubscriptionsPage,
@@ -113,6 +114,9 @@ export const RouteNames = {
 	// Where the backend sends the browser after it validates a SAML assertion.
 	// Must match auth.saml.dashboard_url in the backend configuration.
 	samlCallback: '/auth/callback',
+	// Where Supabase sends the browser when an app asks to act for a user.
+	// Must match the Authorization Path set in Supabase (Authentication > OAuth Server).
+	oauthConsent: '/oauth/consent',
 
 	// Dashboard routes
 	homeDashboard: '/home',
@@ -235,6 +239,12 @@ export const MainRouter: any = createBrowserRouter([
 		// round trip, before any session exists.
 		path: RouteNames.samlCallback,
 		element: <SamlCallback />,
+	},
+	{
+		// Public: the page checks the Supabase session itself and sends a
+		// signed-out user to the login page with the way back.
+		path: RouteNames.oauthConsent,
+		element: <OAuthConsent />,
 	},
 	{
 		path: RouteNames.customerPortal,

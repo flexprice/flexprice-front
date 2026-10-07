@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { ColumnData, FlexpriceTable, LineItemCoupon, PriceQuantityCell } from '@/components/molecules';
 import PriceOverrideDialog from '@/components/molecules/PriceOverrideDialog/PriceOverrideDialog';
 import CommitmentConfigDialog from '@/components/molecules/CommitmentConfigDialog';
-import { Price, PRICE_UNIT_TYPE } from '@/models';
+import { BILLING_MODEL, Price, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models';
 import type { PriceBucketSize } from '@/models/Meter';
 import { ChevronDownIcon, ChevronUpIcon, Copy, Pencil, RotateCcw, Tag, Target, Trash2 } from 'lucide-react';
 import { FormHeader, AddButton, Chip } from '@/components/atoms';
@@ -351,8 +351,15 @@ const SubscriptionPriceTable: FC<Props> = ({
 					<div>{item.display_name || item.price?.display_name || t('organisms.subscriptionPriceTable.chargeFallback')}</div>
 				</div>
 			),
-			quantity: <span>{item.quantity ?? 1}</span>,
-			price: <span>{formatAddedLineItemPrice(item, currency)}</span>,
+			quantity: (
+				<span>{item.price?.type === PRICE_TYPE.USAGE ? t('organisms.subscriptionPriceTable.payAsYouGo') : (item.quantity ?? 1)}</span>
+			),
+			price:
+				item.price?.tiers?.length || item.price?.billing_model === BILLING_MODEL.PACKAGE ? (
+					<ChargeValueCell data={{ ...item.price, currency: item.price.currency ?? currency } as unknown as Price} />
+				) : (
+					<span>{formatAddedLineItemPrice(item, currency)}</span>
+				),
 			invoice_cadence: item.price?.invoice_cadence ?? '--',
 			bucketSize: bucketSizeCell(resolveAddedItemBucketSize(item), t('common:labels.na')),
 			actions:
