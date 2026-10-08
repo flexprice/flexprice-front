@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input, Spacer, Tooltip } from '@/components/atoms';
+import { Button, DatePicker, Input, Tooltip } from '@/components/atoms';
 import { FC, ReactNode, useState, useCallback, useMemo } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
 import { SubscriptionDiscountTable } from '../SubscriptionDiscountTable';
@@ -306,7 +306,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	};
 
 	return (
-		<DialogContent className='bg-surface sm:max-w-[600px] max-h-[88vh] overflow-y-auto'>
+		<DialogContent className='bg-surface sm:max-w-[600px] flex max-h-[88vh] flex-col overflow-hidden'>
 			<PaymentUrlSuccessDialog
 				isOpen={checkoutPopup.isOpen}
 				paymentUrl={checkoutPopup.paymentUrl}
@@ -324,140 +324,141 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				onClose={() => setBlockingSession(null)}
 				onSupersede={() => handleTopup(TopupMode.Checkout, true)}
 			/>
-			<DialogHeader>
+			<DialogHeader className='shrink-0'>
 				<DialogTitle>{t('wallet.topup.dialogTitle')}</DialogTitle>
 			</DialogHeader>
-			<div className='grid gap-4 py-4'>
-				<RectangleRadiogroup
-					title={t('wallet.topup.creditTypeTitle')}
-					options={creditsTypeOptions.map((option) => ({
-						...option,
-						description: undefined,
-					}))}
-					value={topupPayload.credits_type}
-					onChange={(value) => {
-						// Reset related fields when changing credits type
-						// Set generate_invoice to true by default for Purchased credits
-						setCoupon(null);
-						updateTopupPayload({
-							credits_type: value as CreditsType,
-							credits_to_add: undefined,
-							generate_invoice: value === CreditsType.PurchasedCredits ? true : undefined,
-							expiry_date: undefined,
-							reference_id: undefined,
+			{/* Only the form scrolls; the header and the submit buttons stay in view. */}
+			<div className='-mx-1 grid min-h-0 flex-1 gap-4 overflow-y-auto px-1'>
+				<div className='grid gap-4 py-4'>
+					<RectangleRadiogroup
+						title={t('wallet.topup.creditTypeTitle')}
+						options={creditsTypeOptions.map((option) => ({
+							...option,
 							description: undefined,
-						});
-					}}
-				/>
-				<p className='text-sm text-content-muted -my-2'>
-					{topupPayload.credits_type === CreditsType.PurchasedCredits
-						? t('wallet.topup.typeHintPurchased')
-						: t('wallet.topup.typeHintFree')}
-				</p>
-			</div>
+						}))}
+						value={topupPayload.credits_type}
+						onChange={(value) => {
+							// Reset related fields when changing credits type
+							// Set generate_invoice to true by default for Purchased credits
+							setCoupon(null);
+							updateTopupPayload({
+								credits_type: value as CreditsType,
+								credits_to_add: undefined,
+								generate_invoice: value === CreditsType.PurchasedCredits ? true : undefined,
+								expiry_date: undefined,
+								reference_id: undefined,
+								description: undefined,
+							});
+						}}
+					/>
+					<p className='text-sm text-content-muted -my-2'>
+						{topupPayload.credits_type === CreditsType.PurchasedCredits
+							? t('wallet.topup.typeHintPurchased')
+							: t('wallet.topup.typeHintFree')}
+					</p>
+				</div>
 
-			{/* Free Credits Input */}
-			{topupPayload.credits_type && (
-				<Input
-					variant='formatted-number'
-					onChange={(e) => updateTopupPayload({ credits_to_add: e as unknown as number })}
-					value={topupPayload.credits_to_add ?? ''}
-					suffix={t('payments.transactions.creditsSuffix')}
-					label={t('wallet.topup.creditsLabel')}
-					placeholder={t('wallet.topup.creditsPlaceholder')}
-					description={
-						<>
-							{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
-								<span>
-									{getCurrencySymbol(currency!)}
-									{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
-									{t('wallet.topup.creditPreviewSuffix')}
-								</span>
-							)}
-						</>
-					}
-				/>
-			)}
-
-			{topupPayload.credits_type === CreditsType.PurchasedCredits && (
-				<SubscriptionDiscountTable
-					coupon={coupon}
-					onChange={setCoupon}
-					currency={currency}
-					couponFilter={hasCouponCode}
-					showCadence={false}
-					showCouponName
-				/>
-			)}
-
-			{topupPayload.credits_type && (
-				<DatePicker
-					minDate={
-						minExpiryDate
-							? new Date(minExpiryDate.getUTCFullYear(), minExpiryDate.getUTCMonth(), minExpiryDate.getUTCDate())
-							: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 0, 0, 0))
-					}
-					label={t('wallet.topup.expiryDate')}
-					date={topupPayload.expiry_date_utc ? new Date(topupPayload.expiry_date_utc) : undefined}
-					setDate={(value) =>
-						updateTopupPayload({
-							expiry_date_utc: value
-								? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)).toISOString()
-								: undefined,
-						})
-					}
-					className='w-full'
-					labelClassName='text-foreground'
-				/>
-			)}
-			{topupPayload.credits_type && (
-				<Input
-					label={t('wallet.topup.priority')}
-					className='w-full'
-					placeholder={t('wallet.topup.priorityPlaceholder')}
-					// Guarded like the sibling fields: priority starts undefined, which makes
-					// the input uncontrolled until the first keystroke and warns on the switch.
-					value={topupPayload.priority ?? ''}
-					onChange={(e) => {
-						if (e) {
-							updateTopupPayload({ priority: Number(e) });
-						} else {
-							updateTopupPayload({ priority: undefined });
+				{/* Free Credits Input */}
+				{topupPayload.credits_type && (
+					<Input
+						variant='formatted-number'
+						onChange={(e) => updateTopupPayload({ credits_to_add: e as unknown as number })}
+						value={topupPayload.credits_to_add ?? ''}
+						suffix={t('payments.transactions.creditsSuffix')}
+						label={t('wallet.topup.creditsLabel')}
+						placeholder={t('wallet.topup.creditsPlaceholder')}
+						description={
+							<>
+								{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
+									<span>
+										{getCurrencySymbol(currency!)}
+										{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
+										{t('wallet.topup.creditPreviewSuffix')}
+									</span>
+								)}
+							</>
 						}
-					}}
-				/>
-			)}
+					/>
+				)}
 
-			{/* Reference ID and description for purchased credits. Previously gated on the
+				{topupPayload.credits_type === CreditsType.PurchasedCredits && (
+					<SubscriptionDiscountTable
+						coupon={coupon}
+						onChange={setCoupon}
+						currency={currency}
+						couponFilter={hasCouponCode}
+						showCadence={false}
+						showCouponName
+					/>
+				)}
+
+				{topupPayload.credits_type && (
+					<DatePicker
+						minDate={
+							minExpiryDate
+								? new Date(minExpiryDate.getUTCFullYear(), minExpiryDate.getUTCMonth(), minExpiryDate.getUTCDate())
+								: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 0, 0, 0))
+						}
+						label={t('wallet.topup.expiryDate')}
+						date={topupPayload.expiry_date_utc ? new Date(topupPayload.expiry_date_utc) : undefined}
+						setDate={(value) =>
+							updateTopupPayload({
+								expiry_date_utc: value
+									? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)).toISOString()
+									: undefined,
+							})
+						}
+						className='w-full'
+						labelClassName='text-foreground'
+					/>
+				)}
+				{topupPayload.credits_type && (
+					<Input
+						label={t('wallet.topup.priority')}
+						className='w-full'
+						placeholder={t('wallet.topup.priorityPlaceholder')}
+						// Guarded like the sibling fields: priority starts undefined, which makes
+						// the input uncontrolled until the first keystroke and warns on the switch.
+						value={topupPayload.priority ?? ''}
+						onChange={(e) => {
+							if (e) {
+								updateTopupPayload({ priority: Number(e) });
+							} else {
+								updateTopupPayload({ priority: undefined });
+							}
+						}}
+					/>
+				)}
+
+				{/* Reference ID and description for purchased credits. Previously gated on the
 			    generate-invoice toggle, which the three settle actions replaced. */}
-			{topupPayload.credits_type === CreditsType.PurchasedCredits && (
-				<>
-					<Input
-						label={t('wallet.topup.referenceId')}
-						className='w-full'
-						placeholder={t('wallet.topup.referenceIdPlaceholder')}
-						value={topupPayload.reference_id || ''}
-						onChange={(e) => updateTopupPayload({ reference_id: e as string })}
-						description={t('wallet.topup.referenceIdDescription')}
-					/>
+				{topupPayload.credits_type === CreditsType.PurchasedCredits && (
+					<>
+						<Input
+							label={t('wallet.topup.referenceId')}
+							className='w-full'
+							placeholder={t('wallet.topup.referenceIdPlaceholder')}
+							value={topupPayload.reference_id || ''}
+							onChange={(e) => updateTopupPayload({ reference_id: e as string })}
+							description={t('wallet.topup.referenceIdDescription')}
+						/>
 
-					<Input
-						label={t('wallet.topup.descriptionOptional')}
-						className='w-full'
-						placeholder={t('wallet.topup.descriptionPlaceholder')}
-						value={topupPayload.description || ''}
-						onChange={(e) => updateTopupPayload({ description: e as string })}
-						description={t('wallet.topup.descriptionHint')}
-					/>
-				</>
-			)}
-
-			<Spacer className='!mt-4' />
+						<Input
+							label={t('wallet.topup.descriptionOptional')}
+							className='w-full'
+							placeholder={t('wallet.topup.descriptionPlaceholder')}
+							value={topupPayload.description || ''}
+							onChange={(e) => updateTopupPayload({ description: e as string })}
+							description={t('wallet.topup.descriptionHint')}
+						/>
+					</>
+				)}
+			</div>
 
 			{/* For purchased credits the choice of how it settles IS the submit action.
 			    Free credits keep a single button — nothing is ever billed for them.
 			    Coupons only discount an invoice, so the other exits are off while one is picked. */}
-			<div className='w-full justify-end flex gap-2'>
+			<div className='w-full shrink-0 justify-end flex gap-2 pt-2'>
 				{topupPayload.credits_type === CreditsType.PurchasedCredits ? (
 					<>
 						{withCouponHint(
