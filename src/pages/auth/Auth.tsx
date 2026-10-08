@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import AuthService from '@/core/auth/AuthService';
+import type { UserLookupFailedState } from '@/core/auth/AuthProvider';
 import BrandTemplate from './BrandTemplate';
 import { AuthTab } from './authTabs';
 import { config } from '@/config/config';
@@ -14,12 +15,14 @@ const AuthPage: React.FC = () => {
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
 		if (searchParams.get('tab') === AuthTab.RESET_PASSWORD) return;
+		// User lookup just failed; redirecting to / again would loop.
+		if ((location.state as UserLookupFailedState | null)?.userLookupFailed) return;
 		const fetchUser = async () => {
 			const tokenStr = await AuthService.getAcessToken();
 			if (tokenStr) navigate('/');
 		};
 		fetchUser();
-	}, [location.search, navigate]);
+	}, [location.search, location.state, navigate]);
 
 	useEffect(() => {
 		const searchParams = new URLSearchParams(location.search);
