@@ -103,7 +103,7 @@ describe('WalletTopupCard retry after a failed top-up', () => {
 		await user.type(screen.getByPlaceholderText('credits'), '100');
 		await user.type(screen.getByPlaceholderText('Enter reference ID'), 'REF-1');
 
-		await user.click(screen.getByRole('button', { name: 'Generate invoice' }));
+		await user.click(screen.getByRole('button', { name: 'Skip invoice' }));
 
 		await waitFor(() => expect(mockToastError).toHaveBeenCalled());
 		expect(mockTopupWallet).toHaveBeenNthCalledWith(1, expect.objectContaining({ idempotency_key: 'REF-1' }));
@@ -112,7 +112,7 @@ describe('WalletTopupCard retry after a failed top-up', () => {
 		// otherwise every retry resubmits it and gets rejected as a duplicate forever.
 		await waitFor(() => expect(screen.getByPlaceholderText('Enter reference ID')).toHaveValue(''));
 
-		await user.click(screen.getByRole('button', { name: 'Generate invoice' }));
+		await user.click(screen.getByRole('button', { name: 'Skip invoice' }));
 
 		await waitFor(() => expect(mockToastSuccess).toHaveBeenCalled());
 		expect(mockTopupWallet).toHaveBeenNthCalledWith(2, expect.objectContaining({ idempotency_key: undefined }));
@@ -130,7 +130,7 @@ describe('WalletTopupCard checkout visibility', () => {
 		await user.click(screen.getByText('Purchased'));
 
 		await waitFor(() => expect(mockListPublished).toHaveBeenCalled());
-		expect(screen.getByRole('button', { name: 'Generate invoice' })).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Skip invoice' })).toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Checkout link' })).not.toBeInTheDocument();
 	});
 
@@ -225,20 +225,25 @@ describe('WalletTopupCard checkout conflicts', () => {
 });
 
 describe('WalletTopupCard purchased credits', () => {
-	it('offers no Skip invoice: purchased credits are always invoiced', async () => {
+	it('settles Skip invoice as a direct purchase and Generate invoice as invoiced', async () => {
 		mockTopupWallet.mockResolvedValue({ invoice_id: 'inv_1' });
 
 		const user = userEvent.setup();
 		renderTopupCard();
 		await user.click(screen.getByText('Purchased'));
 		await user.type(screen.getByPlaceholderText('credits'), '100');
+		await user.click(screen.getByRole('button', { name: 'Skip invoice' }));
 
-		expect(screen.queryByRole('button', { name: 'Skip invoice' })).not.toBeInTheDocument();
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(1));
+		expect(mockTopupWallet.mock.calls[0][0].transaction_reason).toBe('PURCHASED_CREDIT_DIRECT');
+
+		await user.click(screen.getByText('Purchased'));
+		await user.type(screen.getByPlaceholderText('credits'), '100');
 		await user.click(screen.getByRole('button', { name: 'Generate invoice' }));
 
-		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalled());
-		expect(mockTopupWallet.mock.calls[0][0].transaction_reason).toBe('PURCHASED_CREDIT_INVOICED');
-		expect(mockTopupWallet.mock.calls[0][0].coupons).toBeUndefined();
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(2));
+		expect(mockTopupWallet.mock.calls[1][0].transaction_reason).toBe('PURCHASED_CREDIT_INVOICED');
+		expect(mockTopupWallet.mock.calls[1][0].coupons).toBeUndefined();
 	});
 
 	it('sends the picked coupon by code on Generate invoice', async () => {
@@ -255,21 +260,28 @@ describe('WalletTopupCard purchased credits', () => {
 		expect(mockTopupWallet.mock.calls[0][0].coupons).toEqual([{ coupon_code: 'TOPUP10' }]);
 	});
 
-	it('disables the Checkout link while a coupon is picked, since the API rejects the pair', async () => {
+	it('disables Skip invoice and the Checkout link while a coupon is picked, since coupons only discount an invoice', async () => {
 		mockListPublished.mockResolvedValue({ connections: [RAZORPAY_CONNECTION] });
 
 		const user = userEvent.setup();
 		renderTopupCard();
 		await user.click(screen.getByText('Purchased'));
 		const checkout = await screen.findByRole('button', { name: 'Checkout link' });
+		const skip = screen.getByRole('button', { name: 'Skip invoice' });
 		expect(checkout).toBeEnabled();
+		expect(skip).toBeEnabled();
 
 		await user.click(screen.getByRole('button', { name: 'Pick coupon' }));
 		expect(checkout).toBeDisabled();
-		expect(screen.getByText("Checkout links don't support coupons yet. Remove the coupon to use one.")).toBeInTheDocument();
+		expect(skip).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Generate invoice' })).toBeEnabled();
+		expect(
+			screen.getByText('Coupons apply only to Generate invoice. Remove the coupon to skip the invoice or use a checkout link.'),
+		).toBeInTheDocument();
 
 		await user.click(screen.getByRole('button', { name: 'Remove TOPUP10' }));
 		expect(checkout).toBeEnabled();
+		expect(skip).toBeEnabled();
 	});
 
 	it('hides discounts for free credits and drops a picked coupon on switching to Free', async () => {

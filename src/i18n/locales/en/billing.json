@@ -993,9 +993,10 @@
 			"typeFreeDesc": "Grant credits without a charge.",
 			"typePurchased": "Purchased",
 			"typePurchasedDesc": "Add credits that require payment.",
+			"skipInvoice": "Skip invoice",
 			"generateInvoiceAction": "Generate invoice",
 			"checkoutLink": "Checkout link",
-			"checkoutCouponHint": "Checkout links don't support coupons yet. Remove the coupon to use one."
+			"couponInvoiceOnlyHint": "Coupons apply only to Generate invoice. Remove the coupon to skip the invoice or use a checkout link."
 		},
 		"pendingCheckout": {
 			"title": "A checkout is already pending for this wallet",

@@ -29,12 +29,14 @@ enum CreditsType {
 
 /**
  * How a top-up settles.
- *   Free     — free credits land immediately, nothing is billed
- *   Invoice  — purchased credits; an invoice is raised for the customer to settle later
- *   Checkout — purchased credits via hosted checkout; credits land once payment succeeds
+ *   Free        — free credits land immediately, nothing is billed
+ *   SkipInvoice — purchased credits land immediately, nothing is billed
+ *   Invoice     — purchased credits; an invoice is raised for the customer to settle later
+ *   Checkout    — purchased credits via hosted checkout; credits land once payment succeeds
  */
 enum TopupMode {
 	Free = 'Free',
+	SkipInvoice = 'SkipInvoice',
 	Invoice = 'Invoice',
 	Checkout = 'Checkout',
 }
@@ -117,12 +119,12 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		(connection) => connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY,
 	);
 
-	// Purchased credits are always invoiced; checkout is pay-first and rides the invoiced reason too.
-	const getTransactionReason = useCallback(
-		(mode: TopupMode): WALLET_TRANSACTION_REASON =>
-			mode === TopupMode.Free ? WALLET_TRANSACTION_REASON.FREE_CREDIT_GRANT : WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_INVOICED,
-		[],
-	);
+	// Checkout is pay-first, so it rides the invoiced reason too — the backend rejects checkout on any other reason.
+	const getTransactionReason = useCallback((mode: TopupMode): WALLET_TRANSACTION_REASON => {
+		if (mode === TopupMode.Free) return WALLET_TRANSACTION_REASON.FREE_CREDIT_GRANT;
+		if (mode === TopupMode.SkipInvoice) return WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_DIRECT;
+		return WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_INVOICED;
+	}, []);
 
 	// Centralized data refetching logic
 	const refetchWalletData = useCallback(async () => {
@@ -440,17 +442,24 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 
 			<Spacer className='!mt-4' />
 
-			{/* Purchased credits are always invoiced: the choice of how the invoice is
-			    settled IS the submit action. Free credits keep a single button. */}
+			{/* For purchased credits the choice of how it settles IS the submit action.
+			    Free credits keep a single button — nothing is ever billed for them.
+			    Coupons only discount an invoice, so the other exits are off while one is picked. */}
 			<div className='w-full justify-end flex gap-2'>
 				{topupPayload.credits_type === CreditsType.PurchasedCredits ? (
 					<>
+						<Button
+							variant='outline'
+							isLoading={isPending && pendingAttempt?.mode === TopupMode.SkipInvoice}
+							onClick={() => handleTopup(TopupMode.SkipInvoice)}
+							disabled={isPending || !!coupon}>
+							{t('wallet.topup.skipInvoice')}
+						</Button>
 						{hasRazorpayConnection && (
 							<Button
 								variant='outline'
 								isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
 								onClick={() => handleTopup(TopupMode.Checkout)}
-								// The API rejects coupons with checkout.
 								disabled={isPending || !!coupon}>
 								{t('wallet.topup.checkoutLink')}
 							</Button>
@@ -468,8 +477,8 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 					</Button>
 				)}
 			</div>
-			{topupPayload.credits_type === CreditsType.PurchasedCredits && hasRazorpayConnection && coupon && (
-				<p className='text-xs text-content-muted text-right -mt-2'>{t('wallet.topup.checkoutCouponHint')}</p>
+			{topupPayload.credits_type === CreditsType.PurchasedCredits && coupon && (
+				<p className='text-xs text-content-muted text-right -mt-2'>{t('wallet.topup.couponInvoiceOnlyHint')}</p>
 			)}
 		</DialogContent>
 	);

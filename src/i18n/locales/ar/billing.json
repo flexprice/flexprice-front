@@ -860,9 +860,10 @@
 			"typeFreeDesc": "منح أرصدة دون رسوم.",
 			"typePurchased": "مشتراة",
 			"typePurchasedDesc": "إضافة أرصدة تتطلب الدفع.",
+			"skipInvoice": "تخطي الفاتورة",
 			"generateInvoiceAction": "إنشاء فاتورة",
 			"checkoutLink": "رابط الدفع",
-			"checkoutCouponHint": "روابط الدفع لا تدعم القسائم بعد. أزل القسيمة لاستخدام رابط دفع."
+			"couponInvoiceOnlyHint": "تُطبَّق القسائم على إنشاء الفاتورة فقط. أزل القسيمة لتخطي الفاتورة أو استخدام رابط الدفع."
 		},
 		"pendingCheckout": {
 			"title": "توجد عملية دفع معلّقة لهذه المحفظة",
