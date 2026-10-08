@@ -328,7 +328,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				<DialogTitle>{t('wallet.topup.dialogTitle')}</DialogTitle>
 			</DialogHeader>
 			{/* Only the form scrolls; the header and the submit buttons stay in view. */}
-			<div className='-mx-1 grid min-h-0 flex-1 gap-4 overflow-y-auto px-1'>
+			<div className='-ml-1 -mr-4 grid min-h-0 flex-1 gap-4 overflow-y-auto pl-1 pr-4'>
 				<div className='grid gap-4 py-4'>
 					<RectangleRadiogroup
 						title={t('wallet.topup.creditTypeTitle')}
