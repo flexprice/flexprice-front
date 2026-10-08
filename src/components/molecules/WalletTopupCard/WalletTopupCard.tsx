@@ -1,5 +1,5 @@
-import { Button, DatePicker, Input, Spacer } from '@/components/atoms';
-import { FC, useState, useCallback, useMemo } from 'react';
+import { Button, DatePicker, Input, Spacer, Tooltip } from '@/components/atoms';
+import { FC, ReactNode, useState, useCallback, useMemo } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
 import { SubscriptionDiscountTable } from '../SubscriptionDiscountTable';
 import { Coupon } from '@/models/Coupon';
@@ -283,6 +283,18 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		}));
 	}, []);
 
+	// A disabled button fires no pointer events, so a wrapping span carries the hover.
+	const withCouponHint = (button: ReactNode, hint: string) =>
+		coupon ? (
+			<Tooltip delayDuration={0} content={<div className='max-w-[260px] text-sm'>{hint}</div>}>
+				<span tabIndex={0} className='inline-flex'>
+					{button}
+				</span>
+			</Tooltip>
+		) : (
+			button
+		);
+
 	const handleCopyCheckoutUrl = async () => {
 		try {
 			await navigator.clipboard.writeText(checkoutPopup.paymentUrl);
@@ -448,22 +460,27 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 			<div className='w-full justify-end flex gap-2'>
 				{topupPayload.credits_type === CreditsType.PurchasedCredits ? (
 					<>
-						<Button
-							variant='outline'
-							isLoading={isPending && pendingAttempt?.mode === TopupMode.SkipInvoice}
-							onClick={() => handleTopup(TopupMode.SkipInvoice)}
-							disabled={isPending || !!coupon}>
-							{t('wallet.topup.skipInvoice')}
-						</Button>
-						{hasRazorpayConnection && (
+						{withCouponHint(
 							<Button
 								variant='outline'
-								isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
-								onClick={() => handleTopup(TopupMode.Checkout)}
+								isLoading={isPending && pendingAttempt?.mode === TopupMode.SkipInvoice}
+								onClick={() => handleTopup(TopupMode.SkipInvoice)}
 								disabled={isPending || !!coupon}>
-								{t('wallet.topup.checkoutLink')}
-							</Button>
+								{t('wallet.topup.skipInvoice')}
+							</Button>,
+							t('wallet.topup.skipInvoiceCouponHint'),
 						)}
+						{hasRazorpayConnection &&
+							withCouponHint(
+								<Button
+									variant='outline'
+									isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
+									onClick={() => handleTopup(TopupMode.Checkout)}
+									disabled={isPending || !!coupon}>
+									{t('wallet.topup.checkoutLink')}
+								</Button>,
+								t('wallet.topup.checkoutCouponHint'),
+							)}
 						<Button
 							isLoading={isPending && pendingAttempt?.mode === TopupMode.Invoice}
 							onClick={() => handleTopup(TopupMode.Invoice)}
@@ -477,9 +494,6 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 					</Button>
 				)}
 			</div>
-			{topupPayload.credits_type === CreditsType.PurchasedCredits && coupon && (
-				<p className='text-xs text-content-muted text-right -mt-2'>{t('wallet.topup.couponInvoiceOnlyHint')}</p>
-			)}
 		</DialogContent>
 	);
 };

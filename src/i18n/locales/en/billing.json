@@ -996,7 +996,8 @@
 			"skipInvoice": "Skip invoice",
 			"generateInvoiceAction": "Generate invoice",
 			"checkoutLink": "Checkout link",
-			"couponInvoiceOnlyHint": "Coupons apply only to Generate invoice. Remove the coupon to skip the invoice or use a checkout link."
+			"skipInvoiceCouponHint": "Skip invoice grants credits without an invoice, so a coupon can't apply. Remove the coupon to skip the invoice.",
+			"checkoutCouponHint": "Checkout links don't support coupons yet. Remove the coupon to use a checkout link."
 		},
 		"pendingCheckout": {
 			"title": "A checkout is already pending for this wallet",

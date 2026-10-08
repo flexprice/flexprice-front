@@ -266,22 +266,35 @@ describe('WalletTopupCard purchased credits', () => {
 		const user = userEvent.setup();
 		renderTopupCard();
 		await user.click(screen.getByText('Purchased'));
-		const checkout = await screen.findByRole('button', { name: 'Checkout link' });
-		const skip = screen.getByRole('button', { name: 'Skip invoice' });
-		expect(checkout).toBeEnabled();
-		expect(skip).toBeEnabled();
+		// Picking a coupon wraps each button for its hover hint, so re-query after each change.
+		const checkout = () => screen.getByRole('button', { name: 'Checkout link' });
+		const skip = () => screen.getByRole('button', { name: 'Skip invoice' });
+		await screen.findByRole('button', { name: 'Checkout link' });
+		expect(checkout()).toBeEnabled();
+		expect(skip()).toBeEnabled();
 
 		await user.click(screen.getByRole('button', { name: 'Pick coupon' }));
-		expect(checkout).toBeDisabled();
-		expect(skip).toBeDisabled();
+		expect(checkout()).toBeDisabled();
+		expect(skip()).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Generate invoice' })).toBeEnabled();
+
+		// The reason is shown only on hovering the greyed-out button, and is specific to it.
+		await user.hover(skip().parentElement!);
 		expect(
-			screen.getByText('Coupons apply only to Generate invoice. Remove the coupon to skip the invoice or use a checkout link.'),
-		).toBeInTheDocument();
+			(
+				await screen.findAllByText(
+					"Skip invoice grants credits without an invoice, so a coupon can't apply. Remove the coupon to skip the invoice.",
+				)
+			).length,
+		).toBeGreaterThan(0);
+		await user.hover(checkout().parentElement!);
+		expect(
+			(await screen.findAllByText("Checkout links don't support coupons yet. Remove the coupon to use a checkout link.")).length,
+		).toBeGreaterThan(0);
 
 		await user.click(screen.getByRole('button', { name: 'Remove TOPUP10' }));
-		expect(checkout).toBeEnabled();
-		expect(skip).toBeEnabled();
+		expect(checkout()).toBeEnabled();
+		expect(skip()).toBeEnabled();
 	});
 
 	it('hides discounts for free credits and drops a picked coupon on switching to Free', async () => {
