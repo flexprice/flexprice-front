@@ -1,6 +1,8 @@
 import { Button, DatePicker, Input, Spacer } from '@/components/atoms';
 import { FC, useState, useCallback, useMemo } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
+import { SubscriptionDiscountTable } from '../SubscriptionDiscountTable';
+import { Coupon } from '@/models/Coupon';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import WalletApi from '@/api/WalletApi';
 import ConnectionApi from '@/api/ConnectionApi';
@@ -26,16 +28,19 @@ enum CreditsType {
 }
 
 /**
- * How a purchased top-up settles.
- *   SkipInvoice — credits land immediately, nothing is billed
- *   Invoice     — an invoice is raised for the customer to settle later
- *   Checkout    — hosted checkout; credits land once payment succeeds
+ * How a top-up settles.
+ *   Free     — free credits land immediately, nothing is billed
+ *   Invoice  — purchased credits; an invoice is raised for the customer to settle later
+ *   Checkout — purchased credits via hosted checkout; credits land once payment succeeds
  */
 enum TopupMode {
-	SkipInvoice = 'SkipInvoice',
+	Free = 'Free',
 	Invoice = 'Invoice',
 	Checkout = 'Checkout',
 }
+
+// The top-up API takes coupons by code only.
+const hasCouponCode = (coupon: Coupon) => !!coupon.coupon_code;
 
 // Extended payload type for more comprehensive state management
 interface TopupPayload extends Partial<TopupWalletPayload> {
@@ -86,6 +91,9 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	// now is a decision, not a notification.
 	const [blockingSession, setBlockingSession] = useState<NonNullable<TopupWalletResponse['checkout_session']> | null>(null);
 
+	// One coupon, as on subscriptions; the API accepts a list.
+	const [coupon, setCoupon] = useState<Coupon | null>(null);
+
 	const [topupPayload, setTopupPayload] = useState<TopupPayload>({
 		credits_type: CreditsType.FreeCredit,
 		credits_to_add: undefined,
@@ -109,19 +117,11 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		(connection) => connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY,
 	);
 
-	// Determine transaction reason based on credits type and invoice generation
+	// Purchased credits are always invoiced; checkout is pay-first and rides the invoiced reason too.
 	const getTransactionReason = useCallback(
-		(mode: TopupMode): WALLET_TRANSACTION_REASON => {
-			if (topupPayload.credits_type === CreditsType.FreeCredit) {
-				return WALLET_TRANSACTION_REASON.FREE_CREDIT_GRANT;
-			}
-			// Checkout is pay-first, so it rides the invoiced reason too — the backend
-			// rejects checkout on any other reason.
-			return mode === TopupMode.SkipInvoice
-				? WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_DIRECT
-				: WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_INVOICED;
-		},
-		[topupPayload.credits_type],
+		(mode: TopupMode): WALLET_TRANSACTION_REASON =>
+			mode === TopupMode.Free ? WALLET_TRANSACTION_REASON.FREE_CREDIT_GRANT : WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_INVOICED,
+		[],
 	);
 
 	// Centralized data refetching logic
@@ -196,6 +196,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				expiry_date_utc: topupPayload.expiry_date_utc,
 				priority: topupPayload.priority,
 				description: topupPayload.description,
+				...(mode === TopupMode.Invoice && coupon?.coupon_code ? { coupons: [{ coupon_code: coupon.coupon_code }] } : {}),
 				...(mode === TopupMode.Checkout
 					? {
 							checkout: {
@@ -241,6 +242,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				toast.success('Wallet topped up successfully');
 			}
 			onSuccess?.();
+			setCoupon(null);
 			setTopupPayload({
 				credits_type: CreditsType.FreeCredit,
 				credits_to_add: undefined,
@@ -322,6 +324,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 					onChange={(value) => {
 						// Reset related fields when changing credits type
 						// Set generate_invoice to true by default for Purchased credits
+						setCoupon(null);
 						updateTopupPayload({
 							credits_type: value as CreditsType,
 							credits_to_add: undefined,
@@ -359,6 +362,16 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 							)}
 						</>
 					}
+				/>
+			)}
+
+			{topupPayload.credits_type === CreditsType.PurchasedCredits && (
+				<SubscriptionDiscountTable
+					coupon={coupon}
+					onChange={setCoupon}
+					currency={currency}
+					couponFilter={hasCouponCode}
+					showCadence={false}
 				/>
 			)}
 
@@ -426,44 +439,37 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 
 			<Spacer className='!mt-4' />
 
-			{/* Three exits for purchased credits, replacing the generate-invoice toggle:
-			    the choice of how it settles IS the submit action. Free credits keep a
-			    single button — nothing is ever billed for them. */}
+			{/* Purchased credits are always invoiced: the choice of how the invoice is
+			    settled IS the submit action. Free credits keep a single button. */}
 			<div className='w-full justify-end flex gap-2'>
 				{topupPayload.credits_type === CreditsType.PurchasedCredits ? (
 					<>
+						{hasRazorpayConnection && (
+							<Button
+								variant='outline'
+								isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
+								onClick={() => handleTopup(TopupMode.Checkout)}
+								// The API rejects coupons with checkout.
+								disabled={isPending || !!coupon}>
+								{t('wallet.topup.checkoutLink')}
+							</Button>
+						)}
 						<Button
-							variant='outline'
-							isLoading={isPending && pendingAttempt?.mode === TopupMode.SkipInvoice}
-							onClick={() => handleTopup(TopupMode.SkipInvoice)}
-							disabled={isPending}>
-							{t('wallet.topup.skipInvoice')}
-						</Button>
-						<Button
-							variant='outline'
 							isLoading={isPending && pendingAttempt?.mode === TopupMode.Invoice}
 							onClick={() => handleTopup(TopupMode.Invoice)}
 							disabled={isPending}>
 							{t('wallet.topup.generateInvoiceAction')}
 						</Button>
-						{hasRazorpayConnection && (
-							<Button
-								isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
-								onClick={() => handleTopup(TopupMode.Checkout)}
-								disabled={isPending}>
-								{t('wallet.topup.checkoutLink')}
-							</Button>
-						)}
 					</>
 				) : (
-					<Button
-						isLoading={isPending}
-						onClick={() => handleTopup(TopupMode.SkipInvoice)}
-						disabled={isPending || !topupPayload.credits_type}>
+					<Button isLoading={isPending} onClick={() => handleTopup(TopupMode.Free)} disabled={isPending || !topupPayload.credits_type}>
 						{t('wallet.topup.addCredits')}
 					</Button>
 				)}
 			</div>
+			{topupPayload.credits_type === CreditsType.PurchasedCredits && hasRazorpayConnection && coupon && (
+				<p className='text-xs text-content-muted text-right -mt-2'>{t('wallet.topup.checkoutCouponHint')}</p>
+			)}
 		</DialogContent>
 	);
 };

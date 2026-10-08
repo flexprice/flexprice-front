@@ -88,6 +88,8 @@ export interface TopupWalletPayload {
 	metadata?: Record<string, any>;
 	idempotency_key?: string;
 	transaction_reason: WALLET_TRANSACTION_REASON;
+	/** Discounts the top-up invoice; credits are unchanged. Invoiced purchases only, not with checkout. */
+	coupons?: { coupon_code: string }[];
 }
 
 export interface DebitWalletPayload {

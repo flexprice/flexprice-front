@@ -12,13 +12,14 @@ interface Props {
 	onCancel: () => void;
 	coupons: Coupon[];
 	selectedCouponId?: string;
+	showCadence?: boolean;
 }
 
 interface FormErrors {
 	couponId?: string;
 }
 
-const CouponModal: React.FC<Props> = ({ isOpen, onOpenChange, onSave, onCancel, coupons, selectedCouponId }) => {
+const CouponModal: React.FC<Props> = ({ isOpen, onOpenChange, onSave, onCancel, coupons, selectedCouponId, showCadence = true }) => {
 	const { t } = useTranslation(['catalog', 'common']);
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [selectedCoupon, setSelectedCoupon] = useState<string>(selectedCouponId || '');
@@ -76,7 +77,7 @@ const CouponModal: React.FC<Props> = ({ isOpen, onOpenChange, onSave, onCancel, 
 	const couponOptions: SelectOption[] = coupons.map((coupon) => ({
 		label: coupon.name,
 		value: coupon.id,
-		description: formatCouponName(coupon),
+		description: formatCouponName(coupon, { showCadence }),
 	}));
 
 	return (
