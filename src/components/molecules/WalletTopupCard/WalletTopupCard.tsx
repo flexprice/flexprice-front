@@ -292,7 +292,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	};
 
 	return (
-		<DialogContent className='bg-surface sm:max-w-[600px]'>
+		<DialogContent className='bg-surface sm:max-w-[600px] max-h-[88vh] overflow-y-auto'>
 			<PaymentUrlSuccessDialog
 				isOpen={checkoutPopup.isOpen}
 				paymentUrl={checkoutPopup.paymentUrl}
@@ -372,6 +372,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 					currency={currency}
 					couponFilter={hasCouponCode}
 					showCadence={false}
+					showCouponName
 				/>
 			)}
 

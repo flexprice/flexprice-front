@@ -20,6 +20,8 @@ interface Props {
 	/** Narrows the coupons offered, on top of the validity and currency filters. */
 	couponFilter?: (coupon: Coupon) => boolean;
 	showCadence?: boolean;
+	/** Show the coupon's own name in the name column instead of its formatted discount. */
+	showCouponName?: boolean;
 }
 
 const SubscriptionDiscountTable: FC<Props> = ({
@@ -30,6 +32,7 @@ const SubscriptionDiscountTable: FC<Props> = ({
 	allLineItemCoupons = {},
 	couponFilter,
 	showCadence = true,
+	showCouponName = false,
 }) => {
 	const { t } = useTranslation(['billing', 'common']);
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,6 +102,9 @@ const SubscriptionDiscountTable: FC<Props> = ({
 			title: t('subscriptions.discountTable.couponName'),
 			render: (row) => {
 				try {
+					if (showCouponName && row?.name) {
+						return <div className='font-medium'>{row.name}</div>;
+					}
 					return <div className='font-medium'>{formatCouponName(row, { showCadence })}</div>;
 				} catch (error) {
 					console.error('Error formatting coupon name:', error);
