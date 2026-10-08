@@ -863,8 +863,7 @@
 			"skipInvoice": "تخطي الفاتورة",
 			"generateInvoiceAction": "إنشاء فاتورة",
 			"checkoutLink": "رابط الدفع",
-			"skipInvoiceCouponHint": "تخطي الفاتورة يمنح الأرصدة دون فاتورة، لذا لا يمكن تطبيق قسيمة. أزل القسيمة لتخطي الفاتورة.",
-			"checkoutCouponHint": "روابط الدفع لا تدعم القسائم بعد. أزل القسيمة لاستخدام رابط الدفع."
+			"unavailableWithCouponHint": "غير متاح مع قسيمة"
 		},
 		"pendingCheckout": {
 			"title": "توجد عملية دفع معلّقة لهذه المحفظة",

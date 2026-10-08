@@ -278,19 +278,11 @@ describe('WalletTopupCard purchased credits', () => {
 		expect(skip()).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Generate invoice' })).toBeEnabled();
 
-		// The reason is shown only on hovering the greyed-out button, and is specific to it.
+		// The reason is shown only on hovering a greyed-out button.
 		await user.hover(skip().parentElement!);
-		expect(
-			(
-				await screen.findAllByText(
-					"Skip invoice grants credits without an invoice, so a coupon can't apply. Remove the coupon to skip the invoice.",
-				)
-			).length,
-		).toBeGreaterThan(0);
+		expect((await screen.findAllByText('Not available with a coupon')).length).toBeGreaterThan(0);
 		await user.hover(checkout().parentElement!);
-		expect(
-			(await screen.findAllByText("Checkout links don't support coupons yet. Remove the coupon to use a checkout link.")).length,
-		).toBeGreaterThan(0);
+		expect((await screen.findAllByText('Not available with a coupon')).length).toBeGreaterThan(0);
 
 		await user.click(screen.getByRole('button', { name: 'Remove TOPUP10' }));
 		expect(checkout()).toBeEnabled();

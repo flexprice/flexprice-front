@@ -284,9 +284,9 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	}, []);
 
 	// A disabled button fires no pointer events, so a wrapping span carries the hover.
-	const withCouponHint = (button: ReactNode, hint: string) =>
+	const withCouponHint = (button: ReactNode) =>
 		coupon ? (
-			<Tooltip delayDuration={0} content={<div className='max-w-[260px] text-sm'>{hint}</div>}>
+			<Tooltip delayDuration={0} content={<div className='max-w-[260px] text-sm'>{t('wallet.topup.unavailableWithCouponHint')}</div>}>
 				<span tabIndex={0} className='inline-flex'>
 					{button}
 				</span>
@@ -468,7 +468,6 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 								disabled={isPending || !!coupon}>
 								{t('wallet.topup.skipInvoice')}
 							</Button>,
-							t('wallet.topup.skipInvoiceCouponHint'),
 						)}
 						{hasRazorpayConnection &&
 							withCouponHint(
@@ -479,7 +478,6 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 									disabled={isPending || !!coupon}>
 									{t('wallet.topup.checkoutLink')}
 								</Button>,
-								t('wallet.topup.checkoutCouponHint'),
 							)}
 						<Button
 							isLoading={isPending && pendingAttempt?.mode === TopupMode.Invoice}
