@@ -430,3 +430,4 @@ export type {
 	PortalPayInvoiceRequest,
 	PortalPayInvoiceResponse,
 } from './CustomerPortalBilling';
+export type { CreateFxRateRequest, UpdateFxRateRequest, FxRateFilter, ListFxRatesResponse } from './FxRate';

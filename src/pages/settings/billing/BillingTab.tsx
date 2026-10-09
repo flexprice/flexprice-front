@@ -1,4 +1,5 @@
 import CustomCurrencyConfigurationSection from './CustomCurrencyConfigurationSection';
+import GlobalForexRatesSection from './GlobalForexRatesSection';
 import InvoiceConfigurationSection from './InvoiceConfigurationSection';
 import SubscriptionConfigurationSection from './SubscriptionConfigurationSection';
 
@@ -8,6 +9,7 @@ const BillingTab = () => {
 			<InvoiceConfigurationSection />
 			<SubscriptionConfigurationSection />
 			<CustomCurrencyConfigurationSection />
+			<GlobalForexRatesSection />
 		</div>
 	);
 };

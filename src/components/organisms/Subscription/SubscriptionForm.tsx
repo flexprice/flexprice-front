@@ -69,6 +69,10 @@ import AdditionalPlanPricesSection from './AdditionalPlanPricesSection';
 import LineItemGroupingSection from './LineItemGroupingSection';
 import { Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import SubscriptionFxRateTable from '@/components/molecules/SubscriptionFxRateTable';
+import { useTenantFxRate } from '@/hooks/useTenantFxRate';
+import { useClearOnFxPairChange } from '@/hooks/useClearOnFxPairChange';
+import { canSetSubscriptionFxRates, resolveBillingCurrency } from '@/utils/fx/subscriptionFx';
 
 const BillingAccordionInfoTooltip = ({ description, ariaLabel }: { description: string; ariaLabel: string }) => (
 	<Tooltip
@@ -170,11 +174,21 @@ const SubscriptionForm = ({
 		onChange: (customer: Customer | undefined) => void;
 		hint?: string;
 	};
+	/** Inline subscription-create 400 for fx_rates, with the offending row indexes. */
 }) => {
 	const { t } = useTranslation(['customers', 'common']);
 	const isCustomerSelectionPending = !!customerPicker && !customerPicker.value;
 	// Fetch plan prices via shared hook (same cache key + canonical active filter as CreateCustomerSubscriptionPage)
 	const { data: selectedPlanPrices } = usePlanPrices(state.selectedPlan);
+	const billingCurrency = resolveBillingCurrency(state.currency, [state.invoicingCustomer, customerPicker?.value, subscriberCustomer]);
+	const fxRatesAllowed = canSetSubscriptionFxRates(state.currency, billingCurrency);
+	const showFxOverrides = fxRatesAllowed && (!isDisabled || state.fxRates.length > 0);
+	const { data: tenantFxRate } = useTenantFxRate(fxRatesAllowed && !isDisabled ? state.currency : undefined, billingCurrency);
+
+	// Rows are valid only for the charge → billing pair they were entered for.
+	const fxPair = fxRatesAllowed ? `${state.currency.toLowerCase()}->${billingCurrency}` : undefined;
+	const clearFxRates = useCallback(() => setState((prev) => ({ ...prev, fxRates: [] })), [setState]);
+	useClearOnFxPairChange(fxPair, !isDisabled, state.fxRates.length > 0, clearFxRates);
 
 	// Split plan prices into what attaches by default (exact cadence + ONETIME) vs. what
 	// the user can opt into via the "Also available on this plan" section (compatible but
@@ -757,6 +771,29 @@ const SubscriptionForm = ({
 					label={t('organisms.subscriptionForm.currencyRequired')}
 					disabled={isDisabled || isLoadingPlanDetails}
 					placeholder={t('organisms.subscriptionForm.selectCurrency')}
+				/>
+			)}
+
+			{/* Billing Currency (read-only) and subscription FX overrides */}
+			{state.selectedPlan && !isLoadingPlanDetails && billingCurrency && (
+				<Input
+					label={t('organisms.subscriptionForm.billingCurrency')}
+					value={billingCurrency.toUpperCase()}
+					disabled
+					description={t('organisms.subscriptionForm.billingCurrencyHint', {
+						billing: billingCurrency.toUpperCase(),
+						charge: state.currency.toUpperCase(),
+					})}
+				/>
+			)}
+			{state.selectedPlan && !isLoadingPlanDetails && billingCurrency && showFxOverrides && (
+				<SubscriptionFxRateTable
+					data={state.fxRates}
+					onChange={(rows) => setState((prev) => ({ ...prev, fxRates: rows }))}
+					disabled={isDisabled}
+					chargeCurrency={state.currency}
+					billingCurrency={billingCurrency}
+					tenantRate={tenantFxRate}
 				/>
 			)}
 

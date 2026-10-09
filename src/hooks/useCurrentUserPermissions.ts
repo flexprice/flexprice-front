@@ -40,7 +40,8 @@ export type RbacEntity =
 	| 'setting'
 	| 'oauth'
 	| 'checkoutsession'
-	| 'workflow';
+	| 'workflow'
+	| 'fxrate';
 
 interface CurrentUserPermissions {
 	roles: string[];

@@ -212,3 +212,4 @@ export type { WalletBalance, RealtimeWalletBalance } from './WalletBalance';
 
 // WalletTransaction
 export type { WalletTransaction } from './WalletTransaction';
+export type { FxRate, FxRateScope, FxRateSource } from './FxRate';

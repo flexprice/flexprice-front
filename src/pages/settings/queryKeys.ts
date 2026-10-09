@@ -12,4 +12,7 @@ export const settingsQueryKeys = {
 	subscriptionConfig: [...SETTINGS_ROOT, 'subscription-config'] as const,
 	samlConfig: [...SETTINGS_ROOT, 'saml-config'] as const,
 	customCurrencyConfig: (environmentId?: string) => [...SETTINGS_ROOT, 'custom-currency-config', environmentId] as const,
+	forexRates: (environmentId: string | undefined, page: number, limit: number, offset: number) =>
+		[...SETTINGS_ROOT, 'forex-rates', environmentId, page, limit, offset] as const,
+	forexRatesRoot: (environmentId: string | undefined) => [...SETTINGS_ROOT, 'forex-rates', environmentId] as const,
 };

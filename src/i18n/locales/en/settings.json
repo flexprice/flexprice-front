@@ -265,6 +265,50 @@
 				"symbolRequired": "Every currency needs a symbol.",
 				"factorInvalid": "Every rate must be greater than 0."
 			}
+		},
+		"forexRates": {
+			"modal": {
+				"titleAdd": "Add forex rate",
+				"titleEdit": "Edit forex rate",
+				"from": "From currency",
+				"to": "To currency",
+				"pair": "Currency pair",
+				"selectCurrency": "Select currency",
+				"rate": "Rate",
+				"ratePlaceholder": "83.00",
+				"start": "Valid from",
+				"end": "Valid until",
+				"startPlaceholder": "Always",
+				"endPlaceholder": "No end",
+				"clear": "Clear",
+				"windowHint": "A blank start has no start limit and a blank end means no expiry. Windows are matched at the moment an invoice is finalized or a checkout is created.",
+				"editWindowHint": "Saved dates can be changed but not cleared. To remove a date, delete this override and add a new one.",
+				"cancel": "Cancel",
+				"save": "Save",
+				"errors": {
+					"pairRequired": "Select both currencies.",
+					"pairSame": "From and To must be different currencies.",
+					"rateRequired": "Enter a rate.",
+					"ratePositive": "Rate must be a number greater than 0.",
+					"windowOrder": "Valid from must be before Valid until.",
+					"windowOverlap": "Overlaps another override in this list."
+				}
+			},
+			"title": "Global forex rates",
+			"description": "Default exchange rates used when a customer is billed in a different currency from the plan's.",
+			"addRate": "Add rate",
+			"empty": "No forex rates yet",
+			"loadError": "Could not load forex rates.",
+			"paginationUnit": "rates",
+			"writeDeniedTooltip": "You don't have permission to manage forex rates. Ask a tenant admin for access.",
+			"columns": {
+				"rate": "Rate",
+				"updated": "Last updated"
+			},
+			"toast": {
+				"created": "Forex rate added",
+				"updated": "Forex rate updated"
+			}
 		}
 	},
 	"customerPortal": {

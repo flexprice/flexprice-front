@@ -117,6 +117,8 @@ export interface CreateCustomerRequest {
 	metadata?: Metadata;
 	/** Exempt customers are never charged tax. Defaults to taxable. */
 	tax_treatment?: TAX_TREATMENT;
+	/** Lowercase ISO code invoices are issued in. */
+	billing_currency?: string;
 	tax_rate_overrides?: TaxRateOverride[];
 	/** When true, prevents the customer onboarding workflow from being triggered (internal use) */
 	skip_onboarding_workflow?: boolean;
@@ -137,6 +139,8 @@ export interface UpdateCustomerRequest {
 	metadata?: Metadata;
 	/** Exempt customers are never charged tax. */
 	tax_treatment?: TAX_TREATMENT;
+	/** Lowercase ISO code; on update '' clears it. */
+	billing_currency?: string;
 	/** Provider integration mappings for this customer */
 	integration_entity_mapping?: CreateEntityIntegrationMappingRequest[];
 }
