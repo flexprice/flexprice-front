@@ -17,9 +17,23 @@ interface Props {
 	disabled?: boolean;
 	currency?: string;
 	allLineItemCoupons?: Record<string, Coupon>;
+	/** Narrows the coupons offered, on top of the validity and currency filters. */
+	couponFilter?: (coupon: Coupon) => boolean;
+	showCadence?: boolean;
+	/** Show the coupon's own name in the name column instead of its formatted discount. */
+	showCouponName?: boolean;
 }
 
-const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, currency, allLineItemCoupons = {} }) => {
+const SubscriptionDiscountTable: FC<Props> = ({
+	coupon,
+	onChange,
+	disabled,
+	currency,
+	allLineItemCoupons = {},
+	couponFilter,
+	showCadence = true,
+	showCouponName = false,
+}) => {
 	const { t } = useTranslation(['billing', 'common']);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -32,7 +46,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 	// Filter coupons based on currency and local usage tracking
 	const currencyFilteredCoupons = useMemo(() => {
 		const allCoupons = couponsQuery.data?.items || [];
-		const validCoupons = filterValidCoupons(allCoupons, currency);
+		const validCoupons = filterValidCoupons(allCoupons, currency).filter((c) => !couponFilter || couponFilter(c));
 
 		// Create local usage tracking
 		const localCouponUsage: Record<string, number> = {};
@@ -58,7 +72,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 			// Show if no max redemptions or if usage is below limit
 			return !maxRedemptions || totalUsage < maxRedemptions;
 		});
-	}, [couponsQuery.data?.items, currency, allLineItemCoupons, coupon]);
+	}, [couponsQuery.data?.items, currency, allLineItemCoupons, coupon, couponFilter]);
 
 	const handleSave = (couponId: string) => {
 		try {
@@ -88,7 +102,10 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 			title: t('subscriptions.discountTable.couponName'),
 			render: (row) => {
 				try {
-					return <div className='font-medium'>{formatCouponName(row)}</div>;
+					if (showCouponName && row?.name) {
+						return <div className='font-medium'>{row.name}</div>;
+					}
+					return <div className='font-medium'>{formatCouponName(row, { showCadence })}</div>;
 				} catch (error) {
 					console.error('Error formatting coupon name:', error);
 					return <div className='font-medium'>{row?.name || t('subscriptions.unknownCoupon')}</div>;
@@ -143,7 +160,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 					copyId={{ entityType: 'Discount' }}
 					deleteMutationFn={handleDelete}
 					refetchQueryKey='subscription_discount'
-					entityName={`Discount ${formatCouponName(row)}`}
+					entityName={`Discount ${formatCouponName(row, { showCadence })}`}
 					edit={{
 						enabled: !disabled,
 						onClick: handleEdit,
@@ -166,6 +183,7 @@ const SubscriptionDiscountTable: FC<Props> = ({ coupon, onChange, disabled, curr
 				onSave={handleSave}
 				onCancel={() => setIsModalOpen(false)}
 				selectedCouponId={coupon?.id}
+				showCadence={showCadence}
 			/>
 
 			<div className='space-y-4'>

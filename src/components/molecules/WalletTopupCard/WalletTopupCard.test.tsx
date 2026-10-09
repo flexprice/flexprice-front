@@ -28,6 +28,22 @@ vi.mock('@/api/ConnectionApi', () => ({
 vi.mock('react-hot-toast', () => ({ default: { success: mockToastSuccess, error: mockToastError } }));
 vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn().mockResolvedValue(undefined) }));
 
+// The coupon picker (shared with subscriptions) is stubbed to a button that picks a fixed
+// coupon, so these tests cover what the card does with it rather than the Radix dialog.
+const PICKED_COUPON = { id: 'coupon_1', name: 'Top-up 10', coupon_code: 'TOPUP10', type: 'percentage', percentage_off: '10' };
+vi.mock('../SubscriptionDiscountTable', () => ({
+	SubscriptionDiscountTable: ({ coupon, onChange }: { coupon: { coupon_code?: string } | null; onChange: (c: unknown) => void }) => (
+		<div>
+			<span>Discounts</span>
+			{coupon ? (
+				<button onClick={() => onChange(null)}>Remove {coupon.coupon_code}</button>
+			) : (
+				<button onClick={() => onChange(PICKED_COUPON)}>Pick coupon</button>
+			)}
+		</div>
+	),
+}));
+
 const RAZORPAY_CONNECTION = { id: 'conn_razorpay', provider_type: CONNECTION_PROVIDER_TYPE.RAZORPAY, name: 'Razorpay' };
 
 const BLOCKING_SESSION = {
@@ -205,5 +221,91 @@ describe('WalletTopupCard checkout conflicts', () => {
 		await startCheckout('100');
 
 		await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://checkout.test/new', '_blank', expect.any(String)));
+	});
+});
+
+describe('WalletTopupCard purchased credits', () => {
+	it('settles Skip invoice as a direct purchase and Generate invoice as invoiced', async () => {
+		mockTopupWallet.mockResolvedValue({ invoice_id: 'inv_1' });
+
+		const user = userEvent.setup();
+		renderTopupCard();
+		await user.click(screen.getByText('Purchased'));
+		await user.type(screen.getByPlaceholderText('credits'), '100');
+		await user.click(screen.getByRole('button', { name: 'Skip invoice' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(1));
+		expect(mockTopupWallet.mock.calls[0][0].transaction_reason).toBe('PURCHASED_CREDIT_DIRECT');
+
+		await user.click(screen.getByText('Purchased'));
+		await user.type(screen.getByPlaceholderText('credits'), '100');
+		await user.click(screen.getByRole('button', { name: 'Generate invoice' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(2));
+		expect(mockTopupWallet.mock.calls[1][0].transaction_reason).toBe('PURCHASED_CREDIT_INVOICED');
+		expect(mockTopupWallet.mock.calls[1][0].coupons).toBeUndefined();
+	});
+
+	it('sends the picked coupon by code on Generate invoice', async () => {
+		mockTopupWallet.mockResolvedValue({ invoice_id: 'inv_1' });
+
+		const user = userEvent.setup();
+		renderTopupCard();
+		await user.click(screen.getByText('Purchased'));
+		await user.type(screen.getByPlaceholderText('credits'), '100');
+		await user.click(screen.getByRole('button', { name: 'Pick coupon' }));
+		await user.click(screen.getByRole('button', { name: 'Generate invoice' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalled());
+		expect(mockTopupWallet.mock.calls[0][0].coupons).toEqual([{ coupon_code: 'TOPUP10' }]);
+	});
+
+	it('disables Skip invoice and the Checkout link while a coupon is picked, since coupons only discount an invoice', async () => {
+		mockListPublished.mockResolvedValue({ connections: [RAZORPAY_CONNECTION] });
+
+		const user = userEvent.setup();
+		renderTopupCard();
+		await user.click(screen.getByText('Purchased'));
+		// Picking a coupon wraps each button for its hover hint, so re-query after each change.
+		const checkout = () => screen.getByRole('button', { name: 'Checkout link' });
+		const skip = () => screen.getByRole('button', { name: 'Skip invoice' });
+		await screen.findByRole('button', { name: 'Checkout link' });
+		expect(checkout()).toBeEnabled();
+		expect(skip()).toBeEnabled();
+
+		await user.click(screen.getByRole('button', { name: 'Pick coupon' }));
+		expect(checkout()).toBeDisabled();
+		expect(skip()).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Generate invoice' })).toBeEnabled();
+
+		// The reason is shown only on hovering a greyed-out button.
+		await user.hover(skip().parentElement!);
+		expect((await screen.findAllByText('Not available with a coupon')).length).toBeGreaterThan(0);
+		await user.hover(checkout().parentElement!);
+		expect((await screen.findAllByText('Not available with a coupon')).length).toBeGreaterThan(0);
+
+		await user.click(screen.getByRole('button', { name: 'Remove TOPUP10' }));
+		expect(checkout()).toBeEnabled();
+		expect(skip()).toBeEnabled();
+	});
+
+	it('hides discounts for free credits and drops a picked coupon on switching to Free', async () => {
+		mockTopupWallet.mockResolvedValue({});
+
+		const user = userEvent.setup();
+		renderTopupCard();
+		expect(screen.queryByText('Discounts')).not.toBeInTheDocument();
+
+		await user.click(screen.getByText('Purchased'));
+		await user.click(screen.getByRole('button', { name: 'Pick coupon' }));
+		await user.click(screen.getByText('Free'));
+		expect(screen.queryByText('Discounts')).not.toBeInTheDocument();
+
+		await user.type(screen.getByPlaceholderText('credits'), '100');
+		await user.click(screen.getByRole('button', { name: 'Add Credits' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalled());
+		expect(mockTopupWallet.mock.calls[0][0].transaction_reason).toBe('FREE_CREDIT_GRANT');
+		expect(mockTopupWallet.mock.calls[0][0].coupons).toBeUndefined();
 	});
 });

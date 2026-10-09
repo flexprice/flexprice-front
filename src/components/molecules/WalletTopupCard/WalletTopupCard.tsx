@@ -1,6 +1,8 @@
-import { Button, DatePicker, Input, Spacer } from '@/components/atoms';
-import { FC, useState, useCallback, useMemo } from 'react';
+import { Button, DatePicker, Input, Tooltip } from '@/components/atoms';
+import { FC, ReactNode, useState, useCallback, useMemo } from 'react';
 import RectangleRadiogroup, { RectangleRadiogroupOption } from '../RectangleRadiogroup';
+import { SubscriptionDiscountTable } from '../SubscriptionDiscountTable';
+import { Coupon } from '@/models/Coupon';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import WalletApi from '@/api/WalletApi';
 import ConnectionApi from '@/api/ConnectionApi';
@@ -26,16 +28,21 @@ enum CreditsType {
 }
 
 /**
- * How a purchased top-up settles.
- *   SkipInvoice — credits land immediately, nothing is billed
- *   Invoice     — an invoice is raised for the customer to settle later
- *   Checkout    — hosted checkout; credits land once payment succeeds
+ * How a top-up settles.
+ *   Free        — free credits land immediately, nothing is billed
+ *   SkipInvoice — purchased credits land immediately, nothing is billed
+ *   Invoice     — purchased credits; an invoice is raised for the customer to settle later
+ *   Checkout    — purchased credits via hosted checkout; credits land once payment succeeds
  */
 enum TopupMode {
+	Free = 'Free',
 	SkipInvoice = 'SkipInvoice',
 	Invoice = 'Invoice',
 	Checkout = 'Checkout',
 }
+
+// The top-up API takes coupons by code only.
+const hasCouponCode = (coupon: Coupon) => !!coupon.coupon_code;
 
 // Extended payload type for more comprehensive state management
 interface TopupPayload extends Partial<TopupWalletPayload> {
@@ -86,6 +93,9 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	// now is a decision, not a notification.
 	const [blockingSession, setBlockingSession] = useState<NonNullable<TopupWalletResponse['checkout_session']> | null>(null);
 
+	// One coupon, as on subscriptions; the API accepts a list.
+	const [coupon, setCoupon] = useState<Coupon | null>(null);
+
 	const [topupPayload, setTopupPayload] = useState<TopupPayload>({
 		credits_type: CreditsType.FreeCredit,
 		credits_to_add: undefined,
@@ -109,20 +119,12 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		(connection) => connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY,
 	);
 
-	// Determine transaction reason based on credits type and invoice generation
-	const getTransactionReason = useCallback(
-		(mode: TopupMode): WALLET_TRANSACTION_REASON => {
-			if (topupPayload.credits_type === CreditsType.FreeCredit) {
-				return WALLET_TRANSACTION_REASON.FREE_CREDIT_GRANT;
-			}
-			// Checkout is pay-first, so it rides the invoiced reason too — the backend
-			// rejects checkout on any other reason.
-			return mode === TopupMode.SkipInvoice
-				? WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_DIRECT
-				: WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_INVOICED;
-		},
-		[topupPayload.credits_type],
-	);
+	// Checkout is pay-first, so it rides the invoiced reason too — the backend rejects checkout on any other reason.
+	const getTransactionReason = useCallback((mode: TopupMode): WALLET_TRANSACTION_REASON => {
+		if (mode === TopupMode.Free) return WALLET_TRANSACTION_REASON.FREE_CREDIT_GRANT;
+		if (mode === TopupMode.SkipInvoice) return WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_DIRECT;
+		return WALLET_TRANSACTION_REASON.PURCHASED_CREDIT_INVOICED;
+	}, []);
 
 	// Centralized data refetching logic
 	const refetchWalletData = useCallback(async () => {
@@ -196,6 +198,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				expiry_date_utc: topupPayload.expiry_date_utc,
 				priority: topupPayload.priority,
 				description: topupPayload.description,
+				...(mode === TopupMode.Invoice && coupon?.coupon_code ? { coupons: [{ coupon_code: coupon.coupon_code }] } : {}),
 				...(mode === TopupMode.Checkout
 					? {
 							checkout: {
@@ -241,6 +244,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				toast.success('Wallet topped up successfully');
 			}
 			onSuccess?.();
+			setCoupon(null);
 			setTopupPayload({
 				credits_type: CreditsType.FreeCredit,
 				credits_to_add: undefined,
@@ -279,6 +283,18 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 		}));
 	}, []);
 
+	// A disabled button fires no pointer events, so a wrapping span carries the hover.
+	const withCouponHint = (button: ReactNode) =>
+		coupon ? (
+			<Tooltip delayDuration={0} content={<div className='max-w-[260px] text-sm'>{t('wallet.topup.unavailableWithCouponHint')}</div>}>
+				<span tabIndex={0} className='inline-flex'>
+					{button}
+				</span>
+			</Tooltip>
+		) : (
+			button
+		);
+
 	const handleCopyCheckoutUrl = async () => {
 		try {
 			await navigator.clipboard.writeText(checkoutPopup.paymentUrl);
@@ -290,7 +306,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 	};
 
 	return (
-		<DialogContent className='bg-surface sm:max-w-[600px]'>
+		<DialogContent className='bg-surface sm:max-w-[600px] flex max-h-[88vh] flex-col overflow-hidden'>
 			<PaymentUrlSuccessDialog
 				isOpen={checkoutPopup.isOpen}
 				paymentUrl={checkoutPopup.paymentUrl}
@@ -308,158 +324,171 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				onClose={() => setBlockingSession(null)}
 				onSupersede={() => handleTopup(TopupMode.Checkout, true)}
 			/>
-			<DialogHeader>
+			<DialogHeader className='shrink-0'>
 				<DialogTitle>{t('wallet.topup.dialogTitle')}</DialogTitle>
 			</DialogHeader>
-			<div className='grid gap-4 py-4'>
-				<RectangleRadiogroup
-					title={t('wallet.topup.creditTypeTitle')}
-					options={creditsTypeOptions.map((option) => ({
-						...option,
-						description: undefined,
-					}))}
-					value={topupPayload.credits_type}
-					onChange={(value) => {
-						// Reset related fields when changing credits type
-						// Set generate_invoice to true by default for Purchased credits
-						updateTopupPayload({
-							credits_type: value as CreditsType,
-							credits_to_add: undefined,
-							generate_invoice: value === CreditsType.PurchasedCredits ? true : undefined,
-							expiry_date: undefined,
-							reference_id: undefined,
+			{/* Only the form scrolls; the header and the submit buttons stay in view. */}
+			<div className='-ml-1 -mr-4 grid min-h-0 flex-1 gap-4 overflow-y-auto pl-1 pr-4'>
+				<div className='grid gap-4 py-4'>
+					<RectangleRadiogroup
+						title={t('wallet.topup.creditTypeTitle')}
+						options={creditsTypeOptions.map((option) => ({
+							...option,
 							description: undefined,
-						});
-					}}
-				/>
-				<p className='text-sm text-content-muted -my-2'>
-					{topupPayload.credits_type === CreditsType.PurchasedCredits
-						? t('wallet.topup.typeHintPurchased')
-						: t('wallet.topup.typeHintFree')}
-				</p>
+						}))}
+						value={topupPayload.credits_type}
+						onChange={(value) => {
+							// Reset related fields when changing credits type
+							// Set generate_invoice to true by default for Purchased credits
+							setCoupon(null);
+							updateTopupPayload({
+								credits_type: value as CreditsType,
+								credits_to_add: undefined,
+								generate_invoice: value === CreditsType.PurchasedCredits ? true : undefined,
+								expiry_date: undefined,
+								reference_id: undefined,
+								description: undefined,
+							});
+						}}
+					/>
+					<p className='text-sm text-content-muted -my-2'>
+						{topupPayload.credits_type === CreditsType.PurchasedCredits
+							? t('wallet.topup.typeHintPurchased')
+							: t('wallet.topup.typeHintFree')}
+					</p>
+				</div>
+
+				{/* Free Credits Input */}
+				{topupPayload.credits_type && (
+					<Input
+						variant='formatted-number'
+						onChange={(e) => updateTopupPayload({ credits_to_add: e as unknown as number })}
+						value={topupPayload.credits_to_add ?? ''}
+						suffix={t('payments.transactions.creditsSuffix')}
+						label={t('wallet.topup.creditsLabel')}
+						placeholder={t('wallet.topup.creditsPlaceholder')}
+						description={
+							<>
+								{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
+									<span>
+										{getCurrencySymbol(currency!)}
+										{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
+										{t('wallet.topup.creditPreviewSuffix')}
+									</span>
+								)}
+							</>
+						}
+					/>
+				)}
+
+				{topupPayload.credits_type === CreditsType.PurchasedCredits && (
+					<SubscriptionDiscountTable
+						coupon={coupon}
+						onChange={setCoupon}
+						currency={currency}
+						couponFilter={hasCouponCode}
+						showCadence={false}
+						showCouponName
+					/>
+				)}
+
+				{topupPayload.credits_type && (
+					<DatePicker
+						minDate={
+							minExpiryDate
+								? new Date(minExpiryDate.getUTCFullYear(), minExpiryDate.getUTCMonth(), minExpiryDate.getUTCDate())
+								: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 0, 0, 0))
+						}
+						label={t('wallet.topup.expiryDate')}
+						date={topupPayload.expiry_date_utc ? new Date(topupPayload.expiry_date_utc) : undefined}
+						setDate={(value) =>
+							updateTopupPayload({
+								expiry_date_utc: value
+									? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)).toISOString()
+									: undefined,
+							})
+						}
+						className='w-full'
+						labelClassName='text-foreground'
+					/>
+				)}
+				{topupPayload.credits_type && (
+					<Input
+						label={t('wallet.topup.priority')}
+						className='w-full'
+						placeholder={t('wallet.topup.priorityPlaceholder')}
+						// Guarded like the sibling fields: priority starts undefined, which makes
+						// the input uncontrolled until the first keystroke and warns on the switch.
+						value={topupPayload.priority ?? ''}
+						onChange={(e) => {
+							if (e) {
+								updateTopupPayload({ priority: Number(e) });
+							} else {
+								updateTopupPayload({ priority: undefined });
+							}
+						}}
+					/>
+				)}
+
+				{/* Reference ID and description for purchased credits. Previously gated on the
+			    generate-invoice toggle, which the three settle actions replaced. */}
+				{topupPayload.credits_type === CreditsType.PurchasedCredits && (
+					<>
+						<Input
+							label={t('wallet.topup.referenceId')}
+							className='w-full'
+							placeholder={t('wallet.topup.referenceIdPlaceholder')}
+							value={topupPayload.reference_id || ''}
+							onChange={(e) => updateTopupPayload({ reference_id: e as string })}
+							description={t('wallet.topup.referenceIdDescription')}
+						/>
+
+						<Input
+							label={t('wallet.topup.descriptionOptional')}
+							className='w-full'
+							placeholder={t('wallet.topup.descriptionPlaceholder')}
+							value={topupPayload.description || ''}
+							onChange={(e) => updateTopupPayload({ description: e as string })}
+							description={t('wallet.topup.descriptionHint')}
+						/>
+					</>
+				)}
 			</div>
 
-			{/* Free Credits Input */}
-			{topupPayload.credits_type && (
-				<Input
-					variant='formatted-number'
-					onChange={(e) => updateTopupPayload({ credits_to_add: e as unknown as number })}
-					value={topupPayload.credits_to_add ?? ''}
-					suffix={t('payments.transactions.creditsSuffix')}
-					label={t('wallet.topup.creditsLabel')}
-					placeholder={t('wallet.topup.creditsPlaceholder')}
-					description={
-						<>
-							{topupPayload.credits_to_add && topupPayload.credits_to_add > 0 && (
-								<span>
-									{getCurrencySymbol(currency!)}
-									{getCurrencyAmountFromCredits(conversion_rate, topupPayload.credits_to_add ?? 0)}
-									{t('wallet.topup.creditPreviewSuffix')}
-								</span>
-							)}
-						</>
-					}
-				/>
-			)}
-
-			{topupPayload.credits_type && (
-				<DatePicker
-					minDate={
-						minExpiryDate
-							? new Date(minExpiryDate.getUTCFullYear(), minExpiryDate.getUTCMonth(), minExpiryDate.getUTCDate())
-							: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate() + 1, 0, 0, 0, 0))
-					}
-					label={t('wallet.topup.expiryDate')}
-					date={topupPayload.expiry_date_utc ? new Date(topupPayload.expiry_date_utc) : undefined}
-					setDate={(value) =>
-						updateTopupPayload({
-							expiry_date_utc: value
-								? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)).toISOString()
-								: undefined,
-						})
-					}
-					className='w-full'
-					labelClassName='text-foreground'
-				/>
-			)}
-			{topupPayload.credits_type && (
-				<Input
-					label={t('wallet.topup.priority')}
-					className='w-full'
-					placeholder={t('wallet.topup.priorityPlaceholder')}
-					// Guarded like the sibling fields: priority starts undefined, which makes
-					// the input uncontrolled until the first keystroke and warns on the switch.
-					value={topupPayload.priority ?? ''}
-					onChange={(e) => {
-						if (e) {
-							updateTopupPayload({ priority: Number(e) });
-						} else {
-							updateTopupPayload({ priority: undefined });
-						}
-					}}
-				/>
-			)}
-
-			{/* Reference ID and description for purchased credits. Previously gated on the
-			    generate-invoice toggle, which the three settle actions replaced. */}
-			{topupPayload.credits_type === CreditsType.PurchasedCredits && (
-				<>
-					<Input
-						label={t('wallet.topup.referenceId')}
-						className='w-full'
-						placeholder={t('wallet.topup.referenceIdPlaceholder')}
-						value={topupPayload.reference_id || ''}
-						onChange={(e) => updateTopupPayload({ reference_id: e as string })}
-						description={t('wallet.topup.referenceIdDescription')}
-					/>
-
-					<Input
-						label={t('wallet.topup.descriptionOptional')}
-						className='w-full'
-						placeholder={t('wallet.topup.descriptionPlaceholder')}
-						value={topupPayload.description || ''}
-						onChange={(e) => updateTopupPayload({ description: e as string })}
-						description={t('wallet.topup.descriptionHint')}
-					/>
-				</>
-			)}
-
-			<Spacer className='!mt-4' />
-
-			{/* Three exits for purchased credits, replacing the generate-invoice toggle:
-			    the choice of how it settles IS the submit action. Free credits keep a
-			    single button — nothing is ever billed for them. */}
-			<div className='w-full justify-end flex gap-2'>
+			{/* For purchased credits the choice of how it settles IS the submit action.
+			    Free credits keep a single button — nothing is ever billed for them.
+			    Coupons only discount an invoice, so the other exits are off while one is picked. */}
+			<div className='w-full shrink-0 justify-end flex gap-2 pt-2'>
 				{topupPayload.credits_type === CreditsType.PurchasedCredits ? (
 					<>
+						{withCouponHint(
+							<Button
+								variant='outline'
+								isLoading={isPending && pendingAttempt?.mode === TopupMode.SkipInvoice}
+								onClick={() => handleTopup(TopupMode.SkipInvoice)}
+								disabled={isPending || !!coupon}>
+								{t('wallet.topup.skipInvoice')}
+							</Button>,
+						)}
+						{hasRazorpayConnection &&
+							withCouponHint(
+								<Button
+									variant='outline'
+									isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
+									onClick={() => handleTopup(TopupMode.Checkout)}
+									disabled={isPending || !!coupon}>
+									{t('wallet.topup.checkoutLink')}
+								</Button>,
+							)}
 						<Button
-							variant='outline'
-							isLoading={isPending && pendingAttempt?.mode === TopupMode.SkipInvoice}
-							onClick={() => handleTopup(TopupMode.SkipInvoice)}
-							disabled={isPending}>
-							{t('wallet.topup.skipInvoice')}
-						</Button>
-						<Button
-							variant='outline'
 							isLoading={isPending && pendingAttempt?.mode === TopupMode.Invoice}
 							onClick={() => handleTopup(TopupMode.Invoice)}
 							disabled={isPending}>
 							{t('wallet.topup.generateInvoiceAction')}
 						</Button>
-						{hasRazorpayConnection && (
-							<Button
-								isLoading={isPending && pendingAttempt?.mode === TopupMode.Checkout}
-								onClick={() => handleTopup(TopupMode.Checkout)}
-								disabled={isPending}>
-								{t('wallet.topup.checkoutLink')}
-							</Button>
-						)}
 					</>
 				) : (
-					<Button
-						isLoading={isPending}
-						onClick={() => handleTopup(TopupMode.SkipInvoice)}
-						disabled={isPending || !topupPayload.credits_type}>
+					<Button isLoading={isPending} onClick={() => handleTopup(TopupMode.Free)} disabled={isPending || !topupPayload.credits_type}>
 						{t('wallet.topup.addCredits')}
 					</Button>
 				)}

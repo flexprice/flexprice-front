@@ -648,6 +648,7 @@
 			"events": "Events",
 			"invoice": "Invoice",
 			"creditTopups": "Credit Topups",
+			"creditDebits": "Credit Debits",
 			"creditUsage": "Credit Usage",
 			"usageAnalytics": "Usage Analytics"
 		},

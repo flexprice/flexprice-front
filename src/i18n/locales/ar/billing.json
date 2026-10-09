@@ -865,7 +865,8 @@
 			"typePurchasedDesc": "إضافة أرصدة تتطلب الدفع.",
 			"skipInvoice": "تخطي الفاتورة",
 			"generateInvoiceAction": "إنشاء فاتورة",
-			"checkoutLink": "رابط الدفع"
+			"checkoutLink": "رابط الدفع",
+			"unavailableWithCouponHint": "غير متاح مع قسيمة"
 		},
 		"pendingCheckout": {
 			"title": "توجد عملية دفع معلّقة لهذه المحفظة",

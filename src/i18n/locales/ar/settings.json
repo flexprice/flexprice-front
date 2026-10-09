@@ -647,6 +647,7 @@
 			"events": "الأحداث",
 			"invoice": "الفاتورة",
 			"creditTopups": "إعادة شحن الأرصدة",
+			"creditDebits": "خصم الأرصدة",
 			"creditUsage": "استخدام الأرصدة",
 			"usageAnalytics": "تحليلات الاستخدام"
 		},

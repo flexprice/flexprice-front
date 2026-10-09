@@ -998,7 +998,8 @@
 			"typePurchasedDesc": "Add credits that require payment.",
 			"skipInvoice": "Skip invoice",
 			"generateInvoiceAction": "Generate invoice",
-			"checkoutLink": "Checkout link"
+			"checkoutLink": "Checkout link",
+			"unavailableWithCouponHint": "Not available with a coupon"
 		},
 		"pendingCheckout": {
 			"title": "A checkout is already pending for this wallet",
