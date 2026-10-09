@@ -13,6 +13,7 @@ export const NAMESPACES = [
 	'settings',
 	'customer-portal',
 	'guides',
+	'activity',
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];
