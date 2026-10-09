@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
+import { RouteNames } from '@/core/routes/Routes';
+import { buildAuthRedirect } from '@/utils/auth/authRedirect';
 
 const ResendVerification = () => {
 	const [email, setEmail] = useState('');
@@ -22,10 +24,19 @@ const ResendVerification = () => {
 
 	const { mutate: resendVerification, isPending } = useMutation({
 		mutationFn: async (emailToResend: string) => {
-			return await supabase.auth.resend({
+			// Without an explicit emailRedirectTo, GoTrue falls back to the project's
+			// Site URL — so the resent email pointed somewhere else than the original
+			// signup email, which was built from this origin.
+			const { error } = await supabase.auth.resend({
 				email: emailToResend,
 				type: 'signup',
+				options: { emailRedirectTo: buildAuthRedirect(RouteNames.signupConfirmation) },
 			});
+			// resend resolves with an `error` property rather than rejecting, so an
+			// unchecked call reported success for an email that was never sent.
+			if (error) {
+				throw new Error(error.message);
+			}
 		},
 		onSuccess: () => {
 			toast.success('Verification email has been resent. Please check your inbox.');

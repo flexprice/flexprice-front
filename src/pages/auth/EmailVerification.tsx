@@ -7,6 +7,8 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
 import { config } from '@/config/config';
+import { RouteNames } from '@/core/routes/Routes';
+import { buildAuthRedirect } from '@/utils/auth/authRedirect';
 import sideBg from '../../../assets/side.png';
 import sideBgDark from '../../../assets/sidedark.png';
 
@@ -25,6 +27,9 @@ const EmailVerification = () => {
 			const { error } = await (supabase as SupabaseClient).auth.resend({
 				email: email,
 				type: 'signup',
+				// Required: without it GoTrue uses the project's Site URL, so the resent
+				// link points at a different origin than the original signup email.
+				options: { emailRedirectTo: buildAuthRedirect(RouteNames.signupConfirmation) },
 			});
 			if (error) {
 				throw new Error(error.message);

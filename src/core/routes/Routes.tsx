@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import { Loader } from '@/components/atoms';
 import { config } from '@/config/config';
 import { requirePermission } from '@/core/routes/useRouteAccess';
+import { RESET_PASSWORD_PATH } from '@/pages/auth/authTabs';
 import {
 	// Auth pages
 	Auth,
@@ -109,6 +110,10 @@ export const RouteNames = {
 	login: '/login',
 	auth: '/auth',
 	signupConfirmation: '/auth/signup/confirmation',
+	// Where a Supabase password-reset email sends the browser. Defined in
+	// pages/auth/authTabs so the tab resolver can read it without importing this
+	// module; must be in the Supabase project's Redirect URLs allow-list.
+	resetPassword: RESET_PASSWORD_PATH,
 	resendVerification: '/auth/resend-verification',
 	verifyEmail: '/auth/verify-email',
 	// Where the backend sends the browser after it validates a SAML assertion.
@@ -225,6 +230,12 @@ export const MainRouter: any = createBrowserRouter([
 	{
 		path: RouteNames.signupConfirmation,
 		element: <SignupConfirmation />,
+	},
+	{
+		// Same component as /auth: it resolves which form to show from the path, so
+		// the branded template and every other tab keep working unchanged.
+		path: RouteNames.resetPassword,
+		element: <Auth />,
 	},
 	{
 		path: RouteNames.resendVerification,

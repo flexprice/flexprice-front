@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import supabase from '@/core/services/supbase/config';
 import { useMutation } from '@tanstack/react-query';
 import { AuthTab } from './authTabs';
+import { RouteNames } from '@/core/routes/Routes';
+import { buildAuthRedirect } from '@/utils/auth/authRedirect';
 import { useTranslation } from 'react-i18next';
 
 interface ForgotPasswordFormProps {
@@ -17,7 +19,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ switchTab }) =>
 	// Use React Query for forgot password mutation
 	const forgotPasswordMutation = useMutation({
 		mutationFn: async (emailToReset: string): Promise<any> => {
-			const redirectTo = `${window.location.origin}/auth?tab=${AuthTab.RESET_PASSWORD}`;
+			const redirectTo = buildAuthRedirect(RouteNames.resetPassword);
 			const { error } = await supabase.auth.resetPasswordForEmail(emailToReset.trim(), {
 				redirectTo,
 			});

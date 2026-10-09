@@ -7,6 +7,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import { useTranslation } from 'react-i18next';
 import { buildSignupMetadata, persistSignupMetadata } from '@/utils/auth/signupMetadata';
 import { RETURN_PATH_KEY, sanitizeRedirect } from './safeRedirect';
+import { buildAuthRedirect } from '@/utils/auth/authRedirect';
 
 const GoogleSignin = () => {
 	const { t } = useTranslation('auth');
@@ -21,13 +22,10 @@ const GoogleSignin = () => {
 			if (returnPath) sessionStorage.setItem(RETURN_PATH_KEY, returnPath);
 			else sessionStorage.removeItem(RETURN_PATH_KEY);
 
-			// Get the current site URL (to handle different environments)
-			const siteUrl = window.location.origin;
-
 			const { data, error } = await supabase.auth.signInWithOAuth({
 				provider: 'google',
 				options: {
-					redirectTo: siteUrl + RouteNames.signupConfirmation,
+					redirectTo: buildAuthRedirect(RouteNames.signupConfirmation),
 					queryParams: {},
 					// Define the scopes for Google OAuth
 					scopes: 'email profile',
