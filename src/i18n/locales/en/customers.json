@@ -73,7 +73,8 @@
 			"taxTreatmentTaxable": "Taxable",
 			"timezone": "Timezone",
 			"subscriptionAmount": "Subscription Amount",
-			"subscriptionStartDate": "Subscription Start Date"
+			"subscriptionStartDate": "Subscription Start Date",
+			"billingCurrency": "Billing Currency"
 		},
 		"customerCardSectionTitle": "Customer Details",
 		"customerCardSlug": "Slug",
@@ -116,7 +117,10 @@
 			"selectCity": "Select City",
 			"noCities": "No cities Available",
 			"postalCode": "Postal Code",
-			"postalCodePlaceholder": "Enter Postal Code"
+			"postalCodePlaceholder": "Enter Postal Code",
+			"billingCurrency": "Billing Currency",
+			"billingCurrencyNone": "None (bill in the plan's currency)",
+			"billingCurrencyHint": "Invoices for subscriptions in another currency are converted to this currency when finalized. Issued invoices don't change."
 		},
 		"validation": {
 			"externalIdRequired": "External ID is required",
@@ -342,7 +346,35 @@
 			"saveCardOnStripe": "Save Card on Stripe",
 			"setupAutopayMoyasar": "Setup Autopay",
 			"sharePortalLinkTitle": "Share Customer Portal Link",
-			"childCustomersTitle": "Child customers"
+			"childCustomersTitle": "Child customers",
+			"fxOverrides": {
+				"title": "FX Overrides",
+				"add": "Add override",
+				"empty": "No FX overrides. This customer uses the global forex rates.",
+				"loadError": "Could not load FX overrides.",
+				"paginationUnit": "overrides",
+				"writeDeniedTooltip": "You don't have permission to manage FX overrides. Ask a tenant admin for access.",
+				"columns": {
+					"rate": "Rate",
+					"validFrom": "Valid from",
+					"validUntil": "Valid until",
+					"status": "Status"
+				},
+				"always": "Always",
+				"noEnd": "No end",
+				"status": {
+					"active": "Active",
+					"scheduled": "Scheduled",
+					"expired": "Expired"
+				},
+				"entityName": "FX override",
+				"delete": "Delete",
+				"toast": {
+					"created": "FX override added",
+					"updated": "FX override updated",
+					"deleted": "FX override deleted"
+				}
+			}
 		},
 		"invoice": {
 			"title": "Invoices",
@@ -480,7 +512,7 @@
 			"loadingPlanDetails": "Loading plan details...",
 			"billingPeriodRequired": "Billing Period*",
 			"selectBillingPeriod": "Select billing period",
-			"currencyRequired": "Currency*",
+			"currencyRequired": "Charge Currency*",
 			"selectCurrency": "Select currency",
 			"subscriptionCycle": "Subscription Cycle",
 			"billingAnniversary": "Anniversary",
@@ -524,7 +556,24 @@
 			"autoInvoicePlaceholder": "100.00",
 			"autoInvoiceAmountAria": "Auto invoice threshold amount",
 			"planNoCharges": "No charges added to this plan",
-			"addedChargesLostOnPhaseConversion": "Added charges are not supported in phased subscriptions and have been removed. Add them again within a phase, or after the subscription is created."
+			"addedChargesLostOnPhaseConversion": "Added charges are not supported in phased subscriptions and have been removed. Add them again within a phase, or after the subscription is created.",
+			"billingCurrency": "Billing Currency",
+			"billingCurrencyHint": "Invoices are issued in {{billing}}, converted from {{charge}} when finalized.",
+			"fxOverrides": {
+				"title": "FX Overrides",
+				"hintWithRate": "Rows without dates apply to every invoice. Leave the table empty to use the customer's override or the global rate ({{rate}}).",
+				"hintCheckout": "With checkout, the row covering today is used.",
+				"noGlobalRate": "No global {{pair}} rate. Add one in Settings › Billing before creating this subscription.",
+				"entityName": "FX override",
+				"remove": "Remove",
+				"columns": {
+					"rate": "Rate",
+					"validFrom": "Valid from",
+					"validUntil": "Valid until"
+				},
+				"always": "Always",
+				"noEnd": "No end"
+			}
 		},
 		"subscriptionPriceTable": {
 			"overridePrice": "Override Price",
@@ -615,6 +664,10 @@
 			"creditGrantDeleted": "Credit grant deleted successfully",
 			"creditGrantDeleteFailed": "Failed to delete credit grant",
 			"loadError": "Error loading subscription data"
+		},
+		"fxOverrides": {
+			"empty": "No FX overrides. Invoices use the customer's override or the global rate.",
+			"hint": "Changes apply to invoices finalized from now on. Issued invoices don't change."
 		}
 	}
 }

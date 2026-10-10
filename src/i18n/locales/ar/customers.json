@@ -73,7 +73,8 @@
 			"taxTreatmentTaxable": "خاضع للضريبة",
 			"timezone": "المنطقة الزمنية",
 			"subscriptionAmount": "مبلغ الاشتراك",
-			"subscriptionStartDate": "تاريخ بدء الاشتراك"
+			"subscriptionStartDate": "تاريخ بدء الاشتراك",
+			"billingCurrency": "عملة الفوترة"
 		},
 		"customerCardSectionTitle": "تفاصيل العميل",
 		"customerCardSlug": "المعرّف",
@@ -112,7 +113,10 @@
 			"selectCity": "اختر المدينة",
 			"noCities": "لا توجد مدن متاحة",
 			"postalCode": "الرمز البريدي",
-			"postalCodePlaceholder": "أدخل الرمز البريدي"
+			"postalCodePlaceholder": "أدخل الرمز البريدي",
+			"billingCurrency": "عملة الفوترة",
+			"billingCurrencyNone": "لا شيء (الفوترة بعملة الخطة)",
+			"billingCurrencyHint": "تُحوَّل فواتير الاشتراكات بعملة أخرى إلى هذه العملة عند إصدارها. لا تتغير الفواتير الصادرة."
 		},
 		"validation": {
 			"externalIdRequired": "المعرّف الخارجي مطلوب",
@@ -337,7 +341,35 @@
 			"saveCardOnStripe": "حفظ البطاقة على Stripe",
 			"setupAutopayMoyasar": "إعداد الدفع التلقائي (Moyasar)",
 			"sharePortalLinkTitle": "مشاركة رابط بوابة العميل",
-			"childCustomersTitle": "العملاء الفرعيون"
+			"childCustomersTitle": "العملاء الفرعيون",
+			"fxOverrides": {
+				"title": "تجاوزات سعر الصرف",
+				"add": "إضافة تجاوز",
+				"empty": "لا توجد تجاوزات لسعر الصرف. يستخدم هذا العميل أسعار الصرف العامة.",
+				"loadError": "تعذر تحميل تجاوزات سعر الصرف.",
+				"paginationUnit": "تجاوزات",
+				"writeDeniedTooltip": "ليست لديك صلاحية لإدارة تجاوزات سعر الصرف. اطلب الوصول من مسؤول المستأجر.",
+				"columns": {
+					"rate": "السعر",
+					"validFrom": "صالح من",
+					"validUntil": "صالح حتى",
+					"status": "الحالة"
+				},
+				"always": "دائمًا",
+				"noEnd": "بلا نهاية",
+				"status": {
+					"active": "نشط",
+					"scheduled": "مجدول",
+					"expired": "منتهي"
+				},
+				"entityName": "تجاوز سعر الصرف",
+				"delete": "حذف",
+				"toast": {
+					"created": "تمت إضافة تجاوز سعر الصرف",
+					"updated": "تم تحديث تجاوز سعر الصرف",
+					"deleted": "تم حذف تجاوز سعر الصرف"
+				}
+			}
 		},
 		"invoice": {
 			"title": "الفواتير",
@@ -406,6 +438,10 @@
 			"creditGrantDeleted": "تم حذف منحة الائتمان بنجاح",
 			"creditGrantDeleteFailed": "فشل في حذف منحة الائتمان",
 			"loadError": "خطأ في تحميل بيانات الاشتراك"
+		},
+		"fxOverrides": {
+			"empty": "لا توجد تجاوزات لسعر الصرف. تستخدم الفواتير تجاوز العميل أو السعر العام.",
+			"hint": "تنطبق التغييرات على الفواتير الصادرة من الآن فصاعدًا. لا تتغير الفواتير الصادرة."
 		}
 	},
 	"moyasarAutopay": {
@@ -498,7 +534,7 @@
 			"loadingPlanDetails": "جارٍ تحميل تفاصيل الخطة…",
 			"billingPeriodRequired": "فترة الفوترة*",
 			"selectBillingPeriod": "اختر فترة الفوترة",
-			"currencyRequired": "العملة*",
+			"currencyRequired": "عملة التسعير*",
 			"selectCurrency": "اختر العملة",
 			"subscriptionCycle": "دورة الاشتراك",
 			"billingAnniversary": "ذكرى الفوترة",
@@ -542,7 +578,24 @@
 			"autoInvoicePlaceholder": "100.00",
 			"autoInvoiceAmountAria": "مبلغ حد الفاتورة التلقائية",
 			"planNoCharges": "لا توجد رسوم مضافة إلى هذه الخطة",
-			"addedChargesLostOnPhaseConversion": "الرسوم المضافة غير مدعومة في الاشتراكات المرحلية وتمت إزالتها. أضفها مرة أخرى ضمن مرحلة، أو بعد إنشاء الاشتراك."
+			"addedChargesLostOnPhaseConversion": "الرسوم المضافة غير مدعومة في الاشتراكات المرحلية وتمت إزالتها. أضفها مرة أخرى ضمن مرحلة، أو بعد إنشاء الاشتراك.",
+			"billingCurrency": "عملة الفوترة",
+			"billingCurrencyHint": "تُصدر الفواتير بعملة {{billing}}، محوّلة من {{charge}} عند إصدارها.",
+			"fxOverrides": {
+				"title": "تجاوزات سعر الصرف",
+				"hintWithRate": "تنطبق الصفوف بلا تواريخ على كل فاتورة. اترك الجدول فارغًا لاستخدام تجاوز العميل أو السعر العام ({{rate}}).",
+				"hintCheckout": "عند الدفع المسبق، يُستخدم الصف الذي يغطي اليوم.",
+				"noGlobalRate": "لا يوجد سعر عام لـ {{pair}}. أضف سعرًا في الإعدادات › الفوترة قبل إنشاء هذا الاشتراك.",
+				"entityName": "تجاوز سعر الصرف",
+				"remove": "إزالة",
+				"columns": {
+					"rate": "السعر",
+					"validFrom": "صالح من",
+					"validUntil": "صالح حتى"
+				},
+				"always": "دائمًا",
+				"noEnd": "بلا نهاية"
+			}
 		},
 		"subscriptionPriceTable": {
 			"overridePrice": "تجاوز السعر",

@@ -38,3 +38,4 @@ export { UserApi } from './UserApi';
 export { default as WalletApi } from './WalletApi';
 export { default as WorkflowApi } from './WorkflowApi';
 export { default as WebhookApi } from './WebhookApi';
+export { default as FxRateApi } from './FxRateApi';

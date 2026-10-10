@@ -9,3 +9,5 @@ export const SETTINGS_KEYS = {
 } as const;
 
 export const SETTINGS_MEMBERS_PAGE_SIZE = 10;
+
+export const FOREX_RATES_PAGE_SIZE = 5;

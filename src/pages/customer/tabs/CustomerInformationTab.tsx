@@ -21,6 +21,7 @@ import { uniq } from 'lodash';
 import { Skeleton } from '@/components/ui';
 import { useTranslation } from 'react-i18next';
 import { ENTITY_STATUS } from '@/models';
+import CustomerFxOverridesSection from './CustomerFxOverridesSection';
 
 type ContextType = {
 	isArchived: boolean;
@@ -202,6 +203,10 @@ const CustomerInformationTab = () => {
 			label: 'Postal Code',
 			value: customer?.address_postal_code || '--',
 		},
+		{
+			label: t('overview.labels.billingCurrency'),
+			value: customer?.billing_currency ? customer.billing_currency.toUpperCase() : '--',
+		},
 	];
 
 	if (isLoading) {
@@ -247,6 +252,13 @@ const CustomerInformationTab = () => {
 					</div>
 					<Spacer className='!h-4' />
 					<DetailsCard variant='stacked' data={billingDetails} childrenAtTop cardStyle='borderless' />
+
+					{customerId && (
+						<>
+							<Divider className='my-4' />
+							<CustomerFxOverridesSection customerId={customerId} isArchived={isArchived} />
+						</>
+					)}
 
 					{/* Metadata Section Below Address Details */}
 					<Divider className='my-4' />

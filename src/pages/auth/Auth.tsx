@@ -1,41 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import AuthService from '@/core/auth/AuthService';
+import type { UserLookupFailedState } from '@/core/auth/AuthProvider';
 import BrandTemplate from './BrandTemplate';
 import { AuthTab } from './authTabs';
+import { resolveAuthTab } from './resolveAuthTab';
+import { isPasswordRecoveryLanding } from '@/utils/auth/recoveryLanding';
 import { config } from '@/config/config';
 
 const AuthPage: React.FC = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [currentTab, setCurrentTab] = useState<AuthTab>(AuthTab.LOGIN);
 	const signupEnabled = config.platform.signup.enabled;
 
+	// Derived during render rather than held in state and corrected in an effect,
+	// so the first paint is already the right form. The old effect-based version
+	// rendered the login form for a frame before switching, which on a reset
+	// landing flashed a form the user did not ask for.
+	const currentTab = resolveAuthTab({
+		pathname: location.pathname,
+		search: location.search,
+		isRecoveryLanding: isPasswordRecoveryLanding(),
+		signupEnabled,
+	});
+	const isResettingPassword = currentTab === AuthTab.RESET_PASSWORD;
+
 	useEffect(() => {
-		const searchParams = new URLSearchParams(location.search);
-		if (searchParams.get('tab') === AuthTab.RESET_PASSWORD) return;
+		// Two independent reasons not to send an existing session to the dashboard.
+		//
+		// A password reset arrives *with* a valid session — that is how the new
+		// password can be set at all. Redirecting would turn the reset link into a
+		// sign-in link and the user would never see the form. This supersedes the
+		// earlier `?tab=reset-password` check: the reset flow is now also reached by
+		// path and by recovery fragment, and resolveAuthTab covers all three.
+		if (isResettingPassword) return;
+		// User lookup just failed; redirecting to / again would loop.
+		if ((location.state as UserLookupFailedState | null)?.userLookupFailed) return;
 		const fetchUser = async () => {
 			const tokenStr = await AuthService.getAcessToken();
 			if (tokenStr) navigate('/');
 		};
 		fetchUser();
-	}, [location.search, navigate]);
+	}, [isResettingPassword, location.search, location.state, navigate]);
 
 	useEffect(() => {
-		const searchParams = new URLSearchParams(location.search);
-		const tab = searchParams.get('tab');
-
-		if (tab === AuthTab.SIGNUP && !signupEnabled) {
+		// Signup disabled: drop the parameter so the URL stops advertising a form
+		// that cannot be used. resolveAuthTab has already fallen back to login.
+		const requestedTab = new URLSearchParams(location.search).get('tab');
+		if (requestedTab === AuthTab.SIGNUP && !signupEnabled) {
 			navigate('/auth', { replace: true });
-			return;
 		}
-
-		if (tab === AuthTab.SIGNUP || tab === AuthTab.FORGOT_PASSWORD || tab === AuthTab.RESET_PASSWORD) {
-			setCurrentTab(tab as AuthTab);
-		} else {
-			setCurrentTab(AuthTab.LOGIN);
-		}
-	}, [location, navigate, signupEnabled]);
+	}, [location.search, navigate, signupEnabled]);
 
 	const switchTab = (tab: AuthTab) => {
 		if (tab === AuthTab.SIGNUP && !signupEnabled) {

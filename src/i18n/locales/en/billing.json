@@ -278,7 +278,10 @@
 			"serviceIssue": "Service Issue",
 			"billingError": "Billing Error",
 			"subscriptionCancellation": "Subscription Cancellation"
-		}
+		},
+		"subtotalLabel": "Subtotal",
+		"taxLabel": "Tax",
+		"calculatingTax": "Calculating tax"
 	},
 	"subscriptions": {
 		"title": "Subscriptions",

@@ -335,7 +335,20 @@ export interface SubscriptionInheritanceConfig {
 	subscriptions_ids_for_grouped_invoicing?: string[];
 }
 
+/** One subscription-scope rate created with the subscription; the window is [start_date, end_date). */
+export interface InlineFxRateRequest {
+	rate: string;
+	start_date?: string;
+	end_date?: string;
+}
+
+/** A row in the create form's FX Overrides table; `id` is local only. */
+export interface SubscriptionFxRateRow extends InlineFxRateRequest {
+	id: string;
+}
+
 export interface CreateSubscriptionRequest {
+	fx_rates?: InlineFxRateRequest[];
 	// Customer identification - prioritized over external_customer_id if both provided
 	customer_id?: string;
 	external_customer_id?: string;

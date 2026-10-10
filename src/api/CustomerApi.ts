@@ -83,7 +83,8 @@ class CustomerApi {
 	}
 
 	public static async updateCustomer(customer: UpdateCustomerRequest, id: string): Promise<CustomerResponse> {
-		return await AxiosClient.put<CustomerResponse>(`${this.baseUrl}/${id}`, customer);
+		// '' clears billing_currency, so it must survive the empty-value sanitizer.
+		return await AxiosClient.put<CustomerResponse>(`${this.baseUrl}/${id}`, customer, { allowEmptyKeys: ['billing_currency'] });
 	}
 
 	public static async getEntitlements(payload: GetCustomerEntitlementPayload): Promise<GetCustomerEntitlementsResponse> {

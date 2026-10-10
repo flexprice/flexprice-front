@@ -29,6 +29,7 @@ import AddSubscriptionChargeDialog, {
 } from '@/components/organisms/Subscription/AddSubscriptionChargeDialog';
 import CouponAssociationTable from '@/components/molecules/CouponAssociationTable/CouponAssociationTable';
 import TaxAssociationTable from '@/components/molecules/TaxAssociationTable/TaxAssociationTable';
+import SubscriptionEditFxOverridesSection from '@/components/molecules/SubscriptionEditFxOverridesSection';
 import ApplyCouponDialog from '@/components/molecules/ApplyCouponDialog/ApplyCouponDialog';
 import RemoveCouponDialog from '@/components/molecules/RemoveCouponDialog/RemoveCouponDialog';
 import ApplyTaxDialog from '@/components/molecules/ApplyTaxDialog/ApplyTaxDialog';
@@ -465,6 +466,17 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 							onConfirmCancelCreditGrant={handleConfirmCancelCreditGrant}
 							onCloseCancelModal={handleCloseCancelModal}
 						/>
+
+						{subscriptionId && (
+							<SubscriptionEditFxOverridesSection
+								subscriptionId={subscriptionId}
+								currency={subscriptionDetails.currency}
+								customerId={subscriptionDetails.customer_id}
+								invoicingCustomerId={subscriptionDetails.invoicing_customer_id}
+								subscriber={customer}
+								readOnly={subscriptionReadOnly || subscriptionDetails.subscription_status === SUBSCRIPTION_STATUS.CANCELLED}
+							/>
+						)}
 
 						<SubscriptionEntitlementsSection subscriptionId={subscriptionId} readOnly={subscriptionReadOnly} />
 
