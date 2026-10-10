@@ -1,58 +1,59 @@
 import { TutorialItem } from '@/pages';
 import type { TFunction } from 'i18next';
+import { docsUrl } from '@/config/docs';
 
-/** Doc deep links opened from tutorial cards */
-export enum DOCS_LINKS {
-	SETTINGS_CUSTOM_CURRENCY = 'https://docs.flexprice.io/docs/settings/settings#custom-currency-configuration',
-	SETTINGS_SUBSCRIPTION = 'https://docs.flexprice.io/docs/settings/settings#subscription-configuration',
-	SETTINGS_INVOICE = 'https://docs.flexprice.io/docs/settings/settings#invoice-configuration',
+/** Doc deep links opened from tutorial cards — into the active brand's docs. */
+export const DOCS_LINKS = {
+	SETTINGS_CUSTOM_CURRENCY: docsUrl('/docs/settings/settings#custom-currency-configuration'),
+	SETTINGS_SUBSCRIPTION: docsUrl('/docs/settings/settings#subscription-configuration'),
+	SETTINGS_INVOICE: docsUrl('/docs/settings/settings#invoice-configuration'),
 
-	FEATURE_CREATE = 'https://docs.flexprice.io/docs/product-catalogue/features/create',
-	FEATURE_PLANS = 'https://docs.flexprice.io/docs/product-catalogue/features/linking-to-plans',
-	FEATURE_USECASE = 'https://docs.flexprice.io/docs/product-catalogue/features/use-cases',
+	FEATURE_CREATE: docsUrl('/docs/product-catalogue/features/create'),
+	FEATURE_PLANS: docsUrl('/docs/product-catalogue/features/linking-to-plans'),
+	FEATURE_USECASE: docsUrl('/docs/product-catalogue/features/use-cases'),
 
-	PLANS_OVERVIEW = 'https://docs.flexprice.io/docs/product-catalogue/plans/overview',
-	PLANS_CREATE = 'https://docs.flexprice.io/docs/product-catalogue/plans/create',
-	PLANS_CHARGES = 'https://docs.flexprice.io/docs/product-catalogue/plans/charges/advance-vs-arrear',
+	PLANS_OVERVIEW: docsUrl('/docs/product-catalogue/plans/overview'),
+	PLANS_CREATE: docsUrl('/docs/product-catalogue/plans/create'),
+	PLANS_CHARGES: docsUrl('/docs/product-catalogue/plans/charges/advance-vs-arrear'),
 
-	CUSTOMER_OVERVIEW = 'https://docs.flexprice.io/docs/customers/overview',
-	CUSTOMER_ARCHIVE = 'https://docs.flexprice.io/docs/customers/archive',
-	SUBSCRIPTION_CREATE = 'https://docs.flexprice.io/docs/subscriptions/customers-create-subscription',
+	CUSTOMER_OVERVIEW: docsUrl('/docs/customers/overview'),
+	CUSTOMER_ARCHIVE: docsUrl('/docs/customers/archive'),
+	SUBSCRIPTION_CREATE: docsUrl('/docs/subscriptions/customers-create-subscription'),
 
-	INVOICE_CREATE = 'https://docs.flexprice.io/api-reference/invoices/create-one-off-invoice',
-	INVOICE_MANAGE = 'https://docs.flexprice.io/api-reference/invoices/update-an-invoice',
-	INVOICE_PARTIAL = 'https://docs.flexprice.io/api-reference/invoices/update-invoice-payment-status',
+	INVOICE_CREATE: docsUrl('/api-reference/invoices/create-one-off-invoice'),
+	INVOICE_MANAGE: docsUrl('/api-reference/invoices/update-an-invoice'),
+	INVOICE_PARTIAL: docsUrl('/api-reference/invoices/update-invoice-payment-status'),
 
-	PAYMENT_CREATE = 'https://docs.flexprice.io/api-reference/payments/create-payment',
-	PAYMENT_UPDATE = 'https://docs.flexprice.io/api-reference/payments/update-payment',
-	PAYMENT_DELETE = 'https://docs.flexprice.io/api-reference/payments/delete-payment',
+	PAYMENT_CREATE: docsUrl('/api-reference/payments/create-payment'),
+	PAYMENT_UPDATE: docsUrl('/api-reference/payments/update-payment'),
+	PAYMENT_DELETE: docsUrl('/api-reference/payments/delete-payment'),
 
-	SECRET_LIST = 'https://docs.flexprice.io/api-reference/secrets/list-api-keys',
-	SECRET_CREATE = 'https://docs.flexprice.io/api-reference/secrets/create-a-new-api-key',
-	SECRET_DELETE = 'https://docs.flexprice.io/api-reference/secrets/delete-an-api-key',
+	SECRET_LIST: docsUrl('/api-reference/secrets/list-api-keys'),
+	SECRET_CREATE: docsUrl('/api-reference/secrets/create-a-new-api-key'),
+	SECRET_DELETE: docsUrl('/api-reference/secrets/delete-an-api-key'),
 
-	CREDIT_CREATE = 'https://docs.flexprice.io/api-reference/credit-notes/create-a-new-credit-note',
-	CREDIT_PROCESS = 'https://docs.flexprice.io/api-reference/credit-notes/finalize-credit-note',
-	CREDIT_VOID = 'https://docs.flexprice.io/api-reference/credit-notes/void-a-credit-note',
+	CREDIT_CREATE: docsUrl('/api-reference/credit-notes/create-a-new-credit-note'),
+	CREDIT_PROCESS: docsUrl('/api-reference/credit-notes/finalize-credit-note'),
+	CREDIT_VOID: docsUrl('/api-reference/credit-notes/void-a-credit-note'),
 
-	TASK_LIST = 'https://docs.flexprice.io/api-reference/tasks/list-tasks',
-	TASK_CREATE = 'https://docs.flexprice.io/api-reference/tasks/create-a-new-task',
-	TASK_PROCESS = 'https://docs.flexprice.io/api-reference/tasks/get-task-processing-result',
+	TASK_LIST: docsUrl('/api-reference/tasks/list-tasks'),
+	TASK_CREATE: docsUrl('/api-reference/tasks/create-a-new-task'),
+	TASK_PROCESS: docsUrl('/api-reference/tasks/get-task-processing-result'),
 
-	TAX_OVERVIEW = 'https://docs.flexprice.io/api-reference/tax-associations/create-tax-association',
-	TAX_TYPES = 'https://docs.flexprice.io/api-reference/tax-associations/get-tax-association',
-	TAX_ASSOCIATIONS = 'https://docs.flexprice.io/api-reference/tax-associations/list-tax-associations',
+	TAX_OVERVIEW: docsUrl('/api-reference/tax-associations/create-tax-association'),
+	TAX_TYPES: docsUrl('/api-reference/tax-associations/get-tax-association'),
+	TAX_ASSOCIATIONS: docsUrl('/api-reference/tax-associations/list-tax-associations'),
 
-	GROUPS = 'https://docs.flexprice.io/docs/product-catalogue/groups/overview',
+	GROUPS: docsUrl('/docs/product-catalogue/groups/overview'),
 
-	ADDON_CREATE = 'https://docs.flexprice.io/api-reference/addons/create-addon',
-	ADDON_LIST = 'https://docs.flexprice.io/api-reference/addons/list-addons',
-	ADDON_DELETE = 'https://docs.flexprice.io/api-reference/addons/delete-addon',
+	ADDON_CREATE: docsUrl('/api-reference/addons/create-addon'),
+	ADDON_LIST: docsUrl('/api-reference/addons/list-addons'),
+	ADDON_DELETE: docsUrl('/api-reference/addons/delete-addon'),
 
-	COUPON_CREATE = 'https://docs.flexprice.io/api-reference/coupons/create-coupon',
-	COUPON_UPDATE = 'https://docs.flexprice.io/api-reference/coupons/update-coupon',
-	COUPON_DELETE = 'https://docs.flexprice.io/api-reference/coupons/delete-coupon',
-}
+	COUPON_CREATE: docsUrl('/api-reference/coupons/create-coupon'),
+	COUPON_UPDATE: docsUrl('/api-reference/coupons/update-coupon'),
+	COUPON_DELETE: docsUrl('/api-reference/coupons/delete-coupon'),
+} as const;
 
 export enum IMAGE_URLS {
 	FEATURE_1 = 'https://res.cloudinary.com/daospvham/image/upload/v1753180993/FEATURES1_veomrd.svg',

@@ -2,21 +2,21 @@
 	"features": {
 		"createFeature": {
 			"title": "كيف أنشئ ميزة؟",
-			"description": "تعرّف على طريقة عمل الميزات في Flexprice."
+			"description": "تعرّف على طريقة عمل الميزات في {{brand}}."
 		},
 		"linkToPlans": {
 			"title": "كيف أربط الميزات بالخطط؟",
-			"description": "اربط الميزات بالخطط في Flexprice."
+			"description": "اربط الميزات بالخطط في {{brand}}."
 		},
 		"clonePricing": {
 			"title": "كيف أستنسخ تسعير OpenAI؟",
-			"description": "استنساخ أسلوب تسعير مشابه لـ OpenAI / Cursor في Flexprice."
+			"description": "استنساخ أسلوب تسعير مشابه لـ OpenAI / Cursor في {{brand}}."
 		}
 	},
 	"addons": {
 		"create": {
 			"title": "كيف أنشئ إضافة؟",
-			"description": "تعرّف على إنشاء إضافات جديدة في Flexprice."
+			"description": "تعرّف على إنشاء إضافات جديدة في {{brand}}."
 		},
 		"list": {
 			"title": "كيف أعرض كل الإضافات؟",
@@ -24,31 +24,31 @@
 		},
 		"delete": {
 			"title": "كيف أحذف إضافة؟",
-			"description": "تعرّف على حذف إضافة في Flexprice."
+			"description": "تعرّف على حذف إضافة في {{brand}}."
 		}
 	},
 	"coupons": {
 		"create": {
 			"title": "كيف أنشئ قسيمة؟",
-			"description": "تعرّف على إنشاء قسيمة جديدة في Flexprice."
+			"description": "تعرّف على إنشاء قسيمة جديدة في {{brand}}."
 		},
 		"update": {
 			"title": "كيف أحدّث قسيمة؟",
-			"description": "تعرّف على تحديث قسيمة في Flexprice."
+			"description": "تعرّف على تحديث قسيمة في {{brand}}."
 		},
 		"delete": {
 			"title": "كيف أحذف قسيمة؟",
-			"description": "تعرّف على حذف قسيمة في Flexprice."
+			"description": "تعرّف على حذف قسيمة في {{brand}}."
 		}
 	},
 	"plans": {
 		"overview": {
-			"title": "تعرّف على طريقة عمل الخطط في Flexprice.",
-			"description": "تعرّف على طريقة عمل الخطط في Flexprice."
+			"title": "تعرّف على طريقة عمل الخطط في {{brand}}.",
+			"description": "تعرّف على طريقة عمل الخطط في {{brand}}."
 		},
 		"create": {
 			"title": "كيف أنشئ خطة",
-			"description": "أنشئ خطة جديدة في Flexprice."
+			"description": "أنشئ خطة جديدة في {{brand}}."
 		},
 		"billingModels": {
 			"title": "كيف أختار بين الفوترة المسبقة والمؤجلة؟",
@@ -57,100 +57,100 @@
 	},
 	"groups": {
 		"overview": {
-			"title": "تعرّف على طريقة عمل المجموعات في Flexprice.",
-			"description": "تعرّف على طريقة عمل المجموعات في Flexprice."
+			"title": "تعرّف على طريقة عمل المجموعات في {{brand}}.",
+			"description": "تعرّف على طريقة عمل المجموعات في {{brand}}."
 		},
 		"plansContext": {
-			"title": "تعرّف على طريقة عمل الخطط في Flexprice.",
-			"description": "تعرّف على طريقة عمل الخطط في Flexprice."
+			"title": "تعرّف على طريقة عمل الخطط في {{brand}}.",
+			"description": "تعرّف على طريقة عمل الخطط في {{brand}}."
 		},
 		"featuresContext": {
-			"title": "تعرّف على طريقة عمل الميزات في Flexprice.",
-			"description": "تعرّف على طريقة عمل الميزات في Flexprice."
+			"title": "تعرّف على طريقة عمل الميزات في {{brand}}.",
+			"description": "تعرّف على طريقة عمل الميزات في {{brand}}."
 		}
 	},
 	"customers": {
 		"create": {
 			"title": "كيف أنشئ عميلاً",
-			"description": "تعرّف على طريقة عمل العملاء في Flexprice."
+			"description": "تعرّف على طريقة عمل العملاء في {{brand}}."
 		},
 		"archive": {
 			"title": "كيف أؤرشف عميلاً",
-			"description": "تعرّف على إنشاء عميل جديد في Flexprice."
+			"description": "تعرّف على إنشاء عميل جديد في {{brand}}."
 		},
 		"subscription": {
 			"title": "كيف أنشئ اشتراكاً",
-			"description": "أنشئ اشتراكاً جديداً في Flexprice."
+			"description": "أنشئ اشتراكاً جديداً في {{brand}}."
 		}
 	},
 	"invoices": {
 		"create": {
 			"title": "كيف أنشئ فاتورة",
-			"description": "تعرّف على طريقة عمل الفواتير في Flexprice."
+			"description": "تعرّف على طريقة عمل الفواتير في {{brand}}."
 		},
 		"manage": {
 			"title": "كيف أدير الفواتير",
-			"description": "إدارة الفواتير في Flexprice."
+			"description": "إدارة الفواتير في {{brand}}."
 		},
 		"partialPayments": {
 			"title": "كيف أتعامل مع المدفوعات الجزئية",
-			"description": "التعامل مع المدفوعات الجزئية في Flexprice."
+			"description": "التعامل مع المدفوعات الجزئية في {{brand}}."
 		}
 	},
 	"payments": {
 		"create": {
 			"title": "كيف أنشئ دفعة",
-			"description": "تعرّف على طريقة عمل المدفوعات في Flexprice."
+			"description": "تعرّف على طريقة عمل المدفوعات في {{brand}}."
 		},
 		"update": {
 			"title": "كيف أحدّث دفعة",
-			"description": "أنشئ دفعة في Flexprice."
+			"description": "أنشئ دفعة في {{brand}}."
 		},
 		"delete": {
 			"title": "كيف أحذف دفعة",
-			"description": "احذف دفعة قائمة في Flexprice."
+			"description": "احذف دفعة قائمة في {{brand}}."
 		}
 	},
 	"secrets": {
 		"list": {
 			"title": "عرض مفاتيح API",
-			"description": "اعرض جميع مفاتيح API في Flexprice."
+			"description": "اعرض جميع مفاتيح API في {{brand}}."
 		},
 		"create": {
 			"title": "إنشاء مفتاح API جديد",
-			"description": "ولّد مفتاح API جديداً في Flexprice."
+			"description": "ولّد مفتاح API جديداً في {{brand}}."
 		},
 		"delete": {
 			"title": "حذف مفتاح API",
-			"description": "احذف مفتاح API في Flexprice."
+			"description": "احذف مفتاح API في {{brand}}."
 		}
 	},
 	"creditNotes": {
 		"create": {
 			"title": "إنشاء إشعار دائن جديد",
-			"description": "تعرّف على طريقة عمل الإشعارات الدائنة في Flexprice."
+			"description": "تعرّف على طريقة عمل الإشعارات الدائنة في {{brand}}."
 		},
 		"process": {
 			"title": "معالجة إشعار دائن مسودة",
-			"description": "أنشئ إشعاراً دائناً جديداً في Flexprice."
+			"description": "أنشئ إشعاراً دائناً جديداً في {{brand}}."
 		},
 		"void": {
 			"title": "إبطال إشعار دائن",
-			"description": "إدارة الإشعارات الدائنة في Flexprice."
+			"description": "إدارة الإشعارات الدائنة في {{brand}}."
 		}
 	},
 	"importExport": {
 		"overview": {
 			"title": "نظرة عامة",
-			"description": "تعرّف على خيارات الاستيراد والتصدير في Flexprice."
+			"description": "تعرّف على خيارات الاستيراد والتصدير في {{brand}}."
 		},
 		"importFile": {
 			"title": "استيراد ملف",
-			"description": "استورد ملفاً إلى Flexprice."
+			"description": "استورد ملفاً إلى {{brand}}."
 		},
 		"processTask": {
 			"title": "معالجة مهمة استيراد",
-			"description": "عالج مهمة استيراد في Flexprice."
+			"description": "عالج مهمة استيراد في {{brand}}."
 		}
 	},
 	"taxes": {

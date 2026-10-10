@@ -1,4 +1,5 @@
 import { config } from './config';
+import { brandConfig } from './branding';
 import { isFlexpriceIoHostname } from '@/utils/hostname/isFlexpriceIoHostname';
 
 export interface ContactDetails {
@@ -7,10 +8,11 @@ export interface ContactDetails {
 	bookCallUrl: string;
 }
 
-const FLEXPRICE_CONTACT: ContactDetails = {
-	slackUrl: 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ',
-	email: 'support@flexprice.io',
-	bookCallUrl: 'https://calendly.com/nikhil-flexprice/30min',
+/** The active brand's contact details (Flexprice's in the default build). Empty means "not offered". */
+const BRAND_CONTACT: ContactDetails = {
+	slackUrl: brandConfig.links.community ?? '',
+	email: brandConfig.supportEmail,
+	bookCallUrl: brandConfig.links.bookCall ?? '',
 };
 
 /** White-label contact details when `contact_us` is enabled in platform config. */
@@ -31,7 +33,7 @@ export function isContactEnabled(): boolean {
 }
 
 export function getContactDetails(): ContactDetails {
-	return isPlatformContactUsEnabled() ? PLATFORM_CONTACT_US : FLEXPRICE_CONTACT;
+	return isPlatformContactUsEnabled() ? PLATFORM_CONTACT_US : BRAND_CONTACT;
 }
 
 export function getContactEmailMailto(): string {

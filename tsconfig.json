@@ -20,11 +20,12 @@
       "noUnusedLocals": true,
       "noUnusedParameters": true,
       "paths": {
-          "@/*": ["./src/*"]
+          "@/*": ["./src/*"],
+          "@brand/*": ["./src/brand/default/*"]
       },
       "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "examples"],
   "references": [
     { "path": "./tsconfig.app.json" }
   ]

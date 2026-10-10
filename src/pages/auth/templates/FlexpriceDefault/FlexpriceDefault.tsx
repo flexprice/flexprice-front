@@ -3,7 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useBrand } from '@/config/branding';
 import { AuthTab } from '../../authTabs';
-import LandingSection from './LandingSection';
+import { Slot, hasSlot } from '@/brand/Slot';
+import { cn } from '@/lib/utils';
 import RegionSelector from '@/components/molecules/RegionSelector/RegionSelector';
 import LocaleSelector from '@/components/molecules/LocaleSelector/LocaleSelector';
 import LoginForm from '../../LoginForm';
@@ -12,8 +13,6 @@ import ForgotPasswordForm from '../../ForgotPasswordForm';
 import ResetPasswordForm from '../../ResetPasswordForm';
 import { config } from '@/config/config';
 
-const SLACK_COMMUNITY_URL = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ';
-
 interface FlexpriceDefaultProps {
 	currentTab: AuthTab;
 	switchTab: (tab: AuthTab) => void;
@@ -21,9 +20,10 @@ interface FlexpriceDefaultProps {
 
 const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchTab }) => {
 	const { t } = useTranslation('auth');
-	const { logo, name } = useBrand();
+	const { logo, name, links } = useBrand();
 
 	const signupEnabled = config.platform.signup.enabled;
+	const withAside = hasSlot('auth.aside');
 
 	const renderForm = () => {
 		switch (currentTab) {
@@ -49,18 +49,21 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 	 */
 	return (
 		<div className='flex w-full min-h-screen bg-surface-canvas page !p-0 !flex-col lg:!flex-row'>
-			<div className='w-full lg:w-[45%] flex flex-col'>
-				<a
-					href={SLACK_COMMUNITY_URL}
-					target='_blank'
-					rel='noopener noreferrer'
-					className='w-full h-[48px] flex items-center justify-center gap-2.5 cursor-pointer border-y border-line-subtle hover:opacity-90 transition-opacity'
-					style={{
-						background: 'linear-gradient(to right, rgb(var(--fp-banner-bg)), rgb(var(--fp-banner-bg-mid)), rgb(var(--fp-banner-bg)))',
-					}}>
-					<span className='text-[15px] font-medium text-content-secondary'>{t('slackBanner', { brandName: name })}</span>
-					<img src='/assets/logo/slack-logo.png' alt={t('images.slackLogoAlt')} className='h-4 w-auto' />
-				</a>
+			<div className={cn('w-full flex flex-col', withAside && 'lg:w-[45%]')}>
+				{/* The brand's community banner; a brand without a community link shows none. */}
+				{links.community && (
+					<a
+						href={links.community}
+						target='_blank'
+						rel='noopener noreferrer'
+						className='w-full h-[48px] flex items-center justify-center gap-2.5 cursor-pointer border-y border-line-subtle hover:opacity-90 transition-opacity'
+						style={{
+							background: 'linear-gradient(to right, rgb(var(--fp-banner-bg)), rgb(var(--fp-banner-bg-mid)), rgb(var(--fp-banner-bg)))',
+						}}>
+						<span className='text-[15px] font-medium text-content-secondary'>{t('slackBanner', { brandName: name })}</span>
+						<img src='/assets/logo/slack-logo.png' alt={t('images.slackLogoAlt')} className='h-4 w-auto' />
+					</a>
+				)}
 				<div className='flex-1 flex justify-center items-center pt-[10px]'>
 					<div className='flex flex-col justify-center max-w-xl w-[88%] sm:w-[70%] lg:w-[55%] mx-auto py-10 lg:py-0'>
 						<div className='flex justify-center mb-4'>
@@ -103,9 +106,11 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 					</div>
 				</div>
 			</div>
-			<div className='hidden lg:flex w-[55%] min-h-screen'>
-				<LandingSection />
-			</div>
+			{withAside && (
+				<div className='hidden lg:flex w-[55%] min-h-screen'>
+					<Slot name='auth.aside' />
+				</div>
+			)}
 		</div>
 	);
 };

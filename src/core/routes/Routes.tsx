@@ -1,5 +1,6 @@
 import MainLayout from '@/layouts/MainLayout';
-import { createBrowserRouter, Navigate } from 'react-router';
+import { applyBrandRoutes, APP_ROUTE_ID } from '@/brand/modules';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router';
 import AuthMiddleware from '../auth/AuthProvider';
 import { useUser } from '@/hooks/UserContext';
 import { TenantMetadataKey } from '@/models/Tenant';
@@ -217,7 +218,7 @@ const DefaultRoute = () => {
 	return <Navigate to={onboardingCompleted ? RouteNames.homeDashboard : RouteNames.onboarding} />;
 };
 
-export const MainRouter: any = createBrowserRouter([
+const appRoutes: RouteObject[] = [
 	// public routes
 	{
 		path: RouteNames.login,
@@ -279,6 +280,7 @@ export const MainRouter: any = createBrowserRouter([
 	},
 	// private routes
 	{
+		id: APP_ROUTE_ID,
 		path: RouteNames.home,
 		element: (
 			<AuthMiddleware>
@@ -720,4 +722,7 @@ export const MainRouter: any = createBrowserRouter([
 		element: <ErrorPage />,
 		errorElement: <RouterErrorElement />,
 	},
-]);
+];
+
+// The active brand pack may swap pages and mount its own routes under the signed-in layout.
+export const MainRouter: any = createBrowserRouter(applyBrandRoutes(appRoutes));

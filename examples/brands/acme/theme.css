@@ -1,0 +1,18 @@
+/* Acme: teal instead of Flexprice's near-black, and IBM Plex Sans. Everything else is the app's. */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+	--primary: 175 84% 26%;
+	--primary-foreground: 0 0% 100%;
+	--ring: 175 84% 32%;
+	--fp-brand-navy: 15 118 110;
+	--fp-brand-fill: 15 118 110;
+	--fp-content-heading: 17 94 89;
+}
+
+.dark {
+	--primary: 172 66% 50%;
+	--primary-foreground: 175 84% 10%;
+	--fp-brand-navy: 45 212 191;
+	--fp-brand-fill: 45 212 191;
+}

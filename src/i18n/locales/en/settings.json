@@ -704,8 +704,8 @@
 			"description": "Custom endpoint URL for S3-compatible storage (e.g., MinIO, DigitalOcean Spaces)"
 		},
 		"flexpriceManaged": {
-			"title": "Flexprice Managed Storage",
-			"body": "Your exports will be automatically stored in Flexprice-managed S3 buckets. No additional export configuration required. Download the exported files from the respective task runs table."
+			"title": "{{brand}} Managed Storage",
+			"body": "Your exports will be automatically stored in {{brand}}-managed S3 buckets. No additional export configuration required. Download the exported files from the respective task runs table."
 		},
 		"enabled": "Enable this export task",
 		"buttons": {
@@ -741,21 +741,21 @@
 		"awsMarketplace": {
 			"titleConnect": "Connect your AWS Marketplace account",
 			"titleEdit": "Edit AWS Marketplace Connection",
-			"description": "Sync your AWS Marketplace customers, subscriptions, and billing data securely using an IAM role. Flexprice only accesses the permissions you explicitly grant, and verifies the connection before enabling sync.",
+			"description": "Sync your AWS Marketplace customers, subscriptions, and billing data securely using an IAM role. {{brand}} only accesses the permissions you explicitly grant, and verifies the connection before enabling sync.",
 			"connectionNameLabel": "Connection Name",
 			"connectionNameInfo": "Choose a name to help identify this AWS Marketplace connection inside your workspace.",
 			"connectionNamePlaceholder": "Production AWS Marketplace",
 			"connectionNameHint": "A descriptive name for this connection.",
 			"step1Title": "Step 1 — Create an IAM role in AWS",
-			"step1Hint": "Create a new IAM role in your AWS account using the policies below. They grant Flexprice only the permissions required to sync your AWS Marketplace subscriptions, customers, and billing information.",
+			"step1Hint": "Create a new IAM role in your AWS account using the policies below. They grant {{brand}} only the permissions required to sync your AWS Marketplace subscriptions, customers, and billing information.",
 			"iamPolicyLabel": "Permissions Policy",
-			"iamPolicyInfo": "Specifies exactly what AWS Marketplace resources Flexprice can access.",
+			"iamPolicyInfo": "Specifies exactly what AWS Marketplace resources {{brand}} can access.",
 			"trustPolicyLabel": "Trust Relationship",
-			"trustPolicyInfo": "Allows Flexprice to securely assume this IAM role using the External ID below.",
+			"trustPolicyInfo": "Allows {{brand}} to securely assume this IAM role using the External ID below.",
 			"externalIdLabel": "External ID",
-			"externalIdInfo": "This unique identifier protects against the Confused Deputy security issue by ensuring only your Flexprice workspace can assume this IAM role. You don't need to copy it separately — it's already included in the Trust Relationship above.",
-			"accountIdLabel": "Flexprice AWS account ID",
-			"accountIdInfo": "Flexprice's AWS account that your IAM role will trust. It's already included in the Trust Relationship above.",
+			"externalIdInfo": "This unique identifier protects against the Confused Deputy security issue by ensuring only your {{brand}} workspace can assume this IAM role. You don't need to copy it separately — it's already included in the Trust Relationship above.",
+			"accountIdLabel": "{{brand}} AWS account ID",
+			"accountIdInfo": "{{brand}}'s AWS account that your IAM role will trust. It's already included in the Trust Relationship above.",
 			"accountIdMissing": "Not configured. Set VITE_FLEXPRICE_AWS_ACCOUNT_ID so the trust policy can be generated.",
 			"step2Title": "Step 2 — Enter your IAM Role ARN",
 			"roleArnLabel": "Role ARN",
@@ -777,7 +777,7 @@
 		"gcpMarketplace": {
 			"titleConnect": "Connect to GCP Marketplace",
 			"titleEdit": "Edit GCP Marketplace Connection",
-			"description": "Run the setup script in your GCP project, then paste the resulting credentials JSON here. Flexprice verifies it before saving.",
+			"description": "Run the setup script in your GCP project, then paste the resulting credentials JSON here. {{brand}} verifies it before saving.",
 			"connectionNameLabel": "Connection name",
 			"connectionNameInfo": "Choose a name to help identify this GCP Marketplace connection inside your workspace.",
 			"connectionNamePlaceholder": "e.g. GCP Marketplace",
@@ -789,7 +789,7 @@
 			"copyScript": "Setup script copied to clipboard",
 			"variablesTitle": "Variables",
 			"variablesHint": "Copy each value to fill the matching {VARIABLE} placeholder in the setup script above. The values stay hidden here and are only revealed once pasted.",
-			"accountIdInfo": "Flexprice's AWS account that your Workload Identity Federation provider trusts. It's already included in the setup script above.",
+			"accountIdInfo": "{{brand}}'s AWS account that your Workload Identity Federation provider trusts. It's already included in the setup script above.",
 			"roleNameInfo": "The AWS role name your Workload Identity Federation provider's attribute condition checks against. It's already included in the setup script above.",
 			"copyAccountId": "Account ID copied to clipboard",
 			"copyRoleName": "Role name copied to clipboard",
@@ -797,7 +797,7 @@
 			"accountIdMissing": "Not configured. Set VITE_FLEXPRICE_AWS_ACCOUNT_ID and VITE_FLEXPRICE_AWS_ROLE_NAME so the script can be generated.",
 			"step2Title": "2. Paste the credentials JSON the script produced",
 			"credentialsJsonLabel": "Credentials JSON",
-			"credentialsJsonInfo": "The credentials file the script produced. Flexprice uses it to authenticate into your GCP project without storing a long-lived key.",
+			"credentialsJsonInfo": "The credentials file the script produced. {{brand}} uses it to authenticate into your GCP project without storing a long-lived key.",
 			"credentialsJsonPlaceholder": "{\"type\": \"external_account\", ...}",
 			"credentialsJsonHint": "The full contents of the file the script wrote (flexprice-gcp-creds.json)",
 			"credentialsJsonRequired": "Credentials JSON is required",
@@ -806,7 +806,7 @@
 		"azureMarketplace": {
 			"titleConnect": "Connect to Azure Marketplace",
 			"titleEdit": "Edit Azure Marketplace Connection",
-			"description": "Sync your Azure Marketplace subscriptions and usage using an Entra ID app registered in your own tenant. Flexprice verifies the credentials before saving.",
+			"description": "Sync your Azure Marketplace subscriptions and usage using an Entra ID app registered in your own tenant. {{brand}} verifies the credentials before saving.",
 			"connectionNameLabel": "Connection name",
 			"connectionNameInfo": "Choose a name to help identify this Azure Marketplace connection inside your workspace.",
 			"connectionNamePlaceholder": "e.g. Azure Marketplace",
@@ -827,7 +827,7 @@
 			"clientIdHint": "Found on the app registration overview page in Azure.",
 			"clientIdRequired": "Client ID is required",
 			"clientSecretLabel": "Client secret",
-			"clientSecretInfo": "A client secret generated for the app. Flexprice encrypts it and uses it only to request an access token.",
+			"clientSecretInfo": "A client secret generated for the app. {{brand}} encrypts it and uses it only to request an access token.",
 			"clientSecretPlaceholder": "Enter client secret",
 			"clientSecretHint": "Generated under Certificates and secrets on the app registration.",
 			"clientSecretRequired": "Client secret is required"
@@ -874,7 +874,7 @@
 		},
 		"sync": {
 			"title": "Sync Configuration",
-			"description": "Configure what data to sync between {{partner}} and Flexprice",
+			"description": "Configure what data to sync between {{partner}} and {{brand}}",
 			"pushTo": "Push to {{partner}}",
 			"pushToHubSpot": "Push to HubSpot",
 			"inboundWebhook": "Inbound sync (webhook configuration required)"
@@ -922,7 +922,7 @@
 			"description": "Enter your AWS credentials to connect to S3. Click save when you're done.",
 			"connectionNameHint": "A descriptive name for this S3 connection",
 			"connectionNamePlaceholder": "Enter connection name",
-			"flexpriceManaged": "Flexprice Managed Storage",
+			"flexpriceManaged": "{{brand}} Managed Storage",
 			"flexpriceManagedHint": "No AWS configuration required",
 			"awsAccessKey": "AWS Access Key ID",
 			"awsAccessKeyPlaceholder": "Enter AWS Access Key ID",
@@ -934,7 +934,7 @@
 			"sessionTokenPlaceholder": "Enter AWS Session Token",
 			"sessionTokenHint": "Required only for temporary credentials",
 			"securityNote": "Security Note",
-			"securityFlexprice": "Your data will be stored securely in Flexprice-managed S3 buckets. Files are encrypted at rest and accessible via secure download links.",
+			"securityFlexprice": "Your data will be stored securely in {{brand}}-managed S3 buckets. Files are encrypted at rest and accessible via secure download links.",
 			"securityAws": "Your AWS credentials are encrypted and stored securely. We recommend using IAM roles with minimal required permissions for S3 access."
 		},
 		"zohoBooks": {
@@ -949,15 +949,15 @@
 			"accountsServerPlaceholder": "https://accounts.zoho.in",
 			"accountsServerHint": "Default is India (.in). Use another region if needed (e.g. accounts.zoho.com, accounts.zoho.eu).",
 			"webhookSection": "Webhook configuration",
-			"webhookBody": "In Zoho Books, create Invoice and Contact webhooks and set this URL on each. Use the same secret here and in Zoho so Flexprice can verify X-Zoho-Webhook-Signature.",
+			"webhookBody": "In Zoho Books, create Invoice and Contact webhooks and set this URL on each. Use the same secret here and in Zoho so {{brand}} can verify X-Zoho-Webhook-Signature.",
 			"webhookSecret": "Webhook secret",
 			"webhookSecretPlaceholderEdit": "Leave blank to keep existing secret, or enter a new secret to rotate",
 			"webhookSecretPlaceholderCreate": "Same value as in Zoho Books webhook settings",
 			"webhookSecretDescEdit": "Stored encrypted. Leave blank to keep the current secret when updating.",
-			"webhookSecretDescCreate": "Required. Must match the secret in Zoho Books so Flexprice can verify X-Zoho-Webhook-Signature. Stored encrypted with your connection.",
+			"webhookSecretDescCreate": "Required. Must match the secret in Zoho Books so {{brand}} can verify X-Zoho-Webhook-Signature. Stored encrypted with your connection.",
 			"oauthRedirectTitle": "OAuth Redirect URI",
 			"oauthRedirectBody": "This URI must exactly match your Zoho app Authorized Redirect URI and backend oauth redirect configuration.",
-			"webhookBodyHtml": "In Zoho Books, create Invoice and Contact webhooks and set this URL on each. Use the same secret here and in Zoho so Flexprice can verify <header>X-Zoho-Webhook-Signature</header>.",
+			"webhookBodyHtml": "In Zoho Books, create Invoice and Contact webhooks and set this URL on each. Use the same secret here and in Zoho so {{brand}} can verify <header>X-Zoho-Webhook-Signature</header>.",
 			"credentialsHidden": "OAuth credentials are encrypted and hidden. To update credentials, delete the connection and create a new one.",
 			"selectTenantForUrl": "Select tenant and environment to generate URL",
 			"toastUpdated": "Zoho Books connection updated successfully"
@@ -977,7 +977,7 @@
 			"incomeAccountPlaceholder": "79",
 			"incomeAccountHint": "QuickBooks Income Account ID for Items. If left blank, it defaults to QuickBooks' standard income account (ID: 79).",
 			"pushToQb": "Push to QuickBooks",
-			"webhookPaymentEnabled": "Configure webhooks in your QuickBooks app to enable payment reconciliation from QuickBooks to Flexprice.",
+			"webhookPaymentEnabled": "Configure webhooks in your QuickBooks app to enable payment reconciliation from QuickBooks to {{brand}}.",
 			"webhookPaymentDisabled": "Enable payment sync to configure webhook integration for payment reconciliation.",
 			"webhookVerifierOptional": "Webhook Verifier Token (Optional)",
 			"webhookVerifierPlaceholder": "Enter webhook verifier token from QuickBooks",
@@ -1080,7 +1080,7 @@
 			"webhookEventsIntro": "Subscribe to these events in your Paddle dashboard:"
 		},
 		"whop": {
-			"description": "Connect Flexprice to Whop to sync invoices.",
+			"description": "Connect {{brand}} to Whop to sync invoices.",
 			"connectionPlaceholder": "Name your Whop connection",
 			"connectionHint": "A friendly name for this connection.",
 			"apiKeyPlaceholder": "apik_...",
@@ -1091,8 +1091,8 @@
 			"companyIdRequired": "Company ID is required",
 			"productIdOptional": "Product ID (optional)",
 			"productIdPlaceholder": "prod_... — leave blank to auto-create",
-			"productIdHint": "Whop product used for invoices. Leave blank to have Flexprice create one automatically.",
-			"invoiceSyncHint": "Push Flexprice invoices to Whop as send_invoice payments",
+			"productIdHint": "Whop product used for invoices. Leave blank to have {{brand}} create one automatically.",
+			"invoiceSyncHint": "Push {{brand}} invoices to Whop as send_invoice payments",
 			"webhookSecret": "Webhook Secret",
 			"webhookSecretPlaceholderCreate": "Webhook signing secret from Whop",
 			"webhookSecretPlaceholderEdit": "Leave blank to keep existing secret, or enter a new secret to rotate",
@@ -1153,7 +1153,7 @@
 			"addS3Connection": "Add S3 Connection",
 			"s3FeaturesTitle": "S3 Export Features",
 			"s3FeatureDataExportTitle": "Data Export",
-			"s3FeatureDataExportBody": "Automatically export events, invoices, and other Flexprice data to your S3 bucket on a scheduled basis.",
+			"s3FeatureDataExportBody": "Automatically export events, invoices, and other {{brand}} data to your S3 bucket on a scheduled basis.",
 			"s3FeatureSchedulingTitle": "Flexible Scheduling",
 			"s3FeatureSchedulingBody": "Choose between hourly or daily export schedules to match your data processing needs.",
 			"s3FeatureSecureTitle": "Secure Storage",
@@ -1161,7 +1161,7 @@
 			"s3FeatureFormatsTitle": "Data Format Options",
 			"s3FeatureFormatsBody": "Export data in various formats with configurable compression and file size limits for optimal storage efficiency.",
 			"overviewSectionTitle": "Overview",
-			"overviewIntro": "Export your Flexprice data to external storage systems for data warehousing, analytics, and backup purposes. Configure automated exports with flexible scheduling and secure data transfer.",
+			"overviewIntro": "Export your {{brand}} data to external storage systems for data warehousing, analytics, and backup purposes. Configure automated exports with flexible scheduling and secure data transfer.",
 			"highlightAutomatedExportsTitle": "Automated Exports",
 			"highlightAutomatedExportsBody": "Schedule regular data exports",
 			"highlightMultipleFormatsTitle": "Multiple Formats",
@@ -1170,7 +1170,7 @@
 			"highlightSecureStorageBody": "Encrypted data transfer and storage",
 			"exportProvidersTitle": "Export Providers",
 			"providerAmazonS3Name": "Amazon S3",
-			"providerAmazonS3Description": "Export your Flexprice data to Amazon S3 for data warehousing, analytics, and backup purposes.",
+			"providerAmazonS3Description": "Export your {{brand}} data to Amazon S3 for data warehousing, analytics, and backup purposes.",
 			"tagStorage": "Storage",
 			"tagDataWarehouse": "Data Warehouse",
 			"tagAnalytics": "Analytics",
@@ -1264,12 +1264,12 @@
 					"sections": {
 						"overview": {
 							"title": "Overview",
-							"paragraphs": ["The Flexprice Stripe app enables invoicing, tax collection, and payment via Stripe."]
+							"paragraphs": ["The {{brand}} Stripe app enables invoicing, tax collection, and payment via Stripe."]
 						},
 						"stripeInvoicing": {
 							"title": "Stripe Invoicing",
 							"paragraphs": [
-								"Create and send invoices through Stripe Invoicing directly from Flexprice and automatically collect payments."
+								"Create and send invoices through Stripe Invoicing directly from {{brand}} and automatically collect payments."
 							]
 						},
 						"automaticTax": {
@@ -1293,13 +1293,13 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice Razorpay app enables invoicing, tax calculations, and payment collection directly through Razorpay. Integrate it seamlessly with Flexprice (or your billing engine) to streamline your payment workflows."
+								"The {{brand}} Razorpay app enables invoicing, tax calculations, and payment collection directly through Razorpay. Integrate it seamlessly with {{brand}} (or your billing engine) to streamline your payment workflows."
 							]
 						},
 						"razorpayInvoicing": {
 							"title": "Razorpay Invoicing",
 							"paragraphs": [
-								"Create and send invoices with a few clicks - right from Flexprice - using Razorpay's invoicing capabilities. Payment collection can be automated, reducing manual follow-ups."
+								"Create and send invoices with a few clicks - right from {{brand}} - using Razorpay's invoicing capabilities. Payment collection can be automated, reducing manual follow-ups."
 							]
 						},
 						"automaticTax": {
@@ -1318,24 +1318,24 @@
 				},
 				"chargebee": {
 					"name": "Chargebee",
-					"description": "Sync invoices and charges/prices between Flexprice and Chargebee for seamless billing operations.",
+					"description": "Sync invoices and charges/prices between {{brand}} and Chargebee for seamless billing operations.",
 					"sections": {
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice Chargebee app enables seamless synchronization of invoices and charges/prices between Flexprice and Chargebee. Integrate it to streamline your billing workflows."
+								"The {{brand}} Chargebee app enables seamless synchronization of invoices and charges/prices between {{brand}} and Chargebee. Integrate it to streamline your billing workflows."
 							]
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
 							"paragraphs": [
-								"Sync invoices from Flexprice to Chargebee, ensuring your billing system stays up to date with the latest invoice data."
+								"Sync invoices from {{brand}} to Chargebee, ensuring your billing system stays up to date with the latest invoice data."
 							]
 						},
 						"chargePriceSync": {
 							"title": "Charge and Price Sync",
 							"paragraphs": [
-								"Synchronize charges and prices between Flexprice and Chargebee to maintain consistency across your billing platform."
+								"Synchronize charges and prices between {{brand}} and Chargebee to maintain consistency across your billing platform."
 							]
 						}
 					}
@@ -1347,23 +1347,23 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice HubSpot app enables seamless syncing of deals, invoices, customers, and payments between HubSpot and Flexprice."
+								"The {{brand}} HubSpot app enables seamless syncing of deals, invoices, customers, and payments between HubSpot and {{brand}}."
 							]
 						},
 						"dealLineItems": {
 							"title": "Deal Line Items Sync",
 							"paragraphs": [
-								"Automatically sync deal line items from HubSpot to Flexprice, ensuring accurate revenue tracking and billing."
+								"Automatically sync deal line items from HubSpot to {{brand}}, ensuring accurate revenue tracking and billing."
 							]
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
-							"paragraphs": ["Push invoices from Flexprice to HubSpot to keep your CRM up to date with billing information."]
+							"paragraphs": ["Push invoices from {{brand}} to HubSpot to keep your CRM up to date with billing information."]
 						},
 						"customerSync": {
 							"title": "Customer Sync",
 							"paragraphs": [
-								"Sync customer data between HubSpot and Flexprice to maintain a single source of truth for customer information."
+								"Sync customer data between HubSpot and {{brand}} to maintain a single source of truth for customer information."
 							]
 						},
 						"paymentsSync": {
@@ -1372,7 +1372,7 @@
 						},
 						"revenueReporting": {
 							"title": "Revenue Calculations on HubSpot",
-							"paragraphs": ["Leverage HubSpot's reporting capabilities with accurate revenue data synced from Flexprice."]
+							"paragraphs": ["Leverage HubSpot's reporting capabilities with accurate revenue data synced from {{brand}}."]
 						}
 					}
 				},
@@ -1386,40 +1386,40 @@
 				},
 				"zoho": {
 					"name": "Zoho",
-					"description": "The Zoho Books integration lets you manage critical accounting tasks directly from Flexprice.",
+					"description": "The Zoho Books integration lets you manage critical accounting tasks directly from {{brand}}.",
 					"sections": {
 						"createCustomer": {
 							"title": "Create Customer in Zoho Books",
 							"paragraphs": [
-								"Automatically create or update customers in Zoho Books whenever a new customer is added or modified in Flexprice."
+								"Automatically create or update customers in Zoho Books whenever a new customer is added or modified in {{brand}}."
 							]
 						},
 						"createInvoice": {
 							"title": "Create Invoice in Zoho Books",
-							"paragraphs": ["Generate Zoho Books invoices seamlessly from Flexprice usage data or billing triggers, reducing manual work."]
+							"paragraphs": ["Generate Zoho Books invoices seamlessly from {{brand}} usage data or billing triggers, reducing manual work."]
 						},
 						"transformInvoice": {
-							"title": "Transform Flexprice Invoice to Zoho Books Invoice",
+							"title": "Transform {{brand}} Invoice to Zoho Books Invoice",
 							"paragraphs": [
-								"Convert a Flexprice invoice object into Zoho Books' invoice format - streamlining data flow and ensuring accuracy."
+								"Convert a {{brand}} invoice object into Zoho Books' invoice format - streamlining data flow and ensuring accuracy."
 							]
 						}
 					}
 				},
 				"quickbooks": {
 					"name": "QuickBooks",
-					"description": "Sync plans, customers, and invoices from Flexprice to QuickBooks Online for seamless accounting operations.",
+					"description": "Sync plans, customers, and invoices from {{brand}} to QuickBooks Online for seamless accounting operations.",
 					"sections": {
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice QuickBooks integration enables one-way sync from Flexprice to QuickBooks Online. Automatically sync plans, customers, and invoices to keep your accounting system up to date."
+								"The {{brand}} QuickBooks integration enables one-way sync from {{brand}} to QuickBooks Online. Automatically sync plans, customers, and invoices to keep your accounting system up to date."
 							]
 						},
 						"planPriceSync": {
 							"title": "Plan/Price Sync",
 							"paragraphs": [
-								"Automatically create QuickBooks Items (Service type) when plans are created in Flexprice. Each price is mapped to a QuickBooks Item for accurate invoice line items."
+								"Automatically create QuickBooks Items (Service type) when plans are created in {{brand}}. Each price is mapped to a QuickBooks Item for accurate invoice line items."
 							]
 						},
 						"customerSync": {
@@ -1431,7 +1431,7 @@
 						"invoiceSync": {
 							"title": "Invoice Sync",
 							"paragraphs": [
-								"Automatically sync invoices from Flexprice to QuickBooks Online. Invoice line items are mapped to QuickBooks Items, ensuring accurate accounting records."
+								"Automatically sync invoices from {{brand}} to QuickBooks Online. Invoice line items are mapped to QuickBooks Items, ensuring accurate accounting records."
 							]
 						},
 						"tokenRefresh": {
@@ -1449,13 +1449,13 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice Nomod app enables invoicing and payment collection through Nomod payment links. Integrate it seamlessly with Flexprice to streamline your payment workflows."
+								"The {{brand}} Nomod app enables invoicing and payment collection through Nomod payment links. Integrate it seamlessly with {{brand}} to streamline your payment workflows."
 							]
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
 							"paragraphs": [
-								"Create and send invoices with payment links through Nomod directly from Flexprice. Payment collection can be automated through Nomod payment links."
+								"Create and send invoices with payment links through Nomod directly from {{brand}}. Payment collection can be automated through Nomod payment links."
 							]
 						},
 						"paymentLinks": {
@@ -1479,13 +1479,13 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice Moyasar app enables invoicing and payment collection through Moyasar payment gateway. Integrate it seamlessly with Flexprice to streamline your payment workflows."
+								"The {{brand}} Moyasar app enables invoicing and payment collection through Moyasar payment gateway. Integrate it seamlessly with {{brand}} to streamline your payment workflows."
 							]
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
 							"paragraphs": [
-								"Create and send invoices through Moyasar directly from Flexprice. Payment collection can be automated through Moyasar payment gateway."
+								"Create and send invoices through Moyasar directly from {{brand}}. Payment collection can be automated through Moyasar payment gateway."
 							]
 						},
 						"securePayments": {
@@ -1509,13 +1509,13 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice Paddle app enables invoicing and payment collection through Paddle payment gateway. Integrate it seamlessly with Flexprice to streamline your payment workflows."
+								"The {{brand}} Paddle app enables invoicing and payment collection through Paddle payment gateway. Integrate it seamlessly with {{brand}} to streamline your payment workflows."
 							]
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
 							"paragraphs": [
-								"Create and send invoices through Paddle directly from Flexprice. Payment collection can be automated through Paddle payment gateway."
+								"Create and send invoices through Paddle directly from {{brand}}. Payment collection can be automated through Paddle payment gateway."
 							]
 						},
 						"securePayments": {
@@ -1539,20 +1539,20 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice Whop integration lets you push invoices directly to Whop as one-time send_invoice payments. Customers can pay via the Whop-hosted checkout page, and Flexprice is automatically updated when payment is received."
+								"The {{brand}} Whop integration lets you push invoices directly to Whop as one-time send_invoice payments. Customers can pay via the Whop-hosted checkout page, and {{brand}} is automatically updated when payment is received."
 							]
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
 							"paragraphs": [
-								"When invoice sync is enabled, Flexprice automatically creates a corresponding invoice in Whop whenever a Flexprice invoice is finalized. The integration ensures your Whop product exists (creating one if needed).",
-								"You can also mark a Whop invoice as paid from Flexprice, which calls the Whop mark_paid API on your behalf."
+								"When invoice sync is enabled, {{brand}} automatically creates a corresponding invoice in Whop whenever a {{brand}} invoice is finalized. The integration ensures your Whop product exists (creating one if needed).",
+								"You can also mark a Whop invoice as paid from {{brand}}, which calls the Whop mark_paid API on your behalf."
 							]
 						},
 						"webhooks": {
 							"title": "Webhooks",
 							"paragraphs": [
-								"Register the Flexprice webhook URL in your Whop developer settings, subscribe to invoice.paid, and use the same webhook signing secret in Flexprice. When Whop fires this event, Flexprice verifies the signature, marks the corresponding invoice as paid, and records the payment."
+								"Register the {{brand}} webhook URL in your Whop developer settings, subscribe to invoice.paid, and use the same webhook signing secret in {{brand}}. When Whop fires this event, {{brand}} verifies the signature, marks the corresponding invoice as paid, and records the payment."
 							]
 						}
 					}
@@ -1564,12 +1564,12 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"The Flexprice Tabs integration lets you push invoices directly to Tabs using your Tabs API key. Configure a connection name, API key, and invoice sync settings to get started."
+								"The {{brand}} Tabs integration lets you push invoices directly to Tabs using your Tabs API key. Configure a connection name, API key, and invoice sync settings to get started."
 							]
 						},
 						"invoiceSync": {
 							"title": "Invoice Sync",
-							"paragraphs": ["When invoice sync is enabled, Flexprice automatically pushes finalized invoices to Tabs."]
+							"paragraphs": ["When invoice sync is enabled, {{brand}} automatically pushes finalized invoices to Tabs."]
 						}
 					}
 				},
@@ -1580,13 +1580,13 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"Flexprice reports the usage you already meter to AWS Marketplace on your behalf. Connect the marketplace-metering IAM role from your own AWS account, and Flexprice takes care of sending BatchMeterUsage for each registered agreement."
+								"{{brand}} reports the usage you already meter to AWS Marketplace on your behalf. Connect the marketplace-metering IAM role from your own AWS account, and {{brand}} takes care of sending BatchMeterUsage for each registered agreement."
 							]
 						},
 						"setup": {
 							"title": "Setup",
 							"paragraphs": [
-								"Create an IAM role in your AWS account using the IAM policy and trust policy shown in the connection panel. The trust policy grants Flexprice's AWS account permission to assume the role, scoped to a unique external ID. Paste the resulting Role ARN back into Flexprice and save — Flexprice verifies the role by assuming it before storing the connection."
+								"Create an IAM role in your AWS account using the IAM policy and trust policy shown in the connection panel. The trust policy grants {{brand}}'s AWS account permission to assume the role, scoped to a unique external ID. Paste the resulting Role ARN back into {{brand}} and save — {{brand}} verifies the role by assuming it before storing the connection."
 							]
 						},
 						"usageReporting": {
@@ -1604,13 +1604,13 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"Flexprice reports the usage you already meter to GCP Marketplace on your behalf. Flexprice authenticates to your GCP project using Workload Identity Federation — no long-lived GCP key is ever stored — and sends the usage report for each registered entitlement."
+								"{{brand}} reports the usage you already meter to GCP Marketplace on your behalf. {{brand}} authenticates to your GCP project using Workload Identity Federation — no long-lived GCP key is ever stored — and sends the usage report for each registered entitlement."
 							]
 						},
 						"setup": {
 							"title": "Setup",
 							"paragraphs": [
-								"Run the setup script shown in the connection panel from your GCP project's Cloud Shell. It creates a workload identity pool trusting Flexprice's AWS identity and a service account scoped to report usage only. Paste the resulting credentials file back into Flexprice and save — Flexprice verifies the connection by exchanging it for a live token before storing it."
+								"Run the setup script shown in the connection panel from your GCP project's Cloud Shell. It creates a workload identity pool trusting {{brand}}'s AWS identity and a service account scoped to report usage only. Paste the resulting credentials file back into {{brand}} and save — {{brand}} verifies the connection by exchanging it for a live token before storing it."
 							]
 						},
 						"usageReporting": {
@@ -1628,13 +1628,13 @@
 						"overview": {
 							"title": "Overview",
 							"paragraphs": [
-								"Flexprice reports the usage you already meter to Azure Marketplace on your behalf. Connect an Entra ID app registered in your own Azure tenant, and Flexprice sends the usage event for each registered subscription."
+								"{{brand}} reports the usage you already meter to Azure Marketplace on your behalf. Connect an Entra ID app registered in your own Azure tenant, and {{brand}} sends the usage event for each registered subscription."
 							]
 						},
 						"setup": {
 							"title": "Setup",
 							"paragraphs": [
-								"Register an app in your own Microsoft Entra ID tenant and generate a client secret for it. Make sure this app's tenant ID and application ID are entered on the Technical Configuration page of every offer you want usage reported for. Paste the tenant ID, client ID, and client secret back into Flexprice and save. Flexprice verifies the credentials by requesting an access token before storing the connection."
+								"Register an app in your own Microsoft Entra ID tenant and generate a client secret for it. Make sure this app's tenant ID and application ID are entered on the Technical Configuration page of every offer you want usage reported for. Paste the tenant ID, client ID, and client secret back into {{brand}} and save. {{brand}} verifies the credentials by requesting an access token before storing the connection."
 							]
 						},
 						"usageReporting": {
@@ -1833,10 +1833,10 @@
 			"copyMetadataUrl": "Copy metadata URL",
 			"copiedMetadataUrl": "Metadata URL copied",
 			"enabled": "Enable SAML SSO",
-			"enabledDescription": "Turn on SSO for this tenant. Requires Flexprice approval before sign-in is available.",
+			"enabledDescription": "Turn on SSO for this tenant. Requires {{brand}} approval before sign-in is available.",
 			"statusApproved": "Approved",
-			"statusPending": "Pending Flexprice approval",
-			"statusDescription": "Flexprice reviews and approves SSO access for each tenant. This is separate from the toggle above.",
+			"statusPending": "Pending {{brand}} approval",
+			"statusDescription": "{{brand}} reviews and approves SSO access for each tenant. This is separate from the toggle above.",
 			"enforceSso": "Require SSO for sign-in",
 			"enforceSsoWarning": "Turning this on disables password login for everyone in this tenant except super admins.",
 			"idpEntityId": "IdP entity ID",
@@ -1864,7 +1864,7 @@
 				"defaultRoleRequired": "Default role is required when SAML SSO is enabled"
 			},
 			"saveSuccess": "SAML SSO settings saved",
-			"saveSuccessPendingApproval": "Saved. Awaiting Flexprice approval before sign-in is available.",
+			"saveSuccessPendingApproval": "Saved. Awaiting {{brand}} approval before sign-in is available.",
 			"saveError": "Failed to save SAML SSO settings",
 			"saveErrorForbidden": "SAML SSO can only be configured by a super admin user. A super admin API key cannot be used to change how people sign in.",
 			"saveErrorDisabled": "This deployment does not offer SSO.",
@@ -1872,7 +1872,7 @@
 			"ssoLoginUrlDescription": "Share this link with your team. It takes them straight to your identity provider to sign in.",
 			"copySsoLoginUrl": "Copy SSO sign-in link",
 			"copiedSsoLoginUrl": "SSO sign-in link copied",
-			"unsupportedSigning": "Flexprice does not sign authentication requests or accept encrypted assertions. The certificate above is your identity provider's public certificate — Flexprice holds no signing key of its own. If your identity provider requires signed requests or assertion encryption, turn those options off for this application, or sign-in will fail.",
+			"unsupportedSigning": "{{brand}} does not sign authentication requests or accept encrypted assertions. The certificate above is your identity provider's public certificate — {{brand}} holds no signing key of its own. If your identity provider requires signed requests or assertion encryption, turn those options off for this application, or sign-in will fail.",
 			"saveConflict": "Someone else changed these settings while this page was open. The latest values have been loaded — review them and save again."
 		}
 	},
