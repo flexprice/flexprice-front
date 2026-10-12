@@ -130,6 +130,36 @@ describe('series and totals', () => {
 		]);
 		expect(totalsFor(result, 'invoice_total', 'usd')).toEqual({ current: 250, prev: 180 });
 	});
+	it('defaults to the first currency when none chosen', () => {
+		expect(toSeries(result, 'invoice_total', '')).toEqual([
+			{ label: '2026-08-01T00:00:00Z', current: 100, prev: 80 },
+			{ label: '2026-09-01T00:00:00Z', current: 150, prev: 100 },
+		]);
+		expect(totalsFor(result, 'invoice_total', '')).toEqual({ current: 250, prev: 180 });
+	});
+});
+
+describe('breakdown-only reports', () => {
+	const aging: ReportCatalogEntry = {
+		...flow,
+		key: 'aging',
+		kind: 'snapshot',
+		shapes: ['breakdown'],
+		default_shape: 'breakdown',
+		dimensions: [{ key: 'aging_bucket', label: 'Aging bucket' }],
+		grains: [],
+		supports_compare: false,
+	};
+	it('sends its default dimension without a group-by choice', () => {
+		expect(buildRequest(aging, defaultControls(aging), NOW)).toEqual({
+			shape: 'breakdown',
+			range: rangeForPreset('last_90_days', NOW),
+			dimensions: ['aging_bucket'],
+		});
+	});
+	it('falls back to its default dimension when group-by is not allowed', () => {
+		expect(controlsForEntry(aging, { ...defaultControls(flow), groupBy: 'customer_id' }).groupBy).toBe('aging_bucket');
+	});
 });
 
 describe('formatValue', () => {

@@ -60,7 +60,7 @@ export const defaultControls = (entry: ReportCatalogEntry): ReportControls => ({
 	preset: 'last_90_days',
 	grain: entry.grains.includes('month') ? 'month' : (entry.grains[0] ?? ''),
 	currency: '',
-	groupBy: '',
+	groupBy: entry.default_shape === 'breakdown' ? (entry.dimensions[0]?.key ?? '') : '',
 	compare: entry.supports_compare ? 'previous_period' : 'none',
 	view: 'chart',
 });
@@ -74,7 +74,7 @@ export const controlsForEntry = (entry: ReportCatalogEntry, prev: ReportControls
 		view: prev.view,
 		compare: entry.supports_compare ? (prev.compare === 'none' ? base.compare : prev.compare) : 'none',
 		grain: prev.grain && entry.grains.includes(prev.grain) ? prev.grain : base.grain,
-		groupBy: entry.dimensions.some((d) => d.key === prev.groupBy) ? prev.groupBy : '',
+		groupBy: entry.dimensions.some((d) => d.key === prev.groupBy) ? prev.groupBy : base.groupBy,
 	};
 };
 
@@ -83,7 +83,7 @@ export const buildRequest = (entry: ReportCatalogEntry, c: ReportControls, now: 
 	const groupBy = entry.dimensions.some((d) => d.key === c.groupBy) ? c.groupBy : '';
 	const shape = groupBy && entry.shapes.includes('breakdown') ? 'breakdown' : entry.default_shape;
 	const req: ReportQueryRequest = { shape, range: rangeForPreset(c.preset, now) };
-	if (shape === 'breakdown' && groupBy) req.dimensions = [groupBy];
+	if (shape === 'breakdown' && entry.dimensions.length) req.dimensions = [groupBy || entry.dimensions[0].key];
 	if (shape === 'timeseries' && !snapshot && c.grain) req.grain = c.grain;
 	if (c.currency) req.currency = c.currency;
 	if (!snapshot && entry.supports_compare && c.compare !== 'none') req.compare = c.compare;
@@ -129,7 +129,9 @@ export const currenciesOf = (result: ReportQueryResult): string[] => {
 
 const rowsFor = (result: ReportQueryResult, currency: string) => {
 	const ci = currencyIndex(result);
-	return ci < 0 || !currency ? result.rows : result.rows.filter((r) => r[ci] === currency);
+	if (ci < 0) return result.rows;
+	const chosen = currency || currenciesOf(result)[0];
+	return result.rows.filter((r) => r[ci] === chosen);
 };
 
 export const toSeries = (result: ReportQueryResult, key: string, currency: string) => {
