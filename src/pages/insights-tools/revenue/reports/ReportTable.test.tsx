@@ -31,11 +31,27 @@ describe('ReportTable', () => {
 		expect(screen.getByText('New')).toBeInTheDocument();
 	});
 
-	it('only shows the selected currency', () => {
+	it('defaults to the first currency and totals only its rows', () => {
 		const e = entry('invoice_total');
-		const res = mockRun('invoice_total', { shape: 'scalar', range: 'x' });
-		renderWithProviders(<ReportTable entry={e} result={res} currency='eur' />);
-		expect(screen.queryByText('USD')).not.toBeInTheDocument();
+		const res = {
+			columns: [
+				{ name: 'bucket', type: 'datetime', role: 'dimension' },
+				{ name: 'currency', type: 'string', role: 'dimension' },
+				{ name: 'invoice_total', type: 'decimal', role: 'metric' },
+			],
+			rows: [
+				['2026-01-01T00:00:00Z', 'usd', '100'],
+				['2026-02-01T00:00:00Z', 'usd', '50'],
+				['2026-01-01T00:00:00Z', 'eur', '7000'],
+				['2026-02-01T00:00:00Z', 'eur', '8000'],
+			],
+			meta: { query_source: 'x' },
+		} as unknown as Parameters<typeof ReportTable>[0]['result'];
+		renderWithProviders(<ReportTable entry={e} result={res} currency='' />);
+		const rows = screen.getAllByRole('row');
+		expect(rows).toHaveLength(4);
+		expect(within(rows[3]).getByText('$150')).toBeInTheDocument();
+		expect(screen.queryByText(/7,000|8,000/)).not.toBeInTheDocument();
 	});
 });
 

@@ -127,7 +127,7 @@ export const currenciesOf = (result: ReportQueryResult): string[] => {
 	return [...new Set(result.rows.map((r) => r[ci]))];
 };
 
-const rowsFor = (result: ReportQueryResult, currency: string) => {
+export const rowsFor = (result: ReportQueryResult, currency: string) => {
 	const ci = currencyIndex(result);
 	if (ci < 0) return result.rows;
 	const chosen = currency || currenciesOf(result)[0];

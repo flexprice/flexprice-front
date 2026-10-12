@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/molecules';
 import { ReportCatalogEntry, ReportQueryResult } from '@/types/dto/Reports';
 import DeltaChip from './DeltaChip';
-import { deltaDisplay, formatValue, metricIndexes, totalsFor } from './reportMath';
+import { currenciesOf, deltaDisplay, formatValue, metricIndexes, rowsFor, totalsFor } from './reportMath';
 
 interface Props {
 	entry: ReportCatalogEntry;
@@ -13,12 +13,12 @@ interface Props {
 const ReportTable = ({ entry, result, currency }: Props) => {
 	const { t } = useTranslation('settings');
 	const idx = metricIndexes(result, entry.key);
-	const ci = result.columns.findIndex((c) => c.name === 'currency');
 	const dimCols = result.columns.map((c, i) => ({ c, i })).filter(({ c }) => c.role === 'dimension' && c.name !== 'currency');
-	const rows = result.rows.filter((r) => ci < 0 || !currency || r[ci] === currency);
+	const cur = currency || currenciesOf(result)[0] || '';
+	const rows = rowsFor(result, cur);
 	const hasPrev = idx.prev >= 0;
-	const fmt = (v: string | undefined) => formatValue(Number(v ?? 0), entry.value_type, currency);
-	const total = totalsFor(result, entry.key, currency);
+	const fmt = (v: string | undefined) => formatValue(Number(v ?? 0), entry.value_type, cur);
+	const total = totalsFor(result, entry.key, cur);
 	const showTotal = entry.kind === 'flow' && rows.length > 1;
 
 	return (
@@ -58,12 +58,8 @@ const ReportTable = ({ entry, result, currency }: Props) => {
 							<TableCell colSpan={Math.max(dimCols.length, 1)} className='font-medium'>
 								{t('insightsTools.revenue.reports.total')}
 							</TableCell>
-							<TableCell className='text-right font-medium tabular-nums'>
-								{formatValue(total.current, entry.value_type, currency)}
-							</TableCell>
-							{hasPrev && (
-								<TableCell className='text-right tabular-nums'>{formatValue(total.prev ?? 0, entry.value_type, currency)}</TableCell>
-							)}
+							<TableCell className='text-right font-medium tabular-nums'>{formatValue(total.current, entry.value_type, cur)}</TableCell>
+							{hasPrev && <TableCell className='text-right tabular-nums'>{formatValue(total.prev ?? 0, entry.value_type, cur)}</TableCell>}
 							{hasPrev && (
 								<TableCell className='text-right'>
 									<DeltaChip display={deltaDisplay(String(total.current), String(total.prev ?? 0), undefined, entry.higher_is_better)} />

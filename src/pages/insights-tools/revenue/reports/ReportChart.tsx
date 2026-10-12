@@ -29,13 +29,22 @@ const ReportChart = ({ entry, result, currency }: Props) => {
 	return (
 		<div className='h-72 w-full'>
 			<ResponsiveContainer width='100%' height='100%'>
-				<ComposedChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
+				<ComposedChart data={data} barGap={-24} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
 					<CartesianGrid strokeDasharray='3 3' vertical={false} />
 					<XAxis dataKey='label' tickLine={false} axisLine={false} fontSize={12} />
 					<YAxis tickFormatter={fmt} tickLine={false} axisLine={false} fontSize={12} width={90} />
 					<Tooltip formatter={(v: number) => fmt(v)} />
-					{hasPrev && <Bar dataKey='prev' name={t('insightsTools.revenue.reports.previous')} fill={PREVIOUS} radius={[4, 4, 0, 0]} />}
-					<Bar dataKey='current' name={entry.name} fill={CURRENT} radius={[4, 4, 0, 0]} />
+					{hasPrev && (
+						<Bar
+							dataKey='prev'
+							name={t('insightsTools.revenue.reports.previous')}
+							fill={PREVIOUS}
+							fillOpacity={0.5}
+							barSize={24}
+							radius={[4, 4, 0, 0]}
+						/>
+					)}
+					<Bar dataKey='current' name={entry.name} fill={CURRENT} barSize={24} radius={[4, 4, 0, 0]} />
 				</ComposedChart>
 			</ResponsiveContainer>
 		</div>
