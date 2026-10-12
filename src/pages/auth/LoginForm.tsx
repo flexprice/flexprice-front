@@ -13,6 +13,7 @@ import GoogleSignin from './GoogleSignin';
 import SamlSignin, { SSO_TENANT_PARAM, resolveSsoTenantId } from './SamlSignin';
 import { AuthTab } from './authTabs';
 import { sanitizeRedirect } from './safeRedirect';
+import { stripCredentialParams } from './credentialParams';
 import { useTranslation } from 'react-i18next';
 
 interface LoginFormProps {
@@ -33,25 +34,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 	// disappear mid-visit.
 	const ssoTenantId = resolveSsoTenantId(searchParams.get(SSO_TENANT_PARAM), import.meta.env.VITE_SSO_TENANT_ID as string | undefined);
 
-	// Prefill from query params (e.g. shared login link); then strip params from URL
+	// Credentials are never read from the URL. This only scrubs them.
+	//
+	// The login page used to prefill itself from `?email=…&password=…`, which is
+	// what made the removed "login link" work. Links already sent cannot be
+	// recalled, so one can still arrive — it now signs nobody in, and the
+	// password is replaced out of the address bar so it stops being carried in
+	// `Referer` headers and left behind in history. See credentialParams.ts.
 	useEffect(() => {
-		const emailParam = searchParams.get('email');
-		const passwordParam = searchParams.get('password');
-		if (!emailParam?.trim() || !passwordParam?.trim()) return;
-		try {
-			const decodedEmail = decodeURIComponent(emailParam.trim());
-			const decodedPassword = decodeURIComponent(passwordParam.trim());
-			if (decodedEmail && decodedPassword) {
-				setEmail(decodedEmail);
-				setPassword(decodedPassword);
-				const next = new URLSearchParams(searchParams);
-				next.delete('email');
-				next.delete('password');
-				setSearchParams(next, { replace: true });
-			}
-		} catch {
-			// ignore malformed params
-		}
+		const cleaned = stripCredentialParams(searchParams.toString());
+		if (cleaned === null) return;
+		setSearchParams(new URLSearchParams(cleaned), { replace: true });
 	}, [searchParams, setSearchParams]);
 
 	const { mutate: localLogin } = useMutation({

@@ -25,7 +25,6 @@
 			"enterEmail": "Enter an email address",
 			"emailInvalid": "Please enter a valid email address",
 			"copyFailed": "Could not copy to clipboard",
-			"loginLinkCopied": "Login link copied – share it securely with the user.",
 			"credentialsCopied": "Credentials copied to clipboard.",
 			"credentialsDownloaded": "Credentials downloaded.",
 			"loadError": "Failed to load users. Please try again."
@@ -104,16 +103,13 @@
 			"hidePassword": "Hide password",
 			"showPassword": "Show password",
 			"copyPassword": "Copy password",
-			"oneClickHint": "One-click sign-in link – share this with the user.",
-			"copyLoginLink": "Copy login link",
 			"downloadCsv": "Download CSV",
 			"copyAll": "Copy all",
 			"passwordResetNote": "This password can be reset later.",
 			"signInMethodsNote": "User can sign in with email/password or Google.",
-			"csvHeader": "email,password,login_link",
+			"csvHeader": "email,password",
 			"copyBlockEmailLine": "Email: {{email}}",
-			"copyBlockPasswordLine": "Password: {{password}}",
-			"copyBlockLoginLine": "Login link: {{url}}"
+			"copyBlockPasswordLine": "Password: {{password}}"
 		},
 		"tabs": {
 			"team": "Team"

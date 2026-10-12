@@ -25,7 +25,6 @@
 			"enterEmail": "أدخل عنوان بريد إلكتروني",
 			"emailInvalid": "يرجى إدخال بريد إلكتروني صالح",
 			"copyFailed": "تعذّر النسخ إلى الحافظة",
-			"loginLinkCopied": "تم نسخ رابط تسجيل الدخول – شاركه مع المستخدم بشكل آمن.",
 			"credentialsCopied": "تم نسخ بيانات الدخول إلى الحافظة.",
 			"credentialsDownloaded": "تم تنزيل بيانات الدخول.",
 			"loadError": "فشل تحميل المستخدمين. يُرجى المحاولة مرة أخرى."
@@ -110,16 +109,13 @@
 			"hidePassword": "إخفاء كلمة المرور",
 			"showPassword": "إظهار كلمة المرور",
 			"copyPassword": "نسخ كلمة المرور",
-			"oneClickHint": "رابط تسجيل دخول بضغطة واحدة – شاركه مع المستخدم.",
-			"copyLoginLink": "نسخ رابط تسجيل الدخول",
 			"downloadCsv": "تنزيل CSV",
 			"copyAll": "نسخ الكل",
 			"passwordResetNote": "يمكن إعادة تعيين كلمة المرور لاحقاً.",
 			"signInMethodsNote": "يمكن للمستخدم تسجيل الدخول ببريد/كلمة مرور أو Google.",
-			"csvHeader": "email,password,login_link",
+			"csvHeader": "email,password",
 			"copyBlockEmailLine": "Email: {{email}}",
-			"copyBlockPasswordLine": "Password: {{password}}",
-			"copyBlockLoginLine": "Login link: {{url}}"
+			"copyBlockPasswordLine": "Password: {{password}}"
 		},
 		"tabs": {
 			"team": "الفريق"

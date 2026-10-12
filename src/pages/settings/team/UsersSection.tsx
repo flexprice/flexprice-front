@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { ColumnData } from '@/components/molecules/Table/Table';
-import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Link2, Lock, Mail, Trash2 } from 'lucide-react';
-import { RouteNames } from '@/core/routes/Routes';
+import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Lock, Mail, Trash2 } from 'lucide-react';
 import type { HttpRejectedError } from '@/core/axios/types';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import {
@@ -239,28 +238,12 @@ function UsersSection() {
 		}
 	};
 
-	const loginUrl =
-		addedUserEmail && oneTimePassword
-			? `${window.location.origin}${RouteNames.auth}?email=${encodeURIComponent(addedUserEmail)}&password=${encodeURIComponent(oneTimePassword)}`
-			: '';
-
-	const handleCopyLoginLink = async () => {
-		if (!loginUrl) return;
-		try {
-			await navigator.clipboard.writeText(loginUrl);
-			toast.success(t('members.errors.loginLinkCopied'));
-		} catch {
-			toast.error(t('members.errors.copyFailed'));
-		}
-	};
-
 	const handleCopyAll = async () => {
 		if (!addedUserEmail || !oneTimePassword) return;
 		const lines = [
 			t('members.credentials.copyBlockEmailLine', { email: addedUserEmail }),
 			t('members.credentials.copyBlockPasswordLine', { password: oneTimePassword }),
 		];
-		if (loginUrl) lines.push(t('members.credentials.copyBlockLoginLine', { url: loginUrl }));
 		try {
 			await navigator.clipboard.writeText(lines.join('\n'));
 			toast.success(t('members.errors.credentialsCopied'));
@@ -277,7 +260,7 @@ function UsersSection() {
 	const handleDownloadCsv = () => {
 		if (!addedUserEmail || !oneTimePassword) return;
 		const header = t('members.credentials.csvHeader');
-		const row = [escapeCsvCell(addedUserEmail), escapeCsvCell(oneTimePassword), escapeCsvCell(loginUrl)];
+		const row = [escapeCsvCell(addedUserEmail), escapeCsvCell(oneTimePassword)];
 		const csv = `${header}\r\n${row.join(',')}`;
 		const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 		const url = URL.createObjectURL(blob);
@@ -535,23 +518,7 @@ function UsersSection() {
 						</div>
 					</div>
 
-					{loginUrl && (
-						<div className='border-t border-line-subtle pt-4'>
-							<p className='mb-2 text-xs text-content-zinc-muted'>{t('members.credentials.oneClickHint')}</p>
-							<div className='flex items-center gap-2 rounded-md border border-line bg-surface-faint px-3 py-2'>
-								<Link2 className='h-4 w-4 flex-shrink-0 text-content-zinc-subtle' />
-								<span className='min-w-0 flex-1 truncate text-sm text-content-zinc-tertiary' title={loginUrl}>
-									{loginUrl.length > 44 ? `${loginUrl.slice(0, 44)}…` : loginUrl}
-								</span>
-							</div>
-						</div>
-					)}
-
 					<div className='flex flex-wrap items-center gap-2 border-t border-line-subtle pt-4'>
-						<Button onClick={handleCopyLoginLink} className='shrink-0'>
-							<Link2 className='mr-1.5 h-3.5 w-3.5' />
-							{t('members.credentials.copyLoginLink')}
-						</Button>
 						<Button variant='outline' size='sm' onClick={handleDownloadCsv} className='shrink-0'>
 							<Download className='mr-1.5 h-3.5 w-3.5' />
 							{t('members.credentials.downloadCsv')}
