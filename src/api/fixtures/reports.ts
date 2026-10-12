@@ -136,7 +136,7 @@ const BASE: Record<string, number> = {
 	invoice_total: 412000,
 	net_billing: 399000,
 	total_receivables: 1214600,
-	receivables_aging: 0,
+	receivables_aging: 180000,
 	days_to_pay: 16.4,
 	active_customers: 1720,
 	arpu: 241,

@@ -16,6 +16,7 @@ import {
 	defaultControls,
 	deltaDisplay,
 	formatValue,
+	inclusiveEnd,
 	rangeForPreset,
 	ReportControls,
 	totalsFor,
@@ -44,7 +45,8 @@ const RevenueReports = () => {
 	const request = entry && controls ? buildRequest(entry, controls, now) : undefined;
 	const run = useReportRun(entry?.key, request);
 	const currencies = run.data ? currenciesOf(run.data) : [];
-	const currency = controls?.currency || currencies[0] || '';
+	const currency = controls && currencies.includes(controls.currency) ? controls.currency : (currencies[0] ?? '');
+	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
 
 	const select = (key: string) => {
 		const next = entries.find((e) => e.key === key);
@@ -55,13 +57,19 @@ const RevenueReports = () => {
 
 	const total = entry && run.data ? totalsFor(run.data, entry.key, currency) : undefined;
 	const showChart = !!entry && !!run.data && controls?.view === 'chart' && chartSupported(entry, run.data);
-	const prevRange = `${run.data?.meta.prev_from?.slice(0, 10) ?? ''} – ${run.data?.meta.prev_to?.slice(0, 10) ?? ''}`;
+	const { prev_from: pf, prev_to: pt } = run.data?.meta ?? {};
+	const prevRange = `${pf?.slice(0, 10) ?? ''} – ${pt ? inclusiveEnd(pt) : ''}`;
 
 	return (
 		<Page heading={t('insightsTools.revenue.reports.title')}>
 			<div className='flex flex-col gap-6'>
 				<p className='text-sm text-muted-foreground'>{t('insightsTools.revenue.reports.subtitle')}</p>
-				<KpiRibbon entries={entries} range={rangeForPreset(controls?.preset ?? 'last_90_days', now)} currency={currency} />
+				<KpiRibbon
+					entries={entries}
+					range={rangeForPreset(controls?.preset ?? 'last_90_days', now)}
+					currency={controls?.currency ?? ''}
+					compare={controls?.compare ?? 'previous_period'}
+				/>
 				<div className='flex flex-wrap gap-6'>
 					<div className='w-full lg:w-72 lg:flex-none'>
 						{catalog.isLoading ? (
@@ -85,11 +93,11 @@ const RevenueReports = () => {
 									)}
 									{entry.kind === 'flow' && total && total.prev !== undefined && (
 										<div className='flex items-center gap-2 text-sm'>
-											<span className='font-medium tabular-nums'>{formatValue(total.current, entry.value_type, currency)}</span>
+											<span className='font-medium tabular-nums'>{formatValue(total.current, entry.value_type, currency, daysLabel)}</span>
 											<DeltaChip display={deltaDisplay(String(total.current), String(total.prev), undefined, entry.higher_is_better)} />
 											<span className='text-muted-foreground'>
 												{t('insightsTools.revenue.reports.vsPrevious', {
-													value: formatValue(total.prev, entry.value_type, currency),
+													value: formatValue(total.prev, entry.value_type, currency, daysLabel),
 													range: prevRange,
 												})}
 											</span>
@@ -97,19 +105,19 @@ const RevenueReports = () => {
 									)}
 								</div>
 								<ReportControlsBar entry={entry} controls={controls} currencies={currencies} onChange={setControls} />
-								{run.isLoading && <Skeleton className='h-72 w-full' />}
+								{run.isLoading && !run.data && <Skeleton className='h-72 w-full' />}
 								{run.isError && <ErrorBox title={t('insightsTools.revenue.reports.errorTitle')} message={(run.error as Error)?.message} />}
 								{run.data && run.data.rows.length === 0 && (
 									<span className='text-sm text-muted-foreground'>{t('insightsTools.revenue.reports.noData')}</span>
 								)}
 								{run.data && run.data.rows.length > 0 && (
-									<>
+									<div className={run.isFetching ? 'flex flex-col gap-4 opacity-60' : 'flex flex-col gap-4'}>
 										{controls.view === 'chart' && !showChart && (
 											<span className='text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.unsupportedShape')}</span>
 										)}
 										{showChart && <ReportChart entry={entry} result={run.data} currency={currency} />}
 										<ReportTable entry={entry} result={run.data} currency={currency} />
-									</>
+									</div>
 								)}
 							</>
 						)}

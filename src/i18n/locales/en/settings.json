@@ -1684,6 +1684,8 @@
 				"table": "Table",
 				"total": "Total",
 				"previous": "Previous",
+				"new": "New",
+				"daysUnit": "{{value}} days",
 				"change": "Δ%",
 				"vsPrevious": "vs {{value}} ({{range}})",
 				"pointInTime": "Point-in-time · no comparison",

@@ -1639,6 +1639,8 @@
 				"table": "جدول",
 				"total": "الإجمالي",
 				"previous": "السابق",
+				"new": "جديد",
+				"daysUnit": "{{value}} يوم",
 				"change": "Δ%",
 				"vsPrevious": "مقابل {{value}} ({{range}})",
 				"pointInTime": "لحظي · بدون مقارنة",

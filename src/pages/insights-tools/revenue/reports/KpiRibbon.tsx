@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ReportCatalogEntry } from '@/types/dto/Reports';
+import { ReportCatalogEntry, ReportCompare } from '@/types/dto/Reports';
 import DeltaChip from './DeltaChip';
 import { currenciesOf, deltaDisplay, formatValue, metricIndexes } from './reportMath';
 import { useReportRun } from './useReports';
@@ -9,15 +9,29 @@ import { useReportRun } from './useReports';
 const DEFAULT_CURRENCY = 'usd';
 const HEADLINES = ['invoice_total', 'total_receivables', 'active_customers', 'arpu'];
 
-const Tile = ({ entry, range, currency }: { entry: ReportCatalogEntry; range: string; currency: string }) => {
+type CompareChoice = ReportCompare | 'none';
+
+const Tile = ({
+	entry,
+	range,
+	currency,
+	compareChoice,
+}: {
+	entry: ReportCatalogEntry;
+	range: string;
+	currency: string;
+	compareChoice: CompareChoice;
+}) => {
 	const { t } = useTranslation('settings');
-	const compare = entry.supports_compare && entry.kind !== 'snapshot' ? ('previous_period' as const) : undefined;
+	const compare = entry.supports_compare && entry.kind !== 'snapshot' && compareChoice !== 'none' ? compareChoice : undefined;
 	const { data, isLoading } = useReportRun(entry.key, { shape: 'scalar', range, ...(compare ? { compare } : {}) });
 	const ci = data ? data.columns.findIndex((c) => c.name === 'currency') : -1;
-	const chosen = currency || (data ? currenciesOf(data)[0] : '');
+	const available = data ? currenciesOf(data) : [];
+	const chosen = available.includes(currency) ? currency : (available[0] ?? '');
 	const row = data ? (ci < 0 ? data.rows[0] : data.rows.find((r) => r[ci] === chosen)) : undefined;
 	const cur = (row && ci >= 0 ? row[ci] : chosen) || DEFAULT_CURRENCY;
 	const idx = data ? metricIndexes(data, entry.key) : { current: -1, prev: -1, pct: -1 };
+	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
 	return (
 		<Card className='flex flex-col gap-2 p-4'>
 			<span className='text-sm text-muted-foreground'>{entry.name}</span>
@@ -25,13 +39,14 @@ const Tile = ({ entry, range, currency }: { entry: ReportCatalogEntry; range: st
 				<Skeleton className='h-7 w-28' />
 			) : (
 				<span className='text-2xl font-semibold tabular-nums'>
-					{row ? formatValue(Number(row[idx.current] ?? 0), entry.value_type, cur) : '—'}
+					{row && idx.current >= 0 ? formatValue(Number(row[idx.current] ?? 0), entry.value_type, cur, daysLabel) : '—'}
 				</span>
 			)}
 			{entry.kind === 'snapshot' ? (
 				<span className='text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.pointInTime')}</span>
 			) : (
-				row && (
+				row &&
+				idx.current >= 0 && (
 					<DeltaChip
 						display={deltaDisplay(
 							row[idx.current],
@@ -46,13 +61,20 @@ const Tile = ({ entry, range, currency }: { entry: ReportCatalogEntry; range: st
 	);
 };
 
-const KpiRibbon = ({ entries, range, currency }: { entries: ReportCatalogEntry[]; range: string; currency: string }) => {
+interface RibbonProps {
+	entries: ReportCatalogEntry[];
+	range: string;
+	currency: string;
+	compare: CompareChoice;
+}
+
+const KpiRibbon = ({ entries, range, currency, compare }: RibbonProps) => {
 	const tiles = HEADLINES.map((k) => entries.find((e) => e.key === k)).filter((e): e is ReportCatalogEntry => !!e);
 	if (tiles.length === 0) return null;
 	return (
 		<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
 			{tiles.map((e) => (
-				<Tile key={e.key} entry={e} range={range} currency={currency} />
+				<Tile key={e.key} entry={e} range={range} currency={currency} compareChoice={compare} />
 			))}
 		</div>
 	);

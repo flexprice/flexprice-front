@@ -25,13 +25,15 @@ const ReportChart = ({ entry, result, currency }: Props) => {
 	if (!chartSupported(entry, result)) return null;
 	const data = toSeries(result, entry.key, currency).map((p) => ({ ...p, label: shortLabel(p.label) }));
 	const hasPrev = data.some((p) => p.prev !== undefined);
-	const fmt = (v: number) => formatValue(v, entry.value_type, currency);
+	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
+	const fmt = (v: number) => formatValue(v, entry.value_type, currency, daysLabel);
 	return (
 		<div className='h-72 w-full'>
 			<ResponsiveContainer width='100%' height='100%'>
-				<ComposedChart data={data} barGap={-24} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
+				<ComposedChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
 					<CartesianGrid strokeDasharray='3 3' vertical={false} />
 					<XAxis dataKey='label' tickLine={false} axisLine={false} fontSize={12} />
+					<XAxis xAxisId='prev' dataKey='label' hide />
 					<YAxis tickFormatter={fmt} tickLine={false} axisLine={false} fontSize={12} width={90} />
 					<Tooltip formatter={(v: number) => fmt(v)} />
 					{hasPrev && (
@@ -40,11 +42,12 @@ const ReportChart = ({ entry, result, currency }: Props) => {
 							name={t('insightsTools.revenue.reports.previous')}
 							fill={PREVIOUS}
 							fillOpacity={0.5}
-							barSize={24}
+							xAxisId='prev'
+							maxBarSize={24}
 							radius={[4, 4, 0, 0]}
 						/>
 					)}
-					<Bar dataKey='current' name={entry.name} fill={CURRENT} barSize={24} radius={[4, 4, 0, 0]} />
+					<Bar dataKey='current' name={entry.name} fill={CURRENT} maxBarSize={24} radius={[4, 4, 0, 0]} />
 				</ComposedChart>
 			</ResponsiveContainer>
 		</div>

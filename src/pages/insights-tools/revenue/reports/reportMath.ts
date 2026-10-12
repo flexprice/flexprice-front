@@ -72,7 +72,7 @@ export const controlsForEntry = (entry: ReportCatalogEntry, prev: ReportControls
 		preset: prev.preset,
 		currency: prev.currency,
 		view: prev.view,
-		compare: entry.supports_compare ? (prev.compare === 'none' ? base.compare : prev.compare) : 'none',
+		compare: entry.supports_compare ? prev.compare : 'none',
 		grain: prev.grain && entry.grains.includes(prev.grain) ? prev.grain : base.grain,
 		groupBy: entry.dimensions.some((d) => d.key === prev.groupBy) ? prev.groupBy : base.groupBy,
 	};
@@ -85,7 +85,6 @@ export const buildRequest = (entry: ReportCatalogEntry, c: ReportControls, now: 
 	const req: ReportQueryRequest = { shape, range: rangeForPreset(c.preset, now) };
 	if (shape === 'breakdown' && entry.dimensions.length) req.dimensions = [groupBy || entry.dimensions[0].key];
 	if (shape === 'timeseries' && !snapshot && c.grain) req.grain = c.grain;
-	if (c.currency) req.currency = c.currency;
 	if (!snapshot && entry.supports_compare && c.compare !== 'none') req.compare = c.compare;
 	return req;
 };
@@ -94,6 +93,7 @@ export type DeltaTone = 'success' | 'failed' | 'default' | 'info';
 export interface DeltaDisplay {
 	label: string;
 	tone: DeltaTone;
+	kind: 'pct' | 'new' | 'flat-zero';
 }
 
 export const deltaDisplay = (
@@ -105,13 +105,16 @@ export const deltaDisplay = (
 	if (prev === undefined || prev === '') return null;
 	const cur = Number(current ?? 0);
 	const p = Number(prev);
-	if (p === 0 && cur === 0) return { label: '—', tone: 'default' };
-	if (p === 0) return { label: 'New', tone: 'info' };
+	if (!Number.isFinite(cur) || !Number.isFinite(p)) return null;
+	if (p === 0 && cur === 0) return { label: '—', tone: 'default', kind: 'flat-zero' };
+	if (p === 0) return { label: 'New', tone: 'info', kind: 'new' };
 	const pct = changePct !== undefined && changePct !== '' ? Number(changePct) : ((cur - p) / p) * 100;
-	const label = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
-	if (Math.abs(pct) < 0.5) return { label, tone: 'default' };
+	if (!Number.isFinite(pct)) return null;
+	const rounded = Number(pct.toFixed(1)) + 0;
+	const label = `${rounded >= 0 ? '+' : ''}${rounded.toFixed(1)}%`;
+	if (Math.abs(pct) < 0.5) return { label, tone: 'default', kind: 'pct' };
 	const good = higherIsBetter ? pct > 0 : pct < 0;
-	return { label, tone: good ? 'success' : 'failed' };
+	return { label, tone: good ? 'success' : 'failed', kind: 'pct' };
 };
 
 export const metricIndexes = (result: ReportQueryResult, key: string) => {
@@ -134,13 +137,15 @@ export const rowsFor = (result: ReportQueryResult, currency: string) => {
 	return result.rows.filter((r) => r[ci] === chosen);
 };
 
+const finite = (v: string | undefined) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+
 export const toSeries = (result: ReportQueryResult, key: string, currency: string) => {
 	const { current, prev } = metricIndexes(result, key);
 	const labelIdx = result.columns.findIndex((c) => c.role === 'dimension' && c.name !== 'currency');
 	return rowsFor(result, currency).map((r) => ({
 		label: labelIdx >= 0 ? r[labelIdx] : '',
-		current: Number(r[current] ?? 0),
-		...(prev >= 0 ? { prev: Number(r[prev] ?? 0) } : {}),
+		current: finite(r[current]),
+		...(prev >= 0 ? { prev: finite(r[prev]) } : {}),
 	}));
 };
 
@@ -151,8 +156,20 @@ export const totalsFor = (result: ReportQueryResult, key: string, currency: stri
 	return hasPrev ? { current, prev: series.reduce((s, p) => s + (p.prev ?? 0), 0) } : { current };
 };
 
-export const formatValue = (value: number, valueType: ReportValueType, currency: string): string => {
-	if (valueType === 'days') return `${value.toFixed(1)} days`;
+export const inclusiveEnd = (iso: string): string => {
+	const d = new Date(iso);
+	d.setUTCDate(d.getUTCDate() - 1);
+	return ymd(d);
+};
+
+export const formatValue = (
+	value: number,
+	valueType: ReportValueType,
+	currency: string,
+	daysLabel: (v: string) => string = (v) => `${v} days`,
+): string => {
+	if (valueType === 'days') return daysLabel(value.toFixed(1));
 	if (valueType === 'count') return Math.round(value).toLocaleString('en-US');
-	return `${getCurrencySymbol(currency.toUpperCase())}${value.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+	const sign = value < 0 ? '-' : '';
+	return `${sign}${getCurrencySymbol(currency.toUpperCase())}${Math.abs(value).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
 };

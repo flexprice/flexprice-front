@@ -7,6 +7,7 @@ import {
 	defaultControls,
 	deltaDisplay,
 	formatValue,
+	inclusiveEnd,
 	rangeForPreset,
 	toSeries,
 	totalsFor,
@@ -87,9 +88,9 @@ describe('buildRequest', () => {
 		const req = buildRequest(snapshot, c, NOW);
 		expect(req).toEqual({ shape: 'scalar', range: rangeForPreset(c.preset, NOW) });
 	});
-	it('sends currency only when chosen', () => {
-		expect(buildRequest(flow, { ...defaultControls(flow), currency: 'usd' }, NOW).currency).toBe('usd');
-		expect(buildRequest(flow, { ...defaultControls(flow), currency: '' }, NOW).currency).toBeUndefined();
+	it('never sends currency', () => {
+		expect(buildRequest(flow, { ...defaultControls(flow), currency: 'usd' }, NOW)).not.toHaveProperty('currency');
+		expect(buildRequest(flow, { ...defaultControls(flow), currency: '' }, NOW)).not.toHaveProperty('currency');
 	});
 });
 
@@ -101,20 +102,34 @@ describe('controlsForEntry', () => {
 		expect(next.grain).toBe('');
 		expect(next.preset).toBe('this_year');
 	});
+	it('keeps compare none when the user chose it', () => {
+		const prev = { ...defaultControls(flow), compare: 'none' as const };
+		expect(controlsForEntry(flow, prev).compare).toBe('none');
+		expect(controlsForEntry(snapshot, prev).compare).toBe('none');
+	});
 });
 
 describe('deltaDisplay', () => {
 	it('handles zero baselines', () => {
-		expect(deltaDisplay('0', '0', '', true)).toEqual({ label: '—', tone: 'default' });
-		expect(deltaDisplay('50', '0', '', true)).toEqual({ label: 'New', tone: 'info' });
+		expect(deltaDisplay('0', '0', '', true)).toEqual({ label: '—', tone: 'default', kind: 'flat-zero' });
+		expect(deltaDisplay('50', '0', '', true)).toEqual({ label: 'New', tone: 'info', kind: 'new' });
 	});
 	it('colours by meaning, not sign', () => {
-		expect(deltaDisplay('110', '100', '10', true)).toEqual({ label: '+10.0%', tone: 'success' });
-		expect(deltaDisplay('18.5', '16.4', '12.8', false)).toEqual({ label: '+12.8%', tone: 'failed' });
-		expect(deltaDisplay('90', '100', '-10', false)).toEqual({ label: '-10.0%', tone: 'success' });
+		expect(deltaDisplay('110', '100', '10', true)).toEqual({ label: '+10.0%', tone: 'success', kind: 'pct' });
+		expect(deltaDisplay('18.5', '16.4', '12.8', false)).toEqual({ label: '+12.8%', tone: 'failed', kind: 'pct' });
+		expect(deltaDisplay('90', '100', '-10', false)).toEqual({ label: '-10.0%', tone: 'success', kind: 'pct' });
 	});
 	it('flat under half a percent', () => {
-		expect(deltaDisplay('100.2', '100', '0.2', true)).toEqual({ label: '+0.2%', tone: 'default' });
+		expect(deltaDisplay('100.2', '100', '0.2', true)).toEqual({ label: '+0.2%', tone: 'default', kind: 'pct' });
+	});
+	it('returns null for non-finite input', () => {
+		expect(deltaDisplay('abc', '100', '', true)).toBeNull();
+		expect(deltaDisplay('100', 'x', '', true)).toBeNull();
+		expect(deltaDisplay('100', '100', 'NaN', true)).toBeNull();
+	});
+	it('never renders negative zero', () => {
+		expect(deltaDisplay('100', '100', '-0.0', true)?.label).toBe('+0.0%');
+		expect(deltaDisplay('99.999', '100', '-0.001', true)?.label).toBe('+0.0%');
 	});
 	it('returns null without a comparison', () => {
 		expect(deltaDisplay('100', undefined, undefined, true)).toBeNull();
@@ -162,7 +177,28 @@ describe('breakdown-only reports', () => {
 	});
 });
 
+describe('non-finite values', () => {
+	it('treat as zero in series and totals', () => {
+		const bad: ReportQueryResult = { ...result, rows: [['2026-08-01T00:00:00Z', 'usd', 'oops', 'NaN', '']] };
+		expect(toSeries(bad, 'invoice_total', 'usd')).toEqual([{ label: '2026-08-01T00:00:00Z', current: 0, prev: 0 }]);
+		expect(totalsFor(bad, 'invoice_total', 'usd')).toEqual({ current: 0, prev: 0 });
+	});
+});
+
+describe('inclusiveEnd', () => {
+	it('subtracts one day from an exclusive end', () => {
+		expect(inclusiveEnd('2026-09-01T00:00:00Z')).toBe('2026-08-31');
+		expect(inclusiveEnd('2026-01-01T00:00:00Z')).toBe('2025-12-31');
+	});
+});
+
 describe('formatValue', () => {
+	it('puts the sign before the symbol', () => {
+		expect(formatValue(-1234, 'money', 'usd')).toBe('-$1,234');
+	});
+	it('uses the injected days label', () => {
+		expect(formatValue(16.44, 'days', 'usd', (v) => `${v} يوم`)).toBe('16.4 يوم');
+	});
 	it('formats by value type', () => {
 		expect(formatValue(16.44, 'days', 'usd')).toBe('16.4 days');
 		expect(formatValue(1720, 'count', 'usd')).toBe('1,720');

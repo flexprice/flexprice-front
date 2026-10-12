@@ -67,4 +67,29 @@ describe('RevenueReports', () => {
 		const main = spy.mock.calls.filter(([, req]) => req.shape !== 'scalar');
 		expect(main).toHaveLength(1);
 	});
+
+	it('currency is a client-side filter, never sent', async () => {
+		Element.prototype.scrollIntoView = vi.fn();
+		const spy = vi.spyOn(ReportsApi, 'runReport').mockResolvedValue({
+			columns: [
+				{ name: 'bucket', type: 'datetime', role: 'dimension' },
+				{ name: 'currency', type: 'string', role: 'dimension' },
+				{ name: 'invoice_total', type: 'decimal', role: 'metric' },
+			],
+			rows: [
+				['2026-09-01T00:00:00Z', 'usd', '100'],
+				['2026-09-01T00:00:00Z', 'eur', '70'],
+			],
+			meta: { query_source: 'mock' },
+		});
+		renderWithProviders(<RevenueReports />);
+		const trigger = await screen.findByLabelText('Currency');
+		fireEvent.keyDown(trigger, { key: 'Enter' });
+		fireEvent.click(await screen.findByRole('option', { name: 'EUR' }));
+		await waitFor(() => expect(screen.getByLabelText('Currency')).toHaveTextContent('EUR'));
+		fireEvent.keyDown(screen.getByLabelText('Currency'), { key: 'Enter' });
+		expect(await screen.findByRole('option', { name: 'USD' })).toBeInTheDocument();
+		expect(screen.getByRole('option', { name: 'EUR' })).toBeInTheDocument();
+		expect(spy.mock.calls.every(([, req]) => !('currency' in req))).toBe(true);
+	});
 });
