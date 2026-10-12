@@ -22,6 +22,13 @@ import {
 } from './reportMath';
 import { useReportCatalog, useReportRun } from './useReports';
 
+const ErrorBox = ({ title, message }: { title: string; message?: string }) => (
+	<div role='alert' className='flex flex-col gap-1 rounded-md border border-red-200 bg-red-50 p-4 text-sm'>
+		<span className='font-medium'>{title}</span>
+		<span>{message}</span>
+	</div>
+);
+
 const RevenueReports = () => {
 	const { t } = useTranslation('settings');
 	const catalog = useReportCatalog();
@@ -64,7 +71,9 @@ const RevenueReports = () => {
 						)}
 					</div>
 					<Card className='flex min-w-0 flex-1 flex-col gap-4 p-6'>
-						{!entry || !controls ? (
+						{catalog.isError ? (
+							<ErrorBox title={t('insightsTools.revenue.reports.errorTitle')} message={(catalog.error as Error)?.message} />
+						) : !entry || !controls ? (
 							<span className='text-sm text-muted-foreground'>{t('insightsTools.revenue.reports.selectReport')}</span>
 						) : (
 							<>
@@ -89,12 +98,7 @@ const RevenueReports = () => {
 								</div>
 								<ReportControlsBar entry={entry} controls={controls} currencies={currencies} onChange={setControls} />
 								{run.isLoading && <Skeleton className='h-72 w-full' />}
-								{run.isError && (
-									<div role='alert' className='flex flex-col gap-1 rounded-md border border-red-200 bg-red-50 p-4 text-sm'>
-										<span className='font-medium'>{t('insightsTools.revenue.reports.errorTitle')}</span>
-										<span>{(run.error as Error)?.message}</span>
-									</div>
-								)}
+								{run.isError && <ErrorBox title={t('insightsTools.revenue.reports.errorTitle')} message={(run.error as Error)?.message} />}
 								{run.data && run.data.rows.length === 0 && (
 									<span className='text-sm text-muted-foreground'>{t('insightsTools.revenue.reports.noData')}</span>
 								)}
