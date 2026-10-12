@@ -603,7 +603,7 @@
 			"events": "الأحداث",
 			"invoice": "الفاتورة",
 			"creditTopups": "إعادة شحن الأرصدة",
-			"creditDebits": "خصم الأرصدة",
+			"walletDebits": "خصومات المحفظة",
 			"creditUsage": "استخدام الأرصدة",
 			"usageAnalytics": "تحليلات الاستخدام"
 		},

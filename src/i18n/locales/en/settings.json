@@ -604,7 +604,7 @@
 			"events": "Events",
 			"invoice": "Invoice",
 			"creditTopups": "Credit Topups",
-			"creditDebits": "Credit Debits",
+			"walletDebits": "Wallet Debits",
 			"creditUsage": "Credit Usage",
 			"usageAnalytics": "Usage Analytics"
 		},
