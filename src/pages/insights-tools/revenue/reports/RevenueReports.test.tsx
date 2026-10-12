@@ -92,4 +92,16 @@ describe('RevenueReports', () => {
 		expect(screen.getByRole('option', { name: 'EUR' })).toBeInTheDocument();
 		expect(spy.mock.calls.every(([, req]) => !('currency' in req))).toBe(true);
 	});
+
+	it('drops the previous report rows while a switched report loads', async () => {
+		const { mockRun } = await import('@/api/fixtures/reports');
+		vi.spyOn(ReportsApi, 'runReport').mockImplementation((key, req) =>
+			key === 'days_to_pay' ? new Promise(() => {}) : Promise.resolve(mockRun(key, req)),
+		);
+		renderWithProviders(<RevenueReports />);
+		expect(await screen.findByRole('table')).toBeInTheDocument();
+		fireEvent.click(screen.getByRole('button', { name: 'Days to pay' }));
+		expect(await screen.findByRole('heading', { name: 'Days to pay' })).toBeInTheDocument();
+		await waitFor(() => expect(screen.queryByRole('table')).not.toBeInTheDocument());
+	});
 });

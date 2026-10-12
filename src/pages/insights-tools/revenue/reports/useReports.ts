@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import ReportsApi from '@/api/ReportsApi';
 import { getHttpStatus } from '@/core/axios/types';
 import { ReportQueryRequest } from '@/types/dto/Reports';
@@ -14,5 +14,5 @@ export const useReportRun = (key: string | undefined, req: ReportQueryRequest | 
 		queryFn: () => ReportsApi.runReport(key as string, req as ReportQueryRequest),
 		enabled: !!key && !!req,
 		retry,
-		placeholderData: keepPreviousData,
+		placeholderData: (prev, prevQuery) => (prevQuery?.queryKey[1] === key ? prev : undefined),
 	});
