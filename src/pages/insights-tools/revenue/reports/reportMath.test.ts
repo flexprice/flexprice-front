@@ -8,6 +8,8 @@ import {
 	deltaDisplay,
 	formatValue,
 	inclusiveEnd,
+	isBucketInProgress,
+	isToDatePreset,
 	rangeForPreset,
 	toSeries,
 	totalsFor,
@@ -208,5 +210,35 @@ describe('formatValue', () => {
 		expect(formatValue(16.44, 'days', 'usd')).toBe('16.4 days');
 		expect(formatValue(1720, 'count', 'usd')).toBe('1,720');
 		expect(formatValue(1234.5, 'money', 'usd')).toContain('1,234.5');
+	});
+});
+
+describe('isBucketInProgress', () => {
+	const at = (...a: [number, number, number, number?, number?]) => new Date(Date.UTC(...a));
+	it('month is open until the first of next month', () => {
+		expect(isBucketInProgress('2026-10-01T00:00:00Z', 'month', at(2026, 9, 31, 23, 59))).toBe(true);
+		expect(isBucketInProgress('2026-10-01T00:00:00Z', 'month', at(2026, 10, 1))).toBe(false);
+		expect(isBucketInProgress('2026-12-01T00:00:00Z', 'month', at(2026, 11, 31))).toBe(true);
+		expect(isBucketInProgress('2026-09-01T00:00:00Z', 'month', NOW)).toBe(false);
+	});
+	it('week spans seven days', () => {
+		expect(isBucketInProgress('2026-10-12T00:00:00Z', 'week', at(2026, 9, 18, 23))).toBe(true);
+		expect(isBucketInProgress('2026-10-12T00:00:00Z', 'week', at(2026, 9, 19))).toBe(false);
+	});
+	it('day ends at UTC midnight', () => {
+		expect(isBucketInProgress('2026-10-12T00:00:00Z', 'day', NOW)).toBe(true);
+		expect(isBucketInProgress('2026-10-12T00:00:00Z', 'day', at(2026, 9, 13))).toBe(false);
+		expect(isBucketInProgress('2026-10-11T00:00:00Z', 'day', NOW)).toBe(false);
+	});
+	it('is false without a grain or valid date', () => {
+		expect(isBucketInProgress('2026-10-12T00:00:00Z', '', NOW)).toBe(false);
+		expect(isBucketInProgress('cus_1', 'day', NOW)).toBe(false);
+	});
+});
+
+describe('isToDatePreset', () => {
+	it('is true only for calendar-to-date presets', () => {
+		expect(['this_month', 'this_quarter', 'this_year'].every((p) => isToDatePreset(p as never))).toBe(true);
+		expect(['last_7_days', 'last_month', 'last_90_days'].some((p) => isToDatePreset(p as never))).toBe(false);
 	});
 });

@@ -1643,6 +1643,8 @@
 				"table": "جدول",
 				"total": "الإجمالي",
 				"previous": "السابق",
+				"inProgress": "قيد التقدم",
+				"toDate": "حتى تاريخه",
 				"new": "جديد",
 				"daysUnit": "{{value}} يوم",
 				"change": "Δ%",

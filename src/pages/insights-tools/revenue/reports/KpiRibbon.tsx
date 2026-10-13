@@ -6,7 +6,16 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ReportCatalogEntry, ReportQueryResult } from '@/types/dto/Reports';
 import DeltaChip from './DeltaChip';
-import { currenciesOf, deltaDisplay, formatValue, metricIndexes, RANGE_PRESETS, RangePreset, rangeForPreset } from './reportMath';
+import {
+	currenciesOf,
+	deltaDisplay,
+	formatValue,
+	isToDatePreset,
+	metricIndexes,
+	RANGE_PRESETS,
+	RangePreset,
+	rangeForPreset,
+} from './reportMath';
 import { reportRunOptions } from './useReports';
 
 const DEFAULT_CURRENCY = 'usd';
@@ -17,11 +26,13 @@ const Tile = ({
 	data,
 	isLoading,
 	currency,
+	toDate,
 }: {
 	entry: ReportCatalogEntry;
 	data: ReportQueryResult | undefined;
 	isLoading: boolean;
 	currency: string;
+	toDate: boolean;
 }) => {
 	const { t } = useTranslation('settings');
 	const ci = data ? data.columns.findIndex((c) => c.name === 'currency') : -1;
@@ -40,6 +51,9 @@ const Tile = ({
 				<span className='text-2xl font-semibold tabular-nums'>
 					{row && idx.current >= 0 ? formatValue(Number(row[idx.current] ?? 0), entry.value_type, cur, daysLabel) : '—'}
 				</span>
+			)}
+			{toDate && entry.kind !== 'snapshot' && (
+				<span className='-mt-1 text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.toDate')}</span>
 			)}
 			{entry.kind === 'snapshot' ? (
 				<span className='text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.pointInTime')}</span>
@@ -103,7 +117,14 @@ const KpiRibbon = ({ entries, now }: RibbonProps) => {
 			</div>
 			<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
 				{tiles.map((e, i) => (
-					<Tile key={e.key} entry={e} data={results[i].data} isLoading={results[i].isLoading} currency={currency} />
+					<Tile
+						key={e.key}
+						entry={e}
+						data={results[i].data}
+						isLoading={results[i].isLoading}
+						currency={currency}
+						toDate={isToDatePreset(preset)}
+					/>
 				))}
 			</div>
 		</div>

@@ -132,8 +132,8 @@ const RevenueReports = () => {
 										{controls.view === 'chart' && !showChart && (
 											<span className='text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.unsupportedShape')}</span>
 										)}
-										{showChart && <ReportChart entry={entry} result={run.data} currency={currency} />}
-										<ReportTable entry={entry} result={run.data} currency={currency} />
+										{showChart && <ReportChart entry={entry} result={run.data} currency={currency} grain={request?.grain} now={now} />}
+										<ReportTable entry={entry} result={run.data} currency={currency} grain={request?.grain} now={now} />
 									</div>
 								)}
 							</>

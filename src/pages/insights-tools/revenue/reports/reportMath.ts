@@ -162,6 +162,20 @@ export const inclusiveEnd = (iso: string): string => {
 	return ymd(d);
 };
 
+export const isBucketInProgress = (bucketIso: string, grain: ReportGrain | '' | undefined, now: Date): boolean => {
+	if (!grain) return false;
+	const start = new Date(bucketIso);
+	if (Number.isNaN(start.getTime())) return false;
+	const y = start.getUTCFullYear();
+	const m = start.getUTCMonth();
+	const d = start.getUTCDate();
+	const end = grain === 'month' ? Date.UTC(y, m + 1, d) : Date.UTC(y, m, d + (grain === 'week' ? 7 : 1));
+	return end > now.getTime();
+};
+
+const TO_DATE_PRESETS: RangePreset[] = ['this_month', 'this_quarter', 'this_year'];
+export const isToDatePreset = (preset: RangePreset): boolean => TO_DATE_PRESETS.includes(preset);
+
 export const formatValue = (
 	value: number,
 	valueType: ReportValueType,

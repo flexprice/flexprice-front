@@ -1688,6 +1688,8 @@
 				"table": "Table",
 				"total": "Total",
 				"previous": "Previous",
+				"inProgress": "In progress",
+				"toDate": "To date",
 				"new": "New",
 				"daysUnit": "{{value}} days",
 				"change": "Δ%",
