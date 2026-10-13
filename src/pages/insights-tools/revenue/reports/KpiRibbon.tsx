@@ -1,30 +1,29 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueries } from '@tanstack/react-query';
+import { Select } from '@/components/atoms';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ReportCatalogEntry, ReportCompare } from '@/types/dto/Reports';
+import { ReportCatalogEntry, ReportQueryResult } from '@/types/dto/Reports';
 import DeltaChip from './DeltaChip';
-import { currenciesOf, deltaDisplay, formatValue, metricIndexes } from './reportMath';
-import { useReportRun } from './useReports';
+import { currenciesOf, deltaDisplay, formatValue, metricIndexes, RANGE_PRESETS, RangePreset, rangeForPreset } from './reportMath';
+import { reportRunOptions } from './useReports';
 
 const DEFAULT_CURRENCY = 'usd';
 const HEADLINES = ['invoice_total', 'total_receivables', 'active_customers', 'arpu'];
 
-type CompareChoice = ReportCompare | 'none';
-
 const Tile = ({
 	entry,
-	range,
+	data,
+	isLoading,
 	currency,
-	compareChoice,
 }: {
 	entry: ReportCatalogEntry;
-	range: string;
+	data: ReportQueryResult | undefined;
+	isLoading: boolean;
 	currency: string;
-	compareChoice: CompareChoice;
 }) => {
 	const { t } = useTranslation('settings');
-	const compare = entry.supports_compare && entry.kind !== 'snapshot' && compareChoice !== 'none' ? compareChoice : undefined;
-	const { data, isLoading } = useReportRun(entry.key, { shape: 'scalar', range, ...(compare ? { compare } : {}) });
 	const ci = data ? data.columns.findIndex((c) => c.name === 'currency') : -1;
 	const available = data ? currenciesOf(data) : [];
 	const chosen = available.includes(currency) ? currency : (available[0] ?? '');
@@ -63,19 +62,50 @@ const Tile = ({
 
 interface RibbonProps {
 	entries: ReportCatalogEntry[];
-	range: string;
-	currency: string;
-	compare: CompareChoice;
+	now: Date;
 }
 
-const KpiRibbon = ({ entries, range, currency, compare }: RibbonProps) => {
+const KpiRibbon = ({ entries, now }: RibbonProps) => {
+	const { t } = useTranslation('settings');
+	const [preset, setPreset] = useState<RangePreset>('this_month');
+	const [picked, setPicked] = useState('');
 	const tiles = HEADLINES.map((k) => entries.find((e) => e.key === k)).filter((e): e is ReportCatalogEntry => !!e);
+	const range = rangeForPreset(preset, now);
+	const results = useQueries({
+		queries: tiles.map((e) =>
+			reportRunOptions(e.key, {
+				shape: 'scalar',
+				range,
+				...(e.supports_compare && e.kind !== 'snapshot' ? { compare: 'previous_period' as const } : {}),
+			}),
+		),
+	});
 	if (tiles.length === 0) return null;
+	const currencies = [...new Set(results.flatMap((r) => (r.data ? currenciesOf(r.data) : [])))];
+	const currency = currencies.includes(picked) ? picked : (currencies[0] ?? '');
 	return (
-		<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-			{tiles.map((e) => (
-				<Tile key={e.key} entry={e} range={range} currency={currency} compareChoice={compare} />
-			))}
+		<div className='flex flex-col gap-4'>
+			<div className='flex flex-wrap items-end gap-4'>
+				<Select
+					label={t('insightsTools.revenue.reports.summaryPeriod')}
+					value={preset}
+					options={RANGE_PRESETS.map((p) => ({ value: p, label: t(`insightsTools.revenue.reports.presets.${p}`) }))}
+					onChange={(v) => v && setPreset(v as RangePreset)}
+				/>
+				{currencies.length > 0 && (
+					<Select
+						label={t('insightsTools.revenue.reports.summaryCurrency')}
+						value={currency}
+						options={currencies.map((c) => ({ value: c, label: c.toUpperCase() }))}
+						onChange={(v) => v && setPicked(v)}
+					/>
+				)}
+			</div>
+			<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+				{tiles.map((e, i) => (
+					<Tile key={e.key} entry={e} data={results[i].data} isLoading={results[i].isLoading} currency={currency} />
+				))}
+			</div>
 		</div>
 	);
 };

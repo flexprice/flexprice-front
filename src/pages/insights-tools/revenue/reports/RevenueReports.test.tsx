@@ -104,4 +104,39 @@ describe('RevenueReports', () => {
 		expect(await screen.findByRole('heading', { name: 'Days to pay' })).toBeInTheDocument();
 		await waitFor(() => expect(screen.queryByRole('table')).not.toBeInTheDocument());
 	});
+
+	describe('summary cards', () => {
+		const pick = async (label: string, option: string) => {
+			fireEvent.keyDown(await screen.findByLabelText(label), { key: 'Enter' });
+			fireEvent.click(await screen.findByRole('option', { name: option }));
+		};
+		const calls = (spy: { mock: { calls: Parameters<typeof ReportsApi.runReport>[] } }, scalar: boolean) =>
+			spy.mock.calls.filter(([, req]) => (req.shape === 'scalar') === scalar).map(([key, req]) => JSON.stringify([key, req]));
+
+		it('report controls do not change the cards', async () => {
+			Element.prototype.scrollIntoView = vi.fn();
+			const spy = vi.spyOn(ReportsApi, 'runReport');
+			renderWithProviders(<RevenueReports />);
+			await screen.findByRole('table');
+			const cards = calls(spy, true);
+			expect(cards.length).toBeGreaterThan(0);
+			const reportCalls = calls(spy, false).length;
+			await pick('Date range', 'Last 7 days');
+			await waitFor(() => expect(calls(spy, false).length).toBeGreaterThan(reportCalls));
+			expect(calls(spy, true)).toEqual(cards);
+		});
+
+		it('card range re-queries only the cards', async () => {
+			Element.prototype.scrollIntoView = vi.fn();
+			const spy = vi.spyOn(ReportsApi, 'runReport');
+			renderWithProviders(<RevenueReports />);
+			await screen.findByRole('table');
+			const cardCount = calls(spy, true).length;
+			const reportBefore = calls(spy, false);
+			await pick('Summary period', 'Last 7 days');
+			await waitFor(() => expect(calls(spy, true).length).toBeGreaterThan(cardCount));
+			expect(calls(spy, false)).toEqual(reportBefore);
+			expect(screen.getByLabelText('Date range')).toHaveTextContent('Last 90 days');
+		});
+	});
 });

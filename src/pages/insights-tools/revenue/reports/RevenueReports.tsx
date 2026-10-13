@@ -17,7 +17,6 @@ import {
 	deltaDisplay,
 	formatValue,
 	inclusiveEnd,
-	rangeForPreset,
 	ReportControls,
 	totalsFor,
 } from './reportMath';
@@ -70,12 +69,7 @@ const RevenueReports = () => {
 		<Page heading={t('insightsTools.revenue.reports.title')}>
 			<div className='flex flex-col gap-6'>
 				<p className='text-sm text-muted-foreground'>{t('insightsTools.revenue.reports.subtitle')}</p>
-				<KpiRibbon
-					entries={entries}
-					range={rangeForPreset(controls?.preset ?? 'last_90_days', now)}
-					currency={controls?.currency ?? ''}
-					compare={controls?.compare ?? 'previous_period'}
-				/>
+				<KpiRibbon entries={entries} now={now} />
 				<div className='flex flex-wrap gap-6'>
 					<div className='w-full lg:w-72 lg:flex-none'>
 						{catalog.isLoading ? (

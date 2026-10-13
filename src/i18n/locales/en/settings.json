@@ -1663,6 +1663,8 @@
 				"newCustomReport": "New custom report",
 				"comingSoon": "Coming soon",
 				"range": "Date range",
+				"summaryPeriod": "Summary period",
+				"summaryCurrency": "Summary currency",
 				"presets": {
 					"last_7_days": "Last 7 days",
 					"last_30_days": "Last 30 days",
