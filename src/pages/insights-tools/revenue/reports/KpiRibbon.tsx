@@ -39,10 +39,8 @@ const Tile = ({
 }) => {
 	const { t } = useTranslation('settings');
 	const ci = data ? data.columns.findIndex((c) => c.name === 'currency') : -1;
-	const available = data ? currenciesOf(data) : [];
-	const chosen = available.includes(currency) ? currency : (available[0] ?? '');
-	const row = data ? (ci < 0 ? data.rows[0] : data.rows.find((r) => r[ci] === chosen)) : undefined;
-	const cur = (row && ci >= 0 ? row[ci] : chosen) || DEFAULT_CURRENCY;
+	const row = data ? (ci < 0 ? data.rows[0] : data.rows.find((r) => r[ci] === currency)) : undefined;
+	const cur = currency || DEFAULT_CURRENCY;
 	const idx = data ? metricIndexes(data, entry.key) : { current: -1, prev: -1, pct: -1 };
 	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
 	return (
@@ -121,7 +119,7 @@ const KpiRibbon = ({ entries, now }: RibbonProps) => {
 					type='button'
 					variant='outline'
 					size='sm'
-					disabled={results.some((r) => r.isLoading) || !results.some((r) => r.data?.rows.length)}
+					disabled={results.some((r) => r.isFetching) || !results.some((r) => r.data?.rows.length)}
 					onClick={() =>
 						downloadCsv(
 							csvFilename('summary', range),
@@ -141,7 +139,7 @@ const KpiRibbon = ({ entries, now }: RibbonProps) => {
 						key={e.key}
 						entry={e}
 						data={results[i].data}
-						isLoading={results[i].isLoading}
+						isLoading={results[i].isLoading || results[i].isPlaceholderData}
 						currency={currency}
 						toDate={isToDatePreset(preset)}
 					/>
