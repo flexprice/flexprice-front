@@ -44,15 +44,15 @@ export const rangeForPreset = (preset: RangePreset, now: Date): string => {
 		case 'last_90_days':
 			return daysBack(90);
 		case 'this_month':
-			return `${ymd(utc(y, m))}..${ymd(utc(y, m + 1))}`;
+			return `${ymd(utc(y, m))}..${ymd(tomorrow)}`;
 		case 'last_month':
 			return `${ymd(utc(y, m - 1))}..${ymd(utc(y, m))}`;
 		case 'this_quarter': {
 			const q = Math.floor(m / 3) * 3;
-			return `${ymd(utc(y, q))}..${ymd(utc(y, q + 3))}`;
+			return `${ymd(utc(y, q))}..${ymd(tomorrow)}`;
 		}
 		case 'this_year':
-			return `${ymd(utc(y, 0))}..${ymd(utc(y + 1, 0))}`;
+			return `${ymd(utc(y, 0))}..${ymd(tomorrow)}`;
 	}
 };
 
