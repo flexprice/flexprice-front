@@ -1667,11 +1667,13 @@
 			"secretKeyHint": "يمكنك العثور على مفتاح Stripe السري في إعدادات API",
 			"pullFromStripe": "سحب من Stripe",
 			"pushToStripe": "إرسال إلى Stripe",
+			"customerSyncHint": "إرسال إلى Stripe. مطلوب لـ Stripe Tax — لا يمكن حساب الضريبة لعميل غير موجود في Stripe.",
 			"webhookSecretDescription": "هذا المفتاح مطلوب للتحقق من أحداث Webhook القادمة من Stripe",
 			"webhookSecretPlaceholder": "whsec_...",
 			"webhookIntro": "أضف عنوان URL التالي إلى إعدادات Webhook في Stripe:",
 			"webhookEventsIntro": "قم بتفعيل الأحداث التالية في إعدادات Webhook داخل Stripe:",
 			"labels": {
+				"customers": "العملاء",
 				"plans": "الخطط",
 				"invoices": "الفواتير",
 				"prices": "الأسعار",

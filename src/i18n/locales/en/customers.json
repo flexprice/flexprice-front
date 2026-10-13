@@ -390,6 +390,7 @@
 		},
 		"tax": {
 			"writeDeniedTooltip": "You don't have permission to manage tax associations. Ask a tenant admin for access.",
+			"externalEngineTooltip": "Tax for this environment is calculated by {{provider}}. Configure tax rates and registrations in {{provider}} instead.",
 			"emptyTitle": "Tax",
 			"emptySubtitle": "No tax rate assigned to this customer",
 			"associationsTitle": "Tax Associations",
