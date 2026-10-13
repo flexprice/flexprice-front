@@ -1712,11 +1712,13 @@
 			"secretKeyHint": "Your Stripe secret key from the API keys section",
 			"pullFromStripe": "Pull from Stripe",
 			"pushToStripe": "Push to Stripe",
+			"customerSyncHint": "Push to Stripe. Required for Stripe Tax — tax cannot be calculated for a customer that does not exist in Stripe.",
 			"webhookSecretDescription": "The webhook secret provided by Stripe after setting up the webhook endpoint",
 			"webhookSecretPlaceholder": "whsec_...",
 			"webhookIntro": "Set up this webhook URL in your Stripe dashboard to receive event notifications:",
 			"webhookEventsIntro": "Based on your sync configuration, subscribe to these events in your Stripe dashboard:",
 			"labels": {
+				"customers": "Customers",
 				"plans": "Plans",
 				"invoices": "Invoices",
 				"prices": "Prices",
