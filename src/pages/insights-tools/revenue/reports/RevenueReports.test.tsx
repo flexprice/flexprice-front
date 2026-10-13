@@ -44,20 +44,20 @@ describe('RevenueReports', () => {
 			const spy = vi.spyOn(ReportsApi, 'runReport');
 			renderWithProviders(<RevenueReports />);
 			fireEvent.click(await screen.findByRole('button', { name: 'ARPU' }));
-			fireEvent.click(await screen.findByRole('button', { name: 'Billed' }));
-			expect(await screen.findByRole('heading', { name: 'ARPU (billed)' })).toBeInTheDocument();
-			await waitFor(() => expect(spy).toHaveBeenCalledWith('arpu_billed', expect.objectContaining({ shape: 'timeseries' })));
+			fireEvent.click(await screen.findByRole('button', { name: 'Paid' }));
+			expect(await screen.findByRole('heading', { name: 'ARPU (paid)' })).toBeInTheDocument();
+			await waitFor(() => expect(spy).toHaveBeenCalledWith('arpu_paid', expect.objectContaining({ shape: 'timeseries' })));
 		});
 
 		it('switching report resets basis', async () => {
 			renderWithProviders(<RevenueReports />);
 			fireEvent.click(await screen.findByRole('button', { name: 'ARPU' }));
-			fireEvent.click(await screen.findByRole('button', { name: 'Billed' }));
-			await screen.findByRole('heading', { name: 'ARPU (billed)' });
+			fireEvent.click(await screen.findByRole('button', { name: 'Paid' }));
+			await screen.findByRole('heading', { name: 'ARPU (paid)' });
 			fireEvent.click(screen.getByRole('button', { name: 'Days to pay' }));
 			fireEvent.click(await screen.findByRole('button', { name: 'ARPU' }));
 			expect(await screen.findByRole('heading', { name: 'ARPU' })).toBeInTheDocument();
-			expect(screen.getByRole('button', { name: 'Paid' })).toHaveAttribute('aria-pressed', 'true');
+			expect(screen.getByRole('button', { name: 'Billed' })).toHaveAttribute('aria-pressed', 'true');
 		});
 	});
 
