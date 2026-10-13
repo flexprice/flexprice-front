@@ -9,6 +9,7 @@ interface Props {
 	controls: ReportControls;
 	currencies: string[];
 	onChange: (next: ReportControls) => void;
+	basis?: { options: { value: string; label: string }[]; value: string; onPick: (v: string) => void };
 }
 
 interface SegmentedProps {
@@ -36,7 +37,7 @@ const Segmented = ({ label, options, value, onPick }: SegmentedProps) => (
 	</div>
 );
 
-const ReportControlsBar = ({ entry, controls, currencies, onChange }: Props) => {
+const ReportControlsBar = ({ entry, controls, currencies, onChange, basis }: Props) => {
 	const { t } = useTranslation('settings');
 	const k = (s: string) => t(`insightsTools.revenue.reports.${s}`);
 	const set = (patch: Partial<ReportControls>) => onChange({ ...controls, ...patch });
@@ -48,11 +49,13 @@ const ReportControlsBar = ({ entry, controls, currencies, onChange }: Props) => 
 		groupBy: k('groupBy'),
 		compare: k('compare'),
 		view: k('view'),
+		basis: k('basis'),
 	};
 	const groupRequired = entry.default_shape === 'breakdown';
 
 	return (
 		<div className='flex flex-wrap items-end gap-4'>
+			{basis && <Segmented label={text.basis} value={basis.value} options={basis.options} onPick={basis.onPick} />}
 			<Select
 				label={text.range}
 				value={controls.preset}

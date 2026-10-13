@@ -31,6 +31,36 @@ describe('RevenueReports', () => {
 		expect(await screen.findByRole('heading', { name: 'Days to pay' })).toBeInTheDocument();
 	});
 
+	describe('basis', () => {
+		it('appears only for reports with variants', async () => {
+			renderWithProviders(<RevenueReports />);
+			await screen.findByRole('heading', { name: 'Total billing' });
+			expect(screen.queryByRole('group', { name: 'Basis' })).not.toBeInTheDocument();
+			fireEvent.click(screen.getByRole('button', { name: 'ARPU' }));
+			expect(await screen.findByRole('group', { name: 'Basis' })).toBeInTheDocument();
+		});
+
+		it('switching basis runs the variant key', async () => {
+			const spy = vi.spyOn(ReportsApi, 'runReport');
+			renderWithProviders(<RevenueReports />);
+			fireEvent.click(await screen.findByRole('button', { name: 'ARPU' }));
+			fireEvent.click(await screen.findByRole('button', { name: 'Billed' }));
+			expect(await screen.findByRole('heading', { name: 'ARPU (billed)' })).toBeInTheDocument();
+			await waitFor(() => expect(spy).toHaveBeenCalledWith('arpu_billed', expect.objectContaining({ shape: 'timeseries' })));
+		});
+
+		it('switching report resets basis', async () => {
+			renderWithProviders(<RevenueReports />);
+			fireEvent.click(await screen.findByRole('button', { name: 'ARPU' }));
+			fireEvent.click(await screen.findByRole('button', { name: 'Billed' }));
+			await screen.findByRole('heading', { name: 'ARPU (billed)' });
+			fireEvent.click(screen.getByRole('button', { name: 'Days to pay' }));
+			fireEvent.click(await screen.findByRole('button', { name: 'ARPU' }));
+			expect(await screen.findByRole('heading', { name: 'ARPU' })).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: 'Paid' })).toHaveAttribute('aria-pressed', 'true');
+		});
+	});
+
 	it('shows the server message when a report fails', async () => {
 		vi.spyOn(ReportsApi, 'runReport').mockRejectedValue(new Error('financial reports are not enabled'));
 		renderWithProviders(<RevenueReports />);

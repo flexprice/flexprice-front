@@ -34,6 +34,7 @@ const RevenueReports = () => {
 	const catalog = useReportCatalog();
 	const entries = useMemo(() => catalog.data?.items ?? [], [catalog.data]);
 	const [pickedKey, setPickedKey] = useState('');
+	const [basisKey, setBasisKey] = useState('');
 	const [picked, setPicked] = useState<ReportControls | null>(null);
 	const [now, setNow] = useState(() => new Date());
 	// Roll relative ranges at UTC midnight.
@@ -44,7 +45,16 @@ const RevenueReports = () => {
 	}, [now]);
 
 	const selectedKey = pickedKey || entries[0]?.key || '';
-	const entry = entries.find((e) => e.key === selectedKey);
+	const parent = entries.find((e) => e.key === selectedKey);
+	const variants = useMemo(() => entries.filter((e) => e.variant_of === parent?.key), [entries, parent]);
+	const entry = variants.find((v) => v.key === basisKey) ?? parent;
+	const basisOptions =
+		parent && variants.length
+			? [
+					{ value: parent.key, label: parent.variant_label || t('insightsTools.revenue.reports.basisDefault') },
+					...variants.map((v) => ({ value: v.key, label: v.variant_label || v.name })),
+				]
+			: [];
 	const controls = picked ?? (entry ? defaultControls(entry) : null);
 	const setControls = setPicked;
 	const request = entry && controls ? buildRequest(entry, controls, now) : undefined;
@@ -57,6 +67,7 @@ const RevenueReports = () => {
 		const next = entries.find((e) => e.key === key);
 		if (!next) return;
 		setPickedKey(key);
+		setBasisKey('');
 		setPicked(controlsForEntry(next, controls ?? defaultControls(next)));
 	};
 
@@ -104,7 +115,13 @@ const RevenueReports = () => {
 										</div>
 									)}
 								</div>
-								<ReportControlsBar entry={entry} controls={controls} currencies={currencies} onChange={setControls} />
+								<ReportControlsBar
+									entry={entry}
+									controls={controls}
+									currencies={currencies}
+									onChange={setControls}
+									basis={basisOptions.length ? { options: basisOptions, value: entry.key, onPick: setBasisKey } : undefined}
+								/>
 								{run.isLoading && !run.data && <Skeleton className='h-72 w-full' />}
 								{run.isError && <ErrorBox title={t('insightsTools.revenue.reports.errorTitle')} message={(run.error as Error)?.message} />}
 								{run.data && run.data.rows.length === 0 && (

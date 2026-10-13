@@ -1636,6 +1636,8 @@
 				"none": "بلا",
 				"compare": "مقارنة",
 				"compares": { "previous_period": "الفترة السابقة", "previous_year": "الفترة نفسها من العام الماضي", "none": "بلا" },
+				"basis": "الأساس",
+				"basisDefault": "افتراضي",
 				"view": "عرض كـ",
 				"chart": "مخطط",
 				"table": "جدول",

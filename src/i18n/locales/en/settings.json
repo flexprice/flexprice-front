@@ -1681,6 +1681,8 @@
 				"none": "None",
 				"compare": "Compare",
 				"compares": { "previous_period": "Previous period", "previous_year": "Same period last year", "none": "None" },
+				"basis": "Basis",
+				"basisDefault": "Default",
 				"view": "View as",
 				"chart": "Chart",
 				"table": "Table",

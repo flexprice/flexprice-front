@@ -23,6 +23,12 @@ describe('ReportList', () => {
 		expect(screen.queryByRole('button', { name: 'Total billing' })).not.toBeInTheDocument();
 	});
 
+	it('hides variant entries', () => {
+		renderWithProviders(<ReportList entries={entries} selectedKey='' onSelect={() => {}} />);
+		expect(screen.getByRole('button', { name: 'ARPU' })).toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'ARPU (billed)' })).not.toBeInTheDocument();
+	});
+
 	it('custom report is disabled', () => {
 		renderWithProviders(<ReportList entries={entries} selectedKey='' onSelect={() => {}} />);
 		expect(screen.getByRole('button', { name: /New custom report/ })).toBeDisabled();

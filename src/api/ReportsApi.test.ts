@@ -29,7 +29,7 @@ describe('ReportsApi', () => {
 	it('serves fixtures when mock is on', async () => {
 		vi.stubEnv('VITE_REPORTS_MOCK', 'true');
 		const catalog = await ReportsApi.listReports();
-		expect(catalog.items.length).toBe(10);
+		expect(catalog.items.length).toBe(11);
 		expect(AxiosClient.get).not.toHaveBeenCalled();
 
 		const res = await ReportsApi.runReport('invoice_total', {

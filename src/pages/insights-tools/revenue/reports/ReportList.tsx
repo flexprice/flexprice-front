@@ -18,7 +18,7 @@ const ReportList = ({ entries, selectedKey, onSelect }: Props) => {
 	const [q, setQ] = useState('');
 	const groups = useMemo(() => {
 		const needle = q.trim().toLowerCase();
-		const visible = entries.filter((e) => !needle || e.name.toLowerCase().includes(needle));
+		const visible = entries.filter((e) => !e.variant_of && (!needle || e.name.toLowerCase().includes(needle)));
 		return ORDER.map((c) => ({ category: c, items: visible.filter((e) => e.category === c) })).filter((g) => g.items.length > 0);
 	}, [entries, q]);
 

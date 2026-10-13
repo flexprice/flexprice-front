@@ -23,6 +23,8 @@ export interface ReportCatalogEntry {
 	dimensions: ReportDimension[];
 	grains: ReportGrain[];
 	supports_compare: boolean;
+	variant_of?: string;
+	variant_label?: string;
 }
 
 export interface ReportCatalogResponse {
