@@ -167,12 +167,15 @@ export const mockRun = (key: string, req: ReportQueryRequest): ReportQueryResult
 		);
 	}
 	const metricValues = (cur: number, prev: number): string[] => (compare ? [round(cur), round(prev), pct(cur, prev)] : [round(cur)]);
+	const parsed = /^\d{4}-\d{2}-\d{2}\.\.\d{4}-\d{2}-\d{2}$/.test(req.range);
+	const [from, to] = parsed ? req.range.split('..') : ['2026-05-01', '2026-11-01'];
 	const meta = {
 		query_source: 'mock',
-		from: '2026-09-01T00:00:00Z',
-		to: '2026-10-01T00:00:00Z',
+		from: `${from}T00:00:00Z`,
+		to: `${to}T00:00:00Z`,
 		...(compare ? { prev_from: '2026-08-01T00:00:00Z', prev_to: '2026-09-01T00:00:00Z' } : {}),
 	};
+	const inRange = (b: string) => b.slice(0, 7) >= from.slice(0, 7) && b < to;
 
 	if (req.shape === 'timeseries') {
 		const columns: ReportColumn[] = [
@@ -180,7 +183,9 @@ export const mockRun = (key: string, req: ReportQueryRequest): ReportQueryResult
 			{ name: 'currency', type: 'string', role: 'dimension' },
 			...metricCols,
 		];
-		const rows = BUCKETS.map((b, i) => [b, 'usd', ...metricValues(base * (1 + i * 0.04), base * (0.95 + i * 0.035))]);
+		const rows = BUCKETS.map((b, i) => [b, 'usd', ...metricValues(base * (1 + i * 0.04), base * (0.95 + i * 0.035))]).filter((r) =>
+			inRange(r[0]),
+		);
 		return { columns, rows, meta };
 	}
 	if (req.shape === 'breakdown') {

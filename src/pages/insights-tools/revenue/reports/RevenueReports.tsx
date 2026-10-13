@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Page } from '@/components/atoms';
 import { Card } from '@/components/ui/card';
@@ -36,7 +36,13 @@ const RevenueReports = () => {
 	const entries = useMemo(() => catalog.data?.items ?? [], [catalog.data]);
 	const [pickedKey, setPickedKey] = useState('');
 	const [picked, setPicked] = useState<ReportControls | null>(null);
-	const now = useMemo(() => new Date(), []);
+	const [now, setNow] = useState(() => new Date());
+	// Roll relative ranges at UTC midnight.
+	useEffect(() => {
+		const next = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1);
+		const timer = window.setTimeout(() => setNow(new Date()), next - Date.now() + 1);
+		return () => window.clearTimeout(timer);
+	}, [now]);
 
 	const selectedKey = pickedKey || entries[0]?.key || '';
 	const entry = entries.find((e) => e.key === selectedKey);

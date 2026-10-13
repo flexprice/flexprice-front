@@ -122,6 +122,7 @@ describe('deltaDisplay', () => {
 		expect(deltaDisplay('110', '100', '10', true)).toEqual({ label: '+10.0%', tone: 'success', kind: 'pct' });
 		expect(deltaDisplay('18.5', '16.4', '12.8', false)).toEqual({ label: '+12.8%', tone: 'failed', kind: 'pct' });
 		expect(deltaDisplay('90', '100', '-10', false)).toEqual({ label: '-10.0%', tone: 'success', kind: 'pct' });
+		expect(deltaDisplay('-50', '-100', '-50', true)).toEqual({ label: '-50.0%', tone: 'success', kind: 'pct' });
 	});
 	it('flat under half a percent', () => {
 		expect(deltaDisplay('100.2', '100', '0.2', true)).toEqual({ label: '+0.2%', tone: 'default', kind: 'pct' });

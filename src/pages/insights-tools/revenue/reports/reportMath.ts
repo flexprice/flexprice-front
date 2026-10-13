@@ -113,7 +113,7 @@ export const deltaDisplay = (
 	const rounded = Number(pct.toFixed(1)) + 0;
 	const label = `${rounded >= 0 ? '+' : ''}${rounded.toFixed(1)}%`;
 	if (Math.abs(pct) < 0.5) return { label, tone: 'default', kind: 'pct' };
-	const good = higherIsBetter ? pct > 0 : pct < 0;
+	const good = higherIsBetter ? cur > p : cur < p;
 	return { label, tone: good ? 'success' : 'failed', kind: 'pct' };
 };
 
