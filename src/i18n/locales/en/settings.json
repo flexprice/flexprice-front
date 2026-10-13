@@ -1691,6 +1691,8 @@
 				"previous": "Previous",
 				"inProgress": "In progress",
 				"toDate": "To date",
+				"downloadCsv": "Download CSV",
+				"downloadSummary": "Download summary",
 				"new": "New",
 				"daysUnit": "{{value}} days",
 				"change": "Δ%",

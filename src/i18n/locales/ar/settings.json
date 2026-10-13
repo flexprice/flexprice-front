@@ -1646,6 +1646,8 @@
 				"previous": "السابق",
 				"inProgress": "قيد التقدم",
 				"toDate": "حتى تاريخه",
+				"downloadCsv": "تنزيل CSV",
+				"downloadSummary": "تنزيل الملخص",
 				"new": "جديد",
 				"daysUnit": "{{value}} يوم",
 				"change": "Δ%",

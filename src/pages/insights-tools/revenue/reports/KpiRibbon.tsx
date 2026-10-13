@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueries } from '@tanstack/react-query';
+import { Download } from 'lucide-react';
 import { Select } from '@/components/atoms';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ReportCatalogEntry, ReportQueryResult } from '@/types/dto/Reports';
@@ -16,6 +18,7 @@ import {
 	RangePreset,
 	rangeForPreset,
 } from './reportMath';
+import { csvFilename, downloadCsv, summaryCsv } from './reportCsv';
 import { reportRunOptions } from './useReports';
 
 const DEFAULT_CURRENCY = 'usd';
@@ -114,6 +117,23 @@ const KpiRibbon = ({ entries, now }: RibbonProps) => {
 						onChange={(v) => v && setPicked(v)}
 					/>
 				)}
+				<Button
+					type='button'
+					variant='outline'
+					size='sm'
+					disabled={results.some((r) => r.isLoading) || !results.some((r) => r.data?.rows.length)}
+					onClick={() =>
+						downloadCsv(
+							csvFilename('summary', range),
+							summaryCsv(
+								tiles.map((entry, i) => ({ entry, data: results[i].data })),
+								range,
+							),
+						)
+					}>
+					<Download className='h-4 w-4' />
+					{t('insightsTools.revenue.reports.downloadSummary')}
+				</Button>
 			</div>
 			<div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
 				{tiles.map((e, i) => (

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Download } from 'lucide-react';
 import { Page } from '@/components/atoms';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import KpiRibbon from './KpiRibbon';
@@ -20,6 +22,7 @@ import {
 	ReportControls,
 	totalsFor,
 } from './reportMath';
+import { csvFilename, downloadCsv, reportRowsCsv } from './reportCsv';
 import { useReportCatalog, useReportRun } from './useReports';
 
 const ErrorBox = ({ title, message }: { title: string; message?: string }) => (
@@ -97,7 +100,22 @@ const RevenueReports = () => {
 						) : (
 							<>
 								<div className='flex flex-col gap-1'>
-									<h2 className='text-lg font-semibold'>{entry.name}</h2>
+									<div className='flex items-start justify-between gap-2'>
+										<h2 className='text-lg font-semibold'>{entry.name}</h2>
+										<Button
+											type='button'
+											variant='outline'
+											size='sm'
+											disabled={!run.data?.rows.length || !request}
+											onClick={() =>
+												run.data &&
+												request &&
+												downloadCsv(csvFilename(entry.key, request.range), reportRowsCsv(entry, run.data, request.grain, now))
+											}>
+											<Download className='h-4 w-4' />
+											{t('insightsTools.revenue.reports.downloadCsv')}
+										</Button>
+									</div>
 									<p className='text-sm text-muted-foreground'>{entry.description}</p>
 									{entry.kind === 'snapshot' && (
 										<span className='text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.pointInTime')}</span>
