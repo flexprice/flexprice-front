@@ -56,8 +56,25 @@ export const rangeForPreset = (preset: RangePreset, now: Date): string => {
 	}
 };
 
+// Worst-case span in days per preset.
+const PRESET_MAX_DAYS: Record<RangePreset, number> = {
+	last_7_days: 7,
+	last_30_days: 30,
+	last_90_days: 90,
+	this_month: 31,
+	last_month: 31,
+	this_quarter: 92,
+	this_year: 366,
+};
+
+export const presetAllowed = (entry: ReportCatalogEntry, preset: RangePreset): boolean =>
+	!entry.max_range_days || PRESET_MAX_DAYS[preset] <= entry.max_range_days;
+
+const defaultPreset = (entry: ReportCatalogEntry): RangePreset =>
+	(['last_90_days', 'last_30_days', 'last_7_days'] as const).find((p) => presetAllowed(entry, p)) ?? 'last_7_days';
+
 export const defaultControls = (entry: ReportCatalogEntry): ReportControls => ({
-	preset: 'last_90_days',
+	preset: defaultPreset(entry),
 	grain: entry.grains.includes('month') ? 'month' : (entry.grains[0] ?? ''),
 	currency: '',
 	groupBy: entry.default_shape === 'breakdown' ? (entry.dimensions[0]?.key ?? '') : '',
@@ -69,7 +86,7 @@ export const controlsForEntry = (entry: ReportCatalogEntry, prev: ReportControls
 	const base = defaultControls(entry);
 	return {
 		...base,
-		preset: prev.preset,
+		preset: presetAllowed(entry, prev.preset) ? prev.preset : base.preset,
 		currency: prev.currency,
 		view: prev.view,
 		compare: entry.supports_compare ? prev.compare : 'none',

@@ -1618,6 +1618,7 @@
 				"newCustomReport": "تقرير مخصص جديد",
 				"comingSoon": "قريبًا",
 				"range": "النطاق الزمني",
+				"maxRangeHint": "حتى {{count}} أيام لهذا التقرير",
 				"summaryPeriod": "فترة الملخص",
 				"summaryCurrency": "عملة الملخص",
 				"presets": {

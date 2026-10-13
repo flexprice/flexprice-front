@@ -136,6 +136,7 @@ const CATALOG: ReportCatalogEntry[] = [
 		dimensions: [{ key: 'meter_id', label: 'Meter' }],
 		grains: ['day', 'week', 'month'],
 		supports_compare: true,
+		max_range_days: 7,
 	},
 ];
 

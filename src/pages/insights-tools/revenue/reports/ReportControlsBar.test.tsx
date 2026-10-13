@@ -40,4 +40,15 @@ describe('ReportControlsBar', () => {
 		fireEvent.keyDown(trigger, { key: 'Enter' });
 		expect(screen.queryByText('None')).not.toBeInTheDocument();
 	});
+
+	it('disables presets above max_range_days with a hint', () => {
+		const entry = byKey('events_volume');
+		renderWithProviders(<ReportControlsBar entry={entry} controls={defaultControls(entry)} currencies={[]} onChange={() => {}} />);
+		const trigger = screen.getByLabelText('Date range');
+		expect(trigger).toHaveTextContent('Last 7 days');
+		fireEvent.keyDown(trigger, { key: 'Enter' });
+		expect(screen.getByRole('option', { name: /Last 30 days/ })).toHaveAttribute('aria-disabled', 'true');
+		expect(screen.getByRole('option', { name: /This year/ })).toHaveAttribute('aria-disabled', 'true');
+		expect(screen.getAllByText('Up to 7 days for this report').length).toBeGreaterThan(0);
+	});
 });

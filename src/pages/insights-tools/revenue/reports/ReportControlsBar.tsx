@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Select } from '@/components/atoms';
 import { cn } from '@/lib/utils';
 import { ReportCatalogEntry } from '@/types/dto/Reports';
-import { RANGE_PRESETS, RangePreset, ReportControls } from './reportMath';
+import { RANGE_PRESETS, RangePreset, ReportControls, presetAllowed } from './reportMath';
 
 interface Props {
 	entry: ReportCatalogEntry;
@@ -59,7 +59,15 @@ const ReportControlsBar = ({ entry, controls, currencies, onChange, basis }: Pro
 			<Select
 				label={text.range}
 				value={controls.preset}
-				options={RANGE_PRESETS.map((p) => ({ value: p, label: k(`presets.${p}`) }))}
+				options={RANGE_PRESETS.map((p) => {
+					const ok = presetAllowed(entry, p);
+					return {
+						value: p,
+						label: k(`presets.${p}`),
+						disabled: !ok,
+						description: ok ? undefined : t('insightsTools.revenue.reports.maxRangeHint', { count: entry.max_range_days }),
+					};
+				})}
 				onChange={(v) => v && set({ preset: v as RangePreset })}
 			/>
 			{!snapshot && entry.grains.length > 0 && !controls.groupBy && (

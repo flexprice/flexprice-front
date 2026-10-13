@@ -25,6 +25,7 @@ export interface ReportCatalogEntry {
 	supports_compare: boolean;
 	variant_of?: string;
 	variant_label?: string;
+	max_range_days?: number;
 }
 
 export interface ReportCatalogResponse {

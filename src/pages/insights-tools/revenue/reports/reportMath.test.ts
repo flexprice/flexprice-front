@@ -10,6 +10,7 @@ import {
 	inclusiveEnd,
 	isBucketInProgress,
 	isToDatePreset,
+	presetAllowed,
 	rangeForPreset,
 	toSeries,
 	totalsFor,
@@ -112,6 +113,27 @@ describe('controlsForEntry', () => {
 		const prev = { ...defaultControls(flow), compare: 'none' as const };
 		expect(controlsForEntry(flow, prev).compare).toBe('none');
 		expect(controlsForEntry(snapshot, prev).compare).toBe('none');
+	});
+});
+
+describe('max_range_days', () => {
+	const capped = { ...flow, key: 'events_volume', max_range_days: 7 };
+	it('allows only presets within the cap', () => {
+		expect(presetAllowed(capped, 'last_7_days')).toBe(true);
+		for (const p of ['last_30_days', 'last_90_days', 'this_month', 'last_month', 'this_quarter', 'this_year'] as const) {
+			expect(presetAllowed(capped, p)).toBe(false);
+		}
+		expect(presetAllowed(flow, 'this_year')).toBe(true);
+	});
+	it('defaults to the largest allowed preset', () => {
+		expect(defaultControls(flow).preset).toBe('last_90_days');
+		expect(defaultControls(capped).preset).toBe('last_7_days');
+		expect(defaultControls({ ...capped, max_range_days: 30 }).preset).toBe('last_30_days');
+	});
+	it('switching from a 90-day report resets to 7 days', () => {
+		const prev = { ...defaultControls(flow), preset: 'last_90_days' as const };
+		expect(controlsForEntry(capped, prev).preset).toBe('last_7_days');
+		expect(controlsForEntry(capped, { ...prev, preset: 'last_7_days' }).preset).toBe('last_7_days');
 	});
 });
 
