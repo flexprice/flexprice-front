@@ -26,7 +26,10 @@ import {
 } from './reportMath';
 import { csvFilename, downloadCsv, reportRowsCsv } from './reportCsv';
 import { csvBaseName, effectiveControls, fromDefinition, sameDefinition, toDefinition } from './customReports';
-import { useCustomReports, useReportCatalog, useReportRun } from './useReports';
+import { DatasetDefinition, ReportFamilyCustom } from '@/types/dto/Reports';
+import { useCustomReports, useDatasets, useReportCatalog, useReportRun } from './useReports';
+import BuilderPanel from './builder/BuilderPanel';
+import { defaultDefinition, isDatasetDefinition } from './builder/builderModel';
 
 const ErrorBox = ({ title, message }: { title: string; message?: string }) => (
 	<div role='alert' className='flex flex-col gap-1 rounded-md border border-red-200 bg-red-50 p-4 text-sm'>
@@ -42,10 +45,20 @@ const RevenueReports = () => {
 	const [pickedKey, setPickedKey] = useState('');
 	const [basisKey, setBasisKey] = useState('');
 	const [picked, setPicked] = useState<ReportControls | null>(null);
-	const customReports = useCustomReports();
+	const customReportsQuery = useCustomReports();
+	const customReports = {
+		isError: customReportsQuery.isError,
+		data: customReportsQuery.data && {
+			items: customReportsQuery.data.items.filter((r): r is ReportFamilyCustom => r.definition.family === 'report'),
+		},
+	};
+	const datasetsQuery = useDatasets();
+	const datasets = useMemo(() => datasetsQuery.data?.items ?? [], [datasetsQuery.data]);
+	const [builderDef, setBuilderDef] = useState<DatasetDefinition | null>(null);
 	const [customId, setCustomId] = useState('');
 	const [needsEdit, setNeedsEdit] = useState(false);
 	const custom = customReports.data?.items.find((r) => r.id === customId);
+	const builderCustom = customReportsQuery.data?.items.find((r) => r.id === customId && isDatasetDefinition(r.definition));
 	const [now, setNow] = useState(() => new Date());
 	// Roll relative ranges at UTC midnight.
 	useEffect(() => {
@@ -68,7 +81,7 @@ const RevenueReports = () => {
 	const controls = picked ?? (entry ? defaultControls(entry) : null);
 	const setControls = setPicked;
 	const request = entry && controls ? buildRequest(entry, controls, now) : undefined;
-	const run = useReportRun(entry?.key, request);
+	const run = useReportRun(builderDef ? undefined : entry?.key, request);
 	const currencies = run.data ? currenciesOf(run.data) : [];
 	const currency = controls && currencies.includes(controls.currency) ? controls.currency : (currencies[0] ?? '');
 	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
@@ -81,11 +94,27 @@ const RevenueReports = () => {
 		setPicked(controlsForEntry(next, controls ?? defaultControls(next)));
 		setCustomId('');
 		setNeedsEdit(false);
+		setBuilderDef(null);
+	};
+
+	const newCustom = () => {
+		if (!datasets[0]) return;
+		setCustomId('');
+		setNeedsEdit(false);
+		setBuilderDef(defaultDefinition(datasets[0]));
 	};
 
 	const selectCustom = (id: string) => {
+		const built = customReportsQuery.data?.items.find((x) => x.id === id);
+		if (built && isDatasetDefinition(built.definition)) {
+			setCustomId(id);
+			setNeedsEdit(false);
+			setBuilderDef(built.definition);
+			return;
+		}
 		const r = customReports.data?.items.find((x) => x.id === id);
 		if (!r) return;
+		setBuilderDef(null);
 		setCustomId(id);
 		const e = entries.find((x) => x.key === r.definition.metrics[0]);
 		if (!e) {
@@ -120,17 +149,37 @@ const RevenueReports = () => {
 						) : (
 							<ReportList
 								entries={entries}
-								selectedKey={selectedKey}
+								selectedKey={builderDef ? '' : selectedKey}
 								onSelect={select}
-								customReports={customReports.data?.items ?? []}
+								customReports={customReportsQuery.data?.items ?? []}
 								customError={customReports.isError}
-								selectedCustomId={custom ? customId : ''}
+								selectedCustomId={custom || builderCustom ? customId : ''}
 								onSelectCustom={selectCustom}
+								datasets={datasets}
+								onNewCustom={newCustom}
 							/>
 						)}
 					</div>
 					<Card className='flex min-w-0 flex-1 flex-col gap-4 p-6'>
-						{catalog.isError ? (
+						{builderDef ? (
+							datasetsQuery.isLoading ? (
+								<Skeleton className='h-96 w-full' />
+							) : (
+								<BuilderPanel
+									key={customId || 'new'}
+									datasets={datasets}
+									value={builderDef}
+									onChange={setBuilderDef}
+									custom={builderCustom}
+									now={now}
+									onSaved={setCustomId}
+									onDeleted={() => {
+										setCustomId('');
+										setBuilderDef(null);
+									}}
+								/>
+							)
+						) : catalog.isError ? (
 							<ErrorBox title={t('insightsTools.revenue.reports.errorTitle')} message={(catalog.error as Error)?.message} />
 						) : !entry || !controls ? (
 							<span className='text-sm text-muted-foreground'>{t('insightsTools.revenue.reports.selectReport')}</span>

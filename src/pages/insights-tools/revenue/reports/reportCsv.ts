@@ -24,25 +24,28 @@ export const reportRowsCsv = (
 	result: ReportQueryResult,
 	grain: ReportGrain | '' | undefined,
 	now: Date,
+	measures?: { key: string; label: string }[],
 ): string => {
-	const idx = metricIndexes(result, entry.key);
+	const cols = (measures ?? [{ key: entry.key, label: entry.key }]).map((m) => ({ ...m, idx: metricIndexes(result, m.key) }));
 	const ci = result.columns.findIndex((c) => c.name === 'currency');
 	const dims = result.columns.map((c, i) => ({ c, i })).filter(({ c }) => c.role === 'dimension' && c.name !== 'currency');
 	const bucket = dims.find(({ c }) => c.name === 'bucket');
-	const hasPrev = idx.prev >= 0;
+	const hasPrev = cols.some((m) => m.idx.prev >= 0);
 	const markProgress = !!bucket && !!grain;
+	const prevHeaders = (label: string) => (measures ? [`${label} previous`, `${label} change_pct`] : ['previous', 'change_pct']);
 	const header = [
 		...dims.map(({ c }) => (c.name === 'bucket' ? 'period' : c.name)),
 		...(ci >= 0 ? ['currency'] : []),
-		entry.key,
-		...(hasPrev ? ['previous', 'change_pct'] : []),
+		...cols.flatMap((m) => [m.label, ...(hasPrev ? prevHeaders(m.label) : [])].map(text)),
 		...(markProgress ? ['in_progress'] : []),
 	];
 	const rows = result.rows.map((r) => [
 		...dims.map(({ c, i }) => (c.name === 'bucket' ? at(r, i).slice(0, 10) : text(at(r, i)))),
 		...(ci >= 0 ? [at(r, ci)] : []),
-		at(r, idx.current),
-		...(hasPrev ? [at(r, idx.prev), changePct(r[idx.current], r[idx.prev], idx.pct >= 0 ? r[idx.pct] : undefined)] : []),
+		...cols.flatMap(({ idx }) => [
+			at(r, idx.current),
+			...(hasPrev ? [at(r, idx.prev), changePct(r[idx.current], r[idx.prev], idx.pct >= 0 ? r[idx.pct] : undefined)] : []),
+		]),
 		...(markProgress && bucket ? [String(isBucketInProgress(at(r, bucket.i), grain, now))] : []),
 	]);
 	return toCsv([header, ...rows]);

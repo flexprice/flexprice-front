@@ -1,15 +1,22 @@
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { fireEvent, screen } from '@testing-library/react';
-import { mockCatalog } from '@/api/fixtures/reports';
-import { CustomReport } from '@/types/dto/Reports';
+import { mockCatalog, mockDatasets } from '@/api/fixtures/reports';
+import { ReportFamilyCustom } from '@/types/dto/Reports';
 import ReportList from './ReportList';
 import { renderWithProviders } from './testUtils';
 
 describe('ReportList', () => {
 	const entries = mockCatalog().items;
-	const none = { customReports: [] as CustomReport[], customError: false, selectedCustomId: '', onSelectCustom: () => {} };
-	const acme: CustomReport = {
+	const none = {
+		customReports: [] as ReportFamilyCustom[],
+		customError: false,
+		selectedCustomId: '',
+		onSelectCustom: () => {},
+		datasets: mockDatasets().items,
+		onNewCustom: () => {},
+	};
+	const acme: ReportFamilyCustom = {
 		id: 'v1',
 		name: 'Acme billing',
 		version: 1,
@@ -53,6 +60,8 @@ describe('ReportList', () => {
 				selectedCustomId=''
 				onSelectCustom={onSelectCustom}
 				customReports={[acme]}
+				datasets={none.datasets}
+				onNewCustom={() => {}}
 			/>,
 		);
 		expect(screen.getByText('Custom reports')).toBeInTheDocument();

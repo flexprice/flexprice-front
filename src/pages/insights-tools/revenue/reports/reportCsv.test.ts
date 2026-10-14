@@ -75,4 +75,26 @@ describe('reportCsv', () => {
 		expect(toCsv([['a,b', 'c"d']])).toBe('"a,b","c""d"');
 		expect(csvFilename('invoice_total', '2026-10-01..2026-10-13')).toBe('invoice_total_2026-10-01_2026-10-12.csv');
 	});
+
+	it('writes one labelled column group per measure', () => {
+		const result: ReportQueryResult = {
+			columns: [
+				{ name: 'customer_id', type: 'string', role: 'dimension' },
+				{ name: 'customer_id_label', type: 'string', role: 'dimension' },
+				{ name: 'm0', type: 'decimal', role: 'metric' },
+				{ name: 'm1', type: 'decimal', role: 'metric' },
+				{ name: 'm1_prev', type: 'decimal', role: 'metric' },
+			],
+			rows: [['c1', 'Acme', '3', '10', '5']],
+			meta: { query_source: 'test' },
+		};
+		const measures = [
+			{ key: 'm0', label: 'Count' },
+			{ key: 'm1', label: 'Sum of Total' },
+		];
+		expect(reportRowsCsv(entry, result, '', NOW, measures).split('\r\n')).toEqual([
+			'customer_id,customer_id_label,Count,Count previous,Count change_pct,Sum of Total,Sum of Total previous,Sum of Total change_pct',
+			'c1,Acme,3,,,10,5,100.00',
+		]);
+	});
 });

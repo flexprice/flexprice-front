@@ -252,4 +252,104 @@ describe('RevenueReports', () => {
 			expect(screen.getByRole('button', { name: 'Total billing' })).toHaveAttribute('aria-current', 'true');
 		});
 	});
+
+	describe('report builder', () => {
+		const ABSOLUTE = /^\d{4}-\d{2}-\d{2}\.\.\d{4}-\d{2}-\d{2}$/;
+
+		it('previews a new report with a resolved range, saves it and reopens it', async () => {
+			Element.prototype.scrollIntoView = vi.fn();
+			const runDataset = vi.spyOn(ReportsApi, 'runDataset');
+			const create = vi.spyOn(ReportsApi, 'createCustomReport');
+			renderWithProviders(<RevenueReports />);
+			const newButton = await screen.findByRole('button', { name: 'New custom report' });
+			await waitFor(() => expect(newButton).toBeEnabled());
+			fireEvent.click(newButton);
+			expect(await screen.findByRole('heading', { name: 'New custom report' })).toBeInTheDocument();
+			await waitFor(() =>
+				expect(runDataset).toHaveBeenCalledWith(
+					expect.objectContaining({
+						family: 'dataset',
+						dataset: 'invoices',
+						time: expect.objectContaining({ range: expect.stringMatching(ABSOLUTE) }),
+					}),
+				),
+			);
+			expect(runDataset.mock.calls.every(([d]) => ABSOLUTE.test(d.time.range))).toBe(true);
+			expect(await screen.findByRole('columnheader', { name: 'Count' })).toBeInTheDocument();
+
+			fireEvent.click(screen.getByRole('button', { name: 'Save as custom report' }));
+			const dialog = await screen.findByRole('dialog');
+			fireEvent.change(within(dialog).getByLabelText('Name'), { target: { value: 'Invoice count' } });
+			fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
+			await waitFor(() =>
+				expect(create).toHaveBeenCalledWith(
+					'Invoice count',
+					expect.objectContaining({ family: 'dataset', time: expect.objectContaining({ range: 'last_30_days' }) }),
+				),
+			);
+			expect(await screen.findByRole('heading', { name: 'Invoice count' })).toBeInTheDocument();
+			expect(await screen.findByRole('button', { name: /Invoice count/ })).toHaveTextContent('Builder · Invoices');
+
+			fireEvent.click(screen.getByRole('button', { name: 'Days to pay' }));
+			expect(await screen.findByRole('heading', { name: 'Days to pay' })).toBeInTheDocument();
+			expect(screen.queryByLabelText('Dataset')).not.toBeInTheDocument();
+
+			fireEvent.click(screen.getByRole('button', { name: /Invoice count/ }));
+			expect(await screen.findByRole('heading', { name: 'Invoice count' })).toBeInTheDocument();
+			expect(screen.getByLabelText('Dataset')).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: /Invoice count/ })).toHaveAttribute('aria-current', 'true');
+			expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+		});
+
+		it('opens a stale saved build with the needs-edit banner and no query', async () => {
+			await mockSaveCustom(undefined, 'Old usage', {
+				family: 'dataset',
+				dataset: 'usage',
+				measures: [{ agg: 'count' }],
+				time: { field: 'timestamp', range: 'last_30_days' },
+			});
+			const runDataset = vi.spyOn(ReportsApi, 'runDataset');
+			renderWithProviders(<RevenueReports />);
+			fireEvent.click(await screen.findByRole('button', { name: /Old usage/ }));
+			expect(await screen.findByText('Some saved settings no longer apply to this report. Review and save.')).toHaveAttribute(
+				'role',
+				'status',
+			);
+			await new Promise((r) => setTimeout(r, 600));
+			expect(runDataset).not.toHaveBeenCalled();
+		});
+
+		it('shows the table instead of a chart for grain plus group-by', async () => {
+			await mockSaveCustom(undefined, 'Monthly by status', {
+				family: 'dataset',
+				dataset: 'invoices',
+				measures: [{ agg: 'count' }],
+				dimensions: ['invoice_status'],
+				time: { field: 'created_at', range: 'last_30_days', grain: 'month' },
+				display: 'chart',
+			});
+			renderWithProviders(<RevenueReports />);
+			fireEvent.click(await screen.findByRole('button', { name: /Monthly by status/ }));
+			expect(await screen.findByText('This report has no chart yet; showing the table')).toBeInTheDocument();
+			expect(screen.getByRole('columnheader', { name: 'Count' })).toBeInTheDocument();
+		});
+
+		it('keeps the saved name while the list refetches', async () => {
+			Element.prototype.scrollIntoView = vi.fn();
+			const list = ReportsApi.listCustomReports.bind(ReportsApi);
+			let calls = 0;
+			vi.spyOn(ReportsApi, 'listCustomReports').mockImplementation(() => (calls++ ? new Promise(() => {}) : list()));
+			renderWithProviders(<RevenueReports />);
+			const newButton = await screen.findByRole('button', { name: 'New custom report' });
+			await waitFor(() => expect(newButton).toBeEnabled());
+			fireEvent.click(newButton);
+			fireEvent.click(await screen.findByRole('button', { name: 'Save as custom report' }));
+			const dialog = await screen.findByRole('dialog');
+			fireEvent.change(within(dialog).getByLabelText('Name'), { target: { value: 'Quick save' } });
+			fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
+			expect(await screen.findByRole('heading', { name: 'Quick save' })).toBeInTheDocument();
+			expect(screen.queryByRole('button', { name: 'Save as custom report' })).not.toBeInTheDocument();
+			expect(calls).toBeGreaterThan(1);
+		});
+	});
 });

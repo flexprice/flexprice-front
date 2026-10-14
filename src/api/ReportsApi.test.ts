@@ -71,13 +71,49 @@ describe('ReportsApi', () => {
 		vi.stubEnv('VITE_REPORTS_MOCK', 'false');
 		const def = { family: 'report' as const, metrics: ['invoice_total'], shape: 'scalar' as const, time: { range: 'last_30_days' } };
 		await ReportsApi.listCustomReports();
-		expect(AxiosClient.get).toHaveBeenCalledWith('/analytics/views?family=report');
+		expect(AxiosClient.get).toHaveBeenCalledWith('/analytics/views');
 		await ReportsApi.createCustomReport('N', def);
 		expect(AxiosClient.post).toHaveBeenCalledWith('/analytics/views', { name: 'N', definition: def });
 		await ReportsApi.updateCustomReport('view 1', 'N', def);
 		expect(AxiosClient.put).toHaveBeenCalledWith('/analytics/views/view%201', { name: 'N', definition: def });
 		await ReportsApi.deleteCustomReport('view_1');
 		expect(AxiosClient.delete).toHaveBeenCalledWith('/analytics/views/view_1');
+	});
+
+	it('lists report and dataset views only', async () => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'false');
+		const mk = (id: string, family: string) => ({ id, definition: { family } });
+		vi.mocked(AxiosClient.get).mockResolvedValue({ items: [mk('a', 'report'), mk('b', 'dataset'), mk('c', 'other')] });
+		expect((await ReportsApi.listCustomReports()).items.map((r) => r.id)).toEqual(['a', 'b']);
+	});
+
+	it('calls dataset endpoints', async () => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'false');
+		const definition = {
+			family: 'dataset' as const,
+			dataset: 'invoices',
+			measures: [{ agg: 'count' as const }],
+			time: { field: 'created_at', range: 'x' },
+		};
+		vi.mocked(AxiosClient.get).mockResolvedValue({ items: [] });
+		await ReportsApi.listDatasets();
+		expect(AxiosClient.get).toHaveBeenCalledWith('/analytics/datasets');
+		await ReportsApi.runDataset(definition);
+		expect(AxiosClient.post).toHaveBeenCalledWith('/analytics/datasets/query', { definition });
+	});
+
+	it('mock datasets return deterministic rows', async () => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'true');
+		expect((await ReportsApi.listDatasets()).items.length).toBeGreaterThan(0);
+		const res = await ReportsApi.runDataset({
+			family: 'dataset',
+			dataset: 'invoices',
+			measures: [{ agg: 'sum', field: 'total' }],
+			time: { field: 'created_at', range: '2026-07-01..2026-10-01', grain: 'month' },
+			compare: 'previous_period',
+		});
+		expect(res.columns.map((c) => c.name)).toEqual(['bucket', 'currency', 'm0', 'm0_prev', 'm0_change_pct']);
+		expect(res.meta.measure_labels?.m0).toBe('Sum of Total');
 	});
 
 	it('mock custom report ids stay unique after delete', async () => {
