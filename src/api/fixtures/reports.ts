@@ -36,6 +36,13 @@ const CATALOG: ReportCatalogEntry[] = [
 		['customer_id', 'Customer'],
 		['invoice_type', 'Invoice type'],
 	]),
+	{
+		...money('invoice_total_issued', 'Total billing (issued)', 'Sum of issued invoice totals in the period', 'billing', [
+			['customer_id', 'Customer'],
+		]),
+		variant_of: 'invoice_total',
+		variant_label: 'Issued',
+	},
 	money('net_billing', 'Net billing', 'Total billing minus finalized credit notes', 'billing', []),
 	{
 		key: 'total_receivables',
