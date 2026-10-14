@@ -63,7 +63,7 @@
     "@tanstack/react-query": "^5.62.8",
     "@tanstack/react-query-devtools": "^5.62.11",
     "@vercel/speed-insights": "^1.2.0",
-    "axios": "^1.16.0",
+    "axios": "^1.20.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
