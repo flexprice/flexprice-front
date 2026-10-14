@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import RevenueReports from './RevenueReports';
 import { renderWithProviders } from './testUtils';
 import { render } from '@testing-library/react';
@@ -9,9 +9,15 @@ import { I18nextProvider } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import enSettings from '@/i18n/locales/en/settings.json';
 import ReportsApi from '@/api/ReportsApi';
+import { mockSaveCustom, resetMockCustom } from '@/api/fixtures/reports';
+
+vi.mock('@/api/MeterApi', () => ({ MeterApi: { getAllActiveMeters: vi.fn().mockResolvedValue({ items: [] }) } }));
 
 describe('RevenueReports', () => {
-	beforeEach(() => vi.stubEnv('VITE_REPORTS_MOCK', 'true'));
+	beforeEach(() => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'true');
+		resetMockCustom();
+	});
 	afterEach(() => {
 		vi.unstubAllEnvs();
 		vi.restoreAllMocks();
@@ -34,7 +40,8 @@ describe('RevenueReports', () => {
 	describe('basis', () => {
 		it('appears only for reports with variants', async () => {
 			renderWithProviders(<RevenueReports />);
-			await screen.findByRole('heading', { name: 'Total billing' });
+			fireEvent.click(await screen.findByRole('button', { name: 'Days to pay' }));
+			await screen.findByRole('heading', { name: 'Days to pay' });
 			expect(screen.queryByRole('group', { name: 'Basis' })).not.toBeInTheDocument();
 			fireEvent.click(screen.getByRole('button', { name: 'ARPU' }));
 			expect(await screen.findByRole('group', { name: 'Basis' })).toBeInTheDocument();
@@ -167,6 +174,82 @@ describe('RevenueReports', () => {
 			await waitFor(() => expect(calls(spy, true).length).toBeGreaterThan(cardCount));
 			expect(calls(spy, false)).toEqual(reportBefore);
 			expect(screen.getByLabelText('Date range')).toHaveTextContent('Last 90 days');
+		});
+	});
+
+	describe('custom reports', () => {
+		it('saves the current report as a custom report and reopens it with the variant basis', async () => {
+			Element.prototype.scrollIntoView = vi.fn();
+			const create = vi.spyOn(ReportsApi, 'createCustomReport');
+			renderWithProviders(<RevenueReports />);
+			expect(await screen.findByText('Save any report to reuse it here')).toBeInTheDocument();
+			fireEvent.click(await screen.findByRole('button', { name: 'Issued' }));
+			await screen.findByRole('heading', { name: 'Total billing (issued)' });
+
+			fireEvent.click(screen.getByRole('button', { name: 'Save as custom report' }));
+			const dialog = await screen.findByRole('dialog');
+			const submit = within(dialog).getByRole('button', { name: 'Save' });
+			expect(submit).toBeDisabled();
+			fireEvent.change(within(dialog).getByLabelText('Name'), { target: { value: '  Issued Q3 ' } });
+			fireEvent.click(submit);
+			await waitFor(() => expect(create).toHaveBeenCalledWith('Issued Q3', expect.objectContaining({ metrics: ['invoice_total_issued'] })));
+			expect(await screen.findByRole('heading', { name: 'Issued Q3' })).toBeInTheDocument();
+			await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+			expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+
+			fireEvent.click(screen.getByRole('button', { name: 'Days to pay' }));
+			await screen.findByRole('heading', { name: 'Days to pay' });
+			fireEvent.click(screen.getByRole('button', { name: /Issued Q3/ }));
+			expect(await screen.findByRole('heading', { name: 'Issued Q3' })).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: 'Issued' })).toHaveAttribute('aria-pressed', 'true');
+			expect(screen.getByRole('button', { name: /Issued Q3/ })).toHaveAttribute('aria-current', 'true');
+
+			fireEvent.keyDown(screen.getByLabelText('Date range'), { key: 'Enter' });
+			fireEvent.click(await screen.findByRole('option', { name: 'Last 7 days' }));
+			expect(await screen.findByRole('img', { name: 'Unsaved changes' })).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: /^Save Unsaved changes/ })).toBeEnabled();
+		});
+
+		it('opens a stale custom report with the needs-edit banner and drops the bad filter', async () => {
+			await mockSaveCustom(undefined, 'Stale meters', {
+				family: 'report',
+				metrics: ['invoice_total'],
+				shape: 'timeseries',
+				filters: [{ field: 'meter_id', op: 'eq', value: ['m1'] }],
+				time: { range: 'last_30_days', grain: 'week' },
+			});
+			const spy = vi.spyOn(ReportsApi, 'runReport');
+			renderWithProviders(<RevenueReports />);
+			fireEvent.click(await screen.findByRole('button', { name: /Stale meters/ }));
+			expect(await screen.findByText('Some saved settings no longer apply to this report. Review and save.')).toHaveAttribute(
+				'role',
+				'status',
+			);
+			await waitFor(() => expect(spy).toHaveBeenCalledWith('invoice_total', expect.objectContaining({ grain: 'week' })));
+			const opened = spy.mock.calls.filter(([key, req]) => key === 'invoice_total' && req.grain === 'week');
+			expect(opened.every(([, req]) => !('filters' in req))).toBe(true);
+			expect(screen.getByLabelText('Date range')).toHaveTextContent('Last 30 days');
+		});
+
+		it('deletes a custom report after confirming', async () => {
+			const saved = await mockSaveCustom(undefined, 'Acme billing', {
+				family: 'report',
+				metrics: ['invoice_total'],
+				shape: 'timeseries',
+				time: { range: 'last_90_days', grain: 'month' },
+			});
+			const del = vi.spyOn(ReportsApi, 'deleteCustomReport');
+			renderWithProviders(<RevenueReports />);
+			fireEvent.click(await screen.findByRole('button', { name: /Acme billing/ }));
+			expect(await screen.findByRole('heading', { name: 'Acme billing' })).toBeInTheDocument();
+			fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+			const confirm = await screen.findByRole('alertdialog');
+			expect(confirm).toHaveTextContent('Acme billing will be removed for everyone in this environment.');
+			fireEvent.click(within(confirm).getByRole('button', { name: 'Delete' }));
+			await waitFor(() => expect(del).toHaveBeenCalledWith(saved.id));
+			expect(await screen.findByRole('heading', { name: 'Total billing' })).toBeInTheDocument();
+			expect(await screen.findByText('Save any report to reuse it here')).toBeInTheDocument();
+			expect(screen.getByRole('button', { name: 'Total billing' })).toHaveAttribute('aria-current', 'true');
 		});
 	});
 });

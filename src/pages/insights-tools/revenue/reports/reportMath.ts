@@ -2,6 +2,7 @@ import { getCurrencySymbol } from '@/utils';
 import {
 	ReportCatalogEntry,
 	ReportCompare,
+	ReportFilter,
 	ReportGrain,
 	ReportQueryRequest,
 	ReportQueryResult,
@@ -26,6 +27,7 @@ export interface ReportControls {
 	groupBy: string;
 	compare: ReportCompare | 'none';
 	view: 'chart' | 'table';
+	filters: ReportFilter[];
 }
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
@@ -80,6 +82,7 @@ export const defaultControls = (entry: ReportCatalogEntry): ReportControls => ({
 	groupBy: entry.default_shape === 'breakdown' ? (entry.dimensions[0]?.key ?? '') : '',
 	compare: entry.supports_compare ? 'previous_period' : 'none',
 	view: 'chart',
+	filters: [],
 });
 
 export const controlsForEntry = (entry: ReportCatalogEntry, prev: ReportControls): ReportControls => {
@@ -92,6 +95,7 @@ export const controlsForEntry = (entry: ReportCatalogEntry, prev: ReportControls
 		compare: entry.supports_compare ? prev.compare : 'none',
 		grain: prev.grain && entry.grains.includes(prev.grain) ? prev.grain : base.grain,
 		groupBy: entry.dimensions.some((d) => d.key === prev.groupBy) ? prev.groupBy : base.groupBy,
+		filters: prev.filters.filter((f) => entry.dimensions.some((d) => d.key === f.field)),
 	};
 };
 
@@ -103,6 +107,8 @@ export const buildRequest = (entry: ReportCatalogEntry, c: ReportControls, now: 
 	if (shape === 'breakdown' && entry.dimensions.length) req.dimensions = [groupBy || entry.dimensions[0].key];
 	if (shape === 'timeseries' && !snapshot && c.grain) req.grain = c.grain;
 	if (!snapshot && entry.supports_compare && c.compare !== 'none') req.compare = c.compare;
+	const filters = c.filters.filter((f) => entry.dimensions.some((d) => d.key === f.field));
+	if (filters.length) req.filters = filters;
 	return req;
 };
 
