@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import KpiRibbon from './KpiRibbon';
 import ReportChart, { chartSupported } from './ReportChart';
 import ReportControlsBar from './ReportControlsBar';
+import ReportFilterBar from './ReportFilterBar';
 import ReportList from './ReportList';
 import ReportTable from './ReportTable';
 import DeltaChip from './DeltaChip';
@@ -141,6 +142,7 @@ const RevenueReports = () => {
 									onChange={setControls}
 									basis={basisOptions.length ? { options: basisOptions, value: entry.key, onPick: setBasisKey } : undefined}
 								/>
+								<ReportFilterBar entry={entry} filters={controls.filters} onChange={(filters) => setControls({ ...controls, filters })} />
 								{run.isLoading && !run.data && <Skeleton className='h-72 w-full' />}
 								{run.isError && <ErrorBox title={t('insightsTools.revenue.reports.errorTitle')} message={(run.error as Error)?.message} />}
 								{run.data && run.data.rows.length === 0 && (

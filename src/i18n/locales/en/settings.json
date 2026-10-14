@@ -1650,6 +1650,12 @@
 		},
 		"revenue": {
 			"reports": {
+				"filters": {
+					"title": "Filters",
+					"all": "All",
+					"remove": "Remove {{label}} filter",
+					"clear": "Clear filters"
+				},
 				"title": "Revenue",
 				"subtitle": "Financial reports for your billing data",
 				"search": "Search reports",

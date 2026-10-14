@@ -10,6 +10,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import enSettings from '@/i18n/locales/en/settings.json';
 import ReportsApi from '@/api/ReportsApi';
 
+vi.mock('@/api/MeterApi', () => ({ MeterApi: { getAllActiveMeters: vi.fn().mockResolvedValue({ items: [] }) } }));
+
 describe('RevenueReports', () => {
 	beforeEach(() => vi.stubEnv('VITE_REPORTS_MOCK', 'true'));
 	afterEach(() => {
