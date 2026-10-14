@@ -19,7 +19,7 @@ interface SegmentedProps {
 	onPick: (v: string) => void;
 }
 
-const Segmented = ({ label, options, value, onPick }: SegmentedProps) => (
+export const Segmented = ({ label, options, value, onPick }: SegmentedProps) => (
 	<div className='flex flex-col gap-1'>
 		<span className='text-sm font-medium'>{label}</span>
 		<div role='group' aria-label={label} className='flex rounded-md border p-0.5'>
