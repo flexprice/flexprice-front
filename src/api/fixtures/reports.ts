@@ -239,6 +239,12 @@ export const mockRun = (key: string, req: ReportQueryRequest): ReportQueryResult
 };
 
 let customStore: CustomReport[] = [];
+let seq = 0;
+
+export const resetMockCustom = () => {
+	customStore = [];
+	seq = 0;
+};
 
 export const mockListCustom = async (): Promise<CustomReportListResponse> => ({ items: [...customStore] });
 
@@ -247,7 +253,7 @@ export const mockSaveCustom = async (id: string | undefined, name: string, defin
 	const prev = customStore.find((r) => r.id === id);
 	const next: CustomReport = prev
 		? { ...prev, name, definition, version: prev.version + 1, updated_at: now }
-		: { id: `view_mock_${customStore.length + 1}`, name, definition, version: 1, created_at: now, updated_at: now };
+		: { id: `view_mock_${++seq}`, name, definition, version: 1, created_at: now, updated_at: now };
 	customStore = [next, ...customStore.filter((r) => r.id !== next.id)];
 	return next;
 };

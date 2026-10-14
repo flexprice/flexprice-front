@@ -6,6 +6,7 @@ vi.mock('@/core/axios/verbs', () => ({
 
 import { AxiosClient } from '@/core/axios/verbs';
 import ReportsApi from './ReportsApi';
+import { resetMockCustom } from './fixtures/reports';
 
 describe('ReportsApi', () => {
 	beforeEach(() => vi.clearAllMocks());
@@ -77,5 +78,19 @@ describe('ReportsApi', () => {
 		expect(AxiosClient.put).toHaveBeenCalledWith('/analytics/views/view%201', { name: 'N', definition: def });
 		await ReportsApi.deleteCustomReport('view_1');
 		expect(AxiosClient.delete).toHaveBeenCalledWith('/analytics/views/view_1');
+	});
+
+	it('mock custom report ids stay unique after delete', async () => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'true');
+		resetMockCustom();
+		const def = { family: 'report' as const, metrics: ['invoice_total'], shape: 'scalar' as const, time: { range: 'last_30_days' } };
+		const a = await ReportsApi.createCustomReport('A', def);
+		const b = await ReportsApi.createCustomReport('B', def);
+		await ReportsApi.deleteCustomReport(a.id);
+		const c = await ReportsApi.createCustomReport('C', def);
+		expect(c.id).not.toBe(b.id);
+		expect((await ReportsApi.listCustomReports()).items.map((r) => r.name)).toEqual(['C', 'B']);
+		resetMockCustom();
+		expect((await ReportsApi.listCustomReports()).items).toEqual([]);
 	});
 });
