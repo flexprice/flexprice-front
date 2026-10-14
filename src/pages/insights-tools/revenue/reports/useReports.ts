@@ -1,7 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import ReportsApi from '@/api/ReportsApi';
 import { getHttpStatus } from '@/core/axios/types';
-import { CustomReportDefinition, DatasetDefinition, ReportQueryRequest, ReportQueryResult } from '@/types/dto/Reports';
+import {
+	CustomReport,
+	CustomReportDefinition,
+	CustomReportListResponse,
+	DatasetDefinition,
+	ReportQueryRequest,
+	ReportQueryResult,
+} from '@/types/dto/Reports';
 
 const retry = (count: number, err: unknown) => count < 2 && (getHttpStatus(err) ?? 0) >= 500;
 
@@ -46,7 +53,11 @@ export const useCustomReportMutations = () => {
 		create: useMutation({
 			mutationFn: (a: { name: string; definition: CustomReportDefinition | DatasetDefinition }) =>
 				ReportsApi.createCustomReport(a.name, a.definition),
-			onSuccess,
+			// Seed the list before the refetch lands.
+			onSuccess: (created: CustomReport) => {
+				qc.setQueryData<CustomReportListResponse>(['custom-reports'], (old) => old && { items: [created, ...old.items] });
+				void onSuccess();
+			},
 		}),
 		update: useMutation({
 			mutationFn: (a: { id: string; name: string; definition: CustomReportDefinition | DatasetDefinition }) =>

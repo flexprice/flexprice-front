@@ -49,7 +49,8 @@ const BuilderPanel = ({ datasets, value, onChange, custom, now, onSaved, onDelet
 	const currency = currencies.includes(pickedCurrency) ? pickedCurrency : (currencies[0] ?? '');
 	const grain = value.time.grain || undefined;
 	const dirty = !!custom && isDatasetDefinition(custom.definition) && !sameDatasetDefinition(value, custom.definition);
-	const showChart = !!entry && !!shown && value.display !== 'table' && chartSupported(entry, shown);
+	const showChart =
+		!!entry && !!shown && value.display !== 'table' && !(value.time.grain && value.dimensions?.length) && chartSupported(entry, shown);
 
 	return (
 		<>
@@ -113,7 +114,9 @@ const BuilderPanel = ({ datasets, value, onChange, custom, now, onSaved, onDelet
 					{shown && shown.rows.length > 0 && (
 						<div className={run.isFetching ? 'flex flex-col gap-4 opacity-60' : 'flex flex-col gap-4'}>
 							{value.display !== 'table' && !showChart && <span className='text-xs text-muted-foreground'>{t('unsupportedShape')}</span>}
-							{showChart && <ReportChart entry={entry} result={shown} currency={currency} grain={grain} now={now} />}
+							{showChart && (
+								<ReportChart entry={entry} result={shown} currency={currency} grain={grain} now={now} valueType={measures[0]?.valueType} />
+							)}
 							<ReportTable entry={entry} result={shown} currency={currency} grain={grain} now={now} measures={measures} />
 						</div>
 					)}

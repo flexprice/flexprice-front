@@ -5,8 +5,13 @@ import { Translate, measureLabel } from './builderModel';
 export const measureColumns = (ds: Dataset, def: DatasetDefinition, result: ReportQueryResult | undefined, t: Translate): TableMeasure[] =>
 	def.measures.map((m, i) => {
 		const key = `m${i}`;
-		const money = m.agg !== 'count' && m.agg !== 'count_distinct' && !!ds.fields.find((f) => f.key === m.field)?.money;
-		return { key, label: result?.meta.measure_labels?.[key] || measureLabel(ds, m, t), valueType: money ? 'money' : 'count' };
+		const counted = m.agg === 'count' || m.agg === 'count_distinct';
+		const money = !counted && !!ds.fields.find((f) => f.key === m.field)?.money;
+		return {
+			key,
+			label: result?.meta.measure_labels?.[key] || measureLabel(ds, m, t),
+			valueType: counted ? 'count' : money ? 'money' : 'number',
+		};
 	});
 
 // Built-in chart renders m0 only.
@@ -17,7 +22,7 @@ export const datasetEntry = (ds: Dataset, def: DatasetDefinition, measures: Tabl
 	category: 'billing',
 	// Ratio skips summed totals.
 	kind: 'ratio',
-	value_type: measures[0]?.valueType ?? 'count',
+	value_type: measures[0]?.valueType === 'money' ? 'money' : 'count',
 	higher_is_better: true,
 	shapes: [],
 	default_shape: def.time.grain ? 'timeseries' : 'breakdown',

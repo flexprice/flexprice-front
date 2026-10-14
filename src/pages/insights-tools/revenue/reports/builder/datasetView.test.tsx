@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import '@testing-library/jest-dom';
+import { screen } from '@testing-library/react';
 import { mockDatasets } from '@/api/fixtures/reports';
 import { ReportQueryResult } from '@/types/dto/Reports';
+import ReportTable from '../ReportTable';
+import { renderWithProviders } from '../testUtils';
 import { defaultDefinition } from './builderModel';
-import { measureColumns, withDimLabels } from './datasetView';
+import { datasetEntry, measureColumns, withDimLabels } from './datasetView';
 
-const invoices = mockDatasets().items[0];
+const [invoices, usage] = mockDatasets().items;
 
 describe('datasetView', () => {
 	it('swaps ids for labels and drops label columns', () => {
@@ -35,5 +39,27 @@ describe('datasetView', () => {
 			{ key: 'm0', label: 'builder.agg.count', valueType: 'count' },
 			{ key: 'm1', label: 'Sum of Total', valueType: 'money' },
 		]);
+	});
+
+	it('renders an average of quantity with decimals', () => {
+		const def = {
+			...defaultDefinition(usage),
+			time: { ...defaultDefinition(usage).time, grain: '' as const },
+			measures: [{ agg: 'avg' as const, field: 'qty_total' }],
+		};
+		const result: ReportQueryResult = {
+			columns: [
+				{ name: 'meter_id', type: 'string', role: 'dimension' },
+				{ name: 'm0', type: 'decimal', role: 'metric' },
+			],
+			rows: [['api_calls', '2.4']],
+			meta: { query_source: 'test' },
+		};
+		const measures = measureColumns(usage, def, result, (k) => k);
+		expect(measures[0].valueType).toBe('number');
+		renderWithProviders(
+			<ReportTable entry={datasetEntry(usage, def, measures)} result={result} currency='' now={new Date()} measures={measures} />,
+		);
+		expect(screen.getByText('2.4')).toBeInTheDocument();
 	});
 });

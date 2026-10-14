@@ -1,14 +1,14 @@
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/molecules';
-import { ReportCatalogEntry, ReportGrain, ReportQueryResult, ReportValueType } from '@/types/dto/Reports';
+import { ReportCatalogEntry, ReportGrain, ReportQueryResult } from '@/types/dto/Reports';
 import DeltaChip from './DeltaChip';
-import { currenciesOf, deltaDisplay, formatValue, isBucketInProgress, metricIndexes, rowsFor, totalsFor } from './reportMath';
+import { ValueFormat, currenciesOf, deltaDisplay, formatValue, isBucketInProgress, metricIndexes, rowsFor, totalsFor } from './reportMath';
 
 export interface TableMeasure {
 	key: string;
 	label: string;
-	valueType: ReportValueType;
+	valueType: ValueFormat;
 }
 
 interface Props {
@@ -32,7 +32,7 @@ const ReportTable = ({ entry, result, currency, grain, now, measures }: Props) =
 	}));
 	const hasPrev = cols.some((m) => m.idx.prev >= 0);
 	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
-	const fmt = (v: number, type: ReportValueType) => formatValue(v, type, cur, daysLabel);
+	const fmt = (v: number, type: ValueFormat) => formatValue(v, type, cur, daysLabel);
 	const showTotal = entry.kind === 'flow' && rows.length > 1;
 
 	return (

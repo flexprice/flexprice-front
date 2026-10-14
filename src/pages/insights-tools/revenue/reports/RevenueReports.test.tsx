@@ -318,5 +318,38 @@ describe('RevenueReports', () => {
 			await new Promise((r) => setTimeout(r, 600));
 			expect(runDataset).not.toHaveBeenCalled();
 		});
+
+		it('shows the table instead of a chart for grain plus group-by', async () => {
+			await mockSaveCustom(undefined, 'Monthly by status', {
+				family: 'dataset',
+				dataset: 'invoices',
+				measures: [{ agg: 'count' }],
+				dimensions: ['invoice_status'],
+				time: { field: 'created_at', range: 'last_30_days', grain: 'month' },
+				display: 'chart',
+			});
+			renderWithProviders(<RevenueReports />);
+			fireEvent.click(await screen.findByRole('button', { name: /Monthly by status/ }));
+			expect(await screen.findByText('This report has no chart yet; showing the table')).toBeInTheDocument();
+			expect(screen.getByRole('columnheader', { name: 'Count' })).toBeInTheDocument();
+		});
+
+		it('keeps the saved name while the list refetches', async () => {
+			Element.prototype.scrollIntoView = vi.fn();
+			const list = ReportsApi.listCustomReports.bind(ReportsApi);
+			let calls = 0;
+			vi.spyOn(ReportsApi, 'listCustomReports').mockImplementation(() => (calls++ ? new Promise(() => {}) : list()));
+			renderWithProviders(<RevenueReports />);
+			const newButton = await screen.findByRole('button', { name: 'New custom report' });
+			await waitFor(() => expect(newButton).toBeEnabled());
+			fireEvent.click(newButton);
+			fireEvent.click(await screen.findByRole('button', { name: 'Save as custom report' }));
+			const dialog = await screen.findByRole('dialog');
+			fireEvent.change(within(dialog).getByLabelText('Name'), { target: { value: 'Quick save' } });
+			fireEvent.click(within(dialog).getByRole('button', { name: 'Save' }));
+			expect(await screen.findByRole('heading', { name: 'Quick save' })).toBeInTheDocument();
+			expect(screen.queryByRole('button', { name: 'Save as custom report' })).not.toBeInTheDocument();
+			expect(calls).toBeGreaterThan(1);
+		});
 	});
 });

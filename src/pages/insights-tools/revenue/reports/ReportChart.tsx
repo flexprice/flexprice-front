@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Bar, CartesianGrid, Cell, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { ReportCatalogEntry, ReportGrain, ReportQueryResult } from '@/types/dto/Reports';
-import { formatValue, isBucketInProgress, toSeries } from './reportMath';
+import { ValueFormat, formatValue, isBucketInProgress, toSeries } from './reportMath';
 
 const CURRENT = '#3b82f6';
 const PREVIOUS = '#cbd5e1';
@@ -29,16 +29,17 @@ interface Props {
 	currency: string;
 	grain?: ReportGrain | '';
 	now: Date;
+	valueType?: ValueFormat;
 }
 
-const ReportChart = ({ entry, result, currency, grain, now }: Props) => {
+const ReportChart = ({ entry, result, currency, grain, now, valueType = entry.value_type }: Props) => {
 	const { t } = useTranslation('settings');
 	if (!chartSupported(entry, result)) return null;
 	const data = chartPoints(result, entry.key, currency, grain, now);
 	const inProgressLabel = t('insightsTools.revenue.reports.inProgress');
 	const hasPrev = data.some((p) => p.prev !== undefined);
 	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
-	const fmt = (v: number) => formatValue(v, entry.value_type, currency, daysLabel);
+	const fmt = (v: number) => formatValue(v, valueType, currency, daysLabel);
 	return (
 		<div className='h-72 w-full'>
 			<ResponsiveContainer width='100%' height='100%'>
