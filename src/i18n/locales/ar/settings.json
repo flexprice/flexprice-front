@@ -1677,6 +1677,7 @@
 				"selectReport": "اختر تقريرًا",
 				"unsupportedShape": "لا يوجد مخطط لهذا التقرير بعد؛ يتم عرض الجدول",
 				"builder": {
+					"topN": "أعلى {{count}} حسب {{measure}}",
 					"dataset": "مجموعة البيانات",
 					"newReport": "تقرير مخصص جديد",
 					"listSubtitle": "المنشئ · {{dataset}}",

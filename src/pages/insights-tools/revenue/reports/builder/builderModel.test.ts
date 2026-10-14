@@ -9,6 +9,7 @@ import {
 	resolveDefinition,
 	sameDatasetDefinition,
 	validateBuilder,
+	withTopN,
 } from './builderModel';
 
 const ds: Dataset = {
@@ -164,5 +165,20 @@ describe('helpers', () => {
 		expect(sameDatasetDefinition(a, b)).toBe(true);
 		expect(sameDatasetDefinition({ ...a, dimensions: [] }, a)).toBe(true);
 		expect(sameDatasetDefinition({ ...a, limit: 5 }, a)).toBe(false);
+	});
+});
+
+describe('withTopN', () => {
+	it('adds top-N to breakdowns only', () => {
+		const top = withTopN({ ...base(), time: { ...base().time, grain: '' }, dimensions: ['status'] });
+		expect(top.limit).toBe(100);
+		expect(top.sort).toEqual([{ field: 'm0', dir: 'desc' }]);
+		expect(withTopN(base()).limit).toBeUndefined();
+		expect(withTopN({ ...base(), dimensions: ['status'] }).sort).toBeUndefined();
+		expect(withTopN({ ...base(), time: { ...base().time, grain: '' } }).limit).toBeUndefined();
+	});
+	it('does not make a saved breakdown dirty', () => {
+		const d = { ...base(), time: { ...base().time, grain: '' as const }, dimensions: ['status'] };
+		expect(sameDatasetDefinition(d, withTopN(d))).toBe(true);
 	});
 });

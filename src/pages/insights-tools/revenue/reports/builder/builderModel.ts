@@ -91,8 +91,15 @@ export const validateBuilder = (ds: Dataset, def: DatasetDefinition): string[] =
 	return [...new Set(errs)];
 };
 
+export const BREAKDOWN_LIMIT = 100;
+
+export const withTopN = (def: DatasetDefinition): DatasetDefinition => {
+	const { sort: _sort, limit: _limit, ...rest } = def;
+	return def.dimensions?.length && !def.time.grain ? { ...rest, limit: BREAKDOWN_LIMIT, sort: [{ field: 'm0', dir: 'desc' }] } : rest;
+};
+
 export const resolveDefinition = (def: DatasetDefinition, now: Date): DatasetDefinition => ({
-	...def,
+	...withTopN(def),
 	time: { ...def.time, range: isPreset(def.time.range) ? rangeForPreset(def.time.range, now) : def.time.range },
 });
 
@@ -114,8 +121,9 @@ export const defaultDefinition = (ds: Dataset): DatasetDefinition => ({
 });
 
 export const sameDatasetDefinition = (a: DatasetDefinition, b: DatasetDefinition): boolean => {
-	const canon = (d: DatasetDefinition) =>
-		JSON.stringify({
+	const canon = (raw: DatasetDefinition) => {
+		const d = raw.dimensions?.length && !raw.time.grain ? withTopN(raw) : raw;
+		return JSON.stringify({
 			family: d.family,
 			dataset: d.dataset,
 			measures: d.measures.map((m) => ({ agg: m.agg, field: m.field ?? '' })),
@@ -127,5 +135,6 @@ export const sameDatasetDefinition = (a: DatasetDefinition, b: DatasetDefinition
 			limit: d.limit ?? 0,
 			display: d.display ?? '',
 		});
+	};
 	return canon(a) === canon(b);
 };

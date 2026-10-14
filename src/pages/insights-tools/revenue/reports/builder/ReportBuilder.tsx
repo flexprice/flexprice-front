@@ -4,7 +4,7 @@ import { Select } from '@/components/atoms';
 import { Dataset, DatasetDefinition, ReportCompare, ReportGrain } from '@/types/dto/Reports';
 import { RANGE_PRESETS, presetAllowed } from '../reportMath';
 import { Segmented } from '../ReportControlsBar';
-import { MAX_DIMENSIONS, defaultDefinition, validateBuilder } from './builderModel';
+import { MAX_DIMENSIONS, defaultDefinition, validateBuilder, withTopN } from './builderModel';
 import FilterEditor from './FilterEditor';
 import MeasureEditor from './MeasureEditor';
 
@@ -29,7 +29,7 @@ interface Props {
 const ReportBuilder = ({ datasets, value, onChange }: Props) => {
 	const { t } = useTranslation('settings', { keyPrefix: 'insightsTools.revenue.reports' });
 	const ds = datasets.find((d) => d.key === value.dataset);
-	const set = (patch: Partial<DatasetDefinition>) => onChange({ ...value, ...patch });
+	const set = (patch: Partial<DatasetDefinition>) => onChange(withTopN({ ...value, ...patch }));
 
 	const datasetSelect = (
 		<Select

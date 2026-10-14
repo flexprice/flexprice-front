@@ -118,6 +118,11 @@ const BuilderPanel = ({ datasets, value, onChange, custom, now, onSaved, onDelet
 								<ReportChart entry={entry} result={shown} currency={currency} grain={grain} now={now} valueType={measures[0]?.valueType} />
 							)}
 							<ReportTable entry={entry} result={shown} currency={currency} grain={grain} now={now} measures={measures} />
+							{query?.limit && shown.rows.length === query.limit && (
+								<span className='text-xs text-muted-foreground'>
+									{t('builder.topN', { count: query.limit, measure: measures[0]?.label })}
+								</span>
+							)}
 						</div>
 					)}
 				</div>

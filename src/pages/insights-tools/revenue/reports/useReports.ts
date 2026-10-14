@@ -53,7 +53,7 @@ export const useCustomReportMutations = () => {
 		create: useMutation({
 			mutationFn: (a: { name: string; definition: CustomReportDefinition | DatasetDefinition }) =>
 				ReportsApi.createCustomReport(a.name, a.definition),
-			// Seed the list before the refetch lands.
+			// Seed list before refetch.
 			onSuccess: (created: CustomReport) => {
 				qc.setQueryData<CustomReportListResponse>(['custom-reports'], (old) => old && { items: [created, ...old.items] });
 				void onSuccess();

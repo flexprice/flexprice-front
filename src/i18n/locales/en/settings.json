@@ -1722,6 +1722,7 @@
 				"selectReport": "Select a report",
 				"unsupportedShape": "This report has no chart yet; showing the table",
 				"builder": {
+					"topN": "Top {{count}} by {{measure}}",
 					"dataset": "Dataset",
 					"newReport": "New custom report",
 					"listSubtitle": "Builder · {{dataset}}",
