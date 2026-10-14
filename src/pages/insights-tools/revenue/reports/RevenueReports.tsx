@@ -26,6 +26,7 @@ import {
 } from './reportMath';
 import { csvFilename, downloadCsv, reportRowsCsv } from './reportCsv';
 import { csvBaseName, effectiveControls, fromDefinition, sameDefinition, toDefinition } from './customReports';
+import { ReportFamilyCustom } from '@/types/dto/Reports';
 import { useCustomReports, useReportCatalog, useReportRun } from './useReports';
 
 const ErrorBox = ({ title, message }: { title: string; message?: string }) => (
@@ -42,7 +43,13 @@ const RevenueReports = () => {
 	const [pickedKey, setPickedKey] = useState('');
 	const [basisKey, setBasisKey] = useState('');
 	const [picked, setPicked] = useState<ReportControls | null>(null);
-	const customReports = useCustomReports();
+	const customReportsQuery = useCustomReports();
+	const customReports = {
+		isError: customReportsQuery.isError,
+		data: customReportsQuery.data && {
+			items: customReportsQuery.data.items.filter((r): r is ReportFamilyCustom => r.definition.family === 'report'),
+		},
+	};
 	const [customId, setCustomId] = useState('');
 	const [needsEdit, setNeedsEdit] = useState(false);
 	const custom = customReports.data?.items.find((r) => r.id === customId);

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { CustomReport, ReportCatalogEntry, ReportCategory } from '@/types/dto/Reports';
+import { ReportFamilyCustom, ReportCatalogEntry, ReportCategory } from '@/types/dto/Reports';
 
 const ORDER: ReportCategory[] = ['billing', 'receivables', 'customers', 'credits', 'usage'];
 
@@ -14,7 +14,7 @@ interface Props {
 	entries: ReportCatalogEntry[];
 	selectedKey: string;
 	onSelect: (key: string) => void;
-	customReports: CustomReport[];
+	customReports: ReportFamilyCustom[];
 	customError: boolean;
 	selectedCustomId: string;
 	onSelectCustom: (id: string) => void;

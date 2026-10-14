@@ -59,7 +59,7 @@ export const rangeForPreset = (preset: RangePreset, now: Date): string => {
 };
 
 // Worst-case span in days per preset.
-const PRESET_MAX_DAYS: Record<RangePreset, number> = {
+export const PRESET_MAX_DAYS: Record<RangePreset, number> = {
 	last_7_days: 7,
 	last_30_days: 30,
 	last_90_days: 90,
