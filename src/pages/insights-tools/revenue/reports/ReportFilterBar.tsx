@@ -57,8 +57,8 @@ const ReportFilterBar = ({ entry, filters, onChange }: Props) => {
 
 	return (
 		<div className='flex flex-col gap-2'>
+			<span className='text-sm font-medium'>{t('insightsTools.revenue.reports.filters.title')}</span>
 			<div className='flex flex-wrap items-end gap-3'>
-				<span className='text-sm font-medium'>{t('insightsTools.revenue.reports.filters.title')}</span>
 				{dims.map((d) => {
 					if (d.key === 'customer_id') {
 						return (

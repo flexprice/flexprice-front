@@ -1669,6 +1669,7 @@
 				"customReports": "Custom reports",
 				"customEmpty": "Save any report to reuse it here",
 				"customLoadError": "Couldn't load custom reports",
+				"copyName": "{{name}} copy",
 				"saveAsCustom": "Save as custom report",
 				"save": "Save",
 				"saveAsNew": "Save as new",

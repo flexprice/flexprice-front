@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ReportCatalogEntry } from '@/types/dto/Reports';
 import { defaultControls } from './reportMath';
-import { csvBaseName, fromDefinition, sameDefinition, toDefinition } from './customReports';
+import { csvBaseName, effectiveControls, fromDefinition, sameDefinition, toDefinition } from './customReports';
 
 const entry: ReportCatalogEntry = {
 	key: 'invoice_total',
@@ -67,5 +67,11 @@ describe('custom report definition', () => {
 	it('names CSV files after the custom report', () => {
 		expect(csvBaseName('Acme Q3 billing!', 'invoice_total')).toBe('acme_q3_billing');
 		expect(csvBaseName('!!!', 'invoice_total')).toBe('invoice_total');
+	});
+
+	it('drops a currency the report does not carry', () => {
+		const c = { ...defaultControls(entry), currency: 'USD' };
+		expect(toDefinition(entry, effectiveControls(c, []), now).currency).toBeUndefined();
+		expect(toDefinition(entry, effectiveControls(c, ['USD']), now).currency).toBe('USD');
 	});
 });

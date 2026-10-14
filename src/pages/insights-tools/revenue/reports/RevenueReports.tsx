@@ -25,7 +25,7 @@ import {
 	totalsFor,
 } from './reportMath';
 import { csvFilename, downloadCsv, reportRowsCsv } from './reportCsv';
-import { csvBaseName, fromDefinition, sameDefinition, toDefinition } from './customReports';
+import { csvBaseName, effectiveControls, fromDefinition, sameDefinition, toDefinition } from './customReports';
 import { useCustomReports, useReportCatalog, useReportRun } from './useReports';
 
 const ErrorBox = ({ title, message }: { title: string; message?: string }) => (
@@ -99,8 +99,9 @@ const RevenueReports = () => {
 		setNeedsEdit(!valid);
 	};
 
-	const definition = entry && controls ? toDefinition(entry, controls, now) : undefined;
-	const dirty = custom && definition ? !sameDefinition(definition, custom.definition) : false;
+	const definition = entry && controls ? toDefinition(entry, effectiveControls(controls, currencies), now) : undefined;
+	const baseMissing = !!custom && !entries.some((x) => x.key === custom.definition.metrics[0]);
+	const dirty = custom && definition && !baseMissing ? !sameDefinition(definition, custom.definition) : false;
 
 	const total = entry && run.data ? totalsFor(run.data, entry.key, currency) : undefined;
 	const showChart = !!entry && !!run.data && controls?.view === 'chart' && chartSupported(entry, run.data);

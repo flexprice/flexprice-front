@@ -1,6 +1,11 @@
 import { CustomReportDefinition, ReportCatalogEntry } from '@/types/dto/Reports';
 import { buildRequest, controlsForEntry, defaultControls, RANGE_PRESETS, RangePreset, ReportControls } from './reportMath';
 
+export const effectiveControls = (c: ReportControls, currencies: string[]): ReportControls => ({
+	...c,
+	currency: currencies.includes(c.currency) ? c.currency : '',
+});
+
 export const toDefinition = (entry: ReportCatalogEntry, c: ReportControls, now: Date): CustomReportDefinition => {
 	const req = buildRequest(entry, c, now);
 	return {

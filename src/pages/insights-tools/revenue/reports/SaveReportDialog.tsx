@@ -14,7 +14,7 @@ interface Props {
 	onClose: () => void;
 }
 
-// Mounted per open so the name resets.
+// Remount resets the name.
 const NameForm = ({ initialName, error, pending, onSubmit, onClose }: Omit<Props, 'open' | 'title'>) => {
 	const { t } = useTranslation('settings');
 	const [name, setName] = useState(initialName);
@@ -49,7 +49,7 @@ const NameForm = ({ initialName, error, pending, onSubmit, onClose }: Omit<Props
 
 const SaveReportDialog = ({ open, title, onClose, ...rest }: Props) => (
 	<Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-		<DialogContent aria-describedby={undefined}>
+		<DialogContent aria-describedby={undefined} className='w-full max-w-md bg-surface'>
 			<DialogHeader>
 				<DialogTitle>{title}</DialogTitle>
 			</DialogHeader>

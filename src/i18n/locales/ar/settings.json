@@ -1624,6 +1624,7 @@
 				"customReports": "التقارير المخصصة",
 				"customEmpty": "احفظ أي تقرير لإعادة استخدامه هنا",
 				"customLoadError": "تعذر تحميل التقارير المخصصة",
+				"copyName": "{{name}} copy",
 				"saveAsCustom": "حفظ كتقرير مخصص",
 				"save": "حفظ",
 				"saveAsNew": "حفظ كجديد",

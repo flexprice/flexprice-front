@@ -93,14 +93,14 @@ const CustomReportActions = ({ custom, definition, dirty, onSaved, onDeleted }: 
 			<SaveReportDialog
 				open={!!mode}
 				title={mode ? titles[mode] : ''}
-				initialName={mode === 'rename' ? (custom?.name ?? '') : mode === 'copy' ? `${custom?.name ?? ''} copy` : ''}
+				initialName={mode === 'rename' ? (custom?.name ?? '') : mode === 'copy' ? t('copyName', { name: custom?.name ?? '' }) : ''}
 				error={(active.error as Error | null)?.message}
 				pending={active.isPending}
 				onSubmit={submit}
 				onClose={close}
 			/>
 			<AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-				<AlertDialogContent>
+				<AlertDialogContent className='bg-surface'>
 					<AlertDialogHeader>
 						<AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
 						<AlertDialogDescription>{t('deleteConfirmBody', { name: custom?.name })}</AlertDialogDescription>
