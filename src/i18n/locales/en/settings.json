@@ -1723,6 +1723,8 @@
 				"unsupportedShape": "This report has no chart yet; showing the table",
 				"builder": {
 					"dataset": "Dataset",
+					"newReport": "New custom report",
+					"listSubtitle": "Builder · {{dataset}}",
 					"measures": "Measures",
 					"filters": "Filters",
 					"time": "Time",

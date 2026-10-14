@@ -1678,6 +1678,8 @@
 				"unsupportedShape": "لا يوجد مخطط لهذا التقرير بعد؛ يتم عرض الجدول",
 				"builder": {
 					"dataset": "مجموعة البيانات",
+					"newReport": "تقرير مخصص جديد",
+					"listSubtitle": "المنشئ · {{dataset}}",
 					"measures": "المقاييس",
 					"filters": "عوامل التصفية",
 					"time": "الوقت",
