@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Select } from '@/components/atoms';
 import { Dataset, DatasetDefinition, ReportCompare, ReportGrain } from '@/types/dto/Reports';
-import { PRESET_MAX_DAYS, RANGE_PRESETS } from '../reportMath';
+import { RANGE_PRESETS, presetAllowed } from '../reportMath';
 import { Segmented } from '../ReportControlsBar';
 import { MAX_DIMENSIONS, defaultDefinition, validateBuilder } from './builderModel';
 import FilterEditor from './FilterEditor';
@@ -121,7 +121,7 @@ const ReportBuilder = ({ datasets, value, onChange }: Props) => {
 						value={value.time.range}
 						options={[
 							...RANGE_PRESETS.map((p) => {
-								const ok = !ds.max_range_days || PRESET_MAX_DAYS[p] <= ds.max_range_days;
+								const ok = presetAllowed(ds, p);
 								return {
 									value: p,
 									label: t(`presets.${p}`),
@@ -137,7 +137,11 @@ const ReportBuilder = ({ datasets, value, onChange }: Props) => {
 						label={t('grain')}
 						value={grain}
 						options={[NONE, 'day', 'week', 'month'].map((g) => ({ value: g, label: g === NONE ? t('none') : t(`grains.${g}`) }))}
-						onPick={(g) => set({ time: { ...value.time, grain: g === NONE ? '' : (g as ReportGrain) } })}
+						onPick={(g) =>
+							g === NONE
+								? set({ time: { ...value.time, grain: '' } })
+								: set({ time: { ...value.time, grain: g as ReportGrain }, dimensions: dims.slice(0, 1) })
+						}
 					/>
 					{!usage && (
 						<Select

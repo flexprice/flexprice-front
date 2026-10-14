@@ -94,4 +94,32 @@ describe('ReportBuilder', () => {
 		renderWithProviders(<ReportBuilder datasets={datasets} value={defaultDefinition(usage)} onChange={() => {}} />);
 		expect(screen.queryByLabelText('Compare')).not.toBeInTheDocument();
 	});
+
+	it('changing a measure from sum to count clears the field', () => {
+		const onChange = vi.fn();
+		renderWithProviders(
+			<ReportBuilder datasets={datasets} value={base({ measures: [{ agg: 'sum', field: 'total' }] })} onChange={onChange} />,
+		);
+		open('Measure 1 aggregation');
+		fireEvent.click(screen.getByRole('option', { name: 'Count' }));
+		expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ measures: [{ agg: 'count' }] }));
+	});
+
+	it('changing a filter field resets op and value', () => {
+		const onChange = vi.fn();
+		renderWithProviders(
+			<ReportBuilder datasets={datasets} value={base({ filters: [{ field: 'total', op: 'gt', value: ['5'] }] })} onChange={onChange} />,
+		);
+		open('Filter 1 field');
+		fireEvent.click(screen.getByRole('option', { name: 'Customer' }));
+		expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ filters: [{ field: 'customer_id', op: 'eq', value: [] }] }));
+	});
+
+	it('picking a grain keeps only the first group-by', () => {
+		const onChange = vi.fn();
+		const def = base({ dimensions: ['invoice_status', 'customer_id'], time: { ...base().time, grain: '' } });
+		renderWithProviders(<ReportBuilder datasets={datasets} value={def} onChange={onChange} />);
+		fireEvent.click(screen.getByRole('button', { name: 'Day' }));
+		expect(onChange).toHaveBeenCalledWith({ ...def, dimensions: ['invoice_status'], time: { ...def.time, grain: 'day' } });
+	});
 });

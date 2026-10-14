@@ -69,8 +69,8 @@ export const PRESET_MAX_DAYS: Record<RangePreset, number> = {
 	this_year: 366,
 };
 
-export const presetAllowed = (entry: ReportCatalogEntry, preset: RangePreset): boolean =>
-	!entry.max_range_days || PRESET_MAX_DAYS[preset] <= entry.max_range_days;
+export const presetAllowed = (source: { max_range_days?: number }, preset: RangePreset): boolean =>
+	!source.max_range_days || PRESET_MAX_DAYS[preset] <= source.max_range_days;
 
 const defaultPreset = (entry: ReportCatalogEntry): RangePreset =>
 	(['last_90_days', 'last_30_days', 'last_7_days'] as const).find((p) => presetAllowed(entry, p)) ?? 'last_7_days';
