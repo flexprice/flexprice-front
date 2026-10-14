@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/core/axios/verbs', () => ({
-	AxiosClient: { get: vi.fn(), post: vi.fn() },
+	AxiosClient: { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() },
 }));
 
 import { AxiosClient } from '@/core/axios/verbs';
@@ -64,5 +64,18 @@ describe('ReportsApi', () => {
 			compare: 'previous_period',
 		});
 		expect(res.columns.map((c) => c.name)).toEqual(['currency', 'total_receivables']);
+	});
+
+	it('calls the view endpoints for custom reports', async () => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'false');
+		const def = { family: 'report' as const, metrics: ['invoice_total'], shape: 'scalar' as const, time: { range: 'last_30_days' } };
+		await ReportsApi.listCustomReports();
+		expect(AxiosClient.get).toHaveBeenCalledWith('/analytics/views?family=report');
+		await ReportsApi.createCustomReport('N', def);
+		expect(AxiosClient.post).toHaveBeenCalledWith('/analytics/views', { name: 'N', definition: def });
+		await ReportsApi.updateCustomReport('view 1', 'N', def);
+		expect(AxiosClient.put).toHaveBeenCalledWith('/analytics/views/view%201', { name: 'N', definition: def });
+		await ReportsApi.deleteCustomReport('view_1');
+		expect(AxiosClient.delete).toHaveBeenCalledWith('/analytics/views/view_1');
 	});
 });

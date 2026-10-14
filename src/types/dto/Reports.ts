@@ -75,3 +75,31 @@ export interface ReportQueryResult {
 	rows: string[][];
 	meta: ReportQueryMeta;
 }
+
+export type ReportDisplay = 'chart' | 'table';
+
+export interface CustomReportDefinition {
+	family: 'report';
+	metrics: string[];
+	shape: ReportShape;
+	dimensions?: string[];
+	filters?: ReportFilter[];
+	time: { range: string; grain?: ReportGrain | '' };
+	compare?: ReportCompare;
+	currency?: string;
+	display?: ReportDisplay;
+}
+
+export interface CustomReport {
+	id: string;
+	name: string;
+	version: number;
+	definition: CustomReportDefinition;
+	created_by?: string;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface CustomReportListResponse {
+	items: CustomReport[];
+}
