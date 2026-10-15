@@ -199,13 +199,13 @@ describe('RevenueDashboard', () => {
 	it('controls change request params; point-in-time ignores them', async () => {
 		const { run, ds } = mockApi();
 		renderWithProviders(<RevenueDashboard now={NOW} />);
-		await waitFor(() => expect(run).toHaveBeenCalledWith('invoice_total', { shape: 'scalar', range: '2026-07-18..2026-10-16' }));
+		await waitFor(() => expect(run).toHaveBeenCalledWith('invoice_total', { shape: 'scalar', range: '2026-07-17..2026-10-15' }));
 		expect(run.mock.calls.filter(([k]) => k === 'invoice_total').every(([, r]) => !('compare' in r))).toBe(true);
 		expect(run).toHaveBeenCalledWith('total_receivables', { shape: 'scalar', range: '2026-10-15..2026-10-16' });
 		expect(ds).toHaveBeenCalledWith(
 			expect.objectContaining({
 				measures: [{ agg: 'median', field: 'days_to_pay' }],
-				time: { field: 'paid_at', range: '2026-07-18..2026-10-16' },
+				time: { field: 'paid_at', range: '2026-07-17..2026-10-15' },
 			}),
 		);
 

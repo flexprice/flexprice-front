@@ -118,7 +118,7 @@ describe('credits tab', () => {
 		const { run, ds } = mockApi();
 		renderWithProviders(<CreditsTab controls={controls} goTo={vi.fn()} />);
 		await waitFor(() =>
-			expect(run).toHaveBeenCalledWith('events_volume', { shape: 'timeseries', grain: 'day', range: '2026-10-09..2026-10-16' }),
+			expect(run).toHaveBeenCalledWith('events_volume', { shape: 'timeseries', grain: 'day', range: '2026-10-08..2026-10-15' }),
 		);
 		expect(run).toHaveBeenCalledWith('credit_topups', { shape: 'timeseries', grain: 'month', range: '2026-01-01..2026-10-16' });
 		expect(run).toHaveBeenCalledWith('credit_topups', {
