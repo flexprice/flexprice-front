@@ -15,7 +15,11 @@ const num = (v: string | undefined) => {
 
 const bucketKey = (v: string) => v.slice(0, 10);
 
-export const contractOf = (revenue: number, usage: number) => Math.max(revenue - usage, 0);
+// Usage capped so stacks sum to revenue.
+export const splitRevenue = (revenue: number, usage: number) => {
+	const shown = Math.max(Math.min(usage, revenue), 0);
+	return { usage: shown, contract: Math.max(revenue - shown, 0) };
+};
 
 export interface SeriesSource {
 	result: ReportQueryResult | undefined;
@@ -89,14 +93,18 @@ export const topKeys = ({ rows, keys }: Pivot, n: number): Pivot => {
 	};
 };
 
-// Adds contract and contractPrev fields.
+// Splits revenue and prev into usage/contract.
 export const withContract = (rows: SeriesRow[]): SeriesRow[] =>
-	rows.map((row) => ({
-		...row,
-		usage: Number(row.usage) || 0,
-		contract: contractOf(Number(row.revenue) || 0, Number(row.usage) || 0),
-		...(row.prev !== undefined ? { contractPrev: contractOf(Number(row.prev) || 0, Number(row.usagePrev) || 0) } : {}),
-	}));
+	rows.map((row) => {
+		const cur = splitRevenue(Number(row.revenue) || 0, Number(row.usage) || 0);
+		const prev = row.prev !== undefined ? splitRevenue(Number(row.prev) || 0, Number(row.usagePrev) || 0) : undefined;
+		return {
+			...row,
+			usage: cur.usage,
+			contract: cur.contract,
+			...(prev ? { usagePrev: prev.usage, contractPrev: prev.contract } : {}),
+		};
+	});
 
 export const sumField = (rows: SeriesRow[], field: string): number | undefined =>
 	rows.some((r) => r[field] !== undefined) ? rows.reduce((s, r) => s + (Number(r[field]) || 0), 0) : undefined;

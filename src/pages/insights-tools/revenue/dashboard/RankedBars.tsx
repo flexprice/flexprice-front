@@ -1,3 +1,5 @@
+import { PALETTE } from './revenueMath';
+
 export interface RankedItem {
 	key: string;
 	label: string;
@@ -14,7 +16,7 @@ export interface RankedBarsProps {
 
 const pct = (v: number, max: number) => `${max > 0 ? Math.max((v / max) * 100, 0) : 0}%`;
 
-const RankedBars = ({ items, format, vertical = false, color = '#2b7bd9' }: RankedBarsProps) => {
+const RankedBars = ({ items, format, vertical = false, color = PALETTE[0] }: RankedBarsProps) => {
 	const max = Math.max(0, ...items.map((i) => i.value));
 	if (vertical) {
 		return (
@@ -36,7 +38,7 @@ const RankedBars = ({ items, format, vertical = false, color = '#2b7bd9' }: Rank
 					<span className='truncate text-content-zinc-bold' title={i.label}>
 						{i.label}
 					</span>
-					<span className='h-5 rounded-sm bg-zinc-100'>
+					<span className='h-5 rounded-sm bg-surface-muted'>
 						<span className='block h-full rounded-sm' style={{ width: pct(i.value, max), backgroundColor: color }} />
 					</span>
 					<span className='tabular-nums text-content-zinc-bold'>{format(i.value)}</span>

@@ -192,7 +192,8 @@ const RevenueOverTime = ({ controls, full = false, onViewReport }: Props) => {
 					? () => downloadCsv(csvFilename('revenue_over_time', controls.range), tableCsv(columns, data, footer))
 					: undefined
 			}
-			loading={revenue.isLoading}
+			loading={revenue.isLoading || usage.isLoading || grouped.isLoading}
+			error={revenue.isError || usage.isError || grouped.isError}
 			empty={base.length === 0}>
 			<StatRow stats={stats} />
 			{full && (

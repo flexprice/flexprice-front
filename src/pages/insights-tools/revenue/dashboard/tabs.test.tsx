@@ -133,7 +133,7 @@ describe('dashboard tabs', () => {
 		const rev = await screen.findByRole('region', { name: 'Revenue over time' });
 		expect(await within(rev).findByText('$1,500')).toBeInTheDocument();
 		expect(within(rev).getByText('+25.0%')).toBeInTheDocument();
-		expect(within(rev).getByText('$1K')).toBeInTheDocument();
+		expect(within(rev).getByText('$800')).toBeInTheDocument();
 		expect(within(rev).getByText('$700')).toBeInTheDocument();
 		expect(within(rev).getByText('Previous period')).toBeInTheDocument();
 
@@ -151,8 +151,8 @@ describe('dashboard tabs', () => {
 		expect(within(top).getByText('$1.2K')).toBeInTheDocument();
 
 		const credits = panel('Credit consumption vs. top-ups');
-		expect(await within(credits).findByText('$8.9M')).toBeInTheDocument();
-		expect(within(credits).getByText('$6.8M')).toBeInTheDocument();
+		expect(await within(credits).findByText('8.9M')).toBeInTheDocument();
+		expect(within(credits).getByText('6.8M')).toBeInTheDocument();
 
 		fireEvent.click(within(top).getByRole('button', { name: /View report/ }));
 		expect(goTo).toHaveBeenCalledWith('customers');
@@ -175,11 +175,11 @@ describe('dashboard tabs', () => {
 		);
 	});
 
-	it('revenue tab floors contract at zero in the table view', async () => {
+	it('revenue tab caps usage at revenue in the table view', async () => {
 		const { ds } = mockApi();
 		renderWithProviders(<RevenueTab controls={controls()} goTo={vi.fn()} />);
 		const rev = await screen.findByRole('region', { name: 'Revenue over time' });
-		await within(rev).findByText('$1,000');
+		await within(rev).findByText('$1,500');
 		expect(ds).toHaveBeenCalledWith(
 			expect.objectContaining({
 				dataset: 'invoice_lines',
@@ -197,13 +197,13 @@ describe('dashboard tabs', () => {
 			within(feb)
 				.getAllByRole('cell')
 				.map((c) => c.textContent),
-		).toEqual(['Feb 2026', '$700', '$0', '$500', '$400']);
+		).toEqual(['Feb 2026', '$500', '$0', '$500', '$400']);
 		const total = within(rev).getByText('Total').closest('tr')!;
 		expect(
 			within(total)
 				.getAllByRole('cell')
 				.map((c) => c.textContent),
-		).toEqual(['Total', '$1,000', '$700', '$1,500', '$1,200']);
+		).toEqual(['Total', '$800', '$700', '$1,500', '$1,200']);
 	});
 
 	it('group-by switch changes the request', async () => {
@@ -257,6 +257,25 @@ describe('dashboard tabs', () => {
 		await within(rev).findByText('$1,500');
 		expect(within(rev).queryByText('Previous period')).not.toBeInTheDocument();
 		expect(within(rev).queryByText('+25.0%')).not.toBeInTheDocument();
+	});
+
+	it('top customers waits for a resolved currency', async () => {
+		const { run } = mockApi();
+		renderWithProviders(<OverviewTab controls={{ ...controls(), currency: '' }} goTo={vi.fn()} />);
+		await waitFor(() => expect(run).toHaveBeenCalledWith('credit_topups', expect.anything()));
+		expect(run.mock.calls.some(([k, r]) => k === 'invoice_total' && r.dimensions?.[0] === 'customer_id')).toBe(false);
+	});
+
+	it('failed queries show an error instead of empty', async () => {
+		mockApi();
+		vi.spyOn(ReportsApi, 'runReport').mockImplementation(async (key, req) => {
+			if (key === 'receivables_aging') throw new Error('boom');
+			return report(key, req);
+		});
+		renderWithProviders(<OverviewTab controls={controls()} goTo={vi.fn()} />);
+		const aging = panel('Receivables aging');
+		expect(await within(aging).findByRole('alert')).toHaveTextContent('Could not load this report');
+		expect(within(aging).queryByText('No data for this period')).not.toBeInTheDocument();
 	});
 
 	it('empty data shows the empty state', async () => {

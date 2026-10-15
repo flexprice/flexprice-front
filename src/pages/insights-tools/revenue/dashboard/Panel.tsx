@@ -14,6 +14,7 @@ export interface PanelProps {
 	onDownloadCsv?: () => void;
 	csvDisabled?: boolean;
 	loading?: boolean;
+	error?: boolean;
 	empty?: boolean;
 	className?: string;
 	children: ReactNode;
@@ -28,6 +29,7 @@ const Panel = ({
 	onDownloadCsv,
 	csvDisabled,
 	loading,
+	error,
 	empty,
 	className,
 	children,
@@ -63,6 +65,10 @@ const Panel = ({
 			</div>
 			{loading ? (
 				<Skeleton className='h-48 w-full' />
+			) : error ? (
+				<p role='alert' className='py-10 text-center text-sm text-content-zinc-tertiary'>
+					{t('insightsTools.revenue.reports.errorTitle')}
+				</p>
 			) : empty ? (
 				<p className='py-10 text-center text-sm text-content-zinc-tertiary'>{t('insightsTools.revenue.reports.noData')}</p>
 			) : (

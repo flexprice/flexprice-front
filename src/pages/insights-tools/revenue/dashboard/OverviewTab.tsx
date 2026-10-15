@@ -47,7 +47,8 @@ export const AgingCard = ({ controls, onViewReport }: CardProps) => {
 			definition={t(`${O}.agingDef`)}
 			pointInTime
 			onViewReport={onViewReport}
-			loading={aging.isLoading}
+			loading={aging.isLoading || outstanding.isLoading}
+			error={aging.isError || outstanding.isError}
 			empty={rows.length === 0}>
 			<StatRow
 				stats={[
@@ -96,7 +97,8 @@ export const DaysToPayCard = ({ controls, onViewReport }: CardProps) => {
 			title={t(`${O}.daysToPay`)}
 			definition={t(`${O}.daysToPayDef`)}
 			onViewReport={onViewReport}
-			loading={series.isLoading}
+			loading={series.isLoading || avg.isLoading || median.isLoading}
+			error={series.isError || avg.isError || median.isError}
 			empty={data.length === 0}>
 			<StatRow
 				stats={[
@@ -121,8 +123,8 @@ export const DaysToPayCard = ({ controls, onViewReport }: CardProps) => {
 export const TopCustomersCard = ({ controls, onViewReport }: CardProps) => {
 	const { t } = useTranslation('settings');
 	const { currency } = controls;
-	const q = useQuery(
-		reportQ(
+	const q = useQuery({
+		...reportQ(
 			'invoice_total',
 			{
 				shape: 'breakdown',
@@ -130,11 +132,12 @@ export const TopCustomersCard = ({ controls, onViewReport }: CardProps) => {
 				limit: 5,
 				sort: [{ field: 'invoice_total', dir: 'desc' }],
 				// Top 5 within the page currency.
-				...(currency ? { filters: [{ field: 'currency', op: 'eq' as const, value: [currency] }] } : {}),
+				filters: [{ field: 'currency', op: 'eq' as const, value: [currency] }],
 			},
 			controls,
 		),
-	);
+		enabled: !!currency,
+	});
 	const result = q.data;
 	const ci = result ? result.columns.findIndex((c) => c.name === 'customer_id') : -1;
 	const mi = result ? result.columns.findIndex((c) => c.name === 'invoice_total') : -1;
@@ -147,6 +150,7 @@ export const TopCustomersCard = ({ controls, onViewReport }: CardProps) => {
 			definition={t(`${O}.topCustomersDef`)}
 			onViewReport={onViewReport}
 			loading={q.isLoading}
+			error={q.isError}
 			empty={items.length === 0}>
 			<RankedBars items={items} format={(v) => formatCompactMoney(v, currency)} />
 		</Panel>
@@ -169,7 +173,7 @@ export const CreditsCard = ({ controls, onViewReport }: CardProps) => {
 		},
 		currency,
 	);
-	const compact = (v: number) => formatCompactMoney(v, currency);
+	const compact = (v: number) => v.toLocaleString('en-US', { notation: 'compact', maximumFractionDigits: 1 });
 	const toppedUp = sumField(data, 'topups');
 	const consumed = sumField(data, 'consumed');
 	return (
@@ -178,6 +182,7 @@ export const CreditsCard = ({ controls, onViewReport }: CardProps) => {
 			definition={t(`${O}.creditsDef`)}
 			onViewReport={onViewReport}
 			loading={topups.isLoading || consumption.isLoading}
+			error={topups.isError || consumption.isError}
 			empty={data.length === 0}>
 			<StatRow
 				stats={[

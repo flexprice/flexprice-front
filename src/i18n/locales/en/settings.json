@@ -1890,7 +1890,7 @@
 						"No due date": "No due date"
 					},
 					"daysToPay": "Days to pay over time",
-					"daysToPayDef": "Average days from finalization to payment",
+					"daysToPayDef": "Average days from issue to payment",
 					"average": "Average",
 					"median": "Median",
 					"topCustomers": "Top 5 customers",

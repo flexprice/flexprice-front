@@ -80,9 +80,11 @@ export const RevenueBreakdown = ({ controls }: { controls: DashboardControls }) 
 		<Panel
 			title={t(`${R}.breakdown`)}
 			definition={t(`${R}.breakdownDef`)}
+			actions={<span className='text-sm text-content-zinc-tertiary'>{t(`${R}.groupBys.invoice_type`)}</span>}
 			onDownloadCsv={() => downloadCsv(csvFilename('revenue_by_invoice_type', controls.range), tableCsv(columns, rows, footer))}
 			csvDisabled={rows.length === 0}
 			loading={q.isLoading}
+			error={q.isError}
 			empty={rows.length === 0}>
 			<DataTable columns={columns} rows={rows} rowKey={(r) => r.key} footer={footer} />
 		</Panel>

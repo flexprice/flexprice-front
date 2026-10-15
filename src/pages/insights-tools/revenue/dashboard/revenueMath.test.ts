@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ReportColumn, ReportQueryResult } from '@/types/dto/Reports';
-import { bucketLabel, contractOf, mergeSeries, OTHER_KEY, pivotSeries, sumField, topKeys, withContract } from './revenueMath';
+import { bucketLabel, splitRevenue, mergeSeries, OTHER_KEY, pivotSeries, sumField, topKeys, withContract } from './revenueMath';
 
 const res = (cols: [string, ReportColumn['role']][], rows: string[][]): ReportQueryResult => ({
 	columns: cols.map(([name, role]) => ({ name, role, type: role === 'dimension' ? 'string' : 'decimal' })),
@@ -34,9 +34,10 @@ const usage = res(
 );
 
 describe('revenueMath', () => {
-	it('contract floors at zero when usage exceeds revenue', () => {
-		expect(contractOf(1000, 300)).toBe(700);
-		expect(contractOf(500, 700)).toBe(0);
+	it('caps usage at revenue so the split sums to revenue', () => {
+		expect(splitRevenue(1000, 300)).toEqual({ usage: 300, contract: 700 });
+		expect(splitRevenue(500, 700)).toEqual({ usage: 500, contract: 0 });
+		expect(splitRevenue(-50, 10)).toEqual({ usage: 0, contract: 0 });
 	});
 
 	it('merges series per bucket and currency, sorted', () => {
@@ -55,8 +56,9 @@ describe('revenueMath', () => {
 		]);
 		const withC = withContract(rows);
 		expect(withC.map((r) => r.contract)).toEqual([700, 0]);
-		expect(sumField(withC, 'contract')).toBe(700);
-		expect(sumField(withC, 'usagePrev')).toBeUndefined();
+		expect(withC.map((r) => r.usage)).toEqual([300, 500]);
+		expect(sumField(withC, 'usage')! + sumField(withC, 'contract')!).toBe(sumField(withC, 'revenue'));
+		expect(withC.map((r) => r.contractPrev)).toEqual([800, 400]);
 	});
 
 	it('pivots a dimension and folds the tail into other', () => {
