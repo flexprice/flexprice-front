@@ -1771,7 +1771,45 @@
 			"filterThisYear": "هذه السنة",
 			"filterLastMonth": "الشهر الماضي",
 			"filterLastQuarter": "الربع الماضي",
-			"filterLastYear": "السنة الماضية"
+			"filterLastYear": "السنة الماضية",
+			"dashboard": {
+				"title": "الإيرادات",
+				"viewReport": "عرض التقرير",
+				"comingSoon": "قادم في المهمة التالية",
+				"compares": {
+					"previous_period": "الفترة السابقة",
+					"previous_year": "السنة السابقة",
+					"none": "بدون مقارنة"
+				},
+				"tabs": {
+					"overview": "نظرة عامة",
+					"revenue": "الإيرادات",
+					"customers": "العملاء",
+					"receivables": "الذمم المدينة",
+					"payments": "المدفوعات",
+					"credits": "الأرصدة والاستخدام"
+				},
+				"kpi": {
+					"revenue": "الإيرادات",
+					"arpu": "متوسط الإيراد لكل مستخدم",
+					"outstanding": "المستحق",
+					"overdue": "المتأخر",
+					"daysToPay": "متوسط أيام السداد",
+					"vsPrevPeriod": "مقارنة بالفترة السابقة",
+					"vsPrevYear": "مقارنة بالسنة السابقة",
+					"previous": "السابق: {{value}}",
+					"billedCustomers_zero": "{{count}} عميل مفوتر",
+					"billedCustomers_one": "{{count}} عميل مفوتر",
+					"billedCustomers_two": "{{count}} عميلان مفوتران",
+					"billedCustomers_few": "{{count}} عملاء مفوترين",
+					"billedCustomers_many": "{{count}} عميلًا مفوترًا",
+					"billedCustomers_other": "{{count}} عميل مفوتر",
+					"pointInTime": "لحظي",
+					"asOfToday": "حتى اليوم",
+					"ofOutstanding": "{{value}}% من المستحق",
+					"median": "الوسيط {{value}} يوم"
+				}
+			}
 		}
 	},
 	"integrations": {

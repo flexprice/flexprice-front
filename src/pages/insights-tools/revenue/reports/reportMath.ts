@@ -214,3 +214,9 @@ export const formatValue = (
 	const sign = value < 0 ? '-' : '';
 	return `${sign}${getCurrencySymbol(currency.toUpperCase())}${Math.abs(value).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
 };
+
+export const formatCompactMoney = (value: number, currency: string): string => {
+	const sign = value < 0 ? '-' : '';
+	const n = Math.abs(value).toLocaleString('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+	return `${sign}${getCurrencySymbol(currency.toUpperCase())}${n}`;
+};

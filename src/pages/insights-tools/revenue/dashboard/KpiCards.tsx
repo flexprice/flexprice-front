@@ -1,0 +1,132 @@
+import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useQueries } from '@tanstack/react-query';
+import { Skeleton } from '@/components/ui/skeleton';
+import DeltaChip from '../reports/DeltaChip';
+import { deltaDisplay, formatCompactMoney, formatValue } from '../reports/reportMath';
+import { DashboardControls, datasetQ, overdueOf, reportQ, scalarOf, ScalarValue } from './queries';
+import { REVENUE_KPI } from './useDashboardControls';
+
+const K = 'insightsTools.revenue.dashboard.kpi';
+const FINALIZED = [{ field: 'invoice_status', op: 'eq' as const, value: ['FINALIZED'] }];
+
+const Card = ({
+	label,
+	value,
+	loading,
+	status,
+	footer,
+}: {
+	label: string;
+	value: string;
+	loading: boolean;
+	status: ReactNode;
+	footer: ReactNode;
+}) => (
+	<div className='flex flex-col gap-2 border-line p-5 [&:not(:last-child)]:border-b lg:[&:not(:last-child)]:border-b-0 lg:[&:not(:last-child)]:border-e'>
+		<span className='text-sm text-content-zinc-tertiary'>{label}</span>
+		{loading ? (
+			<Skeleton className='h-8 w-32' />
+		) : (
+			<span className='text-2xl font-semibold tabular-nums text-content-zinc-bold'>{value}</span>
+		)}
+		<div className='flex min-h-6 items-center gap-2 text-xs text-content-zinc-tertiary'>{status}</div>
+		<div className='mt-2 border-t border-line pt-3 text-xs text-content-zinc-tertiary'>{footer}</div>
+	</div>
+);
+
+const KpiCards = ({ controls }: { controls: DashboardControls }) => {
+	const { t } = useTranslation('settings');
+	const { currency } = controls;
+	const [revenue, arpu, outstanding, aging, days, billed, median] = useQueries({
+		queries: [
+			reportQ(REVENUE_KPI.key, REVENUE_KPI.opts, controls),
+			reportQ('arpu', { shape: 'scalar', compare: true }, controls),
+			reportQ('total_receivables', { shape: 'scalar' }, controls),
+			reportQ('receivables_aging', { shape: 'breakdown', dimensions: ['aging_bucket'] }, controls),
+			reportQ('days_to_pay', { shape: 'scalar', compare: true }, controls),
+			datasetQ(
+				{
+					dataset: 'invoices',
+					measures: [{ agg: 'count_distinct', field: 'customer' }],
+					dimensions: ['currency'],
+					filters: FINALIZED,
+					time: { field: 'billing_period' },
+				},
+				controls,
+			),
+			datasetQ({ dataset: 'invoices', measures: [{ agg: 'median', field: 'days_to_pay' }], time: { field: 'paid_at' } }, controls),
+		],
+	});
+	const money = (v: number) => formatValue(v, 'money', currency);
+	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
+	const num = (v: string | undefined) => (v !== undefined && v !== '' && Number.isFinite(Number(v)) ? Number(v) : undefined);
+	const vsLabel = t(`${K}.${controls.compare === 'previous_year' ? 'vsPrevYear' : 'vsPrevPeriod'}`);
+	const delta = (s: ScalarValue | undefined, higherIsBetter: boolean) => {
+		const d = s ? deltaDisplay(s.current, s.prev, s.pct, higherIsBetter) : null;
+		return (
+			d && (
+				<>
+					<DeltaChip display={d} />
+					<span>{vsLabel}</span>
+				</>
+			)
+		);
+	};
+	const dash = '—';
+
+	const rev = scalarOf(revenue.data, 'invoice_total', currency);
+	const revNow = num(rev?.current);
+	const revPrev = num(rev?.prev);
+	const arpuV = scalarOf(arpu.data, 'arpu', currency);
+	const arpuNow = num(arpuV?.current);
+	const billedN = num(scalarOf(billed.data, 'm0', currency)?.current);
+	const out = num(scalarOf(outstanding.data, 'total_receivables', currency)?.current);
+	const overdue = overdueOf(aging.data, currency);
+	const overduePct = overdue !== undefined && out ? (overdue / out) * 100 : undefined;
+	const dtp = scalarOf(days.data, 'days_to_pay', currency);
+	const dtpNow = num(dtp?.current);
+	const med = num(scalarOf(median.data, 'm0', currency)?.current);
+
+	return (
+		<div className='grid grid-cols-1 rounded-lg border border-line bg-surface lg:grid-cols-5'>
+			<Card
+				label={t(`${K}.revenue`)}
+				value={revNow !== undefined ? money(revNow) : dash}
+				loading={revenue.isLoading}
+				status={delta(rev, true)}
+				footer={revPrev !== undefined ? t(`${K}.previous`, { value: formatCompactMoney(revPrev, currency) }) : dash}
+			/>
+			<Card
+				label={t(`${K}.arpu`)}
+				value={arpuNow !== undefined ? money(arpuNow) : dash}
+				loading={arpu.isLoading}
+				status={delta(arpuV, true)}
+				footer={billedN !== undefined ? t(`${K}.billedCustomers`, { count: billedN }) : dash}
+			/>
+			<Card
+				label={t(`${K}.outstanding`)}
+				value={out !== undefined ? money(out) : dash}
+				loading={outstanding.isLoading}
+				status={t(`${K}.pointInTime`)}
+				footer={t(`${K}.asOfToday`)}
+			/>
+			<Card
+				label={t(`${K}.overdue`)}
+				value={overdue !== undefined ? money(overdue) : dash}
+				loading={aging.isLoading}
+				status={t(`${K}.pointInTime`)}
+				footer={overduePct !== undefined ? t(`${K}.ofOutstanding`, { value: overduePct.toFixed(1) }) : dash}
+			/>
+			<Card
+				label={t(`${K}.daysToPay`)}
+				value={dtpNow !== undefined ? formatValue(dtpNow, 'days', currency, daysLabel) : dash}
+				loading={days.isLoading}
+				status={delta(dtp, false)}
+				footer={med !== undefined ? t(`${K}.median`, { value: med.toFixed(1) }) : dash}
+			/>
+		</div>
+	);
+};
+
+export default KpiCards;

@@ -1816,7 +1816,41 @@
 			"filterThisYear": "This year",
 			"filterLastMonth": "Last month",
 			"filterLastQuarter": "Last quarter",
-			"filterLastYear": "Last year"
+			"filterLastYear": "Last year",
+			"dashboard": {
+				"title": "Revenue",
+				"viewReport": "View report",
+				"comingSoon": "Coming in next task",
+				"compares": {
+					"previous_period": "Previous period",
+					"previous_year": "Previous year",
+					"none": "No comparison"
+				},
+				"tabs": {
+					"overview": "Overview",
+					"revenue": "Revenue",
+					"customers": "Customers",
+					"receivables": "Receivables",
+					"payments": "Payments",
+					"credits": "Credits & usage"
+				},
+				"kpi": {
+					"revenue": "Revenue",
+					"arpu": "ARPU",
+					"outstanding": "Outstanding",
+					"overdue": "Overdue",
+					"daysToPay": "Avg. days to pay",
+					"vsPrevPeriod": "vs prev. period",
+					"vsPrevYear": "vs prev. year",
+					"previous": "Previous: {{value}}",
+					"billedCustomers_one": "{{count}} billed customer",
+					"billedCustomers_other": "{{count}} billed customers",
+					"pointInTime": "Point-in-time",
+					"asOfToday": "As of today",
+					"ofOutstanding": "{{value}}% of outstanding",
+					"median": "Median {{value}}d"
+				}
+			}
 		}
 	},
 	"integrations": {

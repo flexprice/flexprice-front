@@ -103,6 +103,7 @@ import { ErrorPage } from '@/components/organisms';
 import { RouterErrorElement } from '@/components/atoms/ErrorBoundary';
 
 const RevenueReports = lazy(() => import('@/pages/insights-tools/revenue/reports/RevenueReports'));
+const RevenueDashboard = lazy(() => import('@/pages/insights-tools/revenue/dashboard/RevenueDashboard'));
 
 export const RouteNames = {
 	// customer portal
@@ -613,7 +614,7 @@ export const MainRouter: any = createBrowserRouter([
 											<Loader />
 										</div>
 									}>
-									<RevenueReports />
+									{config.platform.reports.custom.enabled ? <RevenueReports /> : <RevenueDashboard />}
 								</Suspense>
 							) : (
 								<Revenue />
