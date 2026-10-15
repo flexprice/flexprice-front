@@ -118,6 +118,8 @@ describe('RevenueDashboard', () => {
 	it('renders the five KPI cards from responses', async () => {
 		mockApi();
 		renderWithProviders(<RevenueDashboard now={NOW} />);
+		fireEvent.keyDown(screen.getByLabelText('Compare'), { key: 'Enter' });
+		fireEvent.click(await screen.findByRole('option', { name: 'Previous period' }));
 		expect(await screen.findByText('$4,829,711')).toBeInTheDocument();
 		expect(within(card('Revenue')).getByText('+30.5%')).toBeInTheDocument();
 		expect(screen.getByText('Previous: $3.7M')).toBeInTheDocument();
@@ -159,13 +161,14 @@ describe('RevenueDashboard', () => {
 		await waitFor(() => expect(within(card('Outstanding')).getByText('$1,000')).toBeInTheDocument());
 	});
 
-	it('hides the previous revenue line without compare', async () => {
+	it('shows the previous revenue line only with compare', async () => {
 		mockApi();
 		renderWithProviders(<RevenueDashboard now={NOW} />);
-		await screen.findByText('Previous: $3.7M');
+		await screen.findByText('$4,829,711');
+		expect(screen.queryByText(/^Previous:/)).not.toBeInTheDocument();
 		fireEvent.keyDown(screen.getByLabelText('Compare'), { key: 'Enter' });
-		fireEvent.click(await screen.findByRole('option', { name: 'No comparison' }));
-		await waitFor(() => expect(screen.queryByText(/^Previous:/)).not.toBeInTheDocument());
+		fireEvent.click(await screen.findByRole('option', { name: 'Previous period' }));
+		await screen.findByText('Previous: $3.7M');
 	});
 
 	it('days to pay going down is good', async () => {
@@ -179,7 +182,7 @@ describe('RevenueDashboard', () => {
 	it('shows dashes when there is no data', async () => {
 		mockApi(true);
 		renderWithProviders(<RevenueDashboard now={NOW} />);
-		await waitFor(() => expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(9));
+		await waitFor(() => expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(8));
 		expect(screen.queryByText(/% of outstanding/)).not.toBeInTheDocument();
 	});
 
@@ -196,26 +199,25 @@ describe('RevenueDashboard', () => {
 	it('controls change request params; point-in-time ignores them', async () => {
 		const { run, ds } = mockApi();
 		renderWithProviders(<RevenueDashboard now={NOW} />);
-		await waitFor(() =>
-			expect(run).toHaveBeenCalledWith('invoice_total', { shape: 'scalar', range: '2026-01-01..2026-10-16', compare: 'previous_period' }),
-		);
+		await waitFor(() => expect(run).toHaveBeenCalledWith('invoice_total', { shape: 'scalar', range: '2026-07-18..2026-10-16' }));
+		expect(run.mock.calls.filter(([k]) => k === 'invoice_total').every(([, r]) => !('compare' in r))).toBe(true);
 		expect(run).toHaveBeenCalledWith('total_receivables', { shape: 'scalar', range: '2026-10-15..2026-10-16' });
 		expect(ds).toHaveBeenCalledWith(
 			expect.objectContaining({
 				measures: [{ agg: 'median', field: 'days_to_pay' }],
-				time: { field: 'paid_at', range: '2026-01-01..2026-10-16' },
+				time: { field: 'paid_at', range: '2026-07-18..2026-10-16' },
 			}),
 		);
 
 		fireEvent.keyDown(screen.getByLabelText('Date range'), { key: 'Enter' });
 		fireEvent.click(await screen.findByRole('option', { name: 'Last month' }));
-		await waitFor(() =>
-			expect(run).toHaveBeenCalledWith('invoice_total', { shape: 'scalar', range: '2026-09-01..2026-10-01', compare: 'previous_period' }),
-		);
+		await waitFor(() => expect(run).toHaveBeenCalledWith('invoice_total', { shape: 'scalar', range: '2026-09-01..2026-10-01' }));
 
 		fireEvent.keyDown(screen.getByLabelText('Compare'), { key: 'Enter' });
-		fireEvent.click(await screen.findByRole('option', { name: 'No comparison' }));
-		await waitFor(() => expect(run).toHaveBeenCalledWith('arpu', { shape: 'scalar', range: '2026-09-01..2026-10-01' }));
+		fireEvent.click(await screen.findByRole('option', { name: 'Previous period' }));
+		await waitFor(() =>
+			expect(run).toHaveBeenCalledWith('arpu', { shape: 'scalar', range: '2026-09-01..2026-10-01', compare: 'previous_period' }),
+		);
 		const receivableRanges = run.mock.calls.filter(([k]) => k === 'total_receivables').map(([, r]) => r.range);
 		expect(new Set(receivableRanges)).toEqual(new Set(['2026-10-15..2026-10-16']));
 	});
