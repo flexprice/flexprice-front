@@ -101,7 +101,7 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 				title={exact(arpuNow)}
 				loading={arpu.isLoading}
 				status={delta(arpuV, true)}
-				footer={billedN !== undefined ? t(`${K}.billedCustomers`, { count: billedN }) : dash}
+				footer={billedN !== undefined ? t(`${K}.billedCustomers`, { count: billedN, value: billedN.toLocaleString('en-US') }) : dash}
 			/>
 			<Card
 				label={t(`${K}.outstanding`)}
