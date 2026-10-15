@@ -135,7 +135,7 @@ export const PaymentSpeed = ({ controls }: { controls: DashboardControls }) => {
 		<Panel title={t(`${P}.speed`)} definition={t(`${P}.speedDef`)} loading={q.isLoading} error={q.isError} empty={total === 0}>
 			<RankedBars
 				items={PAYMENT_SPEEDS.map((s, i) => ({ key: s, label: t(`${P}.speeds.${s}`), value: counts[i], color: SPEED_COLORS[i] }))}
-				format={(v) => `${total > 0 ? ((v / total) * 100).toFixed(1) : '0.0'}%`}
+				format={(v) => `${v.toLocaleString('en-US')} · ${total > 0 ? ((v / total) * 100).toFixed(1) : '0.0'}%`}
 				vertical
 			/>
 		</Panel>

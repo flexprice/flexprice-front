@@ -29,6 +29,7 @@ const M = (n: string): Col => [n, 'metric'];
 interface Opts {
 	zero?: boolean;
 	noMedian?: boolean;
+	overdueFails?: boolean;
 }
 
 const report = (key: string, req: ReportQueryRequest, { zero }: Opts): ReportQueryResult => {
@@ -102,7 +103,10 @@ const dataset = (def: DatasetDefinition, { noMedian }: Opts): ReportQueryResult 
 
 const mockApi = (opts: Opts = {}) => {
 	const run = vi.spyOn(ReportsApi, 'runReport').mockImplementation(async (key, req) => report(key, req, opts));
-	const ds = vi.spyOn(ReportsApi, 'runDataset').mockImplementation(async (def) => dataset(def, opts));
+	const ds = vi.spyOn(ReportsApi, 'runDataset').mockImplementation(async (def) => {
+		if (opts.overdueFails && def.filters?.some((f) => f.field === 'days_overdue')) throw new Error('boom');
+		return dataset(def, opts);
+	});
 	return { run, ds };
 };
 
@@ -186,6 +190,16 @@ describe('receivables tab', () => {
 		expect(container.textContent).not.toMatch(/NaN|Infinity/);
 	});
 
+	it('keeps the aging panel when the overdue list fails', async () => {
+		mockApi({ overdueFails: true });
+		renderWithProviders(<ReceivablesTab controls={controls()} goTo={vi.fn()} />);
+		const aging = panel('Receivables aging');
+		expect(await within(aging).findByText('50.0% of outstanding, — customers')).toBeInTheDocument();
+		expect(within(aging).getByText('$1,000')).toBeInTheDocument();
+		expect(within(aging).queryByRole('alert')).not.toBeInTheDocument();
+		expect(within(panel('Overdue customers')).getByRole('alert')).toBeInTheDocument();
+	});
+
 	it('waits for a currency before listing customers', () => {
 		const { ds, run } = mockApi();
 		renderWithProviders(<ReceivablesTab controls={controls('')} goTo={vi.fn()} />);
@@ -210,8 +224,8 @@ describe('payments tab', () => {
 		expect(within(days).getByText(/from issue to full payment/)).toBeInTheDocument();
 
 		const speed = panel('Payment speed');
-		expect(within(speed).getByText('50.0%')).toBeInTheDocument();
-		expect(within(speed).getAllByText('25.0%')).toHaveLength(2);
+		expect(within(speed).getByText('60 · 50.0%')).toBeInTheDocument();
+		expect(within(speed).getAllByText('30 · 25.0%')).toHaveLength(2);
 
 		const slowest = panel('Slowest payers');
 		expect(within(slowest).getByText('Torrent Games')).toBeInTheDocument();

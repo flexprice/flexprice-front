@@ -174,13 +174,20 @@ export const AgingPanel = ({ controls, data }: { controls: DashboardControls; da
 					? () => downloadCsv(csvFilename('receivables_aging', todayRange(controls.now)), tableCsv(columns, rows, footer))
 					: undefined
 			}
-			loading={outstanding.isLoading || aging.isLoading || data.loading}
-			error={outstanding.isError || aging.isError || data.error}
+			loading={outstanding.isLoading || aging.isLoading}
+			error={outstanding.isError || aging.isError}
 			empty={!hasRows}>
 			<StatRow
 				stats={[
 					{ label: t(`${K}.outstanding`), value: money(out) },
-					{ label: t(`${K}.overdue`), value: money(overdue), note: t(`${RC}.overdueNote`, { pct, count: data.rows.length }) },
+					{
+						label: t(`${K}.overdue`),
+						value: money(overdue),
+						note:
+							data.loading || data.error
+								? t(`${RC}.overdueNoteUnknown`, { pct })
+								: t(`${RC}.overdueNote`, { pct, count: data.rows.length }),
+					},
 					{ label: t(`${O}.agingBuckets.Current`), value: money(amounts[0]) },
 					{ label: t(`${O}.agingBuckets.No due date`), value: money(amounts[AGING_BUCKETS.length - 1]) },
 				]}
