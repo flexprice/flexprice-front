@@ -1775,7 +1775,6 @@
 			"dashboard": {
 				"title": "الإيرادات",
 				"viewReport": "عرض التقرير",
-				"comingSoon": "قادم في المهمة التالية",
 				"compares": {
 					"previous_period": "الفترة السابقة",
 					"previous_year": "السنة السابقة",
@@ -1872,6 +1871,7 @@
 					"overdueNote_few": "{{pct}} من المستحق، {{count}} عملاء",
 					"overdueNote_many": "{{pct}} من المستحق، {{count}} عميلًا",
 					"overdueNote_other": "{{pct}} من المستحق، {{count}} عميل",
+					"overdueNoteUnknown": "{{pct}} من المستحق، — عميل",
 					"pointInTimeNote": "لحظي اعتبارًا من اليوم؛ لا ينطبق نطاق التاريخ والمقارنة.",
 					"bucket": "فئة التقادم",
 					"amount": "المبلغ",
@@ -1929,6 +1929,32 @@
 					"creditsDef": "أرصدة المحفظة المضافة والمستخدمة لكل فترة",
 					"toppedUp": "تم الشحن",
 					"consumed": "المستهلك"
+				},
+				"credits": {
+					"flowDef": "أرصدة المحفظة المضافة والمطبّقة على الفواتير لكل فترة",
+					"period": "الفترة",
+					"net": "صافي التغيّر",
+					"byReason": "الشحن حسب السبب",
+					"byReasonDef": "الأرصدة المضافة في الفترة، حسب سبب منحها",
+					"credits": "الأرصدة",
+					"topups": "عمليات الشحن",
+					"reasons": {
+						"purchased": "مشتراة",
+						"subscription": "منحة اشتراك",
+						"free": "منحة مجانية",
+						"bonus": "مكافأة"
+					},
+					"reasonTotal_zero": "{{credits}} · {{formatted}} عملية شحن",
+					"reasonTotal_one": "{{credits}} · عملية شحن واحدة",
+					"reasonTotal_two": "{{credits}} · عمليتا شحن",
+					"reasonTotal_few": "{{credits}} · {{formatted}} عمليات شحن",
+					"reasonTotal_many": "{{credits}} · {{formatted}} عملية شحن",
+					"reasonTotal_other": "{{credits}} · {{formatted}} عملية شحن",
+					"events": "حجم الأحداث",
+					"eventsDef": "أحداث الاستخدام المستلمة يوميًا",
+					"last7Days": "آخر 7 أيام",
+					"totalEvents": "إجمالي الأحداث",
+					"dailyAverage": "المتوسط اليومي"
 				}
 			}
 		}

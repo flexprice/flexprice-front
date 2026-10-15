@@ -2,6 +2,7 @@ import { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Page, Select } from '@/components/atoms';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import CreditsTab from './CreditsTab';
 import CustomersTab from './CustomersTab';
 import KpiCards from './KpiCards';
 import OverviewTab from './OverviewTab';
@@ -27,18 +28,14 @@ const tabFromHash = (): DashboardTab => {
 
 const D = 'insightsTools.revenue.dashboard';
 
-const Placeholder: ComponentType<DashboardTabProps> = () => {
-	const { t } = useTranslation('settings');
-	return <p className='text-sm text-content-zinc-tertiary'>{t(`${D}.comingSoon`)}</p>;
-};
-
+// Inactive tabs unmount; only active fetches.
 const TAB_VIEWS: Record<DashboardTab, ComponentType<DashboardTabProps>> = {
 	overview: OverviewTab,
 	revenue: RevenueTab,
 	customers: CustomersTab,
 	receivables: ReceivablesTab,
 	payments: PaymentsTab,
-	credits: Placeholder,
+	credits: CreditsTab,
 };
 
 const RevenueDashboard = ({ now }: { now?: Date }) => {

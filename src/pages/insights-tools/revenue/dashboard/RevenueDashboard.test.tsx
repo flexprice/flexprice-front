@@ -56,7 +56,20 @@ const FULL: Record<string, ReportQueryResult> = {
 		],
 	),
 	days_to_pay: withCompare('days_to_pay', [], [['19.8', '26.6', '-25.5']]),
+	credit_topups: res(
+		[
+			['bucket', 'dimension'],
+			['currency', 'dimension'],
+			['credit_topups', 'metric'],
+		],
+		[
+			['2026-01-01T00:00:00Z', 'usd', '6000'],
+			['2026-01-01T00:00:00Z', 'eur', '100'],
+		],
+	),
 };
+
+const CREDIT_KEYS = ['credit_topups', 'credit_consumption', 'events_volume'];
 
 const datasetResult = (def: DatasetDefinition, empty: boolean) =>
 	def.measures[0].agg === 'median'
@@ -205,6 +218,37 @@ describe('RevenueDashboard', () => {
 		fireEvent.mouseDown(screen.getByRole('tab', { name: 'Payments' }));
 		expect(screen.getByRole('tab', { name: 'Payments' })).toHaveAttribute('aria-selected', 'true');
 		expect(window.location.hash).toBe('#payments');
+	});
+
+	it('only the active tab fetches', async () => {
+		const { run, ds } = mockApi();
+		window.history.replaceState(null, '', '/revenue#receivables');
+		renderWithProviders(<RevenueDashboard now={NOW} />);
+		await waitFor(() => expect(ds).toHaveBeenCalledWith(expect.objectContaining({ time: expect.objectContaining({ field: 'due_date' }) })));
+		expect(run.mock.calls.filter(([k]) => CREDIT_KEYS.includes(k))).toEqual([]);
+		expect(run.mock.calls.filter(([k, r]) => k === 'invoice_total' && r.shape !== 'scalar')).toEqual([]);
+		expect(ds.mock.calls.filter(([d]) => d.dataset === 'wallet_transactions')).toEqual([]);
+
+		fireEvent.mouseDown(screen.getByRole('tab', { name: 'Credits & usage' }));
+		await waitFor(() => expect(run).toHaveBeenCalledWith('events_volume', expect.anything()));
+		expect(ds).toHaveBeenCalledWith(expect.objectContaining({ dataset: 'wallet_transactions' }));
+		expect(ds.mock.calls.filter(([d]) => d.dimensions?.includes('customer') && d.time.field === 'paid_at')).toEqual([]);
+		expect(run.mock.calls.filter(([k, r]) => k === 'invoice_total' && r.shape !== 'scalar')).toEqual([]);
+	});
+
+	it('switching currency changes money and credit panels', async () => {
+		mockApi();
+		window.history.replaceState(null, '', '/revenue#credits');
+		renderWithProviders(<RevenueDashboard now={NOW} />);
+		const flow = await screen.findByRole('region', { name: 'Credit consumption vs. top-ups' });
+		expect(await within(flow).findByText('+6,000')).toBeInTheDocument();
+		expect(within(card('Revenue')).getByText('$4,829,711')).toBeInTheDocument();
+		fireEvent.keyDown(screen.getByLabelText('Currency'), { key: 'Enter' });
+		fireEvent.click(await screen.findByRole('option', { name: 'EUR' }));
+		expect(await within(flow).findByText('+100')).toBeInTheDocument();
+		expect(within(flow).queryByText('+6,000')).not.toBeInTheDocument();
+		await waitFor(() => expect(within(card('Revenue')).queryByText('$4,829,711')).not.toBeInTheDocument());
+		expect(within(card('Revenue')).getByText(/1,000/)).toBeInTheDocument();
 	});
 
 	it('defaults to overview on an unknown hash', () => {

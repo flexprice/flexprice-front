@@ -1820,7 +1820,6 @@
 			"dashboard": {
 				"title": "Revenue",
 				"viewReport": "View report",
-				"comingSoon": "Coming in next task",
 				"compares": {
 					"previous_period": "Previous period",
 					"previous_year": "Previous year",
@@ -1905,6 +1904,7 @@
 					"agingDef": "Unpaid balance on finalized invoices, grouped by days past the due date",
 					"overdueNote_one": "{{pct}} of outstanding, {{count}} customer",
 					"overdueNote_other": "{{pct}} of outstanding, {{count}} customers",
+					"overdueNoteUnknown": "{{pct}} of outstanding, — customers",
 					"pointInTimeNote": "Point-in-time as of today; the date range and comparison don't apply.",
 					"bucket": "Aging bucket",
 					"amount": "Amount",
@@ -1962,6 +1962,28 @@
 					"creditsDef": "Wallet credits added and used per period",
 					"toppedUp": "Topped up",
 					"consumed": "Consumed"
+				},
+				"credits": {
+					"flowDef": "Wallet credits added and applied to invoices per period",
+					"period": "Period",
+					"net": "Net change",
+					"byReason": "Top-ups by reason",
+					"byReasonDef": "Credits added in the period, by why they were granted",
+					"credits": "Credits",
+					"topups": "Top-ups",
+					"reasons": {
+						"purchased": "Purchased",
+						"subscription": "Subscription grant",
+						"free": "Free grant",
+						"bonus": "Bonus"
+					},
+					"reasonTotal_one": "{{credits}} · {{formatted}} top-up",
+					"reasonTotal_other": "{{credits}} · {{formatted}} top-ups",
+					"events": "Events volume",
+					"eventsDef": "Usage events ingested per day",
+					"last7Days": "Last 7 days",
+					"totalEvents": "Total events",
+					"dailyAverage": "Daily average"
 				}
 			}
 		}
