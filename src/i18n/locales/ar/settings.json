@@ -1775,6 +1775,7 @@
 			"dashboard": {
 				"title": "الإيرادات",
 				"viewReport": "عرض التقرير",
+				"stillLoading": "{{seconds}} ثانية، لا يزال التحميل جاريًا",
 				"compares": {
 					"previous_period": "الفترة السابقة",
 					"previous_year": "السنة السابقة",

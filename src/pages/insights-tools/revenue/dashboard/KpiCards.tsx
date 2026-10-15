@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueries } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import DeltaChip from '../reports/DeltaChip';
+import LoadingElapsed from './LoadingElapsed';
 import { deltaDisplay, formatCompactMoney, formatValue } from '../reports/reportMath';
 import {
 	agingQ,
@@ -41,7 +42,7 @@ const Card = ({
 		) : (
 			<span className='text-2xl font-semibold tabular-nums text-content-zinc-bold'>{value}</span>
 		)}
-		<div className='flex min-h-6 items-center gap-2 text-xs text-content-zinc-tertiary'>{status}</div>
+		<div className='flex min-h-6 items-center gap-2 text-xs text-content-zinc-tertiary'>{loading ? <LoadingElapsed /> : status}</div>
 		<div className='mt-2 border-t border-line pt-3 text-xs text-content-zinc-tertiary'>{footer}</div>
 	</div>
 );

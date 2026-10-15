@@ -4,6 +4,7 @@ import { ArrowRight, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import LoadingElapsed from './LoadingElapsed';
 
 export interface PanelProps {
 	title: string;
@@ -64,7 +65,10 @@ const Panel = ({
 				</div>
 			</div>
 			{loading ? (
-				<Skeleton className='h-48 w-full' />
+				<div className='flex flex-col gap-2'>
+					<Skeleton className='h-48 w-full' />
+					<LoadingElapsed />
+				</div>
 			) : error ? (
 				<p role='alert' className='py-10 text-center text-sm text-content-zinc-tertiary'>
 					{t('insightsTools.revenue.reports.errorTitle')}

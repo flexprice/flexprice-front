@@ -1820,6 +1820,7 @@
 			"dashboard": {
 				"title": "Revenue",
 				"viewReport": "View report",
+				"stillLoading": "{{seconds}} seconds, still loading",
 				"compares": {
 					"previous_period": "Previous period",
 					"previous_year": "Previous year",
