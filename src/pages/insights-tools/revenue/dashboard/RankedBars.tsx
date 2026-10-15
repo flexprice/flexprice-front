@@ -4,6 +4,8 @@ export interface RankedItem {
 	key: string;
 	label: string;
 	value: number;
+	// Stacked segments, horizontal only.
+	parts?: number[];
 }
 
 export interface RankedBarsProps {
@@ -12,12 +14,16 @@ export interface RankedBarsProps {
 	// Columns, kept in given order.
 	vertical?: boolean;
 	color?: string;
+	// Per-part colors for stacked items.
+	colors?: string[];
+	// Fixed scale, e.g. 100 for percents.
+	max?: number;
 }
 
 const pct = (v: number, max: number) => `${max > 0 ? Math.max((v / max) * 100, 0) : 0}%`;
 
-const RankedBars = ({ items, format, vertical = false, color = PALETTE[0] }: RankedBarsProps) => {
-	const max = Math.max(0, ...items.map((i) => i.value));
+const RankedBars = ({ items, format, vertical = false, color = PALETTE[0], colors, max: fixedMax }: RankedBarsProps) => {
+	const max = fixedMax ?? Math.max(0, ...items.map((i) => i.value));
 	if (vertical) {
 		return (
 			<ul className='flex h-56 items-end gap-3'>
@@ -38,8 +44,14 @@ const RankedBars = ({ items, format, vertical = false, color = PALETTE[0] }: Ran
 					<span className='truncate text-content-zinc-bold' title={i.label}>
 						{i.label}
 					</span>
-					<span className='h-5 rounded-sm bg-surface-muted'>
-						<span className='block h-full rounded-sm' style={{ width: pct(i.value, max), backgroundColor: color }} />
+					<span className='flex h-5 rounded-sm bg-surface-muted'>
+						{(i.parts ?? [i.value]).map((p, j) => (
+							<span
+								key={j}
+								className='h-full first:rounded-s-sm last:rounded-e-sm'
+								style={{ width: pct(p, max), backgroundColor: colors?.[j] ?? color }}
+							/>
+						))}
 					</span>
 					<span className='tabular-nums text-content-zinc-bold'>{format(i.value)}</span>
 				</li>

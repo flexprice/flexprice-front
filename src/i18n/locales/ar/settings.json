@@ -1837,6 +1837,33 @@
 						"CREDIT": "شراء رصيد"
 					}
 				},
+				"customers": {
+					"top": "أعلى 10 عملاء",
+					"topDef": "إيرادات كل عميل في الفترة، مقسمة بين الاستخدام والعقود",
+					"billed": "العملاء المفوترون",
+					"concentration": "تركّز الإيرادات",
+					"concentrationDef": "حصة الإيرادات من أكبر العملاء",
+					"topN": "أعلى {{n}}",
+					"bands": "العملاء حسب الإيرادات",
+					"bandsDef": "عدد العملاء في كل شريحة إيرادات خلال هذه الفترة",
+					"bandUnder": "أقل من {{value}}",
+					"bandBetween": "{{from}}–{{to}}",
+					"bandOver": "{{value}}+",
+					"all": "جميع العملاء",
+					"allDef": "إيرادات كل عميل في الفترة، من الأعلى إلى الأدنى",
+					"customer": "العميل",
+					"usageShare": "حصة الاستخدام",
+					"shareOfTotal": "الحصة من الإجمالي",
+					"pageRange_zero": "{{from}}–{{to}} من {{count}} عميل",
+					"pageRange_one": "{{from}}–{{to}} من {{count}} عميل",
+					"pageRange_two": "{{from}}–{{to}} من {{count}} عميلين",
+					"pageRange_few": "{{from}}–{{to}} من {{count}} عملاء",
+					"pageRange_many": "{{from}}–{{to}} من {{count}} عميلًا",
+					"pageRange_other": "{{from}}–{{to}} من {{count}} عميل",
+					"previousPage": "الصفحة السابقة",
+					"nextPage": "الصفحة التالية",
+					"capped": "استنادًا إلى أعلى {{count}} عميل حسب الإيرادات"
+				},
 				"overview": {
 					"aging": "أعمار الذمم المدينة",
 					"agingDef": "الرصيد غير المدفوع حسب أيام التأخير، حتى اليوم",

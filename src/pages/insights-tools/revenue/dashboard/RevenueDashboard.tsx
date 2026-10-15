@@ -2,6 +2,7 @@ import { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Page, Select } from '@/components/atoms';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import CustomersTab from './CustomersTab';
 import KpiCards from './KpiCards';
 import OverviewTab from './OverviewTab';
 import {
@@ -32,7 +33,7 @@ const Placeholder: ComponentType<DashboardTabProps> = () => {
 const TAB_VIEWS: Record<DashboardTab, ComponentType<DashboardTabProps>> = {
 	overview: OverviewTab,
 	revenue: RevenueTab,
-	customers: Placeholder,
+	customers: CustomersTab,
 	receivables: Placeholder,
 	payments: Placeholder,
 	credits: Placeholder,

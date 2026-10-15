@@ -1878,6 +1878,29 @@
 						"CREDIT": "Credit purchase"
 					}
 				},
+				"customers": {
+					"top": "Top 10 customers",
+					"topDef": "Revenue per customer in the period, split into usage and contract",
+					"billed": "Billed customers",
+					"concentration": "Revenue concentration",
+					"concentrationDef": "Share of revenue from the largest customers",
+					"topN": "Top {{n}}",
+					"bands": "Customers by revenue",
+					"bandsDef": "How many customers fall in each revenue band this period",
+					"bandUnder": "Under {{value}}",
+					"bandBetween": "{{from}}–{{to}}",
+					"bandOver": "{{value}}+",
+					"all": "All customers",
+					"allDef": "Revenue per customer in the period, highest first",
+					"customer": "Customer",
+					"usageShare": "Usage share",
+					"shareOfTotal": "Share of total",
+					"pageRange_one": "{{from}}–{{to}} of {{count}} customer",
+					"pageRange_other": "{{from}}–{{to}} of {{count}} customers",
+					"previousPage": "Previous page",
+					"nextPage": "Next page",
+					"capped": "Based on the top {{count}} customers by revenue"
+				},
 				"overview": {
 					"aging": "Receivables aging",
 					"agingDef": "Unpaid balance by days past due, as of today",

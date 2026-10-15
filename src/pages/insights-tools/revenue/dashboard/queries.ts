@@ -137,6 +137,21 @@ export const USAGE_FILTERS = [
 	{ field: 'invoice_status', op: 'eq' as const, value: ['FINALIZED'] },
 ];
 
+export const arpuQ = (c: DashboardControls) => reportQ('arpu', { shape: 'scalar', compare: true }, c);
+
+export const billedCustomersQ = (c: DashboardControls) =>
+	datasetQ(
+		{
+			dataset: 'invoices',
+			measures: [{ agg: 'count_distinct', field: 'customer' }],
+			dimensions: ['currency'],
+			filters: [{ field: 'invoice_status', op: 'eq' as const, value: ['FINALIZED'] }],
+			time: { field: 'billing_period' },
+			compare: true,
+		},
+		c,
+	);
+
 export const revenueQueries = (controls: DashboardControls, grain: DashboardGrain, groupBy: GroupBy) => {
 	const dimension = groupBy === 'invoice_type' ? 'invoice_type' : 'customer_id';
 	return [
