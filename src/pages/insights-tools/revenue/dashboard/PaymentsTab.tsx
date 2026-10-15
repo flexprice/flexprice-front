@@ -98,7 +98,7 @@ export const DaysToPayOverTime = ({ controls }: { controls: DashboardControls })
 						? [
 								{
 									key: 'periodAverage',
-									label: t(`${P}.periodAverage`, { value: `${avgNow.toFixed(1)}d` }),
+									label: t(`${P}.periodAverage`, { value: days(avgNow) }),
 									color: PREVIOUS_COLOR,
 									kind: 'line' as const,
 									dashed: true,
@@ -107,7 +107,7 @@ export const DaysToPayOverTime = ({ controls }: { controls: DashboardControls })
 						: []),
 				]}
 				xLabel={(b) => bucketLabel(b, 'month')}
-				format={(v) => `${Math.round(v)}d`}
+				format={days}
 				rightFormat={(v) => String(Math.round(v))}
 			/>
 		</Panel>
@@ -183,10 +183,11 @@ type Payers = ReturnType<typeof usePayers>;
 
 export const SlowestPayers = ({ data }: { data: Payers }) => {
 	const { t } = useTranslation('settings');
+	const days = useDays();
 	const items = data.rows.slice(0, 8).map((r) => ({ key: r.id, label: r.name, value: r.days }));
 	return (
 		<Panel title={t(`${P}.slowest`)} definition={t(`${P}.slowestDef`)} loading={data.loading} error={data.error} empty={items.length === 0}>
-			<RankedBars items={items} format={(v) => `${v.toFixed(1)}d`} />
+			<RankedBars items={items} format={days} />
 		</Panel>
 	);
 };

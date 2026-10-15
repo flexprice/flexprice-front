@@ -220,7 +220,7 @@ describe('payments tab', () => {
 		expect(within(days).getByText('15.0 days')).toBeInTheDocument();
 		expect(within(days).getByText('120')).toBeInTheDocument();
 		expect(within(days).getByText('+20.0%')).toBeInTheDocument();
-		expect(within(days).getByText('Period average (19.8d)')).toBeInTheDocument();
+		expect(within(days).getByText('Period average (19.8 days)')).toBeInTheDocument();
 		expect(within(days).getByText(/from issue to full payment/)).toBeInTheDocument();
 
 		const speed = panel('Payment speed');
@@ -229,7 +229,7 @@ describe('payments tab', () => {
 
 		const slowest = panel('Slowest payers');
 		expect(within(slowest).getByText('Torrent Games')).toBeInTheDocument();
-		expect(within(slowest).getByText('25.3d')).toBeInTheDocument();
+		expect(within(slowest).getByText('25.3 days')).toBeInTheDocument();
 
 		const table = panel('Payments by customer');
 		expect(cellsOf(within(table).getByText('Torrent Games').closest('tr')!)).toEqual(['Torrent Games', '27', '$5,000', '25.3 days']);

@@ -15,7 +15,7 @@ const num = (v: string | undefined) => {
 
 const bucketKey = (v: string) => v.slice(0, 10);
 
-// Usage capped so stacks sum to revenue.
+// Usage capped at revenue.
 export const splitRevenue = (revenue: number, usage: number) => {
 	const shown = Math.max(Math.min(usage, revenue), 0);
 	return { usage: shown, contract: Math.max(revenue - shown, 0) };

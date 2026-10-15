@@ -18,7 +18,7 @@ const num = (v: string | undefined) => {
 	return v !== undefined && v !== '' && Number.isFinite(n) ? n : 0;
 };
 
-// Revenue rows joined with usage, revenue desc.
+// Revenue rows joined with usage.
 export const customerRows = (
 	revenue: ReportQueryResult | undefined,
 	usage: ReportQueryResult | undefined,
@@ -47,7 +47,7 @@ export const customerRows = (
 		.sort((a, b) => b.revenue - a.revenue);
 };
 
-// Percent of total from the largest N.
+// Share of total from top N.
 export const concentration = (rows: Pick<CustomerRow, 'revenue'>[]) => {
 	const sorted = rows.map((r) => r.revenue).sort((a, b) => b - a);
 	const total = sorted.reduce((s, v) => s + v, 0);
@@ -57,7 +57,7 @@ export const concentration = (rows: Pick<CustomerRow, 'revenue'>[]) => {
 	});
 };
 
-// Counts per band; edges are lower bounds.
+// Counts per band; edges inclusive.
 export const bands = (rows: Pick<CustomerRow, 'revenue'>[]): number[] => {
 	const counts = new Array<number>(BAND_EDGES.length + 1).fill(0);
 	for (const { revenue } of rows) counts[BAND_EDGES.filter((e) => revenue >= e).length]++;

@@ -149,6 +149,16 @@ describe('RevenueDashboard', () => {
 		await waitFor(() => expect(screen.getByLabelText('Currency')).toBeEnabled());
 	});
 
+	it('selects a currency from receivables when no revenue', async () => {
+		mockApi();
+		vi.spyOn(ReportsApi, 'runReport').mockImplementation(async (key) =>
+			key === 'invoice_total' ? { ...FULL.invoice_total, rows: [] } : (FULL[key] ?? res([], [])),
+		);
+		renderWithProviders(<RevenueDashboard now={NOW} />);
+		await waitFor(() => expect(screen.getByLabelText('Currency')).toBeEnabled());
+		await waitFor(() => expect(within(card('Outstanding')).getByText('$1,000')).toBeInTheDocument());
+	});
+
 	it('hides the previous revenue line without compare', async () => {
 		mockApi();
 		renderWithProviders(<RevenueDashboard now={NOW} />);
