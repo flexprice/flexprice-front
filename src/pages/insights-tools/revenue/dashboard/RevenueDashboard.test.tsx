@@ -115,7 +115,7 @@ describe('RevenueDashboard', () => {
 	});
 	afterEach(() => vi.restoreAllMocks());
 
-	it('renders the five KPI cards from responses', async () => {
+	it('renders the four KPI cards from responses', async () => {
 		mockApi();
 		renderWithProviders(<RevenueDashboard now={NOW} />);
 		fireEvent.keyDown(screen.getByLabelText('Compare'), { key: 'Enter' });
@@ -128,20 +128,7 @@ describe('RevenueDashboard', () => {
 		await waitFor(() => expect(within(card('Outstanding')).getByText('$1,000')).toBeInTheDocument());
 		await waitFor(() => expect(within(card('Overdue')).getByText('$400')).toBeInTheDocument());
 		expect(screen.getByText('40.0% of outstanding')).toBeInTheDocument();
-		expect(await screen.findByText('19.8 days')).toBeInTheDocument();
-		expect(await screen.findByText('Median 15.0d')).toBeInTheDocument();
-	});
-
-	it('median follows the page currency', async () => {
-		const { ds } = mockApi();
-		renderWithProviders(<RevenueDashboard now={NOW} />);
-		expect(await screen.findByText('Median 15.0d')).toBeInTheDocument();
-		expect(ds).toHaveBeenCalledWith(
-			expect.objectContaining({ measures: [{ agg: 'median', field: 'days_to_pay' }], dimensions: ['currency'] }),
-		);
-		fireEvent.keyDown(screen.getByLabelText('Currency'), { key: 'Enter' });
-		fireEvent.click(await screen.findByRole('option', { name: 'EUR' }));
-		expect(await screen.findByText('Median 30.0d')).toBeInTheDocument();
+		expect(screen.queryByText('Avg. days to pay')).not.toBeInTheDocument();
 	});
 
 	it('currency select is disabled until currencies load', async () => {
@@ -171,18 +158,10 @@ describe('RevenueDashboard', () => {
 		await screen.findByText('Previous: $3.7M');
 	});
 
-	it('days to pay going down is good', async () => {
-		mockApi();
-		renderWithProviders(<RevenueDashboard now={NOW} />);
-		await screen.findByText('19.8 days');
-		const chip = within(card('Avg. days to pay')).getByText('-25.5%');
-		expect(chip.closest('[style]')?.getAttribute('style')).toContain('success');
-	});
-
 	it('shows dashes when there is no data', async () => {
 		mockApi(true);
 		renderWithProviders(<RevenueDashboard now={NOW} />);
-		await waitFor(() => expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(8));
+		await waitFor(() => expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(6));
 		expect(screen.queryByText(/% of outstanding/)).not.toBeInTheDocument();
 	});
 

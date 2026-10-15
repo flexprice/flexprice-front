@@ -5,19 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import DeltaChip from '../reports/DeltaChip';
 import LoadingElapsed from './LoadingElapsed';
 import { deltaDisplay, formatCompactMoney, formatValue } from '../reports/reportMath';
-import {
-	agingQ,
-	arpuQ,
-	billedCustomersQ,
-	DashboardControls,
-	daysToPayQ,
-	medianDaysQ,
-	outstandingQ,
-	overdueOf,
-	reportQ,
-	scalarOf,
-	ScalarValue,
-} from './queries';
+import { agingQ, arpuQ, billedCustomersQ, DashboardControls, outstandingQ, overdueOf, reportQ, scalarOf, ScalarValue } from './queries';
 import { REVENUE_KPI } from './useDashboardControls';
 
 const K = 'insightsTools.revenue.dashboard.kpi';
@@ -54,21 +42,18 @@ const Card = ({
 const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 	const { t } = useTranslation('settings');
 	const { currency } = controls;
-	const [revenue, arpu, outstanding, aging, days, billed, median] = useQueries({
+	const [revenue, arpu, outstanding, aging, billed] = useQueries({
 		queries: [
 			reportQ(REVENUE_KPI.key, REVENUE_KPI.opts, controls),
 			arpuQ(controls),
 			outstandingQ(controls),
 			agingQ(controls),
-			daysToPayQ(controls),
 			billedCustomersQ(controls),
-			medianDaysQ(controls),
 		],
 	});
 	// Compact large amounts; hover shows exact.
 	const money = (v: number) => (Math.abs(v) >= 1e7 ? formatCompactMoney(v, currency) : formatValue(Math.round(v), 'money', currency));
 	const exact = (v: number | undefined) => (v !== undefined ? formatValue(v, 'money', currency) : undefined);
-	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
 	const num = (v: string | undefined) => (v !== undefined && v !== '' && Number.isFinite(Number(v)) ? Number(v) : undefined);
 	const vsLabel = t(`${K}.${controls.compare === 'previous_year' ? 'vsPrevYear' : 'vsPrevPeriod'}`);
 	const delta = (s: ScalarValue | undefined, higherIsBetter: boolean) => {
@@ -93,12 +78,9 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 	const out = num(scalarOf(outstanding.data, 'total_receivables', currency)?.current);
 	const overdue = overdueOf(aging.data, currency);
 	const overduePct = overdue !== undefined && out ? (overdue / out) * 100 : undefined;
-	const dtp = scalarOf(days.data, 'days_to_pay', currency);
-	const dtpNow = num(dtp?.current);
-	const med = num(scalarOf(median.data, 'm0', currency)?.current);
 
 	return (
-		<div className='grid grid-cols-1 rounded-lg border border-line bg-surface lg:grid-cols-5'>
+		<div className='grid grid-cols-1 rounded-lg border border-line bg-surface lg:grid-cols-4'>
 			<Card
 				label={t(`${K}.revenue`)}
 				value={revNow !== undefined ? money(revNow) : dash}
@@ -136,13 +118,6 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 				loading={aging.isLoading}
 				status={t(`${K}.pointInTime`)}
 				footer={overduePct !== undefined ? t(`${K}.ofOutstanding`, { value: overduePct.toFixed(1) }) : dash}
-			/>
-			<Card
-				label={t(`${K}.daysToPay`)}
-				value={dtpNow !== undefined ? formatValue(dtpNow, 'days', currency, daysLabel) : dash}
-				loading={days.isLoading}
-				status={delta(dtp, false)}
-				footer={med !== undefined ? t(`${K}.median`, { value: med.toFixed(1) }) : dash}
 			/>
 		</div>
 	);
