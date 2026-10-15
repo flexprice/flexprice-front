@@ -1804,7 +1804,7 @@
 					"billedCustomers_few": "{{value}} عملاء مفوترين",
 					"billedCustomers_many": "{{value}} عميلًا مفوترًا",
 					"billedCustomers_other": "{{value}} عميل مفوتر",
-					"pointInTime": "لحظي",
+					"pointInTime": "الحالي · لا يتأثر بالفترة",
 					"asOfToday": "حتى اليوم",
 					"ofOutstanding": "{{value}}% من المستحق",
 					"median": "الوسيط {{value}} يوم"

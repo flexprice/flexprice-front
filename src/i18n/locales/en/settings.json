@@ -1845,7 +1845,7 @@
 					"previous": "Previous: {{value}}",
 					"billedCustomers_one": "{{value}} billed customer",
 					"billedCustomers_other": "{{value}} billed customers",
-					"pointInTime": "Point-in-time",
+					"pointInTime": "Current · ignores date range",
 					"asOfToday": "As of today",
 					"ofOutstanding": "{{value}}% of outstanding",
 					"median": "Median {{value}}d"
