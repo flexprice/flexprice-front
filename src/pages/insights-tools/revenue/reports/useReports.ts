@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import ReportsApi from '@/api/ReportsApi';
+import EnvironmentApi from '@/api/EnvironmentApi';
 import { getHttpStatus } from '@/core/axios/types';
 import {
 	CustomReport,
@@ -13,12 +14,15 @@ import {
 const retry = (count: number, err: unknown) => count < 2 && (getHttpStatus(err) ?? 0) >= 500;
 
 // Ranges are absolute days, so keys roll daily.
+// Results differ per environment.
+const env = () => EnvironmentApi.getActiveEnvironmentId();
+
 const cache = { staleTime: 5 * 60_000, gcTime: 30 * 60_000, refetchOnMount: true } as const;
 
 export const useReportCatalog = () => useQuery({ queryKey: ['reports-catalog'], queryFn: () => ReportsApi.listReports(), ...cache, retry });
 
 export const reportRunOptions = (key: string | undefined, req: ReportQueryRequest | undefined) => ({
-	queryKey: ['report-run', key, req] as const,
+	queryKey: ['report-run', key, req, env()] as const,
 	queryFn: () => ReportsApi.runReport(key as string, req as ReportQueryRequest),
 	enabled: !!key && !!req,
 	...cache,
@@ -32,7 +36,7 @@ export const useReportRun = (key: string | undefined, req: ReportQueryRequest | 
 export const useDatasets = () => useQuery({ queryKey: ['datasets-catalog'], queryFn: () => ReportsApi.listDatasets(), ...cache, retry });
 
 export const datasetRunOptions = (def: DatasetDefinition | undefined) => ({
-	queryKey: ['dataset-run', def] as const,
+	queryKey: ['dataset-run', def, env()] as const,
 	queryFn: () => ReportsApi.runDataset(def as DatasetDefinition),
 	enabled: !!def,
 	...cache,
@@ -44,7 +48,7 @@ export const datasetRunOptions = (def: DatasetDefinition | undefined) => ({
 export const useDatasetRun = (def: DatasetDefinition | undefined) => useQuery(datasetRunOptions(def));
 
 export const useCustomReports = () =>
-	useQuery({ queryKey: ['custom-reports'], queryFn: () => ReportsApi.listCustomReports(), ...cache, retry });
+	useQuery({ queryKey: ['custom-reports', env()], queryFn: () => ReportsApi.listCustomReports(), ...cache, retry });
 
 export const useCustomReportMutations = () => {
 	const qc = useQueryClient();
@@ -55,7 +59,7 @@ export const useCustomReportMutations = () => {
 				ReportsApi.createCustomReport(a.name, a.definition),
 			// Seed list before refetch.
 			onSuccess: (created: CustomReport) => {
-				qc.setQueryData<CustomReportListResponse>(['custom-reports'], (old) => old && { items: [created, ...old.items] });
+				qc.setQueryData<CustomReportListResponse>(['custom-reports', env()], (old) => old && { items: [created, ...old.items] });
 				void onSuccess();
 			},
 		}),
