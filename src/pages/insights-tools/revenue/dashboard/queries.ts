@@ -36,6 +36,7 @@ export interface DashboardTabProps {
 export const POINT_IN_TIME_REPORTS: ReadonlySet<string> = new Set(['total_receivables', 'receivables_aging']);
 
 export const OVERDUE_BUCKETS = ['1-30', '31-60', '61-90', '90+'] as const;
+export const AGING_BUCKETS = ['Current', ...OVERDUE_BUCKETS, 'No due date'] as const;
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -124,3 +125,35 @@ export const overdueOf = (result: ReportQueryResult | undefined, currency: strin
 	sumWhere(result, 'receivables_aging', currency, 'aging_bucket', OVERDUE_BUCKETS);
 
 export const currencyOf = (picked: string, currencies: string[]): string => (currencies.includes(picked) ? picked : (currencies[0] ?? ''));
+
+export const GROUP_BYS = ['revenue_type', 'invoice_type', 'customer', 'none'] as const;
+export type GroupBy = (typeof GROUP_BYS)[number];
+export type DashboardGrain = 'day' | 'month';
+
+export const INVOICE_TYPES = ['SUBSCRIPTION', 'ONE_OFF', 'CREDIT'] as const;
+
+export const USAGE_FILTERS = [
+	{ field: 'price_type', op: 'eq' as const, value: ['USAGE'] },
+	{ field: 'invoice_status', op: 'eq' as const, value: ['FINALIZED'] },
+];
+
+export const revenueQueries = (controls: DashboardControls, grain: DashboardGrain, groupBy: GroupBy) => {
+	const dimension = groupBy === 'invoice_type' ? 'invoice_type' : 'customer_id';
+	return [
+		reportQ('invoice_total', { shape: 'timeseries', grain, compare: true }, controls),
+		datasetQ(
+			{
+				dataset: 'invoice_lines',
+				measures: [{ agg: 'sum', field: 'amount' }],
+				filters: USAGE_FILTERS,
+				time: { field: 'billing_period', grain },
+				compare: true,
+			},
+			controls,
+		),
+		{
+			...reportQ('invoice_total', { shape: 'timeseries', grain, dimensions: [dimension] }, controls),
+			enabled: groupBy === 'invoice_type' || groupBy === 'customer',
+		},
+	];
+};

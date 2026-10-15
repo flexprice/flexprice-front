@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 export interface PanelProps {
@@ -12,11 +13,25 @@ export interface PanelProps {
 	actions?: ReactNode;
 	onDownloadCsv?: () => void;
 	csvDisabled?: boolean;
+	loading?: boolean;
+	empty?: boolean;
 	className?: string;
 	children: ReactNode;
 }
 
-const Panel = ({ title, definition, pointInTime, onViewReport, actions, onDownloadCsv, csvDisabled, className, children }: PanelProps) => {
+const Panel = ({
+	title,
+	definition,
+	pointInTime,
+	onViewReport,
+	actions,
+	onDownloadCsv,
+	csvDisabled,
+	loading,
+	empty,
+	className,
+	children,
+}: PanelProps) => {
 	const { t } = useTranslation('settings');
 	return (
 		<section aria-label={title} className={cn('flex flex-col gap-4 rounded-lg border border-line bg-surface p-5', className)}>
@@ -46,7 +61,13 @@ const Panel = ({ title, definition, pointInTime, onViewReport, actions, onDownlo
 					)}
 				</div>
 			</div>
-			{children}
+			{loading ? (
+				<Skeleton className='h-48 w-full' />
+			) : empty ? (
+				<p className='py-10 text-center text-sm text-content-zinc-tertiary'>{t('insightsTools.revenue.reports.noData')}</p>
+			) : (
+				children
+			)}
 		</section>
 	);
 };

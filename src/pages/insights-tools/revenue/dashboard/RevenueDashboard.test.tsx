@@ -81,9 +81,10 @@ const datasetResult = (def: DatasetDefinition, empty: boolean) =>
 			);
 
 const mockApi = (empty = false) => {
-	const run = vi
-		.spyOn(ReportsApi, 'runReport')
-		.mockImplementation(async (key) => (empty ? { ...FULL[key], rows: [] } : FULL[key]) ?? res([], []));
+	const run = vi.spyOn(ReportsApi, 'runReport').mockImplementation(async (key) => {
+		const r = FULL[key] ?? res([], []);
+		return empty ? { ...r, rows: [] } : r;
+	});
 	const ds = vi.spyOn(ReportsApi, 'runDataset').mockImplementation(async (def) => datasetResult(def, empty));
 	return { run, ds };
 };
@@ -109,8 +110,8 @@ describe('RevenueDashboard', () => {
 		expect(screen.getByText('Previous: $3.7M')).toBeInTheDocument();
 		expect(await screen.findByText('$120,743')).toBeInTheDocument();
 		expect(await screen.findByText('40 billed customers')).toBeInTheDocument();
-		expect(await screen.findByText('$1,000')).toBeInTheDocument();
-		expect(await screen.findByText('$400')).toBeInTheDocument();
+		await waitFor(() => expect(within(card('Outstanding')).getByText('$1,000')).toBeInTheDocument());
+		await waitFor(() => expect(within(card('Overdue')).getByText('$400')).toBeInTheDocument());
 		expect(screen.getByText('40.0% of outstanding')).toBeInTheDocument();
 		expect(await screen.findByText('19.8 days')).toBeInTheDocument();
 		expect(await screen.findByText('Median 15.0d')).toBeInTheDocument();
@@ -162,10 +163,10 @@ describe('RevenueDashboard', () => {
 	it('guards overdue share when outstanding is zero', async () => {
 		mockApi();
 		vi.spyOn(ReportsApi, 'runReport').mockImplementation(async (key) =>
-			key === 'total_receivables' ? { ...FULL.total_receivables, rows: [['usd', '0']] } : FULL[key],
+			key === 'total_receivables' ? { ...FULL.total_receivables, rows: [['usd', '0']] } : (FULL[key] ?? res([], [])),
 		);
 		renderWithProviders(<RevenueDashboard now={NOW} />);
-		await screen.findByText('$400');
+		await waitFor(() => expect(within(card('Overdue')).getByText('$400')).toBeInTheDocument());
 		expect(screen.queryByText(/% of outstanding/)).not.toBeInTheDocument();
 	});
 

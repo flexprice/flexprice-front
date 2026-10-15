@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Page, Select } from '@/components/atoms';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import KpiCards from './KpiCards';
+import OverviewTab from './OverviewTab';
 import {
 	DASHBOARD_COMPARES,
 	DASHBOARD_PRESETS,
@@ -12,6 +13,7 @@ import {
 	DashboardTab,
 	DashboardTabProps,
 } from './queries';
+import RevenueTab from './RevenueTab';
 import { useDashboardControls } from './useDashboardControls';
 
 const isTab = (v: string): v is DashboardTab => (DASHBOARD_TABS as readonly string[]).includes(v);
@@ -28,8 +30,8 @@ const Placeholder: ComponentType<DashboardTabProps> = () => {
 };
 
 const TAB_VIEWS: Record<DashboardTab, ComponentType<DashboardTabProps>> = {
-	overview: Placeholder,
-	revenue: Placeholder,
+	overview: OverviewTab,
+	revenue: RevenueTab,
 	customers: Placeholder,
 	receivables: Placeholder,
 	payments: Placeholder,
