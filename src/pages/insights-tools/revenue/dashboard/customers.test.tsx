@@ -135,10 +135,34 @@ describe('customers tab', () => {
 				{ field: 'price_type', op: 'eq', value: ['USAGE'] },
 				{ field: 'invoice_status', op: 'eq', value: ['FINALIZED'] },
 				{ field: 'currency', op: 'eq', value: ['usd'] },
+				{ field: 'customer', op: 'in', value: ['cus_1', 'cus_2', 'cus_3'] },
 			]),
 		);
 		expect(usageDef.time.field).toBe('billing_period');
 		expect(screen.queryByText(/Based on the top/)).not.toBeInTheDocument();
+	});
+
+	it('revenue header toggles the table order', async () => {
+		mockApi();
+		render();
+		const table = panel('All customers');
+		await within(table).findByText('Northwind Labs');
+		const first = () => within(table).getAllByRole('row')[1].textContent;
+		expect(first()).toContain('Northwind Labs');
+		const header = within(table).getByRole('button', { name: 'Revenue' });
+		expect(header.closest('th')).toHaveAttribute('aria-sort', 'descending');
+		fireEvent.click(header);
+		expect(first()).toContain('cus_3');
+		expect(header.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+		fireEvent.click(header);
+		expect(first()).toContain('Northwind Labs');
+	});
+
+	it('skips usage when the revenue list is empty', async () => {
+		const { ds } = mockApi({ empty: true });
+		render();
+		await screen.findAllByText('No data for this period');
+		expect(ds.mock.calls.some(([d]) => d.dataset === 'invoice_lines')).toBe(false);
 	});
 
 	it('compare none hides previous and change columns and deltas', async () => {

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQueries } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DeltaChip from '../reports/DeltaChip';
 import { csvFilename, downloadCsv } from '../reports/reportCsv';
 import { deltaDisplay, formatCompactMoney, formatValue, rowsFor } from '../reports/reportMath';
 import { BAND_EDGES, bands, concentration, CustomerRow, customerRows } from './customerMath';
-import DataTable from './DataTable';
+import DataTable, { SortDir } from './DataTable';
 import Panel from './Panel';
 import { arpuQ, billedCustomersQ, DashboardControls, DashboardTabProps, datasetQ, reportQ, scalarOf, USAGE_FILTERS } from './queries';
 import RankedBars from './RankedBars';
@@ -29,39 +29,35 @@ const num = (v: string | undefined) => (v !== undefined && v !== '' && Number.is
 const useCustomers = (controls: DashboardControls) => {
 	const { currency } = controls;
 	const currencyFilter = { field: 'currency', op: 'eq' as const, value: [currency] };
-	const [revenue, usage] = useQueries({
-		queries: [
+	const revenue = useQuery({
+		...reportQ(
+			'invoice_total',
 			{
-				...reportQ(
-					'invoice_total',
-					{
-						shape: 'breakdown',
-						dimensions: ['customer_id'],
-						compare: true,
-						limit: CUSTOMER_LIMIT,
-						sort: [{ field: 'invoice_total', dir: 'desc' }],
-						filters: [currencyFilter],
-					},
-					controls,
-				),
-				enabled: !!currency,
+				shape: 'breakdown',
+				dimensions: ['customer_id'],
+				compare: true,
+				limit: CUSTOMER_LIMIT,
+				sort: [{ field: 'invoice_total', dir: 'desc' }],
+				filters: [currencyFilter],
 			},
+			controls,
+		),
+		enabled: !!currency,
+	});
+	const ids = customerRows(revenue.data, undefined, currency).map((r) => r.id);
+	// Usage only for listed customers.
+	const usage = useQuery({
+		...datasetQ(
 			{
-				...datasetQ(
-					{
-						dataset: 'invoice_lines',
-						measures: [{ agg: 'sum', field: 'amount' }],
-						dimensions: ['customer'],
-						filters: [...USAGE_FILTERS, currencyFilter],
-						sort: [{ field: 'm0', dir: 'desc' }],
-						limit: CUSTOMER_LIMIT,
-						time: { field: 'billing_period' },
-					},
-					controls,
-				),
-				enabled: !!currency,
+				dataset: 'invoice_lines',
+				measures: [{ agg: 'sum', field: 'amount' }],
+				dimensions: ['customer'],
+				filters: [...USAGE_FILTERS, currencyFilter, { field: 'customer', op: 'in' as const, value: ids }],
+				time: { field: 'billing_period' },
 			},
-		],
+			controls,
+		),
+		enabled: !!currency && revenue.isSuccess && ids.length > 0,
 	});
 	const rows = customerRows(revenue.data, usage.data, currency);
 	const labels = new Map<string, string>();
@@ -173,6 +169,7 @@ export const AllCustomers = ({ controls, data }: { controls: DashboardControls; 
 	const { t } = useTranslation('settings');
 	const { currency } = controls;
 	const [page, setPage] = useState(0);
+	const [dir, setDir] = useState<SortDir>('desc');
 	const total = data.rows.reduce((s, r) => s + r.revenue, 0);
 	const rows: TableRow[] = data.rows.map((r, i) => ({ ...r, rank: i + 1, name: data.name(r.id) }));
 	const pct = (v: number, of: number) => (of > 0 ? (v / of) * 100 : 0);
@@ -213,19 +210,32 @@ export const AllCustomers = ({ controls, data }: { controls: DashboardControls; 
 				]
 			: []),
 	];
+	const ordered = dir === 'desc' ? rows : [...rows].reverse();
 	const pages = Math.max(Math.ceil(rows.length / PAGE_SIZE), 1);
 	const current = Math.min(page, pages - 1);
-	const shown = rows.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE);
+	const shown = ordered.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE);
 	return (
 		<Panel
 			title={t(`${C}.all`)}
 			definition={t(`${C}.allDef`)}
-			onDownloadCsv={() => downloadCsv(csvFilename('customers_by_revenue', controls.range), tableCsv(columns, rows))}
+			onDownloadCsv={() => downloadCsv(csvFilename('customers_by_revenue', controls.range), tableCsv(columns, ordered))}
 			csvDisabled={rows.length === 0}
 			loading={data.loading}
 			error={data.error}
 			empty={rows.length === 0}>
-			<DataTable columns={columns} rows={shown} rowKey={(r) => r.id} />
+			<DataTable
+				columns={columns}
+				rows={shown}
+				rowKey={(r) => r.id}
+				sort={{
+					key: 'revenue',
+					dir,
+					onToggle: () => {
+						setDir(dir === 'desc' ? 'asc' : 'desc');
+						setPage(0);
+					},
+				}}
+			/>
 			<div className='flex items-center justify-between gap-3 text-xs text-content-zinc-tertiary'>
 				<span>{t(`${C}.pageRange`, { from: current * PAGE_SIZE + 1, to: current * PAGE_SIZE + shown.length, count: rows.length })}</span>
 				{pages > 1 && (

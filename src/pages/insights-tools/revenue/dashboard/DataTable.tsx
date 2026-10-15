@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/molecules';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DataColumn } from './revenueMath';
 
@@ -7,9 +8,13 @@ export interface DataTableProps<T> {
 	rows: T[];
 	rowKey: (row: T) => string;
 	footer?: T;
+	// Caller sorts rows; header shows toggle.
+	sort?: { key: string; dir: SortDir; onToggle: () => void };
 }
 
-const DataTable = <T,>({ columns, rows, rowKey, footer }: DataTableProps<T>) => {
+export type SortDir = 'asc' | 'desc';
+
+const DataTable = <T,>({ columns, rows, rowKey, footer, sort }: DataTableProps<T>) => {
 	const cells = (row: T, bold = false) =>
 		columns.map((c) => (
 			<TableCell key={c.key} className={cn(c.numeric && 'text-end tabular-nums', bold && 'font-semibold')}>
@@ -22,8 +27,18 @@ const DataTable = <T,>({ columns, rows, rowKey, footer }: DataTableProps<T>) => 
 				<TableHeader>
 					<TableRow>
 						{columns.map((c) => (
-							<TableHead key={c.key} className={cn(c.numeric && 'text-end')}>
-								{c.label}
+							<TableHead
+								key={c.key}
+								className={cn(c.numeric && 'text-end')}
+								aria-sort={sort?.key === c.key ? (sort.dir === 'asc' ? 'ascending' : 'descending') : undefined}>
+								{sort?.key === c.key ? (
+									<button type='button' className='inline-flex items-center gap-1' onClick={sort.onToggle}>
+										{c.label}
+										{sort.dir === 'asc' ? <ArrowUp className='h-3 w-3' /> : <ArrowDown className='h-3 w-3' />}
+									</button>
+								) : (
+									c.label
+								)}
 							</TableHead>
 						))}
 					</TableRow>
