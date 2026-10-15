@@ -26,7 +26,14 @@ const withCompare = (key: string, dims: string[], rows: string[][]) =>
 	);
 
 const FULL: Record<string, ReportQueryResult> = {
-	invoice_total: withCompare('invoice_total', ['currency'], [['usd', '4829711', '3700000', '30.5']]),
+	invoice_total: withCompare(
+		'invoice_total',
+		['currency'],
+		[
+			['usd', '4829711', '3700000', '30.5'],
+			['eur', '1000', '800', '25'],
+		],
+	),
 	arpu: withCompare('arpu', ['currency'], [['usd', '120743', '107000', '12.8']]),
 	total_receivables: res(
 		[
@@ -53,7 +60,18 @@ const FULL: Record<string, ReportQueryResult> = {
 
 const datasetResult = (def: DatasetDefinition, empty: boolean) =>
 	def.measures[0].agg === 'median'
-		? res([['m0', 'metric']], empty ? [] : [['15']])
+		? res(
+				[
+					['currency', 'dimension'],
+					['m0', 'metric'],
+				],
+				empty
+					? []
+					: [
+							['eur', '30'],
+							['usd', '15'],
+						],
+			)
 		: res(
 				[
 					['currency', 'dimension'],
@@ -96,6 +114,34 @@ describe('RevenueDashboard', () => {
 		expect(screen.getByText('40.0% of outstanding')).toBeInTheDocument();
 		expect(await screen.findByText('19.8 days')).toBeInTheDocument();
 		expect(await screen.findByText('Median 15.0d')).toBeInTheDocument();
+	});
+
+	it('median follows the page currency', async () => {
+		const { ds } = mockApi();
+		renderWithProviders(<RevenueDashboard now={NOW} />);
+		expect(await screen.findByText('Median 15.0d')).toBeInTheDocument();
+		expect(ds).toHaveBeenCalledWith(
+			expect.objectContaining({ measures: [{ agg: 'median', field: 'days_to_pay' }], dimensions: ['currency'] }),
+		);
+		fireEvent.keyDown(screen.getByLabelText('Currency'), { key: 'Enter' });
+		fireEvent.click(await screen.findByRole('option', { name: 'EUR' }));
+		expect(await screen.findByText('Median 30.0d')).toBeInTheDocument();
+	});
+
+	it('currency select is disabled until currencies load', async () => {
+		mockApi();
+		renderWithProviders(<RevenueDashboard now={NOW} />);
+		expect(screen.getByLabelText('Currency')).toBeDisabled();
+		await waitFor(() => expect(screen.getByLabelText('Currency')).toBeEnabled());
+	});
+
+	it('hides the previous revenue line without compare', async () => {
+		mockApi();
+		renderWithProviders(<RevenueDashboard now={NOW} />);
+		await screen.findByText('Previous: $3.7M');
+		fireEvent.keyDown(screen.getByLabelText('Compare'), { key: 'Enter' });
+		fireEvent.click(await screen.findByRole('option', { name: 'No comparison' }));
+		await waitFor(() => expect(screen.queryByText(/^Previous:/)).not.toBeInTheDocument());
 	});
 
 	it('days to pay going down is good', async () => {

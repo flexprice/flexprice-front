@@ -1,9 +1,17 @@
-import { useEffect, useState } from 'react';
+import { ComponentType, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Page, Select } from '@/components/atoms';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import KpiCards from './KpiCards';
-import { DASHBOARD_COMPARES, DASHBOARD_PRESETS, DASHBOARD_TABS, DashboardCompare, DashboardPreset, DashboardTab } from './queries';
+import {
+	DASHBOARD_COMPARES,
+	DASHBOARD_PRESETS,
+	DASHBOARD_TABS,
+	DashboardCompare,
+	DashboardPreset,
+	DashboardTab,
+	DashboardTabProps,
+} from './queries';
 import { useDashboardControls } from './useDashboardControls';
 
 const isTab = (v: string): v is DashboardTab => (DASHBOARD_TABS as readonly string[]).includes(v);
@@ -13,6 +21,20 @@ const tabFromHash = (): DashboardTab => {
 };
 
 const D = 'insightsTools.revenue.dashboard';
+
+const Placeholder: ComponentType<DashboardTabProps> = () => {
+	const { t } = useTranslation('settings');
+	return <p className='text-sm text-content-zinc-tertiary'>{t(`${D}.comingSoon`)}</p>;
+};
+
+const TAB_VIEWS: Record<DashboardTab, ComponentType<DashboardTabProps>> = {
+	overview: Placeholder,
+	revenue: Placeholder,
+	customers: Placeholder,
+	receivables: Placeholder,
+	payments: Placeholder,
+	credits: Placeholder,
+};
 
 const RevenueDashboard = ({ now }: { now?: Date }) => {
 	const { t } = useTranslation('settings');
@@ -25,8 +47,7 @@ const RevenueDashboard = ({ now }: { now?: Date }) => {
 		return () => window.removeEventListener('hashchange', onHash);
 	}, []);
 
-	const goTo = (next: string) => {
-		if (!isTab(next)) return;
+	const goTo = (next: DashboardTab) => {
 		setTab(next);
 		window.history.replaceState(null, '', `#${next}`);
 	};
@@ -50,20 +71,20 @@ const RevenueDashboard = ({ now }: { now?: Date }) => {
 						options={DASHBOARD_COMPARES.map((c) => ({ value: c, label: t(`${D}.compares.${c}`) }))}
 						onChange={(v) => v && setCompare(v as DashboardCompare)}
 					/>
-					{currencies.length > 0 && (
-						<Select
-							className='w-24'
-							ariaLabel={t('insightsTools.revenue.reports.currency')}
-							value={controls.currency}
-							options={currencies.map((c) => ({ value: c, label: c.toUpperCase() }))}
-							onChange={(v) => v && setCurrency(v)}
-						/>
-					)}
+					<Select
+						className='w-24'
+						ariaLabel={t('insightsTools.revenue.reports.currency')}
+						placeholder={t('insightsTools.revenue.reports.currency')}
+						disabled={currencies.length === 0}
+						value={controls.currency}
+						options={currencies.map((c) => ({ value: c, label: c.toUpperCase() }))}
+						onChange={(v) => v && setCurrency(v)}
+					/>
 				</div>
 			}>
 			<div className='flex flex-col gap-6 pt-3'>
 				<KpiCards controls={controls} />
-				<Tabs value={tab} onValueChange={goTo}>
+				<Tabs value={tab} onValueChange={(v) => isTab(v) && goTo(v)}>
 					<TabsList className='h-auto w-full justify-start gap-6 rounded-none border-b border-line bg-transparent p-0'>
 						{DASHBOARD_TABS.map((k) => (
 							<TabsTrigger
@@ -74,11 +95,14 @@ const RevenueDashboard = ({ now }: { now?: Date }) => {
 							</TabsTrigger>
 						))}
 					</TabsList>
-					{DASHBOARD_TABS.map((k) => (
-						<TabsContent key={k} value={k} className='pt-4'>
-							<p className='text-sm text-content-zinc-tertiary'>{t(`${D}.comingSoon`)}</p>
-						</TabsContent>
-					))}
+					{DASHBOARD_TABS.map((k) => {
+						const View = TAB_VIEWS[k];
+						return (
+							<TabsContent key={k} value={k} className='pt-4'>
+								<View controls={controls} goTo={goTo} />
+							</TabsContent>
+						);
+					})}
 				</Tabs>
 			</div>
 		</Page>

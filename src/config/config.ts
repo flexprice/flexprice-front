@@ -156,7 +156,7 @@ function parseContactUsEnabled(parsed: PlatformConfigJson | undefined): boolean 
 	return false;
 }
 
-/** Parse `VITE_PLATFORM_CONFIG` JSON. Keys: api_reference, sidebar_documentation, guides, onboarding, contact_us, production, signup, revenue, reports (+ reports.custom). Omitted keys default to `enabled: true` (contact_us, production, reports and reports.custom default to false). */
+/** Parse `VITE_PLATFORM_CONFIG` JSON with defaults. */
 export function parsePlatformConfig(rawPlatformConfig?: string): PlatformConfig {
 	let parsed: PlatformConfigJson | undefined;
 	const raw = rawPlatformConfig?.trim();

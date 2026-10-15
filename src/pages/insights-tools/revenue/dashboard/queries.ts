@@ -28,6 +28,11 @@ export interface DashboardControls {
 	now: Date;
 }
 
+export interface DashboardTabProps {
+	controls: DashboardControls;
+	goTo: (tab: DashboardTab) => void;
+}
+
 export const POINT_IN_TIME_REPORTS: ReadonlySet<string> = new Set(['total_receivables', 'receivables_aging']);
 
 export const OVERDUE_BUCKETS = ['1-30', '31-60', '61-90', '90+'] as const;

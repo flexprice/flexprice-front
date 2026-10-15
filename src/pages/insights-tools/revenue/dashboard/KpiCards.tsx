@@ -55,7 +55,10 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 				},
 				controls,
 			),
-			datasetQ({ dataset: 'invoices', measures: [{ agg: 'median', field: 'days_to_pay' }], time: { field: 'paid_at' } }, controls),
+			datasetQ(
+				{ dataset: 'invoices', measures: [{ agg: 'median', field: 'days_to_pay' }], dimensions: ['currency'], time: { field: 'paid_at' } },
+				controls,
+			),
 		],
 	});
 	const money = (v: number) => formatValue(v, 'money', currency);
@@ -95,7 +98,13 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 				value={revNow !== undefined ? money(revNow) : dash}
 				loading={revenue.isLoading}
 				status={delta(rev, true)}
-				footer={revPrev !== undefined ? t(`${K}.previous`, { value: formatCompactMoney(revPrev, currency) }) : dash}
+				footer={
+					controls.compare === 'none'
+						? null
+						: revPrev !== undefined
+							? t(`${K}.previous`, { value: formatCompactMoney(revPrev, currency) })
+							: dash
+				}
 			/>
 			<Card
 				label={t(`${K}.arpu`)}
