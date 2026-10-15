@@ -186,6 +186,16 @@ describe('RevenueDashboard', () => {
 		expect(screen.queryByText(/% of outstanding/)).not.toBeInTheDocument();
 	});
 
+	it('compacts large KPI amounts and keeps the exact value on hover', async () => {
+		mockApi();
+		vi.spyOn(ReportsApi, 'runReport').mockImplementation(async (key) =>
+			key === 'total_receivables' ? { ...FULL.total_receivables, rows: [['usd', '103277993.97']] } : (FULL[key] ?? res([], [])),
+		);
+		renderWithProviders(<RevenueDashboard now={NOW} />);
+		const value = await within(card('Outstanding')).findByText('$103.3M');
+		expect(value).toHaveAttribute('title', '$103,277,993.97');
+	});
+
 	it('guards overdue share when outstanding is zero', async () => {
 		mockApi();
 		vi.spyOn(ReportsApi, 'runReport').mockImplementation(async (key) =>

@@ -25,22 +25,26 @@ const K = 'insightsTools.revenue.dashboard.kpi';
 const Card = ({
 	label,
 	value,
+	title,
 	loading,
 	status,
 	footer,
 }: {
 	label: string;
 	value: string;
+	title?: string;
 	loading: boolean;
 	status: ReactNode;
 	footer: ReactNode;
 }) => (
-	<div className='flex flex-col gap-2 border-line p-5 [&:not(:last-child)]:border-b lg:[&:not(:last-child)]:border-b-0 lg:[&:not(:last-child)]:border-e'>
+	<div className='flex min-w-0 flex-col gap-2 border-line p-5 [&:not(:last-child)]:border-b lg:[&:not(:last-child)]:border-b-0 lg:[&:not(:last-child)]:border-e'>
 		<span className='text-sm text-content-zinc-tertiary'>{label}</span>
 		{loading ? (
 			<Skeleton className='h-8 w-32' />
 		) : (
-			<span className='text-2xl font-semibold tabular-nums text-content-zinc-bold'>{value}</span>
+			<span title={title} className='truncate text-2xl font-semibold tabular-nums text-content-zinc-bold'>
+				{value}
+			</span>
 		)}
 		<div className='flex min-h-6 items-center gap-2 text-xs text-content-zinc-tertiary'>{loading ? <LoadingElapsed /> : status}</div>
 		<div className='mt-2 border-t border-line pt-3 text-xs text-content-zinc-tertiary'>{footer}</div>
@@ -61,7 +65,9 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 			medianDaysQ(controls),
 		],
 	});
-	const money = (v: number) => formatValue(v, 'money', currency);
+	// Compact large amounts; hover shows exact.
+	const money = (v: number) => (Math.abs(v) >= 1e7 ? formatCompactMoney(v, currency) : formatValue(Math.round(v), 'money', currency));
+	const exact = (v: number | undefined) => (v !== undefined ? formatValue(v, 'money', currency) : undefined);
 	const daysLabel = (v: string) => t('insightsTools.revenue.reports.daysUnit', { value: v });
 	const num = (v: string | undefined) => (v !== undefined && v !== '' && Number.isFinite(Number(v)) ? Number(v) : undefined);
 	const vsLabel = t(`${K}.${controls.compare === 'previous_year' ? 'vsPrevYear' : 'vsPrevPeriod'}`);
@@ -96,6 +102,7 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 			<Card
 				label={t(`${K}.revenue`)}
 				value={revNow !== undefined ? money(revNow) : dash}
+				title={exact(revNow)}
 				loading={revenue.isLoading}
 				status={delta(rev, true)}
 				footer={
@@ -109,6 +116,7 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 			<Card
 				label={t(`${K}.arpu`)}
 				value={arpuNow !== undefined ? money(arpuNow) : dash}
+				title={exact(arpuNow)}
 				loading={arpu.isLoading}
 				status={delta(arpuV, true)}
 				footer={billedN !== undefined ? t(`${K}.billedCustomers`, { count: billedN }) : dash}
@@ -116,6 +124,7 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 			<Card
 				label={t(`${K}.outstanding`)}
 				value={out !== undefined ? money(out) : dash}
+				title={exact(out)}
 				loading={outstanding.isLoading}
 				status={t(`${K}.pointInTime`)}
 				footer={t(`${K}.asOfToday`)}
@@ -123,6 +132,7 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 			<Card
 				label={t(`${K}.overdue`)}
 				value={overdue !== undefined ? money(overdue) : dash}
+				title={exact(overdue)}
 				loading={aging.isLoading}
 				status={t(`${K}.pointInTime`)}
 				footer={overduePct !== undefined ? t(`${K}.ofOutstanding`, { value: overduePct.toFixed(1) }) : dash}
