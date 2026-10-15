@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CustomersTab from './CustomersTab';
 import KpiCards from './KpiCards';
 import OverviewTab from './OverviewTab';
+import PaymentsTab from './PaymentsTab';
 import {
 	DASHBOARD_COMPARES,
 	DASHBOARD_PRESETS,
@@ -14,6 +15,7 @@ import {
 	DashboardTab,
 	DashboardTabProps,
 } from './queries';
+import ReceivablesTab from './ReceivablesTab';
 import RevenueTab from './RevenueTab';
 import { useDashboardControls } from './useDashboardControls';
 
@@ -34,8 +36,8 @@ const TAB_VIEWS: Record<DashboardTab, ComponentType<DashboardTabProps>> = {
 	overview: OverviewTab,
 	revenue: RevenueTab,
 	customers: CustomersTab,
-	receivables: Placeholder,
-	payments: Placeholder,
+	receivables: ReceivablesTab,
+	payments: PaymentsTab,
 	credits: Placeholder,
 };
 

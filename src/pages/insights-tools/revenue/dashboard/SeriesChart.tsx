@@ -9,6 +9,7 @@ export interface ChartSeries {
 	dashed?: boolean;
 	// Shown next to the legend label.
 	total?: string;
+	axis?: 'left' | 'right';
 }
 
 export interface SeriesChartProps {
@@ -18,6 +19,8 @@ export interface SeriesChartProps {
 	format: (v: number) => string;
 	stacked?: boolean;
 	height?: number;
+	// Formats the right axis, when used.
+	rightFormat?: (v: number) => string;
 }
 
 export const SeriesLegend = ({ series }: { series: ChartSeries[] }) => (
@@ -36,7 +39,8 @@ export const SeriesLegend = ({ series }: { series: ChartSeries[] }) => (
 	</ul>
 );
 
-const SeriesChart = ({ data, series, xLabel, format, stacked = false, height = 288 }: SeriesChartProps) => {
+const SeriesChart = ({ data, series, xLabel, format, stacked = false, height = 288, rightFormat }: SeriesChartProps) => {
+	const right = new Set(series.filter((s) => s.axis === 'right').map((s) => s.key));
 	const bars = series.filter((s) => s.kind !== 'line');
 	const lines = series.filter((s) => s.kind === 'line');
 	return (
@@ -46,14 +50,24 @@ const SeriesChart = ({ data, series, xLabel, format, stacked = false, height = 2
 					<ComposedChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 8 }}>
 						<CartesianGrid strokeDasharray='3 3' vertical={false} />
 						<XAxis dataKey='bucket' tickFormatter={xLabel} tickLine={false} axisLine={false} fontSize={12} />
-						<YAxis tickFormatter={format} tickLine={false} axisLine={false} fontSize={12} width={72} />
-						<Tooltip labelFormatter={(b: string) => xLabel(b)} formatter={(v: number, name: string) => [format(v), name]} />
+						<YAxis yAxisId='left' tickFormatter={format} tickLine={false} axisLine={false} fontSize={12} width={72} />
+						{rightFormat && (
+							<YAxis yAxisId='right' orientation='right' tickFormatter={rightFormat} tickLine={false} axisLine={false} fontSize={12} />
+						)}
+						<Tooltip
+							labelFormatter={(b: string) => xLabel(b)}
+							formatter={(v: number, name: string, item: { dataKey?: unknown }) => [
+								(rightFormat && right.has(String(item.dataKey)) ? rightFormat : format)(v),
+								name,
+							]}
+						/>
 						{bars.map((s, i) => (
 							<Bar
 								key={s.key}
 								dataKey={s.key}
 								name={s.label}
 								fill={s.color}
+								yAxisId={s.axis ?? 'left'}
 								stackId={stacked ? 'stack' : undefined}
 								maxBarSize={40}
 								radius={!stacked || i === bars.length - 1 ? [3, 3, 0, 0] : 0}
@@ -65,6 +79,7 @@ const SeriesChart = ({ data, series, xLabel, format, stacked = false, height = 2
 								dataKey={s.key}
 								name={s.label}
 								stroke={s.color}
+								yAxisId={s.axis ?? 'left'}
 								strokeWidth={2}
 								strokeDasharray={s.dashed ? '4 4' : undefined}
 								dot={false}

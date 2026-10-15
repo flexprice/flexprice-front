@@ -4,7 +4,19 @@ import { useQueries } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
 import DeltaChip from '../reports/DeltaChip';
 import { deltaDisplay, formatCompactMoney, formatValue } from '../reports/reportMath';
-import { arpuQ, billedCustomersQ, DashboardControls, datasetQ, overdueOf, reportQ, scalarOf, ScalarValue } from './queries';
+import {
+	agingQ,
+	arpuQ,
+	billedCustomersQ,
+	DashboardControls,
+	daysToPayQ,
+	medianDaysQ,
+	outstandingQ,
+	overdueOf,
+	reportQ,
+	scalarOf,
+	ScalarValue,
+} from './queries';
 import { REVENUE_KPI } from './useDashboardControls';
 
 const K = 'insightsTools.revenue.dashboard.kpi';
@@ -41,14 +53,11 @@ const KpiCards = ({ controls }: { controls: DashboardControls }) => {
 		queries: [
 			reportQ(REVENUE_KPI.key, REVENUE_KPI.opts, controls),
 			arpuQ(controls),
-			reportQ('total_receivables', { shape: 'scalar' }, controls),
-			reportQ('receivables_aging', { shape: 'breakdown', dimensions: ['aging_bucket'] }, controls),
-			reportQ('days_to_pay', { shape: 'scalar', compare: true }, controls),
+			outstandingQ(controls),
+			agingQ(controls),
+			daysToPayQ(controls),
 			billedCustomersQ(controls),
-			datasetQ(
-				{ dataset: 'invoices', measures: [{ agg: 'median', field: 'days_to_pay' }], dimensions: ['currency'], time: { field: 'paid_at' } },
-				controls,
-			),
+			medianDaysQ(controls),
 		],
 	});
 	const money = (v: number) => formatValue(v, 'money', currency);

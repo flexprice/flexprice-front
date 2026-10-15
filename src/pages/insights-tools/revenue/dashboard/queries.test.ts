@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { datasetDefinition, DashboardControls, overdueOf, reportRequest, todayRange } from './queries';
+import { agingBucketOf, datasetDefinition, DashboardControls, overdueOf, reportRequest, todayRange, untilTodayRange } from './queries';
 
 const c: DashboardControls = {
 	preset: 'this_year',
@@ -75,5 +75,23 @@ describe('dashboard queries', () => {
 		expect(overdueOf(result, 'usd')).toBe(12.5);
 		expect(overdueOf(result, 'eur')).toBe(99);
 		expect(overdueOf(result, 'gbp')).toBeUndefined();
+	});
+
+	it('maps days overdue to aging buckets', () => {
+		expect([0, 1, 30, 31, 60, 61, 90, 91, 400].map(agingBucketOf)).toEqual([
+			'Current',
+			'1-30',
+			'1-30',
+			'31-60',
+			'31-60',
+			'61-90',
+			'61-90',
+			'90+',
+			'90+',
+		]);
+	});
+
+	it('due-date window ends with today', () => {
+		expect(untilTodayRange(c.now)).toBe('2000-01-01..2026-10-16');
 	});
 });

@@ -126,6 +126,11 @@ export const overdueOf = (result: ReportQueryResult | undefined, currency: strin
 
 export const currencyOf = (picked: string, currencies: string[]): string => (currencies.includes(picked) ? picked : (currencies[0] ?? ''));
 
+export const recordsOf = (result: ReportQueryResult | undefined, currency: string): Record<string, string>[] =>
+	result ? rowsFor(result, currency).map((r) => Object.fromEntries(result.columns.map((c, i) => [c.name, r[i]]))) : [];
+
+export const numOf = (v: string | undefined) => (v !== undefined && v !== '' && Number.isFinite(Number(v)) ? Number(v) : undefined);
+
 export const GROUP_BYS = ['revenue_type', 'invoice_type', 'customer', 'none'] as const;
 export type GroupBy = (typeof GROUP_BYS)[number];
 export type DashboardGrain = 'day' | 'month';
@@ -151,6 +156,25 @@ export const billedCustomersQ = (c: DashboardControls) =>
 		},
 		c,
 	);
+
+export const outstandingQ = (c: DashboardControls) => reportQ('total_receivables', { shape: 'scalar' }, c);
+
+export const agingQ = (c: DashboardControls) => reportQ('receivables_aging', { shape: 'breakdown', dimensions: ['aging_bucket'] }, c);
+
+export const daysToPayQ = (c: DashboardControls) => reportQ('days_to_pay', { shape: 'scalar', compare: true }, c);
+
+export const medianDaysQ = (c: DashboardControls) =>
+	datasetQ(
+		{ dataset: 'invoices', measures: [{ agg: 'median', field: 'days_to_pay' }], dimensions: ['currency'], time: { field: 'paid_at' } },
+		c,
+	);
+
+// Every due date up to today.
+export const untilTodayRange = (now: Date) => `2000-01-01..${todayRange(now).split('..')[1]}`;
+
+// Mirrors the backend aging buckets.
+export const agingBucketOf = (daysOverdue: number): (typeof AGING_BUCKETS)[number] =>
+	daysOverdue <= 0 ? 'Current' : daysOverdue <= 30 ? '1-30' : daysOverdue <= 60 ? '31-60' : daysOverdue <= 90 ? '61-90' : '90+';
 
 export const revenueQueries = (controls: DashboardControls, grain: DashboardGrain, groupBy: GroupBy) => {
 	const dimension = groupBy === 'invoice_type' ? 'invoice_type' : 'customer_id';

@@ -2,7 +2,19 @@ import { useTranslation } from 'react-i18next';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { formatCompactMoney, formatValue, rowsFor } from '../reports/reportMath';
 import Panel from './Panel';
-import { AGING_BUCKETS, DashboardControls, DashboardTabProps, datasetQ, overdueOf, reportQ, scalarOf } from './queries';
+import {
+	AGING_BUCKETS,
+	agingQ,
+	DashboardControls,
+	DashboardTabProps,
+	datasetQ,
+	daysToPayQ,
+	medianDaysQ,
+	outstandingQ,
+	overdueOf,
+	reportQ,
+	scalarOf,
+} from './queries';
 import RankedBars from './RankedBars';
 import { bucketLabel, mergeSeries, PALETTE, sumField } from './revenueMath';
 import RevenueOverTime from './RevenueOverTime';
@@ -23,12 +35,7 @@ interface CardProps {
 export const AgingCard = ({ controls, onViewReport }: CardProps) => {
 	const { t } = useTranslation('settings');
 	const { currency } = controls;
-	const [outstanding, aging] = useQueries({
-		queries: [
-			reportQ('total_receivables', { shape: 'scalar' }, controls),
-			reportQ('receivables_aging', { shape: 'breakdown', dimensions: ['aging_bucket'] }, controls),
-		],
-	});
+	const [outstanding, aging] = useQueries({ queries: [outstandingQ(controls), agingQ(controls)] });
 	const out = num(scalarOf(outstanding.data, 'total_receivables', currency)?.current);
 	const overdue = overdueOf(aging.data, currency);
 	const result = aging.data;
@@ -69,11 +76,8 @@ export const DaysToPayCard = ({ controls, onViewReport }: CardProps) => {
 	const { currency } = controls;
 	const [avg, median, series] = useQueries({
 		queries: [
-			reportQ('days_to_pay', { shape: 'scalar', compare: true }, controls),
-			datasetQ(
-				{ dataset: 'invoices', measures: [{ agg: 'median', field: 'days_to_pay' }], dimensions: ['currency'], time: { field: 'paid_at' } },
-				controls,
-			),
+			daysToPayQ(controls),
+			medianDaysQ(controls),
 			datasetQ(
 				{
 					dataset: 'invoices',

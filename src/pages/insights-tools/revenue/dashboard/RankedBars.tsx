@@ -6,6 +6,7 @@ export interface RankedItem {
 	value: number;
 	// Stacked segments, horizontal only.
 	parts?: number[];
+	color?: string;
 }
 
 export interface RankedBarsProps {
@@ -30,7 +31,7 @@ const RankedBars = ({ items, format, vertical = false, color = PALETTE[0], color
 				{items.map((i) => (
 					<li key={i.key} className='flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1'>
 						<span className='text-xs font-medium tabular-nums text-content-zinc-bold'>{format(i.value)}</span>
-						<span className='w-full max-w-12 rounded-t-sm' style={{ height: pct(i.value, max), backgroundColor: color }} />
+						<span className='w-full max-w-12 rounded-t-sm' style={{ height: pct(i.value, max), backgroundColor: i.color ?? color }} />
 						<span className='truncate text-center text-xs text-content-zinc-tertiary'>{i.label}</span>
 					</li>
 				))}
@@ -49,7 +50,7 @@ const RankedBars = ({ items, format, vertical = false, color = PALETTE[0], color
 							<span
 								key={j}
 								className='h-full first:rounded-s-sm last:rounded-e-sm'
-								style={{ width: pct(p, max), backgroundColor: colors?.[j] ?? color }}
+								style={{ width: pct(p, max), backgroundColor: colors?.[j] ?? i.color ?? color }}
 							/>
 						))}
 					</span>

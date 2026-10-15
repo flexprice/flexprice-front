@@ -1901,6 +1901,46 @@
 					"nextPage": "Next page",
 					"capped": "Based on the top {{count}} customers by revenue"
 				},
+				"receivables": {
+					"agingDef": "Unpaid balance on finalized invoices, grouped by days past the due date",
+					"overdueNote_one": "{{pct}} of outstanding, {{count}} customer",
+					"overdueNote_other": "{{pct}} of outstanding, {{count}} customers",
+					"pointInTimeNote": "Point-in-time as of today; the date range and comparison don't apply.",
+					"bucket": "Aging bucket",
+					"amount": "Amount",
+					"share": "Share",
+					"byCustomer": "Overdue by customer",
+					"byCustomerDef": "Top customers by overdue balance, split by how late it is",
+					"customers": "Overdue customers",
+					"customersDef": "Customers with overdue invoices, by overdue amount",
+					"customer": "Customer",
+					"invoices": "Overdue invoices",
+					"overdueAmount": "Overdue amount",
+					"oldestDue": "Oldest due",
+					"oldestDueValue": "{{date}} · {{days}}d",
+					"agingColumn": "Aging"
+				},
+				"payments": {
+					"daysToPayDef": "Days from issue to full payment, for invoices paid in the period",
+					"paid": "Paid invoices",
+					"averageLine": "Average days to pay",
+					"medianLine": "Median days to pay",
+					"periodAverage": "Period average ({{value}})",
+					"speed": "Payment speed",
+					"speedDef": "Paid invoices by how long they took to be paid",
+					"speeds": {
+						"0-7": "0–7 days",
+						"8-30": "8–30 days",
+						"30+": "30+ days"
+					},
+					"slowest": "Slowest payers",
+					"slowestDef": "Customers with the highest average days to pay",
+					"byCustomer": "Payments by customer",
+					"byCustomerDef": "Paid invoices, amount collected and average days to pay per customer",
+					"customer": "Customer",
+					"collected": "Amount collected",
+					"averageDays": "Average days"
+				},
 				"overview": {
 					"aging": "Receivables aging",
 					"agingDef": "Unpaid balance by days past due, as of today",
