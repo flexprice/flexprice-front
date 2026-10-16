@@ -36,25 +36,25 @@ const utc = (y: number, m: number, day = 1) => new Date(Date.UTC(y, m, day));
 export const rangeForPreset = (preset: RangePreset, now: Date): string => {
 	const y = now.getUTCFullYear();
 	const m = now.getUTCMonth();
-	const tomorrow = utc(y, m, now.getUTCDate() + 1);
-	const daysBack = (n: number) => `${ymd(utc(y, m, now.getUTCDate() + 1 - n))}..${ymd(tomorrow)}`;
+	const d = now.getUTCDate();
+	const today = utc(y, m, d);
+	// Through yesterday; today if period starts today.
+	const toDate = (start: Date) => `${ymd(start)}..${ymd(start < today ? today : utc(y, m, d + 1))}`;
 	switch (preset) {
 		case 'last_7_days':
-			return daysBack(7);
+			return toDate(utc(y, m, d - 7));
 		case 'last_30_days':
-			return daysBack(30);
+			return toDate(utc(y, m, d - 30));
 		case 'last_90_days':
-			return daysBack(90);
+			return toDate(utc(y, m, d - 90));
 		case 'this_month':
-			return `${ymd(utc(y, m))}..${ymd(tomorrow)}`;
+			return toDate(utc(y, m));
 		case 'last_month':
 			return `${ymd(utc(y, m - 1))}..${ymd(utc(y, m))}`;
-		case 'this_quarter': {
-			const q = Math.floor(m / 3) * 3;
-			return `${ymd(utc(y, q))}..${ymd(tomorrow)}`;
-		}
+		case 'this_quarter':
+			return toDate(utc(y, Math.floor(m / 3) * 3));
 		case 'this_year':
-			return `${ymd(utc(y, 0))}..${ymd(tomorrow)}`;
+			return toDate(utc(y, 0));
 	}
 };
 
@@ -213,4 +213,10 @@ export const formatValue = (
 	if (valueType === 'number') return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 	const sign = value < 0 ? '-' : '';
 	return `${sign}${getCurrencySymbol(currency.toUpperCase())}${Math.abs(value).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+};
+
+export const formatCompactMoney = (value: number, currency: string): string => {
+	const sign = value < 0 ? '-' : '';
+	const n = Math.abs(value).toLocaleString('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+	return `${sign}${getCurrencySymbol(currency.toUpperCase())}${n}`;
 };
