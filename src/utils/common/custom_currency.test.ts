@@ -269,3 +269,56 @@ describe('currency options offered to the entities that accept a tenant currency
 		expect(custom[0].value.toLowerCase()).toBe('crd');
 	});
 });
+
+// The setting is free-form JSON, so a payload written elsewhere can spell the codes in any
+// case. The draft lists its fiat codes lowercased, so an uppercase stored key used to miss
+// on lookup, blank every factor, and disable Save on a configuration the backend accepted.
+describe('a payload stored with uppercase codes', () => {
+	const config = parseCustomCurrencyConfig({
+		custom_currencies: {
+			CRD: { name: 'Credits', symbol: 'CR', fiat_conversion_factors: { USD: '1.5', INR: '125' } },
+		},
+		default_fiat_currency: 'USD',
+	});
+
+	it('is normalised to lowercase at the parse boundary', () => {
+		expect(config).toEqual({
+			custom_currencies: {
+				crd: { name: 'Credits', symbol: 'CR', fiat_conversion_factors: { usd: '1.5', inr: '125' } },
+			},
+			default_fiat_currency: 'usd',
+		});
+	});
+
+	it('produces a draft with the factors populated', () => {
+		const draft = toCustomCurrencyDraft(config);
+		expect(draft.defaultFiatCurrency).toBe('usd');
+		expect(draft.fiatCurrencies).toEqual(['usd', 'inr']);
+		expect(draft.currencies[0]).toMatchObject({ code: 'crd', name: 'Credits', symbol: 'CR', factors: { usd: '1.5', inr: '125' } });
+	});
+
+	it('is not reported as invalid', () => {
+		expect(getCustomCurrencyErrorKey(toCustomCurrencyDraft(config))).toBeNull();
+	});
+
+	it('round-trips without renaming the currency', () => {
+		expect(serializeCustomCurrencyConfig(toCustomCurrencyDraft(config))).toEqual({
+			default_fiat_currency: 'usd',
+			custom_currencies: {
+				crd: { name: 'Credits', symbol: 'CR', fiat_conversion_factors: { usd: '1.5', inr: '125' } },
+			},
+		});
+	});
+
+	it('publishes the symbol under the lowercased code', () => {
+		expect(toCustomCurrencyDisplay(config)).toEqual({ crd: { symbol: 'CR', name: 'Credits' } });
+	});
+
+	it('still parses a mixed-case payload the same way as an already-lowercase one', () => {
+		const lower = parseCustomCurrencyConfig({
+			custom_currencies: { crd: { name: 'Credits', symbol: 'CR', fiat_conversion_factors: { usd: '1.5', inr: '125' } } },
+			default_fiat_currency: 'usd',
+		});
+		expect(config).toEqual(lower);
+	});
+});
