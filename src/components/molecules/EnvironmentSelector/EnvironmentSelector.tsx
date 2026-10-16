@@ -3,21 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@/components/ui';
 import { Blocks, Rocket, Server, ChevronsUpDown, Plus, Copy, Pencil } from 'lucide-react';
-import { useGlobalLoading } from '@/core/services/tanstack/ReactQueryProvider';
-import useUser from '@/hooks/useUser';
 import { Select, SelectContent, useSidebar } from '@/components/ui';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { SelectOption } from '@/components/atoms/Select/Select';
-import { useNavigate } from 'react-router';
-import { RouteNames } from '@/core/routes/Routes';
-import { useEnvironment } from '@/hooks/useEnvironment';
-import { useRestrictedEnvs, EnvRestrictionState } from '@/hooks/useRestrictedEnvs';
 import { Button, Tooltip } from '@/components/atoms';
-import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
-import EnvironmentCreator from '../EnvironmentCreator/EnvironmentCreator';
-import EnvironmentCopier from '../EnvironmentCopier/EnvironmentCopier';
-import EnvironmentEditor from '../EnvironmentEditor/EnvironmentEditor';
-import ContactUsDialog from '../ContactUsDialog/ContactUsDialog';
+import { useEnvironmentSwitcher } from '@/hooks/useEnvironmentSwitcher';
 import Environment, { ENVIRONMENT_TYPE } from '@/models/Environment';
 
 interface Props {
@@ -67,22 +57,12 @@ const getEnvironmentIcon = (type: ENVIRONMENT_TYPE) => {
 
 const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) => {
 	const { t } = useTranslation('settings');
-	const { loading, user } = useUser();
 	const { open: sidebarOpen } = useSidebar();
-	const navigate = useNavigate();
-	const { setLoading } = useGlobalLoading();
-
-	const { environments, activeEnvironment, changeActiveEnvironment, refetchEnvironments, isDevelopment, isProduction } = useEnvironment();
-	const { getRestriction } = useRestrictedEnvs();
-	const { can } = useCurrentUserPermissions();
-	const canWriteEnvironment = can('environment', 'write');
+	const switcher = useEnvironmentSwitcher();
+	const { loading, environments, current: currentEnvironment, isDevelopment, isProduction, dialogs } = switcher;
+	const canWriteEnvironment = switcher.canWrite;
 
 	const [isOpen, setIsOpen] = useState(false);
-	const [isCreatorOpen, setIsCreatorOpen] = useState(false);
-	const [isCopierOpen, setIsCopierOpen] = useState(false);
-	const [isEditorOpen, setIsEditorOpen] = useState(false);
-	const [editingEnvironment, setEditingEnvironment] = useState<Environment | null>(null);
-	const [isSuspendedDialogOpen, setIsSuspendedDialogOpen] = useState(false);
 
 	if (loading)
 		return (
@@ -96,7 +76,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 			<div className={cn('mt-1 w-full', className)}>
 				<p className='p-2 text-sm text-muted-foreground'>{t('environment.selector.noneAvailable')}</p>
 				{canWriteEnvironment ? (
-					<Button onClick={() => setIsCreatorOpen(true)} size='sm' className='w-full text-center rounded-[6px] justify-center items-center'>
+					<Button onClick={switcher.openCreate} size='sm' className='w-full text-center rounded-[6px] justify-center items-center'>
 						<Plus className='h-4 w-4' />
 						{t('environment.selector.addEnvironment')}
 					</Button>
@@ -111,17 +91,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 					</Tooltip>
 				)}
 
-				<EnvironmentCreator
-					isOpen={isCreatorOpen}
-					onOpenChange={setIsCreatorOpen}
-					onEnvironmentCreated={async (environmentId) => {
-						await refetchEnvironments();
-						if (environmentId) {
-							changeActiveEnvironment(environmentId);
-							navigate(RouteNames.home);
-						}
-					}}
-				/>
+				{dialogs}
 			</div>
 		);
 	}
@@ -132,34 +102,20 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 		prefixIcon: getEnvironmentIcon(env.type),
 	}));
 
+	const { tenantName } = switcher;
+
 	const handleEditClick = (env: Environment, e: React.MouseEvent | React.PointerEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
 		setIsOpen(false);
-		setEditingEnvironment(env);
-		setIsEditorOpen(true);
+		switcher.openEdit(env);
 	};
 
 	const handleChange = async (environmentId: string) => {
-		const restriction = getRestriction(environmentId, user?.tenant?.id);
-		if (restriction.state === EnvRestrictionState.Suspended) {
-			setIsOpen(false);
-			setIsSuspendedDialogOpen(true);
-			return;
-		}
-		setLoading(true);
-		try {
-			changeActiveEnvironment(environmentId);
-			navigate(RouteNames.home);
-		} catch (error) {
-			console.error('Failed to change environment:', error);
-		} finally {
-			setLoading(false);
-		}
+		setIsOpen(false);
+		await switcher.select(environmentId);
 	};
 
-	// If activeEnvironment is null, use the first environment as a fallback
-	const currentEnvironment = activeEnvironment || environments[0];
 	const environmentName = currentEnvironment?.name || t('environment.selector.noEnvironment');
 
 	return (
@@ -168,20 +124,20 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 			<div className='w-full mt-2 flex items-center justify-between gap-2'>
 				<div className='flex items-center text-start gap-2 min-w-0'>
 					<span className='size-7 bg-surface-avatar text-content-inverse flex justify-center items-center bg-contain rounded-[6px] text-xs font-semibold'>
-						{user?.tenant?.name
+						{tenantName
 							?.split(' ')
 							.map((n) => n[0])
 							.join('')
 							.slice(0, 2) || t('environment.selector.fallbackTenantLetters')}
 					</span>
 					<div className={cn('text-start min-w-0', sidebarOpen ? '' : 'hidden')}>
-						<p className='font-medium text-[16px] leading-snug truncate'>{user?.tenant?.name || t('environment.selector.unknownTenant')}</p>
+						<p className='font-medium text-[16px] leading-snug truncate'>{tenantName || t('environment.selector.unknownTenant')}</p>
 					</div>
 				</div>
 			</div>
 
 			{/* Environment picker (colored box) */}
-			<Select open={isOpen} onOpenChange={setIsOpen} value={activeEnvironment?.id} onValueChange={handleChange} disabled={disabled}>
+			<Select open={isOpen} onOpenChange={setIsOpen} value={switcher.activeId} onValueChange={handleChange} disabled={disabled}>
 				<SelectTrigger className={cn(sidebarOpen ? '' : 'hidden')}>
 					<div
 						className={cn(
@@ -256,7 +212,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 							<Button
 								onClick={() => {
 									setIsOpen(false);
-									setIsCreatorOpen(true);
+									switcher.openCreate();
 								}}
 								key='create'
 								value='create'
@@ -279,7 +235,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 							<Button
 								onClick={() => {
 									setIsOpen(false);
-									setIsCopierOpen(true);
+									switcher.openCopy();
 								}}
 								key='copy'
 								size='sm'
@@ -307,44 +263,7 @@ const EnvironmentSelector: React.FC<Props> = ({ disabled = false, className }) =
 				</SelectContent>
 			</Select>
 
-			<EnvironmentCreator
-				isOpen={isCreatorOpen}
-				onOpenChange={setIsCreatorOpen}
-				onEnvironmentCreated={async (environmentId) => {
-					await refetchEnvironments();
-					if (environmentId) {
-						handleChange(environmentId);
-					}
-				}}
-			/>
-
-			<EnvironmentCopier
-				isOpen={isCopierOpen}
-				onOpenChange={setIsCopierOpen}
-				sourceEnvironment={currentEnvironment}
-				onEnvironmentCloned={async () => {
-					await refetchEnvironments();
-				}}
-			/>
-
-			<EnvironmentEditor
-				isOpen={isEditorOpen}
-				onOpenChange={(open) => {
-					setIsEditorOpen(open);
-					if (!open) setEditingEnvironment(null);
-				}}
-				environment={editingEnvironment}
-				onEnvironmentUpdated={async () => {
-					await refetchEnvironments();
-				}}
-			/>
-
-			<ContactUsDialog
-				isOpen={isSuspendedDialogOpen}
-				onOpenChange={setIsSuspendedDialogOpen}
-				title={t('environment.selector.suspendedTitle')}
-				description={t('environment.selector.suspendedDescription')}
-			/>
+			{dialogs}
 		</div>
 	);
 };

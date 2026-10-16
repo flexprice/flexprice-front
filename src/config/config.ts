@@ -12,6 +12,7 @@ import {
 } from './branding';
 import { RegionsConfig } from './authTemplates';
 import { EnvFlag } from '@/types/enums/env';
+import brandPack from '@brand/brand';
 
 export type { BrandConfig, AuthPageConfig, I18nConfig };
 
@@ -186,7 +187,10 @@ interface FeaturesConfig {
 	tenantFeatureAllowlist: string[];
 }
 
-/** Primary defaults to **Geist** (Google Fonts in `src/index.css`). Override via `VITE_FONT_CONFIG`. */
+/**
+ * Primary defaults to the brand pack's `fontFamily`, else **Geist** (Google Fonts in `src/index.css`).
+ * Override via `VITE_FONT_CONFIG`.
+ */
 export interface TypographyConfig {
 	primaryFont: string;
 	fallbackFont: string;
@@ -194,7 +198,7 @@ export interface TypographyConfig {
 	fontFamily: string;
 }
 
-const DEFAULT_FONT_PRIMARY = 'Geist';
+const DEFAULT_FONT_PRIMARY = brandPack.fontFamily ?? 'Geist';
 const DEFAULT_FONT_FALLBACK = 'sans-serif';
 
 /** Wrap family name in quotes when needed for valid CSS `font-family`. */

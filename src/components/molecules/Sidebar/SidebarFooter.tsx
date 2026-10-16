@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BookOpen, ExternalLink, ChevronsUpDown, LogOut, Settings } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
@@ -7,10 +7,10 @@ import { cn } from '@/lib/utils';
 
 import { useNavigate } from 'react-router';
 import AuthService from '@/core/auth/AuthService';
-import { getCommandPaletteActionEventName, CommandPaletteActionId } from '@/core/actions';
 import useUser from '@/hooks/useUser';
 import { useShouldShowSidebarPricingPromo } from '@/hooks/useShouldShowSidebarPricingPromo';
 import SidebarPricingPromoCard from './SidebarPricingPromoCard';
+import { brandConfig } from '@/config/branding';
 
 const SidebarFooter = () => {
 	const { t } = useTranslation('common');
@@ -18,14 +18,6 @@ const SidebarFooter = () => {
 	const handleLogout = useCallback(async () => {
 		await AuthService.logout();
 	}, []);
-
-	// Log out from command palette (Cmd+K → Log out)
-	useEffect(() => {
-		const eventName = getCommandPaletteActionEventName(CommandPaletteActionId.Logout);
-		const handler = () => handleLogout();
-		window.addEventListener(eventName, handler);
-		return () => window.removeEventListener(eventName, handler);
-	}, [handleLogout]);
 
 	const { loading, user } = useUser();
 	const { open: sidebarOpen } = useSidebar();
@@ -54,7 +46,7 @@ const SidebarFooter = () => {
 
 			<SidebarMenuButton
 				onClick={() => {
-					window.open('https://docs.flexprice.io', '_blank');
+					window.open(brandConfig.links.docs, '_blank');
 				}}
 				tooltip={t('labels.documentation')}
 				className={cn(`flex items-center justify-between gap-2 hover:bg-muted transition-colors my-0 py-1 `)}>

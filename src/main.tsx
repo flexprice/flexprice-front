@@ -1,6 +1,8 @@
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+// After index.css, unlayered: the active brand pack's token overrides win.
+import '@brand/theme.css';
 import PosthogProvider from './core/services/posthog/PosthogProvider.tsx';
 import VercelSpeedInsights from './core/services/vercel/vercel.tsx';
 import { config, initTypography } from './config/config.ts';

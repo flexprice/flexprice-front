@@ -1,15 +1,17 @@
 import { config } from '@/config/config';
 import { useNavigate } from 'react-router';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { Sidebar } from '@/components/molecules/Sidebar';
-import { BreadCrumbs, DebugMenu, RestrictedEnvBanner } from '@/components/molecules';
+import { DebugMenu } from '@/components/molecules';
 import { CommandPalette } from '@/components/organisms';
 import AppPrefetcher from '@/components/organisms/AppPrefetcher';
 import useUser from '@/hooks/useUser';
 import useCustomCurrencyConfig from '@/hooks/useCustomCurrencyConfig';
 import posthog from 'posthog-js';
 import { useEffect } from 'react';
+import AuthService from '@/core/auth/AuthService';
+import { getCommandPaletteActionEventName, CommandPaletteActionId } from '@/core/actions';
 import RouteGuard from '@/core/routes/RouteGuard';
+import { Slot } from '@/brand/Slot';
+import DefaultAppShell from './DefaultAppShell';
 
 const MainLayout: React.FC = () => {
 	const { user } = useUser();
@@ -45,23 +47,31 @@ const MainLayout: React.FC = () => {
 		}
 	}, [user]);
 
+	// Log out from the command palette (Cmd+K → Log out). Here rather than in a menu so it works
+	// whichever shell is rendering.
+	useEffect(() => {
+		const eventName = getCommandPaletteActionEventName(CommandPaletteActionId.Logout);
+		const handler = () => void AuthService.logout();
+		window.addEventListener(eventName, handler);
+		return () => window.removeEventListener(eventName, handler);
+	}, []);
+
+	const page = (
+		<>
+			<RouteGuard />
+			<DebugMenu />
+		</>
+	);
+
+	// Behaviour above stays here; the frame around the page is the brand's to replace.
 	return (
-		<SidebarProvider className='flex h-screen bg-surface-shell relative'>
+		<>
 			<AppPrefetcher />
 			<CommandPalette />
-			{/* Sidebar */}
-			<Sidebar />
-			{/* Right Layout */}
-			<SidebarInset className='flex flex-col flex-1 bg-surface-canvas h-screen relative'>
-				<BreadCrumbs />
-				<RestrictedEnvBanner />
-				{/* Main Content */}
-				<main className='flex-1 px-4 relative overflow-y-auto '>
-					<RouteGuard />
-					<DebugMenu />
-				</main>
-			</SidebarInset>
-		</SidebarProvider>
+			<Slot name='layout.shell' fallback={<DefaultAppShell>{page}</DefaultAppShell>}>
+				{page}
+			</Slot>
+		</>
 	);
 };
 

@@ -2,21 +2,21 @@
 	"features": {
 		"createFeature": {
 			"title": "How to create a feature?",
-			"description": "Explore how features work in Flexprice."
+			"description": "Explore how features work in {{brand}}."
 		},
 		"linkToPlans": {
 			"title": "How to link features to plans?",
-			"description": "Link features to plans in Flexprice."
+			"description": "Link features to plans in {{brand}}."
 		},
 		"clonePricing": {
 			"title": "How to clone open ai pricing?",
-			"description": "Clone open ai / cursor style pricing in Flexprice."
+			"description": "Clone open ai / cursor style pricing in {{brand}}."
 		}
 	},
 	"addons": {
 		"create": {
 			"title": "How to create an Addon?",
-			"description": "Explore how to create a new Addons in Flexprice."
+			"description": "Explore how to create a new Addons in {{brand}}."
 		},
 		"list": {
 			"title": "How to list all Addons?",
@@ -30,7 +30,7 @@
 	"coupons": {
 		"create": {
 			"title": "How to create a coupon?",
-			"description": "Explore how to create a new Coupon in Flexprice."
+			"description": "Explore how to create a new Coupon in {{brand}}."
 		},
 		"update": {
 			"title": "How to update a coupon?",
@@ -43,12 +43,12 @@
 	},
 	"plans": {
 		"overview": {
-			"title": "Explore how plans work in Flexprice.",
-			"description": "Explore how plans work in Flexprice."
+			"title": "Explore how plans work in {{brand}}.",
+			"description": "Explore how plans work in {{brand}}."
 		},
 		"create": {
 			"title": "How to create a plan",
-			"description": "Create a new plan in Flexprice."
+			"description": "Create a new plan in {{brand}}."
 		},
 		"billingModels": {
 			"title": "How to choose between advance and arrear billing?",
@@ -57,100 +57,100 @@
 	},
 	"groups": {
 		"overview": {
-			"title": "Explore how groups work in Flexprice.",
-			"description": "Learn how groups work in Flexprice."
+			"title": "Explore how groups work in {{brand}}.",
+			"description": "Learn how groups work in {{brand}}."
 		},
 		"plansContext": {
-			"title": "Explore how plans work in Flexprice.",
-			"description": "Explore how plans work in Flexprice."
+			"title": "Explore how plans work in {{brand}}.",
+			"description": "Explore how plans work in {{brand}}."
 		},
 		"featuresContext": {
-			"title": "Explore how features work in Flexprice.",
-			"description": "Explore how features work in Flexprice."
+			"title": "Explore how features work in {{brand}}.",
+			"description": "Explore how features work in {{brand}}."
 		}
 	},
 	"customers": {
 		"create": {
 			"title": "How to create a customer",
-			"description": "Explore how customers work in Flexprice."
+			"description": "Explore how customers work in {{brand}}."
 		},
 		"archive": {
 			"title": "How to archive a customer",
-			"description": "Create a new customer in Flexprice."
+			"description": "Create a new customer in {{brand}}."
 		},
 		"subscription": {
 			"title": "How to create a subscription",
-			"description": "Create a new subscription in Flexprice."
+			"description": "Create a new subscription in {{brand}}."
 		}
 	},
 	"invoices": {
 		"create": {
 			"title": "How to create an invoice",
-			"description": "Explore how invoices work in Flexprice."
+			"description": "Explore how invoices work in {{brand}}."
 		},
 		"manage": {
 			"title": "How to manage invoices",
-			"description": "Manage invoices in Flexprice."
+			"description": "Manage invoices in {{brand}}."
 		},
 		"partialPayments": {
 			"title": "How to handle partial payments",
-			"description": "Handle partial payments in Flexprice."
+			"description": "Handle partial payments in {{brand}}."
 		}
 	},
 	"payments": {
 		"create": {
 			"title": "How to create a payment",
-			"description": "Explore how payments work in Flexprice."
+			"description": "Explore how payments work in {{brand}}."
 		},
 		"update": {
 			"title": "How to update a payment",
-			"description": "Create a payment in Flexprice."
+			"description": "Create a payment in {{brand}}."
 		},
 		"delete": {
 			"title": "How to delete a payment",
-			"description": "Delete an existing payment in Flexprice."
+			"description": "Delete an existing payment in {{brand}}."
 		}
 	},
 	"secrets": {
 		"list": {
 			"title": "List API Keys",
-			"description": "View all API keys in Flexprice."
+			"description": "View all API keys in {{brand}}."
 		},
 		"create": {
 			"title": "Create a new API Key",
-			"description": "Generate a new API key in Flexprice."
+			"description": "Generate a new API key in {{brand}}."
 		},
 		"delete": {
 			"title": "Delete an API Key",
-			"description": "Delete an API key in Flexprice."
+			"description": "Delete an API key in {{brand}}."
 		}
 	},
 	"creditNotes": {
 		"create": {
 			"title": "Create a new credit note",
-			"description": "Explore how credit notes work in Flexprice."
+			"description": "Explore how credit notes work in {{brand}}."
 		},
 		"process": {
 			"title": "Process a draft credit note",
-			"description": "Create a new credit note in Flexprice."
+			"description": "Create a new credit note in {{brand}}."
 		},
 		"void": {
 			"title": "Void a credit note",
-			"description": "Manage credit notes in Flexprice."
+			"description": "Manage credit notes in {{brand}}."
 		}
 	},
 	"importExport": {
 		"overview": {
 			"title": "Overview",
-			"description": "Explore import and export options in Flexprice."
+			"description": "Explore import and export options in {{brand}}."
 		},
 		"importFile": {
 			"title": "Import a file",
-			"description": "Import a file into Flexprice."
+			"description": "Import a file into {{brand}}."
 		},
 		"processTask": {
 			"title": "Process import task",
-			"description": "Process an import task in Flexprice."
+			"description": "Process an import task in {{brand}}."
 		}
 	},
 	"taxes": {

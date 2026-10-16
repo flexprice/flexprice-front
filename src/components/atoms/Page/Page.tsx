@@ -37,12 +37,18 @@ const Page: FC<Props> = ({ children, className, type = 'default', header, headin
 				className={cn(
 					'flex-1 page w-full p-0!',
 					type === 'left-aligned' && '!px-12',
-					type === 'default' && 'mx-auto max-w-screen-lg',
+					type === 'default' && 'mx-auto max-w-[var(--fp-page-max-width)]',
 					className,
 				)}>
 				{header && header}
 				{heading && (
-					<SectionHeader title={heading} titleClassName={cn(headingClassName, 'text-3xl font-medium')}>
+					<SectionHeader
+						title={heading}
+						titleClassName={cn(
+							headingClassName,
+							// Sized by tokens (src/index.css) so a brand can restyle every page title from its theme.
+							'text-[length:var(--fp-page-heading-size)] leading-[var(--fp-page-heading-leading)] font-[number:var(--fp-page-heading-weight)] tracking-[var(--fp-page-heading-tracking)]',
+						)}>
 						{headingCTA}
 					</SectionHeader>
 				)}

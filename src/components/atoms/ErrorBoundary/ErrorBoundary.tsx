@@ -1,3 +1,4 @@
+import { brandConfig } from '@/config/branding';
 import { ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary';
@@ -159,7 +160,7 @@ export const ErrorFallback = ({ error, errorInfo, errorId, resetError }: ErrorFa
 					{/* Contact Support Section */}
 					<div className='grid grid-cols-2 gap-4 mb-8'>
 						<a
-							href={`mailto:support@flexprice.io?subject=Error Report: ${errorId}&body=Hello Support Team,%0A%0AI encountered an error with the following reference ID: ${errorId}%0A%0APage URL: ${encodeURIComponent(window.location.href)}%0A%0APlease help resolve this issue.%0A%0AThank you.`}
+							href={`mailto:${brandConfig.supportEmail}?subject=Error Report: ${errorId}&body=Hello Support Team,%0A%0AI encountered an error with the following reference ID: ${errorId}%0A%0APage URL: ${encodeURIComponent(window.location.href)}%0A%0APlease help resolve this issue.%0A%0AThank you.`}
 							className='flex flex-col items-center gap-3 p-4 rounded-lg border border-muted/20 hover:border-blue-DEFAULT/30 hover:bg-blue-DEFAULT/5 transition-all group'
 							aria-label={t('errorPage.emailSupportAria')}>
 							<div className='p-3 rounded-full bg-blue-DEFAULT/10 group-hover:bg-blue-DEFAULT/20 transition-colors'>
@@ -184,50 +185,56 @@ export const ErrorFallback = ({ error, errorInfo, errorId, resetError }: ErrorFa
 							</div>
 						</a>
 
-						<a
-							href='https://join.slack.com/t/flexpricecommunity/shared_invite/zt-3gnc3stna-sHuXbRb7lwYJgCvEvnw2Jw'
-							target='_blank'
-							rel='noopener noreferrer'
-							className='flex flex-col items-center gap-3 p-4 rounded-lg border border-muted/20 hover:border-blue-DEFAULT/30 hover:bg-blue-DEFAULT/5 transition-all group'
-							aria-label={t('errorPage.slackAria')}>
-							<div className='p-3 rounded-full bg-blue-DEFAULT/10 group-hover:bg-blue-DEFAULT/20 transition-colors'>
-								<MessageSquare size={24} className='text-blue-DEFAULT' />
-							</div>
-							<div className='text-center'>
-								<div className='font-medium text-sm'>{t('errorPage.slackCommunity')}</div>
-								<div className='text-xs text-muted-foreground'>{t('errorPage.slackSubtitle')}</div>
-							</div>
-						</a>
+						{brandConfig.links.community && (
+							<a
+								href={brandConfig.links.community}
+								target='_blank'
+								rel='noopener noreferrer'
+								className='flex flex-col items-center gap-3 p-4 rounded-lg border border-muted/20 hover:border-blue-DEFAULT/30 hover:bg-blue-DEFAULT/5 transition-all group'
+								aria-label={t('errorPage.slackAria')}>
+								<div className='p-3 rounded-full bg-blue-DEFAULT/10 group-hover:bg-blue-DEFAULT/20 transition-colors'>
+									<MessageSquare size={24} className='text-blue-DEFAULT' />
+								</div>
+								<div className='text-center'>
+									<div className='font-medium text-sm'>{t('errorPage.slackCommunity')}</div>
+									<div className='text-xs text-muted-foreground'>{t('errorPage.slackSubtitle')}</div>
+								</div>
+							</a>
+						)}
 
-						<a
-							href='https://github.com/flexprice/flexprice-front/issues'
-							target='_blank'
-							rel='noopener noreferrer'
-							className='flex flex-col items-center gap-3 p-4 rounded-lg border border-muted/20 hover:border-blue-DEFAULT/30 hover:bg-blue-DEFAULT/5 transition-all group'
-							aria-label={t('errorPage.githubAria')}>
-							<div className='p-3 rounded-full bg-blue-DEFAULT/10 group-hover:bg-blue-DEFAULT/20 transition-colors'>
-								<Github size={24} className='text-blue-DEFAULT' />
-							</div>
-							<div className='text-center'>
-								<div className='font-medium text-sm'>{t('errorPage.githubIssues')}</div>
-								<div className='text-xs text-muted-foreground'>{t('errorPage.githubSubtitle')}</div>
-							</div>
-						</a>
+						{brandConfig.links.issues && (
+							<a
+								href={brandConfig.links.issues}
+								target='_blank'
+								rel='noopener noreferrer'
+								className='flex flex-col items-center gap-3 p-4 rounded-lg border border-muted/20 hover:border-blue-DEFAULT/30 hover:bg-blue-DEFAULT/5 transition-all group'
+								aria-label={t('errorPage.githubAria')}>
+								<div className='p-3 rounded-full bg-blue-DEFAULT/10 group-hover:bg-blue-DEFAULT/20 transition-colors'>
+									<Github size={24} className='text-blue-DEFAULT' />
+								</div>
+								<div className='text-center'>
+									<div className='font-medium text-sm'>{t('errorPage.githubIssues')}</div>
+									<div className='text-xs text-muted-foreground'>{t('errorPage.githubSubtitle')}</div>
+								</div>
+							</a>
+						)}
 
-						<a
-							href='https://www.linkedin.com/company/flexpriceio/'
-							target='_blank'
-							rel='noopener noreferrer'
-							className='flex flex-col items-center gap-3 p-4 rounded-lg border border-muted/20 hover:border-blue-DEFAULT/30 hover:bg-blue-DEFAULT/5 transition-all group'
-							aria-label={t('errorPage.linkedinAria')}>
-							<div className='p-3 rounded-full bg-blue-DEFAULT/10 group-hover:bg-blue-DEFAULT/20 transition-colors'>
-								<Linkedin size={24} className='text-blue-DEFAULT' />
-							</div>
-							<div className='text-center'>
-								<div className='font-medium text-sm'>{t('errorPage.linkedin')}</div>
-								<div className='text-xs text-muted-foreground'>{t('errorPage.linkedinSubtitle')}</div>
-							</div>
-						</a>
+						{brandConfig.links.linkedin && (
+							<a
+								href={brandConfig.links.linkedin}
+								target='_blank'
+								rel='noopener noreferrer'
+								className='flex flex-col items-center gap-3 p-4 rounded-lg border border-muted/20 hover:border-blue-DEFAULT/30 hover:bg-blue-DEFAULT/5 transition-all group'
+								aria-label={t('errorPage.linkedinAria')}>
+								<div className='p-3 rounded-full bg-blue-DEFAULT/10 group-hover:bg-blue-DEFAULT/20 transition-colors'>
+									<Linkedin size={24} className='text-blue-DEFAULT' />
+								</div>
+								<div className='text-center'>
+									<div className='font-medium text-sm'>{t('errorPage.linkedin')}</div>
+									<div className='text-xs text-muted-foreground'>{t('errorPage.linkedinSubtitle')}</div>
+								</div>
+							</a>
+						)}
 					</div>
 
 					{/* Developer Details (only in dev mode) */}

@@ -272,7 +272,29 @@
 	},
 	"breadcrumb": {
 		"navAriaLabel": "مسار التنقل",
-		"moreSrOnly": "المزيد"
+		"moreSrOnly": "المزيد",
+		"segments": {
+			"createFeature": "إنشاء ميزة",
+			"addCharges": "إضافة رسوم",
+			"checkout": "إتمام الدفع",
+			"onboarding": "الإعداد المبدئي",
+			"pricingSetup": "إعداد التسعير",
+			"usageTracking": "تتبّع الاستخدام",
+			"events": "الأحداث",
+			"query": "الاستعلام",
+			"s3Exports": "تصدير S3",
+			"stripe": "Stripe",
+			"razorpay": "Razorpay",
+			"chargebee": "Chargebee",
+			"hubspot": "HubSpot",
+			"quickbooks": "QuickBooks",
+			"zoho": "Zoho Books",
+			"nomod": "Nomod",
+			"moyasar": "Moyasar",
+			"paddle": "Paddle",
+			"whop": "Whop",
+			"edit": "تعديل"
+		}
 	},
 	"sidebar": {
 		"toggleSidebarAccessibilityLabel": "إظهار أو إخفاء الشريط الجانبي",
@@ -714,7 +736,7 @@
 		"refreshPage": "تحديث الصفحة"
 	},
 	"onboardingLanding": {
-		"welcomeHeading": "مرحباً بك في Flexprice!",
+		"welcomeHeading": "مرحباً بك في {{brand}}!",
 		"welcomeSubtext": "لنبدأ بتسعيرك وفوترتك!",
 		"bookDemo": "حجز عرض تجريبي",
 		"heroImageAlt": "صورة تعريفية للإعداد",
@@ -723,8 +745,8 @@
 	},
 	"tenantSetup": {
 		"loadingWorkspaceAria": "جارٍ تحميل مساحة العمل",
-		"flexpriceLogoAlt": "Flexprice",
-		"welcomeHeading": "مرحباً بك في Flexprice",
+		"flexpriceLogoAlt": "{{brand}}",
+		"welcomeHeading": "مرحباً بك في {{brand}}",
 		"welcomeSubtext": "ثلاثة أسئلة سريعة فقط لإعداد مساحة عملك.",
 		"getStarted": "ابدأ",
 		"reviewCompanyLogoAlt": "شعار {{company}}",

@@ -8,6 +8,8 @@ import {
 	RegionsConfig,
 	Template2Config,
 } from './authTemplates';
+import brandPack from '@brand/brand';
+import type { BrandLinks } from '@/brand/types';
 
 // Re-export for backward compat
 export { AUTH_TEMPLATE, LandingTheme, LandingContentAlign };
@@ -27,11 +29,15 @@ export enum Direction {
 }
 
 export interface BrandConfig {
+	id: string;
 	name: string;
 	logo: string;
+	logoDark: string;
 	primaryColor: string;
 	favicon: string;
 	supportEmail: string;
+	title: string;
+	links: BrandLinks;
 }
 
 export interface I18nConfig {
@@ -49,13 +55,21 @@ export function deriveDirection(locale: Locale): Direction {
 
 // ─── Pure parser functions (no import.meta.env inside) ───────────────────────
 
+/** Env (`VITE_BRAND_CONFIG`) fields win over the build's brand pack, which wins over nothing. */
 export function parseBrandConfig(raw: Record<string, unknown>): BrandConfig {
+	const str = (key: string, fallback: string) => (typeof raw[key] === 'string' ? (raw[key] as string) : fallback);
+	const name = str('name', brandPack.name);
+	const logo = str('logo', brandPack.logo);
 	return {
-		name: typeof raw.name === 'string' ? raw.name : 'Flexprice',
-		logo: typeof raw.logo === 'string' ? raw.logo : '/comicon.png',
-		primaryColor: typeof raw.primaryColor === 'string' ? raw.primaryColor : '#7C3AED',
-		favicon: typeof raw.favicon === 'string' ? raw.favicon : '/favicon.ico',
-		supportEmail: typeof raw.supportEmail === 'string' ? raw.supportEmail : 'support@flexprice.io',
+		id: brandPack.id,
+		name,
+		logo,
+		logoDark: str('logoDark', brandPack.logoDark ?? logo),
+		primaryColor: str('primaryColor', brandPack.primaryColor),
+		favicon: str('favicon', brandPack.favicon),
+		supportEmail: str('supportEmail', brandPack.supportEmail),
+		title: str('title', brandPack.title ?? name),
+		links: brandPack.links,
 	};
 }
 
@@ -139,16 +153,18 @@ export const regionsConfig: RegionsConfig = parseRegionsConfig(_authRaw, {
 	selectionEnabled: import.meta.env.VITE_DATA_REGION_SELECTION_ENABLED === 'true',
 });
 export const allowedLocalesConfig: Locale[] = parseAllowedLocales(_authRaw);
-export const i18nConfig: I18nConfig = parseI18nConfig(import.meta.env.VITE_DEFAULT_LOCALE);
+export const i18nConfig: I18nConfig = parseI18nConfig(import.meta.env.VITE_DEFAULT_LOCALE || brandPack.defaultLocale);
 
 /** Returns the app's active brand config. Not a React hook — safe to call anywhere. */
 export function useBrand(): BrandConfig {
 	return brandConfig;
 }
 
-/** Injects --brand-primary CSS var and swaps the favicon. Call once before first render. */
+/** Injects --brand-primary, tags <html data-brand>, sets the title and favicon. Call once before first render. */
 export function initBranding(): void {
 	document.documentElement.style.setProperty('--brand-primary', brandConfig.primaryColor);
+	document.documentElement.dataset.brand = brandConfig.id;
+	document.title = brandConfig.title;
 	const faviconEl = document.getElementById('app-favicon') as HTMLLinkElement | null;
 	if (faviconEl) {
 		faviconEl.href = brandConfig.favicon;

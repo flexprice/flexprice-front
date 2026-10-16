@@ -1,3 +1,6 @@
+import { brandConfig } from '@/config/branding';
+import { config } from '@/config/config';
+import { docsUrl } from '@/config/docs';
 type ModelContextNavigator = Navigator & {
 	modelContext?: {
 		provideContext: (ctx: { tools: unknown[] }) => void;
@@ -14,13 +17,13 @@ export function registerWebMCPTools() {
 			{
 				name: 'get_flexprice_app_info',
 				description:
-					'Returns metadata about the Flexprice dashboard the user is currently viewing: product name, build version, and canonical documentation and API URLs.',
+					'Returns metadata about the billing dashboard the user is currently viewing: product name, build version, and canonical documentation and API URLs.',
 				inputSchema: { type: 'object', properties: {}, additionalProperties: false },
 				execute: async () => ({
-					name: 'Flexprice Dashboard',
+					name: `${brandConfig.name} Dashboard`,
 					version: __APP_VERSION__,
-					docs: 'https://docs.flexprice.io',
-					api: 'https://api.cloud.flexprice.io',
+					docs: docsUrl(),
+					api: config.api.baseUrl,
 				}),
 			},
 		],
