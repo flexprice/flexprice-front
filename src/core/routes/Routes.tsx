@@ -3,7 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router';
 import AuthMiddleware from '../auth/AuthProvider';
 import { useUser } from '@/hooks/UserContext';
 import { TenantMetadataKey } from '@/models/Tenant';
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { Loader } from '@/components/atoms';
 import { config } from '@/config/config';
 import { requirePermission } from '@/core/routes/useRouteAccess';
@@ -101,6 +101,8 @@ import {
 } from '@/pages';
 import { ErrorPage } from '@/components/organisms';
 import { RouterErrorElement } from '@/components/atoms/ErrorBoundary';
+
+const RevenueReports = lazy(() => import('@/pages/insights-tools/revenue/reports/RevenueReports'));
 
 export const RouteNames = {
 	// customer portal
@@ -604,7 +606,18 @@ export const MainRouter: any = createBrowserRouter([
 				? [
 						{
 							path: RouteNames.revenue,
-							element: <Revenue />,
+							element: config.platform.reports.enabled ? (
+								<Suspense
+									fallback={
+										<div className='flex h-96 w-full items-center justify-center'>
+											<Loader />
+										</div>
+									}>
+									<RevenueReports />
+								</Suspense>
+							) : (
+								<Revenue />
+							),
 						},
 					]
 				: []),
