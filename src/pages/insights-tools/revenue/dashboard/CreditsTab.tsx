@@ -43,18 +43,33 @@ export const CreditFlow = ({ controls }: { controls: DashboardControls }) => {
 	const [topups, consumption] = useQueries({
 		queries: [
 			reportQ('credit_topups', { shape: 'timeseries', grain }, controls),
-			reportQ('credit_consumption', { shape: 'timeseries', grain }, controls),
+			reportQ('credit_consumption', { shape: 'timeseries', grain, dimensions: ['credit_type'] }, controls),
 		],
 	});
-	const data = mergeSeries(
-		{
-			topups: { result: topups.data, column: 'credit_topups' },
-			consumed: { result: consumption.data, column: 'credit_consumption' },
-		},
-		controls.currency,
-	).map((r) => ({ ...r, net: (Number(r.topups) || 0) - (Number(r.consumed) || 0) }));
+	const topupRows = mergeSeries({ topups: { result: topups.data, column: 'credit_topups' } }, controls.currency);
+	const creditRows = recordsOf(consumption.data, controls.currency);
+	const consumptionByBucket = new Map<string, { free: number; paid: number }>();
+	for (const row of creditRows) {
+		const bucket = row.bucket ?? '';
+		const type = row.credit_type ?? '';
+		const value = numOf(row.credit_consumption) ?? 0;
+		const current = consumptionByBucket.get(bucket) ?? { free: 0, paid: 0 };
+		if (type === 'paid') current.paid += value;
+		else if (type === 'free') current.free += value;
+		consumptionByBucket.set(bucket, current);
+	}
+	const topupByBucket = new Map(topupRows.map((row) => [row.bucket, Number(row.topups) || 0]));
+	const buckets = new Set([...topupByBucket.keys(), ...consumptionByBucket.keys()]);
+	const data = [...buckets].sort().map((bucket) => {
+		const split = consumptionByBucket.get(bucket) ?? { free: 0, paid: 0 };
+		const consumed = split.free + split.paid;
+		const toppedUp = topupByBucket.get(bucket) ?? 0;
+		return { bucket, topups: toppedUp, consumed, free: split.free, paid: split.paid, net: toppedUp - consumed };
+	});
 	const toppedUp = sumField(data, 'topups');
 	const consumed = sumField(data, 'consumed');
+	const free = sumField(data, 'free');
+	const paid = sumField(data, 'paid');
 	const net = toppedUp !== undefined || consumed !== undefined ? (toppedUp ?? 0) - (consumed ?? 0) : undefined;
 	const xLabel = (b: string) => bucketLabel(b, grain);
 	const cell = (key: string) => (r: SeriesRow) => Number(r[key]) || 0;
@@ -62,6 +77,8 @@ export const CreditFlow = ({ controls }: { controls: DashboardControls }) => {
 		{ key: 'bucket', label: t(`${C}.period`), value: (r) => r.bucket, render: (r) => xLabel(r.bucket) },
 		{ key: 'topups', label: t(`${O}.toppedUp`), numeric: true, value: cell('topups'), render: (r) => full(cell('topups')(r)) },
 		{ key: 'consumed', label: t(`${O}.consumed`), numeric: true, value: cell('consumed'), render: (r) => full(cell('consumed')(r)) },
+		{ key: 'free', label: t(`${C}.free`), numeric: true, value: cell('free'), render: (r) => full(cell('free')(r)) },
+		{ key: 'paid', label: t(`${C}.paid`), numeric: true, value: cell('paid'), render: (r) => full(cell('paid')(r)) },
 		{ key: 'net', label: t(`${C}.net`), numeric: true, value: cell('net'), render: (r) => signed(cell('net')(r)) },
 	];
 	const footer = { bucket: t(`${RP}.total`), topups: toppedUp ?? 0, consumed: consumed ?? 0, net: net ?? 0 };
@@ -100,6 +117,8 @@ export const CreditFlow = ({ controls }: { controls: DashboardControls }) => {
 				stats={[
 					{ label: t(`${O}.toppedUp`), value: toppedUp !== undefined ? full(toppedUp) : '—' },
 					{ label: t(`${O}.consumed`), value: consumed !== undefined ? full(consumed) : '—' },
+					{ label: t(`${C}.free`), value: free !== undefined ? full(free) : '—' },
+					{ label: t(`${C}.paid`), value: paid !== undefined ? full(paid) : '—' },
 					{ label: t(`${C}.net`), value: net !== undefined ? signed(net) : '—' },
 				]}
 			/>
@@ -109,7 +128,8 @@ export const CreditFlow = ({ controls }: { controls: DashboardControls }) => {
 				<SeriesChart
 					data={data}
 					series={[
-						{ key: 'consumed', label: t(`${O}.consumed`), color: CONSUMED_COLOR, total: compact(consumed ?? 0) },
+						{ key: 'free', label: t(`${C}.free`), color: PALETTE[4], total: compact(free ?? 0) },
+						{ key: 'paid', label: t(`${C}.paid`), color: CONSUMED_COLOR, total: compact(paid ?? 0) },
 						{ key: 'topups', label: t(`${O}.toppedUp`), color: TOPPED_UP_COLOR, total: compact(toppedUp ?? 0) },
 					]}
 					xLabel={xLabel}

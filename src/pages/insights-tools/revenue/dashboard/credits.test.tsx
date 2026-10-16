@@ -48,10 +48,12 @@ const report = (key: string, req: ReportQueryRequest): ReportQueryResult => {
 		);
 	if (key === 'credit_consumption')
 		return res(
-			[D('bucket'), D('currency'), M('credit_consumption')],
+			[D('bucket'), D('credit_type'), D('currency'), M('credit_consumption')],
 			[
-				['2026-01-01T00:00:00Z', 'usd', '2500'],
-				['2026-02-01T00:00:00Z', 'usd', '5000'],
+				['2026-01-01T00:00:00Z', 'paid', 'usd', '1500'],
+				['2026-01-01T00:00:00Z', 'free', 'usd', '1000'],
+				['2026-02-01T00:00:00Z', 'paid', 'usd', '3500'],
+				['2026-02-01T00:00:00Z', 'free', 'usd', '1500'],
 			],
 		);
 	if (key === 'events_volume')
@@ -121,6 +123,12 @@ describe('credits tab', () => {
 			expect(run).toHaveBeenCalledWith('events_volume', { shape: 'timeseries', grain: 'day', range: '2026-10-08..2026-10-15' }),
 		);
 		expect(run).toHaveBeenCalledWith('credit_topups', { shape: 'timeseries', grain: 'month', range: '2026-01-01..2026-10-16' });
+		expect(run).toHaveBeenCalledWith('credit_consumption', {
+			shape: 'timeseries',
+			grain: 'month',
+			dimensions: ['credit_type'],
+			range: '2026-01-01..2026-10-16',
+		});
 		expect(run).toHaveBeenCalledWith('credit_topups', {
 			shape: 'breakdown',
 			dimensions: ['transaction_reason'],
@@ -142,7 +150,12 @@ describe('credits tab', () => {
 		const flow = panel('Credit consumption vs. top-ups');
 		fireEvent.click(within(flow).getByRole('button', { name: 'Day' }));
 		await waitFor(() =>
-			expect(run).toHaveBeenCalledWith('credit_consumption', { shape: 'timeseries', grain: 'day', range: '2026-01-01..2026-10-16' }),
+			expect(run).toHaveBeenCalledWith('credit_consumption', {
+				shape: 'timeseries',
+				grain: 'day',
+				dimensions: ['credit_type'],
+				range: '2026-01-01..2026-10-16',
+			}),
 		);
 	});
 

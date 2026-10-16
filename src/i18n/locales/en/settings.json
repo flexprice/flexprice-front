@@ -1965,9 +1965,11 @@
 					"consumed": "Consumed"
 				},
 				"credits": {
-					"flowDef": "Wallet credits added and applied to invoices per period",
+					"flowDef": "Wallet credits added and applied to invoices per period, valued at the debit conversion rate",
 					"period": "Period",
 					"net": "Net change",
+					"free": "Free consumed",
+					"paid": "Paid consumed",
 					"byReason": "Top-ups by reason",
 					"byReasonDef": "Credits added in the period, by why they were granted",
 					"credits": "Credits",

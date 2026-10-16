@@ -88,7 +88,10 @@ const report = (key: string, req: ReportQueryRequest): ReportQueryResult => {
 	if (key === 'days_to_pay') return compared([D('currency'), M('days_to_pay'), M('days_to_pay_prev')], [['usd', '19.8', '20']], cmp);
 	if (key === 'credit_topups') return res([D('bucket'), D('currency'), M('credit_topups')], [['2026-01-01T00:00:00Z', 'usd', '8900000']]);
 	if (key === 'credit_consumption')
-		return res([D('bucket'), D('currency'), M('credit_consumption')], [['2026-01-01T00:00:00Z', 'usd', '6800000']]);
+		return res(
+			[D('bucket'), D('credit_type'), D('currency'), M('credit_consumption')],
+			[['2026-01-01T00:00:00Z', 'paid', 'usd', '6800000']],
+		);
 	return res([], []);
 };
 
