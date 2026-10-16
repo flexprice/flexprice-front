@@ -1,0 +1,1689 @@
+[
+  {
+    "file": "src/components/molecules/CustomerUsageChart.sparse.test.tsx",
+    "cases": [
+      "renders a visible marker when the series has one point",
+      "draws a line once there are two or more points",
+      "renders a sparse series alongside a dense one as a line, not nothing"
+    ]
+  },
+  {
+    "file": "src/components/molecules/MetricCard.test.tsx",
+    "cases": [
+      "renders a known zero as an amount, not a dash",
+      "renders an em dash when the value is unknown",
+      "renders a zero percentage as 0.00%",
+      "still formats a real amount"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AwsMarketplaceConnectionDrawer/AwsMarketplaceConnectionDrawer.test.tsx",
+    "cases": [
+      "joins tenant and environment ids with an underscore"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CouponAssociationTable/CouponAssociationTable.test.tsx",
+    "cases": [
+      "renders coupon name and code from loaded associations",
+      "shows Forever when end_date is absent",
+      "does not render Remove buttons when onRemove is not provided",
+      "renders row actions dropdown trigger when onRemove is provided"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ApplyCouponDialog/ApplyCouponDialog.test.tsx",
+    "cases": [
+      "renders coupon search trigger and Apply button",
+      "Apply button is disabled when no coupon is selected",
+      "Cancel button calls onOpenChange(false)"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PriceQuantityCell/PriceQuantityCell.test.tsx",
+    "cases": [
+      "hides the quantity input for USAGE prices",
+      "prefills FIXED quantity from min_quantity",
+      "emits a quantity override when the user changes a FIXED price away from the default"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionLineItemTable/SubscriptionLineItemTable.test.tsx",
+    "cases": [
+      "returns the numeric quantity for a FIXED-type row",
+      "returns the numeric quantity for a FIXED-type row with quantity 0",
+      "returns "
+    ]
+  },
+  {
+    "file": "src/components/molecules/Subscription/SubscriptionEditChargesSection.pagination.test.tsx",
+    "cases": [
+      "does not snap back to page 1 while the next page is still loading"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Subscription/SubscriptionLineItemQuantityModifyDialog.test.tsx",
+    "cases": [
+      "allows a quantity of 0 and previews with quantity ",
+      "rejects a negative quantity with an inline error and does not call preview"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EditUserRolesDialog/EditUserRolesDialog.test.tsx",
+    "cases": [
+      "pre-selects the user",
+      "disables Save until the selection actually differs from what the user already has",
+      "re-disables Save if the admin toggles back to the original selection",
+      "fetches fresh user data by ID rather than relying only on the passed-in row",
+      "re-seeds the picker from the freshly-fetched roles when they differ from the stale row prop",
+      "does not clobber a role the admin already toggled once fresh data arrives",
+      "shows a compact identity row (email, type + current roles) instead of a separate ID or ",
+      "submits the updated role selection for the given user",
+      "renders the structured active-API-keys list instead of a generic error",
+      "also finds the active-API-keys details when the error envelope nests them under ",
+      "falls back to the raw message for a plain (non-active-keys) error"
+    ]
+  },
+  {
+    "file": "src/components/molecules/DropdownMenu/DropdownMenu.test.tsx",
+    "cases": [
+      "does not nest a button inside the trigger when a Button is passed as trigger",
+      "still renders a single button when using the default icon trigger",
+      "exposes a focusable nested submenu trigger that opens from pointer and keyboard"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CouponDrawer/CouponDrawer.test.tsx",
+    "cases": [
+      "shows coupon_code field in create mode",
+      "does not show coupon_code field in edit mode"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Sidebar/SidebarItem.test.tsx",
+    "cases": [
+      "cancels the parent section",
+      "still navigates to the default page when nothing else is clicked before the delay"
+    ]
+  },
+  {
+    "file": "src/components/molecules/WalletAlertThresholdSection/WalletAlertThresholdSection.test.tsx",
+    "cases": [
+      "renders one row per severity with the fixed falls-below copy and no condition picker",
+      "has no standalone Thresholds heading and keeps the type label beside its control",
+      "gives all three rows an identically sized severity and input column",
+      "shows the currency symbol in absolute mode and % in percentage mode",
+      "keeps each threshold type\u2019s values independent across a switch and back",
+      "mutes only the controls when disabled \u2014 severity labels stay readable",
+      "omits the currency symbol when no currency applies (tenant-wide defaults)"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CreditGrant/CreditGrantModal.test.tsx",
+    "cases": [
+      "accepts a 5-decimal top-up conversion rate like wallet create"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ForceRunDrawer/ForceRunDrawer.test.tsx",
+    "cases": [
+      "opens the calendar when Start Time is clicked after selecting a custom date range",
+      "keeps the custom range fields after picking a day in the calendar"
+    ]
+  },
+  {
+    "file": "src/components/molecules/RolePicker/RolePicker.test.tsx",
+    "cases": [
+      "renders every role passed in, including ones with unrecognized ids",
+      "calls onToggle with the role id when a checkbox is clicked",
+      "keeps every checkbox clickable even when super_admin is selected",
+      "allows multiple non-super_admin roles to be selected simultaneously",
+      "shows a loading label while roles are loading",
+      "shows an empty-state message when the role list is empty and not loading/erroring",
+      "shows the error state with a working retry button instead of the checkbox list",
+      "renders the zero-selected warning as an alert when error prop is set"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Wallet/WalletTransactionsTable.test.tsx",
+    "cases": [
+      "renders a real translated transaction-reason label through a host i18next instance",
+      "colors a pending transaction amber (regression test: this table must match CustomerWalletTransactionsTable",
+      "colors a completed credit transaction teal, not amber"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ImportFileDrawer/ImportFileDrawer.test.tsx",
+    "cases": [
+      "passes tenant__env as the CSV Box user identifier",
+      "POSTs the task with file_provider=csvbox and upload_id (no file_url)"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AlertSettingsDialog/SpendAlertThresholdCard.test.tsx",
+    "cases": [
+      "offers Add and hides the value input when no threshold is set",
+      "shows the stored value as a bare number once a threshold is set",
+      "keeps the condition picker present but locked \u2014 spend alerts are always "
+    ]
+  },
+  {
+    "file": "src/components/molecules/MoyasarConnectionDrawer/MoyasarConnectionDrawer.test.tsx",
+    "cases": [
+      "prefills both URLs from the connection metadata",
+      "preserves unrelated metadata keys when saving",
+      "clears a URL by dropping its key while keeping the other",
+      "merges against the freshly read map rather than the stale prop",
+      "rejects a malformed URL without calling the API"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/SubscriptionPriceTable.test.tsx",
+    "cases": [
+      "returns 0 when the input is ",
+      "parses positive integers",
+      "falls back to minQuantity when the input does not parse to a number",
+      "truncates decimal input the same way parseInt does",
+      "keeps a one-time price regardless of the selected billing period",
+      "keeps a recurring price whose cadence matches the subscription cadence",
+      "drops a recurring price whose cadence does not divide the subscription cadence",
+      "keeps a recurring price whose cadence evenly divides a multi-count subscription cadence"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/LineItemGroupingSection.test.tsx",
+    "cases": [
+      "states the default behaviour and that the total is unaffected",
+      "reports toggle changes to the parent",
+      "associates the label with the switch, so clicking the text toggles it",
+      "reflects the checked state on the switch",
+      "renders bare in the default trailing variant, so the host section owns the heading",
+      "carries its own heading in the standalone section variant",
+      "shows the overage caveat only when the subscription carries a commitment"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/portalReturnUrl.test.ts",
+    "cases": [
+      "strips the session token from the return URL",
+      "keeps the section the customer was on",
+      "does not carry a provider",
+      "drops parameters it does not recognise",
+      "round-trips the token across browsing contexts",
+      "refuses a stored token past its lifetime",
+      "drops a token it cannot date",
+      "forgets the token on request",
+      "returns null when nothing was stored"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/useCheckoutTabHandoff.test.tsx",
+    "cases": [
+      "does nothing on an ordinary visit",
+      "lets the announcement dispatch before tearing the tab down",
+      "renders the portal when the browser refuses to close the tab"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/refetchPortalQueries.test.ts",
+    "cases": [
+      "a list of distinct roots matches nothing as one prefix",
+      "matches both when each root is queried separately",
+      "stops as soon as the wallet reflects the payment",
+      "keeps re-checking while the wallet is unchanged",
+      "refreshes once when nothing is cached to compare against",
+      "includes the caller-supplied keys in every round"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/TabRenderer.test.tsx",
+    "cases": [
+      "forwards usageData as undefined (not []) when the caller omits it, so the fallback query stays enabled",
+      "still forwards an explicitly pre-fetched usageData array through unchanged"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/useCheckoutReturn.test.tsx",
+    "cases": [
+      "does nothing when no checkout is pending",
+      "picks up a checkout started after mount",
+      "reports success and refreshes balances when the session completed",
+      "tells subscribers when a checkout settles",
+      "reports a failed outcome to subscribers too",
+      "prefers the gateway failure reason over the generic message",
+      "reports an expired session distinctly from a failure",
+      "clears the pending checkout once it reaches a terminal state",
+      "stays quiet while the session is still pending"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/portalTheme.test.ts",
+    "cases": [
+      "produces a space-separated triple, not a hex string",
+      "expands the three-digit form",
+      "refuses anything it cannot read",
+      "separates light from dark backgrounds",
+      "writes a full set of tokens even with no theme",
+      "takes the tenant",
+      "flips text light on a dark tenant background",
+      "falls back to the portal default for a colour it cannot parse"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/checkoutHandoff.test.ts",
+    "cases": [
+      "reports a redirect landing and strips the marker",
+      "reports an ordinary visit and leaves the URL alone",
+      "delivers the announcement to a subscriber",
+      "announces no payment outcome"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/CheckoutLinkDialog.test.tsx",
+    "cases": [
+      "dismisses itself once the checkout completes",
+      "dismisses itself when the customer returns, even with no outcome",
+      "stays open on a failed outcome with no return",
+      "shows the link so a blocked redirect is not a dead end"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/PaymentMethodsWidget.test.tsx",
+    "cases": [
+      "renders the empty state when no cards are saved",
+      "renders a saved card with brand, last4, expiry and the default badge",
+      "distinguishes a provider that could not be read from one with no cards",
+      "sends provider and method id when promoting a card to default",
+      "confirms before removing a card, then sends provider and method id",
+      "opens a redirect action in a new tab and keeps the link on the page",
+      "does not redirect when the setup action is none",
+      "distinguishes an integrations failure from an unsupported account",
+      "hides Set as default for a provider that does not support it",
+      "says so when no provider supports managing payment methods",
+      "gives the empty state an icon"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/SubscriptionsWidget.test.tsx",
+    "cases": [
+      "lists subscriptions as rows, not nested cards",
+      "states the period and next billing on one line, without a colon",
+      "counts the subscriptions in the header"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/TopUpWidget.test.tsx",
+    "cases": [
+      "renders the empty state when the customer has no wallet",
+      "keeps the action disabled until a positive credit amount is entered",
+      "Pay now opens the checkout and keeps the link on the page",
+      "never sends a transaction reason, and always sends an idempotency key",
+      "quotes the charge using the top-up conversion rate, not the spend rate",
+      "falls back to the spend rate when no top-up rate is set",
+      "reports success when a saved-card charge settles with no redirect",
+      "reports the gateway reason when the session failed",
+      "reports a pending session as in flight, not as a failure",
+      "disables the saved-card toggle when no provider can charge off-session",
+      "explains a missing saved card separately from an unsupported provider",
+      "names the checkout provider explicitly",
+      "shows the single gateway, pre-selected, with no choice to make",
+      "asks which gateway to use when more than one can host checkout",
+      "sends the provider the customer picked",
+      "sends no provider config and no save-card flag",
+      "names the checkout provider from /integrations",
+      "lets the customer pay when no gateway can host a checkout"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/AccountSummaryWidget.test.tsx",
+    "cases": [
+      "sums amount due from finalized unpaid invoices only",
+      "shows the rounded balance with the sign outside the symbol",
+      "shows the next billing date from the active subscription",
+      "falls back to a dash when there is no active subscription"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/AutoTopUpWidget.test.tsx",
+    "cases": [
+      "renders the empty state when the customer has no wallet",
+      "seeds threshold and amount from the saved config",
+      "hides the configuration fields while auto top-up is off",
+      "sends the configured threshold and amount on save",
+      "blocks saving an enabled config when no card can be charged",
+      "allows saving once a chargeable card exists",
+      "flags that there is no saved payment method to auto-charge",
+      "puts the warning immediately before the save button, and only once",
+      "sends no invoicing flag \u2014 that is the tenant",
+      "blocks saving a cool-off that is enabled but has no value",
+      "clears a cooloff by sending a zero duration, not null",
+      "blocks saving an enabled config"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/InvoicesWidget.test.tsx",
+    "cases": [
+      "lists only finalized invoices",
+      "shows the empty state when every invoice is a draft",
+      "renders each row with its own currency symbol",
+      "offers pay, view and download, with pay disabled once the invoice is settled",
+      "Pay now starts a payment and opens the returned action URL",
+      "reuses the idempotency key when the same invoice is retried",
+      "shows the payment link in a dialog alongside the redirect",
+      "opens the detail drawer from the invoice number and loads the full invoice",
+      "shows the invoice totals breakdown in the drawer",
+      "shows drawer amounts at two decimals, like the rest of the portal"
+    ]
+  },
+  {
+    "file": "src/components/atoms/ShortPagination/ShortPaginationControls.test.tsx",
+    "cases": [
+      "renders real translated pagination text through a host i18next instance (regression test for the router-leak/i18n-bundling fix)",
+      "renders the bundled English default when no host i18next instance is present",
+      "resyncs the controlled page to 1 when the total shrinks below the current page (page 2 -> page 1)",
+      "does not call onPageChange when the current page is already in range"
+    ]
+  },
+  {
+    "file": "src/components/atoms/Input/Input.test.tsx",
+    "cases": [
+      "should render a basic input",
+      "should render input with label",
+      "should render input with description",
+      "should render input with error",
+      "should apply custom className",
+      "should apply disabled state",
+      "should render input with placeholder",
+      "should render input with prefix",
+      "should render input with suffix",
+      "should format integer input correctly",
+      "should format number input with thousand separators",
+      "should handle negative number input",
+      "strips non-ASCII by default on text variant",
+      "allows printable ASCII when english only is enforced",
+      "does not strip non-ASCII when englishOnly is false",
+      "should call onChange when input value changes",
+      "should prevent invalid input for number variants",
+      "should have associated label when id is provided",
+      "should render label with correct htmlFor attribute"
+    ]
+  },
+  {
+    "file": "src/components/atoms/SectionHeader/SectionHeader.test.tsx",
+    "cases": [
+      "does not wrap a compound title in a paragraph (invalid <div> inside <p>)"
+    ]
+  },
+  {
+    "file": "src/components/atoms/PaymentUrlSuccessDialog/PaymentUrlSuccessDialog.test.tsx",
+    "cases": [
+      "renders the payment link so a blocked popup is recoverable",
+      "tells the user what to do when the page did not open",
+      "offers both opening and copying the link"
+    ]
+  },
+  {
+    "file": "src/components/atoms/DateRangePicker/DateRangePicker.test.tsx",
+    "cases": [
+      "renders no button nested inside another button",
+      "puts the popup semantics on the focusable button",
+      "keeps popoverTriggerClassName on the outermost box",
+      "renders no overlay clear icon outside the trigger button",
+      "clears the selection through the footer Clear action",
+      "offers no Clear action while nothing is selected",
+      "does not clear the selection when the selected day is clicked again"
+    ]
+  },
+  {
+    "file": "src/components/atoms/DatePicker/DatePicker.test.tsx",
+    "cases": [
+      "is not rendered when clearable is not set",
+      "is not rendered when clearable is set but no date is selected",
+      "is not rendered when the picker is disabled",
+      "resets the date to undefined when clicked",
+      "does not open the calendar popover when clicked",
+      "opens on the selected date\u2019s month/year, not the current month",
+      "opens on the current month when no date is selected"
+    ]
+  },
+  {
+    "file": "src/components/atoms/Select/Select.test.tsx",
+    "cases": [
+      "associates the visible label with the trigger",
+      "includes the required marker in the accessible name",
+      "points the label at a caller-supplied id",
+      "gives each instance its own generated id",
+      "names the trigger with ariaLabel when there is no visible label",
+      "keeps the visible label as the accessible name when both are given"
+    ]
+  },
+  {
+    "file": "src/components/atoms/SegmentedControl/SegmentedControl.test.tsx",
+    "cases": [
+      "renders every option as a button with its label",
+      "marks the active option pressed and the other one not",
+      "calls onChange with the clicked option value",
+      "does not call onChange when clicking the already-active option",
+      "disables every option and stops onChange from firing when disabled"
+    ]
+  },
+  {
+    "file": "src/components/atoms/ActionButton/ActionButton.test.tsx",
+    "cases": [
+      "should render the trigger button",
+      "should give the trigger an accessible name by default",
+      "should use a caller-supplied accessible name when ariaLabel is passed",
+      "should render with custom trigger icon",
+      "should render edit action when enabled",
+      "should render archive action when enabled",
+      "should render custom actions",
+      "should not render disabled actions",
+      "should call onClick when edit action is clicked",
+      "should navigate when edit path is provided",
+      "should open confirmation dialog when archive action is clicked",
+      "should call delete mutation when confirmed",
+      "should show success toast on successful deletion",
+      "should show error toast on deletion failure",
+      "should not show toast when disableToast is true",
+      "should call onClick when custom action is clicked",
+      "should support legacy edit props",
+      "should support legacy archive props",
+      "should not render Copy ID when copyId prop is omitted",
+      "should render the generic ",
+      "should show an entity-specific toast message when entityType is given",
+      "should render a custom label when provided",
+      "should close dialog when cancel is clicked"
+    ]
+  },
+  {
+    "file": "src/utils/errorMessage.test.ts",
+    "cases": [
+      "returns Error.message",
+      "returns string throws",
+      "reads axios-like response.data.message",
+      "falls back to generic copy when shape is unknown"
+    ]
+  },
+  {
+    "file": "src/utils/webhooks/activityStats.test.ts",
+    "cases": [
+      "sums success and fail across endpoints",
+      "builds 6 consecutive hourly windows ending at now",
+      "aggregates hourly getStats into activity summary",
+      "returns empty summary when there are no endpoints"
+    ]
+  },
+  {
+    "file": "src/utils/webhooks/svixPlay.test.ts",
+    "cases": [
+      "builds ingest and inspector urls from a token",
+      "parses object token responses",
+      "parses string token responses",
+      "throws when the request fails",
+      "throws when the response body is invalid"
+    ]
+  },
+  {
+    "file": "src/utils/customer/mergeCustomerSearchMetadata.test.ts",
+    "cases": [
+      "returns base metadata unchanged when org type is not selected",
+      "adds org_type metadata when parent or child is selected",
+      "keeps metadata filter org_type when both toolbar and metadata filter are set"
+    ]
+  },
+  {
+    "file": "src/utils/customer/orgTypeMetadataFilterSync.test.ts",
+    "cases": [
+      "detects org_type in metadata filters",
+      "removes org_type rows from metadata filters"
+    ]
+  },
+  {
+    "file": "src/utils/wallet/walletAlertUtils.test.ts",
+    "cases": [
+      "returns true when balance is below threshold",
+      "returns false when balance is above below-threshold",
+      "returns true when balance is above threshold",
+      "returns null when alerts are disabled",
+      "returns null when no thresholds are configured",
+      "returns critical state for balance below critical threshold",
+      "returns warning state for balance below warning threshold",
+      "returns info state for balance below info threshold",
+      "returns ok when balance is healthy",
+      "returns false when balance is healthy",
+      "returns true when an alert threshold is triggered",
+      "returns true when alerts are enabled with a threshold",
+      "syncs all threshold conditions to the master condition before save",
+      "drops thresholds with empty values",
+      "writes the value with condition below",
+      "rewrites a legacy above threshold to below when edited",
+      "clears the level to null for a blank value rather than storing an empty string",
+      "leaves the other levels untouched",
+      "returns null when alerts are disabled",
+      "requires at least one threshold when alerts are enabled",
+      "requires critical when warning is set",
+      "rejects above condition when warning is greater than critical",
+      "accepts above condition when warning is less than critical",
+      "rejects below condition when warning is less than critical",
+      "accepts below condition when warning is greater than critical",
+      "rejects above info threshold greater than warning",
+      "rejects below info threshold less than warning",
+      "defaults to below, so ascending thresholds are valid",
+      "rejects the same ascending thresholds when the caller asks for above (spend alerts)",
+      "writes above when the caller asks for it",
+      "defaults to absolute when alert_threshold_type is undefined",
+      "defaults to absolute when settings is null/undefined",
+      "returns percentage when explicitly set",
+      "seeds an empty draft (both sides empty, absolute active) when settings is absent",
+      "puts absolute-mode settings on the absolute side and leaves percentage empty",
+      "puts percentage-mode settings on the percentage side and leaves absolute empty",
+      "returns the absolute side when active",
+      "returns the percentage side when active",
+      "switching threshold type changes only alert_threshold_type, preserving both sides",
+      "switching back restores the other side unchanged (round trip)",
+      "setWalletAlertDraftEnabled changes only alert_enabled",
+      "applies the updater only to the active side, leaving the inactive side untouched",
+      "toWalletAlertSettingsForValidation composes the active side with alert_enabled/alert_threshold_type",
+      "fromWalletAlertDraftForSave normalizes the active side and keeps alert_threshold_type",
+      "fromWalletAlertDraftForSave still drops an empty/unparseable threshold via the existing normalize logic",
+      "accepts 0 and 100 as valid boundary values",
+      "rejects a negative percentage",
+      "rejects a percentage above 100",
+      "never range-checks in absolute mode, even for a value > 100",
+      "never range-checks in absolute mode when alert_threshold_type is entirely absent",
+      "skips an unset (null) threshold rather than treating it as out of range"
+    ]
+  },
+  {
+    "file": "src/utils/common/price_helpers.test.ts",
+    "cases": [
+      "caps a long floating-point decimal tail to 6 places instead of rendering it in full",
+      "leaves short, common decimal amounts unchanged",
+      "leaves whole-number amounts unchanged",
+      "caps the divideBy-derived unit amount for PACKAGE billing",
+      "caps the first tier unit amount for TIERED billing",
+      "renders the stored decimal as the percentage the user entered",
+      "surfaces the percentage billing model, not the flat fee it is stored as",
+      "renders an untagged flat fee as a currency amount",
+      "renders a fixed percentage charge as a percentage in the price table",
+      "renders a usage percentage charge without the per-unit suffix in the price table",
+      "ignores a stale marker once the charge is overridden onto another billing model"
+    ]
+  },
+  {
+    "file": "src/utils/common/percentage_price_helpers.test.ts",
+    "cases": [
+      "converts the percentages from the spec",
+      "is exact where floating-point division is not",
+      "handles whole, zero and high percentages",
+      "returns an empty string for empty input",
+      "converts the stored decimals from the spec back to percentages",
+      "round-trips values entered in the form",
+      "returns an empty string for empty input",
+      "leaves non-numeric input untouched rather than producing a bogus number",
+      "preserves the sign, except on zero",
+      "detects the marker",
+      "only treats a flat fee as a percentage",
+      "ignores a stale marker on a charge that has moved to another billing model",
+      "adds the marker while keeping unrelated keys",
+      "strips the marker and drops metadata that becomes empty",
+      "leaves a caller",
+      "does not collide with a real backend billing model"
+    ]
+  },
+  {
+    "file": "src/utils/common/openPaymentUrl.test.ts",
+    "cases": [
+      "reports success when the browser allows the open",
+      "reports failure when a popup blocker returns null",
+      "reports failure when the browser throws instead",
+      "refuses a javascript: url without calling window.open",
+      "refuses data: and file: schemes",
+      "accepts http and https",
+      "does nothing without a url",
+      "refuses http for a non-local host",
+      "still allows http for a local gateway"
+    ]
+  },
+  {
+    "file": "src/utils/common/Logger.test.ts",
+    "cases": [
+      "logs the Error message/stack instead of ",
+      "still JSON-stringifies plain objects"
+    ]
+  },
+  {
+    "file": "src/utils/common/custom_currency.test.ts",
+    "cases": [
+      "falls back to the code when nothing is configured",
+      "resolves a configured symbol regardless of case",
+      "leaves real currencies alone",
+      "is used by every formatter",
+      "formats a code Intl rejects",
+      "does not throw on an unconfigured code Intl rejects",
+      "resolves the display name too",
+      "handles empty and missing input",
+      "tolerates a missing or partial value",
+      "lowercases codes and falls back to the code when no name is set",
+      "skips entries with no symbol",
+      "lifts the fiat currencies out of the per-currency factors",
+      "round-trips back to the setting payload",
+      "clears the setting when the last currency is removed",
+      "accepts a valid draft and an empty one",
+      "rejects what the backend rejects",
+      "the symbol loader survives whatever is cached under it",
+      "is not reported as invalid",
+      "is dropped on save, clearing the config",
+      "still validates a row the user has started",
+      "drops values that are not strings",
+      "accepts numeric factors and codes",
+      "falls back whole when the payload is not an object",
+      "builds a FIAT option carrying the code",
+      "offers nothing when the tenant has configured nothing",
+      "leads with the tenant currencies, then the standard list"
+    ]
+  },
+  {
+    "file": "src/utils/common/format_date.test.tsx",
+    "cases": [
+      "utc zone uses the UTC calendar day for IST midnight instants",
+      "local zone uses the local calendar day for IST midnight instants",
+      "formats IST-aligned invoice period as local calendar days (no exclusive-end shift)",
+      "formats UTC midnight bounds in local time"
+    ]
+  },
+  {
+    "file": "src/utils/common/formatPayableAmount.test.ts",
+    "cases": [
+      "keeps two decimals for typical amounts",
+      "preserves sub-cent precision instead of rounding",
+      "formats zero as 0.00",
+      "shows sub-cent fixed addon charges correctly",
+      "does not round 0.005 up to 0.01"
+    ]
+  },
+  {
+    "file": "src/utils/common/formatBalance.test.ts",
+    "cases": [
+      "rounds a full-precision credit balance instead of printing every digit",
+      "keeps genuinely fractional credits",
+      "drops trailing zeros on whole credit amounts",
+      "always renders money at two decimals",
+      "degrades safely on absent or non-numeric input"
+    ]
+  },
+  {
+    "file": "src/utils/common/format_currency_amount.test.ts",
+    "cases": [
+      "renders zero as 0.00 instead of dash",
+      "renders null without currency as dash",
+      "renders negative amounts with sign when requested"
+    ]
+  },
+  {
+    "file": "src/utils/common/connection_metadata_helpers.test.ts",
+    "cases": [
+      "sets a key when given a non-empty value",
+      "preserves keys that are not part of the update",
+      "overwrites an existing key with the new value",
+      "deletes the key when the value is blank rather than storing an empty string",
+      "deletes the key when the value is only whitespace",
+      "deletes the key when the value is undefined",
+      "trims surrounding whitespace from stored values",
+      "treats an undefined existing map as empty",
+      "returns an empty map when clearing the only key",
+      "does not mutate the existing map",
+      "applies several updates at once"
+    ]
+  },
+  {
+    "file": "src/utils/region/regionUtils.test.ts",
+    "cases": [
+      "returns the matching region when origin matches",
+      "returns null when no region URL matches current origin",
+      "returns null for empty regions array"
+    ]
+  },
+  {
+    "file": "src/utils/region/flagMap.test.ts",
+    "cases": [
+      "returns a component for a known country code",
+      "is case-insensitive",
+      "returns null for unknown country code"
+    ]
+  },
+  {
+    "file": "src/utils/auth/signupMetadata.test.ts",
+    "cases": [
+      "builds signup metadata with region and browser context",
+      "persists and retrieves signup metadata from sessionStorage"
+    ]
+  },
+  {
+    "file": "src/utils/subscription/planPricesForSubscriptionUi.test.ts",
+    "cases": [
+      "routes exact-cadence prices to primary and finer-cadence to additional",
+      "routes ONETIME to primary regardless of sub cadence",
+      "drops coarser-cadence prices from both partitions",
+      "filters by currency (case-insensitive)",
+      "routes multiple additional-cadence prices into additional partition",
+      "respects billing_period_count for exact-match (quarterly x 2 sub vs quarterly x 1 price is NOT exact)",
+      "normalizes period to uppercase and pins count",
+      "defaults undefined / non-positive counts to 1",
+      "buckets multiple monthly prices under a single MONTHLY:1 group in plan order",
+      "separates by count",
+      "returns empty array for empty input"
+    ]
+  },
+  {
+    "file": "src/utils/subscription/cadenceCompatibility.test.ts",
+    "cases": [
+      "converts month-based periods to effective months",
+      "returns null for daily / weekly / onetime",
+      "treats missing / zero count as 1",
+      "accepts lower-case string periods (defensive)",
+      "ONETIME on either side is NOT compatible on the recurring scale (matches backend contract)",
+      "same-cadence pairs are compatible",
+      "monthly item divides quarterly / half-yearly / annual sub",
+      "quarterly item divides half-yearly and annual sub",
+      "half-yearly item divides annual sub",
+      "coarser item is NOT compatible with finer sub",
+      "annual item is NOT compatible with quarterly sub (12 % 3 == 0 but item > sub)",
+      "quarterly item on annual sub with count > 1: item_count respected",
+      "DAILY / WEEKLY require exact match with same count",
+      "returns 1 for same-cadence pairs",
+      "returns null for ONETIME on either side (callers must short-circuit ONETIME)",
+      "returns fan-out count when item is finer than sub",
+      "returns null for incompatible pairs"
+    ]
+  },
+  {
+    "file": "src/utils/subscription/lineItemGrouping.test.ts",
+    "cases": [
+      "splits when the charge cadence strictly divides the subscription cadence",
+      "does not split on equal cadence",
+      "does not split when the charge cadence is longer or non-dividing",
+      "never splits ONETIME, DAILY or WEEKLY charges",
+      "never splits when the subscription itself is daily / weekly / onetime",
+      "treats missing / zero counts as 1 and accepts lower-case periods",
+      "is false for an empty charge list",
+      "is true when at least one attached charge splits",
+      "is false when every attached charge matches or exceeds the subscription cadence"
+    ]
+  },
+  {
+    "file": "src/utils/subscription/quantityValidation.test.ts",
+    "cases": [
+      "parses numbers and decimal strings",
+      "returns undefined for missing or invalid values",
+      "accepts zero",
+      "accepts positive integers and decimals",
+      "accepts comma-separated thousands",
+      "trims surrounding whitespace",
+      "rejects negative numbers",
+      "rejects empty or whitespace-only input",
+      "rejects non-numeric input"
+    ]
+  },
+  {
+    "file": "src/utils/subscription/addonQuantity.test.ts",
+    "cases": [
+      "uses min_quantity when the FIXED price has one",
+      "defaults FIXED prices without min_quantity to 1",
+      "returns 0 for USAGE prices so quantity is never sent",
+      "prefers an explicit numeric override, including zero",
+      "parses a decimal-string override",
+      "falls back to min_quantity when the override is missing or invalid",
+      "returns 0 for USAGE even when an override is present",
+      "shows the override quantity for a single FIXED price",
+      "prefills min_quantity when quantity is omitted",
+      "hides quantity for USAGE-only addons",
+      "joins distinct FIXED quantities",
+      "formats quantity \u00d7 unit charge the same way create-sub does",
+      "returns the usage label when there is no FIXED price",
+      "multiplies unit amount by overridden quantity",
+      "uses min_quantity when quantity is omitted",
+      "uses an amount override when present",
+      "stringifies FIXED quantity and keeps the catalogue price_id",
+      "keeps quantity 0 for FIXED prices",
+      "drops quantity on USAGE prices",
+      "keeps a USAGE override that still has another field after quantity is stripped",
+      "keeps the first entry when the same price_id is duplicated",
+      "returns undefined when there are no overrides",
+      "maps create-sub quantity through getLineItemOverrides into addons[].override_line_items",
+      "treats a started line without an end date as active",
+      "treats a future start date as inactive",
+      "treats an ended line as inactive",
+      "maps active lines into the create-sub prices + override_line_items shape",
+      "falls back to upcoming FIXED quantity when no line is currently active",
+      "keeps FIXED display when the embedded price is missing type"
+    ]
+  },
+  {
+    "file": "src/utils/subscription/isInheritedSubscription.test.ts",
+    "cases": [
+      "returns true only for subscription_type inherited",
+      "returns false for grouped_invoicing even with a parent link",
+      "returns false for standalone, parent, delegated_invoicing, and missing type"
+    ]
+  },
+  {
+    "file": "src/utils/subscription/formatSubscriptionTypeDisplay.test.ts",
+    "cases": [
+      "maps known subscription types to labels",
+      "title-cases unknown snake_case values"
+    ]
+  },
+  {
+    "file": "src/utils/analytics/mergeUsageAndCostAnalytics.test.ts",
+    "cases": [
+      "joins cogs and margin when meter_id matches",
+      "returns unmatched cost rows when meter_id is absent from usage",
+      "leaves cogs and margin null when usage row has no meter_id",
+      "allocates meter cogs across all usage rows sharing the meter_id by revenue share",
+      "allocates meter cogs by usage share when revenue is zero"
+    ]
+  },
+  {
+    "file": "src/hooks/useFilterSortingWithPersistence.test.tsx",
+    "cases": [
+      "fresh load with no URL or session state uses prop defaults",
+      "applying a filter writes it to the URL and keeps page at 1",
+      "changing filter while on page > 1 resets page to 1 but keeps filter in URL",
+      "changing filter while already on page 1 does not cause extra URL writes",
+      "clearing all filters removes the filter URL param",
+      "clearing all sorts removes the sort URL param",
+      "hydrates state from URL params on first load (shareable link)",
+      "restores filters from shared URL even when page in URL was > 1",
+      "restores filters from session storage when URL has no params",
+      "URL params take priority over session storage when both are present",
+      "uses window.location as authoritative source on first render tick",
+      "keeps persisted filters when pagination resets",
+      "resets page to 1 when filters change on a non-first page",
+      "resets page to 1 when sorts change on a non-first page",
+      "does not write any URL params when persistenceKey is omitted",
+      "persists both filters and sorts in the URL simultaneously",
+      "does not remove unrelated URL params when writing filters"
+    ]
+  },
+  {
+    "file": "src/hooks/useCurrentUserPermissions.test.ts",
+    "cases": [
+      "*:* grants every entity and action",
+      "*:read grants read on any entity but not write",
+      "entity:* grants both read and write on that entity only",
+      "entity:read grants only read on that entity",
+      "denies an unrelated entity not mentioned in the permission map",
+      "grants access if ANY held role grants it, even if another role does not",
+      "denies everything when the user holds no roles",
+      "does not throw and denies access when a held role id is missing from the fetched role definitions",
+      "isSuperAdmin is true only when super_admin is among the held roles",
+      "reports isLoading true while the user or the role definitions are still loading",
+      "reports isLoading true when the user has loaded but the roles query has not fetched even once yet (enabled just flipped true, fetch not dispatched)",
+      "surfaces isError from the roles query"
+    ]
+  },
+  {
+    "file": "src/hooks/useVersionCheck.test.tsx",
+    "cases": [
+      "renders the update notice as a themed card on a transparent toast shell"
+    ]
+  },
+  {
+    "file": "src/types/dto/CustomerOnboarding.test.ts",
+    "cases": [
+      "returns the default config for non-object input",
+      "parses a create_wallet action, defaulting missing/optional fields",
+      "keeps conversion_rate only when present",
+      "parses wallet_type when present",
+      "drops an invalid wallet_type",
+      "parses wallet initial credits and relative expiry fields",
+      "drops an invalid credits expiration unit",
+      "parses a create_subscription action and drops an invalid billing_cycle",
+      "keeps a valid billing_cycle",
+      "passes through unrecognized action types with their extra fields intact",
+      "drops malformed action entries (missing action field)",
+      "parses custom_workflows map entries with the same action rules",
+      "defaults custom_workflows to an empty object when missing or empty",
+      "omits zero credits and incomplete expiry, and defaults wallet_type to PRE_PAID",
+      "keeps an explicit wallet_type",
+      "keeps credits and both expiry fields when credits are positive",
+      "keeps credits without expiry when expiry fields are omitted",
+      "normalizes custom_workflows and keeps an empty map",
+      "returns customWorkflowNameRequired for blank names",
+      "returns customWorkflowNameInvalid when name exceeds 100 characters",
+      "returns customWorkflowNameDuplicate for duplicate names",
+      "returns null for valid unique free-text names",
+      "returns walletInitialCreditsInvalid for non-numeric credits",
+      "returns walletCreditsExpirationIncomplete when only one expiry field is set",
+      "returns walletCreditsExpirationInvalid for non-positive duration",
+      "returns walletCreditsExpirationWithoutCredits when expiry is set without positive credits",
+      "returns null for a valid wallet action with credits and expiry",
+      "validates actions inside custom_workflows"
+    ]
+  },
+  {
+    "file": "src/types/dto/PortalConfig.test.ts",
+    "cases": [
+      "puts Overview first even when the stored config ordered it last",
+      "keeps the tenant label and enabled flag while reordering",
+      "keeps a tenant-only section",
+      "appends default sections the tenant has never seen",
+      "does not duplicate a section the tenant already has",
+      "respects a section the tenant disabled rather than re-adding it",
+      "does not enable cost and margin cards by default",
+      "falls back to defaults when the tenant has no sections",
+      "is the shipped composition, whatever the stored config holds",
+      "carries no analytics, so no date filter renders on it",
+      "leaves other sections to the tenant",
+      "keeps the tenant label and visibility",
+      "hides Payments even when a stored config enables it",
+      "keeps payment methods on Overview",
+      "ships disabled by default too"
+    ]
+  },
+  {
+    "file": "src/types/dto/BillingSettings.test.ts",
+    "cases": [
+      "parses API default field names from GET /settings/invoice_config",
+      "falls back to built-in defaults for missing API response",
+      "serializes to API field names for PUT /settings/invoice_config",
+      "normalizes invoice config values before save",
+      "validates sequence digits minimum of 1",
+      "picks the largest unit that divides the stored seconds evenly",
+      "shows zero and negative delays as seconds",
+      "round-trips a display value back to the stored seconds"
+    ]
+  },
+  {
+    "file": "src/config/config.webhooks.test.ts",
+    "cases": [
+      "returns Svix when provider is unset and svixUrl is empty",
+      "returns Custom when VITE_WEBHOOK_PROVIDER is flexprice",
+      "returns Custom when VITE_SVIX_URL is set and provider is empty",
+      "returns Svix when provider is explicitly svix even if svixUrl is set",
+      "returns Custom when both flexprice provider and svixUrl are set",
+      "returns Svix for unknown provider values when svixUrl is empty",
+      "returns Svix when provider is explicitly svix and svixUrl is empty"
+    ]
+  },
+  {
+    "file": "src/config/intercom.test.ts",
+    "cases": [
+      "still reports availability for a configured Intercom",
+      "keeps its original meaning: Pylon being active does NOT make Intercom available",
+      "re-exports the Intercom flow config unchanged"
+    ]
+  },
+  {
+    "file": "src/config/support-chat.test.ts",
+    "cases": [
+      "returns no provider when neither is enabled",
+      "returns Intercom when only Intercom is configured",
+      "returns Pylon when only Pylon is configured",
+      "defaults Pylon identity verification to off",
+      "enables Pylon identity verification only when the env flag is true",
+      "treats a malformed Pylon app id as unconfigured, so no dead button renders",
+      "prefers Intercom and warns when both are configured",
+      "treats an enabled provider with a blank app id as unavailable",
+      "falls back to Pylon when Intercom is enabled but has a blank app id",
+      "reports Intercom specifically for the backward-compatible predicate",
+      "labels the command palette entry for the active provider",
+      "labels the command palette entry ",
+      "keeps the Intercom flow config identical to the pre-Pylon defaults",
+      "gives Pylon its own analytics events and storage key but the same behaviour knobs"
+    ]
+  },
+  {
+    "file": "src/config/contact.test.ts",
+    "cases": [
+      "returns platform contact details when contact_us is enabled",
+      "returns Flexprice contact details by default"
+    ]
+  },
+  {
+    "file": "src/config/config.brand.test.ts",
+    "cases": [
+      "returns Flexprice defaults with empty raw",
+      "applies overrides from raw data",
+      "ignores non-string values and falls back to defaults",
+      "defaults to flexprice_default when template is absent",
+      "treats template_1 as flexprice_default for backward compat",
+      "treats unknown template as flexprice_default",
+      "returns template_2 shape with config",
+      "template_2 fields default to null when absent",
+      "returns disabled with empty data",
+      "uses authRaw regions when configured",
+      "filters out invalid region entries",
+      "falls back to legacy envs when authRaw has no regions",
+      "legacy is disabled when selectionEnabled is false",
+      "returns SUPPORTED_LOCALES when allowedLocales absent",
+      "returns configured subset",
+      "filters out invalid locale values",
+      "falls back to SUPPORTED_LOCALES when all values invalid",
+      "defaults to en/ltr when locale absent",
+      "returns rtl for Arabic locale",
+      "falls back to en for unknown locale",
+      "config module exports a config object with required fields",
+      "defaults all platform features to enabled when env is unset",
+      "applies per-feature overrides from VITE_PLATFORM_CONFIG JSON",
+      "leaves unspecified keys enabled when only some features are set in env",
+      "falls back to defaults when JSON is invalid",
+      "enables contact_us from boolean or enabled object",
+      "enables production environment creation only when explicitly set",
+      "disables signup only when explicitly set to false"
+    ]
+  },
+  {
+    "file": "src/credits/adapters.test.tsx",
+    "cases": [
+      "prefers realtime balance data over the wallet snapshot",
+      "falls back to the wallet snapshot when no realtime data is available",
+      "maps frozen and closed statuses",
+      "defaults currency to USD when neither source provides one",
+      "maps transaction fields",
+      "treats any non-debit type as credit, and leaves an empty expiry_date undefined",
+      "returns [] for empty/undefined input",
+      "maps wallets to id/label options"
+    ]
+  },
+  {
+    "file": "src/credits/schema.test.tsx",
+    "cases": [
+      "coerces valid input through unchanged",
+      "falls back an invalid status to active",
+      "coerces malformed numeric fields to 0 instead of throwing",
+      "repairs a missing id to empty string rather than throwing (single-object path never drops)",
+      "coerces valid input through unchanged",
+      "normalizes a null currency to undefined, not the string ",
+      "falls back an invalid type to credit"
+    ]
+  },
+  {
+    "file": "src/credits/components/CreditHistory.test.tsx",
+    "cases": [
+      "renders the transaction history title and table",
+      "renders the empty state when there are no transactions",
+      "renders a loading skeleton when isLoading",
+      "renders a wallet selector only when more than one wallet is supplied",
+      "renders the translated fallback name for an unnamed wallet, not a blank option"
+    ]
+  },
+  {
+    "file": "src/credits/components/CreditBalance.test.tsx",
+    "cases": [
+      "renders the wallet name, status, and balance",
+      "gives the empty state an icon, from the shared component",
+      "renders the empty state when wallet is null",
+      "renders a loading skeleton when isLoading",
+      "renders a real translated title through a host i18next instance (regression test for the usage-widgets locale-key bug)"
+    ]
+  },
+  {
+    "file": "src/credits/components/CreditBalance.balance.test.tsx",
+    "cases": [
+      "rounds a full-precision credit balance",
+      "leads with the monetary value at two decimals, sign before the symbol",
+      "renders a positive balance without a sign",
+      "explains an overdrawn balance",
+      "does not show the overdrawn explanation on a healthy balance",
+      "renders a header action when one is supplied",
+      "renders the balance action on the balance label"
+    ]
+  },
+  {
+    "file": "src/usage/adapters.spend.test.ts",
+    "cases": [
+      "omits cost and margin when cost metrics are off",
+      "still exposes them when a tenant deliberately turns them on"
+    ]
+  },
+  {
+    "file": "src/usage/adapters.test.tsx",
+    "cases": [
+      "keeps only metered entitlements and maps limit/unlimited",
+      "returns [] for empty/undefined input",
+      "includes revenue + cost + margin cards when enabled",
+      "maps the revenue-per-minute custom metric to the cpm title key with currency",
+      "maps a plain custom metric to the custom title key with no currency",
+      "returns [] when nothing is enabled or costData is missing",
+      "maps items to series with no filtering when mode is all",
+      "applies an include_list filter",
+      "applies an exclude_list filter",
+      "maps group, usage display, and cost fields",
+      "leaves group fields undefined when the row has no group",
+      "picks singular/plural off the converted display value, not the raw metered total"
+    ]
+  },
+  {
+    "file": "src/usage/schema.test.tsx",
+    "cases": [
+      "coerces valid input through unchanged",
+      "drops non-array input and reports via onValidationError",
+      "coerces malformed numeric fields instead of throwing",
+      "parses explicit ",
+      "treats a zero limit as finite, not absent",
+      "coerces valid input through unchanged",
+      "falls back an unknown titleKey to custom",
+      "normalizes a null optional string field (currency) to undefined instead of the literal string ",
+      "parses explicit ",
+      "coerces valid input through unchanged",
+      "defaults a missing points array to []",
+      "coerces valid input through unchanged",
+      "coerces non-numeric usage/cost to 0 instead of throwing",
+      "normalizes null optional string fields (groupName, groupId, unit, currency, totalUsageDisplay) to undefined instead of the literal string "
+    ]
+  },
+  {
+    "file": "src/usage/components/UsageTrendChart.test.tsx",
+    "cases": [
+      "renders the chart title and passes series through to the chart",
+      "renders a single card, not a card nested inside another card",
+      "keeps the titled chart card when not loading and series is empty",
+      "states the empty case once, not twice",
+      "offers the action it is given, and nothing when there is none",
+      "renders a loading skeleton when isLoading"
+    ]
+  },
+  {
+    "file": "src/usage/components/UsageQuota.test.tsx",
+    "cases": [
+      "renders a row per item with usage / limit text",
+      "treats a zero limit as finite, not unlimited",
+      "marks a zero-limit quota as over-limit once any usage exists",
+      "renders nothing for an empty item list",
+      "honors a custom label",
+      "resolves translated text from the host dashboard locale file, not the bundled fallback"
+    ]
+  },
+  {
+    "file": "src/usage/components/MetricCards.test.tsx",
+    "cases": [
+      "renders a translated title per metric",
+      "renders loading skeletons when isLoading",
+      "renders nothing when not loading and metrics is empty"
+    ]
+  },
+  {
+    "file": "src/usage/components/UsageBreakdown.test.tsx",
+    "cases": [
+      "renders grouped and ungrouped rows with the title",
+      "keeps the titled card when not loading and rows is empty",
+      "renders a loading skeleton when isLoading",
+      "renders a non-numeric totalUsageDisplay as-is instead of ",
+      "sorts groups themselves by the selected field, not just alphabetically",
+      "exposes aria-expanded and a focus-visible ring on an expandable group header row"
+    ]
+  },
+  {
+    "file": "src/lib/modal-scroll-lock.test.ts",
+    "cases": [
+      "tracks open/close pairs correctly",
+      "calling the same release twice does not double-decrement another modal",
+      "keeps suppressing after the dropdown closes mid-gesture",
+      "stops suppressing once the gesture ends",
+      "does not dismiss when the outside-detected click lands inside a nested dialog",
+      "still dismisses on a click outside everything, even while a nested dialog exists elsewhere in the DOM"
+    ]
+  },
+  {
+    "file": "src/lib/exportable/bundledI18n.test.tsx",
+    "cases": [
+      "uses the bundled default when the host has no i18n context at all",
+      "uses the bundled default when the host doesn",
+      "uses the host value when the host fully has the namespace",
+      "falls back to the bundled value per key when the host has the namespace but is missing that key"
+    ]
+  },
+  {
+    "file": "src/models/SupportChat.test.ts",
+    "cases": [
+      "locks the Intercom analytics event names to their pre-Pylon values",
+      "locks the Intercom storage key to its pre-Pylon value",
+      "locks the tenant metadata truth value to its pre-Pylon value",
+      "namespaces the Pylon analytics events separately from Intercom",
+      "exposes exactly two providers",
+      "models visibility and status as distinct closed sets"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/PlanDetailsPage.test.tsx",
+    "cases": [
+      "renders no count badge on the Sync Usage Charges button (count lives in the tooltip)",
+      "refetches the plan when a started sync is already terminal on the first poll"
+    ]
+  },
+  {
+    "file": "src/pages/webhooks/WebhookDashboard.test.tsx",
+    "cases": [
+      "renders custom WebhooksPortal when provider is custom with token and app_id",
+      "renders custom WebhooksPortal when flexprice provider is set without svixUrl",
+      "renders hosted AppPortal when provider is svix and a hosted url is returned",
+      "prefers custom portal over hosted url when provider is custom",
+      "renders fallback when svix disabled"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.test.tsx",
+    "cases": [
+      "renders invoice context and disables save until something changes",
+      "sends only the changed fields on save",
+      "sends apply_discount for draft invoices when the checkbox is ticked",
+      "sends the full metadata map when a row changes",
+      "updates payment status through the payment endpoint, not the invoice update",
+      "renders payment status as a read-only chip once payment has succeeded",
+      "voids the invoice through the status dropdown on save",
+      "finalizes a failed draft through the status dropdown on save",
+      "blocks voiding combined with line item changes",
+      "edits a draft line item through the modify endpoint",
+      "sends line item description changes through the modify endpoint",
+      "adds and removes draft line items through the modify endpoint",
+      "hides zero-amount line items behind the show-zero-charges toggle",
+      "opens the row editor from the pencil action and commits with the tick",
+      "cancelling the row editor restores the original line item values",
+      "cancelling the editor of a freshly added row discards the row",
+      "lets finalized invoices edit line items behind a void-and-recreate confirmation",
+      "chains finalized operations onto the recreated draft and navigates to it",
+      "keeps the edited form state when the finalized save fails",
+      "cancelling the void confirmation returns to editing without saving",
+      "blocks editing for voided invoices"
+    ]
+  },
+  {
+    "file": "src/pages/auth/SamlSignin.test.ts",
+    "cases": [
+      "prefers the URL param over the env tenant",
+      "falls back to the env tenant when no param (single-tenant deployment)",
+      "returns undefined when neither is set (button hidden)",
+      "trims surrounding whitespace on the resolved value"
+    ]
+  },
+  {
+    "file": "src/pages/onboarding/onboardingConstants.test.tsx",
+    "cases": [
+      "keeps Reddit third in referral sources",
+      "rejects banned whole words without blocking ordinary substrings"
+    ]
+  },
+  {
+    "file": "src/pages/settings/team/memberUtils.test.ts",
+    "cases": [
+      "is false when the caller is not a super_admin",
+      "is false when the row belongs to the caller themself",
+      "is true for a super_admin editing a different member"
+    ]
+  },
+  {
+    "file": "src/pages/settings/customer-onboarding/useCustomerOnboardingConfig.test.ts",
+    "cases": [
+      "round-trips custom_workflows through draft and config",
+      "includes an empty custom_workflows object when no custom workflows exist",
+      "includes a newly added empty custom workflow under its trimmed name"
+    ]
+  },
+  {
+    "file": "src/pages/settings/appearance/ThemeSettings.test.tsx",
+    "cases": [
+      "renders unchecked when the theme is light",
+      "turns dark mode on and puts .dark on <html>",
+      "turns dark mode back off",
+      "persists the choice so it survives a reload",
+      "reflects a theme already persisted as dark"
+    ]
+  },
+  {
+    "file": "src/tests/commitment/subscriptionChargeCommitment.test.ts",
+    "cases": [
+      "applyBaseCommitmentToLineItem sets parent commitment fields on the line item request",
+      "applyWindowCommitmentToLineItem includes parent fields when window commitment is enabled",
+      "subscriptionChargeCommitmentFromLineItem hydrates base fields from a stored line item request",
+      "lineItemWindowCommitmentStateFromBuckets hydrates string commitment fields from persisted line items",
+      "allows clearing all window commitment time buckets on edit",
+      "returns false when no commitment fields are set",
+      "returns true for base amount commitment",
+      "returns true for base quantity commitment",
+      "returns true for window commitment"
+    ]
+  },
+  {
+    "file": "src/tests/commitment/billingModelSelectValueFromPrice.test.ts",
+    "cases": [
+      "respects FLAT_FEE when transform_quantity is also present",
+      "infers PACKAGE from transform_quantity when billing_model is missing",
+      "shows flat label instead of package for flat bucket prices with transform_quantity"
+    ]
+  },
+  {
+    "file": "src/tests/commitment/windowLineItemCommitments.test.ts",
+    "cases": [
+      "extractLineItemCommitments includes parent commitment fields for window mode",
+      "sanitizeAddonLineItemCommitmentsForApi includes parent commitment fields for window mode"
+    ]
+  },
+  {
+    "file": "src/tests/commitment/useCommitmentTimeBucketPrices.test.ts",
+    "cases": [
+      "collects unique price ids from buckets without inline prices",
+      "attaches each fetched price to the matching bucket"
+    ]
+  },
+  {
+    "file": "src/tests/subscriptions/billingAnchor.test.ts",
+    "cases": [
+      "Default Case - Unsupported Billing Period"
+    ]
+  },
+  {
+    "file": "src/tests/subscriptions/quantityModifyEffectiveDate.test.ts",
+    "cases": [
+      "arrear uses period start",
+      "advance uses last instant inside period (end exclusive)",
+      "unknown cadence leaves default undefined",
+      "arrear clamps to line item start when period start is earlier",
+      "clampEffectiveDate raises candidate to line start",
+      "isEffectiveDateWithinLineItemWindow rejects before start",
+      "resolveEffectiveDateIso preserves server start string when JS time matches start (sub-ms safe)",
+      "resolveEffectiveDateIso uses toISOString when clearly after line start",
+      "isEffectiveDateWithinBillingPeriod uses exclusive end",
+      "buildEffectiveDateIso nudges off exclusive period end"
+    ]
+  },
+  {
+    "file": "src/tests/subscriptions/buildQuantityChangeModifyRequest.test.ts",
+    "cases": [
+      "builds quantity_change payload with line item id and quantity string",
+      "includes effective_date when provided"
+    ]
+  },
+  {
+    "file": "src/tests/subscriptions/subscriptionLineItemListItemToLineItem.test.ts",
+    "cases": [
+      "maps base line item commitment_amount and commitment_duration"
+    ]
+  },
+  {
+    "file": "src/tests/subscriptions/internalPriceToSubscriptionLineItemRequest.test.ts",
+    "cases": [
+      "includes transform_quantity for package fixed charges",
+      "includes tiers and tier_mode for tiered fixed charges",
+      "defaults tier_mode to VOLUME when tiers are present but tier_mode is omitted",
+      "stores custom unit package pricing in price_unit_config",
+      "round-trips package and tiered fixed charge fields",
+      "round-trips custom unit package pricing"
+    ]
+  },
+  {
+    "file": "src/tests/subscriptions/subscriptionModifyPreviewPresentation.test.ts",
+    "cases": [
+      "increase",
+      "decrease",
+      "unchanged",
+      "labels decrease",
+      "matches by id",
+      "no match when multiple and ids differ",
+      "single changed invoice uses latest without id match (heuristic)",
+      "includes amount when source resolves",
+      "omits amount when latest does not resolve",
+      "wallet credit copy",
+      "compact title and amount when source resolves",
+      "wallet credit row title without amount when latest missing",
+      "joins start and end with en dash",
+      "maps ended and created with labels and qty"
+    ]
+  },
+  {
+    "file": "src/core/services/support-chat/useSupportChat.test.tsx",
+    "cases": [
+      "initialises the adapter with the identified user",
+      "falls back to the tenant name when the user has no name of their own",
+      "identifies the person, not the company, when a user name exists",
+      "opens the messenger through the adapter",
+      "does not open while the adapter has failed to initialise",
+      "emits the gtag opened event when the messenger becomes visible",
+      "marks the tenant onboarded when the messenger is dismissed",
+      "does not mark the tenant onboarded when onboarding is already complete",
+      "marks the tenant onboarded only once across repeated hide events",
+      "ignores a hide that arrives without a preceding show",
+      "never puts email or name into the gtag payload",
+      "records the messenger as seen in localStorage on close",
+      "toasts an error when marking the tenant onboarded fails",
+      "opens the messenger when the command palette action fires",
+      "auto-opens after the inactivity delay while onboarding is incomplete",
+      "disposes the adapter on unmount",
+      "caches tenant data per tenant id, not globally, so a tenant switch cannot read stale data",
+      "re-identifies without disposing when identity changes without unmounting",
+      "disposes exactly once, on unmount, even after an identity change"
+    ]
+  },
+  {
+    "file": "src/core/services/support-chat/adapters/intercom.test.ts",
+    "cases": [
+      "boots the SDK with the identified user and a hidden launcher",
+      "opens the messenger via the SDK show command",
+      "synthesises onShow and onHide by polling isVisible",
+      "does not re-fire while visibility is unchanged",
+      "does not fire a close before the messenger has ever been seen open",
+      "maps postMessage events to handlers",
+      "ignores postMessage events from an untrusted origin",
+      "trusts any subdomain of intercom.io",
+      "stops polling after unsubscribe",
+      "swallows SDK errors raised while polling"
+    ]
+  },
+  {
+    "file": "src/core/services/support-chat/adapters/index.test.ts",
+    "cases": [
+      "does not fetch or send email_hash when identity verification is disabled",
+      "fetches and sends email_hash when identity verification is enabled"
+    ]
+  },
+  {
+    "file": "src/core/services/support-chat/adapters/conformance.test.ts",
+    "cases": [
+      "resolves init for a valid configuration",
+      "does not throw when show() is called before init",
+      "does not throw when show() is called after dispose",
+      "accepts subscribe before init",
+      "returns an unsubscribe function that is safe to call twice",
+      "has an idempotent dispose",
+      "tolerates dispose without a prior init or subscribe"
+    ]
+  },
+  {
+    "file": "src/core/services/support-chat/adapters/pylon.test.ts",
+    "cases": [
+      "sets chat_settings, including the fetched email_hash, before inserting the widget script",
+      "omits email_hash when no hash fetcher is provided",
+      "rejects and never touches the widget when the hash fetch fails",
+      "injects the widget script with hardened attributes",
+      "injects the script only once across repeated inits",
+      "hides the chat bubble once the widget has loaded",
+      "rejects an app id containing characters outside the allowed set",
+      "rejects when the widget script fails to load",
+      "retries after a failed load instead of replaying the same rejection forever",
+      "queues show() through the stub before the widget loads",
+      "registers native onShow and onHide callbacks and routes them to handlers",
+      "drops callbacks that arrive after dispose"
+    ]
+  },
+  {
+    "file": "src/core/routes/useRouteAccess.test.ts",
+    "cases": [
+      "returns a handle carrying the entity and action verbatim",
+      "accepts an action array for routes that are the only navigable path to a write action",
+      "accepts a handle produced by requirePermission",
+      "rejects undefined, the react-router default for routes with no handle",
+      "rejects null and non-object handles",
+      "rejects an object missing entity or action",
+      "accepts a handle produced by requirePermission with an action array",
+      "rejects an empty action array or one containing an invalid action",
+      "rejects a handle with a non-string entity or invalid action value"
+    ]
+  },
+  {
+    "file": "src/core/auth/AuthService.test.ts",
+    "cases": [
+      "clears session and user data",
+      "preserves the theme preference across logout",
+      "does not invent a theme entry when none was set",
+      "redirects to login"
+    ]
+  },
+  {
+    "file": "src/core/auth/AuthService.saml.test.ts",
+    "cases": [
+      "returns the SAML token rather than the Supabase session",
+      "does not consult Supabase at all when a SAML token is present",
+      "still uses Supabase when no SAML token was stored",
+      "falls back to Supabase when the stored token is not valid JSON",
+      "falls back to Supabase when the stored object carries no token field",
+      "reports no Supabase user when the session came from SAML",
+      "returns the Supabase user when no SAML token was stored",
+      "clears the SAML token and signs out of Supabase"
+    ]
+  },
+  {
+    "file": "src/api/EnvironmentApi.test.ts",
+    "cases": [
+      "resolves immediately when an active environment ID is already stored",
+      "resolves once setActiveEnvironmentId is called after the wait started",
+      "falls back to the timeout so a tenant with no environments never hangs indefinitely"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.test.ts",
+    "cases": [
+      "emits progress steps that match getSetupProgressSteps + done for every pricing template",
+      "completes for a minimal custom-like schema (no entitlements / credit grants)"
+    ]
+  },
+  {
+    "file": "src/store/useLocaleStore.test.ts",
+    "cases": [
+      "initialises with config default locale",
+      "setLocale updates locale and direction",
+      "setLocale updates document direction",
+      "allowedLocales comes from config"
+    ]
+  },
+  {
+    "file": "src/store/useThemeStore.test.ts",
+    "cases": [
+      "defaults to light",
+      "setTheme applies the .dark class on <html>",
+      "toggleTheme flips between light and dark",
+      "persists the choice to localStorage",
+      "rehydrates a persisted dark theme onto <html>",
+      "still applies .dark on app routes",
+      "does not treat a lookalike path as public",
+      "applies dark before React mounts when dark is persisted"
+    ]
+  },
+  {
+    "file": "e2e/smoke/critical-journeys.smoke.spec.ts",
+    "cases": [
+      "the cached session still authenticates",
+      "customers list loads",
+      "plans list loads",
+      "invoices list loads",
+      "subscriptions list loads"
+    ]
+  },
+  {
+    "file": "e2e/regression/sidebar-collapse.spec.ts",
+    "cases": [
+      "remembers the rail state across a reload"
+    ]
+  },
+  {
+    "file": "e2e/visual/login.visual.spec.ts",
+    "cases": [
+      "matches the approved layout"
+    ]
+  },
+  {
+    "file": "e2e/public/signup.spec.ts",
+    "cases": [
+      "rejects an empty submit",
+      "rejects a malformed email",
+      "rejects a password under six characters",
+      "rejects a confirmation that does not match",
+      "returns to login from the signup tab",
+      "rejects a reset request with no email"
+    ]
+  },
+  {
+    "file": "e2e/public/login.spec.ts",
+    "cases": [
+      "renders the credential form",
+      "masks the password until the reveal control is used",
+      "rejects a submit with no credentials instead of navigating",
+      "switches to password recovery and back"
+    ]
+  },
+  {
+    "file": "e2e/journeys/plans/create-plan.spec.ts",
+    "cases": [
+      "creates a plan and shows it in the list after a reload",
+      "derives the lookup key from the plan name"
+    ]
+  },
+  {
+    "file": "e2e/journeys/wallet/wallet-alert-thresholds.spec.ts",
+    "cases": [
+      "1. creates a USD wallet for the customer",
+      "2. enables alerts and saves an absolute critical threshold",
+      "3. switching threshold type is non-destructive",
+      "4. rejects a percentage threshold outside 0-100 on save",
+      "5. saves a valid percentage threshold"
+    ]
+  },
+  {
+    "file": "e2e/journeys/customers/create-customer.spec.ts",
+    "cases": [
+      "creates a customer and shows it in the list after a reload",
+      "keeps save unavailable until the required fields are filled",
+      "rejects a malformed email"
+    ]
+  },
+  {
+    "file": "e2e/journeys/customers/customer-detail.spec.ts",
+    "cases": [
+      "an API-created customer appears in the list",
+      "the detail page renders its tabs for a known customer"
+    ]
+  },
+  {
+    "file": "e2e/journeys/customers/customer-permissions.spec.ts",
+    "cases": [
+      "an account with write access can open the create drawer"
+    ]
+  },
+  {
+    "file": "e2e/journeys/golden-path/catalogue-to-subscription.spec.ts",
+    "cases": [
+      "1. create a feature",
+      "2. the feature is listed",
+      "3. create a plan",
+      "4. open the plan and reach its charges",
+      "5. reach the charge editor from the plan",
+      "6. create an addon",
+      "7. create a customer",
+      "8. reach subscription creation for that customer"
+    ]
+  },
+  {
+    "file": "e2e/journeys/navigation/sidebar.spec.ts",
+    "cases": [
+      "opens a nested section and navigates to its child",
+      "reaches the product catalog through its nested entries"
+    ]
+  },
+  {
+    "file": "e2e/rbac/customer-permissions.spec.ts",
+    "cases": [
+      "a read-only account cannot reach the create-customer drawer",
+      "a read-only account sees why the control is unavailable"
+    ]
+  }
+]

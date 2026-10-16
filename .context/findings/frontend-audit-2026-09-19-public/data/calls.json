@@ -1,0 +1,4376 @@
+[
+  {
+    "file": "src/hooks/useEnvironment.ts",
+    "line": 28,
+    "service": "EnvironmentApi",
+    "method": "getAllEnvironments",
+    "arguments": []
+  },
+  {
+    "file": "src/hooks/useEnvironment.ts",
+    "line": 37,
+    "service": "EnvironmentApi",
+    "method": "getActiveEnvironmentId",
+    "arguments": []
+  },
+  {
+    "file": "src/hooks/useEnvironment.ts",
+    "line": 38,
+    "service": "EnvironmentApi",
+    "method": "setActiveEnvironmentId",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/atoms/SelectFeature/SelectFeature.tsx",
+    "line": 60,
+    "service": "FeatureApi",
+    "method": "getFeatureById",
+    "arguments": [
+      "value"
+    ]
+  },
+  {
+    "file": "src/components/atoms/SelectFeature/SelectFeature.tsx",
+    "line": 67,
+    "service": "FeatureApi",
+    "method": "listFeatures",
+    "arguments": [
+      "{\n\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\tlimit: 50,\n\t\t\tname_contains: query || undefined,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/atoms/FeatureMultiSelect/FeatureMultiSelect.tsx",
+    "line": 13,
+    "service": "FeatureApi",
+    "method": "listFeatures",
+    "arguments": [
+      "{\n\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\tlimit: 1000,\n\t}"
+    ]
+  },
+  {
+    "file": "src/core/services/support-chat/adapters/index.ts",
+    "line": 17,
+    "service": "SupportChatApi",
+    "method": "getIdentityToken",
+    "arguments": []
+  },
+  {
+    "file": "src/core/services/support-chat/useSupportChat.ts",
+    "line": 44,
+    "service": "TenantApi",
+    "method": "getTenantById",
+    "arguments": [
+      "tenantId ?? ''"
+    ]
+  },
+  {
+    "file": "src/core/services/support-chat/useSupportChat.ts",
+    "line": 51,
+    "service": "TenantApi",
+    "method": "updateTenant",
+    "arguments": [
+      "{\n\t\t\t\tname: tenant?.name || '',\n\t\t\t\tmetadata: {\n\t\t\t\t\t...tenant?.metadata,\n\t\t\t\t\t[TenantMetadataKey.ONBOARDING_COMPLETED]: TenantMetadataFlag.True,\n\t\t\t\t},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CreateCustomerDrawer.tsx",
+    "line": 194,
+    "service": "CustomerApi",
+    "method": "updateCustomer",
+    "arguments": [
+      "payload as UpdateCustomerRequest",
+      "data.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CreateCustomerDrawer.tsx",
+    "line": 197,
+    "service": "CustomerApi",
+    "method": "createCustomer",
+    "arguments": [
+      "{\n\t\t\t\t...payload,\n\t\t\t\texternal_id: formData.external_id!,\n\t\t\t\tname: formData.name!,\n\t\t\t\temail: formData.email || '',\n\t\t\t} as CreateCustomerRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CustomerCard.tsx",
+    "line": 9,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId"
+    ]
+  },
+  {
+    "file": "src/hooks/useCustomerPortalUrl.ts",
+    "line": 45,
+    "service": "CustomerApi",
+    "method": "createDashboardSession",
+    "arguments": [
+      "customerExternalId"
+    ]
+  },
+  {
+    "file": "src/hooks/useCustomerPortalUrl.ts",
+    "line": 80,
+    "service": "CustomerApi",
+    "method": "createDashboardSession",
+    "arguments": [
+      "customerExternalId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CustomerTable.tsx",
+    "line": 23,
+    "service": "CustomerApi",
+    "method": "deleteCustomerById",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CustomerSearchSelect.tsx",
+    "line": 45,
+    "service": "CustomerApi",
+    "method": "searchCustomers",
+    "arguments": [
+      "query",
+      "limit"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CustomerMultiSearchSelect.tsx",
+    "line": 32,
+    "service": "CustomerApi",
+    "method": "searchCustomers",
+    "arguments": [
+      "query",
+      "limit"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CustomerHeader.tsx",
+    "line": 7,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionCancelDialog/SubscriptionCancelDialog.tsx",
+    "line": 54,
+    "service": "SubscriptionApi",
+    "method": "cancelSubscription",
+    "arguments": [
+      "subscriptionId",
+      "{\n\t\t\t\tcancellation_type: cancellationType,\n\t\t\t\tproration_behavior: prorationBehavior,\n\t\t\t\tcancel_immediately_inovice_policy: cancelImmediatelyInvoicePolicy,\n\t\t\t\t...(reason.trim() ? { reason: reason.trim() } : {}),\n\t\t\t\t...(cancellationType === SUBSCRIPTION_CANCELLATION_TYPE.SCHEDULED_DATE && cancelAtDate\n\t\t\t\t\t? { cancel_at: cancelAtDate.toISOString() }\n\t\t\t\t\t: {}),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TaxAssociationDialog/TaxAssociationDialog.tsx",
+    "line": 58,
+    "service": "TaxApi",
+    "method": "listTaxRates",
+    "arguments": [
+      "{ limit: 1000, status: ENTITY_STATUS.PUBLISHED }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionCoupon/SubscriptionCoupon.tsx",
+    "line": 28,
+    "service": "CouponApi",
+    "method": "getAllCoupons",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionDiscountTable/SubscriptionDiscountTable.tsx",
+    "line": 29,
+    "service": "CouponApi",
+    "method": "getAllCoupons",
+    "arguments": [
+      "{ limit: 100, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/hooks/useRbacRoles.ts",
+    "line": 14,
+    "service": "RbacApi",
+    "method": "getAllRoles",
+    "arguments": [
+      "userType"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionEntitlementsSection/SubscriptionEntitlementsSection.tsx",
+    "line": 66,
+    "service": "SubscriptionApi",
+    "method": "getSubscriptionEntitlements",
+    "arguments": [
+      "subscriptionId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionEntitlementsSection/SubscriptionEntitlementsSection.tsx",
+    "line": 83,
+    "service": "EntitlementApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\t\tentity_type: ENTITLEMENT_ENTITY_TYPE.SUBSCRIPTION,\n\t\t\t\t\tentity_ids: [subscriptionId],\n\t\t\t\t\tfilters: [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'status',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: ENTITY_STATUS.PUBLISHED },\n\t\t\t\t\t\t},\n\t\t\t\t\t],\n\t\t\t\t\texpand: generateExpandQueryParams([EXPAND.FEATURES]),\n\t\t\t\t\tlimit: 1000,\n\t\t\t\t\toffset: 0,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionEntitlementsSection/SubscriptionEntitlementsSection.tsx",
+    "line": 113,
+    "service": "EntitlementApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\t\tfilters: [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_type',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: ENTITLEMENT_ENTITY_TYPE.PLAN },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_id',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: planId },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'status',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: ENTITY_STATUS.PUBLISHED },\n\t\t\t\t\t\t},\n\t\t\t\t\t],\n\t\t\t\t\texpand: generateExpandQueryParams([EXPAND.FEATURES]),\n\t\t\t\t\tlimit: 1000,\n\t\t\t\t\toffset: 0,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionEntitlementsSection/SubscriptionEntitlementsSection.tsx",
+    "line": 160,
+    "service": "EntitlementApi",
+    "method": "delete",
+    "arguments": [
+      "entitlementId"
+    ]
+  },
+  {
+    "file": "src/components/organisms/PlanForm/SelectGroup.tsx",
+    "line": 42,
+    "service": "GroupApi",
+    "method": "getGroupsByFilter",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: entityType,\n\t\t\t\tlimit: 100,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 115,
+    "service": "EnvironmentApi",
+    "method": "getActiveEnvironmentId",
+    "arguments": []
+  },
+  {
+    "file": "src/hooks/useMeterForCommitment.ts",
+    "line": 14,
+    "service": "MeterApi",
+    "method": "getMeterById",
+    "arguments": [
+      "meterId!"
+    ]
+  },
+  {
+    "file": "src/components/organisms/PlanForm/UsagePricingForm.tsx",
+    "line": 189,
+    "service": "FeatureApi",
+    "method": "listFeatures",
+    "arguments": [
+      "{\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\tmeter_ids: [price.meter_id],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/hooks/useCommitmentTimeBucketPrices.ts",
+    "line": 14,
+    "service": "PriceApi",
+    "method": "GetPriceById",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/AddAddonDialog.tsx",
+    "line": 84,
+    "service": "SubscriptionApi",
+    "method": "getSubscription",
+    "arguments": [
+      "subscriptionId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/AddAddonDialog.tsx",
+    "line": 99,
+    "service": "AddonApi",
+    "method": "List",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/AddAddonDialog.tsx",
+    "line": 164,
+    "service": "SubscriptionApi",
+    "method": "addAddonToSubscription",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/ConfigureAddonDialog.tsx",
+    "line": 70,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptionLineItems",
+    "arguments": [
+      "{\n\t\t\t\tsubscription_ids: [subscriptionId],\n\t\t\t\taddon_association_ids: [association!.id],\n\t\t\t\t// Only active line items: ended charges must not reach the editors,\n\t\t\t\t// especially via the single-charge direct-open path.\n\t\t\t\tactive_filter: true,\n\t\t\t\texpand: `${EXPAND.PRICES}.${EXPAND.METERS}`,\n\t\t\t\tlimit: 100,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/ConfigureAddonDialog.tsx",
+    "line": 95,
+    "service": "SubscriptionApi",
+    "method": "updateSubscriptionLineItem",
+    "arguments": [
+      "lineItemId",
+      "updateData"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/ConfigureAddonDialog.tsx",
+    "line": 107,
+    "service": "SubscriptionApi",
+    "method": "deleteSubscriptionLineItem",
+    "arguments": [
+      "lineItemId",
+      "endDate ? { effective_from: endDate } : {}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/SubscriptionAddonsSection.tsx",
+    "line": 74,
+    "service": "SubscriptionApi",
+    "method": "getSubscription",
+    "arguments": [
+      "subscriptionId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/SubscriptionAddonsSection.tsx",
+    "line": 95,
+    "service": "SubscriptionApi",
+    "method": "getActiveAddons",
+    "arguments": [
+      "subscriptionId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/SubscriptionAddonsSection.tsx",
+    "line": 131,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptionLineItems",
+    "arguments": [
+      "{\n\t\t\t\t\tsubscription_ids: [subscriptionId],\n\t\t\t\t\tactive_filter: true,\n\t\t\t\t\texpand: `${EXPAND.PRICES}.${EXPAND.METERS}`,\n\t\t\t\t\tlimit: pageSize,\n\t\t\t\t\toffset,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonsSection/SubscriptionAddonsSection.tsx",
+    "line": 201,
+    "service": "SubscriptionApi",
+    "method": "removeAddonFromSubscription",
+    "arguments": [
+      "{\n\t\t\t\taddon_association_id: payload.addonAssociationId,\n\t\t\t\t...(payload.effectiveDate ? { effective_date: payload.effectiveDate } : {}),\n\t\t\t\t...(payload.prorationBehavior ? { proration_behavior: payload.prorationBehavior } : {}),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/SubscriptionActionButton.tsx",
+    "line": 116,
+    "service": "SubscriptionApi",
+    "method": "cancelSubscription",
+    "arguments": [
+      "id",
+      "{\n\t\t\t\tproration_behavior: state.cancelProrationBehavior,\n\t\t\t\tcancellation_type: state.cancelCancellationType,\n\t\t\t\tcancel_immediately_inovice_policy: getCancelImmediatelyInvoicePolicy(),\n\t\t\t\t...(state.cancelReason.trim() ? { reason: state.cancelReason.trim() } : {}),\n\t\t\t\t...(state.cancelCancellationType === SUBSCRIPTION_CANCELLATION_TYPE.SCHEDULED_DATE && state.cancelScheduledAt\n\t\t\t\t\t? { cancel_at: state.cancelScheduledAt.toISOString() }\n\t\t\t\t\t: {}),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/SubscriptionActionButton.tsx",
+    "line": 138,
+    "service": "SubscriptionApi",
+    "method": "activateSubscription",
+    "arguments": [
+      "id",
+      "{\n\t\t\t\tstart_date: state.activateStartDate.toISOString(),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Subscription/SubscriptionEditChargesSection.tsx",
+    "line": 83,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptionLineItems",
+    "arguments": [
+      "{\n\t\t\t\tsubscription_ids: [subscriptionId],\n\t\t\t\tcustomer_ids: [customerId],\n\t\t\t\tcurrent_period_start: currentPeriodStart,\n\t\t\t\tactive_filter: true,\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\texpand: `${EXPAND.PRICES}.${EXPAND.METERS}`,\n\t\t\t\tfilters: sanitizedFilters.length ? sanitizedFilters : undefined,\n\t\t\t\tsort: sanitizedSorts.length ? sanitizedSorts : undefined,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Subscription/SubscriptionDetailChargesSection.tsx",
+    "line": 54,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptionLineItems",
+    "arguments": [
+      "{\n\t\t\t\tsubscription_ids: [subscriptionId],\n\t\t\t\tcustomer_ids: [customerId],\n\t\t\t\tcurrent_period_start: currentPeriodStart,\n\t\t\t\tactive_filter: true,\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\texpand: `${EXPAND.PRICES}.${EXPAND.METERS}`,\n\t\t\t\tfilters: sanitizedFilters.length ? sanitizedFilters : undefined,\n\t\t\t\tsort: sanitizedSorts.length ? sanitizedSorts : undefined,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Subscription/SubscriptionEditInheritingCustomersSection.tsx",
+    "line": 39,
+    "service": "SubscriptionApi",
+    "method": "updateSubscription",
+    "arguments": [
+      "childSubscriptionId",
+      "{ parent_subscription_id: null }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Subscription/SubscriptionEditInheritingCustomersSection.tsx",
+    "line": 67,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "c.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Subscription/SubscriptionEditInheritingCustomersSection.tsx",
+    "line": 76,
+    "service": "SubscriptionApi",
+    "method": "executeSubscriptionModify",
+    "arguments": [
+      "parentSubscriptionId",
+      "{\n\t\t\t\ttype: SUBSCRIPTION_MODIFY_TYPE.INHERITANCE,\n\t\t\t\tinheritance_params: {\n\t\t\t\t\texternal_customer_ids_to_inherit_subscription: resolvedExternalIds,\n\t\t\t\t},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/hooks/useSubscriptionQuantityModify.ts",
+    "line": 29,
+    "service": "SubscriptionApi",
+    "method": "previewSubscriptionModify",
+    "arguments": [
+      "subscriptionId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/hooks/useSubscriptionQuantityModify.ts",
+    "line": 45,
+    "service": "SubscriptionApi",
+    "method": "executeSubscriptionModify",
+    "arguments": [
+      "subscriptionId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/UpdateSubscriptionDrawer/UpdateSubscriptionDrawer.tsx",
+    "line": 49,
+    "service": "SubscriptionApi",
+    "method": "listSubscriptions",
+    "arguments": [
+      "{\n\t\t\t\tsubscription_status: [SUBSCRIPTION_STATUS.ACTIVE],\n\t\t\t\tcustomer_id: subscription?.customer_id,\n\t\t\t\tlimit: 100,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoiceStatusModal.tsx",
+    "line": 79,
+    "service": "InvoiceApi",
+    "method": "voidInvoice",
+    "arguments": [
+      "invoice?.id as string",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoiceStatusModal.tsx",
+    "line": 81,
+    "service": "InvoiceApi",
+    "method": "finalizeInvoice",
+    "arguments": [
+      "invoice?.id as string"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoicePaymentStatusModal.tsx",
+    "line": 74,
+    "service": "InvoiceApi",
+    "method": "updateInvoicePaymentStatus",
+    "arguments": [
+      "invoiceId",
+      "{ payment_status: nextStatus }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoiceTableMenu.tsx",
+    "line": 37,
+    "service": "InvoiceApi",
+    "method": "triggerCommunication",
+    "arguments": [
+      "invoice_id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoiceTableMenu.tsx",
+    "line": 50,
+    "service": "InvoiceApi",
+    "method": "downloadInvoicePdf",
+    "arguments": [
+      "invoice_id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoiceTableMenu.tsx",
+    "line": 62,
+    "service": "InvoiceApi",
+    "method": "getInvoiceById",
+    "arguments": [
+      "invoice.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoiceTableMenu.tsx",
+    "line": 63,
+    "service": "InvoiceApi",
+    "method": "downloadInvoiceCsv",
+    "arguments": [
+      "fullInvoice"
+    ]
+  },
+  {
+    "file": "src/components/molecules/InvoiceTable/InvoiceTableMenu.tsx",
+    "line": 79,
+    "service": "InvoiceApi",
+    "method": "recalculateInvoice",
+    "arguments": [
+      "invoice_id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CreditGrant/CreditGrantsTable.tsx",
+    "line": 25,
+    "service": "CreditGrantApi",
+    "method": "delete",
+    "arguments": [
+      "grant.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CreditGrant/AddonCreditGrantsSection.tsx",
+    "line": 43,
+    "service": "CreditGrantApi",
+    "method": "list",
+    "arguments": [
+      "{\n\t\t\t\taddon_ids: [addonId],\n\t\t\t\tscope: CREDIT_GRANT_SCOPE.ADDON,\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CreditGrant/AddonCreditGrantsSection.tsx",
+    "line": 58,
+    "service": "CreditGrantApi",
+    "method": "create",
+    "arguments": [
+      "grantWithAddonId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/RecordPaymentTopup/RecordPaymentTopup.tsx",
+    "line": 72,
+    "service": "WalletApi",
+    "method": "getCustomerWallets",
+    "arguments": [
+      "{ id: customer_id }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/RecordPaymentTopup/RecordPaymentTopup.tsx",
+    "line": 78,
+    "service": "ConnectionApi",
+    "method": "ListPublished",
+    "arguments": []
+  },
+  {
+    "file": "src/components/molecules/RecordPaymentTopup/RecordPaymentTopup.tsx",
+    "line": 233,
+    "service": "PaymentApi",
+    "method": "createPayment",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/hooks/useAllUsers.ts",
+    "line": 10,
+    "service": "UserApi",
+    "method": "getAllUsers",
+    "arguments": []
+  },
+  {
+    "file": "src/hooks/useMinCreditExpiryDate.ts",
+    "line": 37,
+    "service": "CustomerApi",
+    "method": "getCustomerSubscriptions",
+    "arguments": [
+      "customerId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/WalletTopupCard/WalletTopupCard.tsx",
+    "line": 166,
+    "service": "WalletApi",
+    "method": "topupWallet",
+    "arguments": [
+      "{\n\t\t\t\twalletId,\n\t\t\t\tcredits_to_add: topupPayload.credits_to_add,\n\t\t\t\tidempotency_key: topupPayload.reference_id,\n\t\t\t\ttransaction_reason: getTransactionReason(mode),\n\t\t\t\texpiry_date_utc: topupPayload.expiry_date_utc,\n\t\t\t\tpriority: topupPayload.priority,\n\t\t\t\tdescription: topupPayload.description,\n\t\t\t\t...(mode === TopupMode.Checkout\n\t\t\t\t\t? {\n\t\t\t\t\t\t\tcheckout: {\n\t\t\t\t\t\t\t\tpayment_provider: 'razorpay',\n\t\t\t\t\t\t\t\t// No max_mandate_limit: a one-off top-up needs no recurring-debit\n\t\t\t\t\t\t\t\t// mandate, and requiring one would block the customer at checkout.\n\t\t\t\t\t\t\t\tsuccess_url: window.location.href,\n\t\t\t\t\t\t\t\tcancel_url: window.location.href,\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t}\n\t\t\t\t\t: {}),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/WalletDebitCard/WalletDebitCard.tsx",
+    "line": 49,
+    "service": "WalletApi",
+    "method": "debitWallet",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AlertSettingsDialog/AlertSettingsDialog.tsx",
+    "line": 55,
+    "service": "AlertSettingApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: entityType,\n\t\t\t\tentity_id: entityId,\n\t\t\t\tlimit: 1,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AlertSettingsDialog/AlertSettingsDialog.tsx",
+    "line": 126,
+    "service": "AlertSettingApi",
+    "method": "update",
+    "arguments": [
+      "existingSetting.id",
+      "{ config: configToSave }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AlertSettingsDialog/AlertSettingsDialog.tsx",
+    "line": 127,
+    "service": "AlertSettingApi",
+    "method": "create",
+    "arguments": [
+      "{\n\t\t\t\t\t\tentity_type: entityType,\n\t\t\t\t\t\tentity_id: entityId,\n\t\t\t\t\t\t...(isLineItem ? { parent_entity_type: ALERT_ENTITY_TYPE.SUBSCRIPTION, parent_entity_id: parentEntityId } : {}),\n\t\t\t\t\t\tconfig: configToSave,\n\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TerminateWalletModal/TerminateWalletModal.tsx",
+    "line": 20,
+    "service": "WalletApi",
+    "method": "terminateWallet",
+    "arguments": [
+      "wallet?.id as string"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PlansTable/PlansTable.tsx",
+    "line": 50,
+    "service": "PlanApi",
+    "method": "deletePlan",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/hooks/useShouldShowSidebarPricingPromo.ts",
+    "line": 20,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{ limit: 1, offset: 0, filters: [], sort: [] }"
+    ]
+  },
+  {
+    "file": "src/hooks/useShouldShowSidebarPricingPromo.ts",
+    "line": 21,
+    "service": "FeatureApi",
+    "method": "getFeaturesByFilter",
+    "arguments": [
+      "{ limit: 1, offset: 0, filters: [], sort: [] }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PlanDrawer/PlanDrawer.tsx",
+    "line": 45,
+    "service": "PlanApi",
+    "method": "updatePlan",
+    "arguments": [
+      "id",
+      "rest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PlanDrawer/PlanDrawer.tsx",
+    "line": 47,
+    "service": "PlanApi",
+    "method": "createPlan",
+    "arguments": [
+      "vars as CreatePlanRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/DuplicatePlanDialog/DuplicatePlanDialog.tsx",
+    "line": 81,
+    "service": "PlanApi",
+    "method": "clonePlan",
+    "arguments": [
+      "planId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Plan/PlanHeader.tsx",
+    "line": 6,
+    "service": "PlanApi",
+    "method": "getPlanById",
+    "arguments": [
+      "planId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/UpdatePriceDialog/UpdatePriceDialog.tsx",
+    "line": 139,
+    "service": "PriceApi",
+    "method": "UpdatePrice",
+    "arguments": [
+      "priceId",
+      "data"
+    ]
+  },
+  {
+    "file": "src/components/molecules/UpdatePriceDetailsDrawer/UpdatePriceDetailsDrawer.tsx",
+    "line": 41,
+    "service": "PriceApi",
+    "method": "UpdatePrice",
+    "arguments": [
+      "price.id",
+      "updateData"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PriceUnitDrawer/PriceUnitDrawer.tsx",
+    "line": 44,
+    "service": "PriceUnitApi",
+    "method": "UpdatePriceUnit",
+    "arguments": [
+      "id",
+      "rest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PriceUnitDrawer/PriceUnitDrawer.tsx",
+    "line": 46,
+    "service": "PriceUnitApi",
+    "method": "CreatePriceUnit",
+    "arguments": [
+      "vars as CreatePriceUnitRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PriceUnitTable/PriceUnitTable.tsx",
+    "line": 79,
+    "service": "PriceUnitApi",
+    "method": "DeletePriceUnit",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/hooks/useCustomCurrencyConfig.ts",
+    "line": 22,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOM_CURRENCY_CONFIG"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CurrencyPriceUnitSelector/CurrencyPriceUnitSelector.tsx",
+    "line": 45,
+    "service": "PriceUnitApi",
+    "method": "ListPriceUnits",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 100,\n\t\t\t\toffset: 0,\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AddonTable/AddonTable.tsx",
+    "line": 52,
+    "service": "AddonApi",
+    "method": "Delete",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AddonTable/AddonModal.tsx",
+    "line": 28,
+    "service": "AddonApi",
+    "method": "List",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AddonDrawer/AddonDrawer.tsx",
+    "line": 38,
+    "service": "AddonApi",
+    "method": "Update",
+    "arguments": [
+      "payload.id",
+      "payload as UpdateAddonRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AddonDrawer/AddonDrawer.tsx",
+    "line": 40,
+    "service": "AddonApi",
+    "method": "Create",
+    "arguments": [
+      "payload as CreateAddonRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/FeatureTable/FeatureTable.tsx",
+    "line": 112,
+    "service": "FeatureApi",
+    "method": "deleteFeature",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/FeatureDrawer/FeatureDrawer.tsx",
+    "line": 46,
+    "service": "FeatureApi",
+    "method": "updateFeature",
+    "arguments": [
+      "data.id",
+      "updateData"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AddEntitlementDrawer/AddEntitlementDrawer.tsx",
+    "line": 295,
+    "service": "FeatureApi",
+    "method": "getFeatureById",
+    "arguments": [
+      "activeFeature!.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AddEntitlementDrawer/AddEntitlementDrawer.tsx",
+    "line": 372,
+    "service": "EntitlementApi",
+    "method": "createBulk",
+    "arguments": [
+      "bulkRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EntitlementOverrides/EditSubscriptionEntitlementDrawer.tsx",
+    "line": 72,
+    "service": "EntitlementApi",
+    "method": "update",
+    "arguments": [
+      "entitlement.subscriptionEntitlementId",
+      "values"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EntitlementOverrides/EditSubscriptionEntitlementDrawer.tsx",
+    "line": 80,
+    "service": "EntitlementApi",
+    "method": "create",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: ENTITLEMENT_ENTITY_TYPE.SUBSCRIPTION,\n\t\t\t\tentity_id: subscriptionId,\n\t\t\t\tfeature_id: entitlement.feature_id,\n\t\t\t\tfeature_type: entitlement.feature_type as Feature['type'],\n\t\t\t\tparent_entitlement_id: parentEntitlementId,\n\t\t\t\tusage_reset_period: entitlement.usage_reset_period as never,\n\t\t\t\t...values,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CouponDrawer/CouponDrawer.tsx",
+    "line": 45,
+    "service": "CouponApi",
+    "method": "updateCoupon",
+    "arguments": [
+      "data.id",
+      "data as UpdateCouponRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CouponDrawer/CouponDrawer.tsx",
+    "line": 47,
+    "service": "CouponApi",
+    "method": "createCoupon",
+    "arguments": [
+      "data as CreateCouponRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CouponTable/CouponTable.tsx",
+    "line": 86,
+    "service": "CouponApi",
+    "method": "deleteCoupon",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/LineItemCoupon/LineItemCoupon.tsx",
+    "line": 61,
+    "service": "CouponApi",
+    "method": "getAllCoupons",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TaxTable/TaxTable.tsx",
+    "line": 95,
+    "service": "TaxApi",
+    "method": "deleteTaxRate",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TaxDrawer/TaxDrawer.tsx",
+    "line": 56,
+    "service": "TaxApi",
+    "method": "updateTaxRate",
+    "arguments": [
+      "formData.id",
+      "updatePayload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TaxDrawer/TaxDrawer.tsx",
+    "line": 69,
+    "service": "TaxApi",
+    "method": "createTaxRate",
+    "arguments": [
+      "createPayload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TaxAssociationTable/TaxAssociationTable.tsx",
+    "line": 116,
+    "service": "TaxApi",
+    "method": "deleteTaxAssociation",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AppliedTaxesTable/AppliedTaxesTable.tsx",
+    "line": 51,
+    "service": "TaxApi",
+    "method": "getTaxRate",
+    "arguments": [
+      "taxRateId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CostSheetDrawer/CostSheetDrawer.tsx",
+    "line": 40,
+    "service": "CostSheetApi",
+    "method": "UpdateCostSheet",
+    "arguments": [
+      "data.id",
+      "updateRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CostSheetDrawer/CostSheetDrawer.tsx",
+    "line": 48,
+    "service": "CostSheetApi",
+    "method": "CreateCostSheet",
+    "arguments": [
+      "createRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CostSheetTable/CostSheetTable.tsx",
+    "line": 56,
+    "service": "CostSheetApi",
+    "method": "DeleteCostSheet",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/GroupsTable/GroupsTable.tsx",
+    "line": 52,
+    "service": "GroupApi",
+    "method": "deleteGroup",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/GroupDrawer/GroupDrawer.tsx",
+    "line": 38,
+    "service": "GroupApi",
+    "method": "updateGroup",
+    "arguments": [
+      "id",
+      "rest as UpdateGroupRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/GroupDrawer/GroupDrawer.tsx",
+    "line": 40,
+    "service": "GroupApi",
+    "method": "createGroup",
+    "arguments": [
+      "rest as CreateGroupRequest"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Events/EventPropertiesDrawer.tsx",
+    "line": 36,
+    "service": "EventsApi",
+    "method": "getEventDebug",
+    "arguments": [
+      "event!.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Events/EventPropertiesDrawer.tsx",
+    "line": 56,
+    "service": "CustomerApi",
+    "method": "getCustomersByFilters",
+    "arguments": [
+      "{\n\t\t\t\tcustomer_ids: customerIds,\n\t\t\t\tfilters: [],\n\t\t\t\tsort: [],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Events/EventPropertiesDrawer.tsx",
+    "line": 73,
+    "service": "FeatureApi",
+    "method": "listFeatures",
+    "arguments": [
+      "{\n\t\t\t\tfeature_ids: featureIds,\n\t\t\t\tlimit: featureIds.length,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Events/EventPropertiesDrawer.tsx",
+    "line": 94,
+    "service": "SubscriptionApi",
+    "method": "getSubscription",
+    "arguments": [
+      "subscriptionId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SaveCardModal/SaveCardModal.tsx",
+    "line": 34,
+    "service": "PaymentApi",
+    "method": "createSetupIntent",
+    "arguments": [
+      "customerId",
+      "{\n\t\t\t\tsuccess_url: currentUrl,\n\t\t\t\tcancel_url: currentUrl,\n\t\t\t\tprovider: 'stripe',\n\t\t\t\tset_default: setAsDefault,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/MoyasarSaveCardModal/MoyasarSaveCardModal.tsx",
+    "line": 19,
+    "service": "PaymentApi",
+    "method": "getMoyasarSetupIntent",
+    "arguments": [
+      "customerId",
+      "window.location.href"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EnvironmentCreator/EnvironmentCreator.tsx",
+    "line": 51,
+    "service": "EnvironmentApi",
+    "method": "createEnvironment",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EnvironmentCopier/EnvironmentCopier.tsx",
+    "line": 31,
+    "service": "EnvironmentApi",
+    "method": "getAllEnvironments",
+    "arguments": []
+  },
+  {
+    "file": "src/components/molecules/EnvironmentCopier/EnvironmentCopier.tsx",
+    "line": 83,
+    "service": "EnvironmentApi",
+    "method": "cloneEnvironment",
+    "arguments": [
+      "sourceEnvironment.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EnvironmentEditor/EnvironmentEditor.tsx",
+    "line": 30,
+    "service": "EnvironmentApi",
+    "method": "updateEnvironment",
+    "arguments": [
+      "environment.id",
+      "{ name: newName }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SecretKeyDrawer/SecretKeyDrawer.tsx",
+    "line": 39,
+    "service": "UserApi",
+    "method": "getServiceAccounts",
+    "arguments": [
+      "{ limit: 100, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SecretKeyDrawer/SecretKeyDrawer.tsx",
+    "line": 141,
+    "service": "SecretKeysApi",
+    "method": "createSecretKey",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Tenant/UpdateTenantDrawer.tsx",
+    "line": 271,
+    "service": "UserApi",
+    "method": "updateUser",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/IntegrationMappingCard/IntegrationMappingCard.tsx",
+    "line": 84,
+    "service": "IntegrationMappingApi",
+    "method": "getIntegrationConfig",
+    "arguments": []
+  },
+  {
+    "file": "src/components/molecules/IntegrationMappingCard/IntegrationMappingCard.tsx",
+    "line": 93,
+    "service": "ConnectionApi",
+    "method": "ListPublished",
+    "arguments": []
+  },
+  {
+    "file": "src/components/molecules/IntegrationMappingCard/IntegrationMappingCard.tsx",
+    "line": 112,
+    "service": "IntegrationMappingApi",
+    "method": "getIntegrationMappings",
+    "arguments": [
+      "entityType",
+      "entityId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/IntegrationMappingCard/IntegrationMappingCard.tsx",
+    "line": 141,
+    "service": "IntegrationMappingApi",
+    "method": "syncIntegration",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: entityType,\n\t\t\t\tentity_id: entityId,\n\t\t\t\tmethod,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/IntegrationMappingCard/IntegrationMappingCard.tsx",
+    "line": 156,
+    "service": "IntegrationMappingApi",
+    "method": "linkIntegration",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: entityType,\n\t\t\t\tentity_id: entityId,\n\t\t\t\tprovider_type: linkTarget!.provider_type,\n\t\t\t\tprovider_entity_id: providerEntityId,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/IntegrationMappingCard/IntegrationMappingCard.tsx",
+    "line": 176,
+    "service": "IntegrationMappingApi",
+    "method": "delinkIntegration",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: entityType,\n\t\t\t\tentity_id: entityId,\n\t\t\t\tprovider_type: delinkTarget!.provider_type,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/IntegrationMappingCard/IntegrationMappingCard.tsx",
+    "line": 193,
+    "service": "PaymentApi",
+    "method": "getMoyasarSetupIntent",
+    "arguments": [
+      "entityId",
+      "window.location.href"
+    ]
+  },
+  {
+    "file": "src/components/molecules/HubSpotConnectionDrawer/HubSpotConnectionDrawer.tsx",
+    "line": 221,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload as CreateConnectionPayload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/HubSpotConnectionDrawer/HubSpotConnectionDrawer.tsx",
+    "line": 267,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/NomodConnectionDrawer/NomodConnectionDrawer.tsx",
+    "line": 138,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/NomodConnectionDrawer/NomodConnectionDrawer.tsx",
+    "line": 165,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/MoyasarConnectionDrawer/MoyasarConnectionDrawer.tsx",
+    "line": 153,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/MoyasarConnectionDrawer/MoyasarConnectionDrawer.tsx",
+    "line": 170,
+    "service": "ConnectionApi",
+    "method": "Get",
+    "arguments": [
+      "connection!.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/MoyasarConnectionDrawer/MoyasarConnectionDrawer.tsx",
+    "line": 179,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection!.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PaddleConnectionDrawer/PaddleConnectionDrawer.tsx",
+    "line": 140,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload as Parameters<typeof ConnectionApi.Create>[0]"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PaddleConnectionDrawer/PaddleConnectionDrawer.tsx",
+    "line": 158,
+    "service": "ConnectionApi",
+    "method": "Get",
+    "arguments": [
+      "connection!.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/PaddleConnectionDrawer/PaddleConnectionDrawer.tsx",
+    "line": 163,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection!.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TabsConnectionDrawer/TabsConnectionDrawer.tsx",
+    "line": 121,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TabsConnectionDrawer/TabsConnectionDrawer.tsx",
+    "line": 150,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection!.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AwsMarketplaceConnectionDrawer/AwsMarketplaceConnectionDrawer.tsx",
+    "line": 241,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AwsMarketplaceConnectionDrawer/AwsMarketplaceConnectionDrawer.tsx",
+    "line": 255,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection!.id",
+      "{ name: formData.name.trim() }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/GcpMarketplaceConnectionDrawer/GcpMarketplaceConnectionDrawer.tsx",
+    "line": 238,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/GcpMarketplaceConnectionDrawer/GcpMarketplaceConnectionDrawer.tsx",
+    "line": 253,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection!.id",
+      "{ name: formData.name.trim() }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AzureMarketplaceConnectionDrawer/AzureMarketplaceConnectionDrawer.tsx",
+    "line": 87,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/AzureMarketplaceConnectionDrawer/AzureMarketplaceConnectionDrawer.tsx",
+    "line": 101,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection!.id",
+      "{ name: formData.name.trim() }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ImportFileDrawer/ImportFileDrawer.tsx",
+    "line": 176,
+    "service": "TaskApi",
+    "method": "addTask",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: entityType?.value || '',\n\t\t\t\tfile_type: fileTypeOptions[0].value,\n\t\t\t\ttask_type: taskTypeOptions[0].value,\n\t\t\t\tfile_provider: 'csvbox',\n\t\t\t\tupload_id: importId != null ? String(importId) : '',\n\t\t\t\tfile_name: meta?.original_filename || '',\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ImportFileDrawer/ImportFileDrawer.tsx",
+    "line": 203,
+    "service": "TaskApi",
+    "method": "getTaskById",
+    "arguments": [
+      "(taskId ?? task?.id) || ''"
+    ]
+  },
+  {
+    "file": "src/components/molecules/DebugMenu/DebugMenu.tsx",
+    "line": 45,
+    "service": "CustomerApi",
+    "method": "getAllCustomers",
+    "arguments": [
+      "{ limit: 1, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/DebugMenu/DebugMenu.tsx",
+    "line": 56,
+    "service": "CustomerApi",
+    "method": "getCustomerSubscriptions",
+    "arguments": [
+      "customerData?.items[0]?.id || ''"
+    ]
+  },
+  {
+    "file": "src/components/molecules/DebugMenu/DebugMenu.tsx",
+    "line": 97,
+    "service": "EventsApi",
+    "method": "fireEvents",
+    "arguments": [
+      "{\n\t\t\tsubscription_id: subscriptions.items?.[0]?.id || '',\n\t\t\tduration: STREAM_DURATION / 1000,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/core/axios/config.ts",
+    "line": 47,
+    "service": "EnvironmentApi",
+    "method": "getActiveEnvironmentId",
+    "arguments": []
+  },
+  {
+    "file": "src/core/axios/config.ts",
+    "line": 49,
+    "service": "EnvironmentApi",
+    "method": "waitForActiveEnvironment",
+    "arguments": []
+  },
+  {
+    "file": "src/core/axios/config.ts",
+    "line": 50,
+    "service": "EnvironmentApi",
+    "method": "getActiveEnvironmentId",
+    "arguments": []
+  },
+  {
+    "file": "src/hooks/useUser.tsx",
+    "line": 20,
+    "service": "UserApi",
+    "method": "me",
+    "arguments": []
+  },
+  {
+    "file": "src/pages/auth/LoginForm.tsx",
+    "line": 58,
+    "service": "AuthApi",
+    "method": "Login",
+    "arguments": [
+      "email",
+      "password"
+    ]
+  },
+  {
+    "file": "src/pages/auth/SignupForm.tsx",
+    "line": 58,
+    "service": "AuthApi",
+    "method": "Signup",
+    "arguments": [
+      "{\n\t\t\t\temail: signupData.email,\n\t\t\t\tpassword: signupData.password,\n\t\t\t\tmetadata: buildSignupMetadata({ signup_method: 'email' }),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/auth/SignupConfirmation.tsx",
+    "line": 51,
+    "service": "AuthApi",
+    "method": "Signup",
+    "arguments": [
+      "{\n\t\t\t\temail: user.data.user?.email || '',\n\t\t\t\ttoken: session?.access_token || '',\n\t\t\t\tmetadata: getPersistedSignupMetadata() ?? buildSignupMetadata(),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/creditnotes/CreditNote.tsx",
+    "line": 27,
+    "service": "CreditNoteApi",
+    "method": "getCreditNotes",
+    "arguments": [
+      "{\n\t\t\t\texpand: 'invoice,invoice.customer',\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/creditnotes/CreditNoteDetails.tsx",
+    "line": 54,
+    "service": "CreditNoteApi",
+    "method": "getCreditNoteById",
+    "arguments": [
+      "credit_note_id!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/creditnotes/CreditNotesPage.tsx",
+    "line": 21,
+    "service": "CreditNoteApi",
+    "method": "getCreditNotes",
+    "arguments": [
+      "{\n\t\t\tlimit,\n\t\t\toffset,\n\t\t\texpand: 'invoice,customer',\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerWalletModal.tsx",
+    "line": 134,
+    "service": "WalletApi",
+    "method": "createWallet",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerProfilePage.tsx",
+    "line": 42,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/invoice/CustomerInvoiceDetail.tsx",
+    "line": 47,
+    "service": "InvoiceApi",
+    "method": "listInvoices",
+    "arguments": [
+      "{\n\t\t\t\tinvoice_ids: [invoice_id!],\n\t\t\t\tinvoice_status: Object.values(INVOICE_STATUS),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/invoice/CustomerInvoiceDetail.tsx",
+    "line": 66,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "data!.subscription_customer_id!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/invoice/CustomerInvoiceDetail.tsx",
+    "line": 73,
+    "service": "InvoiceApi",
+    "method": "downloadInvoicePdf",
+    "arguments": [
+      "invoice_id"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/invoice/CustomerInvoiceDetail.tsx",
+    "line": 168,
+    "service": "InvoiceApi",
+    "method": "downloadInvoiceCsv",
+    "arguments": [
+      "data"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerInvoiceDetailsPage.tsx",
+    "line": 21,
+    "service": "PaymentApi",
+    "method": "getAllPayments",
+    "arguments": [
+      "{\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\tdestination_id: invoice_id!,\n\t\t\t\tdestination_type: 'INVOICE',\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerInvoiceDetailsPage.tsx",
+    "line": 32,
+    "service": "CreditNoteApi",
+    "method": "getCreditNotes",
+    "arguments": [
+      "{\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\tinvoice_id: invoice_id!,\n\t\t\t\texpand: 'invoice,customer',\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerListPage.tsx",
+    "line": 42,
+    "service": "CustomerApi",
+    "method": "deleteCustomerById",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerListPage.tsx",
+    "line": 285,
+    "service": "CustomerApi",
+    "method": "getCustomersByFilters",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\tlimit,\n\t\t\t\t\t\t\toffset,\n\t\t\t\t\t\t\tsort,\n\t\t\t\t\t\t\tfilters,\n\t\t\t\t\t\t\t...(mergedMetadata ? { metadata: mergedMetadata } : {}),\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerListPage.tsx",
+    "line": 294,
+    "service": "CustomerApi",
+    "method": "getCustomersByFilters",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/hooks/usePlanPrices.ts",
+    "line": 40,
+    "service": "PriceApi",
+    "method": "searchPrices",
+    "arguments": [
+      "{\n\t\t\t\tfilters: [\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'entity_type',\n\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\tvalue: { string: PRICE_ENTITY_TYPE.PLAN },\n\t\t\t\t\t},\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'entity_id',\n\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\tvalue: { string: planId },\n\t\t\t\t\t},\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'status',\n\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\tvalue: { string: ENTITY_STATUS.PUBLISHED },\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t\tallow_expired_prices: false,\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.METERS]),\n\t\t\t\tlimit: 10000,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 162,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 1000,\n\t\t\t\toffset: 0,\n\t\t\t\tfilters: [\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'status',\n\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\tvalue: { string: 'published' },\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t\tsort: [],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 184,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 194,
+    "service": "CustomerApi",
+    "method": "getCustomerSubscriptionById",
+    "arguments": [
+      "subscription_id!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 195,
+    "service": "SubscriptionApi",
+    "method": "getSubscriptionUsage",
+    "arguments": [
+      "subscription_id!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 208,
+    "service": "AddonApi",
+    "method": "List",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 223,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 1,\n\t\t\t\toffset: 0,\n\t\t\t\tfilters: [\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'id',\n\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\tvalue: { string: planId },\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t\tsort: [],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 269,
+    "service": "TaxApi",
+    "method": "listTaxAssociations",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 100,\n\t\t\t\toffset: 0,\n\t\t\t\tentity_id: effectiveCustomerId!,\n\t\t\t\texpand: EXPAND.TAX_RATE,\n\t\t\t\tentity_type: TAXRATE_ENTITY_TYPE.CUSTOMER,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 350,
+    "service": "CouponApi",
+    "method": "getAllCoupons",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 492,
+    "service": "SubscriptionApi",
+    "method": "createSubscription",
+    "arguments": [
+      "data"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CreateCustomerSubscriptionPage.tsx",
+    "line": 798,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "invoicingCustomer.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CouponAssociationTable/CouponAssociationTable.tsx",
+    "line": 76,
+    "service": "CouponApi",
+    "method": "listCouponAssociations",
+    "arguments": [
+      "{\n\t\t\t\tsubscription_ids: [subscriptionId],\n\t\t\t\tactive_only: true,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 105,
+    "service": "SubscriptionApi",
+    "method": "getSubscriptionV2",
+    "arguments": [
+      "subscription_id!",
+      "{ expand: 'plan' }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 112,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 120,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "subscriptionDetails.invoicing_customer_id"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 128,
+    "service": "SubscriptionApi",
+    "method": "getSubscriptionV2",
+    "arguments": [
+      "parentSubscriptionId!",
+      "{ expand: 'plan' }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 136,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "parentCustomerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 156,
+    "service": "SubscriptionApi",
+    "method": "getSubscriptionInvoicesPreview",
+    "arguments": [
+      "{\n\t\t\t\tsubscription_id: subscription_id!,\n\t\t\t\thide_zero_charges_line_items: !showZeroCharges,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 171,
+    "service": "TaxApi",
+    "method": "listTaxAssociations",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 1000,\n\t\t\t\toffset: 0,\n\t\t\t\tentity_id: subscription_id!,\n\t\t\t\tentity_type: TAXRATE_ENTITY_TYPE.SUBSCRIPTION,\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.TAX_RATE]),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 185,
+    "service": "SubscriptionApi",
+    "method": "getUpcomingCreditGrantApplications",
+    "arguments": [
+      "subscription_id!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionDetailsPage.tsx",
+    "line": 193,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptions",
+    "arguments": [
+      "{\n\t\t\t\tfilters: [\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'parent_subscription_id',\n\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\tvalue: { string: subscription_id! },\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t\tlimit: 100,\n\t\t\t\toffset: 0,\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.PLAN, EXPAND.CUSTOMER]),\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ApplyCouponDialog/ApplyCouponDialog.tsx",
+    "line": 43,
+    "service": "CouponApi",
+    "method": "getAllCoupons",
+    "arguments": [
+      "{ limit: 200, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ApplyCouponDialog/ApplyCouponDialog.tsx",
+    "line": 87,
+    "service": "SubscriptionApi",
+    "method": "executeSubscriptionModify",
+    "arguments": [
+      "subscriptionId",
+      "buildPayload()"
+    ]
+  },
+  {
+    "file": "src/components/molecules/RemoveCouponDialog/RemoveCouponDialog.tsx",
+    "line": 37,
+    "service": "SubscriptionApi",
+    "method": "executeSubscriptionModify",
+    "arguments": [
+      "subscriptionId",
+      "buildPayload()"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ApplyTaxDialog/ApplyTaxDialog.tsx",
+    "line": 32,
+    "service": "TaxApi",
+    "method": "listTaxRates",
+    "arguments": [
+      "{ limit: 100, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ApplyTaxDialog/ApplyTaxDialog.tsx",
+    "line": 39,
+    "service": "TaxApi",
+    "method": "listTaxAssociations",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 1000,\n\t\t\t\toffset: 0,\n\t\t\t\tentity_id: subscriptionId,\n\t\t\t\tentity_type: TAXRATE_ENTITY_TYPE.SUBSCRIPTION,\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.TAX_RATE]),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ApplyTaxDialog/ApplyTaxDialog.tsx",
+    "line": 81,
+    "service": "SubscriptionApi",
+    "method": "executeSubscriptionModify",
+    "arguments": [
+      "subscriptionId",
+      "buildPayload()"
+    ]
+  },
+  {
+    "file": "src/components/molecules/RemoveTaxDialog/RemoveTaxDialog.tsx",
+    "line": 37,
+    "service": "SubscriptionApi",
+    "method": "executeSubscriptionModify",
+    "arguments": [
+      "subscriptionId",
+      "buildPayload()"
+    ]
+  },
+  {
+    "file": "src/hooks/useSubscriptionEditCoreQuery.ts",
+    "line": 15,
+    "service": "SubscriptionApi",
+    "method": "getSubscriptionV2",
+    "arguments": [
+      "subscriptionId!",
+      "{\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.PLAN, EXPAND.SCHEDULE]),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 115,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "subscriptionDetails!.customer_id"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 124,
+    "service": "CreditGrantApi",
+    "method": "list",
+    "arguments": [
+      "{\n\t\t\t\tsubscription_ids: [subscriptionId!],\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\tscope: CREDIT_GRANT_SCOPE.SUBSCRIPTION,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 140,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptions",
+    "arguments": [
+      "{\n\t\t\t\tfilters: [\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'parent_subscription_id',\n\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\tvalue: { string: subscriptionId! },\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t\tlimit: 100,\n\t\t\t\toffset: 0,\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.PLAN, EXPAND.CUSTOMER]),\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 161,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptionLineItems",
+    "arguments": [
+      "{ subscription_ids: [subscriptionId!], limit: 100, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 168,
+    "service": "TaxApi",
+    "method": "listTaxAssociations",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 1000,\n\t\t\t\toffset: 0,\n\t\t\t\tentity_id: subscriptionId!,\n\t\t\t\tentity_type: TAXRATE_ENTITY_TYPE.SUBSCRIPTION,\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.TAX_RATE]),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 180,
+    "service": "CouponApi",
+    "method": "listCouponAssociations",
+    "arguments": [
+      "{ subscription_ids: [subscriptionId!], active_only: true }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 200,
+    "service": "SubscriptionApi",
+    "method": "updateSubscriptionLineItem",
+    "arguments": [
+      "lineItemId",
+      "updateData"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 217,
+    "service": "SubscriptionApi",
+    "method": "deleteSubscriptionLineItem",
+    "arguments": [
+      "lineItemId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 230,
+    "service": "SubscriptionApi",
+    "method": "createSubscriptionLineItem",
+    "arguments": [
+      "subscriptionId!",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 243,
+    "service": "SubscriptionApi",
+    "method": "updateSubscription",
+    "arguments": [
+      "subscriptionId!",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 258,
+    "service": "CreditGrantApi",
+    "method": "create",
+    "arguments": [
+      "data"
+    ]
+  },
+  {
+    "file": "src/pages/customer/customers/CustomerSubscriptionEditPage.tsx",
+    "line": 273,
+    "service": "CreditGrantApi",
+    "method": "delete",
+    "arguments": [
+      "creditGrantId",
+      "deleteRequest"
+    ]
+  },
+  {
+    "file": "src/pages/customer/import-export/ImportExport.tsx",
+    "line": 92,
+    "service": "TaskApi",
+    "method": "getAllTasks",
+    "arguments": [
+      "{\n\t\t\t\ttask_type: 'IMPORT',\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/AddCreditNotePage.tsx",
+    "line": 43,
+    "service": "InvoiceApi",
+    "method": "getInvoiceById",
+    "arguments": [
+      "invoice_id!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/AddCreditNotePage.tsx",
+    "line": 116,
+    "service": "CreditNoteApi",
+    "method": "createCreditNote",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/CreateInvoice.tsx",
+    "line": 37,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/CreateInvoice.tsx",
+    "line": 74,
+    "service": "TaxApi",
+    "method": "listTaxAssociations",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 100,\n\t\t\t\toffset: 0,\n\t\t\t\tentity_id: customerId!,\n\t\t\t\texpand: EXPAND.TAX_RATE,\n\t\t\t\tentity_type: TAXRATE_ENTITY_TYPE.CUSTOMER,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/CreateInvoice.tsx",
+    "line": 151,
+    "service": "InvoiceApi",
+    "method": "createInvoice",
+    "arguments": [
+      "{\n\t\t\t\tcustomer_id: customerId!,\n\t\t\t\tinvoice_type: InvoiceType.ONE_OFF,\n\t\t\t\tcurrency,\n\t\t\t\tpayment_status: PAYMENT_STATUS.PENDING,\n\t\t\t\tamount_due: finalTotal,\n\t\t\t\tperiod_start: today.toISOString(),\n\t\t\t\tissue_date: resolvedIssueDate.toISOString(),\n\t\t\t\tline_items: invoiceLineItems,\n\t\t\t\ttotal: finalTotal,\n\t\t\t\tsubtotal: calculateSubtotal(),\n\t\t\t\tbilling_reason: 'manual',\n\t\t\t\tcoupons: selectedCoupon ? [selectedCoupon.id] : [],\n\t\t\t\ttax_rate_overrides: taxOverrides.length > 0 ? taxOverrides : undefined,\n\t\t\t\tmetadata: {},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 148,
+    "service": "InvoiceApi",
+    "method": "getInvoiceById",
+    "arguments": [
+      "invoiceId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 260,
+    "service": "InvoiceApi",
+    "method": "updateInvoice",
+    "arguments": [
+      "targetId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 263,
+    "service": "InvoiceApi",
+    "method": "updateInvoicePaymentStatus",
+    "arguments": [
+      "targetId",
+      "{ payment_status: nextPaymentStatus }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 270,
+    "service": "InvoiceApi",
+    "method": "modifyInvoice",
+    "arguments": [
+      "targetId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 279,
+    "service": "InvoiceApi",
+    "method": "modifyInvoice",
+    "arguments": [
+      "targetId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 287,
+    "service": "InvoiceApi",
+    "method": "modifyInvoice",
+    "arguments": [
+      "targetId",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 294,
+    "service": "InvoiceApi",
+    "method": "voidInvoice",
+    "arguments": [
+      "targetId"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/EditInvoicePage.tsx",
+    "line": 296,
+    "service": "InvoiceApi",
+    "method": "finalizeInvoice",
+    "arguments": [
+      "targetId"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/InvoiceDetailsPage.tsx",
+    "line": 21,
+    "service": "PaymentApi",
+    "method": "getAllPayments",
+    "arguments": [
+      "{\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\tdestination_id: invoiceId!,\n\t\t\t\tdestination_type: 'INVOICE',\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/InvoiceDetailsPage.tsx",
+    "line": 32,
+    "service": "CreditNoteApi",
+    "method": "getCreditNotes",
+    "arguments": [
+      "{\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\tinvoice_id: invoiceId!,\n\t\t\t\texpand: 'invoice,customer',\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/utils/filterSearchHelpers.ts",
+    "line": 19,
+    "service": "CustomerApi",
+    "method": "searchCustomers",
+    "arguments": [
+      "''",
+      "20"
+    ]
+  },
+  {
+    "file": "src/utils/filterSearchHelpers.ts",
+    "line": 29,
+    "service": "CustomerApi",
+    "method": "searchCustomers",
+    "arguments": [
+      "query",
+      "20"
+    ]
+  },
+  {
+    "file": "src/utils/filterSearchHelpers.ts",
+    "line": 56,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\tlimit: 20,\n\t\toffset: 0,\n\t\tfilters,\n\t\tsort: [],\n\t\texpand: 'entitlements,prices,meters,features,credit_grants',\n\t}"
+    ]
+  },
+  {
+    "file": "src/utils/filterSearchHelpers.ts",
+    "line": 86,
+    "service": "GroupApi",
+    "method": "getGroupsByFilter",
+    "arguments": [
+      "{\n\t\tlimit: 20,\n\t\toffset: 0,\n\t\tfilters,\n\t\tsort: [],\n\t}"
+    ]
+  },
+  {
+    "file": "src/utils/filterSearchHelpers.ts",
+    "line": 107,
+    "service": "UserApi",
+    "method": "getAllUsers",
+    "arguments": []
+  },
+  {
+    "file": "src/pages/customer/invoices/InvoicePage.tsx",
+    "line": 103,
+    "service": "CustomerApi",
+    "method": "getCustomersByFilters",
+    "arguments": [
+      "{\n\t\t\tcustomer_ids: ids,\n\t\t\tlimit: ids.length,\n\t\t\toffset: 0,\n\t\t\tfilters: [],\n\t\t\tsort: [],\n\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/InvoicePage.tsx",
+    "line": 138,
+    "service": "InvoiceApi",
+    "method": "listInvoices",
+    "arguments": [
+      "{\n\t\t\t...params,\n\t\t\tinvoice_status: Object.values(INVOICE_STATUS),\n\t\t\tskip_line_items: true,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/invoices/InvoicePage.tsx",
+    "line": 358,
+    "service": "InvoiceApi",
+    "method": "listInvoices",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\tskip_line_items: true,\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/payments/PaymentList.tsx",
+    "line": 27,
+    "service": "PaymentApi",
+    "method": "getAllPayments",
+    "arguments": [
+      "{ limit, offset, status: ENTITY_STATUS.PUBLISHED }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/payments/WalletTransactionList.tsx",
+    "line": 253,
+    "service": "WalletApi",
+    "method": "getAllWalletTransactionsByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t...params,\n\t\t\t\t\t\texpand: generateExpandQueryParams([EXPAND.CUSTOMER, EXPAND.CREATED_BY_USER]),\n\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/payments/WalletTransactionList.tsx",
+    "line": 258,
+    "service": "WalletApi",
+    "method": "getAllWalletTransactionsByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t...params,\n\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\tsort: [],\n\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/subscriptions/Subscriptions.tsx",
+    "line": 290,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptions",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\t\texpand: generateExpandQueryParams([EXPAND.CUSTOMER]),\n\t\t\t\t\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/subscriptions/Subscriptions.tsx",
+    "line": 296,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptions",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerAnalyticsTab.tsx",
+    "line": 50,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerAnalyticsTab.tsx",
+    "line": 156,
+    "service": "EventsApi",
+    "method": "getUsageAnalytics",
+    "arguments": [
+      "sanitizedParams"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerAnalyticsTab.tsx",
+    "line": 172,
+    "service": "CostSheetApi",
+    "method": "GetCostAnalytics",
+    "arguments": [
+      "sanitizedParams"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerAnalyticsTab.tsx",
+    "line": 181,
+    "service": "FeatureApi",
+    "method": "listFeatures",
+    "arguments": [
+      "{\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\tlimit: 1000,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerInformationTab.tsx",
+    "line": 45,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerInformationTab.tsx",
+    "line": 52,
+    "service": "ConnectionApi",
+    "method": "ListPublished",
+    "arguments": []
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerInformationTab.tsx",
+    "line": 59,
+    "service": "SubscriptionApi",
+    "method": "listSubscriptions",
+    "arguments": [
+      "{\n\t\t\t\tinvoicing_customer_ids: [customerId!],\n\t\t\t\tlimit: INVOICED_SUBSCRIPTIONS_LIMIT,\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerInformationTab.tsx",
+    "line": 89,
+    "service": "CustomerApi",
+    "method": "getCustomers",
+    "arguments": [
+      "{\n\t\t\t\tcustomer_ids: subscriberIdList,\n\t\t\t\tlimit: Math.max(subscriberIdList.length, 1),\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerInformationTab.tsx",
+    "line": 272,
+    "service": "CustomerApi",
+    "method": "updateCustomer",
+    "arguments": [
+      "{ metadata: newMetadata }",
+      "customerId"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerUsageEventsTab.tsx",
+    "line": 136,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerUsageEventsTab.tsx",
+    "line": 211,
+    "service": "EventsApi",
+    "method": "getRawEvents",
+    "arguments": [
+      "{\n\t\t\t\t\titer_last_key: iterLastKey,\n\t\t\t\t\tpage_size: 10,\n\t\t\t\t\t...apiParams,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerInvoiceTab.tsx",
+    "line": 27,
+    "service": "InvoiceApi",
+    "method": "getCustomerInvoices",
+    "arguments": [
+      "customerId!",
+      "{ limit, offset }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerInvoiceTab.tsx",
+    "line": 46,
+    "service": "CustomerApi",
+    "method": "getCustomers",
+    "arguments": [
+      "{ customer_ids: subCustIds, limit: subCustIds.length }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerOverviewTab.tsx",
+    "line": 142,
+    "service": "SubscriptionApi",
+    "method": "searchSubscriptions",
+    "arguments": [
+      "{\n\t\t\t\tcustomer_id: customerId!,\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\tfilters: sanitizedFilters,\n\t\t\t\tsort: sanitizedSorts,\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerOverviewTab.tsx",
+    "line": 168,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\t\tfilters: planSearchFilters,\n\t\t\t\tlimit: uniquePlanIds.length || 10,\n\t\t\t\toffset: 0,\n\t\t\t\tsort: [],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerOverviewTab.tsx",
+    "line": 200,
+    "service": "PriceApi",
+    "method": "searchPrices",
+    "arguments": [
+      "{\n\t\t\t\t\tfilters: [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_type',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: PRICE_ENTITY_TYPE.SUBSCRIPTION },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_id',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: sub.id },\n\t\t\t\t\t\t},\n\t\t\t\t\t],\n\t\t\t\t\tlimit: 1,\n\t\t\t\t\toffset: 0,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerOverviewTab.tsx",
+    "line": 246,
+    "service": "CustomerApi",
+    "method": "getUsageSummary",
+    "arguments": [
+      "{ customer_id: customerId! }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerOverviewTab.tsx",
+    "line": 255,
+    "service": "CustomerApi",
+    "method": "getUpcomingCreditGrantApplications",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerOverviewTab.tsx",
+    "line": 265,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerTaxAssociationTab.tsx",
+    "line": 31,
+    "service": "TaxApi",
+    "method": "listTaxAssociations",
+    "arguments": [
+      "{\n\t\t\tentity_type: TAXRATE_ENTITY_TYPE.CUSTOMER,\n\t\t\tentity_id: customerId!,\n\t\t\tlimit,\n\t\t\toffset,\n\t\t\texpand: EXPAND.TAX_RATE,\n\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerTaxAssociationTab.tsx",
+    "line": 53,
+    "service": "TaxApi",
+    "method": "createTaxAssociation",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerWalletTab.tsx",
+    "line": 110,
+    "service": "WalletApi",
+    "method": "getCustomerWallets",
+    "arguments": [
+      "{ id: customerId! }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerWalletTab.tsx",
+    "line": 116,
+    "service": "WalletApi",
+    "method": "getWalletBalance",
+    "arguments": [
+      "activeWallet ? activeWallet.id : ''"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerWalletTab.tsx",
+    "line": 127,
+    "service": "WalletApi",
+    "method": "getWalletTransactions",
+    "arguments": [
+      "{\n\t\t\t\twalletId: activeWallet ? activeWallet.id : '',\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerWalletTab.tsx",
+    "line": 138,
+    "service": "WalletApi",
+    "method": "updateWallet",
+    "arguments": [
+      "walletId",
+      "{\n\t\t\t\tauto_topup: config,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerWalletTab.tsx",
+    "line": 293,
+    "service": "WalletApi",
+    "method": "updateWallet",
+    "arguments": [
+      "activeWallet.id!",
+      "{ metadata: newMetadata }"
+    ]
+  },
+  {
+    "file": "src/pages/customer/tabs/CustomerWalletTab.tsx",
+    "line": 312,
+    "service": "WalletApi",
+    "method": "updateWallet",
+    "arguments": [
+      "activeWallet.id!",
+      "{\n\t\t\t\t\t\t\talert_settings: alertSettings,\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/customer/taxes/TaxrateDetailsPage.tsx",
+    "line": 40,
+    "service": "TaxApi",
+    "method": "getTaxRate",
+    "arguments": [
+      "taxrateId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/taxes/TaxrateDetailsPage.tsx",
+    "line": 47,
+    "service": "TaxApi",
+    "method": "deleteTaxRate",
+    "arguments": [
+      "taxrateId!"
+    ]
+  },
+  {
+    "file": "src/pages/customer/taxes/TaxRatesPage.tsx",
+    "line": 29,
+    "service": "TaxApi",
+    "method": "listTaxRates",
+    "arguments": [
+      "{\n\t\t\tlimit,\n\t\t\toffset,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/developer/developer.tsx",
+    "line": 92,
+    "service": "SecretKeysApi",
+    "method": "getAllSecretKeys",
+    "arguments": [
+      "{ limit, offset }"
+    ]
+  },
+  {
+    "file": "src/pages/developer/developer.tsx",
+    "line": 192,
+    "service": "SecretKeysApi",
+    "method": "deleteSecretKey",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ServiceAccountDrawer/ServiceAccountDrawer.tsx",
+    "line": 36,
+    "service": "RbacApi",
+    "method": "getAllRoles",
+    "arguments": [
+      "'service_account'"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ServiceAccountDrawer/ServiceAccountDrawer.tsx",
+    "line": 75,
+    "service": "UserApi",
+    "method": "createServiceAccount",
+    "arguments": [
+      "{ type: 'service_account' as const, roles: selectedRoles, name: name.trim() || undefined }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ServiceAccountDrawer/ServiceAccountDrawer.tsx",
+    "line": 89,
+    "service": "UserApi",
+    "method": "updateServiceAccount",
+    "arguments": [
+      "data!.id",
+      "{ name: name.trim() || undefined }"
+    ]
+  },
+  {
+    "file": "src/pages/developer/ServiceAccounts.tsx",
+    "line": 32,
+    "service": "UserApi",
+    "method": "getServiceAccounts",
+    "arguments": [
+      "{ limit, offset }"
+    ]
+  },
+  {
+    "file": "src/pages/developer/ServiceAccounts.tsx",
+    "line": 110,
+    "service": "UserApi",
+    "method": "deleteUser",
+    "arguments": [
+      "row.id"
+    ]
+  },
+  {
+    "file": "src/pages/developer/WorkflowsPage.tsx",
+    "line": 200,
+    "service": "WorkflowApi",
+    "method": "search",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/developer/WorkflowsPage.tsx",
+    "line": 202,
+    "service": "WorkflowApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/developer/WorkflowDetailsPage.tsx",
+    "line": 38,
+    "service": "WorkflowApi",
+    "method": "getDetails",
+    "arguments": [
+      "workflowId!",
+      "runId!"
+    ]
+  },
+  {
+    "file": "src/components/molecules/StripeConnectionDrawer/StripeConnectionDrawer.tsx",
+    "line": 194,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/StripeConnectionDrawer/StripeConnectionDrawer.tsx",
+    "line": 230,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/RazorpayConnectionDrawer/RazorpayConnectionDrawer.tsx",
+    "line": 153,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/RazorpayConnectionDrawer/RazorpayConnectionDrawer.tsx",
+    "line": 180,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ChargebeeConnectionDrawer/ChargebeeConnectionDrawer.tsx",
+    "line": 165,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ChargebeeConnectionDrawer/ChargebeeConnectionDrawer.tsx",
+    "line": 192,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/QuickBooksConnectionDrawer/QuickBooksConnectionDrawer.tsx",
+    "line": 165,
+    "service": "ConnectionApi",
+    "method": "Get",
+    "arguments": [
+      "connection.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/QuickBooksConnectionDrawer/QuickBooksConnectionDrawer.tsx",
+    "line": 199,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/QuickBooksConnectionDrawer/QuickBooksConnectionDrawer.tsx",
+    "line": 255,
+    "service": "OAuthApi",
+    "method": "InitiateOAuth",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ZohoBooksConnectionDrawer/ZohoBooksConnectionDrawer.tsx",
+    "line": 99,
+    "service": "OAuthApi",
+    "method": "InitiateOAuth",
+    "arguments": [
+      "{\n\t\t\t\tprovider: 'zoho_books',\n\t\t\t\tname: formData.name,\n\t\t\t\tcredentials: {\n\t\t\t\t\tclient_id: formData.client_id,\n\t\t\t\t\tclient_secret: formData.client_secret,\n\t\t\t\t\twebhook_secret: formData.webhook_secret || '',\n\t\t\t\t},\n\t\t\t\tmetadata: {\n\t\t\t\t\taccounts_server: formData.accounts_server,\n\t\t\t\t\torganization_id: formData.organization_id,\n\t\t\t\t\torganization_name: '',\n\t\t\t\t},\n\t\t\t\tsync_config: {\n\t\t\t\t\tinvoice: {\n\t\t\t\t\t\tinbound: false,\n\t\t\t\t\t\toutbound: true,\n\t\t\t\t\t},\n\t\t\t\t\tcustomer: {\n\t\t\t\t\t\tinbound: true,\n\t\t\t\t\t\toutbound: false,\n\t\t\t\t\t},\n\t\t\t\t},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ZohoBooksConnectionDrawer/ZohoBooksConnectionDrawer.tsx",
+    "line": 143,
+    "service": "ConnectionApi",
+    "method": "Get",
+    "arguments": [
+      "connection.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ZohoBooksConnectionDrawer/ZohoBooksConnectionDrawer.tsx",
+    "line": 155,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/WhopConnectionDrawer/WhopConnectionDrawer.tsx",
+    "line": 122,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/WhopConnectionDrawer/WhopConnectionDrawer.tsx",
+    "line": 157,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/integrations/IntegrationDetails.tsx",
+    "line": 48,
+    "service": "ConnectionApi",
+    "method": "List",
+    "arguments": [
+      "{ provider_type: providerType }"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/integrations/IntegrationDetails.tsx",
+    "line": 58,
+    "service": "ConnectionApi",
+    "method": "Delete",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/integrations/Integrations.tsx",
+    "line": 54,
+    "service": "ConnectionApi",
+    "method": "List",
+    "arguments": [
+      "{ provider_type: providerType }"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/integrations/Integrations.tsx",
+    "line": 437,
+    "service": "ConnectionApi",
+    "method": "Delete",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/integrations/QuickBooksOAuthCallback.tsx",
+    "line": 120,
+    "service": "OAuthApi",
+    "method": "CompleteOAuth",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/S3ConnectionDrawer/S3ConnectionDrawer.tsx",
+    "line": 122,
+    "service": "ConnectionApi",
+    "method": "Create",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/S3ConnectionDrawer/S3ConnectionDrawer.tsx",
+    "line": 140,
+    "service": "ConnectionApi",
+    "method": "Update",
+    "arguments": [
+      "connection.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/S3Exports.tsx",
+    "line": 30,
+    "service": "ConnectionApi",
+    "method": "List",
+    "arguments": [
+      "{ provider_type: CONNECTION_PROVIDER_TYPE.S3 }"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/S3Exports.tsx",
+    "line": 43,
+    "service": "TaskApi",
+    "method": "getAllScheduledTasks",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\tconnection_id: connection.id,\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/S3Exports.tsx",
+    "line": 61,
+    "service": "ConnectionApi",
+    "method": "Delete",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ExportDrawer/ExportDrawer.tsx",
+    "line": 273,
+    "service": "TaskApi",
+    "method": "createScheduledTask",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ExportDrawer/ExportDrawer.tsx",
+    "line": 326,
+    "service": "TaskApi",
+    "method": "updateScheduledTask",
+    "arguments": [
+      "exportTask!.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportManagement.tsx",
+    "line": 26,
+    "service": "ConnectionApi",
+    "method": "Get",
+    "arguments": [
+      "connectionId!"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportManagement.tsx",
+    "line": 37,
+    "service": "TaskApi",
+    "method": "getAllScheduledTasks",
+    "arguments": [
+      "{ connection_id: connectionId! }"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportManagement.tsx",
+    "line": 46,
+    "service": "TaskApi",
+    "method": "deleteScheduledTask",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TaskRunsTable/TaskRunsTable.tsx",
+    "line": 28,
+    "service": "TaskApi",
+    "method": "downloadTaskFile",
+    "arguments": [
+      "taskId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/TaskRunsTable/TaskRunsTable.tsx",
+    "line": 65,
+    "service": "TaskRunApi",
+    "method": "getAllTaskRuns",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportDetails.tsx",
+    "line": 33,
+    "service": "TaskApi",
+    "method": "getScheduledTaskById",
+    "arguments": [
+      "exportId!"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportDetails.tsx",
+    "line": 40,
+    "service": "ConnectionApi",
+    "method": "Get",
+    "arguments": [
+      "connectionId!"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportDetails.tsx",
+    "line": 46,
+    "service": "TaskApi",
+    "method": "updateScheduledTask",
+    "arguments": [
+      "id",
+      "{ enabled }"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportDetails.tsx",
+    "line": 59,
+    "service": "TaskApi",
+    "method": "forceRunScheduledTask",
+    "arguments": [
+      "id",
+      "startTime && endTime ? { start_time: startTime, end_time: endTime } : undefined"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/exports/ExportDetails.tsx",
+    "line": 71,
+    "service": "TaskApi",
+    "method": "deleteScheduledTask",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/usage-syncs/UsageSyncs.tsx",
+    "line": 34,
+    "service": "CustomerApi",
+    "method": "getCustomersByFilters",
+    "arguments": [
+      "{\n\t\tcustomer_ids: ids,\n\t\tlimit: ids.length,\n\t\toffset: 0,\n\t\tfilters: [],\n\t\tsort: [],\n\t}"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/usage-syncs/UsageSyncs.tsx",
+    "line": 50,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\tfilters: [{ field: 'id', operator: FilterOperator.IN, data_type: DataType.ARRAY, value: { array: ids } }],\n\t\tlimit: ids.length,\n\t\toffset: 0,\n\t\tsort: [],\n\t}"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/usage-syncs/UsageSyncs.tsx",
+    "line": 73,
+    "service": "UsageRecordApi",
+    "method": "searchUsageRecords",
+    "arguments": [
+      "{\n\t\t\tlimit: params.limit,\n\t\t\toffset: params.offset,\n\t\t\tfilters: params.filters as never,\n\t\t\tsort: params.sort as never,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/usage-syncs/UsageSyncs.tsx",
+    "line": 211,
+    "service": "UsageRecordApi",
+    "method": "searchUsageRecords",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/insights-tools/revenue/Revenue.tsx",
+    "line": 123,
+    "service": "RevenueDashboardApi",
+    "method": "getRevenueDashboard",
+    "arguments": [
+      "{\n\t\t\t\tperiod_start: start.toISOString(),\n\t\t\t\tperiod_end: end.toISOString(),\n\t\t\t\tcustomer_ids: [],\n\t\t\t\twindow_size,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/onboarding/useOnboardingTenant.ts",
+    "line": 25,
+    "service": "TenantApi",
+    "method": "getTenantById",
+    "arguments": [
+      "user?.tenant?.id ?? ''"
+    ]
+  },
+  {
+    "file": "src/pages/onboarding/useOnboardingTenant.ts",
+    "line": 33,
+    "service": "TenantApi",
+    "method": "updateTenant",
+    "arguments": [
+      "{\n\t\t\t\tname: orgName.trim(),\n\t\t\t\tmetadata: {\n\t\t\t\t\t...tenant?.metadata,\n\t\t\t\t\t[TenantMetadataKey.ONBOARDING_COMPLETED]: 'true',\n\t\t\t\t\tonboarding_referral_source: referralSource,\n\t\t\t\t\tonboarding_organization_url: orgUrl.trim(),\n\t\t\t\t},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/onboarding/useOnboardingTenant.ts",
+    "line": 44,
+    "service": "OnboardingApi",
+    "method": "recordOnboardingData",
+    "arguments": [
+      "{\n\t\t\t\torgName: orgName.trim(),\n\t\t\t\torgUrl: orgUrl.trim(),\n\t\t\t\twebsite: '',\n\t\t\t\trole: '',\n\t\t\t\tteamSize: '',\n\t\t\t\treferralSource,\n\t\t\t\tpricingType: '',\n\t\t\t\tuserEmail: user?.email || '',\n\t\t\t\ttenantId: user?.tenant?.id || '',\n\t\t\t\ttimestamp: new Date().toISOString(),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/llm.ts",
+    "line": 66,
+    "service": "AiPricingParseApi",
+    "method": "parseGemini",
+    "arguments": [
+      "{\n\t\t\tsystemPrompt: SYSTEM_PROMPT,\n\t\t\tuserPrompt: enrichedPrompt,\n\t\t\tresponseSchema: GEMINI_PRICING_SCHEMA as Record<string, unknown>,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 133,
+    "service": "CreditGrantApi",
+    "method": "list",
+    "arguments": [
+      "{ plan_ids: [planId], limit: 100 }"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 143,
+    "service": "CreditGrantApi",
+    "method": "create",
+    "arguments": [
+      "{\n\t\t\tname: g.name,\n\t\t\tscope: CREDIT_GRANT_SCOPE.PLAN,\n\t\t\tplan_id: planId,\n\t\t\tcredits: g.credits,\n\t\t\tcadence,\n\t\t\texpiration_type: CREDIT_GRANT_EXPIRATION_TYPE.NEVER,\n\t\t\t...(g.conversion_rate != null && g.conversion_rate > 0 ? { conversion_rate: g.conversion_rate } : {}),\n\t\t\t...(isRecurring ? { period: period ?? CREDIT_GRANT_PERIOD.MONTHLY, period_count: 1 } : {}),\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 187,
+    "service": "FeatureApi",
+    "method": "listFeatures",
+    "arguments": [
+      "{\n\t\t\tlookup_keys: [feat.key],\n\t\t\tlimit: 1,\n\t\t\texpand: 'meters',\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 208,
+    "service": "FeatureApi",
+    "method": "createFeature",
+    "arguments": [
+      "{\n\t\t\tname: feat.name,\n\t\t\tlookup_key: feat.key,\n\t\t\ttype: featureType,\n\t\t\tmetadata: AI_SETUP_METADATA,\n\t\t\tunit_singular: feat.unit_singular,\n\t\t\tunit_plural: feat.unit_plural,\n\t\t\t...(featureType === FEATURE_TYPE.METERED && {\n\t\t\t\tmeter: {\n\t\t\t\t\tname: feat.name,\n\t\t\t\t\tevent_name: eventName,\n\t\t\t\t\taggregation:\n\t\t\t\t\t\tagg.type === METER_AGGREGATION_TYPE.SUM && agg.field\n\t\t\t\t\t\t\t? { type: METER_AGGREGATION_TYPE.SUM, field: agg.field }\n\t\t\t\t\t\t\t: { type: METER_AGGREGATION_TYPE.COUNT },\n\t\t\t\t\treset_usage: METER_USAGE_RESET_PERIOD.BILLING_PERIOD,\n\t\t\t\t},\n\t\t\t}),\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 247,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\tlimit: 1,\n\t\t\tlookup_key: planLookupKey,\n\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 260,
+    "service": "PlanApi",
+    "method": "createPlan",
+    "arguments": [
+      "{\n\t\t\t\tname: plan.name,\n\t\t\t\tdescription: plan.description,\n\t\t\t\tlookup_key: planLookupKey,\n\t\t\t\tmetadata: AI_SETUP_METADATA,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 268,
+    "service": "PlanApi",
+    "method": "createPlan",
+    "arguments": [
+      "{\n\t\t\t\tname: plan.name,\n\t\t\t\tdescription: plan.description,\n\t\t\t\tlookup_key: `${planLookupKey}_${Date.now()}`,\n\t\t\t\tmetadata: AI_SETUP_METADATA,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 293,
+    "service": "PriceApi",
+    "method": "CreatePrice",
+    "arguments": [
+      "{\n\t\t\t\tamount: String(price.amount),\n\t\t\t\tcurrency: price.currency.toUpperCase(),\n\t\t\t\tentity_type: PRICE_ENTITY_TYPE.PLAN,\n\t\t\t\tentity_id: planId,\n\t\t\t\ttype: PRICE_TYPE.FIXED,\n\t\t\t\tprice_unit_type: PRICE_UNIT_TYPE.FIAT,\n\t\t\t\t// Backend validates BillingPeriod as required for CreatePrice.\n\t\t\t\tbilling_period: toBillingPeriod(price.billing_period),\n\t\t\t\tbilling_period_count: 1,\n\t\t\t\tbilling_model: BILLING_MODEL.FLAT_FEE,\n\t\t\t\tinvoice_cadence: INVOICE_CADENCE.ADVANCE,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 318,
+    "service": "PriceApi",
+    "method": "CreatePrice",
+    "arguments": [
+      "{\n\t\t\t\tamount: String(charge.amount_per_unit),\n\t\t\t\tcurrency: charge.currency.toUpperCase(),\n\t\t\t\tentity_type: PRICE_ENTITY_TYPE.PLAN,\n\t\t\t\tentity_id: planId,\n\t\t\t\ttype: PRICE_TYPE.USAGE,\n\t\t\t\tprice_unit_type: PRICE_UNIT_TYPE.FIAT,\n\t\t\t\tbilling_period: toBillingPeriod(charge.billing_period),\n\t\t\t\tbilling_period_count: 1,\n\t\t\t\tbilling_model: isPackage ? BILLING_MODEL.PACKAGE : BILLING_MODEL.FLAT_FEE,\n\t\t\t\tinvoice_cadence: INVOICE_CADENCE.ARREAR,\n\t\t\t\tmeter_id: meterId,\n\t\t\t\t...(isPackage && charge.package_size ? { transform_quantity: { divide_by: charge.package_size, round: 'up' } } : {}),\n\t\t\t\t...(filterValuesRecord ? { filter_values: filterValuesRecord } : {}),\n\t\t\t\t...(charge.display_name ? { display_name: charge.display_name } : {}),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 349,
+    "service": "EntitlementApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\tentity_type: ENTITLEMENT_ENTITY_TYPE.PLAN,\n\t\t\t\tentity_ids: [planId],\n\t\t\t\tlimit: 100,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/api/ai/orchestrator.ts",
+    "line": 364,
+    "service": "EntitlementApi",
+    "method": "create",
+    "arguments": [
+      "{\n\t\t\t\t\tentity_type: ENTITLEMENT_ENTITY_TYPE.PLAN,\n\t\t\t\t\tentity_id: planId,\n\t\t\t\t\tfeature_id: featureId,\n\t\t\t\t\tfeature_type: featureType,\n\t\t\t\t\tis_enabled: true,\n\t\t\t\t\t...(isStatic\n\t\t\t\t\t\t? { static_value: ent.is_unlimited ? 'unlimited' : String(ent.value ?? 'true') }\n\t\t\t\t\t\t: {\n\t\t\t\t\t\t\t\tusage_limit: ent.is_unlimited ? null : (ent.value ?? null),\n\t\t\t\t\t\t\t\tusage_reset_period: billingPeriodToResetPeriod(planBillingPeriod),\n\t\t\t\t\t\t\t\tis_soft_limit: false,\n\t\t\t\t\t\t\t}),\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/organisms/EntityChargesPage/EntityChargesPage.tsx",
+    "line": 178,
+    "service": "PlanApi",
+    "method": "getPlanById",
+    "arguments": [
+      "entityId"
+    ]
+  },
+  {
+    "file": "src/components/organisms/EntityChargesPage/EntityChargesPage.tsx",
+    "line": 180,
+    "service": "AddonApi",
+    "method": "Get",
+    "arguments": [
+      "entityId"
+    ]
+  },
+  {
+    "file": "src/components/organisms/EntityChargesPage/EntityChargesPage.tsx",
+    "line": 182,
+    "service": "CostSheetApi",
+    "method": "GetCostSheetById",
+    "arguments": [
+      "entityId"
+    ]
+  },
+  {
+    "file": "src/components/organisms/EntityChargesPage/EntityChargesPage.tsx",
+    "line": 193,
+    "service": "PriceApi",
+    "method": "CreateBulkPrice",
+    "arguments": [
+      "prices"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/addons/AddonDetails.tsx",
+    "line": 244,
+    "service": "EntitlementApi",
+    "method": "delete",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/addons/AddonDetails.tsx",
+    "line": 286,
+    "service": "AddonApi",
+    "method": "Get",
+    "arguments": [
+      "id!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/addons/AddonDetails.tsx",
+    "line": 293,
+    "service": "AddonApi",
+    "method": "Delete",
+    "arguments": [
+      "id!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/addons/AddonDetails.tsx",
+    "line": 314,
+    "service": "PriceApi",
+    "method": "DeletePrice",
+    "arguments": [
+      "priceId",
+      "data"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/addons/Addons.tsx",
+    "line": 169,
+    "service": "AddonApi",
+    "method": "Delete",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/addons/Addons.tsx",
+    "line": 217,
+    "service": "AddonApi",
+    "method": "ListByFilter",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/addons/Addons.tsx",
+    "line": 219,
+    "service": "AddonApi",
+    "method": "ListByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/cost-sheets/CostSheetDetails.tsx",
+    "line": 187,
+    "service": "CostSheetApi",
+    "method": "GetCostSheetById",
+    "arguments": [
+      "id!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/cost-sheets/CostSheetDetails.tsx",
+    "line": 194,
+    "service": "CostSheetApi",
+    "method": "DeleteCostSheet",
+    "arguments": [
+      "id!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/cost-sheets/CostSheetDetails.tsx",
+    "line": 260,
+    "service": "PriceApi",
+    "method": "searchPrices",
+    "arguments": [
+      "{\n\t\t\t\tfilters: mergedFilters,\n\t\t\t\tsorts: sanitizedSorts,\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/cost-sheets/CostSheets.tsx",
+    "line": 169,
+    "service": "CostSheetApi",
+    "method": "DeleteCostSheet",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/cost-sheets/CostSheets.tsx",
+    "line": 224,
+    "service": "CostSheetApi",
+    "method": "GetCostSheetsByFilter",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/cost-sheets/CostSheets.tsx",
+    "line": 226,
+    "service": "CostSheetApi",
+    "method": "GetCostSheetsByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/coupons/CouponDetails.tsx",
+    "line": 26,
+    "service": "CouponApi",
+    "method": "getCouponById",
+    "arguments": [
+      "id!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/coupons/Coupons.tsx",
+    "line": 191,
+    "service": "CouponApi",
+    "method": "deleteCoupon",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/coupons/Coupons.tsx",
+    "line": 240,
+    "service": "CouponApi",
+    "method": "getCouponsByFilters",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/coupons/Coupons.tsx",
+    "line": 242,
+    "service": "CouponApi",
+    "method": "getCouponsByFilters",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/AddFeature.tsx",
+    "line": 1009,
+    "service": "FeatureApi",
+    "method": "createFeature",
+    "arguments": [
+      "sanitizedData"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/PlanDetailsPage.tsx",
+    "line": 83,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\t\tfilters: [{ field: 'id', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: planId } }],\n\t\t\t\tlimit: 1,\n\t\t\t\toffset: 0,\n\t\t\t\tsort: [],\n\t\t\t\texpand: 'price_sync_status',\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/PlanDetailsPage.tsx",
+    "line": 101,
+    "service": "WorkflowApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\tfilters: getPlanPriceSyncWorkflowFilters(planId!),\n\t\t\t\tsort: [{ field: 'start_time', direction: SortDirection.DESC }],\n\t\t\t\tlimit: 1,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/PlanDetailsPage.tsx",
+    "line": 144,
+    "service": "PlanApi",
+    "method": "deletePlan",
+    "arguments": [
+      "planId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/PlanDetailsPage.tsx",
+    "line": 156,
+    "service": "PlanApi",
+    "method": "synchronizePlanPricesWithSubscription",
+    "arguments": [
+      "planId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/FeatureDetails.tsx",
+    "line": 135,
+    "service": "FeatureApi",
+    "method": "getFeatureById",
+    "arguments": [
+      "featureId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/FeatureDetails.tsx",
+    "line": 142,
+    "service": "EntitlementApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\tfeature_ids: [featureId!],\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.PLANS, EXPAND.FEATURES, EXPAND.PRICES, EXPAND.ADDONS]),\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\tfilters: [\n\t\t\t\t\t{\n\t\t\t\t\t\tfield: 'entity_type',\n\t\t\t\t\t\toperator: FilterOperator.IN,\n\t\t\t\t\t\tdata_type: DataType.ARRAY,\n\t\t\t\t\t\tvalue: {\n\t\t\t\t\t\t\tarray: [ENTITLEMENT_ENTITY_TYPE.PLAN, ENTITLEMENT_ENTITY_TYPE.ADDON],\n\t\t\t\t\t\t},\n\t\t\t\t\t},\n\t\t\t\t],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/FeatureDetails.tsx",
+    "line": 163,
+    "service": "PriceApi",
+    "method": "ListPrices",
+    "arguments": [
+      "{\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.PLAN, EXPAND.ADDONS]),\n\t\t\t\tmeter_ids: [data?.meter?.id || ''],\n\t\t\t\tstart_date_lt: new Date().toISOString(),\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\tlimit: 10000,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/FeatureDetails.tsx",
+    "line": 192,
+    "service": "FeatureApi",
+    "method": "deleteFeature",
+    "arguments": [
+      "featureId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/FeatureDetails.tsx",
+    "line": 407,
+    "service": "FeatureApi",
+    "method": "updateFeature",
+    "arguments": [
+      "featureId",
+      "{\n\t\t\t\t\t\t\t\talert_settings: alertSettings,\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/Features.tsx",
+    "line": 264,
+    "service": "FeatureApi",
+    "method": "deleteFeature",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/Features.tsx",
+    "line": 316,
+    "service": "FeatureApi",
+    "method": "getFeaturesByFilter",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/features/Features.tsx",
+    "line": 318,
+    "service": "FeatureApi",
+    "method": "getFeaturesByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/AddCharges.tsx",
+    "line": 13,
+    "service": "PlanApi",
+    "method": "getPlanById",
+    "arguments": [
+      "planId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/Plans.tsx",
+    "line": 152,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{ limit: 1, offset: 0, filters: [], sort: [] }"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/Plans.tsx",
+    "line": 160,
+    "service": "PlanApi",
+    "method": "deletePlan",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/Plans.tsx",
+    "line": 368,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/Plans.tsx",
+    "line": 375,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pricing/hooks/usePricingData.ts",
+    "line": 55,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t\tfilters: [{ field: 'status', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: 'published' } }],\n\t\t\t\tsort: [],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pricing/hooks/usePricingData.ts",
+    "line": 76,
+    "service": "PriceApi",
+    "method": "searchPrices",
+    "arguments": [
+      "{\n\t\t\t\t\tfilters: [\n\t\t\t\t\t\t{ field: 'entity_type', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: PRICE_ENTITY_TYPE.PLAN } },\n\t\t\t\t\t\t{ field: 'entity_id', operator: FilterOperator.IN, data_type: DataType.ARRAY, value: { array: planIds } },\n\t\t\t\t\t\t{ field: 'status', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: ENTITY_STATUS.PUBLISHED } },\n\t\t\t\t\t],\n\t\t\t\t\tlimit: PAGE_SIZE,\n\t\t\t\t\toffset: pageOffset,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pricing/hooks/usePricingData.ts",
+    "line": 106,
+    "service": "EntitlementApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\t\tfilters: [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_type',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: ENTITLEMENT_ENTITY_TYPE.PLAN },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{ field: 'entity_id', operator: FilterOperator.IN, data_type: DataType.ARRAY, value: { array: planIds } },\n\t\t\t\t\t],\n\t\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t\t\tlimit: PAGE_SIZE,\n\t\t\t\t\toffset: pageOffset,\n\t\t\t\t\texpand: generateExpandQueryParams([EXPAND.FEATURES]),\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pricing/hooks/usePricingData.ts",
+    "line": 146,
+    "service": "CreditGrantApi",
+    "method": "list",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\tplan_ids: [planId],\n\t\t\t\t\t\t\tscope: CREDIT_GRANT_SCOPE.PLAN,\n\t\t\t\t\t\t\tlimit: PLAN_CREDIT_GRANT_LIST_LIMIT,\n\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/tabs/PlanOverviewTab.tsx",
+    "line": 21,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\t\t\tfilters: [{ field: 'id', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: planId } }],\n\t\t\t\tlimit: 1,\n\t\t\t\toffset: 0,\n\t\t\t\tsort: [],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/tabs/PlanEntitlementsTab.tsx",
+    "line": 86,
+    "service": "EntitlementApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\tentity_ids: [planId!],\n\t\t\t\tentity_type: ENTITLEMENT_ENTITY_TYPE.PLAN,\n\t\t\t\texpand: generateExpandQueryParams([EXPAND.FEATURES]),\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/tabs/PlanEntitlementsTab.tsx",
+    "line": 132,
+    "service": "EntitlementApi",
+    "method": "delete",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/tabs/PlanCreditGrantsTab.tsx",
+    "line": 37,
+    "service": "CreditGrantApi",
+    "method": "list",
+    "arguments": [
+      "{\n\t\t\t\tplan_ids: [planId!],\n\t\t\t\tscope: CREDIT_GRANT_SCOPE.PLAN,\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/tabs/PlanCreditGrantsTab.tsx",
+    "line": 52,
+    "service": "CreditGrantApi",
+    "method": "create",
+    "arguments": [
+      "grantWithPlanId"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/tabs/PlanInformationTab.tsx",
+    "line": 33,
+    "service": "PlanApi",
+    "method": "getPlanById",
+    "arguments": [
+      "planId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/plans/tabs/PlanInformationTab.tsx",
+    "line": 64,
+    "service": "PlanApi",
+    "method": "updatePlan",
+    "arguments": [
+      "planId",
+      "{ metadata: newMetadata }"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/Groups.tsx",
+    "line": 86,
+    "service": "GroupApi",
+    "method": "deleteGroup",
+    "arguments": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/Groups.tsx",
+    "line": 135,
+    "service": "GroupApi",
+    "method": "getGroupsByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\tlimit: params.limit,\n\t\t\t\t\t\t\t\toffset: params.offset,\n\t\t\t\t\t\t\t\tfilters: params.filters ?? [],\n\t\t\t\t\t\t\t\tsort: params.sort ?? [],\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/Groups.tsx",
+    "line": 147,
+    "service": "GroupApi",
+    "method": "getGroupsByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/GroupHeader.tsx",
+    "line": 12,
+    "service": "GroupApi",
+    "method": "getGroupById",
+    "arguments": [
+      "groupId"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/GroupProfilePage.tsx",
+    "line": 38,
+    "service": "GroupApi",
+    "method": "getGroupById",
+    "arguments": [
+      "groupId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/tabs/GroupOverviewTab.tsx",
+    "line": 229,
+    "service": "GroupApi",
+    "method": "getGroupById",
+    "arguments": [
+      "groupId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/tabs/GroupOverviewTab.tsx",
+    "line": 276,
+    "service": "FeatureApi",
+    "method": "getFeaturesByFilter",
+    "arguments": [
+      "{\n\t\t\t\tfilters: mergedFeatureFilters,\n\t\t\t\tsort: sanitizeSortConditions(featureSorts),\n\t\t\t\tlimit: 500,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/tabs/GroupOverviewTab.tsx",
+    "line": 393,
+    "service": "PriceApi",
+    "method": "searchPrices",
+    "arguments": [
+      "{\n\t\t\t\tfilters: mergedFilters,\n\t\t\t\tsorts: searchSorts.length > 0 ? searchSorts : undefined,\n\t\t\t\tallow_expired_prices: true,\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/groups/tabs/GroupInformationTab.tsx",
+    "line": 15,
+    "service": "GroupApi",
+    "method": "getGroupById",
+    "arguments": [
+      "groupId!"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/price-units/PriceUnits.tsx",
+    "line": 208,
+    "service": "PriceUnitApi",
+    "method": "DeletePriceUnit",
+    "arguments": [
+      "row?.id"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/price-units/PriceUnits.tsx",
+    "line": 263,
+    "service": "PriceUnitApi",
+    "method": "ListPriceUnitsByFilter",
+    "arguments": [
+      "params"
+    ]
+  },
+  {
+    "file": "src/pages/product-catalog/price-units/PriceUnits.tsx",
+    "line": 265,
+    "service": "PriceUnitApi",
+    "method": "ListPriceUnitsByFilter",
+    "arguments": [
+      "{\n\t\t\t\t\t\t\t\t...params,\n\t\t\t\t\t\t\t\tlimit: 1,\n\t\t\t\t\t\t\t\toffset: 0,\n\t\t\t\t\t\t\t\tfilters: [],\n\t\t\t\t\t\t\t\tsort: [],\n\t\t\t\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EditUserRolesDialog/EditUserRolesDialog.tsx",
+    "line": 39,
+    "service": "UserApi",
+    "method": "getUserById",
+    "arguments": [
+      "user!.id"
+    ]
+  },
+  {
+    "file": "src/components/molecules/EditUserRolesDialog/EditUserRolesDialog.tsx",
+    "line": 82,
+    "service": "UserApi",
+    "method": "updateUserRoles",
+    "arguments": [
+      "user.id",
+      "selectedRoleIds"
+    ]
+  },
+  {
+    "file": "src/pages/settings/team/useTenantMembers.ts",
+    "line": 14,
+    "service": "UserApi",
+    "method": "getTenantMembers",
+    "arguments": [
+      "{\n\t\t\t\tlimit: 1000,\n\t\t\t\toffset: 0,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/settings/team/useTenantMembers.ts",
+    "line": 24,
+    "service": "UserApi",
+    "method": "addUserToTenant",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/settings/team/UsersSection.tsx",
+    "line": 331,
+    "service": "UserApi",
+    "method": "removeUserFromTenant",
+    "arguments": [
+      "row.id"
+    ]
+  },
+  {
+    "file": "src/pages/settings/billing/useCustomCurrencyConfiguration.ts",
+    "line": 25,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOM_CURRENCY_CONFIG"
+    ]
+  },
+  {
+    "file": "src/pages/settings/billing/useCustomCurrencyConfiguration.ts",
+    "line": 39,
+    "service": "SettingsApi",
+    "method": "updateSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOM_CURRENCY_CONFIG",
+      "{\n\t\t\t\tvalue: serializeCustomCurrencyConfig(draft),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/settings/billing/useInvoiceConfiguration.ts",
+    "line": 8,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.INVOICE_CONFIG"
+    ]
+  },
+  {
+    "file": "src/pages/settings/billing/useInvoiceConfiguration.ts",
+    "line": 23,
+    "service": "SettingsApi",
+    "method": "updateSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.INVOICE_CONFIG",
+      "{ value: payload }"
+    ]
+  },
+  {
+    "file": "src/pages/settings/billing/useInvoiceConfiguration.ts",
+    "line": 33,
+    "service": "SettingsApi",
+    "method": "resetSettingToDefaults",
+    "arguments": [
+      "SETTINGS_KEYS.INVOICE_CONFIG"
+    ]
+  },
+  {
+    "file": "src/pages/settings/billing/useSubscriptionConfiguration.ts",
+    "line": 14,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.SUBSCRIPTION_CONFIG"
+    ]
+  },
+  {
+    "file": "src/pages/settings/billing/useSubscriptionConfiguration.ts",
+    "line": 32,
+    "service": "SettingsApi",
+    "method": "updateSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.SUBSCRIPTION_CONFIG",
+      "{ value: payload }"
+    ]
+  },
+  {
+    "file": "src/pages/settings/customer-portal/useCustomerPortalConfig.ts",
+    "line": 9,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOMER_PORTAL_CONFIG"
+    ]
+  },
+  {
+    "file": "src/pages/settings/customer-portal/useCustomerPortalConfig.ts",
+    "line": 26,
+    "service": "SettingsApi",
+    "method": "updateSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOMER_PORTAL_CONFIG",
+      "{ value: config }"
+    ]
+  },
+  {
+    "file": "src/pages/settings/customer-onboarding/useCustomerOnboardingConfig.ts",
+    "line": 165,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOMER_ONBOARDING"
+    ]
+  },
+  {
+    "file": "src/pages/settings/customer-onboarding/useCustomerOnboardingConfig.ts",
+    "line": 180,
+    "service": "SettingsApi",
+    "method": "updateSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOMER_ONBOARDING",
+      "{ value: payload }"
+    ]
+  },
+  {
+    "file": "src/pages/settings/customer-onboarding/useCustomerOnboardingConfig.ts",
+    "line": 190,
+    "service": "SettingsApi",
+    "method": "resetSettingToDefaults",
+    "arguments": [
+      "SETTINGS_KEYS.CUSTOMER_ONBOARDING"
+    ]
+  },
+  {
+    "file": "src/pages/settings/customer-onboarding/useCustomerOnboardingConfig.ts",
+    "line": 209,
+    "service": "PlanApi",
+    "method": "getPlansByFilter",
+    "arguments": [
+      "{\n\t\tlimit: 1000,\n\t\toffset: 0,\n\t\tfilters: [\n\t\t\t{\n\t\t\t\tfield: 'status',\n\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\tvalue: { string: 'published' },\n\t\t\t},\n\t\t],\n\t\tsort: [],\n\t}"
+    ]
+  },
+  {
+    "file": "src/pages/settings/alerts/useWalletAlertSettings.ts",
+    "line": 16,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.WALLET_BALANCE_ALERT_CONFIG"
+    ]
+  },
+  {
+    "file": "src/pages/settings/alerts/useWalletAlertSettings.ts",
+    "line": 33,
+    "service": "SettingsApi",
+    "method": "updateSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.WALLET_BALANCE_ALERT_CONFIG",
+      "{ value: settings }"
+    ]
+  },
+  {
+    "file": "src/pages/settings/saml-sso/useSamlConfig.ts",
+    "line": 14,
+    "service": "SettingsApi",
+    "method": "getSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.SAML_CONFIG"
+    ]
+  },
+  {
+    "file": "src/pages/settings/saml-sso/useSamlConfig.ts",
+    "line": 38,
+    "service": "SettingsApi",
+    "method": "updateSettingByKey",
+    "arguments": [
+      "SETTINGS_KEYS.SAML_CONFIG",
+      "{ value: toSamlConfigUpdatePayload(config) }"
+    ]
+  },
+  {
+    "file": "src/pages/usage/events/Events.tsx",
+    "line": 218,
+    "service": "EventsApi",
+    "method": "getRawEvents",
+    "arguments": [
+      "{\n\t\t\t\t\titer_last_key: iterLastKey,\n\t\t\t\t\tpage_size: 10,\n\t\t\t\t\t...apiParams,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/usage/query/Query.tsx",
+    "line": 197,
+    "service": "EventsApi",
+    "method": "getUsageByMeter",
+    "arguments": [
+      "payload"
+    ]
+  },
+  {
+    "file": "src/pages/usage/cost-analytics/CostAnalytics.tsx",
+    "line": 78,
+    "service": "CostSheetApi",
+    "method": "GetCostAnalytics",
+    "arguments": [
+      "debouncedApiParams"
+    ]
+  },
+  {
+    "file": "src/config/prefetch.ts",
+    "line": 20,
+    "service": "WebhookApi",
+    "method": "getWebhookDashboardUrl",
+    "arguments": []
+  },
+  {
+    "file": "src/hooks/useDashboardData.tsx",
+    "line": 22,
+    "service": "DashboardApi",
+    "method": "getRevenues",
+    "arguments": [
+      "{\n\t\t\t\trevenue_trend: {\n\t\t\t\t\twindow_size: DEFAULT_WINDOW_SIZE,\n\t\t\t\t\twindow_count: DEFAULT_WINDOW_COUNT,\n\t\t\t\t},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/hooks/useDashboardData.tsx",
+    "line": 64,
+    "service": "DashboardApi",
+    "method": "getRevenues",
+    "arguments": [
+      "{\n\t\t\t\trevenue_trend: {\n\t\t\t\t\twindow_size: DEFAULT_WINDOW_SIZE,\n\t\t\t\t\twindow_count: DEFAULT_WINDOW_COUNT,\n\t\t\t\t},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/hooks/useDashboardData.tsx",
+    "line": 117,
+    "service": "DashboardApi",
+    "method": "getRevenues",
+    "arguments": [
+      "{\n\t\t\t\trevenue_trend: {\n\t\t\t\t\twindow_size: DEFAULT_WINDOW_SIZE,\n\t\t\t\t\twindow_count: DEFAULT_WINDOW_COUNT,\n\t\t\t\t},\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/pages/home/DashboardPage.tsx",
+    "line": 93,
+    "service": "EventsApi",
+    "method": "getMonitoringData",
+    "arguments": [
+      "debouncedMonitoringParams"
+    ]
+  },
+  {
+    "file": "src/context/PortalConfigContext.tsx",
+    "line": 33,
+    "service": "CustomerPortalApi",
+    "method": "getConfig",
+    "arguments": []
+  },
+  {
+    "file": "src/components/customer-portal/WalletTab.tsx",
+    "line": 37,
+    "service": "CustomerPortalApi",
+    "method": "getWallets",
+    "arguments": []
+  },
+  {
+    "file": "src/components/customer-portal/WalletTab.tsx",
+    "line": 48,
+    "service": "CustomerPortalApi",
+    "method": "getWalletBalance",
+    "arguments": [
+      "activeWallet!.id"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/WalletTab.tsx",
+    "line": 60,
+    "service": "CustomerPortalApi",
+    "method": "getWalletTransactions",
+    "arguments": [
+      "{\n\t\t\t\twalletId: activeWallet!.id,\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/usage/containers/UsageQuotaContainer.tsx",
+    "line": 17,
+    "service": "CustomerPortalApi",
+    "method": "getUsageSummary",
+    "arguments": []
+  },
+  {
+    "file": "src/usage/containers/UsageTrendChartContainer.tsx",
+    "line": 29,
+    "service": "CustomerPortalApi",
+    "method": "getAnalytics",
+    "arguments": [
+      "analyticsParams"
+    ]
+  },
+  {
+    "file": "src/usage/containers/UsageBreakdownContainer.tsx",
+    "line": 28,
+    "service": "CustomerPortalApi",
+    "method": "getAnalytics",
+    "arguments": [
+      "analyticsParams"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/InvoiceDetailDrawer.tsx",
+    "line": 71,
+    "service": "CustomerPortalApi",
+    "method": "getInvoice",
+    "arguments": [
+      "invoice!.id"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/useCheckoutReturn.ts",
+    "line": 111,
+    "service": "CustomerPortalApi",
+    "method": "getCheckoutSession",
+    "arguments": [
+      "sessionId!"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/usePortalIntegrations.ts",
+    "line": 17,
+    "service": "CustomerPortalApi",
+    "method": "getIntegrations",
+    "arguments": []
+  },
+  {
+    "file": "src/components/customer-portal/widgets/usePayInvoice.ts",
+    "line": 37,
+    "service": "CustomerPortalApi",
+    "method": "payInvoice",
+    "arguments": [
+      "invoiceId",
+      "{\n\t\t\t\t// Same ambiguity rule as top-up: the resolver refuses when more than one\n\t\t\t\t// provider qualifies, so the choice is made here rather than left unset.\n\t\t\t\t...(linkProvider ? { payment_provider: linkProvider } : {}),\n\t\t\t\tidempotency_key: keys.get(invoiceId),\n\t\t\t\tsuccess_url: portalReturnUrl(),\n\t\t\t\tcancel_url: portalReturnUrl(),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/InvoicesWidget.tsx",
+    "line": 150,
+    "service": "CustomerPortalApi",
+    "method": "getInvoices",
+    "arguments": [
+      "{ limit: 100, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/InvoicesWidget.tsx",
+    "line": 154,
+    "service": "CustomerPortalApi",
+    "method": "downloadInvoicePdf",
+    "arguments": [
+      "invoiceId"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/InvoicesWidget.tsx",
+    "line": 237,
+    "service": "CustomerPortalApi",
+    "method": "getInvoice",
+    "arguments": [
+      "downloadTarget.id"
+    ]
+  },
+  {
+    "file": "src/credits/containers/CreditBalanceContainer.tsx",
+    "line": 30,
+    "service": "CustomerPortalApi",
+    "method": "getWallets",
+    "arguments": []
+  },
+  {
+    "file": "src/credits/containers/CreditBalanceContainer.tsx",
+    "line": 37,
+    "service": "CustomerPortalApi",
+    "method": "getWalletBalance",
+    "arguments": [
+      "wallet!.id"
+    ]
+  },
+  {
+    "file": "src/credits/containers/CreditHistoryContainer.tsx",
+    "line": 38,
+    "service": "CustomerPortalApi",
+    "method": "getWallets",
+    "arguments": []
+  },
+  {
+    "file": "src/credits/containers/CreditHistoryContainer.tsx",
+    "line": 51,
+    "service": "CustomerPortalApi",
+    "method": "getWalletTransactions",
+    "arguments": [
+      "{ walletId: activeWallet!.id, limit, offset }"
+    ]
+  },
+  {
+    "file": "src/usage/containers/MetricCardsContainer.tsx",
+    "line": 36,
+    "service": "CustomerPortalApi",
+    "method": "getAnalytics",
+    "arguments": [
+      "analyticsParams"
+    ]
+  },
+  {
+    "file": "src/usage/containers/MetricCardsContainer.tsx",
+    "line": 50,
+    "service": "CustomerPortalApi",
+    "method": "getCostAnalytics",
+    "arguments": [
+      "{\n\t\t\t\tstart_time: analyticsParams.start_time,\n\t\t\t\tend_time: analyticsParams.end_time,\n\t\t\t\tfeature_ids: analyticsParams.feature_ids,\n\t\t\t\texpand: ['meter', 'price'],\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/usePortalWallet.ts",
+    "line": 20,
+    "service": "CustomerPortalApi",
+    "method": "getWallets",
+    "arguments": []
+  },
+  {
+    "file": "src/components/customer-portal/widgets/TopUpForm.tsx",
+    "line": 70,
+    "service": "CustomerPortalApi",
+    "method": "getPaymentMethods",
+    "arguments": []
+  },
+  {
+    "file": "src/components/customer-portal/widgets/TopUpForm.tsx",
+    "line": 111,
+    "service": "CustomerPortalApi",
+    "method": "topUpWallet",
+    "arguments": [
+      "wallet.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/AutoTopUpForm.tsx",
+    "line": 68,
+    "service": "CustomerPortalApi",
+    "method": "updateAutoTopup",
+    "arguments": [
+      "wallet.id",
+      "payload"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/useChargeableMethod.ts",
+    "line": 24,
+    "service": "CustomerPortalApi",
+    "method": "getPaymentMethods",
+    "arguments": []
+  },
+  {
+    "file": "src/components/customer-portal/widgets/PaymentMethodsWidget.tsx",
+    "line": 142,
+    "service": "CustomerPortalApi",
+    "method": "getPaymentMethods",
+    "arguments": []
+  },
+  {
+    "file": "src/components/customer-portal/widgets/PaymentMethodsWidget.tsx",
+    "line": 148,
+    "service": "CustomerPortalApi",
+    "method": "addPaymentMethod",
+    "arguments": [
+      "{\n\t\t\t\tpayment_provider: provider,\n\t\t\t\tsuccess_url: portalReturnUrl(),\n\t\t\t\tcancel_url: portalReturnUrl(),\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/PaymentMethodsWidget.tsx",
+    "line": 174,
+    "service": "CustomerPortalApi",
+    "method": "setDefaultPaymentMethod",
+    "arguments": [
+      "{ payment_provider: method.provider, payment_method_id: method.id }"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/PaymentMethodsWidget.tsx",
+    "line": 186,
+    "service": "CustomerPortalApi",
+    "method": "deletePaymentMethod",
+    "arguments": [
+      "{ payment_provider: method.provider, payment_method_id: method.id }"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/AccountSummaryWidget.tsx",
+    "line": 57,
+    "service": "CustomerPortalApi",
+    "method": "getInvoices",
+    "arguments": [
+      "{ limit: pageSize, offset: page * pageSize }"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/widgets/AccountSummaryWidget.tsx",
+    "line": 68,
+    "service": "CustomerPortalApi",
+    "method": "getSubscriptions",
+    "arguments": [
+      "{ limit: 10, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/SectionContent.tsx",
+    "line": 201,
+    "service": "CustomerPortalApi",
+    "method": "getSubscriptions",
+    "arguments": [
+      "{ limit: 10, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/customer-portal/SectionContent.tsx",
+    "line": 207,
+    "service": "CustomerPortalApi",
+    "method": "getUsageSummary",
+    "arguments": []
+  },
+  {
+    "file": "src/pages/customer-portal/CustomerPortal.tsx",
+    "line": 51,
+    "service": "CustomerPortalApi",
+    "method": "getCustomer",
+    "arguments": []
+  },
+  {
+    "file": "src/pages/customer-portal/CustomerPortal.tsx",
+    "line": 68,
+    "service": "CustomerPortalApi",
+    "method": "getWallets",
+    "arguments": []
+  },
+  {
+    "file": "src/pages/customer-portal/CustomerPortal.tsx",
+    "line": 73,
+    "service": "CustomerPortalApi",
+    "method": "getInvoices",
+    "arguments": [
+      "{ limit: 100, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/organisms/PlanPriceTable/PlanPriceTable.tsx",
+    "line": 290,
+    "service": "PriceApi",
+    "method": "DeletePrice",
+    "arguments": [
+      "priceId",
+      "data"
+    ]
+  },
+  {
+    "file": "src/components/organisms/PlanPriceTable/PlanPriceTable.tsx",
+    "line": 404,
+    "service": "PriceApi",
+    "method": "searchPrices",
+    "arguments": [
+      "{\n\t\t\t\tentity_ids: [plan.id],\n\t\t\t\tentity_type: PRICE_ENTITY_TYPE.PLAN,\n\t\t\t\tfilters: searchFilters.length > 0 ? searchFilters : undefined,\n\t\t\t\tsorts: searchSorts.length > 0 ? searchSorts : undefined,\n\t\t\t\tallow_expired_prices: showExpiredPrices,\n\t\t\t\t// Legacy prices carry the bucket on the meter; expand it so bucket-size display and edit guards resolve.\n\t\t\t\texpand: EXPAND.METERS,\n\t\t\t\tlimit,\n\t\t\t\toffset,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonTable/SubscriptionAddonModal.tsx",
+    "line": 79,
+    "service": "AddonApi",
+    "method": "List",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/SubscriptionAddonTable/SubscriptionAddonTable.tsx",
+    "line": 56,
+    "service": "AddonApi",
+    "method": "List",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/SubscriptionForm.tsx",
+    "line": 317,
+    "service": "PriceApi",
+    "method": "searchPrices",
+    "arguments": [
+      "{\n\t\t\t\t\tfilters: [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_type',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: PRICE_ENTITY_TYPE.PLAN },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_id',\n\t\t\t\t\t\t\toperator: FilterOperator.IN,\n\t\t\t\t\t\t\tdata_type: DataType.ARRAY,\n\t\t\t\t\t\t\tvalue: { array: planIds },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'status',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: ENTITY_STATUS.PUBLISHED },\n\t\t\t\t\t\t},\n\t\t\t\t\t],\n\t\t\t\t\tlimit: PAGE_SIZE,\n\t\t\t\t\toffset,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/SubscriptionForm.tsx",
+    "line": 466,
+    "service": "CreditGrantApi",
+    "method": "list",
+    "arguments": [
+      "{\n\t\t\t\tplan_ids: [state.selectedPlan],\n\t\t\t\tscope: CREDIT_GRANT_SCOPE.PLAN,\n\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/SubscriptionForm.tsx",
+    "line": 594,
+    "service": "EntitlementApi",
+    "method": "search",
+    "arguments": [
+      "{\n\t\t\t\t\tfilters: [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_type',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: ENTITLEMENT_ENTITY_TYPE.PLAN },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'entity_id',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: state.selectedPlan },\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tfield: 'status',\n\t\t\t\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\t\t\t\tvalue: { string: ENTITY_STATUS.PUBLISHED },\n\t\t\t\t\t\t},\n\t\t\t\t\t],\n\t\t\t\t\texpand: generateExpandQueryParams([EXPAND.FEATURES]),\n\t\t\t\t\tlimit: 10000,\n\t\t\t\t\toffset: 0,\n\t\t\t\t}"
+    ]
+  },
+  {
+    "file": "src/components/organisms/Subscription/SubscriptionForm.tsx",
+    "line": 636,
+    "service": "AddonApi",
+    "method": "GetEntitlements",
+    "arguments": [
+      "addonId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/CouponAssociation/CouponAssociation.tsx",
+    "line": 27,
+    "service": "CouponApi",
+    "method": "getAllCoupons",
+    "arguments": [
+      "{ limit: 1000, offset: 0 }"
+    ]
+  },
+  {
+    "file": "src/components/molecules/Customer/CustomerOverviewCard.tsx",
+    "line": 11,
+    "service": "CustomerApi",
+    "method": "getCustomerById",
+    "arguments": [
+      "customerId"
+    ]
+  },
+  {
+    "file": "src/components/molecules/ExportRunsList/ExportRunsList.tsx",
+    "line": 18,
+    "service": "ExportRunApi",
+    "method": "getExportRunsByTaskId",
+    "arguments": [
+      "taskId",
+      "{ limit }"
+    ]
+  }
+]
