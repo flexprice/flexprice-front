@@ -63,6 +63,8 @@ const getSubscriptionStatusChip = (status: SUBSCRIPTION_STATUS, t: TFunction) =>
 	switch (status) {
 		case SUBSCRIPTION_STATUS.ACTIVE:
 			return <Chip variant='success' label={t('common:status.active')} />;
+		case SUBSCRIPTION_STATUS.PAUSED:
+			return <Chip variant='warning' label={t('common:status.paused')} />;
 		case SUBSCRIPTION_STATUS.CANCELLED:
 			return <Chip variant='failed' label={t('common:status.cancelled')} />;
 		case SUBSCRIPTION_STATUS.INCOMPLETE:
@@ -141,6 +143,7 @@ const SubscriptionsPage = () => {
 				dataType: DataType.ARRAY,
 				options: [
 					{ value: SUBSCRIPTION_STATUS.ACTIVE, label: t('common:status.active') },
+					{ value: SUBSCRIPTION_STATUS.PAUSED, label: t('common:status.paused') },
 					{ value: SUBSCRIPTION_STATUS.CANCELLED, label: t('common:status.cancelled') },
 					{ value: SUBSCRIPTION_STATUS.INCOMPLETE, label: t('common:status.incomplete') },
 					{ value: SUBSCRIPTION_STATUS.TRIALING, label: t('common:status.trialing') },

@@ -11,6 +11,9 @@ import {
 	UpdateSubscriptionRequest,
 	CancelSubscriptionRequest,
 	CancelSubscriptionResponse,
+	PauseSubscriptionRequest,
+	ResumeSubscriptionRequest,
+	SubscriptionPauseActionResponse,
 	SubscriptionResponse,
 	GetUsageBySubscriptionRequest,
 	GetUsageBySubscriptionResponse,
@@ -101,6 +104,20 @@ class SubscriptionApi {
 		payload: CancelSubscriptionPayload | CancelSubscriptionRequest,
 	): Promise<void | CancelSubscriptionResponse> {
 		return await AxiosClient.post(`${this.baseUrl}/${id}/cancel`, payload);
+	}
+
+	/**
+	 * Pause subscription now
+	 */
+	public static async pauseSubscription(id: string, payload: PauseSubscriptionRequest): Promise<SubscriptionPauseActionResponse> {
+		return await AxiosClient.post<SubscriptionPauseActionResponse>(`${this.baseUrl}/${id}/pause`, payload);
+	}
+
+	/**
+	 * Resume paused subscription now
+	 */
+	public static async resumeSubscription(id: string, payload: ResumeSubscriptionRequest): Promise<SubscriptionPauseActionResponse> {
+		return await AxiosClient.post<SubscriptionPauseActionResponse>(`${this.baseUrl}/${id}/resume`, payload);
 	}
 
 	// =============================================================================

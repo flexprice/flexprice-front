@@ -161,6 +161,7 @@ export const invoiceCadenceOptions = [
 // Subscription-related options
 export const subscriptionStatusOptions = [
 	{ label: 'Active', value: SUBSCRIPTION_STATUS.ACTIVE },
+	{ label: 'Paused', value: SUBSCRIPTION_STATUS.PAUSED },
 	{ label: 'Cancelled', value: SUBSCRIPTION_STATUS.CANCELLED },
 	{ label: 'Incomplete', value: SUBSCRIPTION_STATUS.INCOMPLETE },
 	{ label: 'Trialing', value: SUBSCRIPTION_STATUS.TRIALING },

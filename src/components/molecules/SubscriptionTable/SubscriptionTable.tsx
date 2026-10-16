@@ -25,6 +25,8 @@ const SubscriptionTable: FC<Props> = ({ data, onEdit }) => {
 		switch (status) {
 			case SUBSCRIPTION_STATUS.ACTIVE:
 				return <Chip variant='success' label={t('common:status.active')} />;
+			case SUBSCRIPTION_STATUS.PAUSED:
+				return <Chip variant='warning' label={t('common:status.paused')} />;
 			case SUBSCRIPTION_STATUS.CANCELLED:
 				return <Chip variant='failed' label={t('common:status.cancelled')} />;
 			case SUBSCRIPTION_STATUS.INCOMPLETE:

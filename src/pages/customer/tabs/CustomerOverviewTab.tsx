@@ -57,6 +57,7 @@ const subscriptionFilterOptions: FilterField[] = [
 		dataType: DataType.ARRAY,
 		options: [
 			{ value: SUBSCRIPTION_STATUS.ACTIVE, label: 'Active' },
+			{ value: SUBSCRIPTION_STATUS.PAUSED, label: 'Paused' },
 			{ value: SUBSCRIPTION_STATUS.CANCELLED, label: 'Cancelled' },
 			{ value: SUBSCRIPTION_STATUS.INCOMPLETE, label: 'Incomplete' },
 			{ value: SUBSCRIPTION_STATUS.TRIALING, label: 'Trialing' },
@@ -98,7 +99,13 @@ const initialSubscriptionFilters: FilterCondition[] = [
 	{
 		field: 'subscription_status',
 		operator: FilterOperator.IN,
-		valueArray: [SUBSCRIPTION_STATUS.ACTIVE, SUBSCRIPTION_STATUS.TRIALING, SUBSCRIPTION_STATUS.DRAFT, SUBSCRIPTION_STATUS.INCOMPLETE],
+		valueArray: [
+			SUBSCRIPTION_STATUS.ACTIVE,
+			SUBSCRIPTION_STATUS.PAUSED,
+			SUBSCRIPTION_STATUS.TRIALING,
+			SUBSCRIPTION_STATUS.DRAFT,
+			SUBSCRIPTION_STATUS.INCOMPLETE,
+		],
 		dataType: DataType.ARRAY,
 		id: 'initial-status',
 	},

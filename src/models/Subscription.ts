@@ -74,6 +74,7 @@ export interface Subscription extends BaseModel {
 	readonly cancelled_at: string;
 	readonly cancel_at: string;
 	readonly cancel_at_period_end: boolean;
+	readonly proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
 	readonly trial_start: string;
 	readonly trial_end: string;
 	readonly trial_period_days?: number | null;
@@ -193,6 +194,7 @@ export interface Schedule extends BaseModel {
 
 export enum SUBSCRIPTION_STATUS {
 	ACTIVE = 'active',
+	PAUSED = 'paused',
 	CANCELLED = 'cancelled',
 	INCOMPLETE = 'incomplete',
 	TRIALING = 'trialing',
