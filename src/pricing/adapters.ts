@@ -224,7 +224,11 @@ export function adaptPlanToCard(plan: PlanWithData, grants: CreditGrant[]): Plan
 			billingPeriod: displayPrice?.billing_period,
 			type: displayPrice?.type,
 			displayType,
-			is_percentage: displayPrice ? isPercentagePrice(displayPrice) : false,
+			// `usageCharges` entries are plain display objects with no `metadata`, and
+			// `isPercentagePrice` keys off `metadata.billing_model`, so re-deriving the flag from a
+			// usage-charge `displayPrice` always yields false. Reuse the value already computed above
+			// from the real price (which does carry metadata) for the usage-only case.
+			is_percentage: recurringPrice ? isPercentagePrice(recurringPrice) : (usageCharges[0]?.is_percentage ?? false),
 		},
 		usageCharges,
 		entitlements:
