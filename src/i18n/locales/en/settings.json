@@ -219,6 +219,34 @@
 				"description3": "Future credit grants are cancelled, a final invoice is generated for the partial period"
 			}
 		},
+		"taxConfiguration": {
+			"title": "Tax configuration",
+			"description": "Use an external tax engine to calculate tax on invoices and credit notes instead of your Flexprice tax rates.",
+			"fields": {
+				"enabled": "Use an external tax engine",
+				"provider": "Tax engine"
+			},
+			"hints": {
+				"enabled": "When off, Flexprice calculates tax from the tax rates you have configured.",
+				"provider": "Which engine calculates tax. Stripe is the only external engine currently supported."
+			},
+			"providers": {
+				"flexprice": "Flexprice (native)",
+				"stripe": "Stripe Tax"
+			},
+			"warnings": {
+				"overridesNativeRates": "While an external engine is in force, your Flexprice tax rates are no longer applied, and linking new tax rates or using overrides is rejected. Credit notes keep the tax treatment of the invoice they were raised against.",
+				"missingConnection": "No Stripe connection was found in this environment. Without one, tax calculation fails — it does not fall back to your Flexprice tax rates. Add the connection before enabling this.",
+				"nativeSelected": "Flexprice is the native engine, so selecting it here changes nothing. Turn this off instead, or choose an external engine."
+			},
+			"actions": {
+				"docs": "Docs",
+				"docsTitle": "Open the tax configuration documentation",
+				"superAdminOnly": "Only a Super Admin can change this setting."
+			},
+			"saveSuccess": "Tax configuration saved.",
+			"saveError": "Could not save the tax configuration."
+		},
 		"customCurrencyConfiguration": {
 			"title": "Custom currency configuration",
 			"saveSuccess": "Custom currency configuration saved",
