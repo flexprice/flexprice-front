@@ -16,6 +16,10 @@ import { generateQueryParams } from '@/utils/common/api_helper';
 export class PriceApi {
 	private static baseUrl = '/prices';
 
+	public static async getPriceById(id: string): Promise<PriceResponse> {
+		return await AxiosClient.get<PriceResponse>(`${this.baseUrl}/${id}`);
+	}
+
 	/**
 	 * List prices with optional filters
 	 * @param filters - Optional price filters
