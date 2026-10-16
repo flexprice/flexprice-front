@@ -1923,6 +1923,7 @@
 				},
 				"payments": {
 					"daysToPayDef": "Days from issue to full payment, for invoices paid in the period",
+					"noPaidInvoices": "No paid invoices in this date range. Try selecting a longer period.",
 					"paid": "Paid invoices",
 					"averageLine": "Average days to pay",
 					"medianLine": "Median days to pay",

@@ -27,6 +27,7 @@ const useDays = () => {
 
 export const DaysToPayOverTime = ({ controls }: { controls: DashboardControls }) => {
 	const { t } = useTranslation('settings');
+	const noPaidInvoices = t(`${P}.noPaidInvoices`);
 	const days = useDays();
 	const { currency } = controls;
 	const [avg, median, paid, series] = useQueries({
@@ -75,7 +76,8 @@ export const DaysToPayOverTime = ({ controls }: { controls: DashboardControls })
 			definition={t(`${P}.daysToPayDef`)}
 			loading={queries.some((q) => q.isLoading)}
 			error={queries.some((q) => q.isError)}
-			empty={data.length === 0}>
+			empty={data.length === 0}
+			emptyMessage={noPaidInvoices}>
 			<StatRow
 				stats={[
 					{ label: t(`${O}.average`), value: days(avgNow), current: avgNow, prev: numOf(avgV?.prev), higherIsBetter: false },
@@ -116,6 +118,7 @@ export const DaysToPayOverTime = ({ controls }: { controls: DashboardControls })
 
 export const PaymentSpeed = ({ controls }: { controls: DashboardControls }) => {
 	const { t } = useTranslation('settings');
+	const noPaidInvoices = t(`${P}.noPaidInvoices`);
 	const q = useQuery(
 		datasetQ(
 			{
@@ -132,7 +135,13 @@ export const PaymentSpeed = ({ controls }: { controls: DashboardControls }) => {
 	const counts = PAYMENT_SPEEDS.map((s) => records.filter((r) => r.payment_speed === s).reduce((n, r) => n + (numOf(r.m0) ?? 0), 0));
 	const total = counts.reduce((s, v) => s + v, 0);
 	return (
-		<Panel title={t(`${P}.speed`)} definition={t(`${P}.speedDef`)} loading={q.isLoading} error={q.isError} empty={total === 0}>
+		<Panel
+			title={t(`${P}.speed`)}
+			definition={t(`${P}.speedDef`)}
+			loading={q.isLoading}
+			error={q.isError}
+			empty={total === 0}
+			emptyMessage={noPaidInvoices}>
 			<RankedBars
 				items={PAYMENT_SPEEDS.map((s, i) => ({ key: s, label: t(`${P}.speeds.${s}`), value: counts[i], color: SPEED_COLORS[i] }))}
 				format={(v) => `${v.toLocaleString('en-US')} · ${total > 0 ? ((v / total) * 100).toFixed(1) : '0.0'}%`}
@@ -183,10 +192,17 @@ type Payers = ReturnType<typeof usePayers>;
 
 export const SlowestPayers = ({ data }: { data: Payers }) => {
 	const { t } = useTranslation('settings');
+	const noPaidInvoices = t(`${P}.noPaidInvoices`);
 	const days = useDays();
 	const items = data.rows.slice(0, 8).map((r) => ({ key: r.id, label: r.name, value: r.days }));
 	return (
-		<Panel title={t(`${P}.slowest`)} definition={t(`${P}.slowestDef`)} loading={data.loading} error={data.error} empty={items.length === 0}>
+		<Panel
+			title={t(`${P}.slowest`)}
+			definition={t(`${P}.slowestDef`)}
+			loading={data.loading}
+			error={data.error}
+			empty={items.length === 0}
+			emptyMessage={noPaidInvoices}>
 			<RankedBars items={items} format={days} />
 		</Panel>
 	);
@@ -194,6 +210,7 @@ export const SlowestPayers = ({ data }: { data: Payers }) => {
 
 export const PaymentsByCustomer = ({ controls, data }: { controls: DashboardControls; data: Payers }) => {
 	const { t } = useTranslation('settings');
+	const noPaidInvoices = t(`${P}.noPaidInvoices`);
 	const days = useDays();
 	const columns: DataColumn<PayerRow>[] = [
 		{ key: 'customer', label: t(`${P}.customer`), value: (r) => r.name },
@@ -215,7 +232,8 @@ export const PaymentsByCustomer = ({ controls, data }: { controls: DashboardCont
 			csvDisabled={data.rows.length === 0}
 			loading={data.loading}
 			error={data.error}
-			empty={data.rows.length === 0}>
+			empty={data.rows.length === 0}
+			emptyMessage={noPaidInvoices}>
 			<div className='max-h-[36rem] overflow-y-auto'>
 				<DataTable columns={columns} rows={data.rows} rowKey={(r) => r.id} />
 			</div>

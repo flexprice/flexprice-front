@@ -29,11 +29,13 @@ const M = (n: string): Col => [n, 'metric'];
 interface Opts {
 	zero?: boolean;
 	noMedian?: boolean;
+	noPayments?: boolean;
 	overdueFails?: boolean;
 }
 
-const report = (key: string, req: ReportQueryRequest, { zero }: Opts): ReportQueryResult => {
+const report = (key: string, req: ReportQueryRequest, { zero, noPayments }: Opts): ReportQueryResult => {
 	const v = (s: string) => (zero ? '0' : s);
+	if (noPayments && key === 'days_to_pay') return res([M('days_to_pay'), M('days_to_pay_prev')], []);
 	if (key === 'total_receivables') return res([D('currency'), M('total_receivables')], [['usd', v('1000')]]);
 	if (key === 'receivables_aging' && req.dimensions?.length === 2)
 		return res(
@@ -61,8 +63,14 @@ const report = (key: string, req: ReportQueryRequest, { zero }: Opts): ReportQue
 	return res([], []);
 };
 
-const dataset = (def: DatasetDefinition, { noMedian }: Opts): ReportQueryResult => {
+const dataset = (def: DatasetDefinition, { noMedian, noPayments }: Opts): ReportQueryResult => {
 	const dims = def.dimensions ?? [];
+	if (noPayments) {
+		if (dims.includes('payment_speed')) return res([D('payment_speed'), D('currency'), M('m0')], []);
+		if (dims.includes('customer')) return res([D('customer'), D('customer_label'), D('currency'), M('m0'), M('m1'), M('m2')], []);
+		if (def.time.grain === 'month') return res([D('bucket'), D('currency'), M('m0'), M('m1'), M('m2')], []);
+		return def.measures[0].agg === 'median' ? res([D('currency'), M('m0')], []) : res([D('currency'), M('m0'), M('m0_prev')], []);
+	}
 	if (def.filters?.some((f) => f.field === 'days_overdue'))
 		return res(
 			[D('customer'), D('customer_label'), D('currency'), M('m0'), M('m1'), M('m2')],
@@ -242,6 +250,15 @@ describe('payments tab', () => {
 		const days = panel('Days to pay over time');
 		await within(days).findByText('19.8 days');
 		expect(within(days).getByText('—')).toBeInTheDocument();
+	});
+
+	it('explains when the selected range has no paid invoices', async () => {
+		mockApi({ noPayments: true });
+		renderWithProviders(<PaymentsTab controls={controls()} goTo={vi.fn()} />);
+		const emptyMessage = 'No paid invoices in this date range. Try selecting a longer period.';
+		for (const name of ['Days to pay over time', 'Payment speed', 'Slowest payers', 'Payments by customer']) {
+			expect(await within(panel(name)).findByText(emptyMessage)).toBeInTheDocument();
+		}
 	});
 
 	it('scopes the payers query to paid invoices in the page currency', async () => {

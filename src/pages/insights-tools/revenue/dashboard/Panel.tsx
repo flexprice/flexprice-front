@@ -17,6 +17,7 @@ export interface PanelProps {
 	loading?: boolean;
 	error?: boolean;
 	empty?: boolean;
+	emptyMessage?: string;
 	className?: string;
 	children: ReactNode;
 }
@@ -32,6 +33,7 @@ const Panel = ({
 	loading,
 	error,
 	empty,
+	emptyMessage,
 	className,
 	children,
 }: PanelProps) => {
@@ -74,7 +76,7 @@ const Panel = ({
 					{t('insightsTools.revenue.reports.errorTitle')}
 				</p>
 			) : empty ? (
-				<p className='py-10 text-center text-sm text-content-zinc-tertiary'>{t('insightsTools.revenue.reports.noData')}</p>
+				<p className='py-10 text-center text-sm text-content-zinc-tertiary'>{emptyMessage ?? t('insightsTools.revenue.reports.noData')}</p>
 			) : (
 				children
 			)}
