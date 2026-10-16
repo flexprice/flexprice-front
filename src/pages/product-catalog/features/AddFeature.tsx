@@ -123,7 +123,7 @@ const EXPRESSION_SUPPORTED_TYPES: METER_AGGREGATION_TYPE[] = [
 
 // Validation schemas
 const FEATURE_SCHEMA = z.object({
-	name: z.string().nonempty('Feature name is required'),
+	name: z.string().trim().min(1, 'Feature name is required'),
 	description: z.string().optional(),
 	lookup_key: z.string().optional(),
 	type: z.enum([FEATURE_TYPE.BOOLEAN, FEATURE_TYPE.METERED, FEATURE_TYPE.STATIC, FEATURE_TYPE.CONFIG]).optional(),
@@ -280,7 +280,9 @@ const FeatureDetailsSection = ({
 		(name: string) => {
 			onUpdateFeature({
 				name,
-				lookup_key: 'feat-' + name.replace(/\s/g, '-').toLowerCase(),
+				// Derive from the trimmed name: the submitted name is trimmed, so an
+				// untrimmed source here yields keys like "feat---api-calls--".
+				lookup_key: 'feat-' + name.trim().replace(/\s/g, '-').toLowerCase(),
 				meter: data.meter ? { ...data.meter, name } : undefined,
 			});
 		},
@@ -902,6 +904,22 @@ const AggregationSection = ({
 	);
 };
 
+// Trimming lives here so the submitted payload and the copyable cURL preview
+// cannot drift. These keys are matched verbatim against event.properties on the
+// backend, so a preview that still rendered padded keys would teach users to
+// ingest exactly the events the meter can no longer match.
+const sanitizeMeterKeys = (meter: Partial<CreateMeterRequest>) => ({
+	event_name: (meter.event_name || '').trim(),
+	field: meter.aggregation?.field?.trim() || '',
+	expression: meter.aggregation?.expression?.trim() || '',
+	group_by: meter.aggregation?.group_by?.trim() || '',
+	// Both predicates live here rather than at the call sites, so the preview
+	// cannot advertise a filter the submitted meter drops.
+	filters: (meter.filters || [])
+		.map((filter) => ({ ...filter, key: filter.key.trim() }))
+		.filter((filter) => filter.key !== '' && filter.values.length > 0),
+});
+
 // Code Preview Section Component
 const CodePreviewSection = ({ meter }: { meter: Partial<CreateMeterRequest> | undefined }) => {
 	const { t } = useTranslation(['catalog', 'common']);
@@ -918,12 +936,13 @@ const CodePreviewSection = ({ meter }: { meter: Partial<CreateMeterRequest> | un
 	const curlCommand = useMemo(() => {
 		if (!meter) return '';
 
-		const filterProperties = (meter.filters || [])
-			.filter((filter) => filter.key && filter.key.trim() !== '')
+		const sanitized = sanitizeMeterKeys(meter);
+
+		const filterProperties = sanitized.filters
 			.map((filter) => `\n\t\t\t "${filter.key}" : "${filter.values[0] || 'FILTER_VALUE'}"`)
 			.join(',');
 
-		const aggregationField = meter.aggregation?.field ? `,\n\t\t\t "${meter.aggregation.field}":"__VALUE__"` : '';
+		const aggregationField = sanitized.field ? `,\n\t\t\t "${sanitized.field}":"__VALUE__"` : '';
 
 		return `curl --request POST \\
 	--url https://api.cloud.flexprice.io/v1/events \\
@@ -931,7 +950,7 @@ const CodePreviewSection = ({ meter }: { meter: Partial<CreateMeterRequest> | un
 	--header 'x-api-key: <your_api_key>' \\
 	--data '{
 		"event_id": "${staticEventId}",
-		"event_name": "${meter.event_name || '__MUST_BE_DEFINED__'}",
+		"event_name": "${sanitized.event_name || '__MUST_BE_DEFINED__'}",
 		"external_customer_id": "__CUSTOMER_ID__",
 		"properties": {${filterProperties}${aggregationField}
 		},
@@ -956,23 +975,24 @@ const AddFeaturePage = () => {
 	const { isPending, mutate: createFeature } = useMutation({
 		mutationFn: async (featureData: FeatureFormData = data) => {
 			// Build CreateMeterRequest with proper structure if metered
+			const meter = featureData.type === FEATURE_TYPE.METERED ? featureData.meter : undefined;
+			const sanitized = meter ? sanitizeMeterKeys(meter) : undefined;
+
 			const meterRequest: CreateMeterRequest | undefined =
-				featureData.type === FEATURE_TYPE.METERED && featureData.meter
+				meter && sanitized
 					? {
-							name: featureData.meter.name || featureData.name || '',
-							event_name: featureData.meter.event_name || '',
+							name: (meter.name || featureData.name || '').trim(),
+							event_name: sanitized.event_name,
 							aggregation: {
-								type: featureData.meter.aggregation?.type || METER_AGGREGATION_TYPE.SUM,
+								type: meter.aggregation?.type || METER_AGGREGATION_TYPE.SUM,
 								// XOR with field — the toggle handler clears the inactive side,
 								// so at most one of these is populated at submit time.
-								...(featureData.meter.aggregation?.expression?.trim()
-									? { expression: featureData.meter.aggregation.expression.trim() }
-									: { field: featureData.meter.aggregation?.field?.trim() || '' }),
-								multiplier: featureData.meter.aggregation?.multiplier,
-								group_by: featureData.meter.aggregation?.group_by,
+								...(sanitized.expression ? { expression: sanitized.expression } : { field: sanitized.field }),
+								multiplier: meter.aggregation?.multiplier,
+								group_by: sanitized.group_by || undefined,
 							},
-							reset_usage: featureData.meter.reset_usage || METER_USAGE_RESET_PERIOD.BILLING_PERIOD,
-							filters: featureData.meter.filters?.filter((filter) => filter.key !== '' && filter.values.length > 0),
+							reset_usage: meter.reset_usage || METER_USAGE_RESET_PERIOD.BILLING_PERIOD,
+							filters: sanitized.filters,
 						}
 					: undefined;
 
@@ -994,9 +1014,9 @@ const AddFeaturePage = () => {
 					: undefined;
 
 			const sanitizedData: CreateFeatureRequest = {
-				name: featureData.name!,
+				name: featureData.name!.trim(),
 				description: featureData.description,
-				lookup_key: featureData.lookup_key,
+				lookup_key: featureData.lookup_key?.trim(),
 				type: featureData.type!,
 				meter: meterRequest,
 				metadata: featureData.metadata,
