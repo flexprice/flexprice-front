@@ -70,10 +70,13 @@ const PlansPage = () => {
 	// Computed once and reused everywhere on this page that needs the same
 	// decision, rather than each control independently re-deriving it.
 	const canWritePlan = can('plan', 'write');
-	// The AI pricing flow also creates features alongside the plan itself, so its entry
-	// CTA needs both permissions — plan:write alone lets a user start a flow that then
-	// fails partway through on the feature-creation step.
-	const canUseAiPricing = canWritePlan && can('feature', 'write');
+	// orchestrateSetup (src/api/ai/orchestrator.ts) can create features, plans, prices, and -
+	// depending on what the AI-derived schema calls for - entitlements and credit grants. The
+	// schema isn't known until after the user describes their pricing, so this CTA has to gate
+	// on every permission the flow could ever need; missing any one of them lets a user start a
+	// flow that then fails partway through, leaving partially-created plan data behind.
+	const canUseAiPricing =
+		canWritePlan && can('feature', 'write') && can('price', 'write') && can('entitlement', 'write') && can('creditgrant', 'write');
 
 	const sortingOptions: SortOption[] = useMemo(
 		() => [
