@@ -110,7 +110,7 @@ const card = (label: string) =>
 
 describe('RevenueDashboard', () => {
 	beforeEach(() => {
-		window.history.replaceState(null, '', '/revenue');
+		window.history.replaceState(null, '', '/reporting');
 		Element.prototype.scrollIntoView = vi.fn();
 	});
 	afterEach(() => vi.restoreAllMocks());
@@ -212,7 +212,7 @@ describe('RevenueDashboard', () => {
 
 	it('opens the tab from the hash and writes it back', async () => {
 		mockApi();
-		window.history.replaceState(null, '', '/revenue#receivables');
+		window.history.replaceState(null, '', '/reporting#receivables');
 		renderWithProviders(<RevenueDashboard now={NOW} />);
 		expect(screen.getByRole('tab', { name: 'Receivables' })).toHaveAttribute('aria-selected', 'true');
 		fireEvent.mouseDown(screen.getByRole('tab', { name: 'Payments' }));
@@ -222,7 +222,7 @@ describe('RevenueDashboard', () => {
 
 	it('only the active tab fetches', async () => {
 		const { run, ds } = mockApi();
-		window.history.replaceState(null, '', '/revenue#receivables');
+		window.history.replaceState(null, '', '/reporting#receivables');
 		renderWithProviders(<RevenueDashboard now={NOW} />);
 		await waitFor(() => expect(ds).toHaveBeenCalledWith(expect.objectContaining({ time: expect.objectContaining({ field: 'due_date' }) })));
 		expect(run.mock.calls.filter(([k]) => CREDIT_KEYS.includes(k))).toEqual([]);
@@ -238,7 +238,7 @@ describe('RevenueDashboard', () => {
 
 	it('switching currency changes money and credit panels', async () => {
 		mockApi();
-		window.history.replaceState(null, '', '/revenue#credits');
+		window.history.replaceState(null, '', '/reporting#credits');
 		renderWithProviders(<RevenueDashboard now={NOW} />);
 		const flow = await screen.findByRole('region', { name: 'Credit consumption vs. top-ups' });
 		expect(await within(flow).findByText('+6,000')).toBeInTheDocument();
@@ -253,7 +253,7 @@ describe('RevenueDashboard', () => {
 
 	it('defaults to overview on an unknown hash', () => {
 		mockApi();
-		window.history.replaceState(null, '', '/revenue#nope');
+		window.history.replaceState(null, '', '/reporting#nope');
 		renderWithProviders(<RevenueDashboard now={NOW} />);
 		expect(screen.getByRole('tab', { name: 'Overview' })).toHaveAttribute('aria-selected', 'true');
 	});

@@ -21,7 +21,7 @@ export const commandPalettePaths = {
 	'billing-payments': '/billing/payments',
 	'settings-billing': '/settings?tab=billing',
 	'tools-bulk-imports': '/tools/bulk-imports',
-	'tools-revenue': '/revenue',
+	'tools-revenue': '/reporting',
 	'tools-exports': '/tools/exports',
 	'tools-exports-s3': '/tools/exports/s3',
 	'usage-tracking-events': '/usage-tracking/events',

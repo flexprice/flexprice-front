@@ -191,7 +191,7 @@ export const RouteNames = {
 	// tools routes
 	tools: '/tools',
 	bulkImports: '/tools/bulk-imports',
-	revenue: '/revenue',
+	revenue: '/reporting',
 	integrations: '/tools/integrations',
 	integrationDetails: '/tools/integrations',
 	oauthCallback: '/tools/integrations/oauth/callback', // Generic OAuth callback (backend redirect URI)

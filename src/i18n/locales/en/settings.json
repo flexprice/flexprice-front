@@ -1656,7 +1656,7 @@
 					"remove": "Remove {{label}} filter",
 					"clear": "Clear filters"
 				},
-				"title": "Revenue",
+				"title": "Reporting",
 				"subtitle": "Financial reports for your billing data",
 				"search": "Search reports",
 				"categories": {
@@ -1797,7 +1797,7 @@
 					}
 				}
 			},
-			"pageHeading": "Revenue",
+			"pageHeading": "Reporting",
 			"metricNetRevenue": "Net Revenue",
 			"metricContractRevenue": "Contract Revenue",
 			"metricUsageRevenue": "Usage Revenue",
@@ -1818,7 +1818,7 @@
 			"filterLastQuarter": "Last quarter",
 			"filterLastYear": "Last year",
 			"dashboard": {
-				"title": "Revenue",
+				"title": "Reporting",
 				"viewReport": "View report",
 				"stillLoading": "{{seconds}} seconds, still loading",
 				"compares": {

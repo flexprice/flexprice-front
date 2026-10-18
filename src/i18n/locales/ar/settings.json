@@ -1611,7 +1611,7 @@
 					"remove": "إزالة عامل التصفية {{label}}",
 					"clear": "مسح عوامل التصفية"
 				},
-				"title": "الإيرادات",
+				"title": "التقارير",
 				"subtitle": "التقارير المالية لبيانات الفوترة الخاصة بك",
 				"search": "البحث في التقارير",
 				"categories": {
@@ -1752,7 +1752,7 @@
 					}
 				}
 			},
-			"pageHeading": "الإيرادات",
+			"pageHeading": "التقارير",
 			"metricNetRevenue": "صافي الإيرادات",
 			"metricContractRevenue": "إيرادات العقود",
 			"metricUsageRevenue": "إيرادات الاستخدام",
@@ -1773,7 +1773,7 @@
 			"filterLastQuarter": "الربع الماضي",
 			"filterLastYear": "السنة الماضية",
 			"dashboard": {
-				"title": "الإيرادات",
+				"title": "التقارير",
 				"viewReport": "عرض التقرير",
 				"stillLoading": "{{seconds}} ثانية، لا يزال التحميل جاريًا",
 				"compares": {
