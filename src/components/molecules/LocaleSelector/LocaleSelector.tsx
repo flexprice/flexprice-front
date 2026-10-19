@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useLocaleStore } from '@/store/useLocaleStore';
 import { Locale } from '@/config/branding';
 
-const LOCALE_LABELS: Record<Locale, string> = {
+export const LOCALE_LABELS: Record<Locale, string> = {
 	[Locale.En]: 'English',
 	[Locale.Ar]: 'العربية',
 	[Locale.He]: 'עברית',

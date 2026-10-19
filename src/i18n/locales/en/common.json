@@ -290,7 +290,29 @@
 	},
 	"breadcrumb": {
 		"navAriaLabel": "breadcrumb",
-		"moreSrOnly": "More"
+		"moreSrOnly": "More",
+		"segments": {
+			"createFeature": "Create Feature",
+			"addCharges": "Add Charges",
+			"checkout": "Checkout",
+			"onboarding": "Onboarding",
+			"pricingSetup": "Pricing Setup",
+			"usageTracking": "Usage Tracking",
+			"events": "Events",
+			"query": "Query",
+			"s3Exports": "S3 Exports",
+			"stripe": "Stripe",
+			"razorpay": "Razorpay",
+			"chargebee": "Chargebee",
+			"hubspot": "Hubspot",
+			"quickbooks": "QuickBooks",
+			"zoho": "Zoho Books",
+			"nomod": "Nomod",
+			"moyasar": "Moyasar",
+			"paddle": "Paddle",
+			"whop": "Whop",
+			"edit": "Edit"
+		}
 	},
 	"sidebar": {
 		"toggleSidebarAccessibilityLabel": "Toggle Sidebar",
@@ -725,7 +747,7 @@
 		"refreshPage": "Refresh Page"
 	},
 	"onboardingLanding": {
-		"welcomeHeading": "Welcome to Flexprice!",
+		"welcomeHeading": "Welcome to {{brand}}!",
 		"welcomeSubtext": "Let's get your pricing and billing started!",
 		"bookDemo": "Book a Demo",
 		"heroImageAlt": "Onboarding Hero",
@@ -734,8 +756,8 @@
 	},
 	"tenantSetup": {
 		"loadingWorkspaceAria": "Loading workspace",
-		"flexpriceLogoAlt": "Flexprice",
-		"welcomeHeading": "Welcome to Flexprice",
+		"flexpriceLogoAlt": "{{brand}}",
+		"welcomeHeading": "Welcome to {{brand}}",
 		"welcomeSubtext": "Just three quick questions to set up your workspace.",
 		"getStarted": "Get started",
 		"reviewCompanyLogoAlt": "{{company}} logo",

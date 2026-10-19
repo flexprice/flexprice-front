@@ -6,6 +6,8 @@ import { ApiDocsContent } from '@/components/molecules';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { useState } from 'react';
 import { logger } from '@/utils/common/Logger';
+import { docsUrl } from '@/config/docs';
+import { brandConfig } from '@/config/branding';
 
 export interface TutorialItem {
 	title: string;
@@ -18,32 +20,32 @@ const tutorials: TutorialItem[] = [
 	{
 		title: 'Getting Started',
 		description: 'Learn the basics of Flexprice in 5 minutes',
-		onClick: () => window.open('https://docs.flexprice.io', '_blank'),
+		onClick: () => window.open(docsUrl(), '_blank'),
 	},
 	{
 		title: 'Set Up Pricing Plans',
 		description: 'Create and configure your first pricing plan',
-		onClick: () => window.open('https://docs.flexprice.io/docs/product-catalogue/plans/pricing', '_blank'),
+		onClick: () => window.open(docsUrl('/docs/product-catalogue/plans/pricing'), '_blank'),
 	},
 	{
 		title: 'Define Usage Metering',
 		description: 'Set up billable metrics to track customer usage',
-		onClick: () => window.open('https://docs.flexprice.io/docs/wallet/create#creating-a-wallet', '_blank'),
+		onClick: () => window.open(docsUrl('/docs/wallet/create#creating-a-wallet'), '_blank'),
 	},
 	{
 		title: 'Configure Credits & Wallets',
 		description: 'Manage prepaid wallets, free credits, and top-ups',
-		onClick: () => window.open('https://docs.flexprice.io/docs/wallet/create', '_blank'),
+		onClick: () => window.open(docsUrl('/docs/wallet/create'), '_blank'),
 	},
 	{
 		title: 'Billing',
 		description: 'Create customers, assign plans, and manage subscriptions',
-		onClick: () => window.open('https://docs.flexprice.io/docs/product-catalogue/features/create', '_blank'),
+		onClick: () => window.open(docsUrl('/docs/product-catalogue/features/create'), '_blank'),
 	},
 	{
 		title: 'Self-Hosting & Configuration',
 		description: 'Set up and deploy Flexprice on your own infrastructure',
-		onClick: () => window.open('https://docs.flexprice.io/docs/getting-started/self-hosting-guide', '_blank'),
+		onClick: () => window.open(docsUrl('/docs/getting-started/self-hosting-guide'), '_blank'),
 	},
 ];
 
@@ -99,14 +101,16 @@ const OnboardingPage = () => {
 							<div className='w-[60%]'>
 								<h1 className='mb-2 text-xl font-semibold tracking-tight'>{t('onboardingLanding.welcomeHeading')}</h1>
 								<p className='mb-6 text-sm text-content-slate-strong'>{t('onboardingLanding.welcomeSubtext')}</p>
-								<div className='flex gap-4'>
-									<Button
-										onClick={() => {
-											window.open('https://calendly.com/flexprice-30mins-chat/manish', '_blank');
-										}}>
-										{t('onboardingLanding.bookDemo')}
-									</Button>
-								</div>
+								{brandConfig.links.bookCall && (
+									<div className='flex gap-4'>
+										<Button
+											onClick={() => {
+												window.open(brandConfig.links.bookCall, '_blank');
+											}}>
+											{t('onboardingLanding.bookDemo')}
+										</Button>
+									</div>
+								)}
 							</div>
 							<div className='flex-shrink-0 ml-8 w-[40%]'>
 								<img src='/assets/svg/onboarding_hero.svg' alt={t('onboardingLanding.heroImageAlt')} className='h-auto' />

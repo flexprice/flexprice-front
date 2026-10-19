@@ -19,6 +19,7 @@ export interface User {
 		status: string;
 		created_at: string;
 		updated_at: string;
+		metadata?: Record<string, string>;
 	};
 	email: string;
 	name?: string;

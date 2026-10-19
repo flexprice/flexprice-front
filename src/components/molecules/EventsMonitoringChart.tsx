@@ -32,12 +32,21 @@ interface EventsMonitoringChartProps {
 	description?: string;
 	className?: string;
 	onViewLatestData?: () => void;
+	/** Controls rendered at the end of the card header, e.g. compact `DashboardControls`. */
+	headerActions?: React.ReactNode;
 }
 
 const CHART_MARGIN = { top: 20, right: 30, left: 20, bottom: 20 };
 const CHART_HEIGHT = 300;
 
-export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ data, title, description, className, onViewLatestData }) => {
+export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({
+	data,
+	title,
+	description,
+	className,
+	onViewLatestData,
+	headerActions,
+}) => {
 	const { t, i18n } = useTranslation(['developers', 'common']);
 	const dateLocale = i18n.resolvedLanguage ?? i18n.language ?? 'en';
 	const displayTitle = title ?? t('events.monitoring.title');
@@ -190,6 +199,7 @@ export const EventsMonitoringChart: React.FC<EventsMonitoringChartProps> = ({ da
 						<CardTitle className={getTypographyClass('section-title', 'font-medium')}>{displayTitle}</CardTitle>
 						<CardDescription className={getTypographyClass('helper-text', 'mt-1')}>{displayDescription}</CardDescription>
 					</div>
+					{headerActions}
 				</div>
 			</CardHeader>
 

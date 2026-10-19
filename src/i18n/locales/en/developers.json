@@ -92,7 +92,7 @@
 	},
 	"secretKeyDrawer": {
 		"title": "Create API Key",
-		"description": "Create a new API key to access the Flexprice API",
+		"description": "Create a new API key to access the {{brand}} API",
 		"createFailed": "Failed to create API key. Please try again.",
 		"inheritedPrefix": "Inherited from service account:",
 		"fullAccess": {

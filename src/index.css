@@ -8,6 +8,15 @@
 		/* Overridden at runtime by `initTypography()` — `config.typography.fontFamily` */
 		--font-sans: 'Geist', sans-serif;
 
+		/* Page frame — layout values a brand pack may override in its theme.css. */
+		--fp-page-max-width: 1024px;
+		--fp-page-padding: 3rem 1rem;
+		--fp-page-height: 100vh;
+		--fp-page-heading-size: 1.875rem;
+		--fp-page-heading-leading: 2.25rem;
+		--fp-page-heading-weight: 500;
+		--fp-page-heading-tracking: normal;
+
 		--background: #f8fafc;
 
 		--foreground: 0 0% 3.9%;
@@ -649,7 +658,9 @@ html {
 		@apply border-line;
 	}
 	.page {
-		@apply flex flex-col px-4 py-12 h-screen;
+		@apply flex flex-col;
+		padding: var(--fp-page-padding);
+		height: var(--fp-page-height);
 	}
 	.scrollbar-hide {
 		-ms-overflow-style: none;

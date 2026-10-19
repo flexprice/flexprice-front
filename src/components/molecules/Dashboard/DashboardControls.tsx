@@ -12,9 +12,17 @@ interface DashboardControlsProps {
 	windowSize: WindowSize;
 	onTimePeriodChange: (period: TIME_PERIOD) => void;
 	onWindowSizeChange: (size: WindowSize) => void;
+	/** Renders the two selects inline without labels, for embedding in a card header. */
+	compact?: boolean;
 }
 
-export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod, windowSize, onTimePeriodChange, onWindowSizeChange }) => {
+export const DashboardControls: React.FC<DashboardControlsProps> = ({
+	timePeriod,
+	windowSize,
+	onTimePeriodChange,
+	onWindowSizeChange,
+	compact = false,
+}) => {
 	const { t } = useTranslation('common');
 
 	const timePeriodOptions = useMemo(
@@ -42,6 +50,25 @@ export const DashboardControls: React.FC<DashboardControlsProps> = ({ timePeriod
 		],
 		[t],
 	);
+
+	if (compact) {
+		return (
+			<div className='flex flex-wrap items-center gap-2'>
+				<Select
+					value={timePeriod}
+					options={timePeriodOptions}
+					onChange={(value) => onTimePeriodChange(value as TIME_PERIOD)}
+					className='w-[132px]'
+				/>
+				<Select
+					value={windowSize}
+					options={windowSizeOptions}
+					onChange={(value) => onWindowSizeChange(value as WindowSize)}
+					className='w-[132px]'
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<div className='flex flex-col sm:flex-row gap-4 sm:justify-end mb-6'>

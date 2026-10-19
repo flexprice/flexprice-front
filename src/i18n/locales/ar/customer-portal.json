@@ -6,7 +6,7 @@
 	},
 	"footer": {
 		"poweredBy": "مدعوم بواسطة",
-		"brand": "Flexprice"
+		"brand": "{{brand}}"
 	},
 	"header": {
 		"defaultInitials": "ع"

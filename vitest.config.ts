@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { resolveBrandDir } from './scripts/vite-brand.mjs';
 
 export default defineConfig({
 	test: {
@@ -24,6 +25,7 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
+			'@brand': resolveBrandDir(),
 			'@': path.resolve(__dirname, './src'),
 		},
 	},
