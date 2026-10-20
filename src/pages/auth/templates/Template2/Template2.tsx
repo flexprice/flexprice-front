@@ -9,6 +9,7 @@ import LoginForm from '../../LoginForm';
 import SignupForm from '../../SignupForm';
 import ForgotPasswordForm from '../../ForgotPasswordForm';
 import ResetPasswordForm from '../../ResetPasswordForm';
+import SetPasswordForm from '../../SetPasswordForm';
 import { config as appConfig } from '@/config/config';
 
 interface Template2Props {
@@ -31,6 +32,8 @@ const Template2: React.FC<Template2Props> = ({ config, currentTab, switchTab }) 
 				return <ForgotPasswordForm switchTab={switchTab} />;
 			case AuthTab.RESET_PASSWORD:
 				return <ResetPasswordForm switchTab={switchTab} />;
+			case AuthTab.SET_PASSWORD:
+				return <SetPasswordForm switchTab={switchTab} />;
 			default:
 				return <LoginForm switchTab={switchTab} />;
 		}

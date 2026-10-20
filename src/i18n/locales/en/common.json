@@ -442,6 +442,7 @@
 		"payments": "Payments",
 		"tabs": "Tabs",
 		"documentation": "Documentation",
+		"changePassword": "Change password",
 		"customerDetails": "Customer Details",
 		"loadingCustomerDetails": "Loading customer details...",
 		"timePeriod": "Time Period",

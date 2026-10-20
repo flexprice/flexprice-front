@@ -126,9 +126,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 						<label htmlFor='password' className='block text-sm font-medium text-content-secondary'>
 							{t('fields.password')}
 						</label>
-						<button type='button' onClick={() => switchTab(AuthTab.FORGOT_PASSWORD)} className='text-sm text-grey-600 hover:underline'>
-							{t('links.forgotPassword')}
-						</button>
+						{/* Self-hosted has no email, so only an admin can start a reset. */}
+						{config.app.env !== APP_ENV.SelfHosted && (
+							<button type='button' onClick={() => switchTab(AuthTab.FORGOT_PASSWORD)} className='text-sm text-grey-600 hover:underline'>
+								{t('links.forgotPassword')}
+							</button>
+						)}
 					</div>
 					<Input
 						id='password'
@@ -145,6 +148,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 						onChange={(s) => setPassword(s)}
 						value={password}
 					/>
+					{config.app.env === APP_ENV.SelfHosted && <p className='mt-1.5 text-xs text-content-muted'>{t('links.askAdmin')}</p>}
 				</div>
 				<Button onClick={handleLogin} className='w-full !mt-6 h-11' isLoading={loading}>
 					{t('buttons.login')}

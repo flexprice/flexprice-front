@@ -23,10 +23,27 @@ export interface CreateTenantUserRequest {
 	roles: string[];
 }
 
-/** Response includes one-time password (view once, not stored). */
+/** Response includes a one-time password (hosted) or an invite link token (self-hosted); view once, not stored. */
 export interface CreateTenantUserResponse {
 	user?: User;
-	password: string;
+	password?: string;
+	invite_token?: string;
+	invite_expires_at?: string;
+}
+
+export type PasswordLinkPurpose = 'invite' | 'reset';
+
+/** Response for POST /users/{id}/password-link: a one-time link for a member to set their password. */
+export interface PasswordLinkResponse {
+	token: string;
+	purpose: PasswordLinkPurpose;
+	expires_at: string;
+}
+
+/** Response for POST /auth/password/check. */
+export interface PasswordLinkDetails {
+	purpose: PasswordLinkPurpose;
+	email: string;
 }
 
 /** Request for PUT /users/{id}/roles - change an existing user's roles. Service accounts aren't supported (fixed at creation). */
