@@ -63,3 +63,27 @@ describe('usesExternalTaxEngine', () => {
 		expect(usesExternalTaxEngine({ enabled: true, provider: '' })).toBe(false);
 	});
 });
+
+// The gating in the tax-association UI turns on usesExternalTaxEngine alone, and the
+// backend refuses exactly the same set, so these mirror its two rejection sites:
+// CreateTaxAssociation and tax_rate_overrides on subscription/invoice creation.
+describe('usesExternalTaxEngine as the association gate', () => {
+	const gated = (value: unknown) => usesExternalTaxEngine(parseTaxConfig(value));
+
+	it('does not gate an environment with no setting', () => {
+		expect(gated(undefined)).toBe(false);
+		expect(gated({})).toBe(false);
+	});
+
+	it('gates an enabled external engine', () => {
+		expect(gated({ enabled: true, provider: 'stripe' })).toBe(true);
+	});
+
+	it('does not gate once the engine is switched off, even with the provider retained', () => {
+		expect(gated({ enabled: false, provider: 'stripe' })).toBe(false);
+	});
+
+	it('does not gate an enabled config that names the native engine', () => {
+		expect(gated({ enabled: true, provider: 'flexprice' })).toBe(false);
+	});
+});

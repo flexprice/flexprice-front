@@ -2,6 +2,7 @@ import { useParams, useOutletContext } from 'react-router';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardHeader, AddButton, Loader, NoDataCard, ShortPagination, Tooltip } from '@/components/atoms';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
+import { useExternalTaxEngine } from '@/hooks/useExternalTaxEngine';
 import { ApiDocsContent } from '@/components/molecules';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import TaxApi from '@/api/TaxApi';
@@ -26,6 +27,9 @@ const CustomerTaxAssociationTab = () => {
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const { can } = useCurrentUserPermissions();
 	const canWriteTax = can('tax', 'write');
+	// The backend rejects CreateTaxAssociation outright while an external engine is
+	// in force, so the control is disabled rather than left to fail on submit.
+	const { isExternal: isExternalTaxEngine, provider: taxProvider } = useExternalTaxEngine();
 
 	const fetchTaxAssociations = async () => {
 		return await TaxApi.listTaxAssociations({
@@ -81,16 +85,22 @@ const CustomerTaxAssociationTab = () => {
 		toast.error('Error fetching tax associations');
 	}
 
+	const addDisabledReason = isExternalTaxEngine
+		? t('tabPanels.tax.externalEngineTooltip', { provider: taxProvider })
+		: !canWriteTax
+			? t('tabPanels.tax.writeDeniedTooltip')
+			: null;
+
 	const addTaxAssociationCta =
 		!isArchived &&
-		(canWriteTax ? (
-			<AddButton onClick={handleAddTaxAssociation} disabled={false} />
-		) : (
-			<Tooltip content={t('tabPanels.tax.writeDeniedTooltip')}>
+		(addDisabledReason ? (
+			<Tooltip content={addDisabledReason}>
 				<span tabIndex={0} className='inline-block'>
 					<AddButton disabled />
 				</span>
 			</Tooltip>
+		) : (
+			<AddButton onClick={handleAddTaxAssociation} disabled={false} />
 		));
 
 	if (!taxAssociationsData?.items?.length) {

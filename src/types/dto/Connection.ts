@@ -131,6 +131,12 @@ export interface CreateConnectionPayload {
 			inbound: boolean;
 			outbound: boolean;
 		};
+		// Push to Stripe. Stripe Tax refuses to calculate for a customer that does
+		// not exist in Stripe, so this gates that integration as well as invoicing.
+		customer?: {
+			inbound: boolean;
+			outbound: boolean;
+		};
 		deal?: {
 			inbound: boolean;
 			outbound: boolean;
@@ -170,6 +176,12 @@ export interface UpdateConnectionPayload {
 			outbound: boolean;
 		};
 		price?: {
+			inbound: boolean;
+			outbound: boolean;
+		};
+		// Push to Stripe. Stripe Tax refuses to calculate for a customer that does
+		// not exist in Stripe, so this gates that integration as well as invoicing.
+		customer?: {
 			inbound: boolean;
 			outbound: boolean;
 		};
