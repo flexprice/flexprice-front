@@ -66,7 +66,7 @@ const Tile = ({
 							row[idx.current],
 							idx.prev >= 0 ? row[idx.prev] : undefined,
 							idx.pct >= 0 ? row[idx.pct] : undefined,
-							entry.higher_is_better,
+							entry.improvement === 'higher',
 						)}
 					/>
 				)

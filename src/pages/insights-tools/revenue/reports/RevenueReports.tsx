@@ -124,7 +124,9 @@ const RevenueReports = () => {
 										<div
 											className={run.isPlaceholderData ? 'flex items-center gap-2 text-sm opacity-60' : 'flex items-center gap-2 text-sm'}>
 											<span className='font-medium tabular-nums'>{formatValue(total.current, entry.value_type, currency, daysLabel)}</span>
-											<DeltaChip display={deltaDisplay(String(total.current), String(total.prev), undefined, entry.higher_is_better)} />
+											<DeltaChip
+												display={deltaDisplay(String(total.current), String(total.prev), undefined, entry.improvement === 'higher')}
+											/>
 											<span className='text-muted-foreground'>
 												{t('insightsTools.revenue.reports.vsPrevious', {
 													value: formatValue(total.prev, entry.value_type, currency, daysLabel),

@@ -25,7 +25,7 @@ const flow: ReportCatalogEntry = {
 	category: 'billing',
 	kind: 'flow',
 	value_type: 'money',
-	higher_is_better: true,
+	improvement: 'higher',
 	shapes: ['scalar', 'timeseries', 'breakdown'],
 	default_shape: 'timeseries',
 	dimensions: [{ key: 'customer_id', label: 'Customer' }],

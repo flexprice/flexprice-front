@@ -17,7 +17,7 @@ export interface ReportCatalogEntry {
 	category: ReportCategory;
 	kind: ReportKind;
 	value_type: ReportValueType;
-	higher_is_better: boolean;
+	improvement: 'higher' | 'lower';
 	shapes: ReportShape[];
 	default_shape: ReportShape;
 	dimensions: ReportDimension[];
