@@ -16,10 +16,11 @@ export interface TaxConfig {
 }
 
 /**
- * The providers offered in the UI, matching the backend's `TaxProviders`.
- * `flexprice` is the native engine; anything else is external.
+ * The providers offered in the tax-engine dropdown. Stripe is the only
+ * external engine the UI exposes. `flexprice` stays a valid stored value
+ * (the native engine) but is not a choice.
  */
-export const TAX_PROVIDERS: Exclude<TaxProvider, ''>[] = ['flexprice', 'stripe'];
+export const TAX_PROVIDERS: Array<'stripe'> = ['stripe'];
 
 /**
  * What an environment with no saved setting resolves to. The backend's default
@@ -31,7 +32,7 @@ export const FALLBACK_TAX_CONFIG: TaxConfig = {
 };
 
 function isTaxProvider(value: unknown): value is TaxProvider {
-	return value === '' || (typeof value === 'string' && (TAX_PROVIDERS as string[]).includes(value));
+	return value === '' || value === 'flexprice' || value === 'stripe';
 }
 
 /**
