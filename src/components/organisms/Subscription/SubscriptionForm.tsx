@@ -322,10 +322,14 @@ const SubscriptionForm = ({
 		queryFn: async () => {
 			const idsWithCharges = new Set<string>();
 			const PAGE_SIZE = 500;
-			// Hard cap on page requests so a misbehaving backend (full pages with an unreliable
-			// `total`) can't loop forever; return whatever IDs we've collected once reached.
-			const MAX_PAGES = 20;
+			// Safety cap on page requests so a misbehaving backend (full pages with an unreliable
+			// `total`) can't loop forever. This previously capped at 20 pages (10k prices), which
+			// silently truncated results once a tenant's published price catalog grew past that —
+			// plans past the cutoff got falsely flagged as having no charges even though they did.
+			// Scale the cap so it only kicks in as a genuine safety net, not a routine limit.
+			const MAX_PAGES = 200;
 			let offset = 0;
+			let truncated = false;
 			for (let page = 0; page < MAX_PAGES; page++) {
 				const response = await PriceApi.searchPrices({
 					filters: [
@@ -354,17 +358,25 @@ const SubscriptionForm = ({
 				response.items.forEach((price) => {
 					if (price.entity_id) idsWithCharges.add(price.entity_id);
 				});
-				if (response.items.length < PAGE_SIZE) break;
+				if (response.items.length < PAGE_SIZE) {
+					break;
+				}
 				const total = response.pagination?.total;
-				if (total != null && offset + response.items.length >= total) break;
+				if (total != null && offset + response.items.length >= total) {
+					break;
+				}
 				offset += PAGE_SIZE;
+				if (page === MAX_PAGES - 1) truncated = true;
 			}
-			return [...idsWithCharges];
+			// If we hit the safety cap without exhausting the result set, we can't trust that
+			// every charged plan was seen — return null so the lookup is treated as unknown
+			// (plans stay selectable) instead of incorrectly disabling plans that do have charges.
+			return truncated ? null : [...idsWithCharges];
 		},
 		enabled: planIds.length > 0,
 	});
 
-	// Derived Set preserves O(1) lookups; undefined while the lookup is in flight.
+	// Derived Set preserves O(1) lookups; undefined while the lookup is in flight or was truncated.
 	const planIdsWithChargesSet = useMemo(() => (planIdsWithCharges ? new Set(planIdsWithCharges) : undefined), [planIdsWithCharges]);
 
 	const plansWithCharges = useMemo(() => {

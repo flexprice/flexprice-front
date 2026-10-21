@@ -19,6 +19,12 @@
 # Required repository secrets: VERCEL_TOKEN, VERCEL_ORG_ID, DEPLOYMENTS_CONFIG
 # DEPLOYMENTS_CONFIG may also be stored as a repository Variable (falls back automatically).
 #
+# Optional repository secret: VERCEL_PROJECT_ID_CA
+# When set, and DEPLOYMENTS_CONFIG does not already contain production-ca or that
+# project id, the workflow appends a main-branch production deploy named
+# production-ca. Token and org fall back to VERCEL_TOKEN / VERCEL_ORG_ID.
+# generate_meta is on, matching production-us and production-in.
+#
 # Optional repository secret: DEPLOYMENT_STATUS_TOKEN
 # A PAT (classic "repo" scope, or fine-grained with "Deployments: write") used to report
 # each successful deploy to GitHub as a Deployment + success status, which is what fires
@@ -56,6 +62,7 @@ jobs:
       DEPLOYMENTS_CONFIG: ${{ secrets.DEPLOYMENTS_CONFIG || vars.DEPLOYMENTS_CONFIG }}
       VERCEL_TOKEN_DEFAULT: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID_DEFAULT: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID_CA: ${{ secrets.VERCEL_PROJECT_ID_CA }}
 
     steps:
       - uses: actions/checkout@v3
@@ -106,6 +113,28 @@ jobs:
             echo "::error::DEPLOYMENTS_CONFIG must be a JSON array or { \"deployments\": [...] }."
             exit 1
           }
+
+          # Canada production uses its own project-id secret instead of an inline
+          # DEPLOYMENTS_CONFIG entry. Skip when that entry is already present.
+          ca_project_id="$(printf '%s' "${VERCEL_PROJECT_ID_CA:-}" | tr -d '[:space:]')"
+          if [ -n "$ca_project_id" ]; then
+            echo "::add-mask::${ca_project_id}"
+            ca_exists="$(jq -r --arg id "$ca_project_id" --arg name "production-ca" \
+              'any(.[]; .vercel_project_id == $id or .deployment_name == $name)' <<<"$normalized")"
+            if [ "$ca_exists" != "true" ]; then
+              normalized="$(jq -c --arg id "$ca_project_id" \
+                '. + [{
+                  deployment_name: "production-ca",
+                  vercel_project_id: $id,
+                  vercel_org_id: "",
+                  vercel_token: "",
+                  enabled: true,
+                  branches: ["main"],
+                  generate_meta: true
+                }]' <<<"$normalized")"
+              echo "Appended production-ca for the main branch."
+            fi
+          fi
 
           current_branch="${GITHUB_REF_NAME}"
           echo "Branch: ${current_branch}"
