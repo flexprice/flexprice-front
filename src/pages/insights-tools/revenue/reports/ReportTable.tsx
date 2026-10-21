@@ -74,7 +74,12 @@ const ReportTable = ({ entry, result, currency, grain, now, measures }: Props) =
 									{hasPrev && (
 										<TableCell className='text-end'>
 											<DeltaChip
-												display={deltaDisplay(r[idx.current], r[idx.prev], idx.pct >= 0 ? r[idx.pct] : undefined, entry.higher_is_better)}
+												display={deltaDisplay(
+													r[idx.current],
+													r[idx.prev],
+													idx.pct >= 0 ? r[idx.pct] : undefined,
+													entry.improvement === 'higher',
+												)}
 											/>
 										</TableCell>
 									)}
@@ -94,7 +99,7 @@ const ReportTable = ({ entry, result, currency, grain, now, measures }: Props) =
 									{hasPrev && (
 										<TableCell className='text-end'>
 											<DeltaChip
-												display={deltaDisplay(String(total.current), String(total.prev ?? 0), undefined, entry.higher_is_better)}
+												display={deltaDisplay(String(total.current), String(total.prev ?? 0), undefined, entry.improvement === 'higher')}
 											/>
 										</TableCell>
 									)}

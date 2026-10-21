@@ -23,7 +23,7 @@ export const datasetEntry = (ds: Dataset, def: DatasetDefinition, measures: Tabl
 	// Ratio skips summed totals.
 	kind: 'ratio',
 	value_type: measures[0]?.valueType === 'money' ? 'money' : 'count',
-	higher_is_better: true,
+	improvement: 'higher',
 	shapes: [],
 	default_shape: def.time.grain ? 'timeseries' : 'breakdown',
 	dimensions: ds.fields.filter((f) => f.group).map((f) => ({ key: f.key, label: f.label })),
