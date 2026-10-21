@@ -13,7 +13,7 @@ const base: Omit<ReportCatalogEntry, 'dimensions'> = {
 	category: 'billing',
 	kind: 'flow',
 	value_type: 'money',
-	higher_is_better: true,
+	improvement: 'higher',
 	shapes: ['scalar'],
 	default_shape: 'scalar',
 	grains: [],
