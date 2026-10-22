@@ -66,6 +66,8 @@ interface TopupCardProps {
 const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1, onSuccess, onCheckoutUrl, customerId }) => {
 	const { t } = useTranslation('billing');
 	const { minExpiryDate } = useMinCreditExpiryDate(customerId);
+	// Days after this are disabled. Today stays selectable.
+	const maxEffectiveDate = useMemo(() => new Date(), []);
 
 	const creditsTypeOptions = useMemo<RectangleRadiogroupOption[]>(
 		() => [
@@ -196,6 +198,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				idempotency_key: topupPayload.reference_id,
 				transaction_reason: getTransactionReason(mode),
 				expiry_date_utc: topupPayload.expiry_date_utc,
+				...(topupPayload.effective_date ? { effective_date: topupPayload.effective_date } : {}),
 				priority: topupPayload.priority,
 				description: topupPayload.description,
 				...(mode === TopupMode.Invoice && coupon?.coupon_code ? { coupons: [{ coupon_code: coupon.coupon_code }] } : {}),
@@ -250,6 +253,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 				credits_to_add: undefined,
 				generate_invoice: undefined,
 				expiry_date: undefined,
+				effective_date: undefined,
 				priority: undefined,
 				reference_id: undefined,
 				description: undefined,
@@ -346,6 +350,7 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 								credits_to_add: undefined,
 								generate_invoice: value === CreditsType.PurchasedCredits ? true : undefined,
 								expiry_date: undefined,
+								effective_date: undefined,
 								reference_id: undefined,
 								description: undefined,
 							});
@@ -411,6 +416,26 @@ const TopupCard: FC<TopupCardProps> = ({ walletId, currency, conversion_rate = 1
 						className='w-full'
 						labelClassName='text-foreground'
 					/>
+				)}
+				{topupPayload.credits_type && (
+					<div className='space-y-1'>
+						<DatePicker
+							label={t('wallet.topup.effectiveDate')}
+							placeholder={t('wallet.topup.effectiveDatePlaceholder')}
+							maxDate={maxEffectiveDate}
+							date={topupPayload.effective_date ? new Date(topupPayload.effective_date) : undefined}
+							setDate={(value) =>
+								updateTopupPayload({
+									effective_date: value
+										? new Date(Date.UTC(value.getFullYear(), value.getMonth(), value.getDate(), 0, 0, 0, 0)).toISOString()
+										: undefined,
+								})
+							}
+							className='w-full'
+							labelClassName='text-foreground'
+						/>
+						<p className='text-sm text-muted-foreground'>{t('wallet.topup.effectiveDateHint')}</p>
+					</div>
 				)}
 				{topupPayload.credits_type && (
 					<Input

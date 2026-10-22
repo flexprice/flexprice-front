@@ -36,6 +36,9 @@ interface StripeFormData {
 		subscription: boolean; // pull from Stripe
 		invoice: boolean; // push to Stripe
 		price: boolean; // push to Stripe
+		// Push to Stripe. A prerequisite for Stripe Tax, which refuses to calculate
+		// for a customer that does not exist in Stripe yet.
+		customer: boolean;
 	};
 }
 
@@ -53,6 +56,7 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 			subscription: false, // pull from Stripe
 			invoice: false, // push to Stripe
 			price: false, // push to Stripe
+			customer: false, // push to Stripe
 		},
 	});
 	const [errors, setErrors] = useState<Record<string, string>>({});
@@ -99,6 +103,7 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 					subscription: legacySyncConfig?.subscription?.inbound || false,
 					invoice: legacySyncConfig?.invoice?.outbound || false,
 					price: legacySyncConfig?.price?.outbound || false,
+					customer: legacySyncConfig?.customer?.outbound || false,
 				};
 
 				setFormData({
@@ -117,6 +122,7 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 						subscription: false,
 						invoice: false,
 						price: false,
+						customer: false,
 					},
 				});
 			}
@@ -188,6 +194,10 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 						inbound: false,
 						outbound: formData.sync_config.price,
 					},
+					customer: {
+						inbound: false,
+						outbound: formData.sync_config.customer,
+					},
 				},
 			};
 
@@ -223,6 +233,10 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 					price: {
 						inbound: false,
 						outbound: formData.sync_config.price,
+					},
+					customer: {
+						inbound: false,
+						outbound: formData.sync_config.customer,
 					},
 				},
 			};
@@ -305,6 +319,15 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 					<p className='text-xs text-content-tertiary mb-4'>{t('connection.sync.description', { partner: STRIPE_PROVIDER })}</p>
 
 					<div className='space-y-4'>
+						{/* Customers — first, because invoice sync and Stripe Tax both need it */}
+						<div className='flex items-center justify-between p-3 bg-surface border border-line rounded-lg'>
+							<div>
+								<label className='text-sm font-medium text-content-secondary'>{t('integrations.stripe.labels.customers')}</label>
+								<p className='text-xs text-content-muted'>{t('integrations.stripe.customerSyncHint')}</p>
+							</div>
+							<Switch checked={formData.sync_config.customer} onCheckedChange={(checked) => handleSyncConfigChange('customer', checked)} />
+						</div>
+
 						{/* Plans */}
 						<div className='flex items-center justify-between p-3 bg-surface border border-line rounded-lg'>
 							<div>

@@ -6,7 +6,7 @@ import {
 	SUBSCRIPTION_STATUS,
 } from '@/models/Subscription';
 import { useMutation } from '@tanstack/react-query';
-import { X, Pencil, Play, Bell } from 'lucide-react';
+import { X, Pencil, Play, Bell, CirclePause, CirclePlay } from 'lucide-react';
 import React, { useState, useMemo } from 'react';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { DatePicker, Label, Modal, Input, Button, FormHeader, Spacer, Select, Toggle } from '@/components/atoms';
@@ -26,6 +26,9 @@ interface Props {
 	subscription: Subscription;
 }
 
+// Pause is immediate only for now; the select is in place for scheduled pause later.
+const PAUSE_MODE_IMMEDIATE = 'immediate';
+
 const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation(['customers', 'common']);
@@ -34,14 +37,14 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 	const canWriteSubscription = can('subscription', 'write');
 	const canWriteAlertSettings = can('alert_settings', 'write');
 	const [state, setState] = useState({
-		// isPauseModalOpen: false,
-		// isResumeModalOpen: false,
+		isPauseModalOpen: false,
+		isResumeModalOpen: false,
 		isCancelModalOpen: false,
 		isActivateModalOpen: false,
 		isAlertSettingsOpen: false,
-		// pauseStartDate: new Date(),
-		// pauseDays: '',
-		// pauseReason: '',
+		pauseProrationBehavior: SUBSCRIPTION_PRORATION_BEHAVIOR.NONE,
+		pauseReason: '',
+		resumeProrationBehavior: subscription.proration_behavior ?? SUBSCRIPTION_PRORATION_BEHAVIOR.NONE,
 		activateStartDate: new Date(),
 		cancelCancellationType: SUBSCRIPTION_CANCELLATION_TYPE.IMMEDIATE,
 		cancelProrationBehavior: SUBSCRIPTION_PRORATION_BEHAVIOR.NONE,
@@ -62,51 +65,63 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 		}));
 	};
 
+	const resetPauseState = () => {
+		setState((prev) => ({
+			...prev,
+			isPauseModalOpen: false,
+			pauseProrationBehavior: SUBSCRIPTION_PRORATION_BEHAVIOR.NONE,
+			pauseReason: '',
+		}));
+	};
+
+	const resetResumeState = () => {
+		setState((prev) => ({
+			...prev,
+			isResumeModalOpen: false,
+			resumeProrationBehavior: subscription.proration_behavior ?? SUBSCRIPTION_PRORATION_BEHAVIOR.NONE,
+		}));
+	};
+
 	const getCancelImmediatelyInvoicePolicy = () =>
 		state.cancelGenerateInvoice
 			? SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY.GENERATE_INVOICE
 			: SUBSCRIPTION_CANCEL_IMMEDIATELY_INVOICE_POLICY.SKIP;
-	// const pauseEndDate = useMemo(() => {
-	// 	if (!state.pauseDays) return null;
-	// 	return addDays(state.pauseStartDate, parseInt(state.pauseDays));
-	// }, [state.pauseStartDate, state.pauseDays]);
 	const minCancelScheduledAt = useMemo(() => new Date(), []);
 
-	// const { mutate: pauseSubscription, isPending: isPauseLoading } = useMutation({
-	// 	mutationFn: (id: string) =>
-	// 		SubscriptionApi.pauseSubscription(id, {
-	// 			pause_start: state.pauseStartDate.toISOString(),
-	// 			pause_days: parseInt(state.pauseDays),
-	// 			pause_mode: 'immediate',
-	// 		}),
-	// 	onSuccess: async () => {
-	// 		setState((prev) => ({ ...prev, isPauseModalOpen: false }));
-	// 		toast.success('Subscription paused successfully');
-	// 		await refetchQueries(['subscriptionDetails']);
-	// 		await refetchQueries(['subscriptions']);
-	// 	},
-	// 	onError: (error: Error) => {
-	// 		setState((prev) => ({ ...prev, isPauseModalOpen: false }));
-	// 		toast.error(error.message || 'Failed to pause subscription');
-	// 	},
-	// });
+	const { mutate: pauseSubscription, isPending: isPauseLoading } = useMutation({
+		mutationFn: (id: string) =>
+			SubscriptionApi.pauseSubscription(id, {
+				proration_behavior: state.pauseProrationBehavior,
+				...(state.pauseReason.trim() ? { reason: state.pauseReason.trim() } : {}),
+			}),
+		onSuccess: async () => {
+			resetPauseState();
+			toast.success(t('customers:organisms.subscriptionAction.pauseSuccess'));
+			await refetchSubscriptionQueries();
+			await refetchQueries(['subscriptionInvoices']);
+		},
+		onError: (err: Error) => {
+			resetPauseState();
+			toast.error(err.message || t('customers:organisms.subscriptionAction.pauseError'));
+		},
+	});
 
-	// const { mutate: resumeSubscription, isPending: isResumeLoading } = useMutation({
-	// 	mutationFn: (id: string) =>
-	// 		SubscriptionApi.resumeSubscription(id, {
-	// 			resume_mode: 'immediate',
-	// 		}),
-	// 	onSuccess: async () => {
-	// 		setState((prev) => ({ ...prev, isResumeModalOpen: false }));
-	// 		toast.success('Subscription resumed successfully');
-	// 		await refetchQueries(['subscriptionDetails']);
-	// 		await refetchQueries(['subscriptions']);
-	// 	},
-	// 	onError: (err: Error) => {
-	// 		setState((prev) => ({ ...prev, isResumeModalOpen: false }));
-	// 		toast.error(err.message || 'Failed to resume subscription');
-	// 	},
-	// });
+	const { mutate: resumeSubscription, isPending: isResumeLoading } = useMutation({
+		mutationFn: (id: string) =>
+			SubscriptionApi.resumeSubscription(id, {
+				proration_behavior: state.resumeProrationBehavior,
+			}),
+		onSuccess: async () => {
+			resetResumeState();
+			toast.success(t('customers:organisms.subscriptionAction.resumeSuccess'));
+			await refetchSubscriptionQueries();
+			await refetchQueries(['subscriptionInvoices']);
+		},
+		onError: (err: Error) => {
+			resetResumeState();
+			toast.error(err.message || t('customers:organisms.subscriptionAction.resumeError'));
+		},
+	});
 
 	const cancelScheduledInvalid =
 		state.cancelCancellationType === SUBSCRIPTION_CANCELLATION_TYPE.SCHEDULED_DATE && state.cancelScheduledAt === undefined;
@@ -151,6 +166,8 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 
 	const isCancelled = subscription.subscription_status.toUpperCase() === 'CANCELLED';
 	const isDraft = subscription.subscription_status === SUBSCRIPTION_STATUS.DRAFT;
+	const isActive = subscription.subscription_status === SUBSCRIPTION_STATUS.ACTIVE;
+	const isPaused = subscription.subscription_status === SUBSCRIPTION_STATUS.PAUSED;
 	const readOnly = isInheritedSubscription(subscription);
 
 	const menuOptions: DropdownMenuOption[] = [
@@ -182,26 +199,30 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 			disabledReason:
 				!readOnly && !canWriteAlertSettings ? t('customers:organisms.subscriptionAction.alertSettingsWriteDeniedTooltip') : undefined,
 		},
-		...(!isCancelled && !isDraft
+		...(isActive
 			? [
-					// {
-					// 	label: 'Pause Subscription',
-					// 	icon: <CirclePause className='h-4 w-4' />,
-					// 	onSelect: () => setState((prev) => ({ ...prev, isPauseModalOpen: true })),
-					// 	disabled: isPaused || isCancelled || readOnly,
-					// },
+					{
+						label: t('customers:organisms.subscriptionAction.pauseSubscription'),
+						icon: <CirclePause className='h-4 w-4' />,
+						onSelect: () => setState((prev) => ({ ...prev, isPauseModalOpen: true })),
+						disabled: readOnly || !canWriteSubscription,
+						disabledReason: !readOnly && !canWriteSubscription ? t('customers:organisms.subscriptionAction.writeDeniedTooltip') : undefined,
+						className: 'text-warning',
+					},
 				]
 			: []),
-		// ...(isPaused && !isCancelled
-		// 	? [
-		// 			{
-		// 				label: 'Resume Subscription',
-		// 				icon: <CirclePlay className='h-4 w-4' />,
-		// 				onSelect: () => setState((prev) => ({ ...prev, isResumeModalOpen: true })),
-		// 				disabled: isCancelled || readOnly,
-		// 			},
-		// 		]
-		// 	: []),
+		...(isPaused
+			? [
+					{
+						label: t('customers:organisms.subscriptionAction.resumeSubscription'),
+						icon: <CirclePlay className='h-4 w-4' />,
+						onSelect: () => setState((prev) => ({ ...prev, isResumeModalOpen: true })),
+						disabled: readOnly || !canWriteSubscription,
+						disabledReason: !readOnly && !canWriteSubscription ? t('customers:organisms.subscriptionAction.writeDeniedTooltip') : undefined,
+						className: 'text-success',
+					},
+				]
+			: []),
 		{
 			label: 'Cancel Subscription',
 			icon: <X className='h-4 w-4' />,
@@ -321,6 +342,122 @@ const SubscriptionActionButton: React.FC<Props> = ({ subscription }) => {
 							{isCancelLoading
 								? t('customers:organisms.subscriptionAction.cancelling')
 								: t('customers:organisms.subscriptionAction.yesCancel')}
+						</Button>
+					</div>
+				</div>
+			</Modal>
+
+			{/* Pause Modal */}
+			<Modal
+				isOpen={state.isPauseModalOpen}
+				onOpenChange={(open) => {
+					if (!open) {
+						resetPauseState();
+						return;
+					}
+					setState((prev) => ({ ...prev, isPauseModalOpen: open }));
+				}}
+				className='card bg-surface w-[560px] max-w-[90vw]'>
+				<div className='space-y-4'>
+					<FormHeader
+						title={t('customers:organisms.subscriptionAction.pauseTitle')}
+						variant='sub-header'
+						subtitle={t('customers:organisms.subscriptionAction.pauseSubtitle')}
+						titleClassName='!mb-1'
+						subtitleClassName='!text-sm !max-w-[440px] !leading-6'
+					/>
+					<div className='space-y-4'>
+						<Select
+							label={t('customers:organisms.subscriptionAction.pauseMode')}
+							value={PAUSE_MODE_IMMEDIATE}
+							options={[{ label: t('customers:organisms.subscriptionAction.pauseImmediate'), value: PAUSE_MODE_IMMEDIATE }]}
+							disabled
+						/>
+						<Select
+							label={t('customers:organisms.subscriptionAction.prorationBehavior')}
+							value={state.pauseProrationBehavior}
+							options={[
+								{ label: t('customers:organisms.subscriptionAction.prorationNone'), value: SUBSCRIPTION_PRORATION_BEHAVIOR.NONE },
+								{
+									label: t('customers:organisms.subscriptionAction.prorationCreate'),
+									value: SUBSCRIPTION_PRORATION_BEHAVIOR.CREATE_PRORATIONS,
+								},
+							]}
+							onChange={(value) =>
+								setState((prev) => ({
+									...prev,
+									pauseProrationBehavior: value as SUBSCRIPTION_PRORATION_BEHAVIOR,
+								}))
+							}
+						/>
+						<Input
+							label={t('customers:organisms.subscriptionAction.reasonOptional')}
+							value={state.pauseReason}
+							onChange={(value) => setState((prev) => ({ ...prev, pauseReason: value }))}
+							placeholder={t('customers:organisms.subscriptionAction.pauseReasonPlaceholder')}
+						/>
+					</div>
+					<div className='flex justify-end gap-3 pt-4'>
+						<Button variant='outline' onClick={() => resetPauseState()} disabled={isPauseLoading}>
+							{t('customers:organisms.subscriptionAction.keepSubscription')}
+						</Button>
+						<Button
+							className='bg-warning border-warning text-white hover:bg-warning/90'
+							onClick={() => pauseSubscription(subscription.id)}
+							disabled={isPauseLoading}>
+							{isPauseLoading ? t('customers:organisms.subscriptionAction.pausing') : t('customers:organisms.subscriptionAction.yesPause')}
+						</Button>
+					</div>
+				</div>
+			</Modal>
+
+			{/* Resume Modal */}
+			<Modal
+				isOpen={state.isResumeModalOpen}
+				onOpenChange={(open) => {
+					if (!open) {
+						resetResumeState();
+						return;
+					}
+					setState((prev) => ({ ...prev, isResumeModalOpen: open }));
+				}}
+				className='card bg-surface w-[560px] max-w-[90vw]'>
+				<div className='space-y-4'>
+					<FormHeader
+						title={t('customers:organisms.subscriptionAction.resumeTitle')}
+						variant='sub-header'
+						subtitle={t('customers:organisms.subscriptionAction.resumeSubtitle')}
+						titleClassName='!mb-1'
+						subtitleClassName='!text-sm !max-w-[440px] !leading-6'
+					/>
+					<Select
+						label={t('customers:organisms.subscriptionAction.prorationBehavior')}
+						value={state.resumeProrationBehavior}
+						options={[
+							{ label: t('customers:organisms.subscriptionAction.prorationNone'), value: SUBSCRIPTION_PRORATION_BEHAVIOR.NONE },
+							{
+								label: t('customers:organisms.subscriptionAction.prorationCreate'),
+								value: SUBSCRIPTION_PRORATION_BEHAVIOR.CREATE_PRORATIONS,
+							},
+						]}
+						onChange={(value) =>
+							setState((prev) => ({
+								...prev,
+								resumeProrationBehavior: value as SUBSCRIPTION_PRORATION_BEHAVIOR,
+							}))
+						}
+					/>
+					<div className='flex justify-end gap-3 pt-4'>
+						<Button variant='outline' onClick={() => resetResumeState()} disabled={isResumeLoading}>
+							{t('common:actions.cancel')}
+						</Button>
+						<Button
+							className='bg-success border-success text-white hover:bg-success/90'
+							onClick={() => resumeSubscription(subscription.id)}
+							disabled={isResumeLoading}>
+							{isResumeLoading
+								? t('customers:organisms.subscriptionAction.resuming')
+								: t('customers:organisms.subscriptionAction.yesResume')}
 						</Button>
 					</div>
 				</div>

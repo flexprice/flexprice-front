@@ -90,6 +90,9 @@ export interface TaxApplied extends BaseModel {
 	readonly provider?: string;
 	// What the provider transaction did. Absent or empty means a filing.
 	readonly tax_transaction_type?: TAX_TRANSACTION_TYPE;
+	// The provider transaction recording the filed tax, stamped at commit. Absent on a
+	// native row, and on an external row whose invoice has not been finalized yet.
+	readonly tax_transaction_id?: string;
 	readonly external_tax_details?: ExternalTaxDetails;
 	readonly entity_type: TAXRATE_ENTITY_TYPE;
 	readonly entity_id: string;

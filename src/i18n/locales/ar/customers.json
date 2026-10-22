@@ -385,6 +385,7 @@
 		},
 		"tax": {
 			"writeDeniedTooltip": "ليس لديك صلاحية إدارة ارتباطات الضرائب. اطلب الوصول من مسؤول المستأجر.",
+			"externalEngineTooltip": "تُحسب الضريبة لهذه البيئة بواسطة {{provider}}. قم بإعداد أسعار الضرائب والتسجيلات في {{provider}} بدلاً من ذلك.",
 			"emptyTitle": "الضريبة",
 			"emptySubtitle": "لا يوجد معدل ضريبي مُعيَّن لهذا العميل",
 			"associationsTitle": "ارتباطات الضرائب",
@@ -523,7 +524,24 @@
 			"activateSubtitle": "سيُبدأ تفعيل الاشتراك دورة الفوترة من تاريخ البدء المختار.",
 			"startDate": "تاريخ البدء",
 			"activating": "جارٍ التفعيل…",
-			"activate": "تفعيل"
+			"activate": "تفعيل",
+			"pauseSubscription": "إيقاف الاشتراك مؤقتاً",
+			"resumeSubscription": "استئناف الاشتراك",
+			"pauseTitle": "إيقاف الاشتراك مؤقتاً",
+			"pauseSubtitle": "يُفوتر الاستخدام والرسوم الثابتة حتى الآن في فاتورة إغلاق.",
+			"pauseMode": "وضع الإيقاف",
+			"pauseImmediate": "فوري",
+			"pauseReasonPlaceholder": "لماذا يُوقف هذا الاشتراك مؤقتاً؟",
+			"yesPause": "نعم، إيقاف",
+			"pausing": "جارٍ الإيقاف…",
+			"pauseSuccess": "تم إيقاف الاشتراك مؤقتاً بنجاح",
+			"pauseError": "تعذّر إيقاف الاشتراك",
+			"resumeTitle": "استئناف الاشتراك",
+			"resumeSubtitle": "تُستأنف الفوترة الآن. تُفوتر الرسوم المسبقة للفترة الحالية عند الاستئناف.",
+			"yesResume": "نعم، استئناف",
+			"resuming": "جارٍ الاستئناف…",
+			"resumeSuccess": "تم استئناف الاشتراك بنجاح",
+			"resumeError": "تعذّر استئناف الاشتراك"
 		},
 		"subscriptionForm": {
 			"subscriptionDetails": "تفاصيل الاشتراك",

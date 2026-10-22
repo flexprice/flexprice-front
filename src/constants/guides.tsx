@@ -6,6 +6,7 @@ export enum DOCS_LINKS {
 	SETTINGS_CUSTOM_CURRENCY = 'https://docs.flexprice.io/docs/settings/settings#custom-currency-configuration',
 	SETTINGS_SUBSCRIPTION = 'https://docs.flexprice.io/docs/settings/settings#subscription-configuration',
 	SETTINGS_INVOICE = 'https://docs.flexprice.io/docs/settings/settings#invoice-configuration',
+	SETTINGS_TAX = 'https://docs.flexprice.io/docs/settings/settings#tax-configuration',
 
 	FEATURE_CREATE = 'https://docs.flexprice.io/docs/product-catalogue/features/create',
 	FEATURE_PLANS = 'https://docs.flexprice.io/docs/product-catalogue/features/linking-to-plans',
