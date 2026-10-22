@@ -36,7 +36,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ switchTab }) => {
 
 	// Credentials are never read from the URL. This only scrubs them.
 	//
-	// The login page used to prefill itself from `?email=…&password=…`, which is
+	// The login page used to prefill itself from email and password query
+	// parameters, which is
 	// what made the removed "login link" work. Links already sent cannot be
 	// recalled, so one can still arrive — it now signs nobody in, and the
 	// password is replaced out of the address bar so it stops being carried in

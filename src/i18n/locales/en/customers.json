@@ -390,6 +390,7 @@
 		},
 		"tax": {
 			"writeDeniedTooltip": "You don't have permission to manage tax associations. Ask a tenant admin for access.",
+			"externalEngineTooltip": "Tax for this environment is calculated by {{provider}}. Configure tax rates and registrations in {{provider}} instead.",
 			"emptyTitle": "Tax",
 			"emptySubtitle": "No tax rate assigned to this customer",
 			"associationsTitle": "Tax Associations",
@@ -501,7 +502,24 @@
 			"activateSubtitle": "Activating the subscription will start the billing cycle from the selected start date.",
 			"startDate": "Start Date",
 			"activating": "Activating...",
-			"activate": "Activate"
+			"activate": "Activate",
+			"pauseSubscription": "Pause Subscription",
+			"resumeSubscription": "Resume Subscription",
+			"pauseTitle": "Pause Subscription",
+			"pauseSubtitle": "Usage and fixed charges up to now are billed on a closing invoice.",
+			"pauseMode": "Pause Mode",
+			"pauseImmediate": "Immediate",
+			"pauseReasonPlaceholder": "Why is this subscription being paused?",
+			"yesPause": "Yes, Pause",
+			"pausing": "Pausing...",
+			"pauseSuccess": "Subscription paused successfully",
+			"pauseError": "Failed to pause subscription",
+			"resumeTitle": "Resume Subscription",
+			"resumeSubtitle": "Billing restarts now. Advance charges for the current period are billed on resume.",
+			"yesResume": "Yes, Resume",
+			"resuming": "Resuming...",
+			"resumeSuccess": "Subscription resumed successfully",
+			"resumeError": "Failed to resume subscription"
 		},
 		"subscriptionForm": {
 			"subscriptionDetails": "Subscription Details",

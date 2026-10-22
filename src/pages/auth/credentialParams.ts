@@ -2,7 +2,8 @@
  * Query parameters that the removed "login link" feature used to carry.
  *
  * Adding a user returned a one-time password, and the team settings page offered
- * to copy it as `/auth?email=…&password=…` — a working credential in a URL. A
+ * to copy it as a link to the login page carrying the email and the password as
+ * query parameters — a working credential in a URL. A
  * URL is not a private channel: it lands in browser and shell history, in
  * `Referer` headers, in proxy, CDN and server access logs, and in the link
  * previews that chat apps generate by fetching it. The feature also wrote the

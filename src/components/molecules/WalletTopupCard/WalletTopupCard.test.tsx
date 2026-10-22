@@ -26,6 +26,32 @@ vi.mock('@/api/ConnectionApi', () => ({
 	default: { ListPublished: mockListPublished },
 }));
 vi.mock('react-hot-toast', () => ({ default: { success: mockToastSuccess, error: mockToastError } }));
+// The real picker opens, then the dialog's dismiss layer closes it in jsdom before a day can be
+// chosen. This stub still runs the card's setDate handler: first click picks 15 Oct 2026, second clears.
+vi.mock('@/components/atoms', async () => {
+	const actual = await vi.importActual<typeof import('@/components/atoms')>('@/components/atoms');
+	return {
+		...actual,
+		DatePicker: ({
+			label,
+			placeholder,
+			date,
+			setDate,
+		}: {
+			label?: string;
+			placeholder?: string;
+			date?: Date;
+			setDate: (next: Date | undefined) => void;
+		}) => (
+			<div>
+				<div>{label}</div>
+				<button type='button' onClick={() => setDate(date ? undefined : new Date(2026, 9, 15))}>
+					{date ? 'date selected' : (placeholder ?? 'Pick a date')}
+				</button>
+			</div>
+		),
+	};
+});
 vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn().mockResolvedValue(undefined) }));
 
 // The coupon picker (shared with subscriptions) is stubbed to a button that picks a fixed
@@ -307,5 +333,82 @@ describe('WalletTopupCard purchased credits', () => {
 		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalled());
 		expect(mockTopupWallet.mock.calls[0][0].transaction_reason).toBe('FREE_CREDIT_GRANT');
 		expect(mockTopupWallet.mock.calls[0][0].coupons).toBeUndefined();
+	});
+});
+
+describe('WalletTopupCard effective date', () => {
+	const effectiveDateButton = () => screen.getAllByRole('button', { name: 'Pick a date' })[1];
+
+	it('shows the optional field under Expiry Date on Free and Purchased', async () => {
+		const user = userEvent.setup();
+		renderTopupCard();
+
+		expect(screen.getByText('Effective Date')).toBeInTheDocument();
+		expect(
+			screen.getByText('Credits are available for consumption from this date. Leave empty to use the current time.'),
+		).toBeInTheDocument();
+		const expiryBeforeEffective =
+			screen.getByText('Expiry Date').compareDocumentPosition(screen.getByText('Effective Date')) & Node.DOCUMENT_POSITION_FOLLOWING;
+		expect(expiryBeforeEffective).toBeTruthy();
+
+		await user.click(screen.getByText('Purchased'));
+		expect(screen.getByText('Effective Date')).toBeInTheDocument();
+		const purchasedExpiryBeforeEffective =
+			screen.getByText('Expiry Date').compareDocumentPosition(screen.getByText('Effective Date')) & Node.DOCUMENT_POSITION_FOLLOWING;
+		expect(purchasedExpiryBeforeEffective).toBeTruthy();
+	});
+
+	it('omits effective_date when empty and does not fold the date into the idempotency key', async () => {
+		mockTopupWallet.mockResolvedValue({});
+
+		const user = userEvent.setup();
+		renderTopupCard();
+		await user.type(screen.getByPlaceholderText('credits'), '100');
+		await user.click(screen.getByRole('button', { name: 'Add Credits' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(1));
+		const freePayload = mockTopupWallet.mock.calls[0][0];
+		expect(freePayload).not.toHaveProperty('effective_date');
+		expect(freePayload.transaction_reason).toBe('FREE_CREDIT_GRANT');
+		expect(freePayload.idempotency_key).toBeUndefined();
+
+		await user.click(screen.getByText('Purchased'));
+		await user.type(screen.getByPlaceholderText('credits'), '50');
+		await user.type(screen.getByPlaceholderText('Enter reference ID'), 'REF-KEEP');
+		await user.click(screen.getByRole('button', { name: 'Skip invoice' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(2));
+		const purchasedPayload = mockTopupWallet.mock.calls[1][0];
+		expect(purchasedPayload).not.toHaveProperty('effective_date');
+		expect(purchasedPayload.transaction_reason).toBe('PURCHASED_CREDIT_DIRECT');
+		expect(purchasedPayload.idempotency_key).toBe('REF-KEEP');
+	});
+
+	it('sends the picked day as effective_date, an ISO-8601 UTC timestamp, on the existing top-up body', async () => {
+		mockTopupWallet.mockResolvedValue({});
+
+		const user = userEvent.setup();
+		renderTopupCard();
+		await user.type(screen.getByPlaceholderText('credits'), '100');
+		await user.click(effectiveDateButton());
+		await user.click(screen.getByRole('button', { name: 'Add Credits' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(1));
+		const freePayload = mockTopupWallet.mock.calls[0][0];
+		expect(freePayload.effective_date).toBe('2026-10-15T00:00:00.000Z');
+		expect(freePayload.transaction_reason).toBe('FREE_CREDIT_GRANT');
+		expect(freePayload.idempotency_key).toBeUndefined();
+
+		await user.click(screen.getByText('Purchased'));
+		await user.type(screen.getByPlaceholderText('credits'), '50');
+		await user.type(screen.getByPlaceholderText('Enter reference ID'), 'REF-KEEP');
+		await user.click(effectiveDateButton());
+		await user.click(screen.getByRole('button', { name: 'Skip invoice' }));
+
+		await waitFor(() => expect(mockTopupWallet).toHaveBeenCalledTimes(2));
+		const purchasedPayload = mockTopupWallet.mock.calls[1][0];
+		expect(purchasedPayload.effective_date).toBe('2026-10-15T00:00:00.000Z');
+		expect(purchasedPayload.transaction_reason).toBe('PURCHASED_CREDIT_DIRECT');
+		expect(purchasedPayload.idempotency_key).toBe('REF-KEEP');
 	});
 });
