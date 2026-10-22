@@ -403,7 +403,7 @@ export interface CreateSubscriptionRequest {
 	gateway_payment_method_id?: string;
 	collection_method?: COLLECTION_METHOD;
 
-	// PaymentTerms (e.g. 15 NET, 30 NET) used to compute invoice due date from period end
+	// PaymentTerms (e.g. 15 NET, END_OF_MONTH) used to compute invoice due date from the invoice issue date
 	payment_terms?: PAYMENT_TERMS;
 
 	// Proration behavior
@@ -545,6 +545,39 @@ export interface CancelSubscriptionResponse {
 	total_credit_amount: number;
 	message: string;
 	processed_at: string;
+}
+
+/** Pauses an active subscription now; proration_behavior prices the closing invoice (defaults to none). */
+export interface PauseSubscriptionRequest {
+	proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
+	reason?: string;
+	metadata?: Record<string, string>;
+}
+
+/** Resumes a paused subscription now; proration_behavior, when sent, is saved on the subscription. */
+export interface ResumeSubscriptionRequest {
+	proration_behavior?: SUBSCRIPTION_PRORATION_BEHAVIOR;
+	metadata?: Record<string, string>;
+}
+
+export interface SubscriptionPause {
+	id: string;
+	subscription_id: string;
+	pause_status: string;
+	pause_mode: string;
+	resume_mode?: string;
+	pause_start: string;
+	resumed_at?: string;
+	original_period_start: string;
+	original_period_end: string;
+	reason?: string;
+	metadata?: Record<string, string>;
+}
+
+/** Response of both the pause and the resume endpoints. */
+export interface SubscriptionPauseActionResponse {
+	subscription: SubscriptionResponse;
+	pause: SubscriptionPause;
 }
 
 export interface ProrationDetail {

@@ -85,6 +85,15 @@ export interface GetAddonsResponse extends Pagination {
 export interface GetAddonByFilterPayload extends Pagination {
 	filters: TypedBackendFilter[];
 	sort: TypedBackendSort[];
+	expand?: string;
+}
+
+// Returned by POST /addons/:id/sync/subscriptions. The endpoint is async, so the
+// body carries the started workflow handle, not the sync result.
+export interface SynchronizeAddonPricesWithSubscriptionResponse {
+	message: string;
+	workflow_id?: string;
+	run_id?: string;
 }
 
 export interface AddonFilter extends Omit<QueryFilter, 'sort'>, TimeRangeFilter {

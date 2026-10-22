@@ -381,6 +381,7 @@
 		"unknown": "Unknown",
 		"creditGrants": "Credit Grants",
 		"taxRateOverrides": "Tax Rate Overrides",
+		"taxExternalEngineNote": "Tax for this environment is calculated by {{provider}}, so overrides are not applied. Configure tax in {{provider}} instead.",
 		"taxes": "Taxes",
 		"yes": "Yes",
 		"no": "No",

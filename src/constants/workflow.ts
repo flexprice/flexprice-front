@@ -23,9 +23,32 @@ export function getPlanPriceSyncWorkflowFilters(planId: string): TypedBackendFil
 	];
 }
 
+/** Workflow type for addon usage-price sync (POST /addons/:id/sync/subscriptions). */
+export const ADDON_PRICE_SYNC_WORKFLOW_TYPE = 'AddonPriceSyncWorkflow';
+
+/** Filter for workflows/search: workflow_type eq AddonPriceSyncWorkflow. */
+export const ADDON_PRICE_SYNC_WORKFLOW_FILTER: TypedBackendFilter = {
+	field: 'workflow_type',
+	operator: FilterOperator.EQUAL,
+	data_type: DataType.STRING,
+	value: { string: ADDON_PRICE_SYNC_WORKFLOW_TYPE },
+};
+
+/**
+ * Filters for addon price sync workflow search: workflow_type eq AddonPriceSyncWorkflow and entity_id eq addonId.
+ * Use with POST /workflows/search. Response should be sorted by start_time desc so first item is latest.
+ */
+export function getAddonPriceSyncWorkflowFilters(addonId: string): TypedBackendFilter[] {
+	return [
+		ADDON_PRICE_SYNC_WORKFLOW_FILTER,
+		{ field: 'entity_id', operator: FilterOperator.EQUAL, data_type: DataType.STRING, value: { string: addonId } },
+	];
+}
+
 /** API workflow_type → display name for UI. Usage: display = WORKFLOW_TYPE_DISPLAY_NAMES[workflow_type] ?? workflow_type */
 export const WORKFLOW_TYPE_DISPLAY_NAMES: Record<string, string> = {
 	PriceSyncV2Workflow: 'Price sync',
+	AddonPriceSyncWorkflow: 'Addon price sync',
 	QuickBooksPriceSyncWorkflow: 'QuickBooks price sync',
 	TaskProcessingWorkflow: 'Task processing',
 	SubscriptionChangeWorkflow: 'Subscription change',

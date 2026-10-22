@@ -26,7 +26,7 @@ import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 import { SubscriptionResponse } from '@/types/dto/Subscription';
 import { generateExpandQueryParams } from '@/utils/common/api_helper';
 import formatDate from '@/utils/common/format_date';
-import { BILLING_PERIOD } from '@/constants/constants';
+import { BILLING_PERIOD, paymentTermsOptions } from '@/constants/constants';
 import { ExternalLink } from 'lucide-react';
 import { formatSubscriptionTypeDisplayLabel } from '@/utils/subscription/formatSubscriptionTypeDisplay';
 
@@ -378,7 +378,12 @@ const CustomerSubscriptionDetailsPage: FC = () => {
 
 				<div className='w-full flex justify-between items-center'>
 					<p className='text-content-zinc-muted text-sm'>{t('subscriptionDetail.paymentTerms')}</p>
-					<p className='text-content-zinc text-sm'>{subscriptionDetails?.payment_terms ?? t('usageTable.featureTypes.dash')}</p>
+					<p className='text-content-zinc text-sm'>
+						{subscriptionDetails?.payment_terms
+							? (paymentTermsOptions.find((option) => option.value === subscriptionDetails.payment_terms)?.label ??
+								subscriptionDetails.payment_terms)
+							: t('usageTable.featureTypes.dash')}
+					</p>
 				</div>
 				<Spacer className='!my-4' />
 
