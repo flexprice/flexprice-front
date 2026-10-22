@@ -14,6 +14,7 @@ interface SubscriptionsWidgetProps {
 
 const SUBSCRIPTION_CHIP_VARIANT: Record<SUBSCRIPTION_STATUS, 'success' | 'warning' | 'info' | 'default' | 'failed'> = {
 	[SUBSCRIPTION_STATUS.ACTIVE]: 'success',
+	[SUBSCRIPTION_STATUS.PAUSED]: 'warning',
 	[SUBSCRIPTION_STATUS.TRIALING]: 'info',
 	[SUBSCRIPTION_STATUS.CANCELLED]: 'failed',
 	[SUBSCRIPTION_STATUS.INCOMPLETE]: 'warning',

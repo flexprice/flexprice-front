@@ -8,6 +8,7 @@ import {
 	GetAddonsResponse,
 	GetAddonByFilterPayload,
 	AddonResponse,
+	SynchronizeAddonPricesWithSubscriptionResponse,
 } from '@/types/dto';
 import { ListEntitlementsResponse } from '@/types/dto/Entitlement';
 
@@ -48,6 +49,10 @@ class AddonApi {
 
 	public static async GetEntitlements(addonId: string) {
 		return await AxiosClient.get<ListEntitlementsResponse>(`${this.baseUrl}/${addonId}/entitlements`);
+	}
+
+	public static async synchronizeAddonPricesWithSubscription(id: string) {
+		return await AxiosClient.post<SynchronizeAddonPricesWithSubscriptionResponse>(`${this.baseUrl}/${id}/sync/subscriptions`);
 	}
 }
 

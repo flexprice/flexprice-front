@@ -41,6 +41,14 @@ const formatTaxValue = (taxRate: TaxRateResponse | undefined, currency: string =
 // Flexprice rate to look up.
 const isExternal = (row: TaxApplied) => Boolean(row.external_tax_details);
 
+// Which engine produced the row, for display. A native row names Flexprice; an external one
+// names its provider, falling back to a neutral label if a future provider arrives unlabelled.
+const getSourceLabel = (row: TaxApplied) => {
+	if (!isExternal(row)) return 'Flexprice';
+	if (!row.provider) return 'External';
+	return row.provider.charAt(0).toUpperCase() + row.provider.slice(1);
+};
+
 const AppliedTaxesTable: FC<Props> = ({ data: rows }) => {
 	const { t } = useTranslation('common');
 	// A reversal records tax being un-filed when the invoice was voided, not a tax it charges.
@@ -81,6 +89,17 @@ const AppliedTaxesTable: FC<Props> = ({ data: rows }) => {
 				}
 				const taxRate = taxRatesMap.get(row.tax_rate_id!);
 				return <RedirectCell redirectUrl={`${RouteNames.taxes}/${row.tax_rate_id}`}>{taxRate?.name || row.tax_rate_id}</RedirectCell>;
+			},
+		},
+		{
+			title: 'Source',
+			render: (row) => {
+				const label = getSourceLabel(row);
+				// The provider transaction is the filing record on the provider's side. It is
+				// stamped at commit, so an external row shows none until its invoice is
+				// finalized — which is itself worth being able to see.
+				if (!row.tax_transaction_id) return label;
+				return <TooltipCell tooltipContent={row.tax_transaction_id} tooltipText={label} />;
 			},
 		},
 		{

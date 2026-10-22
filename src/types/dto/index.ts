@@ -292,6 +292,7 @@ export type {
 	GetAddonByFilterPayload,
 	AddAddonToSubscriptionRequest,
 	AddonResponse,
+	SynchronizeAddonPricesWithSubscriptionResponse,
 } from './Addon';
 
 export type {

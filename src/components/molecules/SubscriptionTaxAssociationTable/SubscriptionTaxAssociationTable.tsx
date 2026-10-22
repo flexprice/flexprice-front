@@ -5,6 +5,7 @@ import { Chip, ActionButton, AddButton, FormHeader } from '@/components/atoms';
 import TaxAssociationDialog from '../TaxAssociationDialog/TaxAssociationDialog';
 import { TAX_BEHAVIOR, TAXRATE_ENTITY_TYPE } from '@/models/Tax';
 import { useTranslation } from 'react-i18next';
+import { useExternalTaxEngine } from '@/hooks/useExternalTaxEngine';
 
 interface Props {
 	data: TaxRateOverride[];
@@ -15,6 +16,9 @@ interface Props {
 const SubscriptionTaxAssociationTable: FC<Props> = ({ data, onChange, disabled }) => {
 	const { t } = useTranslation('common');
 	const [isOpen, setIsOpen] = useState(false);
+	// Overrides are rejected by the backend while an external engine is in force, so
+	// the control is disabled with the reason rather than failing on submit.
+	const { isExternal: isExternalTaxEngine, provider: taxProvider } = useExternalTaxEngine();
 	const [selectedTaxOverride, setSelectedTaxOverride] = useState<TaxRateOverride | null>(null);
 
 	const handleSave = (taxAssociationRequest: CreateTaxAssociationRequest) => {
@@ -124,9 +128,12 @@ const SubscriptionTaxAssociationTable: FC<Props> = ({ data, onChange, disabled }
 							setSelectedTaxOverride(null);
 							setIsOpen(true);
 						}}
-						disabled={disabled}
+						disabled={disabled || isExternalTaxEngine}
 					/>
 				</div>
+				{isExternalTaxEngine && (
+					<p className='text-xs text-content-muted'>{t('labels.taxExternalEngineNote', { provider: taxProvider })}</p>
+				)}
 				<div className='rounded-[6px] border border-line-strong'>
 					<FlexpriceTable data={data} columns={columns} showEmptyRow />
 				</div>

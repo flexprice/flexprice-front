@@ -225,6 +225,34 @@
 				"description3": "تُلغى منح الائتمان المستقبلية، وتُنشأ فاتورة نهائية للفترة الجزئية"
 			}
 		},
+		"taxConfiguration": {
+			"title": "إعداد الضريبة",
+			"description": "استخدم محرك ضرائب خارجي لحساب الضريبة على الفواتير وإشعارات الدائن بدلاً من أسعار الضرائب في Flexprice.",
+			"fields": {
+				"enabled": "استخدام محرك ضرائب خارجي",
+				"provider": "محرك الضريبة"
+			},
+			"hints": {
+				"enabled": "عند الإيقاف، يحسب Flexprice الضريبة من أسعار الضرائب التي أعددتها.",
+				"provider": "المحرك الذي يحسب الضريبة. Stripe هو المحرك الخارجي الوحيد المدعوم حالياً."
+			},
+			"providers": {
+				"flexprice": "Flexprice (الأصلي)",
+				"stripe": "Stripe Tax"
+			},
+			"warnings": {
+				"overridesNativeRates": "أثناء تفعيل محرك خارجي، لم تعد أسعار الضرائب في Flexprice مطبّقة، ويُرفض ربط أسعار ضرائب جديدة أو استخدام التجاوزات. تحتفظ إشعارات الدائن بمعاملة الضريبة الخاصة بالفاتورة التي صدرت عنها.",
+				"missingConnection": "لم يتم العثور على اتصال Stripe في هذه البيئة. بدونه يفشل حساب الضريبة ولا يعود إلى أسعار الضرائب في Flexprice. أضف الاتصال قبل التفعيل.",
+				"nativeSelected": "Flexprice هو المحرك الأصلي، لذا اختياره هنا لا يغيّر شيئاً. أوقف هذا الإعداد بدلاً من ذلك، أو اختر محركاً خارجياً."
+			},
+			"actions": {
+				"docs": "المستندات",
+				"docsTitle": "افتح مستندات إعداد الضريبة",
+				"superAdminOnly": "يمكن لمسؤول عام فقط تغيير هذا الإعداد."
+			},
+			"saveSuccess": "تم حفظ إعداد الضريبة.",
+			"saveError": "لم يتم حفظ إعداد الضريبة."
+		},
 		"customCurrencyConfiguration": {
 			"title": "إعدادات العملة المخصصة",
 			"saveSuccess": "تم حفظ إعدادات العملة المخصصة",
@@ -1784,11 +1812,13 @@
 			"secretKeyHint": "يمكنك العثور على مفتاح Stripe السري في إعدادات API",
 			"pullFromStripe": "سحب من Stripe",
 			"pushToStripe": "إرسال إلى Stripe",
+			"customerSyncHint": "إرسال إلى Stripe. مطلوب لـ Stripe Tax — لا يمكن حساب الضريبة لعميل غير موجود في Stripe.",
 			"webhookSecretDescription": "هذا المفتاح مطلوب للتحقق من أحداث Webhook القادمة من Stripe",
 			"webhookSecretPlaceholder": "whsec_...",
 			"webhookIntro": "أضف عنوان URL التالي إلى إعدادات Webhook في Stripe:",
 			"webhookEventsIntro": "قم بتفعيل الأحداث التالية في إعدادات Webhook داخل Stripe:",
 			"labels": {
+				"customers": "العملاء",
 				"plans": "الخطط",
 				"invoices": "الفواتير",
 				"prices": "الأسعار",
