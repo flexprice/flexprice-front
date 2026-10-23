@@ -375,6 +375,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 							{ value: SCHEDULED_ENTITY_TYPE.INVOICE, label: t('exportDrawer.entityTypes.invoice') },
 							{ value: SCHEDULED_ENTITY_TYPE.CREDIT_TOPUPS, label: t('exportDrawer.entityTypes.creditTopups') },
 							{ value: SCHEDULED_ENTITY_TYPE.WALLET_DEBITS, label: t('exportDrawer.entityTypes.walletDebits') },
+							{ value: SCHEDULED_ENTITY_TYPE.WALLET_LEDGER, label: t('exportDrawer.entityTypes.walletLedger') },
 							{ value: SCHEDULED_ENTITY_TYPE.CREDIT_USAGE, label: t('exportDrawer.entityTypes.creditUsage') },
 							{ value: SCHEDULED_ENTITY_TYPE.USAGE_ANALYTICS, label: t('exportDrawer.entityTypes.usageAnalytics') },
 						]}

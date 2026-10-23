@@ -686,6 +686,7 @@
 			"invoice": "Invoice",
 			"creditTopups": "Credit Topups",
 			"walletDebits": "Wallet Debits",
+			"walletLedger": "Wallet Ledger",
 			"creditUsage": "Credit Usage",
 			"usageAnalytics": "Usage Analytics"
 		},

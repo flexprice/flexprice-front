@@ -669,7 +669,11 @@
 		"startTimePlaceholder": "اختر وقت البداية",
 		"endTimeLabel": "وقت النهاية",
 		"endTimePlaceholder": "اختر وقت النهاية",
-		"runExport": "تشغيل التصدير"
+		"runExport": "تشغيل التصدير",
+		"customersLabel": "العملاء",
+		"customersPlaceholder": "كل العملاء",
+		"customersHint": "اتركه فارغاً لتصدير جميع العملاء. بحد أقصى {{max}}.",
+		"customersTooMany": "اختر {{max}} عميلاً كحد أقصى"
 	},
 	"taskRunsTable": {
 		"downloadStarted": "بدأ التنزيل",
