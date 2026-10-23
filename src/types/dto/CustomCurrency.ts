@@ -20,15 +20,27 @@ export interface CustomCurrencyConfig {
 // the pages that read it. An entry left without a symbol is dropped by the display map.
 const settingString = z.union([z.string(), z.number()]).transform(String).catch('');
 
+// Currency codes are case-insensitive everywhere they are used, but the stored setting is
+// free-form JSON, so a payload written by the API or an older client can carry "USD" where
+// this module expects "usd". Normalising the keys at the parse boundary lets everything
+// downstream - the draft, the display map and the validator - assume lowercase. Without it
+// `toCustomCurrencyDraft` lists the fiat codes lowercased and then misses the stored
+// uppercase key, blanking every factor and failing validation on a saved configuration.
+const toLowerCaseKeys = <T>(record: Record<string, T>): Record<string, T> =>
+	Object.entries(record).reduce<Record<string, T>>((normalised, [key, value]) => {
+		normalised[key.toLowerCase()] = value;
+		return normalised;
+	}, {});
+
 const customCurrencyDefinitionSchema = z.object({
 	name: settingString,
 	symbol: settingString,
-	fiat_conversion_factors: z.record(settingString).catch({}),
+	fiat_conversion_factors: z.record(settingString).catch({}).transform(toLowerCaseKeys),
 });
 
 const customCurrencyConfigSchema = z.object({
-	custom_currencies: z.record(customCurrencyDefinitionSchema).catch({}),
-	default_fiat_currency: settingString,
+	custom_currencies: z.record(customCurrencyDefinitionSchema).catch({}).transform(toLowerCaseKeys),
+	default_fiat_currency: settingString.transform((code) => code.toLowerCase()),
 });
 
 /** Reads an unknown settings payload into a config, tolerating a missing or partial value. */
