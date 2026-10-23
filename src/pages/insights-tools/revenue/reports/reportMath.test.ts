@@ -264,3 +264,17 @@ describe('isToDatePreset', () => {
 		expect(['last_7_days', 'last_month', 'last_90_days'].some((p) => isToDatePreset(p as never))).toBe(false);
 	});
 });
+
+describe('buildRequest filters', () => {
+	it('sends only filters the report allows', () => {
+		const c = {
+			...defaultControls(flow),
+			filters: [
+				{ field: 'customer_id', op: 'eq' as const, value: ['cust_1'] },
+				{ field: 'meter_id', op: 'eq' as const, value: ['m1'] },
+			],
+		};
+		expect(buildRequest(flow, c, NOW).filters).toEqual([{ field: 'customer_id', op: 'eq', value: ['cust_1'] }]);
+		expect(buildRequest(flow, defaultControls(flow), NOW).filters).toBeUndefined();
+	});
+});

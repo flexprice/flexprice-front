@@ -3,24 +3,32 @@ import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ReportCatalogEntry, ReportCategory } from '@/types/dto/Reports';
+import { CustomReport, ReportCatalogEntry, ReportCategory } from '@/types/dto/Reports';
 
 const ORDER: ReportCategory[] = ['billing', 'receivables', 'customers', 'credits', 'usage'];
+
+const itemClass = (selected: boolean) =>
+	cn('rounded-md px-2 py-1.5 text-start text-sm hover:bg-zinc-100', selected && 'bg-zinc-100 font-medium');
 
 interface Props {
 	entries: ReportCatalogEntry[];
 	selectedKey: string;
 	onSelect: (key: string) => void;
+	customReports: CustomReport[];
+	customError: boolean;
+	selectedCustomId: string;
+	onSelectCustom: (id: string) => void;
 }
 
-const ReportList = ({ entries, selectedKey, onSelect }: Props) => {
+const ReportList = ({ entries, selectedKey, onSelect, customReports, customError, selectedCustomId, onSelectCustom }: Props) => {
 	const { t } = useTranslation('settings');
 	const [q, setQ] = useState('');
+	const needle = q.trim().toLowerCase();
 	const groups = useMemo(() => {
-		const needle = q.trim().toLowerCase();
 		const visible = entries.filter((e) => !e.variant_of && (!needle || e.name.toLowerCase().includes(needle)));
 		return ORDER.map((c) => ({ category: c, items: visible.filter((e) => e.category === c) })).filter((g) => g.items.length > 0);
-	}, [entries, q]);
+	}, [entries, needle]);
+	const customs = customReports.filter((r) => !needle || r.name.toLowerCase().includes(needle));
 
 	return (
 		<Card className='flex flex-col gap-4 p-4'>
@@ -39,26 +47,47 @@ const ReportList = ({ entries, selectedKey, onSelect }: Props) => {
 					<div className='px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 						{t(`insightsTools.revenue.reports.categories.${g.category}`)}
 					</div>
-					{g.items.map((e) => (
-						<button
-							key={e.key}
-							type='button'
-							onClick={() => onSelect(e.key)}
-							aria-current={e.key === selectedKey ? 'true' : undefined}
-							className={cn(
-								'rounded-md px-2 py-1.5 text-start text-sm hover:bg-zinc-100',
-								e.key === selectedKey && 'bg-zinc-100 font-medium',
-							)}>
-							{e.name}
-						</button>
-					))}
+					{g.items.map((e) => {
+						const selected = !selectedCustomId && e.key === selectedKey;
+						return (
+							<button
+								key={e.key}
+								type='button'
+								onClick={() => onSelect(e.key)}
+								aria-current={selected ? 'true' : undefined}
+								className={itemClass(selected)}>
+								{e.name}
+							</button>
+						);
+					})}
 				</div>
 			))}
 			<div className='flex flex-col gap-1 border-t pt-3'>
-				<button type='button' disabled className='rounded-md px-2 py-1.5 text-start text-sm text-muted-foreground'>
-					{t('insightsTools.revenue.reports.newCustomReport')}
-				</button>
-				<span className='px-2 text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.comingSoon')}</span>
+				<div className='px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+					{t('insightsTools.revenue.reports.customReports')}
+				</div>
+				{customError ? (
+					<span className='px-2 text-xs text-red-600'>{t('insightsTools.revenue.reports.customLoadError')}</span>
+				) : customReports.length === 0 ? (
+					<span className='px-2 text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.customEmpty')}</span>
+				) : (
+					customs.map((r) => {
+						const selected = r.id === selectedCustomId;
+						return (
+							<button
+								key={r.id}
+								type='button'
+								onClick={() => onSelectCustom(r.id)}
+								aria-current={selected ? 'true' : undefined}
+								className={cn(itemClass(selected), 'flex flex-col')}>
+								<span>{r.name}</span>
+								<span className='text-xs font-normal text-muted-foreground'>
+									{entries.find((e) => e.key === r.definition.metrics[0])?.name}
+								</span>
+							</button>
+						);
+					})
+				)}
 			</div>
 		</Card>
 	);

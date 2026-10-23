@@ -1,4 +1,13 @@
-import { ReportCatalogEntry, ReportCatalogResponse, ReportColumn, ReportQueryRequest, ReportQueryResult } from '@/types/dto/Reports';
+import {
+	CustomReport,
+	CustomReportDefinition,
+	CustomReportListResponse,
+	ReportCatalogEntry,
+	ReportCatalogResponse,
+	ReportColumn,
+	ReportQueryRequest,
+	ReportQueryResult,
+} from '@/types/dto/Reports';
 
 const money = (
 	key: string,
@@ -27,6 +36,13 @@ const CATALOG: ReportCatalogEntry[] = [
 		['customer_id', 'Customer'],
 		['invoice_type', 'Invoice type'],
 	]),
+	{
+		...money('invoice_total_issued', 'Total billing (issued)', 'Sum of issued invoice totals in the period', 'billing', [
+			['customer_id', 'Customer'],
+		]),
+		variant_of: 'invoice_total',
+		variant_label: 'Issued',
+	},
 	money('net_billing', 'Net billing', 'Total billing minus finalized credit notes', 'billing', []),
 	{
 		key: 'total_receivables',
@@ -227,4 +243,28 @@ export const mockRun = (key: string, req: ReportQueryRequest): ReportQueryResult
 		],
 		meta,
 	};
+};
+
+let customStore: CustomReport[] = [];
+let seq = 0;
+
+export const resetMockCustom = () => {
+	customStore = [];
+	seq = 0;
+};
+
+export const mockListCustom = async (): Promise<CustomReportListResponse> => ({ items: [...customStore] });
+
+export const mockSaveCustom = async (id: string | undefined, name: string, definition: CustomReportDefinition): Promise<CustomReport> => {
+	const now = new Date().toISOString();
+	const prev = customStore.find((r) => r.id === id);
+	const next: CustomReport = prev
+		? { ...prev, name, definition, version: prev.version + 1, updated_at: now }
+		: { id: `view_mock_${++seq}`, name, definition, version: 1, created_at: now, updated_at: now };
+	customStore = [next, ...customStore.filter((r) => r.id !== next.id)];
+	return next;
+};
+
+export const mockDeleteCustom = async (id: string): Promise<void> => {
+	customStore = customStore.filter((r) => r.id !== id);
 };

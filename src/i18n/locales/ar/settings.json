@@ -1646,6 +1646,12 @@
 		},
 		"revenue": {
 			"reports": {
+				"filters": {
+					"title": "عوامل التصفية",
+					"all": "الكل",
+					"remove": "إزالة عامل التصفية {{label}}",
+					"clear": "مسح عوامل التصفية"
+				},
 				"title": "الإيرادات",
 				"subtitle": "التقارير المالية لبيانات الفوترة الخاصة بك",
 				"search": "البحث في التقارير",
@@ -1656,8 +1662,21 @@
 					"credits": "الأرصدة",
 					"usage": "الاستخدام"
 				},
-				"newCustomReport": "تقرير مخصص جديد",
-				"comingSoon": "قريبًا",
+				"customReports": "التقارير المخصصة",
+				"customEmpty": "احفظ أي تقرير لإعادة استخدامه هنا",
+				"customLoadError": "تعذر تحميل التقارير المخصصة",
+				"copyName": "{{name}} copy",
+				"saveAsCustom": "حفظ كتقرير مخصص",
+				"save": "حفظ",
+				"saveAsNew": "حفظ كجديد",
+				"rename": "إعادة التسمية",
+				"delete": "حذف",
+				"deleteConfirmTitle": "حذف التقرير المخصص؟",
+				"deleteConfirmBody": "ستتم إزالة {{name}} لجميع المستخدمين في هذه البيئة.",
+				"nameLabel": "الاسم",
+				"unsaved": "تغييرات غير محفوظة",
+				"needsEdit": "بعض الإعدادات المحفوظة لم تعد تنطبق على هذا التقرير. راجعها واحفظها.",
+				"cancel": "إلغاء",
 				"range": "النطاق الزمني",
 				"maxRangeHint": "حتى {{count}} أيام لهذا التقرير",
 				"summaryPeriod": "فترة الملخص",

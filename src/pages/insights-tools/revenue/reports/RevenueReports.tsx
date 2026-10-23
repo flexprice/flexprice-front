@@ -7,7 +7,9 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import KpiRibbon from './KpiRibbon';
 import ReportChart, { chartSupported } from './ReportChart';
+import CustomReportActions from './CustomReportActions';
 import ReportControlsBar from './ReportControlsBar';
+import ReportFilterBar from './ReportFilterBar';
 import ReportList from './ReportList';
 import ReportTable from './ReportTable';
 import DeltaChip from './DeltaChip';
@@ -23,7 +25,8 @@ import {
 	totalsFor,
 } from './reportMath';
 import { csvFilename, downloadCsv, reportRowsCsv } from './reportCsv';
-import { useReportCatalog, useReportRun } from './useReports';
+import { csvBaseName, effectiveControls, fromDefinition, sameDefinition, toDefinition } from './customReports';
+import { useCustomReports, useReportCatalog, useReportRun } from './useReports';
 
 const ErrorBox = ({ title, message }: { title: string; message?: string }) => (
 	<div role='alert' className='flex flex-col gap-1 rounded-md border border-red-200 bg-red-50 p-4 text-sm'>
@@ -39,6 +42,10 @@ const RevenueReports = () => {
 	const [pickedKey, setPickedKey] = useState('');
 	const [basisKey, setBasisKey] = useState('');
 	const [picked, setPicked] = useState<ReportControls | null>(null);
+	const customReports = useCustomReports();
+	const [customId, setCustomId] = useState('');
+	const [needsEdit, setNeedsEdit] = useState(false);
+	const custom = customReports.data?.items.find((r) => r.id === customId);
 	const [now, setNow] = useState(() => new Date());
 	// Roll relative ranges at UTC midnight.
 	useEffect(() => {
@@ -72,7 +79,29 @@ const RevenueReports = () => {
 		setPickedKey(key);
 		setBasisKey('');
 		setPicked(controlsForEntry(next, controls ?? defaultControls(next)));
+		setCustomId('');
+		setNeedsEdit(false);
 	};
+
+	const selectCustom = (id: string) => {
+		const r = customReports.data?.items.find((x) => x.id === id);
+		if (!r) return;
+		setCustomId(id);
+		const e = entries.find((x) => x.key === r.definition.metrics[0]);
+		if (!e) {
+			setNeedsEdit(true);
+			return;
+		}
+		const { controls: saved, valid } = fromDefinition(e, r.definition);
+		setPickedKey(e.variant_of || e.key);
+		setBasisKey(e.variant_of ? e.key : '');
+		setPicked(saved);
+		setNeedsEdit(!valid);
+	};
+
+	const definition = entry && controls ? toDefinition(entry, effectiveControls(controls, currencies), now) : undefined;
+	const baseMissing = !!custom && !entries.some((x) => x.key === custom.definition.metrics[0]);
+	const dirty = custom && definition && !baseMissing ? !sameDefinition(definition, custom.definition) : false;
 
 	const total = entry && run.data ? totalsFor(run.data, entry.key, currency) : undefined;
 	const showChart = !!entry && !!run.data && controls?.view === 'chart' && chartSupported(entry, run.data);
@@ -89,7 +118,15 @@ const RevenueReports = () => {
 						{catalog.isLoading ? (
 							<Skeleton className='h-96 w-full' />
 						) : (
-							<ReportList entries={entries} selectedKey={selectedKey} onSelect={select} />
+							<ReportList
+								entries={entries}
+								selectedKey={selectedKey}
+								onSelect={select}
+								customReports={customReports.data?.items ?? []}
+								customError={customReports.isError}
+								selectedCustomId={custom ? customId : ''}
+								onSelectCustom={selectCustom}
+							/>
 						)}
 					</div>
 					<Card className='flex min-w-0 flex-1 flex-col gap-4 p-6'>
@@ -101,21 +138,47 @@ const RevenueReports = () => {
 							<>
 								<div className='flex flex-col gap-1'>
 									<div className='flex items-start justify-between gap-2'>
-										<h2 className='text-lg font-semibold'>{entry.name}</h2>
-										<Button
-											type='button'
-											variant='outline'
-											size='sm'
-											disabled={!run.data?.rows.length || !request || run.isFetching}
-											onClick={() =>
-												run.data &&
-												request &&
-												downloadCsv(csvFilename(entry.key, request.range), reportRowsCsv(entry, run.data, request.grain, now))
-											}>
-											<Download className='h-4 w-4' />
-											{t('insightsTools.revenue.reports.downloadCsv')}
-										</Button>
+										<div className='flex flex-col'>
+											<h2 className='text-lg font-semibold'>{custom?.name ?? entry.name}</h2>
+											{custom && <span className='text-sm text-muted-foreground'>{entry.name}</span>}
+										</div>
+										<div className='flex flex-wrap items-center justify-end gap-2'>
+											<CustomReportActions
+												custom={custom}
+												definition={definition}
+												dirty={dirty}
+												onSaved={(id) => {
+													setCustomId(id);
+													setNeedsEdit(false);
+												}}
+												onDeleted={() => {
+													setCustomId('');
+													setNeedsEdit(false);
+												}}
+											/>
+											<Button
+												type='button'
+												variant='outline'
+												size='sm'
+												disabled={!run.data?.rows.length || !request || run.isFetching}
+												onClick={() =>
+													run.data &&
+													request &&
+													downloadCsv(
+														csvFilename(custom ? csvBaseName(custom.name, entry.key) : entry.key, request.range),
+														reportRowsCsv(entry, run.data, request.grain, now),
+													)
+												}>
+												<Download className='h-4 w-4' />
+												{t('insightsTools.revenue.reports.downloadCsv')}
+											</Button>
+										</div>
 									</div>
+									{custom && needsEdit && (
+										<div role='status' className='rounded-md border border-amber-200 bg-amber-50 p-3 text-sm'>
+											{t('insightsTools.revenue.reports.needsEdit')}
+										</div>
+									)}
 									<p className='text-sm text-muted-foreground'>{entry.description}</p>
 									{entry.kind === 'snapshot' && (
 										<span className='text-xs text-muted-foreground'>{t('insightsTools.revenue.reports.pointInTime')}</span>
@@ -143,6 +206,7 @@ const RevenueReports = () => {
 									onChange={setControls}
 									basis={basisOptions.length ? { options: basisOptions, value: entry.key, onPick: setBasisKey } : undefined}
 								/>
+								<ReportFilterBar entry={entry} filters={controls.filters} onChange={(filters) => setControls({ ...controls, filters })} />
 								{run.isLoading && !run.data && <Skeleton className='h-72 w-full' />}
 								{run.isError && <ErrorBox title={t('insightsTools.revenue.reports.errorTitle')} message={(run.error as Error)?.message} />}
 								{run.data && run.data.rows.length === 0 && (

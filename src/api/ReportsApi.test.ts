@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@/core/axios/verbs', () => ({
-	AxiosClient: { get: vi.fn(), post: vi.fn() },
+	AxiosClient: { get: vi.fn(), post: vi.fn(), put: vi.fn(), delete: vi.fn() },
 }));
 
 import { AxiosClient } from '@/core/axios/verbs';
 import ReportsApi from './ReportsApi';
+import { resetMockCustom } from './fixtures/reports';
 
 describe('ReportsApi', () => {
 	beforeEach(() => vi.clearAllMocks());
@@ -29,7 +30,7 @@ describe('ReportsApi', () => {
 	it('serves fixtures when mock is on', async () => {
 		vi.stubEnv('VITE_REPORTS_MOCK', 'true');
 		const catalog = await ReportsApi.listReports();
-		expect(catalog.items.length).toBe(11);
+		expect(catalog.items.length).toBe(12);
 		expect(AxiosClient.get).not.toHaveBeenCalled();
 
 		const res = await ReportsApi.runReport('invoice_total', {
@@ -64,5 +65,32 @@ describe('ReportsApi', () => {
 			compare: 'previous_period',
 		});
 		expect(res.columns.map((c) => c.name)).toEqual(['currency', 'total_receivables']);
+	});
+
+	it('calls the view endpoints for custom reports', async () => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'false');
+		const def = { family: 'report' as const, metrics: ['invoice_total'], shape: 'scalar' as const, time: { range: 'last_30_days' } };
+		await ReportsApi.listCustomReports();
+		expect(AxiosClient.get).toHaveBeenCalledWith('/analytics/views?family=report');
+		await ReportsApi.createCustomReport('N', def);
+		expect(AxiosClient.post).toHaveBeenCalledWith('/analytics/views', { name: 'N', definition: def });
+		await ReportsApi.updateCustomReport('view 1', 'N', def);
+		expect(AxiosClient.put).toHaveBeenCalledWith('/analytics/views/view%201', { name: 'N', definition: def });
+		await ReportsApi.deleteCustomReport('view_1');
+		expect(AxiosClient.delete).toHaveBeenCalledWith('/analytics/views/view_1');
+	});
+
+	it('mock custom report ids stay unique after delete', async () => {
+		vi.stubEnv('VITE_REPORTS_MOCK', 'true');
+		resetMockCustom();
+		const def = { family: 'report' as const, metrics: ['invoice_total'], shape: 'scalar' as const, time: { range: 'last_30_days' } };
+		const a = await ReportsApi.createCustomReport('A', def);
+		const b = await ReportsApi.createCustomReport('B', def);
+		await ReportsApi.deleteCustomReport(a.id);
+		const c = await ReportsApi.createCustomReport('C', def);
+		expect(c.id).not.toBe(b.id);
+		expect((await ReportsApi.listCustomReports()).items.map((r) => r.name)).toEqual(['C', 'B']);
+		resetMockCustom();
+		expect((await ReportsApi.listCustomReports()).items).toEqual([]);
 	});
 });

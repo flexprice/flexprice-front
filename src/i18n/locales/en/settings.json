@@ -1691,6 +1691,12 @@
 		},
 		"revenue": {
 			"reports": {
+				"filters": {
+					"title": "Filters",
+					"all": "All",
+					"remove": "Remove {{label}} filter",
+					"clear": "Clear filters"
+				},
 				"title": "Revenue",
 				"subtitle": "Financial reports for your billing data",
 				"search": "Search reports",
@@ -1701,8 +1707,21 @@
 					"credits": "Credits",
 					"usage": "Usage"
 				},
-				"newCustomReport": "New custom report",
-				"comingSoon": "Coming soon",
+				"customReports": "Custom reports",
+				"customEmpty": "Save any report to reuse it here",
+				"customLoadError": "Couldn't load custom reports",
+				"copyName": "{{name}} copy",
+				"saveAsCustom": "Save as custom report",
+				"save": "Save",
+				"saveAsNew": "Save as new",
+				"rename": "Rename",
+				"delete": "Delete",
+				"deleteConfirmTitle": "Delete custom report?",
+				"deleteConfirmBody": "{{name}} will be removed for everyone in this environment.",
+				"nameLabel": "Name",
+				"unsaved": "Unsaved changes",
+				"needsEdit": "Some saved settings no longer apply to this report. Review and save.",
+				"cancel": "Cancel",
 				"range": "Date range",
 				"maxRangeHint": "Up to {{count}} days for this report",
 				"summaryPeriod": "Summary period",
