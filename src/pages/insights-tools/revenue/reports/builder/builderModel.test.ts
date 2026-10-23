@@ -130,7 +130,7 @@ describe('resolveDefinition', () => {
 	const now = new Date('2026-10-14T12:00:00Z');
 	it('turns a preset into an absolute range', () => {
 		const r = resolveDefinition(base({ time: { field: 'created_at', range: 'this_quarter', grain: 'month' } }), now);
-		expect(r.time.range).toBe('2026-10-01..2026-10-15');
+		expect(r.time.range).toBe('2026-10-01..2026-10-14');
 	});
 	it('keeps absolute ranges and does not mutate', () => {
 		const d = base({ time: { field: 'created_at', range: '2026-01-01..2026-02-01' } });

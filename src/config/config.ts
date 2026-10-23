@@ -112,6 +112,9 @@ export interface PlatformConfig {
 	};
 	reports: {
 		enabled: boolean;
+		custom: {
+			enabled: boolean;
+		};
 	};
 }
 
@@ -137,7 +140,7 @@ interface PlatformConfigJson {
 	production?: { enabled?: boolean };
 	signup?: { enabled?: boolean };
 	revenue?: { enabled?: boolean };
-	reports?: { enabled?: boolean };
+	reports?: { enabled?: boolean; custom?: { enabled?: boolean } };
 }
 
 function parsePlatformFeatureEnabled(parsed: PlatformConfigJson | undefined, key: PlatformFeatureKey): boolean {
@@ -153,7 +156,7 @@ function parseContactUsEnabled(parsed: PlatformConfigJson | undefined): boolean 
 	return false;
 }
 
-/** Parse `VITE_PLATFORM_CONFIG` JSON. Keys: api_reference, sidebar_documentation, guides, onboarding, contact_us, production, signup, revenue, reports. Omitted keys default to `enabled: true` (contact_us, production and reports default to false). */
+/** Parse `VITE_PLATFORM_CONFIG` JSON with defaults. */
 export function parsePlatformConfig(rawPlatformConfig?: string): PlatformConfig {
 	let parsed: PlatformConfigJson | undefined;
 	const raw = rawPlatformConfig?.trim();
@@ -175,7 +178,10 @@ export function parsePlatformConfig(rawPlatformConfig?: string): PlatformConfig 
 		production: { enabled: parsePlatformFeatureEnabled(parsed, 'production') },
 		signup: { enabled: parsePlatformFeatureEnabled(parsed, 'signup') },
 		revenue: { enabled: parsePlatformFeatureEnabled(parsed, 'revenue') },
-		reports: { enabled: parsePlatformFeatureEnabled(parsed, 'reports') },
+		reports: {
+			enabled: parsePlatformFeatureEnabled(parsed, 'reports'),
+			custom: { enabled: parsed?.reports?.custom?.enabled === true },
+		},
 	};
 }
 

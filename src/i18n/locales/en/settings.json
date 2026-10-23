@@ -1697,7 +1697,7 @@
 					"remove": "Remove {{label}} filter",
 					"clear": "Clear filters"
 				},
-				"title": "Revenue",
+				"title": "Reporting",
 				"subtitle": "Financial reports for your billing data",
 				"search": "Search reports",
 				"categories": {
@@ -1838,7 +1838,7 @@
 					}
 				}
 			},
-			"pageHeading": "Revenue",
+			"pageHeading": "Reporting",
 			"metricNetRevenue": "Net Revenue",
 			"metricContractRevenue": "Contract Revenue",
 			"metricUsageRevenue": "Usage Revenue",
@@ -1857,7 +1857,180 @@
 			"filterThisYear": "This year",
 			"filterLastMonth": "Last month",
 			"filterLastQuarter": "Last quarter",
-			"filterLastYear": "Last year"
+			"filterLastYear": "Last year",
+			"dashboard": {
+				"title": "Reporting",
+				"viewReport": "View report",
+				"stillLoading": "{{seconds}} seconds, still loading",
+				"compares": {
+					"previous_period": "Previous period",
+					"previous_year": "Previous year",
+					"none": "No comparison"
+				},
+				"tabs": {
+					"overview": "Overview",
+					"revenue": "Revenue",
+					"customers": "Customers",
+					"receivables": "Receivables",
+					"payments": "Payments",
+					"credits": "Credits & usage"
+				},
+				"kpi": {
+					"revenue": "Revenue",
+					"arpu": "ARPU",
+					"outstanding": "Outstanding",
+					"overdue": "Overdue",
+					"daysToPay": "Avg. days to pay",
+					"vsPrevPeriod": "vs prev. period",
+					"vsPrevYear": "vs prev. year",
+					"previous": "Previous: {{value}}",
+					"billedCustomers_one": "{{value}} billed customer",
+					"billedCustomers_other": "{{value}} billed customers",
+					"pointInTime": "Current · ignores date range",
+					"asOfToday": "As of today",
+					"ofOutstanding": "{{value}}% of outstanding",
+					"median": "Median {{value}}d"
+				},
+				"revenue": {
+					"overTime": "Revenue over time",
+					"overTimeDef": "Invoiced revenue per period, before credit notes",
+					"total": "Total revenue",
+					"usage": "Usage revenue",
+					"contract": "Contract revenue",
+					"revenue": "Revenue",
+					"previous": "Previous period",
+					"period": "Period",
+					"other": "Other",
+					"groupBy": "Group by",
+					"groupBys": {
+						"revenue_type": "Revenue type",
+						"invoice_type": "Invoice type",
+						"customer": "Customer",
+						"none": "No grouping"
+					},
+					"breakdown": "Revenue breakdown",
+					"breakdownDef": "Revenue split by the type of invoice that billed it",
+					"name": "Name",
+					"share": "Share",
+					"change": "Change",
+					"invoiceTypes": {
+						"SUBSCRIPTION": "Subscription",
+						"ONE_OFF": "One-off",
+						"CREDIT": "Credit purchase"
+					}
+				},
+				"customers": {
+					"top": "Top 10 customers",
+					"topDef": "Revenue per customer in the period, split into usage and contract",
+					"billed": "Billed customers",
+					"concentration": "Revenue concentration",
+					"concentrationDef": "Share of revenue from the largest customers",
+					"topN": "Top {{n}}",
+					"bands": "Customers by revenue",
+					"bandsDef": "How many customers fall in each revenue band this period",
+					"bandUnder": "Under {{value}}",
+					"bandBetween": "{{from}}–{{to}}",
+					"bandOver": "{{value}}+",
+					"all": "All customers",
+					"allDef": "Revenue per customer in the period, highest first",
+					"customer": "Customer",
+					"usageShare": "Usage share",
+					"shareOfTotal": "Share of total",
+					"pageRange_one": "{{from}}–{{to}} of {{count}} customer",
+					"pageRange_other": "{{from}}–{{to}} of {{count}} customers",
+					"previousPage": "Previous page",
+					"nextPage": "Next page",
+					"capped": "Based on the top {{count}} customers by revenue"
+				},
+				"receivables": {
+					"agingDef": "Unpaid balance on finalized invoices, grouped by days past the due date",
+					"overdueNote_one": "{{pct}} of outstanding, {{count}} customer",
+					"overdueNote_other": "{{pct}} of outstanding, {{count}} customers",
+					"overdueNoteUnknown": "{{pct}} of outstanding, — customers",
+					"pointInTimeNote": "Point-in-time as of today; the date range and comparison don't apply.",
+					"bucket": "Aging bucket",
+					"amount": "Amount",
+					"share": "Share",
+					"byCustomer": "Overdue by customer",
+					"byCustomerDef": "Top customers by overdue balance, split by how late it is",
+					"customers": "Overdue customers",
+					"customersDef": "Customers with overdue invoices, by overdue amount",
+					"customer": "Customer",
+					"invoices": "Overdue invoices",
+					"overdueAmount": "Overdue amount",
+					"oldestDue": "Oldest due",
+					"oldestDueValue": "{{date}} · {{days}}d",
+					"agingColumn": "Aging"
+				},
+				"payments": {
+					"daysToPayDef": "Days from issue to full payment, for invoices paid in the period",
+					"noPaidInvoices": "No paid invoices in this date range. Try selecting a longer period.",
+					"paid": "Paid invoices",
+					"averageLine": "Average days to pay",
+					"medianLine": "Median days to pay",
+					"periodAverage": "Period average ({{value}})",
+					"speed": "Payment speed",
+					"speedDef": "Paid invoices by how long they took to be paid",
+					"speeds": {
+						"0-7": "0–7 days",
+						"8-30": "8–30 days",
+						"30+": "30+ days"
+					},
+					"slowest": "Slowest payers",
+					"slowestDef": "Customers with the highest average days to pay",
+					"byCustomer": "Payments by customer",
+					"byCustomerDef": "Paid invoices, amount collected and average days to pay per customer",
+					"customer": "Customer",
+					"collected": "Amount collected",
+					"averageDays": "Average days"
+				},
+				"overview": {
+					"aging": "Receivables aging",
+					"agingDef": "Unpaid balance by days past due, as of today",
+					"agingBuckets": {
+						"Current": "Not yet due",
+						"1-30": "1–30 days",
+						"31-60": "31–60 days",
+						"61-90": "61–90 days",
+						"90+": "90+ days",
+						"No due date": "No due date"
+					},
+					"daysToPay": "Days to pay over time",
+					"daysToPayDef": "Average days from issue to payment",
+					"average": "Average",
+					"median": "Median",
+					"topCustomers": "Top 5 customers",
+					"topCustomersDef": "Highest revenue in the period",
+					"credits": "Credit consumption vs. top-ups",
+					"creditsDef": "Wallet credits added and used per period",
+					"toppedUp": "Topped up",
+					"consumed": "Consumed"
+				},
+				"credits": {
+					"flowDef": "Wallet credits added and applied to invoices per period, valued at the debit conversion rate",
+					"period": "Period",
+					"net": "Net change",
+					"free": "Free consumed",
+					"paid": "Paid consumed",
+					"byReason": "Top-ups by reason",
+					"byReasonDef": "Credits added in the period, by why they were granted",
+					"credits": "Credits",
+					"topups": "Top-ups",
+					"reasons": {
+						"purchased": "Purchased",
+						"subscription": "Subscription grant",
+						"free": "Free grant",
+						"bonus": "Bonus"
+					},
+					"reasonTotal_one": "{{credits}} · {{formatted}} top-up",
+					"reasonTotal_other": "{{credits}} · {{formatted}} top-ups",
+					"events": "Events volume",
+					"eventsDef": "Usage events ingested per day",
+					"last7Days": "Last 7 days",
+					"totalEvents": "Total events",
+					"dailyAverage": "Daily average"
+				}
+			}
 		}
 	},
 	"integrations": {

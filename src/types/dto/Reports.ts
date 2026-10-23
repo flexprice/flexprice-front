@@ -133,7 +133,7 @@ export interface DatasetCatalogResponse {
 	items: Dataset[];
 }
 
-export type MeasureAgg = 'count' | 'count_distinct' | 'sum' | 'avg' | 'min' | 'max';
+export type MeasureAgg = 'count' | 'count_distinct' | 'sum' | 'avg' | 'median' | 'min' | 'max';
 
 export interface MeasureSpec {
 	agg: MeasureAgg;

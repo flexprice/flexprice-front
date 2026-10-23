@@ -16,7 +16,7 @@ const changePct = (cur: string | undefined, prev: string | undefined, pct: strin
 const at = (r: string[], i: number) => (i >= 0 ? (r[i] ?? '') : '');
 
 // Block spreadsheet formula injection.
-const text = (v: string) => (/^[=+\-@\t\r]/.test(v) && !Number.isFinite(Number(v)) ? `'${v}` : v);
+export const csvSafe = (v: string) => (/^[=+\-@\t\r]/.test(v) && !Number.isFinite(Number(v)) ? `'${v}` : v);
 
 // Every currency row, raw values, no formatting.
 export const reportRowsCsv = (
@@ -36,11 +36,11 @@ export const reportRowsCsv = (
 	const header = [
 		...dims.map(({ c }) => (c.name === 'bucket' ? 'period' : c.name)),
 		...(ci >= 0 ? ['currency'] : []),
-		...cols.flatMap((m) => [m.label, ...(hasPrev ? prevHeaders(m.label) : [])].map(text)),
+		...cols.flatMap((m) => [m.label, ...(hasPrev ? prevHeaders(m.label) : [])].map(csvSafe)),
 		...(markProgress ? ['in_progress'] : []),
 	];
 	const rows = result.rows.map((r) => [
-		...dims.map(({ c, i }) => (c.name === 'bucket' ? at(r, i).slice(0, 10) : text(at(r, i)))),
+		...dims.map(({ c, i }) => (c.name === 'bucket' ? at(r, i).slice(0, 10) : csvSafe(at(r, i)))),
 		...(ci >= 0 ? [at(r, ci)] : []),
 		...cols.flatMap(({ idx }) => [
 			at(r, idx.current),

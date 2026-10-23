@@ -17,11 +17,12 @@ interface SegmentedProps {
 	options: { value: string; label: string }[];
 	value: string;
 	onPick: (v: string) => void;
+	labelPosition?: 'top' | 'start' | 'none';
 }
 
-export const Segmented = ({ label, options, value, onPick }: SegmentedProps) => (
-	<div className='flex flex-col gap-1'>
-		<span className='text-sm font-medium'>{label}</span>
+export const Segmented = ({ label, options, value, onPick, labelPosition = 'top' }: SegmentedProps) => (
+	<div className={cn('flex gap-1', labelPosition === 'start' ? 'items-center gap-3' : 'flex-col')}>
+		{labelPosition !== 'none' && <span className='text-sm font-medium'>{label}</span>}
 		<div role='group' aria-label={label} className='flex rounded-md border p-0.5'>
 			{options.map((o) => (
 				<button

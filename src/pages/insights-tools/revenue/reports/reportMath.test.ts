@@ -60,16 +60,18 @@ const result: ReportQueryResult = {
 };
 
 describe('rangeForPreset', () => {
-	it('computes UTC, end-exclusive ranges', () => {
-		expect(rangeForPreset('this_month', NOW)).toBe('2026-10-01..2026-10-13');
+	it('computes UTC, end-exclusive ranges through yesterday', () => {
+		expect(rangeForPreset('this_month', NOW)).toBe('2026-10-01..2026-10-12');
 		expect(rangeForPreset('last_month', NOW)).toBe('2026-09-01..2026-10-01');
-		expect(rangeForPreset('this_quarter', NOW)).toBe('2026-10-01..2026-10-13');
-		expect(rangeForPreset('this_year', NOW)).toBe('2026-01-01..2026-10-13');
-		expect(rangeForPreset('last_30_days', NOW)).toBe('2026-09-13..2026-10-13');
+		expect(rangeForPreset('this_quarter', NOW)).toBe('2026-10-01..2026-10-12');
+		expect(rangeForPreset('this_year', NOW)).toBe('2026-01-01..2026-10-12');
+		expect(rangeForPreset('last_30_days', NOW)).toBe('2026-09-12..2026-10-12');
 	});
 
-	it('ends this_month at next month start on last day', () => {
-		expect(rangeForPreset('this_month', new Date(Date.UTC(2026, 9, 31, 15)))).toBe('2026-10-01..2026-11-01');
+	it('keeps today when the period starts today', () => {
+		const first = new Date(Date.UTC(2026, 9, 1, 15));
+		expect(rangeForPreset('this_month', first)).toBe('2026-10-01..2026-10-02');
+		expect(rangeForPreset('last_7_days', first)).toBe('2026-09-24..2026-10-01');
 	});
 });
 
