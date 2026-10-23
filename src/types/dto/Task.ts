@@ -82,6 +82,8 @@ export interface UpdateScheduledTaskPayload {
 export interface ForceRunPayload {
 	start_time?: string;
 	end_time?: string;
+	/** Wallet ledger exports only; empty means every customer. */
+	customer_external_ids?: string[];
 }
 
 export interface DownloadTaskFileResponse {

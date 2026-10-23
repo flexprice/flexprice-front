@@ -680,7 +680,11 @@
 		"startTimePlaceholder": "Select start time",
 		"endTimeLabel": "End Time",
 		"endTimePlaceholder": "Select end time",
-		"runExport": "Run Export"
+		"runExport": "Run Export",
+		"customersLabel": "Customers",
+		"customersPlaceholder": "All customers",
+		"customersHint": "Leave empty to export every customer. Up to {{max}}.",
+		"customersTooMany": "Select at most {{max}} customers"
 	},
 	"taskRunsTable": {
 		"downloadStarted": "Download started",

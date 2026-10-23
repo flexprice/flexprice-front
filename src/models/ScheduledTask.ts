@@ -5,6 +5,7 @@ export enum SCHEDULED_ENTITY_TYPE {
 	INVOICE = 'invoice',
 	CREDIT_TOPUPS = 'credit_topups',
 	WALLET_DEBITS = 'wallet_debits',
+	WALLET_LEDGER = 'wallet_ledger',
 	CREDIT_USAGE = 'credit_usage',
 	USAGE_ANALYTICS = 'usage_analytics',
 }
@@ -27,6 +28,7 @@ export const ALLOWED_METADATA_ENTITY_TYPES: Record<SCHEDULED_ENTITY_TYPE, EXPORT
 	[SCHEDULED_ENTITY_TYPE.INVOICE]: [],
 	[SCHEDULED_ENTITY_TYPE.CREDIT_TOPUPS]: [],
 	[SCHEDULED_ENTITY_TYPE.WALLET_DEBITS]: [],
+	[SCHEDULED_ENTITY_TYPE.WALLET_LEDGER]: [],
 };
 
 export type ScheduledEntityType = SCHEDULED_ENTITY_TYPE;

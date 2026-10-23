@@ -685,6 +685,7 @@
 			"invoice": "الفاتورة",
 			"creditTopups": "إعادة شحن الأرصدة",
 			"walletDebits": "خصومات المحفظة",
+			"walletLedger": "سجل المحفظة",
 			"creditUsage": "استخدام الأرصدة",
 			"usageAnalytics": "تحليلات الاستخدام"
 		},

@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft, Play, Pause, Trash2, RefreshCw } from 'lucide-react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { TaskApi, ConnectionApi } from '@/api';
-import { ENTITY_STATUS } from '@/models';
+import { ENTITY_STATUS, SCHEDULED_ENTITY_TYPE } from '@/models';
 import toast from 'react-hot-toast';
 import ForceRunDrawer from '@/components/molecules/ForceRunDrawer/ForceRunDrawer';
 import TaskRunsTable from '@/components/molecules/TaskRunsTable/TaskRunsTable';
@@ -55,8 +55,21 @@ const ExportDetails = () => {
 
 	// Force run task
 	const { mutate: forceRunTask, isPending: isForceRunning } = useMutation({
-		mutationFn: ({ id, startTime, endTime }: { id: string; startTime?: string; endTime?: string }) =>
-			TaskApi.forceRunScheduledTask(id, startTime && endTime ? { start_time: startTime, end_time: endTime } : undefined),
+		mutationFn: ({
+			id,
+			startTime,
+			endTime,
+			customerExternalIds,
+		}: {
+			id: string;
+			startTime?: string;
+			endTime?: string;
+			customerExternalIds?: string[];
+		}) =>
+			TaskApi.forceRunScheduledTask(id, {
+				...(startTime && endTime ? { start_time: startTime, end_time: endTime } : {}),
+				...(customerExternalIds?.length ? { customer_external_ids: customerExternalIds } : {}),
+			}),
 		onSuccess: () => {
 			toast.success('Export task started successfully');
 			setIsForceRunDrawerOpen(false);
@@ -84,9 +97,9 @@ const ExportDetails = () => {
 		}
 	};
 
-	const handleForceRun = (startTime?: string, endTime?: string) => {
+	const handleForceRun = (startTime?: string, endTime?: string, customerExternalIds?: string[]) => {
 		if (exportTask) {
-			forceRunTask({ id: exportTask.id, startTime, endTime });
+			forceRunTask({ id: exportTask.id, startTime, endTime, customerExternalIds });
 		}
 	};
 
@@ -258,6 +271,7 @@ const ExportDetails = () => {
 				onOpenChange={setIsForceRunDrawerOpen}
 				onConfirm={handleForceRun}
 				isLoading={isForceRunning}
+				showCustomerFilter={exportTask?.entity_type === SCHEDULED_ENTITY_TYPE.WALLET_LEDGER}
 			/>
 		</Page>
 	);
