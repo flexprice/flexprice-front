@@ -68,6 +68,7 @@ export interface ReportQueryMeta {
 	to?: string;
 	prev_from?: string;
 	prev_to?: string;
+	measure_labels?: Record<string, string>;
 }
 
 export interface ReportQueryResult {
@@ -94,12 +95,68 @@ export interface CustomReport {
 	id: string;
 	name: string;
 	version: number;
-	definition: CustomReportDefinition;
+	definition: CustomReportDefinition | DatasetDefinition;
 	created_by?: string;
 	created_at: string;
 	updated_at: string;
 }
 
+export type ReportFamilyCustom = Omit<CustomReport, 'definition'> & { definition: CustomReportDefinition };
+
 export interface CustomReportListResponse {
 	items: CustomReport[];
+}
+
+export type FieldKind = 'time' | 'string' | 'number' | 'bool';
+
+export interface DatasetField {
+	key: string;
+	label: string;
+	kind: FieldKind;
+	money?: boolean;
+	group: boolean;
+	filter: boolean;
+	measure: boolean;
+	enum?: string[];
+	customer?: boolean;
+}
+
+export interface Dataset {
+	key: string;
+	label: string;
+	description: string;
+	max_range_days?: number;
+	fields: DatasetField[];
+}
+
+export interface DatasetCatalogResponse {
+	items: Dataset[];
+}
+
+export type MeasureAgg = 'count' | 'count_distinct' | 'sum' | 'avg' | 'min' | 'max';
+
+export interface MeasureSpec {
+	agg: MeasureAgg;
+	field?: string;
+}
+
+export type BuilderFilterOp = 'eq' | 'in' | 'not_in' | 'gt' | 'gte' | 'lt' | 'lte' | 'between';
+
+export interface BuilderFilter {
+	field: string;
+	op: BuilderFilterOp;
+	value: string[];
+}
+
+export interface DatasetDefinition {
+	family: 'dataset';
+	dataset: string;
+	measures: MeasureSpec[];
+	dimensions?: string[];
+	filters?: BuilderFilter[];
+	time: { field: string; range: string; grain?: ReportGrain | '' };
+	compare?: ReportCompare;
+	sort?: ReportSort[];
+	limit?: number;
+	display?: ReportDisplay;
 }

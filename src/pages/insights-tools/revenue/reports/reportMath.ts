@@ -59,7 +59,7 @@ export const rangeForPreset = (preset: RangePreset, now: Date): string => {
 };
 
 // Worst-case span in days per preset.
-const PRESET_MAX_DAYS: Record<RangePreset, number> = {
+export const PRESET_MAX_DAYS: Record<RangePreset, number> = {
 	last_7_days: 7,
 	last_30_days: 30,
 	last_90_days: 90,
@@ -69,8 +69,8 @@ const PRESET_MAX_DAYS: Record<RangePreset, number> = {
 	this_year: 366,
 };
 
-export const presetAllowed = (entry: ReportCatalogEntry, preset: RangePreset): boolean =>
-	!entry.max_range_days || PRESET_MAX_DAYS[preset] <= entry.max_range_days;
+export const presetAllowed = (source: { max_range_days?: number }, preset: RangePreset): boolean =>
+	!source.max_range_days || PRESET_MAX_DAYS[preset] <= source.max_range_days;
 
 const defaultPreset = (entry: ReportCatalogEntry): RangePreset =>
 	(['last_90_days', 'last_30_days', 'last_7_days'] as const).find((p) => presetAllowed(entry, p)) ?? 'last_7_days';
@@ -199,14 +199,18 @@ export const isBucketInProgress = (bucketIso: string, grain: ReportGrain | '' | 
 const TO_DATE_PRESETS: RangePreset[] = ['this_month', 'this_quarter', 'this_year'];
 export const isToDatePreset = (preset: RangePreset): boolean => TO_DATE_PRESETS.includes(preset);
 
+// Builder measures add plain decimal numbers.
+export type ValueFormat = ReportValueType | 'number';
+
 export const formatValue = (
 	value: number,
-	valueType: ReportValueType,
+	valueType: ValueFormat,
 	currency: string,
 	daysLabel: (v: string) => string = (v) => `${v} days`,
 ): string => {
 	if (valueType === 'days') return daysLabel(value.toFixed(1));
 	if (valueType === 'count') return Math.round(value).toLocaleString('en-US');
+	if (valueType === 'number') return value.toLocaleString('en-US', { maximumFractionDigits: 2 });
 	const sign = value < 0 ? '-' : '';
 	return `${sign}${getCurrencySymbol(currency.toUpperCase())}${Math.abs(value).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
 };

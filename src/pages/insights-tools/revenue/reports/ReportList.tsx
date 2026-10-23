@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { CustomReport, ReportCatalogEntry, ReportCategory } from '@/types/dto/Reports';
+import { CustomReport, Dataset, ReportCatalogEntry, ReportCategory } from '@/types/dto/Reports';
+import { isDatasetDefinition } from './builder/builderModel';
 
 const ORDER: ReportCategory[] = ['billing', 'receivables', 'customers', 'credits', 'usage'];
 
@@ -18,10 +20,29 @@ interface Props {
 	customError: boolean;
 	selectedCustomId: string;
 	onSelectCustom: (id: string) => void;
+	datasets: Dataset[];
+	onNewCustom: () => void;
 }
 
-const ReportList = ({ entries, selectedKey, onSelect, customReports, customError, selectedCustomId, onSelectCustom }: Props) => {
+const ReportList = ({
+	entries,
+	selectedKey,
+	onSelect,
+	customReports,
+	customError,
+	selectedCustomId,
+	onSelectCustom,
+	datasets,
+	onNewCustom,
+}: Props) => {
 	const { t } = useTranslation('settings');
+	const subtitle = (r: CustomReport) => {
+		const d = r.definition;
+		if (!isDatasetDefinition(d)) return entries.find((e) => e.key === d.metrics[0])?.name;
+		return t('insightsTools.revenue.reports.builder.listSubtitle', {
+			dataset: datasets.find((x) => x.key === d.dataset)?.label ?? d.dataset,
+		});
+	};
 	const [q, setQ] = useState('');
 	const needle = q.trim().toLowerCase();
 	const groups = useMemo(() => {
@@ -66,6 +87,9 @@ const ReportList = ({ entries, selectedKey, onSelect, customReports, customError
 				<div className='px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
 					{t('insightsTools.revenue.reports.customReports')}
 				</div>
+				<Button type='button' variant='outline' size='sm' className='mb-1' disabled={!datasets.length} onClick={onNewCustom}>
+					{t('insightsTools.revenue.reports.builder.newReport')}
+				</Button>
 				{customError ? (
 					<span className='px-2 text-xs text-red-600'>{t('insightsTools.revenue.reports.customLoadError')}</span>
 				) : customReports.length === 0 ? (
@@ -81,9 +105,7 @@ const ReportList = ({ entries, selectedKey, onSelect, customReports, customError
 								aria-current={selected ? 'true' : undefined}
 								className={cn(itemClass(selected), 'flex flex-col')}>
 								<span>{r.name}</span>
-								<span className='text-xs font-normal text-muted-foreground'>
-									{entries.find((e) => e.key === r.definition.metrics[0])?.name}
-								</span>
+								<span className='text-xs font-normal text-muted-foreground'>{subtitle(r)}</span>
 							</button>
 						);
 					})

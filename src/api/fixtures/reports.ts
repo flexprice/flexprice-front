@@ -2,6 +2,8 @@ import {
 	CustomReport,
 	CustomReportDefinition,
 	CustomReportListResponse,
+	DatasetCatalogResponse,
+	DatasetDefinition,
 	ReportCatalogEntry,
 	ReportCatalogResponse,
 	ReportColumn,
@@ -255,7 +257,11 @@ export const resetMockCustom = () => {
 
 export const mockListCustom = async (): Promise<CustomReportListResponse> => ({ items: [...customStore] });
 
-export const mockSaveCustom = async (id: string | undefined, name: string, definition: CustomReportDefinition): Promise<CustomReport> => {
+export const mockSaveCustom = async (
+	id: string | undefined,
+	name: string,
+	definition: CustomReportDefinition | DatasetDefinition,
+): Promise<CustomReport> => {
 	const now = new Date().toISOString();
 	const prev = customStore.find((r) => r.id === id);
 	const next: CustomReport = prev
@@ -267,4 +273,99 @@ export const mockSaveCustom = async (id: string | undefined, name: string, defin
 
 export const mockDeleteCustom = async (id: string): Promise<void> => {
 	customStore = customStore.filter((r) => r.id !== id);
+};
+
+const DATASETS: DatasetCatalogResponse = {
+	items: [
+		{
+			key: 'invoices',
+			label: 'Invoices',
+			description: 'Billed invoices',
+			fields: [
+				{ key: 'created_at', label: 'Created', kind: 'time', group: false, filter: false, measure: false },
+				{ key: 'id', label: 'Invoice', kind: 'string', group: true, filter: false, measure: false },
+				{ key: 'customer_id', label: 'Customer', kind: 'string', group: true, filter: true, measure: false, customer: true },
+				{
+					key: 'invoice_status',
+					label: 'Status',
+					kind: 'string',
+					group: true,
+					filter: true,
+					measure: false,
+					enum: ['DRAFT', 'FINALIZED', 'VOIDED'],
+				},
+				{ key: 'total', label: 'Total', kind: 'number', money: true, group: false, filter: true, measure: true },
+				{ key: 'amount_due', label: 'Amount due', kind: 'number', money: true, group: false, filter: true, measure: true },
+			],
+		},
+		{
+			key: 'usage',
+			label: 'Usage',
+			description: 'Metered usage',
+			max_range_days: 7,
+			fields: [
+				{ key: 'timestamp', label: 'Time', kind: 'time', group: false, filter: false, measure: false },
+				{ key: 'meter_id', label: 'Meter', kind: 'string', group: true, filter: true, measure: false },
+				{ key: 'qty_total', label: 'Quantity', kind: 'number', group: false, filter: true, measure: true },
+			],
+		},
+	],
+};
+
+export const mockDatasets = (): DatasetCatalogResponse => DATASETS;
+
+const aggLabel: Record<string, string> = {
+	count: 'Count',
+	count_distinct: 'Distinct',
+	sum: 'Sum of',
+	avg: 'Average of',
+	min: 'Min of',
+	max: 'Max of',
+};
+
+export const mockRunDataset = (def: DatasetDefinition): ReportQueryResult => {
+	const ds = DATASETS.items.find((d) => d.key === def.dataset);
+	const label = (k?: string) => ds?.fields.find((f) => f.key === k)?.label ?? k ?? '';
+	const compare = !!def.compare && def.dataset !== 'usage';
+	const dim = def.dimensions?.[0];
+	const grain = !!def.time.grain && !dim;
+	const money = def.measures.some((m) => ds?.fields.find((f) => f.key === m.field)?.money);
+	const measureCols: ReportColumn[] = [];
+	const measure_labels: Record<string, string> = {};
+	def.measures.forEach((m, i) => {
+		measureCols.push({ name: `m${i}`, type: 'decimal', role: 'metric' });
+		if (compare) {
+			measureCols.push(
+				{ name: `m${i}_prev`, type: 'decimal', role: 'metric' },
+				{ name: `m${i}_change_pct`, type: 'decimal', role: 'metric' },
+			);
+		}
+		measure_labels[`m${i}`] = [aggLabel[m.agg], label(m.field)].filter(Boolean).join(' ');
+	});
+	const values = (seed: number): string[] =>
+		def.measures.flatMap((_, i) => {
+			const cur = 1000 * (i + 1) + seed * 137;
+			const prev = cur * 0.9;
+			return compare ? [round(cur), round(prev), pct(cur, prev)] : [round(cur)];
+		});
+	const lead: ReportColumn[] = [];
+	if (grain) lead.push({ name: 'bucket', type: 'datetime', role: 'dimension' });
+	if (dim) lead.push({ name: dim, type: 'string', role: 'dimension' });
+	if (money) lead.push({ name: 'currency', type: 'string', role: 'dimension' });
+	const keys = grain ? BUCKETS : dim ? (BREAKDOWN_LABELS[dim] ?? ['a', 'b', 'c']) : [];
+	const rows = keys.length ? keys.map((k, i) => [k, ...(money ? ['usd'] : []), ...values(i)]) : [[...(money ? ['usd'] : []), ...values(0)]];
+	const [from, to] = /^\d{4}-\d{2}-\d{2}\.\.\d{4}-\d{2}-\d{2}$/.test(def.time.range)
+		? def.time.range.split('..')
+		: ['2026-05-01', '2026-11-01'];
+	return {
+		columns: [...lead, ...measureCols],
+		rows,
+		meta: {
+			query_source: 'mock',
+			from: `${from}T00:00:00Z`,
+			to: `${to}T00:00:00Z`,
+			...(compare ? { prev_from: '2026-08-01T00:00:00Z', prev_to: '2026-09-01T00:00:00Z' } : {}),
+			measure_labels,
+		},
+	};
 };

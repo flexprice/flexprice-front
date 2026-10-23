@@ -11,7 +11,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { CustomReport, CustomReportDefinition } from '@/types/dto/Reports';
+import { CustomReport, CustomReportDefinition, DatasetDefinition } from '@/types/dto/Reports';
 import SaveReportDialog from './SaveReportDialog';
 import { useCustomReportMutations } from './useReports';
 
@@ -19,7 +19,7 @@ type Mode = 'create' | 'copy' | 'rename';
 
 interface Props {
 	custom?: CustomReport;
-	definition?: CustomReportDefinition;
+	definition?: CustomReportDefinition | DatasetDefinition;
 	dirty: boolean;
 	onSaved: (id: string) => void;
 	onDeleted: () => void;
