@@ -31,3 +31,6 @@ export * from './home';
 export * from './customer-portal';
 
 export * from './checkout';
+
+// Activity log
+export * from './activity';
