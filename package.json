@@ -114,7 +114,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.2.0",
-    "@vitest/ui": "^5.0.0",
+    "@vitest/ui": "^5.0.5",
     "autoprefixer": "^10.4.20",
     "eslint": "^10.0.1",
     "eslint-plugin-i18next": "^6.1.4",
