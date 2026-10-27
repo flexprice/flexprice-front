@@ -154,7 +154,10 @@
 				"netPayableTooltip": "Final amount due after applying credit notes",
 				"amountPaid": "Amount paid",
 				"overpaid": "Overpaid",
-				"remainingBalance": "Remaining balance"
+				"remainingBalance": "Remaining balance",
+				"grantUsage": "Usage",
+				"grantCovered": "Entitlement",
+				"grantBilled": "Billed"
 			},
 			"creditLineTable": {
 				"creditQuantity": "Credit Quantity",

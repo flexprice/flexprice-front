@@ -4,8 +4,14 @@ import GrantWindowLedger from './GrantWindowLedger';
 import { RouteNames } from '@/core/routes/Routes';
 import { FEATURE_TYPE } from '@/models/Feature';
 import { FC, useMemo, useState } from 'react';
-import CustomerUsage, { EntitlementBudget, EntitlementSource, ENTITLEMENT_SOURCE_ENTITY_TYPE } from '@/models/CustomerUsage';
-import { GrantAllowanceState } from '@/models/Entitlement';
+import CustomerUsage, {
+	EntitlementBudget,
+	EntitlementSource,
+	ENTITLEMENT_SOURCE_ENTITY_TYPE,
+	type SubscriptionGrantUsage,
+} from '@/models/CustomerUsage';
+import { ENTITLEMENT_AGGREGATION_MODE, GrantAllowanceState } from '@/models/Entitlement';
+import { formatCurrency } from '@/constants/common';
 import { formatAmount } from '@/components/atoms/Input/Input';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
@@ -14,6 +20,8 @@ import { formatGrantPeriod } from '@/utils/entitlement/allowanceLabel';
 
 interface Props {
 	data: CustomerUsage[];
+	/** Dollar allowances over every usage line of a subscription, listed above the features. */
+	subscriptionGrants?: SubscriptionGrantUsage[];
 	allowRedirect?: boolean;
 	/** Needed to link a subscription source — its route is nested under the customer. */
 	customerId?: string;
@@ -67,15 +75,25 @@ interface UsageRow {
 	leadsFeature: boolean;
 }
 
-/** The windows behind a row: one budget's, or the whole feature's. */
-const allowancesOf = (row: UsageRow): GrantAllowanceState[] => {
+/** A subscription grant's row. */
+interface GrantRow {
+	grant: SubscriptionGrantUsage;
+}
+
+type TableRow = UsageRow | GrantRow;
+
+const isGrantRow = (row: TableRow): row is GrantRow => 'grant' in row;
+
+/** The windows behind a row: a grant's, one budget's, or the whole feature's. */
+const allowancesOf = (row: TableRow): GrantAllowanceState[] => {
+	if (isGrantRow(row)) return row.grant.allowances;
 	const all = row.usage.grant_state?.allowances ?? [];
 	if (!row.budget) return all;
 	return all.filter((a) => a.entitlement_id === row.budget!.entitlement_id);
 };
 
 /** A row is worth opening only when there are windows behind it. */
-const hasAllowances = (row: UsageRow) => allowancesOf(row).length > 0;
+const hasAllowances = (row: TableRow) => allowancesOf(row).length > 0;
 
 /** The source that funds a budget, so its row can name and link to it. */
 const sourceOf = (row: UsageRow): EntitlementSource | undefined => {
@@ -83,26 +101,28 @@ const sourceOf = (row: UsageRow): EntitlementSource | undefined => {
 	return (row.usage.sources ?? []).find((s) => s.entity_id === row.budget!.source_entity_id);
 };
 
-const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId }) => {
+const CustomerUsageTable: FC<Props> = ({ data, subscriptionGrants = [], allowRedirect = true, customerId }) => {
 	const { t } = useTranslation('customers');
 	// The cadence words ('day', 'billing period') live in the catalog bundle.
 	const { t: tCatalog } = useTranslation('catalog');
-	const [ledgerRow, setLedgerRow] = useState<UsageRow | null>(null);
+	const [ledgerRow, setLedgerRow] = useState<TableRow | null>(null);
 	// Sampled on the click rather than during render, so the ledger's rows all agree
 	// on which window is current.
 	const [ledgerOpenedAt, setLedgerOpenedAt] = useState(0);
 
-	const rows: UsageRow[] = useMemo(
-		() =>
-			data.flatMap<UsageRow>((usage) =>
+	const rows: TableRow[] = useMemo(
+		() => [
+			...subscriptionGrants.map<GrantRow>((grant) => ({ grant })),
+			...data.flatMap<UsageRow>((usage) =>
 				usage.buckets?.length
 					? usage.buckets.map((budget, i) => ({ usage, budget, leadsFeature: i === 0 }))
 					: [{ usage, leadsFeature: true }],
 			),
-		[data],
+		],
+		[data, subscriptionGrants],
 	);
 
-	const columnData: ColumnData<UsageRow>[] = useMemo(() => {
+	const columnData: ColumnData<TableRow>[] = useMemo(() => {
 		// "50" alone does not say what it renews against; the cadence is half the rule.
 		const withPeriod = (amount: string, cfg: Pick<EntitlementBudget, 'grant_duration_value' | 'grant_duration_unit'>) =>
 			cfg.grant_duration_unit ? tCatalog('entitlements.allowance.perPeriod', { amount, period: formatGrantPeriod(cfg, tCatalog) }) : amount;
@@ -127,11 +147,15 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 			}
 		};
 
+		const grantMoney = (row: GrantRow, value?: string | null) => formatCurrency(value ?? '0', row.grant.currency);
+		const allUsageLabel = tCatalog('entitlements.subscriptionGrants.featureName');
+
 		return [
 			{
 				title: t('usageTable.columns.feature'),
 
 				render(row) {
+					if (isGrantRow(row)) return <span>{allUsageLabel}</span>;
 					// A budget below the first repeats nothing: the group reads as one feature
 					// with several budgets rather than several features sharing a name.
 					if (!row.leadsFeature) return null;
@@ -151,6 +175,17 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 			{
 				title: t('usageTable.columns.source'),
 				render(row) {
+					if (isGrantRow(row)) {
+						const redirectUrl = getSubscriptionRedirectUrl(customerId, row.grant.subscription_id);
+						const label = tCatalog('entitlements.subscriptionGrants.source');
+						return redirectUrl ? (
+							<RedirectCell allowRedirect={allowRedirect} redirectUrl={redirectUrl}>
+								{label}
+							</RedirectCell>
+						) : (
+							<span>{label}</span>
+						);
+					}
 					// A budget names the one source that funds it; only a folded row has several.
 					if (row.budget) {
 						const source = sourceOf(row);
@@ -229,6 +264,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 			{
 				title: t('usageTable.columns.value'),
 				render(row) {
+					if (isGrantRow(row)) return <span>{withPeriod(grantMoney(row, row.grant.entitlement.grant_quota), row.grant.entitlement)}</span>;
 					if (row.budget) {
 						if (row.budget.grant_unlimited || !row.budget.grant_quota) return <span>{t('usageTable.unlimitedLabel')}</span>;
 						return <span>{withPeriod(formatAmount(row.budget.grant_quota), row.budget)}</span>;
@@ -239,6 +275,11 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 			{
 				title: t('usageTable.columns.mode'),
 				render(row) {
+					if (isGrantRow(row)) {
+						return row.grant.entitlement.aggregation_mode === ENTITLEMENT_AGGREGATION_MODE.PARALLEL
+							? t('usageTable.modeParallel')
+							: t('usageTable.modeAdditive');
+					}
 					if (row.usage.feature?.type !== FEATURE_TYPE.METERED) return t('usageTable.fallback');
 					// Only a parallel feature is sent as buckets; anything else pools into one figure.
 					return row.usage.buckets?.length ? t('usageTable.modeParallel') : t('usageTable.modeAdditive');
@@ -247,6 +288,7 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 			{
 				title: t('usageTable.columns.measure'),
 				render(row) {
+					if (isGrantRow(row)) return t('usageTable.measureAmount');
 					// What the number counts: the feature's own units, or money. The value
 					// column carries no unit word, so this is what tells them apart.
 					if (row.usage.feature?.type !== FEATURE_TYPE.METERED) return t('usageTable.fallback');
@@ -258,6 +300,23 @@ const CustomerUsageTable: FC<Props> = ({ data, allowRedirect = true, customerId 
 			{
 				title: t('usageTable.columns.usage'),
 				render(row) {
+					if (isGrantRow(row)) {
+						const live = row.grant.allowances.find((a) => a.is_active);
+						const used = Number(live?.usage ?? 0);
+						const quota = Number(live?.quota ?? row.grant.entitlement.grant_quota ?? 0);
+						const value = quota > 0 ? Math.ceil((used / quota) * 100) : 0;
+						return (
+							<Progress
+								label={`${grantMoney(row, String(used))} / ${grantMoney(row, String(quota))}`}
+								value={value}
+								className='h-[6px]'
+								indicatorColor={
+									value >= 100 ? 'bg-gradient-to-r from-danger to-danger-soft' : 'bg-gradient-to-r from-accent-indigo-soft to-info'
+								}
+								backgroundColor={value >= 100 ? 'bg-danger-muted' : 'bg-info-line'}
+							/>
+						);
+					}
 					if (row.usage.feature?.type != FEATURE_TYPE.METERED) {
 						return t('usageTable.fallback');
 					}

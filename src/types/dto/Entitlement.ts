@@ -90,6 +90,25 @@ export interface CreateEntitlementRequest {
 	grant_unlimited?: boolean;
 }
 
+/**
+ * A subscription grant: a dollar allowance shared by every usage line on one subscription.
+ * It has no feature; the server infers the scope from a SUBSCRIPTION owner with a grant config.
+ */
+export interface CreateSubscriptionGrantRequest {
+	entity_type: ENTITLEMENT_ENTITY_TYPE.SUBSCRIPTION;
+	entity_id: string;
+	grant_measure: ENTITLEMENT_GRANT_MEASURE.AMOUNT;
+	grant_quota: string;
+	grant_duration_unit: ENTITLEMENT_GRANT_DURATION_UNIT;
+	grant_duration_value?: number;
+	grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
+	aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
+	/** ISO date. Defaults to now on the server. */
+	start_date?: string;
+	/** ISO date. No window runs past it. */
+	end_date?: string;
+}
+
 export interface UpdateEntitlementRequest {
 	plan_id?: string;
 	feature_id?: string;

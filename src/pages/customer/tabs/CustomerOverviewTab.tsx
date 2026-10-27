@@ -8,6 +8,7 @@ import { Subscription, SUBSCRIPTION_STATUS, PRICE_ENTITY_TYPE, ENTITY_STATUS } f
 import toast from 'react-hot-toast';
 import { RouteNames } from '@/core/routes/Routes';
 import CustomerUsageTable from '@/components/molecules/CustomerUsageTable';
+import type { SubscriptionGrantUsage } from '@/models/CustomerUsage';
 import { UpcomingCreditGrantApplicationsTable, IntegrationMappingCard } from '@/components/molecules';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { PriceApi } from '@/api';
@@ -200,6 +201,36 @@ const CustomerOverviewTab = () => {
 		[currentPageItems, planMap],
 	);
 
+	// Subscription grants are not in the usage summary; each live subscription reports its own.
+	const liveSubscriptions = useMemo(
+		() =>
+			currentPageItems.filter(
+				(s) => s.subscription_status === SUBSCRIPTION_STATUS.ACTIVE || s.subscription_status === SUBSCRIPTION_STATUS.TRIALING,
+			),
+		[currentPageItems],
+	);
+	const grantQueries = useQueries({
+		queries: liveSubscriptions.map((sub) => ({
+			queryKey: ['subscriptionEntitlements', sub.id],
+			queryFn: async () => await SubscriptionApi.getSubscriptionEntitlements(sub.id),
+			retry: false,
+			refetchOnWindowFocus: false,
+		})),
+	});
+	const subscriptionGrants: SubscriptionGrantUsage[] = liveSubscriptions.flatMap((sub, i) => {
+		const grants = grantQueries[i]?.data?.subscription_grants;
+		const allowances = grants?.grant_state?.allowances ?? [];
+		return (grants?.entitlements ?? []).map((entitlement) => ({
+			subscription_id: sub.id,
+			currency: sub.currency,
+			entitlement,
+			// Additive grants share one pooled window, keyed to one of them.
+			allowances: allowances.filter((a) => a.entitlement_id === entitlement.id).length
+				? allowances.filter((a) => a.entitlement_id === entitlement.id)
+				: allowances,
+		}));
+	});
+
 	const overrideQueries = useQueries({
 		queries: currentPageItems.map((sub) => ({
 			queryKey: ['subscriptionOverride', sub.id],
@@ -329,10 +360,10 @@ const CustomerOverviewTab = () => {
 		<div className='space-y-6'>
 			{renderSubscriptionContent()}
 
-			{(usageData?.features?.length || 0) > 0 && (
+			{((usageData?.features?.length || 0) > 0 || subscriptionGrants.length > 0) && (
 				<Card variant='notched'>
 					<CardHeader title={t('tabPanels.overview.entitlementsCardTitle')} />
-					<CustomerUsageTable data={usageData?.features ?? []} customerId={customerId} />
+					<CustomerUsageTable data={usageData?.features ?? []} subscriptionGrants={subscriptionGrants} customerId={customerId} />
 				</Card>
 			)}
 

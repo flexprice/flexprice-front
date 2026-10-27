@@ -30,6 +30,7 @@ import {
 	INVOICE_CADENCE,
 	PriceBucketSize,
 	GrantState,
+	Entitlement,
 	ENTITLEMENT_GRANT_MEASURE,
 	ENTITLEMENT_GRANT_DURATION_UNIT,
 	ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR,
@@ -966,6 +967,14 @@ export interface GetSubscriptionEntitlementsResponse {
 	subscription_id: string;
 	plan_id: string;
 	features: SubscriptionEntitlementFeature[];
+	/** Dollar allowances shared by every usage line; absent when the subscription has none. */
+	subscription_grants?: SubscriptionGrants;
+}
+
+/** The subscription's grants and the windows measured against them this period. */
+export interface SubscriptionGrants {
+	entitlements: Entitlement[];
+	grant_state?: GrantState;
 }
 
 // =============================================================================

@@ -1,4 +1,4 @@
-import { ENTITLEMENT_GRANT_DURATION_UNIT, ENTITLEMENT_GRANT_MEASURE, GrantState } from './Entitlement';
+import { Entitlement, ENTITLEMENT_GRANT_DURATION_UNIT, ENTITLEMENT_GRANT_MEASURE, GrantAllowanceState, GrantState } from './Entitlement';
 import { JsonObject } from '@/types/common';
 import { BaseModel } from './base';
 import Feature from './Feature';
@@ -69,3 +69,11 @@ export interface EntitlementSource {
 }
 
 export default CustomerUsage;
+
+/** A subscription grant for usage views: a dollar allowance over every usage line, and its windows. */
+export interface SubscriptionGrantUsage {
+	readonly subscription_id: string;
+	readonly currency: string;
+	readonly entitlement: Entitlement;
+	readonly allowances: GrantAllowanceState[];
+}

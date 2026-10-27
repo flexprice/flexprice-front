@@ -3,6 +3,7 @@ import {
 	EntitlementFilter,
 	EntitlementResponse,
 	CreateEntitlementRequest,
+	CreateSubscriptionGrantRequest,
 	CreateBulkEntitlementRequest,
 	CreateBulkEntitlementResponse,
 	UpdateEntitlementRequest,
@@ -18,6 +19,15 @@ class EntitlementApi {
 	 * @returns Promise<EntitlementResponse>
 	 */
 	public static async create(data: CreateEntitlementRequest) {
+		return await AxiosClient.post<EntitlementResponse>(this.baseUrl, data);
+	}
+
+	/**
+	 * Create a subscription grant: a dollar allowance over every usage line on a subscription
+	 * @param data - Grant configuration
+	 * @returns Promise<EntitlementResponse>
+	 */
+	public static async createSubscriptionGrant(data: CreateSubscriptionGrantRequest) {
 		return await AxiosClient.post<EntitlementResponse>(this.baseUrl, data);
 	}
 
