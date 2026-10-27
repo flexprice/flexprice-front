@@ -31,7 +31,7 @@ const axiosClient: AxiosInstance = axios.create({
 // Everything else needs to wait rather than fire with no X-Environment-ID: on a fresh login,
 // getActiveEnvironmentId() is a synchronous localStorage read that's empty until
 // useEnvironment()'s own fetch has resolved, and the backend 403s without the header.
-const ENV_GATE_EXEMPT_PATHS = ['/environments', '/users/me'];
+const ENV_GATE_EXEMPT_PATHS = ['/environments', '/users/me', '/auth/password'];
 
 axiosClient.interceptors.request.use(
 	async (config: InternalAxiosRequestConfig) => {

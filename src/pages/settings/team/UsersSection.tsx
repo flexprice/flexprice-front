@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { ColumnData } from '@/components/molecules/Table/Table';
-import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, Lock, Mail, Trash2 } from 'lucide-react';
+import { AlertTriangle, Copy, Download, Eye, EyeOff, Info, KeyRound, Lock, Mail, Trash2 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
 import type { HttpRejectedError } from '@/core/axios/types';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import {
@@ -28,6 +29,8 @@ import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 import useUser from '@/hooks/useUser';
 import { SUPER_ADMIN_ROLE_ID } from '@/api/RbacApi';
 import { settingsQueryKeys } from '../queryKeys';
+import { config, APP_ENV } from '@/config/config';
+import PasswordLinkDialog, { type PasswordLinkDialogLink } from './PasswordLinkDialog';
 import {
 	filterMembers,
 	getMemberJoinedDate,
@@ -56,6 +59,9 @@ function UsersSection() {
 	const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 	const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
 	const [editingUser, setEditingUser] = useState<SettingsMember | null>(null);
+	const [passwordLink, setPasswordLink] = useState<PasswordLinkDialogLink | null>(null);
+	// Self-hosted stores passwords itself and cannot send email, so members get one-time links instead.
+	const isSelfHosted = config.app.env === APP_ENV.SelfHosted;
 
 	const { isSuperAdmin, can } = useCurrentUserPermissions();
 	const canWriteUser = can('user', 'write');
@@ -214,8 +220,12 @@ function UsersSection() {
 				onSuccess: (res, variables) => {
 					closeUserDialog();
 					setEmail('');
+					if (res.invite_token && res.invite_expires_at) {
+						setPasswordLink({ email: variables.email, purpose: 'invite', token: res.invite_token, expiresAt: res.invite_expires_at });
+						return;
+					}
 					setAddedUserEmail(variables.email);
-					setOneTimePassword(res.password);
+					setOneTimePassword(res.password ?? null);
 					setShowPassword(false);
 					setPasswordDialogOpen(true);
 				},
@@ -227,6 +237,16 @@ function UsersSection() {
 			},
 		);
 	};
+
+	const createPasswordLink = useMutation({
+		mutationFn: (member: SettingsMember) => UserApi.createPasswordLink(member.id),
+		onSuccess: (res, member) => {
+			setPasswordLink({ email: member.email, purpose: res.purpose, token: res.token, expiresAt: res.expires_at });
+		},
+		onError: (err: Error) => {
+			toast.error(err.message || t('members.errors.passwordLinkFailed'));
+		},
+	});
 
 	const handleCopyPassword = async () => {
 		if (!oneTimePassword) return;
@@ -319,6 +339,17 @@ function UsersSection() {
 							text: t('members.actions.remove'),
 							icon: <Trash2 className='h-4 w-4' />,
 						}}
+						customActions={
+							isSelfHosted
+								? [
+										{
+											text: t('members.actions.resetPassword'),
+											icon: <KeyRound className='h-4 w-4' />,
+											onClick: () => createPasswordLink.mutate(row),
+										},
+									]
+								: undefined
+						}
 					/>
 				);
 			},
@@ -543,6 +574,8 @@ function UsersSection() {
 			</Dialog>
 
 			<EditUserRolesDialog user={editingUser} isOpen={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)} />
+
+			<PasswordLinkDialog link={passwordLink} onClose={() => setPasswordLink(null)} />
 		</>
 	);
 }

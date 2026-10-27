@@ -10,6 +10,7 @@ import LoginForm from '../../LoginForm';
 import SignupForm from '../../SignupForm';
 import ForgotPasswordForm from '../../ForgotPasswordForm';
 import ResetPasswordForm from '../../ResetPasswordForm';
+import SetPasswordForm from '../../SetPasswordForm';
 import { config } from '@/config/config';
 
 const SLACK_COMMUNITY_URL = 'https://join.slack.com/t/flexpricecommunity/shared_invite/zt-39uat51l0-n8JmSikHZP~bHJNXladeaQ';
@@ -33,6 +34,8 @@ const FlexpriceDefault: React.FC<FlexpriceDefaultProps> = ({ currentTab, switchT
 				return <ForgotPasswordForm switchTab={switchTab} />;
 			case AuthTab.RESET_PASSWORD:
 				return <ResetPasswordForm switchTab={switchTab} />;
+			case AuthTab.SET_PASSWORD:
+				return <SetPasswordForm switchTab={switchTab} />;
 			default:
 				return <LoginForm switchTab={switchTab} />;
 		}

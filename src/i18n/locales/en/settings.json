@@ -27,7 +27,8 @@
 			"copyFailed": "Could not copy to clipboard",
 			"credentialsCopied": "Credentials copied to clipboard.",
 			"credentialsDownloaded": "Credentials downloaded.",
-			"loadError": "Failed to load users. Please try again."
+			"loadError": "Failed to load users. Please try again.",
+			"passwordLinkFailed": "Could not create the link. Try again."
 		},
 		"columns": {
 			"email": "Email",
@@ -41,7 +42,8 @@
 			"add": "Add",
 			"invite": "Invite",
 			"remove": "Remove",
-			"editRoles": "Edit roles"
+			"editRoles": "Edit roles",
+			"resetPassword": "Reset password"
 		},
 		"editRoles": {
 			"title": "Edit roles",
@@ -93,6 +95,14 @@
 			"nameLabel": "Name",
 			"namePlaceholder": "Jane Doe",
 			"submit": "Invite user"
+		},
+		"passwordLink": {
+			"inviteTitle": "Invite link",
+			"resetTitle": "Password reset link",
+			"description": "Send this link to {{email}}. It works once and expires on {{expiry}}.",
+			"copy": "Copy link",
+			"copied": "Link copied",
+			"note": "You won't see this link again. If it's lost, create a new one from the member's menu."
 		},
 		"credentials": {
 			"title": "Login Credentials",

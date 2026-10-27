@@ -39,7 +39,8 @@ export function resolveAuthTab({ pathname, search, isRecoveryLanding, signupEnab
 	}
 
 	// `?tab=reset-password` is still honoured for links already in inboxes.
-	if (tab === AuthTab.FORGOT_PASSWORD || tab === AuthTab.RESET_PASSWORD) {
+	// `?tab=set-password` is a one-time link from an admin (self-hosted invites and resets).
+	if (tab === AuthTab.FORGOT_PASSWORD || tab === AuthTab.RESET_PASSWORD || tab === AuthTab.SET_PASSWORD) {
 		return tab as AuthTab;
 	}
 
