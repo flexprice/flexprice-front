@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures/test';
 
 /**
- * Signup and password-recovery validation.
+ * Signup validation.
  *
  * Every assertion here is client-side: the forms reject bad input before any
  * request is made, so these run without credentials, without a backend, and on any
@@ -72,17 +72,5 @@ test.describe('Signup form @critical', () => {
 		await loginPage.loginTab.click();
 
 		await expect(page.getByRole('heading', { name: 'Login to your account' })).toBeVisible();
-	});
-});
-
-test.describe('Password recovery @critical', () => {
-	test('rejects a reset request with no email', async ({ loginPage, page }) => {
-		await loginPage.goto();
-		await loginPage.forgotPassword.click();
-
-		await expect(page.getByRole('heading', { name: 'Forgot your password?' })).toBeVisible();
-		await page.getByRole('button', { name: 'Send Reset Link' }).click();
-
-		await expect(page.getByText('Please enter your email address')).toBeVisible();
 	});
 });

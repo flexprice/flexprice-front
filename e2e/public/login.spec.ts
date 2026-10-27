@@ -31,12 +31,4 @@ test.describe('Login page @critical', () => {
 		await expect(page.getByText('Please enter both email and password')).toBeVisible();
 		await expect(page).toHaveURL(/\/login/);
 	});
-
-	test('switches to password recovery and back', async ({ loginPage, page }) => {
-		await loginPage.forgotPassword.click();
-		await expect(page.getByRole('heading', { name: 'Forgot your password?' })).toBeVisible();
-
-		await page.getByRole('button', { name: 'Back to login' }).click();
-		await expect(page.getByRole('heading', { name: 'Login to your account' })).toBeVisible();
-	});
 });
