@@ -11,6 +11,7 @@ import {
 	PortalTableHeader as TableHeader,
 	PortalTableRow as TableRow,
 } from '@/components/atoms/PortalTable/PortalTable';
+import { formatAmount } from '@/components/atoms/Input/Input';
 import { formatNumber, getCurrencySymbol } from '@/utils';
 import { cn } from '@/lib/utils';
 import EmptyState from '@/components/atoms/EmptyState/EmptyState';
@@ -42,6 +43,18 @@ function renderUsageCell(row: UsageBreakdownRow) {
 		<span>
 			{formatted}
 			{row.unit ? ` ${row.unit}` : ''}
+		</span>
+	);
+}
+
+function renderUnitPriceCell(row: UsageBreakdownRow) {
+	if (!row.unitPrice) return '-';
+	const formatted = formatAmount(row.unitPrice);
+	if (!formatted) return '-';
+	return (
+		<span>
+			{row.currency ? getCurrencySymbol(row.currency) : ''}
+			{formatted}
 		</span>
 	);
 }
@@ -211,6 +224,7 @@ const UsageBreakdown = ({
 						<TableRow>
 							<TableHead className='w-[45%]'>{nameLabel || t('usageWidgets.feature')}</TableHead>
 							{showUsage && <TableHead align='end'>{renderSortableHeader(SORT_TOTAL_USAGE, t('usageWidgets.totalUsage'))}</TableHead>}
+							<TableHead align='end'>{t('usageWidgets.unitPrice')}</TableHead>
 							<TableHead align='end'>{renderSortableHeader(SORT_TOTAL_COST, t('usageWidgets.totalCost'))}</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -256,6 +270,9 @@ const UsageBreakdown = ({
 											</TableCell>
 										)}
 										<TableCell align='end' className='text-content-secondary'>
+											{t('usageWidgets.cellEmDash')}
+										</TableCell>
+										<TableCell align='end' className='text-content-secondary'>
 											{firstCurrency ? (
 												<>
 													{getCurrencySymbol(firstCurrency)}
@@ -276,6 +293,9 @@ const UsageBreakdown = ({
 													</TableCell>
 												)}
 												<TableCell align='end' className='text-content-secondary'>
+													{renderUnitPriceCell(row)}
+												</TableCell>
+												<TableCell align='end' className='text-content-secondary'>
 													{renderCostCell(row)}
 												</TableCell>
 											</TableRow>
@@ -294,13 +314,16 @@ const UsageBreakdown = ({
 									</TableCell>
 								)}
 								<TableCell align='end' className='text-content-secondary'>
+									{renderUnitPriceCell(row)}
+								</TableCell>
+								<TableCell align='end' className='text-content-secondary'>
 									{renderCostCell(row)}
 								</TableCell>
 							</TableRow>
 						))}
 						{rows.length === 0 && (
 							<TableRow>
-								<TableCell colSpan={showUsage ? 3 : 2} className='text-content-secondary'>
+								<TableCell colSpan={showUsage ? 4 : 3} className='text-content-secondary'>
 									{t('usageWidgets.cellEmpty')}
 								</TableCell>
 							</TableRow>

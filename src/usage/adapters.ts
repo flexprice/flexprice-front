@@ -169,10 +169,12 @@ export function adaptGroupedBreakdownRows(items: UsageAnalyticItem[], groupKey: 
 			totalUsage: 0,
 			totalCost: 0,
 			unit: base.unit,
+			unitPrice: base.unitPrice,
 			currency: base.currency,
 		};
 		row.totalUsage += Number.isFinite(shown) ? shown : 0;
 		row.totalCost += base.totalCost;
+		if (row.unitPrice !== base.unitPrice) row.unitPrice = undefined;
 		rows.set(value, row);
 	});
 	return [...rows.values()];
@@ -206,6 +208,7 @@ export function adaptUsageBreakdownRows(items: UsageAnalyticItem[]): UsageBreakd
 			totalUsage: Number(row.total_usage) || 0,
 			totalUsageDisplay: row.total_usage_display || undefined,
 			unit: unitLabel,
+			unitPrice: row.price?.amount?.trim() || undefined,
 			totalCost: Number(row.total_cost) || 0,
 			currency: row.currency,
 		};

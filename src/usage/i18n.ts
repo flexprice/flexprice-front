@@ -21,6 +21,7 @@ const EN_USAGE_WIDGETS = {
 	breakdownTitle: 'Usage Breakdown',
 	feature: 'Feature',
 	totalUsage: 'Total Usage',
+	unitPrice: 'Unit Price',
 	totalCost: 'Total Cost',
 	noGroup: 'No group',
 	expandAllAria: 'Expand all',

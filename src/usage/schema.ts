@@ -106,6 +106,7 @@ export const UsageBreakdownRowSchema = z
 		totalUsage: z.coerce.number().catch(0),
 		totalUsageDisplay: nullishToOptionalString,
 		unit: nullishToOptionalString,
+		unitPrice: nullishToOptionalString,
 		totalCost: z.coerce.number().catch(0),
 		currency: nullishToOptionalString,
 	})

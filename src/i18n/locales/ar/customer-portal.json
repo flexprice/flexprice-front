@@ -160,6 +160,7 @@
 	"usageBreakdown": {
 		"feature": "الميزة",
 		"totalUsage": "إجمالي الاستخدام",
+		"unitPrice": "سعر الوحدة",
 		"totalCost": "إجمالي التكلفة",
 		"noGroup": "بلا مجموعة",
 		"expandAllAria": "توسيع الكل",
