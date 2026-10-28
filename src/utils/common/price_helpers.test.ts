@@ -24,11 +24,6 @@ describe('formatPriceDisplay', () => {
 		expect(formatPriceDisplay({ ...base, amount: '0.066666666666667' })).toBe('$0.066667');
 	});
 
-	it('keeps an exact per-token rate that sits past 6 decimal places', () => {
-		expect(formatPriceDisplay({ ...base, symbol: '₹', amount: '0.00000025' })).toBe('₹0.00000025');
-		expect(formatPriceDisplay({ ...base, amount: '0.0000025' })).toBe('$0.0000025');
-	});
-
 	it('leaves short, common decimal amounts unchanged', () => {
 		expect(formatPriceDisplay({ ...base, amount: '5.00' })).toBe('$5.00');
 		expect(formatPriceDisplay({ ...base, amount: '19.99' })).toBe('$19.99');

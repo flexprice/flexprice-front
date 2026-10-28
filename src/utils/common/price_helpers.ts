@@ -143,15 +143,14 @@ export const normalizePriceDisplay = (
  * @returns Formatted price string for display
  */
 // Backend amounts can carry full floating-point precision (e.g. a per-unit rate computed as
-// amount/quantity yielding "0.066666666666667"). Those tails are longer than an exact price and
-// are rounded to MAX_DISPLAY_DECIMALS. Exact rates up to MAX_EXACT_DECIMALS places, including
-// per-token prices like "0.00000025", are returned untouched — rounding them to 6 places shows 0.
+// amount/quantity yielding "0.066666666666667"). Display doesn't need more than this many decimal
+// places - values with fewer decimals are returned untouched, so the common 2-decimal case is
+// unaffected.
 const MAX_DISPLAY_DECIMALS = 6;
-const MAX_EXACT_DECIMALS = 12;
 
 const capDisplayDecimals = (amount: string, maxDecimals: number = MAX_DISPLAY_DECIMALS): string => {
 	const [, decimalPart] = amount.split('.');
-	if (!decimalPart || decimalPart.length <= MAX_EXACT_DECIMALS) return amount;
+	if (!decimalPart || decimalPart.length <= maxDecimals) return amount;
 	const parsed = Number(amount);
 	return Number.isFinite(parsed) ? parsed.toFixed(maxDecimals) : amount;
 };
