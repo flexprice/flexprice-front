@@ -23,7 +23,7 @@ const AuthPage: React.FC = () => {
 		isRecoveryLanding: isPasswordRecoveryLanding(),
 		signupEnabled,
 	});
-	const isResettingPassword = currentTab === AuthTab.RESET_PASSWORD;
+	const isResettingPassword = currentTab === AuthTab.RESET_PASSWORD || currentTab === AuthTab.SET_PASSWORD;
 
 	useEffect(() => {
 		// Two independent reasons not to send an existing session to the dashboard.

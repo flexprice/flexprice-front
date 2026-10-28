@@ -27,7 +27,8 @@
 			"copyFailed": "تعذّر النسخ إلى الحافظة",
 			"credentialsCopied": "تم نسخ بيانات الدخول إلى الحافظة.",
 			"credentialsDownloaded": "تم تنزيل بيانات الدخول.",
-			"loadError": "فشل تحميل المستخدمين. يُرجى المحاولة مرة أخرى."
+			"loadError": "فشل تحميل المستخدمين. يُرجى المحاولة مرة أخرى.",
+			"passwordLinkFailed": "تعذّر إنشاء الرابط. حاول مرة أخرى."
 		},
 		"columns": {
 			"email": "البريد الإلكتروني",
@@ -44,7 +45,8 @@
 			"add": "إضافة",
 			"invite": "دعوة",
 			"remove": "إزالة",
-			"editRoles": "تعديل الأدوار"
+			"editRoles": "تعديل الأدوار",
+			"resetPassword": "إعادة تعيين كلمة المرور"
 		},
 		"editRoles": {
 			"title": "تعديل الأدوار",
@@ -99,6 +101,14 @@
 			"nameLabel": "الاسم",
 			"namePlaceholder": "محمد أحمد",
 			"submit": "دعوة مستخدم"
+		},
+		"passwordLink": {
+			"inviteTitle": "رابط الدعوة",
+			"resetTitle": "رابط إعادة تعيين كلمة المرور",
+			"description": "أرسل هذا الرابط إلى {{email}}. يعمل مرة واحدة وتنتهي صلاحيته في {{expiry}}.",
+			"copy": "نسخ الرابط",
+			"copied": "تم نسخ الرابط",
+			"note": "لن ترى هذا الرابط مرة أخرى. إذا فُقد، أنشئ رابطاً جديداً من قائمة العضو."
 		},
 		"credentials": {
 			"title": "بيانات تسجيل الدخول",
@@ -685,6 +695,7 @@
 			"invoice": "الفاتورة",
 			"creditTopups": "إعادة شحن الأرصدة",
 			"walletDebits": "خصومات المحفظة",
+			"walletLedger": "سجل المحفظة",
 			"creditUsage": "استخدام الأرصدة",
 			"usageAnalytics": "تحليلات الاستخدام"
 		},
@@ -885,6 +896,7 @@
 			"webhookPasswordRequired": "كلمة مرور الويب هوك مطلوبة",
 			"secretKeyRequired": "المفتاح السري مطلوب",
 			"webhookSecretRequired": "سرّ الويب هوك مطلوب",
+			"paymentGatewayRequired": "اختر بوابة دفع واحدة على الأقل",
 			"keyIdRequired": "معرّف المفتاح مطلوب",
 			"clientSideTokenRequired": "رمز الواجهة مطلوب",
 			"organizationIdRequired": "معرّف المنظمة مطلوب",
@@ -997,7 +1009,15 @@
 			"webhookBodyHtml": "في Zoho Books، أنشئ ويب هوك للفواتير وجهات الاتصال واضبط هذا العنوان لكل منهما. استخدم نفس السرّ هنا وفي Zoho حتى يتحقق Flexprice من <header>X-Zoho-Webhook-Signature</header>.",
 			"credentialsHidden": "بيانات OAuth مشفّرة ومخفية. لتحديثها احذف الاتصال وأنشئ اتصالاً جديداً.",
 			"selectTenantForUrl": "اختر المستأجر والبيئة لتوليد الرابط",
-			"toastUpdated": "تم تحديث اتصال Zoho Books بنجاح"
+			"toastUpdated": "تم تحديث اتصال Zoho Books بنجاح",
+			"attachPaymentGateways": "إرفاق بوابات الدفع بالفواتير",
+			"attachPaymentGatewaysDesc": "يضيف روابط الدفع الإلكتروني إلى الفواتير المُزامَنة.",
+			"paymentGateways": "بوابات الدفع",
+			"paymentGatewaysDesc": "اختر البوابات التي تظهر على الفواتير المُزامَنة. يجب إعداد كل بوابة ضمن المدفوعات الإلكترونية في Zoho Books.",
+			"paypalPaymentMethod": "طريقة الدفع عبر PayPal",
+			"paypalPaymentMethodDesc": "كيفية دفع العملاء عبر PayPal على الفواتير المُزامَنة.",
+			"paypalPaymentMethodStandard": "قياسي",
+			"paypalPaymentMethodAdaptive": "تكيّفي"
 		},
 		"quickBooks": {
 			"descriptionEdit": "حدّث إعدادات اتصال QuickBooks.",

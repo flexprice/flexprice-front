@@ -160,6 +160,7 @@
 	"usageBreakdown": {
 		"feature": "Feature",
 		"totalUsage": "Total Usage",
+		"unitPrice": "Unit Price",
 		"totalCost": "Total Cost",
 		"noGroup": "No group",
 		"expandAllAria": "Expand all",

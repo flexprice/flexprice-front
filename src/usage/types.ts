@@ -85,6 +85,8 @@ export interface UsageBreakdownRow {
 	totalUsage: number;
 	totalUsageDisplay?: string;
 	unit?: string;
+	/** Unit price from `price.amount`, kept as a string so sub-cent rates are not rounded. */
+	unitPrice?: string;
 	totalCost: number;
 	currency?: string;
 }

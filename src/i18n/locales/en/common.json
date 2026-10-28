@@ -443,6 +443,7 @@
 		"payments": "Payments",
 		"tabs": "Tabs",
 		"documentation": "Documentation",
+		"changePassword": "Change password",
 		"customerDetails": "Customer Details",
 		"loadingCustomerDetails": "Loading customer details...",
 		"timePeriod": "Time Period",
@@ -552,6 +553,7 @@
 		"breakdownTitle": "Usage Breakdown",
 		"feature": "Feature",
 		"totalUsage": "Total Usage",
+		"unitPrice": "Unit Price",
 		"totalCost": "Total Cost",
 		"noGroup": "No group",
 		"expandAllAria": "Expand all",
@@ -680,7 +682,11 @@
 		"startTimePlaceholder": "Select start time",
 		"endTimeLabel": "End Time",
 		"endTimePlaceholder": "Select end time",
-		"runExport": "Run Export"
+		"runExport": "Run Export",
+		"customersLabel": "Customers",
+		"customersPlaceholder": "All customers",
+		"customersHint": "Leave empty to export every customer. Up to {{max}}.",
+		"customersTooMany": "Select at most {{max}} customers"
 	},
 	"taskRunsTable": {
 		"downloadStarted": "Download started",

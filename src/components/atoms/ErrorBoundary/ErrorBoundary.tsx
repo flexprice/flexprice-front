@@ -17,7 +17,7 @@ interface ErrorInfo {
 const generateErrorId = () => `err_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
 // Log error to console
-const logError = (error: Error, info?: ErrorInfo, metadata?: Record<string, unknown>) => {
+const logError = (error: Error, info?: ErrorInfo, metadata?: Record<string, any>) => {
 	const errorId = generateErrorId();
 
 	console.error('[ErrorBoundary]', {

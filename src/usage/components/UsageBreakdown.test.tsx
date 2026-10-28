@@ -29,6 +29,16 @@ describe('UsageBreakdown', () => {
 		expect(container.querySelector('.animate-pulse')).not.toBeNull();
 	});
 
+	it('shows the unit price from price.amount with the row currency', () => {
+		render(
+			<UsageBreakdown
+				rows={[{ id: 'sms', name: 'sms_australia_intelli', totalUsage: 2894, unitPrice: '0.05556', totalCost: 160.79, currency: 'USD' }]}
+			/>,
+		);
+		expect(screen.getByText('Unit Price')).toBeInTheDocument();
+		expect(screen.getByText('$0.05556')).toBeInTheDocument();
+	});
+
 	it('renders a non-numeric totalUsageDisplay as-is instead of "NaN"', () => {
 		render(<UsageBreakdown rows={[{ id: 'feat_1', name: 'API Calls', totalUsage: 0, totalCost: 0, totalUsageDisplay: 'N/A' }]} />);
 		expect(screen.getByText('N/A')).toBeInTheDocument();

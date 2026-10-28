@@ -49,4 +49,13 @@ describe('resolveAuthTab', () => {
 	it('lets a recovery landing outrank a signup tab', () => {
 		expect(resolveAuthTab({ ...base, search: '?tab=signup', isRecoveryLanding: true })).toBe(AuthTab.RESET_PASSWORD);
 	});
+
+	// A one-time password link from an admin (self-hosted invites and resets).
+	it('honours ?tab=set-password', () => {
+		expect(resolveAuthTab({ ...base, search: '?tab=set-password' })).toBe(AuthTab.SET_PASSWORD);
+	});
+
+	it('lets a recovery landing outrank a set-password tab', () => {
+		expect(resolveAuthTab({ ...base, search: '?tab=set-password', isRecoveryLanding: true })).toBe(AuthTab.RESET_PASSWORD);
+	});
 });

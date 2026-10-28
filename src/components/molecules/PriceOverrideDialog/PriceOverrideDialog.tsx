@@ -6,7 +6,7 @@ import { Price, BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PR
 import { PriceBucketSize } from '@/models/Meter';
 import { removeFormatting } from '@/components/atoms/Input/Input';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
-import { BUCKET_SIZE_NONE, priceBucketSizeOptions } from '@/constants/constants';
+import { BUCKET_SIZE_NONE, priceBucketSizeOptionsWithNone } from '@/constants/constants';
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
 import VolumeTieredPricingForm from '@/components/organisms/PlanForm/VolumeTieredPricingForm';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
@@ -641,9 +641,9 @@ const PriceOverrideDialog: FC<Props> = ({
 						<div className='space-y-2'>
 							<label className='text-sm font-medium text-content-secondary'>{t('priceDialogs.bucketSize')}</label>
 							<Select
-								value={overrideBucketSize}
-								onChange={(value) => setOverrideBucketSize(value as PriceBucketSize)}
-								options={priceBucketSizeOptions}
+								value={overrideBucketSize || BUCKET_SIZE_NONE}
+								onChange={(value) => setOverrideBucketSize(value === BUCKET_SIZE_NONE ? '' : (value as PriceBucketSize))}
+								options={priceBucketSizeOptionsWithNone}
 								placeholder={t('priceDialogs.bucketSizePlaceholder')}
 								disabled={!!meterBucketSize}
 								description={meterBucketSize ? t('priceDialogs.bucketSizeSetOnMeter', { bucketSize: meterBucketSize }) : undefined}

@@ -136,6 +136,10 @@ export const priceBucketSizeOptions = [
 	{ label: 'Day', value: BUCKET_SIZE.WindowSizeDay },
 ];
 
+// For dialogs that edit an existing price: "None" is the only way to remove bucketing, since the
+// select can't be emptied once a size is picked. Not for create flows, where BUCKET_SIZE_NONE is invalid.
+export const priceBucketSizeOptionsWithNone = [{ label: 'None', value: BUCKET_SIZE_NONE }, ...priceBucketSizeOptions];
+
 export const billingCadenceOptions = [
 	{ label: 'Recurring', value: BILLING_CADENCE.RECURRING },
 	{ label: 'One Time', value: BILLING_CADENCE.ONETIME },

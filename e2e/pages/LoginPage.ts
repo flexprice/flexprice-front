@@ -15,10 +15,6 @@ export class LoginPage {
 		return this.page.getByRole('button', { name: 'Login', exact: true });
 	}
 
-	get forgotPassword(): Locator {
-		return this.page.getByRole('button', { name: 'Forgot your password?' });
-	}
-
 	/** The auth page is a single route with tabs; these switch between them. */
 	get signupTab(): Locator {
 		return this.page.getByRole('button', { name: 'Sign up' });

@@ -1,6 +1,6 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, ExternalLink, ChevronsUpDown, LogOut, Settings } from 'lucide-react';
+import { BookOpen, ExternalLink, ChevronsUpDown, KeyRound, LogOut, Settings } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { SidebarMenuButton, useSidebar, Popover, PopoverContent, PopoverTrigger, Skeleton } from '@/components/ui';
 import { cn } from '@/lib/utils';
@@ -11,6 +11,8 @@ import { getCommandPaletteActionEventName, CommandPaletteActionId } from '@/core
 import useUser from '@/hooks/useUser';
 import { useShouldShowSidebarPricingPromo } from '@/hooks/useShouldShowSidebarPricingPromo';
 import SidebarPricingPromoCard from './SidebarPricingPromoCard';
+import ChangePasswordDialog from './ChangePasswordDialog';
+import { config, APP_ENV } from '@/config/config';
 
 const SidebarFooter = () => {
 	const { t } = useTranslation('common');
@@ -30,6 +32,7 @@ const SidebarFooter = () => {
 	const { loading, user } = useUser();
 	const { open: sidebarOpen } = useSidebar();
 	const showPricingPromo = useShouldShowSidebarPricingPromo();
+	const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
 	if (loading) return <Skeleton className='w-full h-10' />;
 
@@ -41,6 +44,16 @@ const SidebarFooter = () => {
 				navigate(RouteNames.settings);
 			},
 		},
+		// Self-hosted stores passwords itself, so a signed-in user changes theirs here.
+		...(config.app.env === APP_ENV.SelfHosted
+			? [
+					{
+						label: t('labels.changePassword'),
+						icon: KeyRound,
+						onClick: () => setChangePasswordOpen(true),
+					},
+				]
+			: []),
 		{
 			label: 'Logout',
 			icon: LogOut,
@@ -92,6 +105,8 @@ const SidebarFooter = () => {
 					))}
 				</PopoverContent>
 			</Popover>
+
+			<ChangePasswordDialog isOpen={changePasswordOpen} email={user?.email ?? ''} onClose={() => setChangePasswordOpen(false)} />
 		</div>
 	);
 };

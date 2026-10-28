@@ -10,7 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { PriceApi } from '@/api/PriceApi';
 import { UpdatePriceRequest } from '@/types/dto';
-import { BUCKET_SIZE_NONE, priceBucketSizeOptions } from '@/constants/constants';
+import { BUCKET_SIZE_NONE, priceBucketSizeOptionsWithNone } from '@/constants/constants';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import { PremiumFeatureIcon } from '../PremiumFeature/PremiumFeature';
 import { useMeterForCommitment } from '@/hooks/useMeterForCommitment';
@@ -384,9 +384,9 @@ const UpdatePriceDialog: FC<UpdatePriceDialogProps> = ({ isOpen, onOpenChange, p
 						<div className='space-y-2'>
 							<label className='text-sm font-medium text-content-secondary'>{t('priceDialogs.bucketSize')}</label>
 							<Select
-								value={overrideBucketSize}
-								onChange={(value) => setOverrideBucketSize(value as PriceBucketSize)}
-								options={priceBucketSizeOptions}
+								value={overrideBucketSize || BUCKET_SIZE_NONE}
+								onChange={(value) => setOverrideBucketSize(value === BUCKET_SIZE_NONE ? '' : (value as PriceBucketSize))}
+								options={priceBucketSizeOptionsWithNone}
 								placeholder={t('priceDialogs.bucketSizePlaceholder')}
 								disabled={!!meterBucketSize}
 								description={meterBucketSize ? t('priceDialogs.bucketSizeSetOnMeter', { bucketSize: meterBucketSize }) : undefined}

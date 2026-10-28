@@ -27,7 +27,8 @@
 			"copyFailed": "Could not copy to clipboard",
 			"credentialsCopied": "Credentials copied to clipboard.",
 			"credentialsDownloaded": "Credentials downloaded.",
-			"loadError": "Failed to load users. Please try again."
+			"loadError": "Failed to load users. Please try again.",
+			"passwordLinkFailed": "Could not create the link. Try again."
 		},
 		"columns": {
 			"email": "Email",
@@ -41,7 +42,8 @@
 			"add": "Add",
 			"invite": "Invite",
 			"remove": "Remove",
-			"editRoles": "Edit roles"
+			"editRoles": "Edit roles",
+			"resetPassword": "Reset password"
 		},
 		"editRoles": {
 			"title": "Edit roles",
@@ -93,6 +95,14 @@
 			"nameLabel": "Name",
 			"namePlaceholder": "Jane Doe",
 			"submit": "Invite user"
+		},
+		"passwordLink": {
+			"inviteTitle": "Invite link",
+			"resetTitle": "Password reset link",
+			"description": "Send this link to {{email}}. It works once and expires on {{expiry}}.",
+			"copy": "Copy link",
+			"copied": "Link copied",
+			"note": "You won't see this link again. If it's lost, create a new one from the member's menu."
 		},
 		"credentials": {
 			"title": "Login Credentials",
@@ -686,6 +696,7 @@
 			"invoice": "Invoice",
 			"creditTopups": "Credit Topups",
 			"walletDebits": "Wallet Debits",
+			"walletLedger": "Wallet Ledger",
 			"creditUsage": "Credit Usage",
 			"usageAnalytics": "Usage Analytics"
 		},
@@ -886,6 +897,7 @@
 			"webhookPasswordRequired": "Webhook password is required",
 			"secretKeyRequired": "Secret key is required",
 			"webhookSecretRequired": "Webhook secret is required",
+			"paymentGatewayRequired": "Select at least one payment gateway",
 			"keyIdRequired": "Key ID is required",
 			"clientSideTokenRequired": "Client-side token is required",
 			"organizationIdRequired": "Organization ID is required",
@@ -998,7 +1010,15 @@
 			"webhookBodyHtml": "In Zoho Books, create Invoice and Contact webhooks and set this URL on each. Use the same secret here and in Zoho so Flexprice can verify <header>X-Zoho-Webhook-Signature</header>.",
 			"credentialsHidden": "OAuth credentials are encrypted and hidden. To update credentials, delete the connection and create a new one.",
 			"selectTenantForUrl": "Select tenant and environment to generate URL",
-			"toastUpdated": "Zoho Books connection updated successfully"
+			"toastUpdated": "Zoho Books connection updated successfully",
+			"attachPaymentGateways": "Attach payment gateways to invoices",
+			"attachPaymentGatewaysDesc": "Adds pay online links to synced invoices.",
+			"paymentGateways": "Payment gateways",
+			"paymentGatewaysDesc": "Select the gateways to show on synced invoices. Each must be set up under Online Payments in Zoho Books.",
+			"paypalPaymentMethod": "PayPal payment method",
+			"paypalPaymentMethodDesc": "How customers pay through PayPal on synced invoices.",
+			"paypalPaymentMethodStandard": "Standard",
+			"paypalPaymentMethodAdaptive": "Adaptive"
 		},
 		"quickBooks": {
 			"descriptionEdit": "Update your QuickBooks connection settings.",
