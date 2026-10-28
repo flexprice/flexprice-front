@@ -896,6 +896,7 @@
 			"webhookPasswordRequired": "كلمة مرور الويب هوك مطلوبة",
 			"secretKeyRequired": "المفتاح السري مطلوب",
 			"webhookSecretRequired": "سرّ الويب هوك مطلوب",
+			"paymentGatewayRequired": "اختر بوابة دفع واحدة على الأقل",
 			"keyIdRequired": "معرّف المفتاح مطلوب",
 			"clientSideTokenRequired": "رمز الواجهة مطلوب",
 			"organizationIdRequired": "معرّف المنظمة مطلوب",
@@ -1008,7 +1009,15 @@
 			"webhookBodyHtml": "في Zoho Books، أنشئ ويب هوك للفواتير وجهات الاتصال واضبط هذا العنوان لكل منهما. استخدم نفس السرّ هنا وفي Zoho حتى يتحقق Flexprice من <header>X-Zoho-Webhook-Signature</header>.",
 			"credentialsHidden": "بيانات OAuth مشفّرة ومخفية. لتحديثها احذف الاتصال وأنشئ اتصالاً جديداً.",
 			"selectTenantForUrl": "اختر المستأجر والبيئة لتوليد الرابط",
-			"toastUpdated": "تم تحديث اتصال Zoho Books بنجاح"
+			"toastUpdated": "تم تحديث اتصال Zoho Books بنجاح",
+			"attachPaymentGateways": "إرفاق بوابات الدفع بالفواتير",
+			"attachPaymentGatewaysDesc": "يضيف روابط الدفع الإلكتروني إلى الفواتير المُزامَنة.",
+			"paymentGateways": "بوابات الدفع",
+			"paymentGatewaysDesc": "اختر البوابات التي تظهر على الفواتير المُزامَنة. يجب إعداد كل بوابة ضمن المدفوعات الإلكترونية في Zoho Books.",
+			"paypalPaymentMethod": "طريقة الدفع عبر PayPal",
+			"paypalPaymentMethodDesc": "كيفية دفع العملاء عبر PayPal على الفواتير المُزامَنة.",
+			"paypalPaymentMethodStandard": "قياسي",
+			"paypalPaymentMethodAdaptive": "تكيّفي"
 		},
 		"quickBooks": {
 			"descriptionEdit": "حدّث إعدادات اتصال QuickBooks.",

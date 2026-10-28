@@ -897,6 +897,7 @@
 			"webhookPasswordRequired": "Webhook password is required",
 			"secretKeyRequired": "Secret key is required",
 			"webhookSecretRequired": "Webhook secret is required",
+			"paymentGatewayRequired": "Select at least one payment gateway",
 			"keyIdRequired": "Key ID is required",
 			"clientSideTokenRequired": "Client-side token is required",
 			"organizationIdRequired": "Organization ID is required",
@@ -1009,7 +1010,15 @@
 			"webhookBodyHtml": "In Zoho Books, create Invoice and Contact webhooks and set this URL on each. Use the same secret here and in Zoho so Flexprice can verify <header>X-Zoho-Webhook-Signature</header>.",
 			"credentialsHidden": "OAuth credentials are encrypted and hidden. To update credentials, delete the connection and create a new one.",
 			"selectTenantForUrl": "Select tenant and environment to generate URL",
-			"toastUpdated": "Zoho Books connection updated successfully"
+			"toastUpdated": "Zoho Books connection updated successfully",
+			"attachPaymentGateways": "Attach payment gateways to invoices",
+			"attachPaymentGatewaysDesc": "Adds pay online links to synced invoices.",
+			"paymentGateways": "Payment gateways",
+			"paymentGatewaysDesc": "Select the gateways to show on synced invoices. Each must be set up under Online Payments in Zoho Books.",
+			"paypalPaymentMethod": "PayPal payment method",
+			"paypalPaymentMethodDesc": "How customers pay through PayPal on synced invoices.",
+			"paypalPaymentMethodStandard": "Standard",
+			"paypalPaymentMethodAdaptive": "Adaptive"
 		},
 		"quickBooks": {
 			"descriptionEdit": "Update your QuickBooks connection settings.",
