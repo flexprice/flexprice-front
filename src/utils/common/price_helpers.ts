@@ -14,6 +14,8 @@ import { PERCENTAGE_BILLING_MODEL, PercentageBillingModel, decimalAmountToPercen
 export interface NormalizedPriceDisplay {
 	amount: string; // The amount to display
 	symbol: string; // Currency/unit symbol to display
+	/** Backend display string for a saved price ("₹0.00000025"). Absent for overrides and unsaved amounts. */
+	displayAmount?: string;
 	tiers: CreatePriceTier[] | null; // Pricing tiers (null if not tiered)
 	billingModel: BILLING_MODEL | 'SLAB_TIERED' | PercentageBillingModel; // Billing model
 	tierMode: TIER_MODE; // Tier mode (VOLUME or SLAB)
@@ -125,9 +127,18 @@ export const normalizePriceDisplay = (
 	// Step 6: Extract transform quantity
 	const transformQuantity = override?.transform_quantity || price.transform_quantity || null;
 
+	// A saved price already has a formatted display string. An override replaces the amount, so the
+	// saved string would be stale. Custom units use their own display field, not the fiat one.
+	const displayAmount = override
+		? undefined
+		: isCustomPriceUnit
+			? price.display_price_unit_amount || undefined
+			: price.display_amount || undefined;
+
 	return {
 		amount,
 		symbol,
+		displayAmount,
 		tiers,
 		billingModel,
 		tierMode,
@@ -142,10 +153,9 @@ export const normalizePriceDisplay = (
  * @param normalized - The normalized price display data
  * @returns Formatted price string for display
  */
-// Backend amounts can carry full floating-point precision (e.g. a per-unit rate computed as
-// amount/quantity yielding "0.066666666666667"). Display doesn't need more than this many decimal
-// places - values with fewer decimals are returned untouched, so the common 2-decimal case is
-// unaffected.
+// Fallback for a raw amount that has no backend display string (an override, or a float tail
+// such as "0.066666666666667"). A saved price never reaches this: fiat uses display_amount and a
+// custom unit uses display_price_unit_amount.
 const MAX_DISPLAY_DECIMALS = 6;
 
 const capDisplayDecimals = (amount: string, maxDecimals: number = MAX_DISPLAY_DECIMALS): string => {
@@ -163,19 +173,24 @@ const capDisplayDecimals = (amount: string, maxDecimals: number = MAX_DISPLAY_DE
 export const formatPercentageAmount = (amount: string): string =>
 	`${formatAmount(capDisplayDecimals(decimalAmountToPercentage(amount || '0')))}%`;
 
+const formatCurrencyAmount = (normalized: NormalizedPriceDisplay): string => {
+	const { amount, symbol, displayAmount } = normalized;
+	return displayAmount || `${symbol}${formatAmount(capDisplayDecimals(amount))}`;
+};
+
 export const formatPriceDisplay = (normalized: NormalizedPriceDisplay): string => {
 	const { amount, symbol, billingModel, transformQuantity, tiers } = normalized;
 
 	switch (billingModel) {
 		case BILLING_MODEL.FLAT_FEE:
-			return `${symbol}${formatAmount(capDisplayDecimals(amount))}`;
+			return formatCurrencyAmount(normalized);
 
 		case PERCENTAGE_BILLING_MODEL:
 			return formatPercentageAmount(amount);
 
 		case BILLING_MODEL.PACKAGE: {
 			const divideBy = transformQuantity?.divide_by || 1;
-			return `${symbol}${formatAmount(capDisplayDecimals(amount))} / ${divideBy} units`;
+			return `${formatCurrencyAmount(normalized)} / ${divideBy} units`;
 		}
 
 		case BILLING_MODEL.TIERED:
@@ -185,7 +200,7 @@ export const formatPriceDisplay = (normalized: NormalizedPriceDisplay): string =
 		}
 
 		default:
-			return `${symbol}${formatAmount(capDisplayDecimals(amount))}`;
+			return formatCurrencyAmount(normalized);
 	}
 };
 

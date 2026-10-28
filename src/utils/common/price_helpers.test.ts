@@ -44,6 +44,33 @@ describe('formatPriceDisplay', () => {
 		).toBe('$0.066667 / 15 units');
 	});
 
+	it('shows the backend display_amount for a saved fiat per-token rate', () => {
+		expect(formatPriceDisplay(normalizePriceDisplay(savedPrice('0.00000025', '₹0.00000025', 'INR')))).toBe('₹0.00000025');
+	});
+
+	it('shows the custom-unit display string, not the converted fiat display_amount', () => {
+		const price = {
+			amount: '0.0000025',
+			display_amount: '₹0.0000025',
+			price_unit_amount: '0.00000025',
+			display_price_unit_amount: 'CR0.00000025',
+			currency: 'INR',
+			price_unit_type: PRICE_UNIT_TYPE.CUSTOM,
+			billing_model: BILLING_MODEL.FLAT_FEE,
+			tier_mode: TIER_MODE.VOLUME,
+			tiers: null,
+			transform_quantity: null,
+			metadata: null,
+		} as unknown as Price;
+
+		expect(formatPriceDisplay(normalizePriceDisplay(price))).toBe('CR0.00000025');
+	});
+
+	it('formats an override from its amount when the saved display_amount is stale', () => {
+		const price = savedPrice('0.00000025', '$0.00000025');
+		expect(formatPriceDisplay(normalizePriceDisplay(price, { amount: '1.50' } as never))).toBe('$1.50');
+	});
+
 	it('caps the first tier unit amount for TIERED billing', () => {
 		expect(
 			formatPriceDisplay({
@@ -54,6 +81,19 @@ describe('formatPriceDisplay', () => {
 		).toBe('starts at $0.066667 per unit');
 	});
 });
+
+const savedPrice = (amount: string, displayAmount: string, currency = 'USD'): Price =>
+	({
+		amount,
+		display_amount: displayAmount,
+		currency,
+		billing_model: BILLING_MODEL.FLAT_FEE,
+		tier_mode: TIER_MODE.VOLUME,
+		price_unit_type: PRICE_UNIT_TYPE.FIAT,
+		tiers: null,
+		transform_quantity: null,
+		metadata: null,
+	}) as unknown as Price;
 
 const percentagePrice = (amount: string, overrides: Partial<Price> = {}): Price =>
 	({
