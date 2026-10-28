@@ -51,7 +51,7 @@ export enum ENTITLEMENT_GRANT_STATUS {
 
 /**
  * What a grant entitlement funds: one feature, or every usage line on a subscription.
- * A subscription grant has no feature and is measured in money.
+ * A subscription entitlement grant has no feature and is measured in money.
  */
 export enum ENTITLEMENT_GRANT_SCOPE {
 	FEATURE = 'feature',
@@ -94,7 +94,7 @@ export interface Entitlement extends BaseModel {
 	readonly grant_duration_unit?: ENTITLEMENT_GRANT_DURATION_UNIT;
 	readonly grant_allocation_behavior?: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR;
 	readonly aggregation_mode?: ENTITLEMENT_AGGREGATION_MODE;
-	/** `subscription` for a subscription grant, which has no feature. */
+	/** `subscription` for a subscription entitlement grant, which has no feature. */
 	readonly grant_scope?: ENTITLEMENT_GRANT_SCOPE;
 }
 

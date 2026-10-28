@@ -70,8 +70,8 @@ export interface EntitlementSource {
 
 export default CustomerUsage;
 
-/** A subscription grant for usage views: a dollar allowance over every usage line, and its windows. */
-export interface SubscriptionGrantUsage {
+/** A subscription entitlement grant for usage views: a dollar allowance over every usage line, and its windows. */
+export interface SubscriptionEntitlementGrantUsage {
 	readonly subscription_id: string;
 	readonly currency: string;
 	readonly entitlement: Entitlement;

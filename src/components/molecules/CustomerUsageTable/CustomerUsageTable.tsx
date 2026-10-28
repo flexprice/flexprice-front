@@ -8,7 +8,7 @@ import CustomerUsage, {
 	EntitlementBudget,
 	EntitlementSource,
 	ENTITLEMENT_SOURCE_ENTITY_TYPE,
-	type SubscriptionGrantUsage,
+	type SubscriptionEntitlementGrantUsage,
 } from '@/models/CustomerUsage';
 import { ENTITLEMENT_AGGREGATION_MODE, GrantAllowanceState } from '@/models/Entitlement';
 import { formatCurrency } from '@/constants/common';
@@ -21,7 +21,7 @@ import { formatGrantPeriod } from '@/utils/entitlement/allowanceLabel';
 interface Props {
 	data: CustomerUsage[];
 	/** Dollar allowances over every usage line of a subscription, listed above the features. */
-	subscriptionGrants?: SubscriptionGrantUsage[];
+	subscriptionEntitlementGrants?: SubscriptionEntitlementGrantUsage[];
 	allowRedirect?: boolean;
 	/** Needed to link a subscription source — its route is nested under the customer. */
 	customerId?: string;
@@ -75,9 +75,9 @@ interface UsageRow {
 	leadsFeature: boolean;
 }
 
-/** A subscription grant's row. */
+/** A subscription entitlement grant's row. */
 interface GrantRow {
-	grant: SubscriptionGrantUsage;
+	grant: SubscriptionEntitlementGrantUsage;
 }
 
 type TableRow = UsageRow | GrantRow;
@@ -101,7 +101,7 @@ const sourceOf = (row: UsageRow): EntitlementSource | undefined => {
 	return (row.usage.sources ?? []).find((s) => s.entity_id === row.budget!.source_entity_id);
 };
 
-const CustomerUsageTable: FC<Props> = ({ data, subscriptionGrants = [], allowRedirect = true, customerId }) => {
+const CustomerUsageTable: FC<Props> = ({ data, subscriptionEntitlementGrants = [], allowRedirect = true, customerId }) => {
 	const { t } = useTranslation('customers');
 	// The cadence words ('day', 'billing period') live in the catalog bundle.
 	const { t: tCatalog } = useTranslation('catalog');
@@ -112,14 +112,14 @@ const CustomerUsageTable: FC<Props> = ({ data, subscriptionGrants = [], allowRed
 
 	const rows: TableRow[] = useMemo(
 		() => [
-			...subscriptionGrants.map<GrantRow>((grant) => ({ grant })),
+			...subscriptionEntitlementGrants.map<GrantRow>((grant) => ({ grant })),
 			...data.flatMap<UsageRow>((usage) =>
 				usage.buckets?.length
 					? usage.buckets.map((budget, i) => ({ usage, budget, leadsFeature: i === 0 }))
 					: [{ usage, leadsFeature: true }],
 			),
 		],
-		[data, subscriptionGrants],
+		[data, subscriptionEntitlementGrants],
 	);
 
 	const columnData: ColumnData<TableRow>[] = useMemo(() => {
@@ -148,7 +148,7 @@ const CustomerUsageTable: FC<Props> = ({ data, subscriptionGrants = [], allowRed
 		};
 
 		const grantMoney = (row: GrantRow, value?: string | null) => formatCurrency(value ?? '0', row.grant.currency);
-		const allUsageLabel = tCatalog('entitlements.subscriptionGrants.featureName');
+		const allUsageLabel = tCatalog('entitlements.subscriptionEntitlementGrants.featureName');
 
 		return [
 			{
@@ -177,7 +177,7 @@ const CustomerUsageTable: FC<Props> = ({ data, subscriptionGrants = [], allowRed
 				render(row) {
 					if (isGrantRow(row)) {
 						const redirectUrl = getSubscriptionRedirectUrl(customerId, row.grant.subscription_id);
-						const label = tCatalog('entitlements.subscriptionGrants.source');
+						const label = tCatalog('entitlements.subscriptionEntitlementGrants.source');
 						return redirectUrl ? (
 							<RedirectCell allowRedirect={allowRedirect} redirectUrl={redirectUrl}>
 								{label}

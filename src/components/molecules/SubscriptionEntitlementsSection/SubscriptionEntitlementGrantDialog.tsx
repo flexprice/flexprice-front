@@ -12,10 +12,10 @@ import {
 	ENTITLEMENT_GRANT_MEASURE,
 	type Entitlement,
 } from '@/models/Entitlement';
-import type { SubscriptionGrantDraft } from '@/types/dto/Entitlement';
+import type { SubscriptionEntitlementGrantDraft } from '@/types/dto/Entitlement';
 import { getCurrencySymbol } from '@/constants/common';
 
-interface SubscriptionGrantDialogProps {
+interface SubscriptionEntitlementGrantDialogProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	currency: string;
@@ -24,11 +24,11 @@ interface SubscriptionGrantDialogProps {
 	/** Edits this grant's quota when set; creates a new grant otherwise. Mount per open, so the form starts fresh. */
 	grant?: Entitlement | null;
 	/** Hands the new grant back instead of saving it, for a subscription that does not exist yet. */
-	onDraft?: (draft: SubscriptionGrantDraft) => void;
+	onDraft?: (draft: SubscriptionEntitlementGrantDraft) => void;
 	onSaved?: () => void;
 }
 
-const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
+const SubscriptionEntitlementGrantDialog: FC<SubscriptionEntitlementGrantDialogProps> = ({
 	isOpen,
 	onOpenChange,
 	currency,
@@ -52,7 +52,7 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 
 	const isPeriod = unit === ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD;
 
-	const draft = (): SubscriptionGrantDraft => ({
+	const draft = (): SubscriptionEntitlementGrantDraft => ({
 		grant_quota: quota.trim(),
 		grant_duration_unit: unit,
 		grant_duration_value: isPeriod ? undefined : Number(every),
@@ -67,7 +67,7 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 			if (isEdit && grant) {
 				return await EntitlementApi.update(grant.id, { grant_quota: quota.trim() });
 			}
-			return await EntitlementApi.createSubscriptionGrant({
+			return await EntitlementApi.createSubscriptionEntitlementGrant({
 				...draft(),
 				entity_type: ENTITLEMENT_ENTITY_TYPE.SUBSCRIPTION,
 				entity_id: subscriptionId ?? '',
@@ -75,12 +75,16 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 			});
 		},
 		onSuccess: () => {
-			toast.success(isEdit ? t('entitlements.subscriptionGrants.updateSuccess') : t('entitlements.subscriptionGrants.createSuccess'));
+			toast.success(
+				isEdit
+					? t('entitlements.subscriptionEntitlementGrants.updateSuccess')
+					: t('entitlements.subscriptionEntitlementGrants.createSuccess'),
+			);
 			onSaved?.();
 			onOpenChange(false);
 		},
 		onError: (error: Error) => {
-			toast.error(error.message || t('entitlements.subscriptionGrants.saveFailed'));
+			toast.error(error.message || t('entitlements.subscriptionEntitlementGrants.saveFailed'));
 		},
 	});
 
@@ -88,10 +92,10 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 		const next: typeof errors = {};
 		const amount = Number(quota);
 		if (!quota.trim() || !Number.isFinite(amount) || amount <= 0) {
-			next.quota = t('entitlements.subscriptionGrants.quotaRequired');
+			next.quota = t('entitlements.subscriptionEntitlementGrants.quotaRequired');
 		}
 		if (!isEdit && !isPeriod && (!Number.isInteger(Number(every)) || Number(every) < 1)) {
-			next.every = t('entitlements.subscriptionGrants.everyRequired');
+			next.every = t('entitlements.subscriptionEntitlementGrants.everyRequired');
 		}
 		setErrors(next);
 		if (Object.keys(next).length > 0) {
@@ -109,33 +113,42 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 		<Dialog
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
-			title={isEdit ? t('entitlements.subscriptionGrants.editTitle') : t('entitlements.subscriptionGrants.createTitle')}
-			description={isEdit ? t('entitlements.subscriptionGrants.editDescription') : t('entitlements.subscriptionGrants.createDescription')}
+			title={
+				isEdit ? t('entitlements.subscriptionEntitlementGrants.editTitle') : t('entitlements.subscriptionEntitlementGrants.createTitle')
+			}
+			description={
+				isEdit
+					? t('entitlements.subscriptionEntitlementGrants.editDescription')
+					: t('entitlements.subscriptionEntitlementGrants.createDescription')
+			}
 			scrollBody
 			className='w-full max-w-xl'>
 			<div className='space-y-5'>
 				<Input
 					id='subscription-grant-quota'
-					label={t('entitlements.subscriptionGrants.quotaLabel')}
+					label={t('entitlements.subscriptionEntitlementGrants.quotaLabel')}
 					type='number'
 					value={quota}
 					onChange={setQuota}
 					inputPrefix={getCurrencySymbol(currency)}
-					placeholder={t('entitlements.subscriptionGrants.quotaPlaceholder')}
+					placeholder={t('entitlements.subscriptionEntitlementGrants.quotaPlaceholder')}
 					error={errors.quota}
 				/>
 
 				{!isEdit && (
 					<>
 						<Select
-							label={t('entitlements.subscriptionGrants.windowLabel')}
+							label={t('entitlements.subscriptionEntitlementGrants.windowLabel')}
 							value={unit}
 							onChange={(value) => setUnit(value as ENTITLEMENT_GRANT_DURATION_UNIT)}
 							options={[
-								{ value: ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD, label: t('entitlements.subscriptionGrants.windowPeriod') },
-								{ value: ENTITLEMENT_GRANT_DURATION_UNIT.HOUR, label: t('entitlements.subscriptionGrants.windowHour') },
-								{ value: ENTITLEMENT_GRANT_DURATION_UNIT.DAY, label: t('entitlements.subscriptionGrants.windowDay') },
-								{ value: ENTITLEMENT_GRANT_DURATION_UNIT.WEEK, label: t('entitlements.subscriptionGrants.windowWeek') },
+								{
+									value: ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD,
+									label: t('entitlements.subscriptionEntitlementGrants.windowPeriod'),
+								},
+								{ value: ENTITLEMENT_GRANT_DURATION_UNIT.HOUR, label: t('entitlements.subscriptionEntitlementGrants.windowHour') },
+								{ value: ENTITLEMENT_GRANT_DURATION_UNIT.DAY, label: t('entitlements.subscriptionEntitlementGrants.windowDay') },
+								{ value: ENTITLEMENT_GRANT_DURATION_UNIT.WEEK, label: t('entitlements.subscriptionEntitlementGrants.windowWeek') },
 							]}
 						/>
 
@@ -143,24 +156,24 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 							<div className='grid grid-cols-2 gap-4'>
 								<Input
 									id='subscription-grant-every'
-									label={t('entitlements.subscriptionGrants.everyLabel')}
+									label={t('entitlements.subscriptionEntitlementGrants.everyLabel')}
 									type='number'
 									value={every}
 									onChange={setEvery}
 									error={errors.every}
 								/>
 								<Select
-									label={t('entitlements.subscriptionGrants.allocationLabel')}
+									label={t('entitlements.subscriptionEntitlementGrants.allocationLabel')}
 									value={allocation}
 									onChange={(value) => setAllocation(value as ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR)}
 									options={[
 										{
 											value: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR.FIRST_USAGE,
-											label: t('entitlements.subscriptionGrants.allocationFirstUsage'),
+											label: t('entitlements.subscriptionEntitlementGrants.allocationFirstUsage'),
 										},
 										{
 											value: ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR.UNIT_START,
-											label: t('entitlements.subscriptionGrants.allocationUnitStart'),
+											label: t('entitlements.subscriptionEntitlementGrants.allocationUnitStart'),
 										},
 									]}
 								/>
@@ -169,7 +182,7 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 
 						<FieldWithInfo
 							label={t('entitlements.addDrawer.stackingLabel')}
-							description={t('entitlements.subscriptionGrants.stackingInfo')}
+							description={t('entitlements.subscriptionEntitlementGrants.stackingInfo')}
 							infoAriaLabel={t('entitlements.addDrawer.infoAria', { field: t('entitlements.addDrawer.stackingLabel') })}>
 							<Select
 								value={mode}
@@ -184,18 +197,18 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 
 						<div className='grid grid-cols-2 gap-4'>
 							<DatePicker
-								label={t('entitlements.subscriptionGrants.startDateLabel')}
+								label={t('entitlements.subscriptionEntitlementGrants.startDateLabel')}
 								placeholder={t(
 									onDraft
-										? 'entitlements.subscriptionGrants.startDateHintNewSubscription'
-										: 'entitlements.subscriptionGrants.startDateHint',
+										? 'entitlements.subscriptionEntitlementGrants.startDateHintNewSubscription'
+										: 'entitlements.subscriptionEntitlementGrants.startDateHint',
 								)}
 								date={startDate}
 								setDate={setStartDate}
 								clearable
 							/>
 							<DatePicker
-								label={t('entitlements.subscriptionGrants.endDateLabel')}
+								label={t('entitlements.subscriptionEntitlementGrants.endDateLabel')}
 								date={endDate}
 								setDate={setEndDate}
 								minDate={startDate}
@@ -210,7 +223,7 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 						{tc('actions.cancel')}
 					</Button>
 					<Button onClick={handleSave} isLoading={isPending} disabled={isPending}>
-						{t('entitlements.subscriptionGrants.save')}
+						{t('entitlements.subscriptionEntitlementGrants.save')}
 					</Button>
 				</div>
 			</div>
@@ -218,4 +231,4 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
 	);
 };
 
-export default SubscriptionGrantDialog;
+export default SubscriptionEntitlementGrantDialog;

@@ -17,7 +17,7 @@ import EntitlementApi from '@/api/EntitlementApi';
 import { FEATURE_TYPE } from '@/models/Feature';
 import { ENTITLEMENT_ENTITY_TYPE, ENTITLEMENT_GRANT_MEASURE, type Entitlement } from '@/models/Entitlement';
 import { formatCurrency } from '@/constants/common';
-import SubscriptionGrantDialog from './SubscriptionGrantDialog';
+import SubscriptionEntitlementGrantDialog from './SubscriptionEntitlementGrantDialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { BsThreeDots } from 'react-icons/bs';
@@ -35,19 +35,20 @@ import {
 import { JsonObject } from '@/types/common';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
-/** A subscription grant shown as a row: a dollar allowance over every usage line. */
-interface SubscriptionGrantRow {
-	rowType: 'subscription_grant';
+/** A subscription entitlement grant shown as a row: a dollar allowance over every usage line. */
+interface SubscriptionEntitlementGrantRow {
+	rowType: 'subscription_entitlement_grant';
 	grant: Entitlement;
 }
 
-type EntitlementRow = EnrichedSubscriptionEntitlement | SubscriptionGrantRow;
+type EntitlementRow = EnrichedSubscriptionEntitlement | SubscriptionEntitlementGrantRow;
 
-const isGrantRow = (row: EntitlementRow): row is SubscriptionGrantRow => 'rowType' in row && row.rowType === 'subscription_grant';
+const isGrantRow = (row: EntitlementRow): row is SubscriptionEntitlementGrantRow =>
+	'rowType' in row && row.rowType === 'subscription_entitlement_grant';
 
 interface SubscriptionEntitlementsSectionProps {
 	subscriptionId: string;
-	/** Subscription currency, for subscription grant amounts. */
+	/** Subscription currency, for subscription entitlement grant amounts. */
 	currency?: string;
 	/** When true, add and delete entitlement actions are disabled. */
 	readOnly?: boolean;
@@ -183,9 +184,13 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		[entitlementsData?.features, rawSubscriptionEntitlements?.items, planEntitlements?.items],
 	);
 
-	const grantRows = useMemo<SubscriptionGrantRow[]>(
-		() => (entitlementsData?.subscription_grants?.entitlements ?? []).map((grant) => ({ rowType: 'subscription_grant' as const, grant })),
-		[entitlementsData?.subscription_grants],
+	const grantRows = useMemo<SubscriptionEntitlementGrantRow[]>(
+		() =>
+			(entitlementsData?.subscription_entitlement_grants?.entitlements ?? []).map((grant) => ({
+				rowType: 'subscription_entitlement_grant' as const,
+				grant,
+			})),
+		[entitlementsData?.subscription_entitlement_grants],
 	);
 
 	const rows: EntitlementRow[] = [...grantRows, ...entitlements];
@@ -195,12 +200,12 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 	const { mutate: deleteGrant, isPending: isDeletingGrant } = useMutation({
 		mutationFn: async (id: string) => await EntitlementApi.delete(id),
 		onSuccess: () => {
-			toast.success(t('entitlements.subscriptionGrants.deleteSuccess'));
+			toast.success(t('entitlements.subscriptionEntitlementGrants.deleteSuccess'));
 			setGrantToDelete(null);
 			invalidateEntitlements();
 		},
 		onError: (error: Error) => {
-			toast.error(error.message || t('entitlements.subscriptionGrants.deleteFailed'));
+			toast.error(error.message || t('entitlements.subscriptionEntitlementGrants.deleteFailed'));
 		},
 	});
 
@@ -457,7 +462,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			title: t('entitlements.overridesTable.columnFeatureName'),
 			render: (row) =>
 				isGrantRow(row) ? (
-					<span>{t('entitlements.subscriptionGrants.featureName')}</span>
+					<span>{t('entitlements.subscriptionEntitlementGrants.featureName')}</span>
 				) : (
 					<span>{row.feature?.name || tc('labels.unknownFeature')}</span>
 				),
@@ -466,7 +471,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			title: t('entitlements.subscriptionEdit.columnSource'),
 			render: (row) => (
 				<span className='capitalize text-sm text-content-tertiary'>
-					{isGrantRow(row) ? t('entitlements.subscriptionGrants.source') : getSourceLabel(row)}
+					{isGrantRow(row) ? t('entitlements.subscriptionEntitlementGrants.source') : getSourceLabel(row)}
 				</span>
 			),
 		},
@@ -512,7 +517,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 							}}>
 							<DropdownMenu open={dropdownOpen === row.grant.id} onOpenChange={(open) => setDropdownOpen(open ? row.grant.id : null)}>
 								<DropdownMenuTrigger asChild>
-									<button className='focus:outline-none' aria-label={t('entitlements.subscriptionGrants.actionsMenu')}>
+									<button className='focus:outline-none' aria-label={t('entitlements.subscriptionEntitlementGrants.actionsMenu')}>
 										<BsThreeDots className='text-base text-muted-foreground hover:text-foreground transition-colors' />
 									</button>
 								</DropdownMenuTrigger>
@@ -522,7 +527,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 										onSelect={() => openGrantDialog(row.grant)}
 										className='flex gap-2 items-center cursor-pointer'>
 										<Pencil className='h-4 w-4' />
-										<span>{t('entitlements.subscriptionGrants.editQuota')}</span>
+										<span>{t('entitlements.subscriptionEntitlementGrants.editQuota')}</span>
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										disabled={!canWriteEntitlement}
@@ -656,10 +661,10 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='end'>
 				<DropdownMenuItem onSelect={() => setAddDrawerOpen(true)} className='cursor-pointer'>
-					{t('entitlements.subscriptionGrants.addFeatureEntitlement')}
+					{t('entitlements.subscriptionEntitlementGrants.addFeatureEntitlement')}
 				</DropdownMenuItem>
 				<DropdownMenuItem onSelect={() => openGrantDialog(null)} className='cursor-pointer'>
-					{t('entitlements.subscriptionGrants.addSubscriptionGrant')}
+					{t('entitlements.subscriptionEntitlementGrants.addSubscriptionEntitlementGrant')}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
@@ -713,7 +718,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			</Dialog>
 
 			{grantDialogOpen && (
-				<SubscriptionGrantDialog
+				<SubscriptionEntitlementGrantDialog
 					key={grantToEdit?.id ?? 'new'}
 					isOpen={grantDialogOpen}
 					onOpenChange={setGrantDialogOpen}
@@ -725,8 +730,8 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 			)}
 
 			<Dialog
-				title={t('entitlements.subscriptionGrants.deleteConfirmTitle')}
-				description={t('entitlements.subscriptionGrants.deleteConfirmDescription')}
+				title={t('entitlements.subscriptionEntitlementGrants.deleteConfirmTitle')}
+				description={t('entitlements.subscriptionEntitlementGrants.deleteConfirmDescription')}
 				titleClassName='text-lg font-normal text-content-heading'
 				isOpen={!!grantToDelete}
 				onOpenChange={(open) => !open && setGrantToDelete(null)}

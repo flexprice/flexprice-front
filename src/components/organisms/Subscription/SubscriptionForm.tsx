@@ -18,7 +18,7 @@ import { PlanResponse } from '@/types';
 import { useCallback, useMemo, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import SubscriptionCreditGrantTable from '@/components/molecules/CreditGrant/SubscriptionCreditGrantTable';
-import { SubscriptionGrantDraftTable } from '@/components/molecules/SubscriptionEntitlementsSection';
+import { SubscriptionEntitlementGrantDraftTable } from '@/components/molecules/SubscriptionEntitlementsSection';
 import SubscriptionAddonTable from '@/components/molecules/SubscriptionAddonTable/SubscriptionAddonTable';
 import { BILLING_CYCLE } from '@/models/Subscription';
 import {
@@ -1144,9 +1144,9 @@ const SubscriptionForm = ({
 			{/* Subscription entitlements: dollar allowances shared by every usage line */}
 			{state.selectedPlan && !isLoadingPlanDetails && (
 				<div className='mt-6 pt-6 border-t border-line'>
-					<SubscriptionGrantDraftTable
-						data={state.subscriptionGrants}
-						onChange={(data) => setState((prev) => ({ ...prev, subscriptionGrants: data }))}
+					<SubscriptionEntitlementGrantDraftTable
+						data={state.subscriptionEntitlementGrants}
+						onChange={(data) => setState((prev) => ({ ...prev, subscriptionEntitlementGrants: data }))}
 						currency={state.currency}
 						disabled={isDisabled}
 					/>
