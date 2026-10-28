@@ -264,7 +264,15 @@ const CustomerUsageTable: FC<Props> = ({ data, subscriptionGrants = [], allowRed
 			{
 				title: t('usageTable.columns.value'),
 				render(row) {
-					if (isGrantRow(row)) return <span>{withPeriod(grantMoney(row, row.grant.entitlement.grant_quota), row.grant.entitlement)}</span>;
+					if (isGrantRow(row))
+						return (
+							<span>
+								{withPeriod(grantMoney(row, row.grant.entitlement.grant_quota), {
+									grant_duration_unit: row.grant.entitlement.grant_duration_unit,
+									grant_duration_value: row.grant.entitlement.grant_duration_value ?? undefined,
+								})}
+							</span>
+						);
 					if (row.budget) {
 						if (row.budget.grant_unlimited || !row.budget.grant_quota) return <span>{t('usageTable.unlimitedLabel')}</span>;
 						return <span>{withPeriod(formatAmount(row.budget.grant_quota), row.budget)}</span>;

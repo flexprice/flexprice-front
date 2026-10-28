@@ -109,6 +109,9 @@ export interface CreateSubscriptionGrantRequest {
 	end_date?: string;
 }
 
+/** A subscription entitlement sent with POST /subscriptions; the subscription and measure are implied. */
+export type SubscriptionGrantDraft = Omit<CreateSubscriptionGrantRequest, 'entity_type' | 'entity_id' | 'grant_measure'>;
+
 export interface UpdateEntitlementRequest {
 	plan_id?: string;
 	feature_id?: string;

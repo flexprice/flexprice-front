@@ -15,11 +15,7 @@ import type { SubscriptionEntitlementEffective } from '@/types/dto/Subscription'
 import SubscriptionApi from '@/api/SubscriptionApi';
 import EntitlementApi from '@/api/EntitlementApi';
 import { FEATURE_TYPE } from '@/models/Feature';
-import {
-	ENTITLEMENT_ENTITY_TYPE,
-	ENTITLEMENT_GRANT_MEASURE,
-	type Entitlement,
-} from '@/models/Entitlement';
+import { ENTITLEMENT_ENTITY_TYPE, ENTITLEMENT_GRANT_MEASURE, type Entitlement } from '@/models/Entitlement';
 import { formatCurrency } from '@/constants/common';
 import SubscriptionGrantDialog from './SubscriptionGrantDialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -476,8 +472,7 @@ const SubscriptionEntitlementsSection: FC<SubscriptionEntitlementsSectionProps> 
 		},
 		{
 			title: t('entitlements.overridesTable.columnFeatureType'),
-			render: (row) =>
-				isGrantRow(row) ? '--' : getFeatureTypeChip(row.feature_type),
+			render: (row) => (isGrantRow(row) ? '--' : getFeatureTypeChip(row.feature_type)),
 		},
 		{
 			title: t('entitlements.overridesTable.columnMeasure'),

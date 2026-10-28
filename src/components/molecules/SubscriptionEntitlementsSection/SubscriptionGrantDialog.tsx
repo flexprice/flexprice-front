@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Button, DatePicker, Dialog, Input, Select } from '@/components/atoms';
+import { Button, DatePicker, Dialog, FieldWithInfo, Input, Select } from '@/components/atoms';
 import EntitlementApi from '@/api/EntitlementApi';
 import {
 	ENTITLEMENT_AGGREGATION_MODE,
@@ -12,19 +12,31 @@ import {
 	ENTITLEMENT_GRANT_MEASURE,
 	type Entitlement,
 } from '@/models/Entitlement';
+import type { SubscriptionGrantDraft } from '@/types/dto/Entitlement';
 import { getCurrencySymbol } from '@/constants/common';
 
 interface SubscriptionGrantDialogProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	subscriptionId: string;
 	currency: string;
+	/** Creates the grant on this subscription. Unused when onDraft is set. */
+	subscriptionId?: string;
 	/** Edits this grant's quota when set; creates a new grant otherwise. Mount per open, so the form starts fresh. */
 	grant?: Entitlement | null;
-	onSaved: () => void;
+	/** Hands the new grant back instead of saving it, for a subscription that does not exist yet. */
+	onDraft?: (draft: SubscriptionGrantDraft) => void;
+	onSaved?: () => void;
 }
 
-const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({ isOpen, onOpenChange, subscriptionId, currency, grant, onSaved }) => {
+const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({
+	isOpen,
+	onOpenChange,
+	currency,
+	subscriptionId,
+	grant,
+	onDraft,
+	onSaved,
+}) => {
 	const { t } = useTranslation('catalog');
 	const { t: tc } = useTranslation('common');
 	const isEdit = !!grant;
@@ -40,27 +52,31 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({ isOpen, onO
 
 	const isPeriod = unit === ENTITLEMENT_GRANT_DURATION_UNIT.SUBSCRIPTION_PERIOD;
 
+	const draft = (): SubscriptionGrantDraft => ({
+		grant_quota: quota.trim(),
+		grant_duration_unit: unit,
+		grant_duration_value: isPeriod ? undefined : Number(every),
+		grant_allocation_behavior: isPeriod ? undefined : allocation,
+		aggregation_mode: mode,
+		start_date: startDate?.toISOString(),
+		end_date: endDate?.toISOString(),
+	});
+
 	const { mutate: save, isPending } = useMutation({
 		mutationFn: async () => {
 			if (isEdit && grant) {
 				return await EntitlementApi.update(grant.id, { grant_quota: quota.trim() });
 			}
 			return await EntitlementApi.createSubscriptionGrant({
+				...draft(),
 				entity_type: ENTITLEMENT_ENTITY_TYPE.SUBSCRIPTION,
-				entity_id: subscriptionId,
+				entity_id: subscriptionId ?? '',
 				grant_measure: ENTITLEMENT_GRANT_MEASURE.AMOUNT,
-				grant_quota: quota.trim(),
-				grant_duration_unit: unit,
-				grant_duration_value: isPeriod ? undefined : Number(every),
-				grant_allocation_behavior: isPeriod ? undefined : allocation,
-				aggregation_mode: mode,
-				start_date: startDate?.toISOString(),
-				end_date: endDate?.toISOString(),
 			});
 		},
 		onSuccess: () => {
 			toast.success(isEdit ? t('entitlements.subscriptionGrants.updateSuccess') : t('entitlements.subscriptionGrants.createSuccess'));
-			onSaved();
+			onSaved?.();
 			onOpenChange(false);
 		},
 		onError: (error: Error) => {
@@ -78,9 +94,15 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({ isOpen, onO
 			next.every = t('entitlements.subscriptionGrants.everyRequired');
 		}
 		setErrors(next);
-		if (Object.keys(next).length === 0) {
-			save();
+		if (Object.keys(next).length > 0) {
+			return;
 		}
+		if (onDraft && !isEdit) {
+			onDraft(draft());
+			onOpenChange(false);
+			return;
+		}
+		save();
 	};
 
 	return (
@@ -145,20 +167,29 @@ const SubscriptionGrantDialog: FC<SubscriptionGrantDialogProps> = ({ isOpen, onO
 							</div>
 						)}
 
-						<Select
-							label={t('entitlements.subscriptionGrants.modeLabel')}
-							value={mode}
-							onChange={(value) => setMode(value as ENTITLEMENT_AGGREGATION_MODE)}
-							options={[
-								{ value: ENTITLEMENT_AGGREGATION_MODE.ADDITIVE, label: t('entitlements.subscriptionGrants.modeAdditiveOption') },
-								{ value: ENTITLEMENT_AGGREGATION_MODE.PARALLEL, label: t('entitlements.subscriptionGrants.modeParallelOption') },
-							]}
-						/>
+						<FieldWithInfo
+							label={t('entitlements.addDrawer.stackingLabel')}
+							description={t('entitlements.subscriptionGrants.stackingInfo')}
+							infoAriaLabel={t('entitlements.addDrawer.infoAria', { field: t('entitlements.addDrawer.stackingLabel') })}>
+							<Select
+								value={mode}
+								ariaLabel={t('entitlements.addDrawer.stackingLabel')}
+								onChange={(value) => setMode(value as ENTITLEMENT_AGGREGATION_MODE)}
+								options={[
+									{ value: ENTITLEMENT_AGGREGATION_MODE.ADDITIVE, label: t('entitlements.addDrawer.stackingAdditive') },
+									{ value: ENTITLEMENT_AGGREGATION_MODE.PARALLEL, label: t('entitlements.addDrawer.stackingParallel') },
+								]}
+							/>
+						</FieldWithInfo>
 
 						<div className='grid grid-cols-2 gap-4'>
 							<DatePicker
 								label={t('entitlements.subscriptionGrants.startDateLabel')}
-								placeholder={t('entitlements.subscriptionGrants.startDateHint')}
+								placeholder={t(
+									onDraft
+										? 'entitlements.subscriptionGrants.startDateHintNewSubscription'
+										: 'entitlements.subscriptionGrants.startDateHint',
+								)}
 								date={startDate}
 								setDate={setStartDate}
 								clearable

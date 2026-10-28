@@ -1,3 +1,4 @@
+import type { SubscriptionGrantDraft } from './Entitlement';
 import {
 	BILLING_CADENCE,
 	LineItem as InvoiceLineItem,
@@ -349,6 +350,8 @@ export interface SubscriptionFxRateRow extends InlineFxRateRequest {
 }
 
 export interface CreateSubscriptionRequest {
+	/** Dollar allowances shared by every usage line, created with the subscription. */
+	subscription_grants?: SubscriptionGrantDraft[];
 	fx_rates?: InlineFxRateRequest[];
 	// Customer identification - prioritized over external_customer_id if both provided
 	customer_id?: string;

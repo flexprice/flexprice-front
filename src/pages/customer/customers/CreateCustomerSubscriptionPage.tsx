@@ -16,6 +16,7 @@ import { AddonApi, CustomerApi, PlanApi, SubscriptionApi, TaxApi, CouponApi } fr
 import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
 import { RouteNames } from '@/core/routes/Routes';
 
+import type { SubscriptionGrantDraft } from '@/types/dto/Entitlement';
 import {
 	SubscriptionPhase,
 	Coupon,
@@ -124,6 +125,7 @@ export type SubscriptionFormState = {
 	tax_rate_overrides: TaxRateOverride[];
 	entitlementOverrides: Record<string, EntitlementOverrideRequest>;
 	creditGrants: InternalCreditGrantRequest[];
+	subscriptionGrants: SubscriptionGrantDraft[];
 	enable_true_up: boolean;
 	commitmentDuration: string;
 	/** Billing customer (serialized as inheritance.invoicing_customer_external_id on create) */
@@ -325,6 +327,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		tax_rate_overrides: [],
 		entitlementOverrides: {},
 		creditGrants: [],
+		subscriptionGrants: [],
 		enable_true_up: false,
 		commitmentDuration: BILLING_PERIOD.MONTHLY.toUpperCase(),
 		invoicingCustomer: undefined,
@@ -442,6 +445,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 				tax_rate_overrides: [],
 				entitlementOverrides: {},
 				creditGrants: (subscriptionData.details.credit_grants || []).map(creditGrantToInternal),
+				subscriptionGrants: [],
 				enable_true_up: (subscriptionData.details as any).enable_true_up ?? false,
 				inheritanceCustomers: [],
 				...(() => {
@@ -881,6 +885,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 						sanitized.creditGrants.length > 0
 						? sanitized.creditGrants.map(internalToCreateRequest)
 						: undefined,
+			subscription_grants: subscriptionState.subscriptionGrants.length > 0 ? subscriptionState.subscriptionGrants : undefined,
 			enable_true_up: subscriptionState.enable_true_up,
 			commitment_duration: sanitized.commitmentDuration ? (sanitized.commitmentDuration as BILLING_PERIOD) : undefined,
 			subscription_status: isDraftParam ? SUBSCRIPTION_STATUS.DRAFT : undefined,
