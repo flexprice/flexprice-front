@@ -19,6 +19,10 @@
 			"voidSuccess": "Invoice voided successfully",
 			"downloadError": "Failed to download invoice"
 		},
+		"hostedInvoice": {
+			"menuLabel": "View hosted invoice",
+			"unavailable": "No hosted invoice link is available for this invoice"
+		},
 		"edit": {
 			"pageTitle": "Edit Invoice",
 			"detailsTitle": "Invoice Details",

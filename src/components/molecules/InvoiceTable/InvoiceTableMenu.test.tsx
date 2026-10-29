@@ -53,6 +53,7 @@ beforeAll(async () => {
 					invoices: {
 						writeDenied: 'No permission',
 						edit: { menuLabel: 'Edit Invoice', menuDisabledStatus: 'Not editable' },
+						hostedInvoice: { menuLabel: 'View hosted invoice', unavailable: 'No hosted invoice link is available' },
 						recompute: {
 							menuLabel: 'Recalculate Invoice',
 							menuDisabledStatus: 'Only draft, skipped or finalized invoices can be recalculated',
@@ -146,6 +147,14 @@ describe('InvoiceTableMenu — recalculate a draft from usage', () => {
 		// the reason is a Tooltip, so it only exists once the item is hovered
 		await user.hover(item);
 		expect(await screen.findAllByText('Already replaced')).not.toHaveLength(0);
+	});
+
+	it('opens the hosted invoice link from the search response', async () => {
+		const open = vi.spyOn(window, 'open').mockImplementation(() => null);
+		const user = await renderMenu(invoice({ hosted_invoice_url: 'https://invoice.flexprice.io/in/hit_1' }));
+		await user.click(screen.getByText('View hosted invoice'));
+		expect(open).toHaveBeenCalledWith('https://invoice.flexprice.io/in/hit_1', '_blank', 'noopener,noreferrer');
+		open.mockRestore();
 	});
 
 	it('is disabled for a one-off invoice — there is no usage behind it', async () => {
