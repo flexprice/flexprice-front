@@ -8,6 +8,7 @@ import { Subscription, SUBSCRIPTION_STATUS, PRICE_ENTITY_TYPE, ENTITY_STATUS } f
 import toast from 'react-hot-toast';
 import { RouteNames } from '@/core/routes/Routes';
 import CustomerUsageTable from '@/components/molecules/CustomerUsageTable';
+import type { SubscriptionEntitlementGrantUsage } from '@/models/CustomerUsage';
 import { UpcomingCreditGrantApplicationsTable, IntegrationMappingCard } from '@/components/molecules';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { PriceApi } from '@/api';
@@ -27,6 +28,7 @@ import {
 } from '@/types/common/QueryBuilder';
 import type { TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { BILLING_CADENCE } from '@/models/Invoice';
+import { ENTITLEMENT_AGGREGATION_MODE } from '@/models/Entitlement';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import { searchPlansForFilter } from '@/utils/filterSearchHelpers';
@@ -200,6 +202,38 @@ const CustomerOverviewTab = () => {
 		[currentPageItems, planMap],
 	);
 
+	// Subscription entitlement grants are not in the usage summary; each live subscription reports its own.
+	const liveSubscriptions = useMemo(
+		() =>
+			currentPageItems.filter(
+				(s) => s.subscription_status === SUBSCRIPTION_STATUS.ACTIVE || s.subscription_status === SUBSCRIPTION_STATUS.TRIALING,
+			),
+		[currentPageItems],
+	);
+	const grantQueries = useQueries({
+		queries: liveSubscriptions.map((sub) => ({
+			queryKey: ['subscriptionEntitlements', sub.id],
+			queryFn: async () => await SubscriptionApi.getSubscriptionEntitlements(sub.id),
+			retry: false,
+			refetchOnWindowFocus: false,
+		})),
+	});
+	const subscriptionEntitlementGrants: SubscriptionEntitlementGrantUsage[] = liveSubscriptions.flatMap((sub, i) => {
+		const grants = grantQueries[i]?.data?.subscription_entitlement_grants;
+		const allowances = grants?.grant_state?.allowances ?? [];
+		return (grants?.entitlements ?? []).map((entitlement) => {
+			const own = allowances.filter((a) => a.entitlement_id === entitlement.id);
+			// Additive grants share one pooled window, keyed to one of them; a parallel grant only has its own.
+			const pooled = entitlement.aggregation_mode !== ENTITLEMENT_AGGREGATION_MODE.PARALLEL;
+			return {
+				subscription_id: sub.id,
+				currency: sub.currency,
+				entitlement,
+				allowances: own.length || !pooled ? own : allowances,
+			};
+		});
+	});
+
 	const overrideQueries = useQueries({
 		queries: currentPageItems.map((sub) => ({
 			queryKey: ['subscriptionOverride', sub.id],
@@ -329,10 +363,14 @@ const CustomerOverviewTab = () => {
 		<div className='space-y-6'>
 			{renderSubscriptionContent()}
 
-			{(usageData?.features?.length || 0) > 0 && (
+			{((usageData?.features?.length || 0) > 0 || subscriptionEntitlementGrants.length > 0) && (
 				<Card variant='notched'>
 					<CardHeader title={t('tabPanels.overview.entitlementsCardTitle')} />
-					<CustomerUsageTable data={usageData?.features ?? []} customerId={customerId} />
+					<CustomerUsageTable
+						data={usageData?.features ?? []}
+						subscriptionEntitlementGrants={subscriptionEntitlementGrants}
+						customerId={customerId}
+					/>
 				</Card>
 			)}
 

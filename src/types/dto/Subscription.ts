@@ -1,3 +1,4 @@
+import type { SubscriptionEntitlementGrantDraft } from './Entitlement';
 import {
 	BILLING_CADENCE,
 	LineItem as InvoiceLineItem,
@@ -30,6 +31,7 @@ import {
 	INVOICE_CADENCE,
 	PriceBucketSize,
 	GrantState,
+	Entitlement,
 	ENTITLEMENT_GRANT_MEASURE,
 	ENTITLEMENT_GRANT_DURATION_UNIT,
 	ENTITLEMENT_GRANT_ALLOCATION_BEHAVIOR,
@@ -348,6 +350,8 @@ export interface SubscriptionFxRateRow extends InlineFxRateRequest {
 }
 
 export interface CreateSubscriptionRequest {
+	/** Dollar allowances shared by every usage line, created with the subscription. */
+	subscription_entitlement_grants?: SubscriptionEntitlementGrantDraft[];
 	fx_rates?: InlineFxRateRequest[];
 	// Customer identification - prioritized over external_customer_id if both provided
 	customer_id?: string;
@@ -966,6 +970,14 @@ export interface GetSubscriptionEntitlementsResponse {
 	subscription_id: string;
 	plan_id: string;
 	features: SubscriptionEntitlementFeature[];
+	/** Dollar allowances shared by every usage line; absent when the subscription has none. */
+	subscription_entitlement_grants?: SubscriptionEntitlementGrants;
+}
+
+/** The subscription's grants and the windows measured against them this period. */
+export interface SubscriptionEntitlementGrants {
+	entitlements: Entitlement[];
+	grant_state?: GrantState;
 }
 
 // =============================================================================

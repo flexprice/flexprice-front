@@ -6,6 +6,8 @@ import { FC, useState } from 'react';
 import { RefreshCw, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTranslation } from 'react-i18next';
+import LineItemGrantInfo from './LineItemGrantInfo';
+import { getGrantAllowance } from './grantAllowance';
 interface Props {
 	data: LineItem[];
 	currency?: string;
@@ -50,7 +52,7 @@ const InvoiceLineItemTable: FC<Props> = ({
 	const na = t('common:labels.na');
 	const [showZeroCharges, setShowZeroCharges] = useState(false);
 	const filteredData = data
-		.filter((item) => showZeroCharges || Number(item.amount ?? 0) !== 0)
+		.filter((item) => showZeroCharges || Number(item.amount ?? 0) !== 0 || getGrantAllowance(item) > 0)
 		.sort((a, b) => Number(b.amount ?? 0) - Number(a.amount ?? 0));
 
 	return (
@@ -124,7 +126,7 @@ const InvoiceLineItemTable: FC<Props> = ({
 										)}
 										<td className='py-4 px-4 text-end text-sm text-content-tertiary'>{item.quantity ? item.quantity : na}</td>
 										<td className='py-4 px-0 text-end w-36  text-sm text-content-tertiary'>
-											{formatAmount(item.amount ?? 0, item.currency)}
+											<LineItemGrantInfo item={item}>{formatAmount(item.amount ?? 0, item.currency)}</LineItemGrantInfo>
 										</td>
 									</tr>
 								);

@@ -19,6 +19,10 @@
 			"voidSuccess": "تم إبطال الفاتورة بنجاح",
 			"downloadError": "فشل تنزيل الفاتورة"
 		},
+		"hostedInvoice": {
+			"menuLabel": "عرض الفاتورة المستضافة",
+			"unavailable": "لا يتوفر رابط فاتورة مستضافة لهذه الفاتورة"
+		},
 		"edit": {
 			"pageTitle": "تعديل الفاتورة",
 			"detailsTitle": "تفاصيل الفاتورة",

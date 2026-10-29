@@ -478,7 +478,11 @@ const CustomerSubscriptionEditPage: React.FC = () => {
 							/>
 						)}
 
-						<SubscriptionEntitlementsSection subscriptionId={subscriptionId} readOnly={subscriptionReadOnly} />
+						<SubscriptionEntitlementsSection
+							subscriptionId={subscriptionId}
+							currency={subscriptionDetails?.currency}
+							readOnly={subscriptionReadOnly}
+						/>
 
 						<SubscriptionAddonsSection
 							subscriptionId={subscriptionId}

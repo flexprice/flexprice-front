@@ -19,6 +19,10 @@
 			"voidSuccess": "Invoice voided successfully",
 			"downloadError": "Failed to download invoice"
 		},
+		"hostedInvoice": {
+			"menuLabel": "View hosted invoice",
+			"unavailable": "No hosted invoice link is available for this invoice"
+		},
 		"edit": {
 			"pageTitle": "Edit Invoice",
 			"detailsTitle": "Invoice Details",
@@ -154,7 +158,10 @@
 				"netPayableTooltip": "Final amount due after applying credit notes",
 				"amountPaid": "Amount paid",
 				"overpaid": "Overpaid",
-				"remainingBalance": "Remaining balance"
+				"remainingBalance": "Remaining balance",
+				"grantUsage": "Usage",
+				"grantCovered": "Entitlement",
+				"grantBilled": "Billed"
 			},
 			"creditLineTable": {
 				"creditQuantity": "Credit Quantity",
