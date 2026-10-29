@@ -28,6 +28,7 @@ import {
 } from '@/types/common/QueryBuilder';
 import type { TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { BILLING_CADENCE } from '@/models/Invoice';
+import { ENTITLEMENT_AGGREGATION_MODE } from '@/models/Entitlement';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import { searchPlansForFilter } from '@/utils/filterSearchHelpers';
@@ -220,15 +221,17 @@ const CustomerOverviewTab = () => {
 	const subscriptionEntitlementGrants: SubscriptionEntitlementGrantUsage[] = liveSubscriptions.flatMap((sub, i) => {
 		const grants = grantQueries[i]?.data?.subscription_entitlement_grants;
 		const allowances = grants?.grant_state?.allowances ?? [];
-		return (grants?.entitlements ?? []).map((entitlement) => ({
-			subscription_id: sub.id,
-			currency: sub.currency,
-			entitlement,
-			// Additive grants share one pooled window, keyed to one of them.
-			allowances: allowances.filter((a) => a.entitlement_id === entitlement.id).length
-				? allowances.filter((a) => a.entitlement_id === entitlement.id)
-				: allowances,
-		}));
+		return (grants?.entitlements ?? []).map((entitlement) => {
+			const own = allowances.filter((a) => a.entitlement_id === entitlement.id);
+			// Additive grants share one pooled window, keyed to one of them; a parallel grant only has its own.
+			const pooled = entitlement.aggregation_mode !== ENTITLEMENT_AGGREGATION_MODE.PARALLEL;
+			return {
+				subscription_id: sub.id,
+				currency: sub.currency,
+				entitlement,
+				allowances: own.length || !pooled ? own : allowances,
+			};
+		});
 	});
 
 	const overrideQueries = useQueries({
