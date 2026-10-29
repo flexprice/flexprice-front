@@ -7,6 +7,8 @@ import { Info, AlertCircle } from 'lucide-react';
 import { currencyOptions } from '@/constants/constants';
 import { useTranslation } from 'react-i18next';
 import { getCustomCurrencySymbol } from '@/utils/common/custom_currency';
+import { ISO_FORMAT_PLACEHOLDER } from '@/constants/common';
+import { getCurrencySymbol } from '@/utils/common/helper_functions';
 
 interface RevenueMonth {
 	month: string;
@@ -14,16 +16,29 @@ interface RevenueMonth {
 	currency: string;
 }
 
-function formatDashboardRevenueAmount(revenue: number, currencyCode: string, notAvailableLabel: string): string {
+export function formatDashboardRevenueAmount(revenue: number, currencyCode: string, notAvailableLabel: string): string {
 	if (revenue === 0) return notAvailableLabel;
-	const parts = new Intl.NumberFormat(undefined, {
-		style: 'currency',
-		currency: currencyCode,
-		minimumFractionDigits: 0,
-		maximumFractionDigits: 0,
-	}).formatToParts(revenue);
-
+	// Intl only accepts a well-formed ISO code and throws on anything else, so a custom currency is
+	// formatted against a placeholder and its symbol swapped into the result — mirroring
+	// formatCurrency. Without this a tenant-defined code reaches Intl raw and the RangeError takes
+	// down the whole revenue card, since this runs inside the render map.
 	const customSymbol = getCustomCurrencySymbol(currencyCode);
+	const formatCode = customSymbol ? ISO_FORMAT_PLACEHOLDER : currencyCode;
+
+	let parts: Intl.NumberFormatPart[];
+	try {
+		parts = new Intl.NumberFormat(undefined, {
+			style: 'currency',
+			currency: formatCode,
+			minimumFractionDigits: 0,
+			maximumFractionDigits: 0,
+		}).formatToParts(revenue);
+	} catch {
+		// Space-separated and grouped, so the fallback still reads as an amount — `cr1 1,234`
+		// rather than `cr11234`, which runs the code into the digits and loses the separator.
+		return `${getCurrencySymbol(currencyCode)} ${revenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+	}
+
 	return parts.map((part) => (part.type === 'currency' && customSymbol ? customSymbol : part.value)).join('');
 }
 
