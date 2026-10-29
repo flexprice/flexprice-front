@@ -146,6 +146,17 @@ const InvoiceTableMenu: FC<Props> = ({ data }) => {
 			},
 		},
 		{
+			label: t('invoices.hostedInvoice.menuLabel'),
+			group: 'Actions',
+			disabled: !data.hosted_invoice_url,
+			disabledReason: data.hosted_invoice_url ? undefined : t('invoices.hostedInvoice.unavailable'),
+			onSelect: () => {
+				const url = data.hosted_invoice_url;
+				if (!url || !url.startsWith('https://')) return;
+				window.open(url, '_blank', 'noopener,noreferrer');
+			},
+		},
+		{
 			label: 'Send Communication',
 			group: 'Actions',
 			onSelect: () => {
