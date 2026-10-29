@@ -1137,9 +1137,7 @@
 			"updateSuccess": "Entitlement quota updated",
 			"deleteSuccess": "Subscription entitlement deleted",
 			"saveFailed": "Could not save the subscription entitlement",
-			"deleteFailed": "Could not delete the subscription entitlement",
-			"sectionTitle": "Entitlements",
-			"amountColumn": "Allowance"
+			"deleteFailed": "Could not delete the subscription entitlement"
 		}
 	},
 	"premiumFeature": {
