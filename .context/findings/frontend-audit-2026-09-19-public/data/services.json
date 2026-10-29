@@ -1,0 +1,5167 @@
+[
+  {
+    "file": "src/api/RbacApi.ts",
+    "line": 25,
+    "method": "getAllRoles",
+    "parameters": [
+      "userType?: 'user' | 'service_account'"
+    ],
+    "returnType": "Promise<RbacRole[]>",
+    "baseUrl": "'/rbac'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`${this.baseUrl}/roles`, { user_type: userType });\n\t\tconst response = await AxiosClient.get<GetRolesResponse>(url);\n\t\treturn response.roles;\n\t}"
+  },
+  {
+    "file": "src/api/RbacApi.ts",
+    "line": 32,
+    "method": "getRoleById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<RbacRole>",
+    "baseUrl": "'/rbac'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/roles/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<RbacRole>(`${this.baseUrl}/roles/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 23,
+    "method": "createFeature",
+    "parameters": [
+      "data: CreateFeatureRequest"
+    ],
+    "returnType": "Promise<FeatureResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<FeatureResponse, CreateFeatureRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 32,
+    "method": "getFeatureById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<FeatureResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<FeatureResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 41,
+    "method": "listFeatures",
+    "parameters": [
+      "filter: FeatureFilter = {}"
+    ],
+    "returnType": "Promise<ListFeaturesResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, filter);\n\t\treturn await AxiosClient.get<ListFeaturesResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 52,
+    "method": "updateFeature",
+    "parameters": [
+      "id: string",
+      "data: UpdateFeatureRequest"
+    ],
+    "returnType": "Promise<FeatureResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data, {\n\t\t\tallowEmptyKeys: ['group_id'],\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<FeatureResponse, UpdateFeatureRequest>(`${this.baseUrl}/${id}`, data, {\n\t\t\tallowEmptyKeys: ['group_id'],\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 62,
+    "method": "deleteFeature",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 71,
+    "method": "listFeaturesByFilter",
+    "parameters": [
+      "filter: FeatureFilter"
+    ],
+    "returnType": "Promise<ListFeaturesResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, filter)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListFeaturesResponse, FeatureFilter>(`${this.baseUrl}/search`, filter);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 82,
+    "method": "getAllFeatures",
+    "parameters": [
+      "payload: GetFeaturesPayload = {}"
+    ],
+    "returnType": "Promise<GetFeaturesResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, {\n\t\t\t...payload,\n\t\t\texpand: 'meters',\n\t\t});\n\t\treturn await AxiosClient.get<GetFeaturesResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 93,
+    "method": "getFeaturesByFilter",
+    "parameters": [
+      "payload: GetFeatureByFilterPayload"
+    ],
+    "returnType": "Promise<GetFeaturesResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetFeaturesResponse, GetFeatureByFilterPayload>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/FeatureApi.ts",
+    "line": 100,
+    "method": "updateFeatureLegacy",
+    "parameters": [
+      "id: string",
+      "data: UpdateFeaturePayload"
+    ],
+    "returnType": "Promise<FeatureResponse>",
+    "baseUrl": "'/features'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<FeatureResponse, UpdateFeaturePayload>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/SupportChatApi.ts",
+    "line": 11,
+    "method": "getIdentityToken",
+    "parameters": [],
+    "returnType": "Promise<SupportChatTokenResponse>",
+    "baseUrl": "'/users/chat'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/verify`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SupportChatTokenResponse>(`${this.baseUrl}/verify`);\n\t}"
+  },
+  {
+    "file": "src/api/TenantApi.ts",
+    "line": 8,
+    "method": "getTenantById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/tenants'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<Tenant>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TenantApi.ts",
+    "line": 12,
+    "method": "updateTenant",
+    "parameters": [
+      "data: UpdateTenantRequest"
+    ],
+    "baseUrl": "'/tenants'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/update`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Tenant, UpdateTenantRequest>(`${this.baseUrl}/update`, data);\n\t}"
+  },
+  {
+    "file": "src/api/TenantApi.ts",
+    "line": 16,
+    "method": "getTenantBillingDetails",
+    "parameters": [],
+    "baseUrl": "'/tenants'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/billing`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<GetBillingdetailsResponse>(`${this.baseUrl}/billing`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 24,
+    "method": "getCustomerById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<CustomerResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CustomerResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 28,
+    "method": "getCustomerByLookupKey",
+    "parameters": [
+      "lookupKey: string"
+    ],
+    "returnType": "Promise<CustomerResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/lookup/${lookupKey}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CustomerResponse>(`${this.baseUrl}/lookup/${lookupKey}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 32,
+    "method": "getCustomerByExternalId",
+    "parameters": [
+      "externalId: string"
+    ],
+    "returnType": "Promise<CustomerResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/external/${externalId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CustomerResponse>(`${this.baseUrl}/external/${externalId}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 40,
+    "method": "getCustomers",
+    "parameters": [
+      "filter: CustomerFilter = {}"
+    ],
+    "returnType": "Promise<ListCustomersResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst params: Record<string, string | number | undefined> = {};\n\t\tif (filter.limit != null) params.limit = filter.limit;\n\t\tif (filter.offset != null) params.offset = filter.offset;\n\t\tif (filter.expand != null) params.expand = filter.expand;\n\t\tif (filter.external_id != null) params.external_id = filter.external_id;\n\t\tif (filter.email != null) params.email = filter.email;\n\t\tif (filter.start_time != null) params.start_time = filter.start_time;\n\t\tif (filter.end_time != null) params.end_time = filter.end_time;\n\t\tif (filter.customer_ids?.length) params.customer_ids = filter.customer_ids.join(',');\n\t\tif (filter.external_ids?.length) params.external_ids = filter.external_ids.join(',');\n\t\t// parent_customer_ids removed from customer APIs (subscription hierarchy replaces customer parent linkage)\n\t\tconst url = generateQueryParams(this.baseUrl, params);\n\t\treturn await AxiosClient.get<ListCustomersResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 57,
+    "method": "getAllCustomers",
+    "parameters": [
+      "{ limit = 10, offset = 0 }: Pagination"
+    ],
+    "returnType": "Promise<ListCustomersResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn await this.getCustomers({ limit, offset });\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 65,
+    "method": "getCustomersByFilters",
+    "parameters": [
+      "payload: GetCustomerByFiltersPayload"
+    ],
+    "returnType": "Promise<ListCustomersResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListCustomersResponse>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 69,
+    "method": "deleteCustomerById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 73,
+    "method": "getCustomerSubscriptions",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<GetCustomerSubscriptionsResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`/subscriptions?customer_id=${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`/subscriptions?customer_id=${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 77,
+    "method": "getCustomerSubscriptionById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<Subscription>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`/subscriptions/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`/subscriptions/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 81,
+    "method": "createCustomer",
+    "parameters": [
+      "customer: CreateCustomerRequest"
+    ],
+    "returnType": "Promise<CustomerResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}`, customer)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CustomerResponse>(`${this.baseUrl}`, customer);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 85,
+    "method": "updateCustomer",
+    "parameters": [
+      "customer: UpdateCustomerRequest",
+      "id: string"
+    ],
+    "returnType": "Promise<CustomerResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, customer)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<CustomerResponse>(`${this.baseUrl}/${id}`, customer);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 89,
+    "method": "getEntitlements",
+    "parameters": [
+      "payload: GetCustomerEntitlementPayload"
+    ],
+    "returnType": "Promise<GetCustomerEntitlementsResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${payload.customer_id}/entitlements`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`${this.baseUrl}/${payload.customer_id}/entitlements`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 93,
+    "method": "getUsageSummary",
+    "parameters": [
+      "payload: GetCustomerEntitlementPayload"
+    ],
+    "returnType": "Promise<GetUsageSummaryResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${payload.customer_id}/usage`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`${this.baseUrl}/${payload.customer_id}/usage`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 101,
+    "method": "getCustomerUsageSummary",
+    "parameters": [
+      "queryParams: {\n\t\texternal_customer_id?: string;\n\t\tcustomer_id?: string;\n\t}"
+    ],
+    "returnType": "Promise<GetUsageSummaryResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`${this.baseUrl}/usage`, queryParams);\n\t\treturn await AxiosClient.get<GetUsageSummaryResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 113,
+    "method": "getCustomerInvoiceSummary",
+    "parameters": [
+      "customerId: string"
+    ],
+    "returnType": "Promise<any>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${customerId}/invoices/summary`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`${this.baseUrl}/${customerId}/invoices/summary`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 120,
+    "method": "getUpcomingCreditGrantApplications",
+    "parameters": [
+      "customerId: string"
+    ],
+    "returnType": "Promise<ListCreditGrantApplicationsResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${customerId}/grants/upcoming`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<ListCreditGrantApplicationsResponse>(`${this.baseUrl}/${customerId}/grants/upcoming`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 129,
+    "method": "createDashboardSession",
+    "parameters": [
+      "externalId: string"
+    ],
+    "returnType": "Promise<DashboardSessionResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/portal/${externalId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<DashboardSessionResponse>(`${this.baseUrl}/portal/${externalId}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerApi.ts",
+    "line": 140,
+    "method": "searchCustomers",
+    "parameters": [
+      "query: string",
+      "limit: number = 50"
+    ],
+    "returnType": "Promise<ListCustomersResponse>",
+    "baseUrl": "'/customers'",
+    "httpCalls": [],
+    "body": "{\n\t\t// If query is empty, return all customers without filters\n\t\tif (!query || query.trim() === '') {\n\t\t\treturn await this.getCustomersByFilters({\n\t\t\t\tlimit,\n\t\t\t\toffset: 0,\n\t\t\t\tfilters: [],\n\t\t\t\tsort: [],\n\t\t\t\tstatus: ENTITY_STATUS.PUBLISHED,\n\t\t\t});\n\t\t}\n\n\t\t// Create filters for name and email contains search\n\t\tconst filters: TypedBackendFilter[] = [\n\t\t\t{\n\t\t\t\tfield: 'name',\n\t\t\t\toperator: FilterOperator.CONTAINS,\n\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\tvalue: { string: query },\n\t\t\t},\n\t\t];\n\n\t\treturn await this.getCustomersByFilters({\n\t\t\tlimit,\n\t\t\toffset: 0,\n\t\t\tfilters,\n\t\t\tsort: [],\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 47,
+    "method": "getSubscription",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<SubscriptionResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<SubscriptionResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 57,
+    "method": "getSubscriptionV2",
+    "parameters": [
+      "id: string",
+      "options?: { expand?: string }"
+    ],
+    "returnType": "Promise<SubscriptionResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst params = new URLSearchParams();\n\t\tif (options?.expand !== undefined) {\n\t\t\tparams.append('expand', options.expand);\n\t\t}\n\t\tconst queryString = params.toString();\n\t\tconst url = queryString ? `${this.baseUrl}/${id}/v2?${queryString}` : `${this.baseUrl}/${id}/v2`;\n\t\treturn await AxiosClient.get<SubscriptionResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 70,
+    "method": "createSubscription",
+    "parameters": [
+      "payload: CreateSubscriptionRequest"
+    ],
+    "returnType": "Promise<SubscriptionResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(this.baseUrl, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 77,
+    "method": "updateSubscription",
+    "parameters": [
+      "id: string",
+      "payload: UpdateSubscriptionRequest"
+    ],
+    "returnType": "Promise<SubscriptionResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<SubscriptionResponse>(`${this.baseUrl}/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 84,
+    "method": "listSubscriptions",
+    "parameters": [
+      "payload: ListSubscriptionsPayload"
+    ],
+    "returnType": "Promise<ListSubscriptionsResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<ListSubscriptionsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 92,
+    "method": "searchSubscriptions",
+    "parameters": [
+      "payload: ListSubscriptionsPayload"
+    ],
+    "returnType": "Promise<ListSubscriptionsResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, { ...payload })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/search`, { ...payload });\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 99,
+    "method": "cancelSubscription",
+    "parameters": [
+      "id: string",
+      "payload: CancelSubscriptionPayload | CancelSubscriptionRequest"
+    ],
+    "returnType": "Promise<void | CancelSubscriptionResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/cancel`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/${id}/cancel`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 113,
+    "method": "activateSubscription",
+    "parameters": [
+      "id: string",
+      "payload: { start_date: string }"
+    ],
+    "returnType": "Promise<SubscriptionResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/activate`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SubscriptionResponse>(`${this.baseUrl}/${id}/activate`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 124,
+    "method": "getSubscriptionUsage",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<SubscriptionUsage>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/usage`, { subscription_id: id })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/usage`, { subscription_id: id });\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 131,
+    "method": "getUsageBySubscription",
+    "parameters": [
+      "payload: GetUsageBySubscriptionRequest | { subscription_id: string }"
+    ],
+    "returnType": "Promise<GetUsageBySubscriptionResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/usage`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetUsageBySubscriptionResponse>(`${this.baseUrl}/usage`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 140,
+    "method": "getSubscriptionInvoicesPreview",
+    "parameters": [
+      "payload: GetSubscriptionDetailsPayload"
+    ],
+    "returnType": "Promise<GetSubscriptionPreviewResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "'/invoices/preview', payload, {\n\t\t\ttimeout: 60000, // 1 minute\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post('/invoices/preview', payload, {\n\t\t\ttimeout: 60000, // 1 minute\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 153,
+    "method": "addAddonToSubscription",
+    "parameters": [
+      "payload: AddAddonRequest"
+    ],
+    "returnType": "Promise<AddonAssociationResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/addon`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<AddonAssociationResponse>(`${this.baseUrl}/addon`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 160,
+    "method": "getActiveAddons",
+    "parameters": [
+      "subscriptionId: string"
+    ],
+    "returnType": "Promise<ListAddonAssociationsResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${subscriptionId}/addons/associations`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<ListAddonAssociationsResponse>(`${this.baseUrl}/${subscriptionId}/addons/associations`);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 167,
+    "method": "removeAddonFromSubscription",
+    "parameters": [
+      "payload: RemoveAddonRequest"
+    ],
+    "returnType": "Promise<{ message: string }>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/addon`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/addon`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 178,
+    "method": "createSubscriptionLineItem",
+    "parameters": [
+      "subscriptionId: string",
+      "payload: CreateSubscriptionLineItemRequest"
+    ],
+    "returnType": "Promise<SubscriptionLineItemResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${subscriptionId}/lineitems`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SubscriptionLineItemResponse>(`${this.baseUrl}/${subscriptionId}/lineitems`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 188,
+    "method": "updateSubscriptionLineItem",
+    "parameters": [
+      "id: string",
+      "payload: UpdateSubscriptionLineItemRequest"
+    ],
+    "returnType": "Promise<SubscriptionLineItemResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/lineitems/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<SubscriptionLineItemResponse>(`${this.baseUrl}/lineitems/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 198,
+    "method": "deleteSubscriptionLineItem",
+    "parameters": [
+      "id: string",
+      "payload: DeleteSubscriptionLineItemRequest"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/lineitems/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/lineitems/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 206,
+    "method": "searchSubscriptionLineItems",
+    "parameters": [
+      "filter: SubscriptionLineItemFilter"
+    ],
+    "returnType": "Promise<ListSubscriptionLineItemsResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/lineitems/search`, filter)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListSubscriptionLineItemsResponse>(`${this.baseUrl}/lineitems/search`, filter);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 217,
+    "method": "getSubscriptionEntitlements",
+    "parameters": [
+      "subscriptionId: string"
+    ],
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${subscriptionId}/entitlements`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<GetSubscriptionEntitlementsResponse>(`${this.baseUrl}/${subscriptionId}/entitlements`);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 228,
+    "method": "getUpcomingCreditGrantApplications",
+    "parameters": [
+      "subscriptionId: string"
+    ],
+    "returnType": "Promise<ListCreditGrantApplicationsResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${subscriptionId}/grants/upcoming`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<ListCreditGrantApplicationsResponse>(`${this.baseUrl}/${subscriptionId}/grants/upcoming`);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 240,
+    "method": "previewSubscriptionChange",
+    "parameters": [
+      "id: string",
+      "payload: PreviewSubscriptionChangeRequest"
+    ],
+    "returnType": "Promise<PreviewSubscriptionChangeResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/change/preview`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<PreviewSubscriptionChangeResponse>(`${this.baseUrl}/${id}/change/preview`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 251,
+    "method": "executeSubscriptionChange",
+    "parameters": [
+      "id: string",
+      "payload: ExecuteSubscriptionChangeRequest"
+    ],
+    "returnType": "Promise<ExecuteSubscriptionChangeResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/change/execute`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ExecuteSubscriptionChangeResponse>(`${this.baseUrl}/${id}/change/execute`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 266,
+    "method": "previewSubscriptionModify",
+    "parameters": [
+      "id: string",
+      "payload: ExecuteSubscriptionModifyRequest"
+    ],
+    "returnType": "Promise<SubscriptionModifyResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/modify/preview`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SubscriptionModifyResponse>(`${this.baseUrl}/${id}/modify/preview`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/SubscriptionApi.ts",
+    "line": 277,
+    "method": "executeSubscriptionModify",
+    "parameters": [
+      "id: string",
+      "payload: ExecuteSubscriptionModifyRequest"
+    ],
+    "returnType": "Promise<SubscriptionModifyResponse>",
+    "baseUrl": "'/subscriptions'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/modify/execute`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SubscriptionModifyResponse>(`${this.baseUrl}/${id}/modify/execute`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 20,
+    "method": "createTaxRate",
+    "parameters": [
+      "payload: CreateTaxRateRequest"
+    ],
+    "returnType": "Promise<TaxRateResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/rates`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<TaxRateResponse>(`${this.baseUrl}/rates`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 24,
+    "method": "getTaxRate",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<TaxRateResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/rates/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<TaxRateResponse>(`${this.baseUrl}/rates/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 28,
+    "method": "listTaxRates",
+    "parameters": [
+      "filter?: TaxRateFilter"
+    ],
+    "returnType": "Promise<ListTaxRatesResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = filter ? generateQueryParams(`${this.baseUrl}/rates`, filter) : `${this.baseUrl}/rates`;\n\t\treturn await AxiosClient.get<ListTaxRatesResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 33,
+    "method": "updateTaxRate",
+    "parameters": [
+      "id: string",
+      "payload: UpdateTaxRateRequest"
+    ],
+    "returnType": "Promise<TaxRateResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/rates/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<TaxRateResponse>(`${this.baseUrl}/rates/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 37,
+    "method": "deleteTaxRate",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/rates/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/rates/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 42,
+    "method": "createTaxAssociation",
+    "parameters": [
+      "payload: CreateTaxAssociationRequest"
+    ],
+    "returnType": "Promise<TaxAssociationResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/associations`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<TaxAssociationResponse>(`${this.baseUrl}/associations`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 46,
+    "method": "getTaxAssociation",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<TaxAssociationResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/associations/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<TaxAssociationResponse>(`${this.baseUrl}/associations/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 50,
+    "method": "updateTaxAssociation",
+    "parameters": [
+      "id: string",
+      "payload: TaxAssociationUpdateRequest"
+    ],
+    "returnType": "Promise<TaxAssociationResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/associations/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<TaxAssociationResponse>(`${this.baseUrl}/associations/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 54,
+    "method": "deleteTaxAssociation",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/associations/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/associations/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaxApi.ts",
+    "line": 58,
+    "method": "listTaxAssociations",
+    "parameters": [
+      "filter?: TaxAssociationFilter"
+    ],
+    "returnType": "Promise<ListTaxAssociationsResponse>",
+    "baseUrl": "'/taxes'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = filter ? generateQueryParams(`${this.baseUrl}/associations`, filter) : `${this.baseUrl}/associations`;\n\t\treturn await AxiosClient.get<ListTaxAssociationsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CouponApi.ts",
+    "line": 10,
+    "method": "createCoupon",
+    "parameters": [
+      "payload: CreateCouponRequest"
+    ],
+    "returnType": "Promise<Coupon>",
+    "baseUrl": "'/coupons'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CouponApi.ts",
+    "line": 14,
+    "method": "getCouponById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<Coupon>",
+    "baseUrl": "'/coupons'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CouponApi.ts",
+    "line": 18,
+    "method": "updateCoupon",
+    "parameters": [
+      "id: string",
+      "payload: UpdateCouponRequest"
+    ],
+    "returnType": "Promise<Coupon>",
+    "baseUrl": "'/coupons'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put(`${this.baseUrl}/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CouponApi.ts",
+    "line": 22,
+    "method": "deleteCoupon",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/coupons'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CouponApi.ts",
+    "line": 26,
+    "method": "getAllCoupons",
+    "parameters": [
+      "{ limit = 10, offset = 0 }: Pagination"
+    ],
+    "returnType": "Promise<ListCouponsResponse>",
+    "baseUrl": "'/coupons'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, { limit, offset });\n\t\treturn await AxiosClient.get(url);\n\t}"
+  },
+  {
+    "file": "src/api/CouponApi.ts",
+    "line": 31,
+    "method": "getCouponsByFilters",
+    "parameters": [
+      "payload: CouponFilter"
+    ],
+    "returnType": "Promise<ListCouponsResponse>",
+    "baseUrl": "'/coupons'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CouponApi.ts",
+    "line": 35,
+    "method": "listCouponAssociations",
+    "parameters": [
+      "filter?: CouponAssociationFilter"
+    ],
+    "returnType": "Promise<ListCouponAssociationsResponse>",
+    "baseUrl": "'/coupons'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = filter ? generateQueryParams(`${this.baseUrl}/associations`, filter) : `${this.baseUrl}/associations`;\n\t\treturn await AxiosClient.get<ListCouponAssociationsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/EntitlementApi.ts",
+    "line": 20,
+    "method": "create",
+    "parameters": [
+      "data: CreateEntitlementRequest"
+    ],
+    "baseUrl": "'/entitlements'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<EntitlementResponse>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/EntitlementApi.ts",
+    "line": 29,
+    "method": "createBulk",
+    "parameters": [
+      "data: CreateBulkEntitlementRequest"
+    ],
+    "baseUrl": "'/entitlements'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/bulk`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreateBulkEntitlementResponse>(`${this.baseUrl}/bulk`, data);\n\t}"
+  },
+  {
+    "file": "src/api/EntitlementApi.ts",
+    "line": 38,
+    "method": "get",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/entitlements'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<EntitlementResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/EntitlementApi.ts",
+    "line": 47,
+    "method": "search",
+    "parameters": [
+      "filters: EntitlementFilter"
+    ],
+    "baseUrl": "'/entitlements'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, filters)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListEntitlementsResponse>(`${this.baseUrl}/search`, filters);\n\t}"
+  },
+  {
+    "file": "src/api/EntitlementApi.ts",
+    "line": 57,
+    "method": "update",
+    "parameters": [
+      "id: string",
+      "data: UpdateEntitlementRequest"
+    ],
+    "baseUrl": "'/entitlements'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<EntitlementResponse>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/EntitlementApi.ts",
+    "line": 66,
+    "method": "delete",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/entitlements'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 17,
+    "method": "List",
+    "parameters": [
+      "payload: GetAddonsPayload = {}"
+    ],
+    "returnType": "Promise<GetAddonsResponse>",
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, {\n\t\t\t...payload,\n\t\t\texpand: 'prices,meters,entitlements',\n\t\t});\n\t\treturn await AxiosClient.get<GetAddonsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 25,
+    "method": "Get",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<AddonResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 29,
+    "method": "GetByLookupKey",
+    "parameters": [
+      "lookupKey: string"
+    ],
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/lookup/${lookupKey}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<AddonResponse>(`${this.baseUrl}/lookup/${lookupKey}`);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 33,
+    "method": "Create",
+    "parameters": [
+      "data: CreateAddonRequest"
+    ],
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Addon, CreateAddonRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 37,
+    "method": "Update",
+    "parameters": [
+      "id: string",
+      "data: UpdateAddonRequest"
+    ],
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Addon, UpdateAddonRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 41,
+    "method": "Delete",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 45,
+    "method": "ListByFilter",
+    "parameters": [
+      "payload: GetAddonByFilterPayload"
+    ],
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetAddonsResponse, GetAddonByFilterPayload>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/AddonApi.ts",
+    "line": 49,
+    "method": "GetEntitlements",
+    "parameters": [
+      "addonId: string"
+    ],
+    "baseUrl": "'/addons'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${addonId}/entitlements`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<ListEntitlementsResponse>(`${this.baseUrl}/${addonId}/entitlements`);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 16,
+    "method": "createGroup",
+    "parameters": [
+      "data: CreateGroupRequest"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GroupResponse, CreateGroupRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 20,
+    "method": "getAllGroups",
+    "parameters": [
+      "{ limit, offset }: Pagination"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst payload = {\n\t\t\tlimit,\n\t\t\toffset,\n\t\t};\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<ListGroupsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 29,
+    "method": "getGroupById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<GroupResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 33,
+    "method": "updateGroup",
+    "parameters": [
+      "id: string",
+      "data: UpdateGroupRequest"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<GroupResponse, UpdateGroupRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 37,
+    "method": "deleteGroup",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 41,
+    "method": "searchGroups",
+    "parameters": [
+      "query: string",
+      "{ limit, offset }: Pagination"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\tconst payload = {\n\t\t\tlimit,\n\t\t\toffset,\n\t\t\tquery,\n\t\t};\n\t\treturn await AxiosClient.post<ListGroupsResponse>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 50,
+    "method": "getGroupsByFilter",
+    "parameters": [
+      "payload: GroupFilter"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListGroupsResponse>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/GroupApi.ts",
+    "line": 54,
+    "method": "addEntityToGroup",
+    "parameters": [
+      "id: string",
+      "data: AddEntityToGroupRequest"
+    ],
+    "baseUrl": "'/groups'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/entities`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GroupResponse, AddEntityToGroupRequest>(`${this.baseUrl}/${id}/entities`, data);\n\t}"
+  },
+  {
+    "file": "src/api/AlertLogsApi.ts",
+    "line": 36,
+    "method": "listAlertLogsByFilter",
+    "parameters": [
+      "payload: ListAlertLogsByFilterPayload"
+    ],
+    "returnType": "Promise<ListAlertLogsResponse>",
+    "baseUrl": "'/alerts'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListAlertLogsResponse>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/AuthApi.ts",
+    "line": 7,
+    "method": "Login",
+    "parameters": [
+      "email: string",
+      "password: string"
+    ],
+    "baseUrl": "'/auth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/login`, { email, password } as LoginData)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<LocalUser>(`${this.baseUrl}/login`, { email, password } as LoginData);\n\t}"
+  },
+  {
+    "file": "src/api/AuthApi.ts",
+    "line": 11,
+    "method": "Signup",
+    "parameters": [
+      "data: SignupData"
+    ],
+    "baseUrl": "'/auth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/signup`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<LocalUser>(`${this.baseUrl}/signup`, data);\n\t}"
+  },
+  {
+    "file": "src/api/AuthApi.ts",
+    "line": 15,
+    "method": "Logout",
+    "parameters": [],
+    "baseUrl": "'/auth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/logout`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/logout`);\n\t}"
+  },
+  {
+    "file": "src/api/AuthApi.ts",
+    "line": 19,
+    "method": "VerifyEmail",
+    "parameters": [
+      "token: string"
+    ],
+    "baseUrl": "'/auth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/signup/confirmation`, { token })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/signup/confirmation`, { token });\n\t}"
+  },
+  {
+    "file": "src/api/AuthApi.ts",
+    "line": 23,
+    "method": "ResetPassword",
+    "parameters": [
+      "token: string",
+      "newPassword: string"
+    ],
+    "baseUrl": "'/auth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/reset-password`, { token, newPassword })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/reset-password`, { token, newPassword });\n\t}"
+  },
+  {
+    "file": "src/api/AuthApi.ts",
+    "line": 27,
+    "method": "ResendVerificationEmail",
+    "parameters": [
+      "email: string"
+    ],
+    "baseUrl": "'/auth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/resend-verification`, { email })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/resend-verification`, { email });\n\t}"
+  },
+  {
+    "file": "src/api/ConnectionApi.ts",
+    "line": 9,
+    "method": "List",
+    "parameters": [
+      "payload: GetConnectionsPayload = {}"
+    ],
+    "returnType": "Promise<GetConnectionsResponse>",
+    "baseUrl": "'/connections'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<GetConnectionsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/ConnectionApi.ts",
+    "line": 14,
+    "method": "Get",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<Connection>",
+    "baseUrl": "'/connections'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<Connection>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/ConnectionApi.ts",
+    "line": 18,
+    "method": "ListPublished",
+    "parameters": [],
+    "returnType": "Promise<GetConnectionsResponse>",
+    "baseUrl": "'/connections'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn this.List({ status: ENTITY_STATUS.PUBLISHED });\n\t}"
+  },
+  {
+    "file": "src/api/ConnectionApi.ts",
+    "line": 22,
+    "method": "Create",
+    "parameters": [
+      "payload: CreateConnectionPayload"
+    ],
+    "returnType": "Promise<Connection>",
+    "baseUrl": "'/connections'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Connection>(this.baseUrl, payload);\n\t}"
+  },
+  {
+    "file": "src/api/ConnectionApi.ts",
+    "line": 26,
+    "method": "Update",
+    "parameters": [
+      "id: string",
+      "payload: Partial<UpdateConnectionPayload>"
+    ],
+    "returnType": "Promise<Connection>",
+    "baseUrl": "'/connections'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Connection>(`${this.baseUrl}/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/ConnectionApi.ts",
+    "line": 30,
+    "method": "Delete",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/connections'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 17,
+    "method": "ListCostSheets",
+    "parameters": [
+      "payload: GetCostSheetsPayload = {}"
+    ],
+    "returnType": "Promise<GetCostSheetsResponse>",
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, {\n\t\t\t...payload,\n\t\t\texpand: 'prices',\n\t\t});\n\t\treturn await AxiosClient.get<GetCostSheetsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 25,
+    "method": "GetCostSheetById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CostSheetResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 29,
+    "method": "GetCostSheetByLookupKey",
+    "parameters": [
+      "lookupKey: string"
+    ],
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/lookup/${lookupKey}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CostSheetResponse>(`${this.baseUrl}/lookup/${lookupKey}`);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 33,
+    "method": "CreateCostSheet",
+    "parameters": [
+      "data: CreateCostSheetRequest"
+    ],
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CostSheet, CreateCostSheetRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 37,
+    "method": "UpdateCostSheet",
+    "parameters": [
+      "id: string",
+      "data: UpdateCostSheetRequest"
+    ],
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<CostSheet, UpdateCostSheetRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 41,
+    "method": "DeleteCostSheet",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 45,
+    "method": "GetCostSheetsByFilter",
+    "parameters": [
+      "payload: GetCostSheetsByFilterPayload"
+    ],
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetCostSheetsResponse, GetCostSheetsByFilterPayload>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 49,
+    "method": "GetActiveCostSheetForTenant",
+    "parameters": [],
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/active`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CostSheetResponse>(`${this.baseUrl}/active`);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 60,
+    "method": "GetCostAnalytics",
+    "parameters": [
+      "payload: GetCostAnalyticsRequest"
+    ],
+    "returnType": "Promise<GetDetailedCostAnalyticsResponse>",
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/analytics`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetDetailedCostAnalyticsResponse>(`${this.baseUrl}/analytics`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CostSheetApi.ts",
+    "line": 68,
+    "method": "GetCostAnalyticsV2",
+    "parameters": [
+      "payload: GetCostAnalyticsRequest"
+    ],
+    "returnType": "Promise<GetDetailedCostAnalyticsResponse>",
+    "baseUrl": "'/costs'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/analytics-v2`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetDetailedCostAnalyticsResponse>(`${this.baseUrl}/analytics-v2`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CreditGrantApi.ts",
+    "line": 23,
+    "method": "create",
+    "parameters": [
+      "data: CreateCreditGrantRequest"
+    ],
+    "baseUrl": "'/creditgrants'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn AxiosClient.post<CreditGrantResponse, CreateCreditGrantRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/CreditGrantApi.ts",
+    "line": 32,
+    "method": "get",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/creditgrants'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CreditGrantResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CreditGrantApi.ts",
+    "line": 41,
+    "method": "list",
+    "parameters": [
+      "filters: CreditGrantFilter"
+    ],
+    "baseUrl": "'/creditgrants'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, filters);\n\t\treturn await AxiosClient.get<ListCreditGrantsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CreditGrantApi.ts",
+    "line": 51,
+    "method": "search",
+    "parameters": [
+      "payload: SearchCreditGrantsRequest"
+    ],
+    "baseUrl": "'/creditgrants'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SearchCreditGrantsResponse>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CreditGrantApi.ts",
+    "line": 61,
+    "method": "update",
+    "parameters": [
+      "id: string",
+      "data: UpdateCreditGrantRequest"
+    ],
+    "baseUrl": "'/creditgrants'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<CreditGrantResponse, UpdateCreditGrantRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/CreditGrantApi.ts",
+    "line": 71,
+    "method": "delete",
+    "parameters": [
+      "id: string",
+      "data?: DeleteCreditGrantRequest"
+    ],
+    "baseUrl": "'/creditgrants'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void, DeleteCreditGrantRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/CreditGrantApi.ts",
+    "line": 80,
+    "method": "cancelFuture",
+    "parameters": [
+      "data: CancelFutureCreditGrantRequest"
+    ],
+    "baseUrl": "'/creditgrants'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/cancel`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<void, CancelFutureCreditGrantRequest>(`${this.baseUrl}/cancel`, data);\n\t}"
+  },
+  {
+    "file": "src/api/CreditNoteApi.ts",
+    "line": 19,
+    "method": "getCreditNotes",
+    "parameters": [
+      "params: GetAllCreditNotesPayload = {}"
+    ],
+    "returnType": "Promise<ListCreditNotesResponse>",
+    "baseUrl": "'/creditnotes'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, params);\n\t\treturn await AxiosClient.get<ListCreditNotesResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CreditNoteApi.ts",
+    "line": 28,
+    "method": "getCreditNoteById",
+    "parameters": [
+      "creditNoteId: string"
+    ],
+    "returnType": "Promise<CreditNote>",
+    "baseUrl": "'/creditnotes'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${creditNoteId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<CreditNote>(`${this.baseUrl}/${creditNoteId}`);\n\t}"
+  },
+  {
+    "file": "src/api/CreditNoteApi.ts",
+    "line": 36,
+    "method": "createCreditNote",
+    "parameters": [
+      "params: CreateCreditNoteParams"
+    ],
+    "returnType": "Promise<CreditNote>",
+    "baseUrl": "'/creditnotes'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, params)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreditNote, CreateCreditNoteParams>(this.baseUrl, params);\n\t}"
+  },
+  {
+    "file": "src/api/CreditNoteApi.ts",
+    "line": 44,
+    "method": "finalizeCreditNote",
+    "parameters": [
+      "params: ProcessDraftCreditNoteParams"
+    ],
+    "returnType": "Promise<CreditNote>",
+    "baseUrl": "'/creditnotes'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${params.credit_note_id}/finalize`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreditNote>(`${this.baseUrl}/${params.credit_note_id}/finalize`);\n\t}"
+  },
+  {
+    "file": "src/api/CreditNoteApi.ts",
+    "line": 52,
+    "method": "processDraftCreditNote",
+    "parameters": [
+      "params: ProcessDraftCreditNoteParams"
+    ],
+    "returnType": "Promise<CreditNote>",
+    "baseUrl": "'/creditnotes'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn this.finalizeCreditNote(params);\n\t}"
+  },
+  {
+    "file": "src/api/CreditNoteApi.ts",
+    "line": 60,
+    "method": "voidCreditNote",
+    "parameters": [
+      "params: VoidCreditNoteParams"
+    ],
+    "returnType": "Promise<CreditNote>",
+    "baseUrl": "'/creditnotes'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${credit_note_id}/void`, voidData)"
+      }
+    ],
+    "body": "{\n\t\tconst { credit_note_id, ...voidData } = params;\n\t\treturn await AxiosClient.post<CreditNote>(`${this.baseUrl}/${credit_note_id}/void`, voidData);\n\t}"
+  },
+  {
+    "file": "src/api/CreditNoteApi.ts",
+    "line": 69,
+    "method": "getCreditNotesByInvoice",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "returnType": "Promise<ListCreditNotesResponse>",
+    "baseUrl": "'/creditnotes'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn await this.getCreditNotes({ invoice_id: invoiceId });\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 43,
+    "method": "getCustomer",
+    "parameters": [],
+    "returnType": "Promise<Customer>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/info`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<Customer>(`${this.baseUrl}/info`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 50,
+    "method": "updateCustomer",
+    "parameters": [
+      "payload: UpdateCustomerRequest"
+    ],
+    "returnType": "Promise<Customer>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/info`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Customer>(`${this.baseUrl}/info`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 57,
+    "method": "getUsageSummary",
+    "parameters": [
+      "query?: GetCustomerUsageSummaryRequest"
+    ],
+    "returnType": "Promise<GetUsageSummaryResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`${this.baseUrl}/usage`, query || {});\n\t\treturn await AxiosClient.get<GetUsageSummaryResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 65,
+    "method": "getSubscriptions",
+    "parameters": [
+      "payload: DashboardPaginatedRequest"
+    ],
+    "returnType": "Promise<ListSubscriptionsResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/subscriptions`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListSubscriptionsResponse>(`${this.baseUrl}/subscriptions`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 72,
+    "method": "getSubscription",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<SubscriptionResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/subscriptions/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<SubscriptionResponse>(`${this.baseUrl}/subscriptions/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 79,
+    "method": "getInvoices",
+    "parameters": [
+      "payload: DashboardPaginatedRequest"
+    ],
+    "returnType": "Promise<GetInvoicesResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/invoices`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetInvoicesResponse>(`${this.baseUrl}/invoices`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 86,
+    "method": "getInvoice",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<Invoice>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/invoices/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<Invoice>(`${this.baseUrl}/invoices/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 93,
+    "method": "getWallets",
+    "parameters": [],
+    "returnType": "Promise<WalletResponse[]>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/wallets`, {})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<WalletResponse[]>(`${this.baseUrl}/wallets`, {});\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 100,
+    "method": "getWallet",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<WalletResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/wallets/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<WalletResponse>(`${this.baseUrl}/wallets/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 107,
+    "method": "getAnalytics",
+    "parameters": [
+      "payload: DashboardAnalyticsRequest"
+    ],
+    "returnType": "Promise<GetUsageAnalyticsResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/analytics/revenue`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetUsageAnalyticsResponse>(`${this.baseUrl}/analytics/revenue`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 114,
+    "method": "getCostAnalytics",
+    "parameters": [
+      "payload: DashboardCostAnalyticsRequest"
+    ],
+    "returnType": "Promise<GetDetailedCostAnalyticsResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/analytics/cost`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetDetailedCostAnalyticsResponse>(`${this.baseUrl}/analytics/cost`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 121,
+    "method": "downloadInvoicePdf",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`${this.baseUrl}/invoices/${invoiceId}/pdf`, { url: true });\n\t\tconst response = await AxiosClient.get<{ presigned_url: string }>(url);\n\t\tconst presignedUrl = response.presigned_url;\n\t\twindow.open(presignedUrl, '_blank');\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 131,
+    "method": "getWalletBalance",
+    "parameters": [
+      "walletId: string"
+    ],
+    "returnType": "Promise<RealtimeWalletBalance>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/wallets/${walletId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<RealtimeWalletBalance>(`${this.baseUrl}/wallets/${walletId}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 138,
+    "method": "getWalletTransactions",
+    "parameters": [
+      "payload: {\n\t\twalletId: string;\n\t\tlimit?: number;\n\t\toffset?: number;\n\t}"
+    ],
+    "returnType": "Promise<WalletTransactionResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst { walletId, limit = 10, offset = 0 } = payload;\n\t\tconst url = generateQueryParams(`${this.baseUrl}/wallets/${walletId}/transactions`, { limit, offset });\n\t\treturn await AxiosClient.get<WalletTransactionResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 152,
+    "method": "topUpWallet",
+    "parameters": [
+      "walletId: string",
+      "payload: PortalTopUpRequest"
+    ],
+    "returnType": "Promise<PortalTopUpResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/wallets/${walletId}/top-up`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<PortalTopUpResponse>(`${this.baseUrl}/wallets/${walletId}/top-up`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 160,
+    "method": "updateAutoTopup",
+    "parameters": [
+      "walletId: string",
+      "payload: PortalAutoTopupRequest"
+    ],
+    "returnType": "Promise<unknown>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/wallets/${walletId}/auto-topup`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<unknown>(`${this.baseUrl}/wallets/${walletId}/auto-topup`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 168,
+    "method": "payInvoice",
+    "parameters": [
+      "invoiceId: string",
+      "payload: PortalPayInvoiceRequest = {}"
+    ],
+    "returnType": "Promise<PortalPayInvoiceResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/invoices/${invoiceId}/pay`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<PortalPayInvoiceResponse>(`${this.baseUrl}/invoices/${invoiceId}/pay`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 176,
+    "method": "getPaymentMethods",
+    "parameters": [
+      "query?: PortalListPaymentMethodsQuery"
+    ],
+    "returnType": "Promise<SavedPaymentMethodsResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`${this.baseUrl}/payment-methods`, query || {});\n\t\treturn await AxiosClient.get<SavedPaymentMethodsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 185,
+    "method": "addPaymentMethod",
+    "parameters": [
+      "payload: PortalAddPaymentMethodRequest"
+    ],
+    "returnType": "Promise<AddPaymentMethodResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/payment-methods`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<AddPaymentMethodResponse>(`${this.baseUrl}/payment-methods`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 194,
+    "method": "deletePaymentMethod",
+    "parameters": [
+      "payload: PortalDeletePaymentMethodRequest"
+    ],
+    "returnType": "Promise<SavedPaymentMethodsResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/payment-methods/delete`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SavedPaymentMethodsResponse>(`${this.baseUrl}/payment-methods/delete`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 199,
+    "method": "setDefaultPaymentMethod",
+    "parameters": [
+      "payload: PortalSetDefaultPaymentMethodRequest"
+    ],
+    "returnType": "Promise<SavedPaymentMethodsResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/payment-methods/default`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SavedPaymentMethodsResponse>(`${this.baseUrl}/payment-methods/default`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 207,
+    "method": "getIntegrations",
+    "parameters": [],
+    "returnType": "Promise<PortalIntegrationsResponse>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/integrations`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<PortalIntegrationsResponse>(`${this.baseUrl}/integrations`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 212,
+    "method": "getCheckoutSession",
+    "parameters": [
+      "sessionId: string"
+    ],
+    "returnType": "Promise<PortalCheckoutSession>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/checkout-sessions/${sessionId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<PortalCheckoutSession>(`${this.baseUrl}/checkout-sessions/${sessionId}`);\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 216,
+    "method": "cancelCheckoutSession",
+    "parameters": [
+      "sessionId: string"
+    ],
+    "returnType": "Promise<PortalCheckoutSession>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/checkout-sessions/${sessionId}/cancel`, {})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<PortalCheckoutSession>(`${this.baseUrl}/checkout-sessions/${sessionId}/cancel`, {});\n\t}"
+  },
+  {
+    "file": "src/api/CustomerPortalApi.ts",
+    "line": 225,
+    "method": "getConfig",
+    "parameters": [],
+    "returnType": "Promise<PortalConfig>",
+    "baseUrl": "'/customer/portal'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/config`)"
+      }
+    ],
+    "body": "{\n\t\ttry {\n\t\t\tconst response = await AxiosClient.get<{ value: Partial<PortalConfig> }>(`${this.baseUrl}/config`);\n\t\t\tif (response?.value) {\n\t\t\t\treturn deepMergePortalConfig(DEFAULT_PORTAL_CONFIG, response.value);\n\t\t\t}\n\t\t\treturn DEFAULT_PORTAL_CONFIG;\n\t\t} catch {\n\t\t\t// No config stored yet or network error — use bundled defaults silently\n\t\t\treturn DEFAULT_PORTAL_CONFIG;\n\t\t}\n\t}"
+  },
+  {
+    "file": "src/api/DashboardApi.ts",
+    "line": 69,
+    "method": "getRevenues",
+    "parameters": [
+      "payload?: DashboardRevenuesRequest"
+    ],
+    "returnType": "Promise<DashboardRevenuesResponse>",
+    "baseUrl": "'/dashboard'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/revenues`, requestPayload)"
+      }
+    ],
+    "body": "{\n\t\t// Transform nested request format to flat format if needed\n\t\tconst requestPayload = payload?.revenue_trend\n\t\t\t? {\n\t\t\t\t\twindow_size: payload.revenue_trend.window_size || 'MONTH',\n\t\t\t\t\twindow_count: payload.revenue_trend.window_count || 3,\n\t\t\t\t}\n\t\t\t: {\n\t\t\t\t\twindow_size: 'MONTH',\n\t\t\t\t\twindow_count: 3,\n\t\t\t\t};\n\t\treturn await AxiosClient.post<DashboardRevenuesResponse>(`${this.baseUrl}/revenues`, requestPayload);\n\t}"
+  },
+  {
+    "file": "src/api/EntityIntegrationMappingApi.ts",
+    "line": 37,
+    "method": "createEntityIntegrationMapping",
+    "parameters": [
+      "data: CreateEntityIntegrationMappingRequest"
+    ],
+    "returnType": "Promise<EntityIntegrationMapping>",
+    "baseUrl": "'/entity-integration-mappings'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<EntityIntegrationMapping>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/EntityIntegrationMappingApi.ts",
+    "line": 45,
+    "method": "listEntityIntegrationMappings",
+    "parameters": [
+      "payload: Pagination = { limit: 10, offset: 0 }"
+    ],
+    "returnType": "Promise<ListEntityIntegrationMappingsResponse>",
+    "baseUrl": "'/entity-integration-mappings'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<ListEntityIntegrationMappingsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/EntityIntegrationMappingApi.ts",
+    "line": 56,
+    "method": "getEntityIntegrationMapping",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<EntityIntegrationMapping>",
+    "baseUrl": "'/entity-integration-mappings'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<EntityIntegrationMapping>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/EntityIntegrationMappingApi.ts",
+    "line": 64,
+    "method": "deleteEntityIntegrationMapping",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/entity-integration-mappings'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 24,
+    "method": "getRawEvents",
+    "parameters": [
+      "payload: GetEventsPayload"
+    ],
+    "returnType": "Promise<GetEventsResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(EventsApi.baseUrl, payload);\n\t\treturn await AxiosClient.get<GetEventsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 33,
+    "method": "getEventDebug",
+    "parameters": [
+      "eventId: string"
+    ],
+    "returnType": "Promise<GetEventDebugResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`${EventsApi.baseUrl}/lookup`, { id: eventId });\n\t\treturn await AxiosClient.get<GetEventDebugResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 42,
+    "method": "queryEvents",
+    "parameters": [
+      "payload: GetEventsRequest"
+    ],
+    "returnType": "Promise<GetEventsResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${EventsApi.baseUrl}/query`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetEventsResponse>(`${EventsApi.baseUrl}/query`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 46,
+    "method": "getUsageByMeter",
+    "parameters": [
+      "payload: GetUsageByMeterPayload"
+    ],
+    "returnType": "Promise<GetUsageByMeterResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${EventsApi.baseUrl}/usage/meter`, {\n\t\t\t...payload,\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetUsageByMeterResponse>(`${EventsApi.baseUrl}/usage/meter`, {\n\t\t\t...payload,\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 56,
+    "method": "getUsage",
+    "parameters": [
+      "payload: GetUsageRequest"
+    ],
+    "returnType": "Promise<GetUsageResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${EventsApi.baseUrl}/usage`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetUsageResponse>(`${EventsApi.baseUrl}/usage`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 64,
+    "method": "fireEvents",
+    "parameters": [
+      "payload: FireEventsPayload"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`/portal/onboarding/events`, {\n\t\t\t...payload,\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<void>(`/portal/onboarding/events`, {\n\t\t\t...payload,\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 74,
+    "method": "getUsageAnalytics",
+    "parameters": [
+      "payload: GetUsageAnalyticsRequest"
+    ],
+    "returnType": "Promise<GetUsageAnalyticsResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${EventsApi.baseUrl}/analytics`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetUsageAnalyticsResponse>(`${EventsApi.baseUrl}/analytics`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 82,
+    "method": "getUsageAnalyticsV2",
+    "parameters": [
+      "payload: GetUsageAnalyticsRequest"
+    ],
+    "returnType": "Promise<GetUsageAnalyticsResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${EventsApi.baseUrl}/analytics-v2`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetUsageAnalyticsResponse>(`${EventsApi.baseUrl}/analytics-v2`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 90,
+    "method": "getMonitoringData",
+    "parameters": [
+      "payload: GetMonitoringDataRequest"
+    ],
+    "returnType": "Promise<GetMonitoringDataResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`${EventsApi.baseUrl}/monitoring`, payload);\n\t\treturn await AxiosClient.get<GetMonitoringDataResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/EventsApi.ts",
+    "line": 99,
+    "method": "getHuggingFaceBillingData",
+    "parameters": [
+      "payload: GetHuggingFaceBillingDataRequest"
+    ],
+    "returnType": "Promise<GetHuggingFaceBillingDataResponse>",
+    "baseUrl": "'/events'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${EventsApi.baseUrl}/huggingface-billing`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetHuggingFaceBillingDataResponse>(`${EventsApi.baseUrl}/huggingface-billing`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/ExportRunApi.ts",
+    "line": 38,
+    "method": "getAllExportRuns",
+    "parameters": [
+      "payload: GetExportRunsPayload = {}"
+    ],
+    "returnType": "Promise<GetExportRunsResponse>",
+    "baseUrl": "'/export-runs'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<GetExportRunsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/ExportRunApi.ts",
+    "line": 43,
+    "method": "getExportRunById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<ExportRun>",
+    "baseUrl": "'/export-runs'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<ExportRun>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/ExportRunApi.ts",
+    "line": 47,
+    "method": "getExportRunsByTaskId",
+    "parameters": [
+      "taskId: string",
+      "payload: Omit<GetExportRunsPayload, 'scheduled_task_id'> = {}"
+    ],
+    "returnType": "Promise<GetExportRunsResponse>",
+    "baseUrl": "'/export-runs'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn await this.getAllExportRuns({ ...payload, scheduled_task_id: taskId });\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationsApi.ts",
+    "line": 6,
+    "method": "installIntegration",
+    "parameters": [
+      "request: CreateIntegrationRequest"
+    ],
+    "baseUrl": "'/secrets/integrations'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${request.provider}`, request)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseUrl}/${request.provider}`, request);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationsApi.ts",
+    "line": 10,
+    "method": "getIntegration",
+    "parameters": [
+      "provider: string"
+    ],
+    "baseUrl": "'/secrets/integrations'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/by-provider/${provider}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<IntegrationResponse>(`${this.baseUrl}/by-provider/${provider}`);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationsApi.ts",
+    "line": 14,
+    "method": "getLinkedInIntegration",
+    "parameters": [],
+    "baseUrl": "'/secrets/integrations'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/linked`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<LinkedinIntegrationResponse>(`${this.baseUrl}/linked`);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationsApi.ts",
+    "line": 18,
+    "method": "uninstallIntegration",
+    "parameters": [
+      "provider: string"
+    ],
+    "baseUrl": "'/secrets/integrations'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${provider}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/${provider}`);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 35,
+    "method": "listInvoices",
+    "parameters": [
+      "filter: InvoiceFilter = {}"
+    ],
+    "returnType": "Promise<GetInvoicesResponse>",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/search`, filter)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetInvoicesResponse>(`${this.baseurl}/search`, filter);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 40,
+    "method": "getCustomerInvoices",
+    "parameters": [
+      "customerId: string",
+      "pagination?: { limit: number; offset: number }"
+    ],
+    "returnType": "Promise<GetInvoicesListResponse>",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/search`, {\n\t\t\tcustomer_id: customerId,\n\t\t\t// Explicitly include all known invoice statuses"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<GetInvoicesListResponse>(`${this.baseurl}/search`, {\n\t\t\tcustomer_id: customerId,\n\t\t\t// Explicitly include all known invoice statuses; backend defaults may exclude some (e.g. SKIPPED).\n\t\t\tinvoice_status: Object.values(INVOICE_STATUS),\n\t\t\tskip_line_items: true,\n\t\t\tsort: [\n\t\t\t\t{\n\t\t\t\t\tfield: 'period_start',\n\t\t\t\t\tdirection: SortDirection.DESC,\n\t\t\t\t},\n\t\t\t],\n\t\t\t...pagination,\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 59,
+    "method": "getInvoiceById",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "returnType": "Promise<Invoice>",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseurl}/${invoiceId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<Invoice>(`${this.baseurl}/${invoiceId}`);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 63,
+    "method": "updateInvoicePaymentStatus",
+    "parameters": [
+      "invoiceId: string",
+      "payload: UpdatePaymentStatusPayload"
+    ],
+    "returnType": "Promise<Invoice>",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseurl}/${invoiceId}/payment`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Invoice>(`${this.baseurl}/${invoiceId}/payment`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 67,
+    "method": "updateInvoiceStatus",
+    "parameters": [
+      "payload: UpdateInvoiceStatusPayload"
+    ],
+    "returnType": "Promise<Invoice>",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseurl}/${payload.invoiceId}/status`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Invoice>(`${this.baseurl}/${payload.invoiceId}/status`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 71,
+    "method": "voidInvoice",
+    "parameters": [
+      "invoiceId: string",
+      "payload?: VoidInvoicePayload"
+    ],
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/${invoiceId}/void`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseurl}/${invoiceId}/void`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 75,
+    "method": "finalizeInvoice",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/${invoiceId}/finalize`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseurl}/${invoiceId}/finalize`);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 79,
+    "method": "attemptPayment",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/${invoiceId}/payment/attempt`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseurl}/${invoiceId}/payment/attempt`);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 83,
+    "method": "getInvoicePreview",
+    "parameters": [
+      "payload: GetInvoicePreviewPayload"
+    ],
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/preview`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Invoice>(`${this.baseurl}/preview`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 87,
+    "method": "createInvoice",
+    "parameters": [
+      "payload: CreateInvoicePayload"
+    ],
+    "returnType": "Promise<Invoice>",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Invoice>(`${this.baseurl}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 92,
+    "method": "updateInvoice",
+    "parameters": [
+      "invoiceId: string",
+      "payload: UpdateInvoicePayload"
+    ],
+    "returnType": "Promise<Invoice>",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseurl}/${invoiceId}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Invoice>(`${this.baseurl}/${invoiceId}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 101,
+    "method": "modifyInvoice",
+    "parameters": [
+      "invoiceId: string",
+      "payload: ExecuteInvoiceModifyPayload"
+    ],
+    "returnType": "Promise<InvoiceModifyResponse>",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/${invoiceId}/modify/execute`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<InvoiceModifyResponse>(`${this.baseurl}/${invoiceId}/modify/execute`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 105,
+    "method": "recalculateInvoice",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "returnType": "Promise<RecalculateInvoiceResponse>",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/${invoiceId}/recalculate`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<RecalculateInvoiceResponse>(`${this.baseurl}/${invoiceId}/recalculate`);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 109,
+    "method": "getInvoicePdf",
+    "parameters": [
+      "invoiceId: string",
+      "invoiceNo?: string"
+    ],
+    "httpCalls": [],
+    "body": "{\n\t\tconst downloadFileName = invoiceNo ? `invoice-${invoiceNo}.pdf` : `invoice-${invoiceId}.pdf`;\n\n\t\tconst response = await fetch(`${config.api.baseUrl}${this.baseurl}/${invoiceId}/pdf`, {\n\t\t\theaders: {\n\t\t\t\tAuthorization: `Bearer ${await AuthService.getAcessToken()}`,\n\t\t\t\t'X-Environment-ID': EnvironmentApi.getActiveEnvironmentId() || '',\n\t\t\t\tAccept: 'application/pdf',\n\t\t\t},\n\t\t});\n\n\t\tif (!response.ok) {\n\t\t\tthrow new Error('Failed to fetch PDF');\n\t\t}\n\n\t\tconst arrayBuffer = await response.arrayBuffer();\n\t\tconst blob = new Blob([arrayBuffer], { type: 'application/pdf' });\n\t\tconst url = window.URL.createObjectURL(blob);\n\n\t\t// Create a temporary link element\n\t\tconst link = document.createElement('a');\n\t\tlink.href = url;\n\t\tlink.download = downloadFileName;\n\n\t\t// Append to body, click and remove\n\t\tdocument.body.appendChild(link);\n\t\tlink.click();\n\t\tdocument.body.removeChild(link);\n\n\t\t// Clean up the URL object\n\t\twindow.URL.revokeObjectURL(url);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 142,
+    "method": "downloadInvoicePdf",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst params = { url: true };\n\t\tconst url = generateQueryParams(`${this.baseurl}/${invoiceId}/pdf`, params);\n\t\tconst response = await AxiosClient.get<{ presigned_url: string }>(url);\n\t\tconst presignedUrl = response.presigned_url;\n\n\t\twindow.open(presignedUrl, '_blank');\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 152,
+    "method": "downloadInvoiceCsv",
+    "parameters": [
+      "invoice: Invoice"
+    ],
+    "returnType": "number",
+    "httpCalls": [],
+    "body": "{\n\t\treturn downloadInvoiceLineItemsCsv(invoice);\n\t}"
+  },
+  {
+    "file": "src/api/InvoiceApi.ts",
+    "line": 156,
+    "method": "triggerCommunication",
+    "parameters": [
+      "invoiceId: string"
+    ],
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseurl}/${invoiceId}/comms/trigger`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.baseurl}/${invoiceId}/comms/trigger`);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 8,
+    "method": "createMeter",
+    "parameters": [
+      "data: CreateMeterRequest"
+    ],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<MeterResponse, CreateMeterRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 12,
+    "method": "getAllMeters",
+    "parameters": [
+      "{ limit, offset }: Pagination"
+    ],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}?limit=${limit}&offset=${offset}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<GetAllMetersResponse>(`${this.baseUrl}?limit=${limit}&offset=${offset}`);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 16,
+    "method": "getAllActiveMeters",
+    "parameters": [],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}?status=published&limit=1000`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<GetAllMetersResponse>(`${this.baseUrl}?status=published&limit=1000`);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 20,
+    "method": "getMeterById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<MeterResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 24,
+    "method": "updateMeter",
+    "parameters": [
+      "id: string",
+      "data: UpdateMeterRequest"
+    ],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<MeterResponse, UpdateMeterRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 28,
+    "method": "deleteMeter",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 32,
+    "method": "disableMeter",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/disable`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<void>(`${this.baseUrl}/${id}/disable`);\n\t}"
+  },
+  {
+    "file": "src/api/MeterApi.ts",
+    "line": 36,
+    "method": "listMeters",
+    "parameters": [
+      "{ limit, offset }: Pagination"
+    ],
+    "baseUrl": "'/meters'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}?limit=${limit}&offset=${offset}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<ListMetersResponse>(`${this.baseUrl}?limit=${limit}&offset=${offset}`);\n\t}"
+  },
+  {
+    "file": "src/api/OnboardingApi.ts",
+    "line": 27,
+    "method": "generateEvents",
+    "parameters": [
+      "payload: FireEventsPayload"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/portal/onboarding'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/events`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<void>(`${this.baseUrl}/events`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/OnboardingApi.ts",
+    "line": 35,
+    "method": "setupDemo",
+    "parameters": [
+      "payload: SetupDemoRequest"
+    ],
+    "returnType": "Promise<SetupDemoResponse>",
+    "baseUrl": "'/portal/onboarding'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/setup`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SetupDemoResponse>(`${this.baseUrl}/setup`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/OnboardingApi.ts",
+    "line": 43,
+    "method": "recordOnboardingData",
+    "parameters": [
+      "payload: OnboardingDataRequest"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/portal/onboarding'",
+    "httpCalls": [],
+    "body": "{\n\t\tconst webAppUrl = config.integrations.googleSheetsWebAppUrl;\n\n\t\tif (!webAppUrl) {\n\t\t\tconsole.warn('VITE_GOOGLE_SHEETS_WEB_APP_URL is not configured. Skipping onboarding data recording.');\n\t\t\treturn;\n\t\t}\n\n\t\t// Use a \"simple\" fetch request to avoid CORS preflight (OPTIONS) where possible.\n\t\t// Note: `Content-Type: application/json` would trigger a preflight in browsers.\n\t\tconst controller = new AbortController();\n\t\tconst timeoutId = window.setTimeout(() => controller.abort(), 10_000);\n\n\t\ttry {\n\t\t\tconst res = await fetch(webAppUrl, {\n\t\t\t\tmethod: 'POST',\n\t\t\t\theaders: {\n\t\t\t\t\t// Keep request \"simple\" to reduce preflight chances (Google Apps Script can still read raw body).\n\t\t\t\t\t'Content-Type': 'text/plain;charset=UTF-8',\n\t\t\t\t},\n\t\t\t\tbody: JSON.stringify(payload),\n\t\t\t\tsignal: controller.signal,\n\t\t\t});\n\n\t\t\t// This is non-critical telemetry; don't hard-fail onboarding on sheet issues.\n\t\t\tif (!res.ok) {\n\t\t\t\tconst text = await res.text().catch(() => '');\n\t\t\t\tconsole.warn('Failed to record onboarding data to Google Sheets.', {\n\t\t\t\t\tstatus: res.status,\n\t\t\t\t\tstatusText: res.statusText,\n\t\t\t\t\tbody: text,\n\t\t\t\t});\n\t\t\t}\n\t\t} catch (err) {\n\t\t\tconsole.warn('Failed to record onboarding data to Google Sheets.', err);\n\t\t} finally {\n\t\t\twindow.clearTimeout(timeoutId);\n\t\t}\n\t}"
+  },
+  {
+    "file": "src/api/OAuthApi.ts",
+    "line": 69,
+    "method": "InitiateOAuth",
+    "parameters": [
+      "payload: InitiateOAuthRequest"
+    ],
+    "returnType": "Promise<InitiateOAuthResponse>",
+    "baseUrl": "'/oauth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/init`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<InitiateOAuthResponse>(`${this.baseUrl}/init`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/OAuthApi.ts",
+    "line": 82,
+    "method": "CompleteOAuth",
+    "parameters": [
+      "payload: CompleteOAuthRequest"
+    ],
+    "returnType": "Promise<CompleteOAuthResponse>",
+    "baseUrl": "'/oauth'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/complete`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CompleteOAuthResponse>(`${this.baseUrl}/complete`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 9,
+    "method": "createPayment",
+    "parameters": [
+      "data: RecordPaymentPayload"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Payment>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 13,
+    "method": "getPaymentById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<Payment>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 17,
+    "method": "updatePayment",
+    "parameters": [
+      "id: string",
+      "data: Partial<Payment>"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Payment>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 21,
+    "method": "deletePayment",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 25,
+    "method": "getAllPayments",
+    "parameters": [
+      "payload: GetAllPaymentsPayload"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<GetAllPaymentsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 30,
+    "method": "createSetupIntent",
+    "parameters": [
+      "customerId: string",
+      "data: {\n\t\t\tsuccess_url: string;\n\t\t\tcancel_url: string;\n\t\t\tprovider: string;\n\t\t\tset_default?: boolean;\n\t\t}"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn await AxiosClient.post<{\n\t\t\tsetup_intent_id: string;\n\t\t\tcheckout_session_id: string;\n\t\t\tcheckout_url: string;\n\t\t\tclient_secret: string;\n\t\t\tstatus: string;\n\t\t\tusage: string;\n\t\t\tcustomer_id: string;\n\t\t\tcreated_at: number;\n\t\t\texpires_at: number;\n\t\t}>(`${this.baseUrl}/customers/${customerId}/setup/intent`, data);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 52,
+    "method": "getMoyasarSetupIntent",
+    "parameters": [
+      "customerId: string",
+      "successUrl?: string"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn await AxiosClient.post<{\n\t\t\tstatus: string;\n\t\t\tcustomer_id: string;\n\t\t\tcheckout_url: string;\n\t\t}>(`${this.baseUrl}/customers/${customerId}/setup/intent`, {\n\t\t\tprovider: 'moyasar',\n\t\t\tsuccess_url: successUrl ?? window.location.origin,\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 63,
+    "method": "processPayment",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<Payment>",
+    "baseUrl": "'/payments'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/process`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Payment>(`${this.baseUrl}/${id}/process`);\n\t}"
+  },
+  {
+    "file": "src/api/PaymentApi.ts",
+    "line": 67,
+    "method": "getCustomerPaymentMethods",
+    "parameters": [
+      "customerId: string"
+    ],
+    "baseUrl": "'/payments'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/customers/${customerId}/methods`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`${this.baseUrl}/customers/${customerId}/methods`);\n\t}"
+  },
+  {
+    "file": "src/api/PlanApi.ts",
+    "line": 28,
+    "method": "createPlan",
+    "parameters": [
+      "data: CreatePlanRequest"
+    ],
+    "baseUrl": "'/plans'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreatePlanResponse, CreatePlanRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/PlanApi.ts",
+    "line": 36,
+    "method": "getPlansByFilter",
+    "parameters": [
+      "payload: GetPlansByFilterPayload = {}"
+    ],
+    "baseUrl": "'/plans'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, requestPayload)"
+      }
+    ],
+    "body": "{\n\t\tconst { limit = 10, offset = 0, filters = [], sort = [] } = payload;\n\n\t\tconst requestPayload = {\n\t\t\t...payload,\n\t\t\tlimit,\n\t\t\toffset,\n\t\t\tfilters,\n\t\t\tsort,\n\t\t};\n\n\t\treturn await AxiosClient.post<GetAllPlansResponse>(`${this.baseUrl}/search`, requestPayload);\n\t}"
+  },
+  {
+    "file": "src/api/PlanApi.ts",
+    "line": 50,
+    "method": "getPlanById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/plans'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<PlanResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/PlanApi.ts",
+    "line": 54,
+    "method": "updatePlan",
+    "parameters": [
+      "id: string",
+      "data: UpdatePlanRequest"
+    ],
+    "baseUrl": "'/plans'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<PlanResponse, UpdatePlanRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/PlanApi.ts",
+    "line": 58,
+    "method": "deletePlan",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/plans'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/PlanApi.ts",
+    "line": 62,
+    "method": "clonePlan",
+    "parameters": [
+      "id: string",
+      "data: ClonePlanRequest"
+    ],
+    "baseUrl": "'/plans'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/clone`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<PlanResponse, ClonePlanRequest>(`${this.baseUrl}/${id}/clone`, data);\n\t}"
+  },
+  {
+    "file": "src/api/PlanApi.ts",
+    "line": 66,
+    "method": "synchronizePlanPricesWithSubscription",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/plans'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${id}/sync/subscriptions`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SynchronizePlanPricesWithSubscriptionResponse>(`${this.baseUrl}/${id}/sync/subscriptions`);\n\t}"
+  },
+  {
+    "file": "src/api/PriceApi.ts",
+    "line": 24,
+    "method": "ListPrices",
+    "parameters": [
+      "filters?: PriceFilter"
+    ],
+    "baseUrl": "'/prices'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = filters ? generateQueryParams(this.baseUrl, filters) : this.baseUrl;\n\t\treturn await AxiosClient.get<GetAllPricesResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/PriceApi.ts",
+    "line": 34,
+    "method": "GetPriceById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/prices'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<PriceResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/PriceApi.ts",
+    "line": 44,
+    "method": "CreatePrice",
+    "parameters": [
+      "data: CreatePriceRequest"
+    ],
+    "baseUrl": "'/prices'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<PriceResponse>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/PriceApi.ts",
+    "line": 54,
+    "method": "CreateBulkPrice",
+    "parameters": [
+      "data: CreateBulkPriceRequest"
+    ],
+    "baseUrl": "'/prices'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/bulk`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreateBulkPriceResponse>(`${this.baseUrl}/bulk`, data);\n\t}"
+  },
+  {
+    "file": "src/api/PriceApi.ts",
+    "line": 66,
+    "method": "UpdatePrice",
+    "parameters": [
+      "id: string",
+      "data: UpdatePriceRequest"
+    ],
+    "baseUrl": "'/prices'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data, { allowEmptyKeys: ['group_id'] })"
+      }
+    ],
+    "body": "{\n\t\t// allowEmptyKeys so that group_id: '' is sent when user selects \"None\" to clear the group\n\t\treturn await AxiosClient.put<PriceResponse>(`${this.baseUrl}/${id}`, data, { allowEmptyKeys: ['group_id'] });\n\t}"
+  },
+  {
+    "file": "src/api/PriceApi.ts",
+    "line": 77,
+    "method": "DeletePrice",
+    "parameters": [
+      "id: string",
+      "data?: DeletePriceRequest"
+    ],
+    "baseUrl": "'/prices'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`, data || {})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`, data || {});\n\t}"
+  },
+  {
+    "file": "src/api/PriceApi.ts",
+    "line": 86,
+    "method": "searchPrices",
+    "parameters": [
+      "payload: SearchPricesRequest"
+    ],
+    "baseUrl": "'/prices'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SearchPricesResponse>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/PriceUnitApi.ts",
+    "line": 20,
+    "method": "CreatePriceUnit",
+    "parameters": [
+      "data: CreatePriceUnitRequest"
+    ],
+    "baseUrl": "'/prices/units'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreatePriceUnitResponse>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/PriceUnitApi.ts",
+    "line": 29,
+    "method": "ListPriceUnits",
+    "parameters": [
+      "filters?: PriceUnitFilter"
+    ],
+    "baseUrl": "'/prices/units'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = filters ? generateQueryParams(this.baseUrl, filters) : this.baseUrl;\n\t\treturn await AxiosClient.get<ListPriceUnitsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/PriceUnitApi.ts",
+    "line": 39,
+    "method": "GetPriceUnit",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/prices/units'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<PriceUnitResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/PriceUnitApi.ts",
+    "line": 48,
+    "method": "GetPriceUnitByCode",
+    "parameters": [
+      "code: string"
+    ],
+    "baseUrl": "'/prices/units'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/code/${code}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<PriceUnitResponse>(`${this.baseUrl}/code/${code}`);\n\t}"
+  },
+  {
+    "file": "src/api/PriceUnitApi.ts",
+    "line": 58,
+    "method": "UpdatePriceUnit",
+    "parameters": [
+      "id: string",
+      "data: UpdatePriceUnitRequest"
+    ],
+    "baseUrl": "'/prices/units'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<PriceUnitResponse>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/PriceUnitApi.ts",
+    "line": 67,
+    "method": "DeletePriceUnit",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/prices/units'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/PriceUnitApi.ts",
+    "line": 76,
+    "method": "ListPriceUnitsByFilter",
+    "parameters": [
+      "filter: PriceUnitFilter"
+    ],
+    "baseUrl": "'/prices/units'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, filter)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListPriceUnitsResponse>(`${this.baseUrl}/search`, filter);\n\t}"
+  },
+  {
+    "file": "src/api/SecretKeysApi.ts",
+    "line": 24,
+    "method": "getAllSecretKeys",
+    "parameters": [
+      "pagination: Pagination"
+    ],
+    "baseUrl": "'/secrets/api/keys'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, pagination);\n\t\treturn await AxiosClient.get<GetAllSecretKeysResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/SecretKeysApi.ts",
+    "line": 29,
+    "method": "getSecretKeyById",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/secrets/api/keys'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<SecretKey>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/SecretKeysApi.ts",
+    "line": 33,
+    "method": "createSecretKey",
+    "parameters": [
+      "data: CreateSecretKeyPayload"
+    ],
+    "baseUrl": "'/secrets/api/keys'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreateSecretKeyResponse>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/SecretKeysApi.ts",
+    "line": 37,
+    "method": "deleteSecretKey",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/secrets/api/keys'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/SettingsApi.ts",
+    "line": 22,
+    "method": "getSettingByKey",
+    "parameters": [
+      "key: string"
+    ],
+    "returnType": "Promise<Setting>",
+    "baseUrl": "'/settings'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${key}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<Setting>(`${this.baseUrl}/${key}`);\n\t}"
+  },
+  {
+    "file": "src/api/SettingsApi.ts",
+    "line": 30,
+    "method": "updateSettingByKey",
+    "parameters": [
+      "key: string",
+      "data: UpdateSettingRequest"
+    ],
+    "returnType": "Promise<Setting>",
+    "baseUrl": "'/settings'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${key}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Setting>(`${this.baseUrl}/${key}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/SettingsApi.ts",
+    "line": 38,
+    "method": "deleteSettingByKey",
+    "parameters": [
+      "key: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/settings'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${key}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${key}`);\n\t}"
+  },
+  {
+    "file": "src/api/SettingsApi.ts",
+    "line": 46,
+    "method": "resetSettingToDefaults",
+    "parameters": [
+      "key: string"
+    ],
+    "returnType": "Promise<Setting>",
+    "baseUrl": "'/settings'",
+    "httpCalls": [],
+    "body": "{\n\t\ttry {\n\t\t\tawait this.deleteSettingByKey(key);\n\t\t} catch (error) {\n\t\t\tif (!isHttpNotFoundError(error)) throw error;\n\t\t}\n\n\t\treturn this.getSettingByKey(key);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 21,
+    "method": "addTask",
+    "parameters": [
+      "data: AddTaskPayload"
+    ],
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ImportTask, AddTaskPayload>(`${this.baseUrl}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 25,
+    "method": "getTaskById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<ImportTask>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 29,
+    "method": "updateTaskStatus",
+    "parameters": [
+      "id: string",
+      "status: string"
+    ],
+    "returnType": "Promise<ImportTask>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}/status`, { status })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<ImportTask>(`${this.baseUrl}/${id}/status`, { status });\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 33,
+    "method": "getAllTasks",
+    "parameters": [
+      "payload: GetTasksPayload = {}"
+    ],
+    "returnType": "Promise<GetTasksResponse>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get(url);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 39,
+    "method": "getAllScheduledTasks",
+    "parameters": [
+      "payload: GetScheduledTasksPayload = {}"
+    ],
+    "returnType": "Promise<GetScheduledTasksResponse>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.scheduledBaseUrl, payload);\n\t\treturn await AxiosClient.get<GetScheduledTasksResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 44,
+    "method": "getScheduledTaskById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<ScheduledTask>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.scheduledBaseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<ScheduledTask>(`${this.scheduledBaseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 48,
+    "method": "createScheduledTask",
+    "parameters": [
+      "payload: CreateScheduledTaskPayload"
+    ],
+    "returnType": "Promise<ScheduledTask>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.scheduledBaseUrl, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ScheduledTask>(this.scheduledBaseUrl, payload);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 52,
+    "method": "updateScheduledTask",
+    "parameters": [
+      "id: string",
+      "payload: UpdateScheduledTaskPayload"
+    ],
+    "returnType": "Promise<ScheduledTask>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.scheduledBaseUrl}/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<ScheduledTask>(`${this.scheduledBaseUrl}/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 56,
+    "method": "deleteScheduledTask",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.scheduledBaseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete(`${this.scheduledBaseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 60,
+    "method": "forceRunScheduledTask",
+    "parameters": [
+      "id: string",
+      "payload?: ForceRunPayload"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.scheduledBaseUrl}/${id}/run`, payload || {})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post(`${this.scheduledBaseUrl}/${id}/run`, payload || {});\n\t}"
+  },
+  {
+    "file": "src/api/TaskApi.ts",
+    "line": 65,
+    "method": "downloadTaskFile",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<DownloadTaskFileResponse>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}/download`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<DownloadTaskFileResponse>(`${this.baseUrl}/${id}/download`);\n\t}"
+  },
+  {
+    "file": "src/api/TaskRunApi.ts",
+    "line": 54,
+    "method": "getAllTaskRuns",
+    "parameters": [
+      "payload: GetTaskRunsPayload = {}"
+    ],
+    "returnType": "Promise<GetTaskRunsResponse>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<GetTaskRunsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/TaskRunApi.ts",
+    "line": 59,
+    "method": "getTaskRunById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<TaskRun>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<TaskRun>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/TaskRunApi.ts",
+    "line": 63,
+    "method": "getTaskRunsByScheduledTaskId",
+    "parameters": [
+      "scheduledTaskId: string",
+      "payload: Omit<GetTaskRunsPayload, 'scheduled_task_id'> = {}"
+    ],
+    "returnType": "Promise<GetTaskRunsResponse>",
+    "baseUrl": "'/tasks'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn await this.getAllTaskRuns({ ...payload, scheduled_task_id: scheduledTaskId });\n\t}"
+  },
+  {
+    "file": "src/api/UsageRecordApi.ts",
+    "line": 7,
+    "method": "searchUsageRecords",
+    "parameters": [
+      "payload: UsageRecordFilter"
+    ],
+    "returnType": "Promise<ListUsageRecordsResponse>",
+    "baseUrl": "'/usage-records/search'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListUsageRecordsResponse>(this.baseUrl, payload);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 23,
+    "method": "getCustomerWallets",
+    "parameters": [
+      "data: GetCustomerWalletsPayload"
+    ],
+    "returnType": "Promise<Wallet[]>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(`/customers${this.baseUrl}`, data);\n\t\treturn await AxiosClient.get<Wallet[]>(url);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 28,
+    "method": "getWalletTransactions",
+    "parameters": [
+      "{ walletId, limit = 10, offset = 0 }: WalletTransactionPayload"
+    ],
+    "returnType": "Promise<WalletTransactionResponse>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${walletId}/transactions?limit=${limit}&offset=${offset}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<WalletTransactionResponse>(`${this.baseUrl}/${walletId}/transactions?limit=${limit}&offset=${offset}`);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 32,
+    "method": "getWalletBalance",
+    "parameters": [
+      "walletId: string"
+    ],
+    "returnType": "Promise<RealtimeWalletBalance>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${walletId}/balance/real-time`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<RealtimeWalletBalance>(`${this.baseUrl}/${walletId}/balance/real-time`);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 36,
+    "method": "getWalletBalanceV2",
+    "parameters": [
+      "walletId: string"
+    ],
+    "returnType": "Promise<RealtimeWalletBalance>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${walletId}/balance/real-time-v2`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<RealtimeWalletBalance>(`${this.baseUrl}/${walletId}/balance/real-time-v2`);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 39,
+    "method": "createWallet",
+    "parameters": [
+      "data: CreateWalletPayload"
+    ],
+    "returnType": "Promise<Wallet>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Wallet>(`${this.baseUrl}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 43,
+    "method": "topupWallet",
+    "parameters": [
+      "data: TopupWalletPayload"
+    ],
+    "returnType": "Promise<TopupWalletResponse>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${data.walletId}/top-up`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<TopupWalletResponse>(`${this.baseUrl}/${data.walletId}/top-up`, data);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 47,
+    "method": "debitWallet",
+    "parameters": [
+      "data: DebitWalletPayload"
+    ],
+    "returnType": "Promise<Wallet>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${data.walletId}/debit`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Wallet>(`${this.baseUrl}/${data.walletId}/debit`, data);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 51,
+    "method": "terminateWallet",
+    "parameters": [
+      "walletId: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${walletId}/terminate`, {})"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<void>(`${this.baseUrl}/${walletId}/terminate`, {});\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 55,
+    "method": "updateWallet",
+    "parameters": [
+      "walletId: string",
+      "data: UpdateWalletRequest"
+    ],
+    "returnType": "Promise<WalletResponse>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${walletId}`, { ...data })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<WalletResponse>(`${this.baseUrl}/${walletId}`, { ...data });\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 60,
+    "method": "getAllWalletTransactionsByFilter",
+    "parameters": [
+      "payload: GetWalletTransactionsByFilterPayload"
+    ],
+    "returnType": "Promise<WalletTransactionResponse>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "\n\t\t\t`${this.baseUrl}/transactions/search`,\n\t\t\tpayload,\n\t\t)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<WalletTransactionResponse, GetWalletTransactionsByFilterPayload>(\n\t\t\t`${this.baseUrl}/transactions/search`,\n\t\t\tpayload,\n\t\t);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 68,
+    "method": "listWallets",
+    "parameters": [
+      "payload: ListWalletsPayload = {}"
+    ],
+    "returnType": "Promise<ListWalletsResponse>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst url = generateQueryParams(this.baseUrl, payload);\n\t\treturn await AxiosClient.get<ListWalletsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/WalletApi.ts",
+    "line": 74,
+    "method": "listWalletsByFilter",
+    "parameters": [
+      "payload: ListWalletsByFilterPayload"
+    ],
+    "returnType": "Promise<ListWalletsResponse>",
+    "baseUrl": "'/wallets'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListWalletsResponse, ListWalletsByFilterPayload>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/WorkflowApi.ts",
+    "line": 15,
+    "method": "search",
+    "parameters": [
+      "payload: WorkflowExecutionFilterRequest"
+    ],
+    "returnType": "Promise<ListWorkflowsResponse>",
+    "baseUrl": "'/workflows'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<ListWorkflowsResponse>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/WorkflowApi.ts",
+    "line": 22,
+    "method": "getDetails",
+    "parameters": [
+      "workflowId: string",
+      "runId: string"
+    ],
+    "returnType": "Promise<WorkflowDetailsResponse>",
+    "baseUrl": "'/workflows'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${workflowId}/${runId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<WorkflowDetailsResponse>(`${this.baseUrl}/${workflowId}/${runId}`);\n\t}"
+  },
+  {
+    "file": "src/api/WorkflowApi.ts",
+    "line": 29,
+    "method": "getSummary",
+    "parameters": [
+      "workflowId: string",
+      "runId: string"
+    ],
+    "returnType": "Promise<WorkflowSummaryResponse>",
+    "baseUrl": "'/workflows'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${workflowId}/${runId}/summary`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<WorkflowSummaryResponse>(`${this.baseUrl}/${workflowId}/${runId}/summary`);\n\t}"
+  },
+  {
+    "file": "src/api/WorkflowApi.ts",
+    "line": 36,
+    "method": "getTimeline",
+    "parameters": [
+      "workflowId: string",
+      "runId: string"
+    ],
+    "returnType": "Promise<WorkflowTimelineResponse>",
+    "baseUrl": "'/workflows'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${workflowId}/${runId}/timeline`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<WorkflowTimelineResponse>(`${this.baseUrl}/${workflowId}/${runId}/timeline`);\n\t}"
+  },
+  {
+    "file": "src/api/WorkflowApi.ts",
+    "line": 43,
+    "method": "getBatch",
+    "parameters": [
+      "payload: BatchWorkflowsRequest"
+    ],
+    "returnType": "Promise<BatchWorkflowsResponse>",
+    "baseUrl": "'/workflows'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/batch`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<BatchWorkflowsResponse>(`${this.baseUrl}/batch`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/WebhookApi.ts",
+    "line": 5,
+    "method": "getWebhookDashboardUrl",
+    "parameters": [],
+    "baseUrl": "'/webhooks'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${baseUrl}/dashboard`)"
+      }
+    ],
+    "body": "{\n\t\tconst baseUrl = '/webhooks';\n\t\treturn AxiosClient.get<WebhookDashboardResponse>(`${baseUrl}/dashboard`);\n\t}"
+  },
+  {
+    "file": "src/api/AlertSettingApi.ts",
+    "line": 18,
+    "method": "create",
+    "parameters": [
+      "data: CreateAlertSettingsRequest"
+    ],
+    "baseUrl": "'/alerts/setting'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn AxiosClient.post<AlertSettingResponse, CreateAlertSettingsRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/AlertSettingApi.ts",
+    "line": 27,
+    "method": "get",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/alerts/setting'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<AlertSettingResponse>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/AlertSettingApi.ts",
+    "line": 36,
+    "method": "search",
+    "parameters": [
+      "payload: SearchAlertSettingsRequest"
+    ],
+    "baseUrl": "'/alerts/setting'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<SearchAlertSettingsResponse, SearchAlertSettingsRequest>(`${this.baseUrl}/search`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/AlertSettingApi.ts",
+    "line": 46,
+    "method": "update",
+    "parameters": [
+      "id: string",
+      "data: UpdateAlertSettingsRequest"
+    ],
+    "baseUrl": "'/alerts/setting'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<AlertSettingResponse, UpdateAlertSettingsRequest>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/AlertSettingApi.ts",
+    "line": 55,
+    "method": "delete",
+    "parameters": [
+      "id: string"
+    ],
+    "baseUrl": "'/alerts/setting'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${id}`);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationMappingApi.ts",
+    "line": 63,
+    "method": "getIntegrationConfig",
+    "parameters": [],
+    "returnType": "Promise<IntegrationConfigResponse>",
+    "baseUrl": "'/integrations'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/config`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<IntegrationConfigResponse>(`${this.baseUrl}/config`);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationMappingApi.ts",
+    "line": 67,
+    "method": "getIntegrationMappings",
+    "parameters": [
+      "entityType: string",
+      "entityId: string"
+    ],
+    "returnType": "Promise<IntegrationMappingsResponse>",
+    "baseUrl": "'/integrations'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "url)"
+      }
+    ],
+    "body": "{\n\t\tconst params = { entity_type: entityType, entity_id: entityId };\n\t\tconst url = generateQueryParams(`${this.baseUrl}/mappings`, params);\n\t\treturn await AxiosClient.get<IntegrationMappingsResponse>(url);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationMappingApi.ts",
+    "line": 73,
+    "method": "syncIntegration",
+    "parameters": [
+      "request: IntegrationSyncRequest"
+    ],
+    "returnType": "Promise<{ message: string }>",
+    "baseUrl": "'/integrations'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/sync`, request)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<{ message: string }>(`${this.baseUrl}/sync`, request);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationMappingApi.ts",
+    "line": 77,
+    "method": "linkIntegration",
+    "parameters": [
+      "request: IntegrationLinkRequest"
+    ],
+    "returnType": "Promise<IntegrationLinkResponse>",
+    "baseUrl": "'/integrations'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/link`, request)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<IntegrationLinkResponse>(`${this.baseUrl}/link`, request);\n\t}"
+  },
+  {
+    "file": "src/api/IntegrationMappingApi.ts",
+    "line": 81,
+    "method": "delinkIntegration",
+    "parameters": [
+      "request: IntegrationDelinkRequest"
+    ],
+    "returnType": "Promise<IntegrationDelinkResponse>",
+    "baseUrl": "'/integrations'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/link`, request)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<IntegrationDelinkResponse>(`${this.baseUrl}/link`, request);\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 40,
+    "method": "getAllEnvironments",
+    "parameters": [],
+    "returnType": "Promise<ListEnvironmentResponse>",
+    "baseUrl": "'/environments'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "this.baseUrl)"
+      }
+    ],
+    "body": "{\n\t\ttry {\n\t\t\treturn await AxiosClient.get<ListEnvironmentResponse>(this.baseUrl);\n\t\t} catch (error) {\n\t\t\treturn { environments: [], total: 0 } as ListEnvironmentResponse;\n\t\t}\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 48,
+    "method": "getEnvironmentById",
+    "parameters": [
+      "id: string"
+    ],
+    "returnType": "Promise<Environment | null>",
+    "baseUrl": "'/environments'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/${id}`)"
+      }
+    ],
+    "body": "{\n\t\ttry {\n\t\t\treturn await AxiosClient.get<Environment>(`${this.baseUrl}/${id}`);\n\t\t} catch (error) {\n\t\t\treturn null;\n\t\t}\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 56,
+    "method": "createEnvironment",
+    "parameters": [
+      "payload: CreateEnvironmentPayload"
+    ],
+    "returnType": "Promise<Environment | null>",
+    "baseUrl": "'/environments'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<Environment>(this.baseUrl, payload);\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 60,
+    "method": "cloneEnvironment",
+    "parameters": [
+      "sourceEnvironmentId: string",
+      "payload: CloneEnvironmentPayload"
+    ],
+    "returnType": "Promise<CloneEnvironmentResponse>",
+    "baseUrl": "'/environments'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${sourceEnvironmentId}/clone`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CloneEnvironmentResponse>(`${this.baseUrl}/${sourceEnvironmentId}/clone`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 64,
+    "method": "updateEnvironment",
+    "parameters": [
+      "id: string",
+      "payload: UpdateEnvironmentPayload"
+    ],
+    "returnType": "Promise<Environment | null>",
+    "baseUrl": "'/environments'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<Environment>(`${this.baseUrl}/${id}`, payload);\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 68,
+    "method": "getActiveEnvironmentId",
+    "parameters": [],
+    "returnType": "string | null",
+    "baseUrl": "'/environments'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn localStorage.getItem(ACTIVE_ENVIRONMENT_ID_KEY);\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 72,
+    "method": "setActiveEnvironmentId",
+    "parameters": [
+      "environmentId: string"
+    ],
+    "returnType": "void",
+    "baseUrl": "'/environments'",
+    "httpCalls": [],
+    "body": "{\n\t\tlocalStorage.setItem(ACTIVE_ENVIRONMENT_ID_KEY, environmentId);\n\t\tresolveEnvReady?.();\n\t\tresolveEnvReady = null;\n\t}"
+  },
+  {
+    "file": "src/api/EnvironmentApi.ts",
+    "line": 81,
+    "method": "waitForActiveEnvironment",
+    "parameters": [
+      "timeoutMs = 5000"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/environments'",
+    "httpCalls": [],
+    "body": "{\n\t\treturn Promise.race([getEnvReadyPromise(), new Promise<void>((resolve) => setTimeout(resolve, timeoutMs))]);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 25,
+    "method": "getTenantMembers",
+    "parameters": [
+      "params: GetTenantMembersParams"
+    ],
+    "returnType": "Promise<GetServiceAccountsResponse>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, {\n\t\t\tlimit: params.limit,\n\t\t\toffset: params.offset,\n\t\t\ttype: 'user',\n\t\t\tfilters,\n\t\t\tsort: [\n\t\t\t\t{\n\t\t\t\t\tfield: 'created_at',\n\t\t\t\t\tdirection: 'desc',\n\t\t\t\t},\n\t\t\t],\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\tconst filters: TypedBackendFilter[] = [\n\t\t\t{\n\t\t\t\tfield: 'status',\n\t\t\t\toperator: FilterOperator.EQUAL,\n\t\t\t\tdata_type: DataType.STRING,\n\t\t\t\tvalue: { string: 'published' },\n\t\t\t},\n\t\t];\n\t\treturn await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/search`, {\n\t\t\tlimit: params.limit,\n\t\t\toffset: params.offset,\n\t\t\ttype: 'user',\n\t\t\tfilters,\n\t\t\tsort: [\n\t\t\t\t{\n\t\t\t\t\tfield: 'created_at',\n\t\t\t\t\tdirection: 'desc',\n\t\t\t\t},\n\t\t\t],\n\t\t});\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 49,
+    "method": "getAllUsers",
+    "parameters": [],
+    "returnType": "Promise<GetServiceAccountsResponse>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, {\n\t\t\tlimit: 1000,\n\t\t\toffset: 0,\n\t\t\ttype: 'user',\n\t\t\tfilters: [],\n\t\t\tsort: [\n\t\t\t\t{\n\t\t\t\t\tfield: 'created_at',\n\t\t\t\t\tdirection: 'desc',\n\t\t\t\t},\n\t\t\t],\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\tconst response = await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/search`, {\n\t\t\tlimit: 1000,\n\t\t\toffset: 0,\n\t\t\ttype: 'user',\n\t\t\tfilters: [],\n\t\t\tsort: [\n\t\t\t\t{\n\t\t\t\t\tfield: 'created_at',\n\t\t\t\t\tdirection: 'desc',\n\t\t\t\t},\n\t\t\t],\n\t\t});\n\t\treturn response;\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 70,
+    "method": "getUserById",
+    "parameters": [
+      "userId: string"
+    ],
+    "returnType": "Promise<User | undefined>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, {\n\t\t\tuser_ids: [userId],\n\t\t\ttype: 'user',\n\t\t\tlimit: 1,\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\tconst response = await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/search`, {\n\t\t\tuser_ids: [userId],\n\t\t\ttype: 'user',\n\t\t\tlimit: 1,\n\t\t});\n\t\treturn response.items[0];\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 80,
+    "method": "getServiceAccounts",
+    "parameters": [
+      "params: { limit: number; offset: number } = { limit: 10, offset: 0 }"
+    ],
+    "returnType": "Promise<GetServiceAccountsResponse>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/search`, {\n\t\t\tlimit: params.limit,\n\t\t\toffset: params.offset,\n\t\t\ttype: 'service_account',\n\t\t\tsort: [\n\t\t\t\t{\n\t\t\t\t\tfield: 'created_at',\n\t\t\t\t\tdirection: 'desc',\n\t\t\t\t},\n\t\t\t],\n\t\t})"
+      }
+    ],
+    "body": "{\n\t\tconst response = await AxiosClient.post<GetServiceAccountsResponse>(`${this.baseUrl}/search`, {\n\t\t\tlimit: params.limit,\n\t\t\toffset: params.offset,\n\t\t\ttype: 'service_account',\n\t\t\tsort: [\n\t\t\t\t{\n\t\t\t\t\tfield: 'created_at',\n\t\t\t\t\tdirection: 'desc',\n\t\t\t\t},\n\t\t\t],\n\t\t});\n\t\treturn response;\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 98,
+    "method": "createUser",
+    "parameters": [
+      "data: CreateUserRequest"
+    ],
+    "returnType": "Promise<User>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<User, CreateUserRequest>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 106,
+    "method": "addUserToTenant",
+    "parameters": [
+      "data: CreateTenantUserRequest"
+    ],
+    "returnType": "Promise<CreateTenantUserResponse>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.v1UsersUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<CreateTenantUserResponse, CreateTenantUserRequest>(this.v1UsersUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 111,
+    "method": "createServiceAccount",
+    "parameters": [
+      "data: CreateServiceAccountPayload"
+    ],
+    "returnType": "Promise<User>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<User>(this.baseUrl, data);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 116,
+    "method": "updateUser",
+    "parameters": [
+      "data: UpdateTenantPayload"
+    ],
+    "returnType": "Promise<User>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`tenants/update`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<User, UpdateTenantPayload>(`tenants/update`, data);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 121,
+    "method": "updateServiceAccount",
+    "parameters": [
+      "id: string",
+      "data: { name?: string; metadata?: Record<string, string> }"
+    ],
+    "returnType": "Promise<User>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}`, data)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<User, typeof data>(`${this.baseUrl}/${id}`, data);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 130,
+    "method": "removeUserFromTenant",
+    "parameters": [
+      "userId: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "`${this.baseUrl}/${userId}/remove`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<void>(`${this.baseUrl}/${userId}/remove`);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 139,
+    "method": "deleteUser",
+    "parameters": [
+      "userId: string"
+    ],
+    "returnType": "Promise<void>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "delete",
+        "expression": "`${this.baseUrl}/${userId}`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.delete<void>(`${this.baseUrl}/${userId}`);\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 144,
+    "method": "updateUserRoles",
+    "parameters": [
+      "id: string",
+      "roles: string[]"
+    ],
+    "returnType": "Promise<User>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "put",
+        "expression": "`${this.baseUrl}/${id}/roles`, { roles })"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.put<User, UpdateUserRolesRequest>(`${this.baseUrl}/${id}/roles`, { roles });\n\t}"
+  },
+  {
+    "file": "src/api/UserApi.ts",
+    "line": 148,
+    "method": "me",
+    "parameters": [],
+    "returnType": "Promise<User>",
+    "baseUrl": "'/users'",
+    "httpCalls": [
+      {
+        "verb": "get",
+        "expression": "`${this.baseUrl}/me`)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.get<User>(`${this.baseUrl}/me`);\n\t}"
+  },
+  {
+    "file": "src/api/RevenueDashboardApi.ts",
+    "line": 7,
+    "method": "getRevenueDashboard",
+    "parameters": [
+      "payload: RevenueDashboardRequest"
+    ],
+    "returnType": "Promise<RevenueDashboardResponse>",
+    "baseUrl": "'/dashboard/revenue-dashboard'",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.baseUrl, payload)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<RevenueDashboardResponse>(this.baseUrl, payload);\n\t}"
+  },
+  {
+    "file": "src/api/AiPricingParseApi.ts",
+    "line": 19,
+    "method": "parseGemini",
+    "parameters": [
+      "body: ParseGeminiPricingRequest"
+    ],
+    "returnType": "Promise<PricingSchema>",
+    "httpCalls": [
+      {
+        "verb": "post",
+        "expression": "this.path, body)"
+      }
+    ],
+    "body": "{\n\t\treturn await AxiosClient.post<PricingSchema, ParseGeminiPricingRequest>(this.path, body);\n\t}"
+  }
+]
