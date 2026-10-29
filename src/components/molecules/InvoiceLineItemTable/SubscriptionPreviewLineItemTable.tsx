@@ -6,6 +6,7 @@ import { FC } from 'react';
 import { RefreshCw, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTranslation } from 'react-i18next';
+import LineItemGrantInfo from './LineItemGrantInfo';
 interface Props {
 	data: LineItem[];
 	currency?: string;
@@ -120,7 +121,9 @@ const SubscriptionPreviewLineItemTable: FC<Props> = ({
 									<td className='py-4 px-4 text-center text-sm text-content-tertiary'>
 										{item.quantity ? item.quantity : t('common:labels.na')}
 									</td>
-									<td className='py-4 px-0 text-end text-sm text-content '>{formatAmount(item.amount ?? 0, item.currency)}</td>
+									<td className='py-4 px-0 text-end text-sm text-content '>
+										<LineItemGrantInfo item={item}>{formatAmount(item.amount ?? 0, item.currency)}</LineItemGrantInfo>
+									</td>
 								</tr>
 							);
 						})}
