@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DatePicker, Label, Button } from '@/components/atoms';
+import { DateTimePicker, Label, Button } from '@/components/atoms';
 import { SubscriptionDiscountTable } from '@/components/molecules';
 import SubscriptionPriceTable from '@/components/organisms/Subscription/SubscriptionPriceTable';
 import { Coupon } from '@/models/Coupon';
@@ -103,7 +103,7 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 				<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 					<div>
 						<Label label={t('organisms.phaseForm.startDateRequired')} />
-						<DatePicker
+						<DateTimePicker
 							date={formState.start_date}
 							setDate={(date) => {
 								if (date) {
@@ -117,7 +117,7 @@ const PhaseForm: React.FC<PhaseFormProps> = ({
 					</div>
 					<div>
 						<Label label={t('organisms.phaseForm.endDate')} />
-						<DatePicker
+						<DateTimePicker
 							date={formState.end_date || undefined}
 							setDate={(date) => {
 								updateFormState({ end_date: date });
