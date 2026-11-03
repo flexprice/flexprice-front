@@ -824,5 +824,9 @@
 		"integrations": "Integrations",
 		"pricingWidget": "Pricing Widget",
 		"settings": "Settings"
+	},
+	"newUiBanner": {
+		"message": "A new Flexprice console is here.",
+		"action": "Take me to the new UI"
 	}
 }

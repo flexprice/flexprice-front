@@ -2,7 +2,7 @@ import { config } from '@/config/config';
 import { useNavigate } from 'react-router';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Sidebar } from '@/components/molecules/Sidebar';
-import { BreadCrumbs, DebugMenu, RestrictedEnvBanner } from '@/components/molecules';
+import { BreadCrumbs, DebugMenu, NewUiBanner, RestrictedEnvBanner } from '@/components/molecules';
 import { CommandPalette } from '@/components/organisms';
 import AppPrefetcher from '@/components/organisms/AppPrefetcher';
 import useUser from '@/hooks/useUser';
@@ -54,6 +54,7 @@ const MainLayout: React.FC = () => {
 			{/* Right Layout */}
 			<SidebarInset className='flex flex-col flex-1 bg-surface-canvas h-screen relative'>
 				<BreadCrumbs />
+				<NewUiBanner />
 				<RestrictedEnvBanner />
 				{/* Main Content */}
 				<main className='flex-1 px-4 relative overflow-y-auto '>
