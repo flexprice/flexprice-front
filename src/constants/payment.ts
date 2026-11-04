@@ -23,6 +23,7 @@ export enum PAYMENT_METHOD_TYPE {
 	OFFLINE = 'OFFLINE',
 	CREDITS = 'CREDITS',
 	PAYMENT_LINK = 'PAYMENT_LINK',
+	UPI = 'UPI',
 }
 
 export enum PAYMENT_DESTINATION_TYPE {
@@ -68,6 +69,8 @@ export const formatPaymentMethodType = (type: string): string => {
 			return 'Credits';
 		case PAYMENT_METHOD_TYPE.PAYMENT_LINK:
 			return 'Payment Link';
+		case PAYMENT_METHOD_TYPE.UPI:
+			return 'UPI';
 		default:
 			return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
 	}

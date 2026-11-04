@@ -14,9 +14,11 @@ import {
 	ListCreditGrantApplicationsResponse,
 } from '@/types/dto';
 import { DashboardSessionResponse } from '@/types/dto/Dashboard';
+import { PaymentGatewayType, SavedPaymentMethodsResponse } from '@/types/dto/CustomerPortalBilling';
 import { generateQueryParams } from '@/utils/common/api_helper';
 import { TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
+
 
 class CustomerApi {
 	private static baseUrl = '/customers';
@@ -166,6 +168,10 @@ class CustomerApi {
 			filters,
 			sort: [],
 		});
+	}
+
+	public static async getPaymentMethods(id: string, provider: PaymentGatewayType): Promise<SavedPaymentMethodsResponse> {
+		return await AxiosClient.get<SavedPaymentMethodsResponse>(`${this.baseUrl}/${id}/payment-methods?providers=${provider}`);
 	}
 }
 

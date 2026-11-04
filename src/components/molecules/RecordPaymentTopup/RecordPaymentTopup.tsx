@@ -1,6 +1,7 @@
 import { Button, Input, Select, Textarea, PaymentUrlSuccessDialog, DatePicker, Dialog } from '@/components/atoms';
 import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
 import { FC, useState, useEffect, useMemo } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { PAYMENT_METHOD_TYPE, PAYMENT_DESTINATION_TYPE, Payment } from '@/models/Payment';
 import { WALLET_TYPE } from '@/models/Wallet';
@@ -13,6 +14,9 @@ import toast from 'react-hot-toast';
 import { LoaderCircleIcon } from 'lucide-react';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 import { useTranslation } from 'react-i18next';
+import { PAYMENT_STATUS } from '@/constants';
+import CustomerApi from '@/api/CustomerApi';
+import { PaymentGatewayType } from '@/types/dto/CustomerPortalBilling';
 
 interface Props {
 	isOpen: boolean;
@@ -32,6 +36,7 @@ interface ValidationErrors {
 	description?: string;
 	wallet_id?: string;
 	selected_connection_id?: string;
+	saved_method_id?: string;
 	recorded_at?: string;
 }
 
@@ -42,6 +47,7 @@ interface PaymentFormData {
 	description?: string;
 	wallet_id?: string;
 	selected_connection_id?: string;
+	saved_method_id?: string;
 	recorded_at?: Date;
 }
 
@@ -98,34 +104,110 @@ const RecordPaymentTopup: FC<Props> = ({
 		}
 	}, [filteredWallets, formData.payment_method_type]);
 
+	// Razorpay recurring charges are INR only.
+	const chargeConnections = availableConnections.filter(
+		(connection) =>
+			connection.provider_type === CONNECTION_PROVIDER_TYPE.STRIPE ||
+			(connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY && currency.toUpperCase() === 'INR'),
+	);
+
 	const paymentMethodOptions = [
 		{ label: 'Offline', value: PAYMENT_METHOD_TYPE.OFFLINE, description: 'Record payment that was processed outside the system' },
 		{ label: 'Credits', value: PAYMENT_METHOD_TYPE.CREDITS, description: 'Pay using customer post-paid wallet balance.' },
 		...(availableConnections.length > 0
 			? [{ label: 'Payment Link', value: PAYMENT_METHOD_TYPE.PAYMENT_LINK, description: 'Generate a payment link for online payment' }]
 			: []),
+		...(chargeConnections.length > 0
+			? [
+					{
+						label: t('payments.chargeSavedMethod'),
+						value: PAYMENT_METHOD_TYPE.CARD,
+						description: t('payments.chargeSavedMethodDescription'),
+					},
+				]
+			: []),
 	];
 
-	const providerOptions = availableConnections
+	const isSavedCharge = formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD;
+	const selectedConnection = availableConnections.find((conn) => conn.id === formData.selected_connection_id);
+
+	const {
+		data: savedMethods,
+		isSuccess: savedMethodsLoaded,
+		isFetching: savedMethodsLoading,
+		refetch: refetchSavedMethods,
+	} = useQuery({
+		queryKey: ['customerPaymentMethods', customer_id, selectedConnection?.provider_type],
+		queryFn: () => CustomerApi.getPaymentMethods(customer_id, selectedConnection!.provider_type as PaymentGatewayType),
+		enabled: isOpen && isSavedCharge && !!customer_id && !!selectedConnection,
+	});
+
+	// Razorpay picks the mandate itself, so it gets one option per type; Stripe charges the exact card chosen.
+	const isRazorpay = selectedConnection?.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY;
+	const usableMethods = (savedMethods?.providers ?? [])
+		.flatMap((group) => group.items ?? [])
+		.filter(
+			(item) =>
+				item.can_auto_charge &&
+				item.status === 'ACTIVE' &&
+				(item.type === PAYMENT_METHOD_TYPE.CARD || item.type === PAYMENT_METHOD_TYPE.UPI),
+		);
+	const chargeableMethods = isRazorpay
+		? usableMethods.filter((item, index) => usableMethods.findIndex((other) => other.type === item.type) === index)
+		: usableMethods;
+	const savedMethodOptions = chargeableMethods.map((item) => {
+		const sameType = usableMethods.filter((other) => other.type === item.type).length;
+		const name = item.type === PAYMENT_METHOD_TYPE.UPI ? t('payments.upiMethod') : t('payments.cardMethod');
+		const detail =
+			item.type === PAYMENT_METHOD_TYPE.UPI
+				? item.upi?.vpa && ` (${item.upi.vpa})`
+				: `${item.card?.last4 ? ` •••• ${item.card.last4}` : ''}${item.card?.brand ? ` (${item.card.brand})` : ''}`;
+		return {
+			value: item.id,
+			label: isRazorpay && sameType > 1 ? `${name} (${t('payments.mandateCount', { count: sameType })})` : `${name}${detail || ''}`,
+			description: item.is_default ? t('payments.defaultMethod') : undefined,
+		};
+	});
+	// A provider that could not be read is not the same as a customer with no saved methods.
+	const savedMethodsLookupFailed =
+		isSavedCharge &&
+		savedMethodsLoaded &&
+		!savedMethodsLoading &&
+		chargeableMethods.length === 0 &&
+		(savedMethods?.providers ?? []).some((group) => group.error);
+	const noChargeableMethod =
+		isSavedCharge && savedMethodsLoaded && !savedMethodsLoading && chargeableMethods.length === 0 && !savedMethodsLookupFailed;
+	// Only fall back when nothing was chosen; a choice that vanished on refetch must be made again.
+	const selectedSavedMethod = formData.saved_method_id
+		? chargeableMethods.find((item) => item.id === formData.saved_method_id)
+		: chargeableMethods.length === 1
+			? chargeableMethods[0]
+			: chargeableMethods.find((item) => item.is_default);
+
+	// One key per unchanged saved-charge attempt, so a retry after a lost response cannot charge twice.
+	const attemptSignature = [isOpen, formData.amount, formData.selected_connection_id, selectedSavedMethod?.id].join('|');
+	const [chargeAttempt, setChargeAttempt] = useState(() => ({ signature: attemptSignature, key: uuidv4() }));
+	if (chargeAttempt.signature !== attemptSignature) {
+		setChargeAttempt({ signature: attemptSignature, key: uuidv4() });
+	}
+
+	const PROVIDER_LABELS: Partial<Record<CONNECTION_PROVIDER_TYPE, string>> = {
+		[CONNECTION_PROVIDER_TYPE.STRIPE]: 'Stripe',
+		[CONNECTION_PROVIDER_TYPE.RAZORPAY]: 'Razorpay',
+		[CONNECTION_PROVIDER_TYPE.NOMOD]: 'Nomod',
+		[CONNECTION_PROVIDER_TYPE.MOYASAR]: 'Moyasar',
+		[CONNECTION_PROVIDER_TYPE.PADDLE]: 'Paddle',
+	};
+	const providerOptions = (formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD ? chargeConnections : availableConnections)
 		.map((connection) => {
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.STRIPE) {
-				return { label: 'Stripe', value: connection.id, description: `Process payment through Stripe (${connection.name})` };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY) {
-				return { label: 'Razorpay', value: connection.id, description: `Process payment through Razorpay (${connection.name})` };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.NOMOD) {
-				return { label: 'Nomod', value: connection.id, description: `Process payment through Nomod (${connection.name})` };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.MOYASAR) {
-				return { label: 'Moyasar', value: connection.id, description: `Process payment through Moyasar (${connection.name})` };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.PADDLE) {
-				return { label: 'Paddle', value: connection.id, description: `Process payment through Paddle (${connection.name})` };
-			}
-			return null;
+			const provider = PROVIDER_LABELS[connection.provider_type as CONNECTION_PROVIDER_TYPE];
+			if (!provider) return null;
+			// Two connections to one provider are only told apart by their names.
+			const name = connection.name?.trim();
+			const label = name && name.toLowerCase() !== provider.toLowerCase() ? `${provider} (${name})` : provider;
+			return { label, value: connection.id };
 		})
-		.filter((option): option is { label: string; value: string; description: string } => option !== null);
+		.filter((option): option is { label: string; value: string } => option !== null);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -136,6 +218,7 @@ const RecordPaymentTopup: FC<Props> = ({
 				description: '',
 				wallet_id: '',
 				selected_connection_id: '',
+				saved_method_id: undefined,
 				recorded_at: undefined,
 			});
 			setErrors({});
@@ -155,8 +238,15 @@ const RecordPaymentTopup: FC<Props> = ({
 			newErrors.payment_method_type = 'Payment method is required';
 		}
 
-		if (formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK && !formData.selected_connection_id) {
+		if (
+			(formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK || formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD) &&
+			!formData.selected_connection_id
+		) {
 			newErrors.selected_connection_id = 'Payment provider is required';
+		}
+
+		if (isSavedCharge && selectedConnection && !noChargeableMethod && !selectedSavedMethod) {
+			newErrors.saved_method_id = 'Saved method is required';
 		}
 
 		switch (formData.payment_method_type) {
@@ -165,7 +255,6 @@ const RecordPaymentTopup: FC<Props> = ({
 					newErrors.recorded_at = 'Recorded date cannot be in the future';
 				}
 				break;
-			case PAYMENT_METHOD_TYPE.CARD:
 			case PAYMENT_METHOD_TYPE.ACH:
 				newErrors.payment_method_type = 'This payment method is not available yet';
 				break;
@@ -182,11 +271,7 @@ const RecordPaymentTopup: FC<Props> = ({
 
 	const { mutate: recordPayment, isPending } = useMutation({
 		mutationFn: async (): Promise<Payment> => {
-			const selectedConnection = formData.selected_connection_id
-				? availableConnections.find((conn) => conn.id === formData.selected_connection_id)
-				: null;
-
-			const isPaymentLink = !!selectedConnection;
+			const isPaymentLink = formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK;
 			let paymentUrls = {};
 
 			if (isPaymentLink) {
@@ -207,8 +292,9 @@ const RecordPaymentTopup: FC<Props> = ({
 				currency,
 				destination_id,
 				destination_type,
-				payment_method_type: formData.payment_method_type as PAYMENT_METHOD_TYPE,
+				payment_method_type: (isSavedCharge ? selectedSavedMethod?.type : formData.payment_method_type) as PAYMENT_METHOD_TYPE,
 				process_payment: true,
+				...(isSavedCharge && !isRazorpay && selectedSavedMethod && { payment_method_id: selectedSavedMethod.id }),
 				...(formData.payment_method_type === PAYMENT_METHOD_TYPE.CREDITS && {
 					payment_method_id: formData.wallet_id || '',
 				}),
@@ -216,11 +302,8 @@ const RecordPaymentTopup: FC<Props> = ({
 					formData.recorded_at && {
 						recorded_at: formData.recorded_at,
 					}),
-				...(selectedConnection && {
-					payment_gateway: selectedConnection.provider_type,
-					payment_method_type: PAYMENT_METHOD_TYPE.PAYMENT_LINK,
-				}),
-				idempotency_key: formData.reference_id,
+				...(selectedConnection && { payment_gateway: selectedConnection.provider_type }),
+				idempotency_key: isSavedCharge ? chargeAttempt.key : formData.reference_id,
 				metadata: {
 					...(formData.description?.trim() && { description: formData.description.trim() }),
 					...(formData.payment_method_type === PAYMENT_METHOD_TYPE.OFFLINE && { reference_id: formData.reference_id }),
@@ -233,7 +316,14 @@ const RecordPaymentTopup: FC<Props> = ({
 			return await PaymentApi.createPayment(payload);
 		},
 		onSuccess: (payment: Payment) => {
-			toast.success('Payment recorded successfully');
+			if (payment.payment_status === PAYMENT_STATUS.FAILED) {
+				// A declined charge is final; trying again is a new attempt.
+				setChargeAttempt((prev) => ({ ...prev, key: uuidv4() }));
+				toast.error(payment.error_message || t('payments.chargeFailed'));
+				onSuccess?.(payment);
+				return;
+			}
+			toast.success(payment.payment_status === PAYMENT_STATUS.PROCESSING ? t('payments.chargeSubmitted') : 'Payment recorded successfully');
 
 			onOpenChange(false);
 
@@ -340,6 +430,38 @@ const RecordPaymentTopup: FC<Props> = ({
 					</div>
 				);
 			case PAYMENT_METHOD_TYPE.CARD:
+				return (
+					<div className='space-y-3'>
+						{selectedConnection &&
+							(savedMethodsLoading ? (
+								<div className='flex items-center gap-2 text-sm text-muted-foreground'>
+									<LoaderCircleIcon className='w-4 h-4 animate-spin' />
+									{t('payments.loadingSavedMethods')}
+								</div>
+							) : savedMethodsLookupFailed ? (
+								<div className='flex items-center justify-between gap-2 text-sm text-danger-bright'>
+									<span>{t('payments.savedMethodsLookupFailed')}</span>
+									<Button variant='outline' size='sm' onClick={() => refetchSavedMethods()}>
+										{t('common:actions.retry')}
+									</Button>
+								</div>
+							) : (
+								<Select
+									label={t('payments.savedMethod')}
+									placeholder={noChargeableMethod ? t('payments.noChargeableMethod') : t('payments.selectSavedMethod')}
+									options={savedMethodOptions}
+									value={selectedSavedMethod?.id || ''}
+									onChange={(value) => setFormData({ ...formData, saved_method_id: value })}
+									error={errors.saved_method_id}
+									disabled={noChargeableMethod}
+								/>
+							))}
+						{selectedConnection?.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY && (
+							<p className='text-xs text-muted-foreground'>{t('payments.chargeSavedCardRazorpayHint')}</p>
+						)}
+						{descriptionField}
+					</div>
+				);
 			case PAYMENT_METHOD_TYPE.ACH:
 				return (
 					<div className='space-y-3'>
@@ -390,22 +512,25 @@ const RecordPaymentTopup: FC<Props> = ({
 								reference_id: '',
 								description: '',
 								wallet_id: '',
+								saved_method_id: undefined,
 								recorded_at: undefined,
 							});
 						}}
 						error={errors.payment_method_type}
 					/>
 
-					{formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK && providerOptions.length > 0 && (
-						<Select
-							label={t('payments.paymentProvider')}
-							placeholder={t('payments.selectPaymentProvider')}
-							options={providerOptions}
-							value={formData.selected_connection_id}
-							onChange={(connectionId) => setFormData({ ...formData, selected_connection_id: connectionId })}
-							error={errors.selected_connection_id}
-						/>
-					)}
+					{(formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK ||
+						formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD) &&
+						providerOptions.length > 0 && (
+							<Select
+								label={t('payments.paymentProvider')}
+								placeholder={t('payments.selectPaymentProvider')}
+								options={providerOptions}
+								value={formData.selected_connection_id}
+								onChange={(connectionId) => setFormData({ ...formData, selected_connection_id: connectionId, saved_method_id: undefined })}
+								error={errors.selected_connection_id}
+							/>
+						)}
 
 					{formData.payment_method_type && renderPaymentMethodFields()}
 
@@ -413,7 +538,16 @@ const RecordPaymentTopup: FC<Props> = ({
 						<Button variant='outline' onClick={() => onOpenChange(false)} className='me-2'>
 							{t('common:actions.cancel')}
 						</Button>
-						<Button onClick={handleSubmit} disabled={isPending || !formData.payment_method_type} isLoading={isPending}>
+						<Button
+							onClick={handleSubmit}
+							disabled={
+								isPending ||
+								!formData.payment_method_type ||
+								noChargeableMethod ||
+								savedMethodsLookupFailed ||
+								(isSavedCharge && savedMethodsLoading)
+							}
+							isLoading={isPending}>
 							{isPending && <LoaderCircleIcon className='w-4 h-4 animate-spin me-2' />}
 							{t('payments.recordPaymentButton')}
 						</Button>

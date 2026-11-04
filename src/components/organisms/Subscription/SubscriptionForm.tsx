@@ -1,6 +1,7 @@
 import {
 	Select,
 	FormHeader,
+	AddButton,
 	Label,
 	DecimalUsageInput,
 	DatePicker,
@@ -18,7 +19,7 @@ import { PlanResponse } from '@/types';
 import { useCallback, useMemo, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import SubscriptionCreditGrantTable from '@/components/molecules/CreditGrant/SubscriptionCreditGrantTable';
-import { SubscriptionEntitlementGrantDraftTable } from '@/components/molecules/SubscriptionEntitlementsSection';
+import SubscriptionEntitlementGrantDialog from '@/components/molecules/SubscriptionEntitlementsSection/SubscriptionEntitlementGrantDialog';
 import SubscriptionAddonTable from '@/components/molecules/SubscriptionAddonTable/SubscriptionAddonTable';
 import { BILLING_CYCLE } from '@/models/Subscription';
 import {
@@ -491,6 +492,7 @@ const SubscriptionForm = ({
 	const [editedPlanGrantIds, setEditedPlanGrantIds] = useState<Set<string>>(new Set());
 	// Add subscription charge dialog open state (single-phase only)
 	const [isAddChargeDialogOpen, setAddChargeDialogOpen] = useState(false);
+	const [isGrantDialogOpen, setGrantDialogOpen] = useState(false);
 	// When set, dialog is in edit mode for this added line item (tempId)
 	const [editingAddedChargeTempId, setEditingAddedChargeTempId] = useState<string | null>(null);
 
@@ -1129,18 +1131,6 @@ const SubscriptionForm = ({
 				</div>
 			)}
 
-			{/* Subscription entitlements: dollar allowances shared by every usage line */}
-			{state.selectedPlan && !isLoadingPlanDetails && (
-				<div className='mt-6 pt-6 border-t border-line'>
-					<SubscriptionEntitlementGrantDraftTable
-						data={state.subscriptionEntitlementGrants}
-						onChange={(data) => setState((prev) => ({ ...prev, subscriptionEntitlementGrants: data }))}
-						currency={state.currency}
-						disabled={isDisabled}
-					/>
-				</div>
-			)}
-
 			{/* Tax Rate Overrides */}
 			{state.selectedPlan && !isLoadingPlanDetails && (
 				<div className='mt-6 pt-6 border-t border-line'>
@@ -1168,18 +1158,40 @@ const SubscriptionForm = ({
 				</div>
 			)}
 
-			{/* Entitlements Section */}
-			{state.selectedPlan && !isLoadingPlanDetails && allEntitlements.length > 0 && (
+			{/* Entitlements: the plan's and addons' (overridable) plus subscription entitlements drafted here */}
+			{state.selectedPlan && !isLoadingPlanDetails && (
 				<div className='mt-6 pt-6 border-t border-line'>
 					<div className='space-y-4'>
-						<FormHeader className='mb-0' title={t('organisms.subscriptionForm.entitlements')} variant='sub-header' />
+						<div className='flex items-center justify-between'>
+							<FormHeader className='mb-0' title={t('organisms.subscriptionForm.entitlements')} variant='sub-header' />
+							<AddButton onClick={() => setGrantDialogOpen(true)} disabled={isDisabled} />
+						</div>
 						<EntitlementOverridesTable
 							entitlements={allEntitlements}
 							overrides={state.entitlementOverrides}
 							onOverrideChange={handleEntitlementOverride}
 							onOverrideReset={handleEntitlementOverrideReset}
+							subscriptionGrants={state.subscriptionEntitlementGrants}
+							onRemoveSubscriptionGrant={(index) =>
+								setState((prev) => ({
+									...prev,
+									subscriptionEntitlementGrants: prev.subscriptionEntitlementGrants.filter((_, i) => i !== index),
+								}))
+							}
+							currency={state.currency}
+							disabled={isDisabled}
 						/>
 					</div>
+					{isGrantDialogOpen && (
+						<SubscriptionEntitlementGrantDialog
+							isOpen={isGrantDialogOpen}
+							onOpenChange={setGrantDialogOpen}
+							currency={state.currency}
+							onDraft={(draft) =>
+								setState((prev) => ({ ...prev, subscriptionEntitlementGrants: [...prev.subscriptionEntitlementGrants, draft] }))
+							}
+						/>
+					)}
 				</div>
 			)}
 
