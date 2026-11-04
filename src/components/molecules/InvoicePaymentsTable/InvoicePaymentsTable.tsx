@@ -4,7 +4,7 @@ import { Payment } from '@/models/Payment';
 import FlexpriceTable, { ColumnData, TooltipCell } from '../Table';
 import { formatDateShort, toSentenceCase, getCurrencySymbol } from '@/utils/common/helper_functions';
 import { Chip, NoDataCard } from '@/components/atoms';
-import { CreditCard, Banknote, Receipt, CircleDollarSign, ExternalLink, Copy, Eye } from 'lucide-react';
+import { CreditCard, Banknote, Receipt, CircleDollarSign, ExternalLink, Copy, Eye, Smartphone } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
 import { RedirectCell } from '../Table';
 import { PAYMENT_METHOD_TYPE } from '@/constants';
@@ -41,6 +41,10 @@ const PAYMENT_METHOD_CONFIG = {
 	[PAYMENT_METHOD_TYPE.PAYMENT_LINK]: {
 		icon: ExternalLink,
 		label: 'Payment Link',
+	},
+	[PAYMENT_METHOD_TYPE.UPI]: {
+		icon: Smartphone,
+		label: 'UPI',
 	},
 } as const;
 

@@ -142,6 +142,7 @@ export interface SavedPaymentMethod {
 	type: string;
 	status: PaymentMethodStatus;
 	card?: SavedCardDetails;
+	upi?: { vpa?: string };
 	/** Which method to use at this provider — scoped per provider, so two
 	 *  providers means two defaults. Answers "which one", never "may we". */
 	is_default: boolean;
