@@ -13,6 +13,7 @@ import toast from 'react-hot-toast';
 import { LoaderCircleIcon } from 'lucide-react';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 import { useTranslation } from 'react-i18next';
+import { PAYMENT_STATUS } from '@/constants';
 
 interface Props {
 	isOpen: boolean;
@@ -98,15 +99,23 @@ const RecordPaymentTopup: FC<Props> = ({
 		}
 	}, [filteredWallets, formData.payment_method_type]);
 
+	const chargeConnections = availableConnections.filter(
+		(connection) =>
+			connection.provider_type === CONNECTION_PROVIDER_TYPE.STRIPE || connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY,
+	);
+
 	const paymentMethodOptions = [
 		{ label: 'Offline', value: PAYMENT_METHOD_TYPE.OFFLINE, description: 'Record payment that was processed outside the system' },
 		{ label: 'Credits', value: PAYMENT_METHOD_TYPE.CREDITS, description: 'Pay using customer post-paid wallet balance.' },
 		...(availableConnections.length > 0
 			? [{ label: 'Payment Link', value: PAYMENT_METHOD_TYPE.PAYMENT_LINK, description: 'Generate a payment link for online payment' }]
 			: []),
+		...(chargeConnections.length > 0
+			? [{ label: 'Charge Saved Card', value: PAYMENT_METHOD_TYPE.CARD, description: "Charge the customer's saved card or mandate" }]
+			: []),
 	];
 
-	const providerOptions = availableConnections
+	const providerOptions = (formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD ? chargeConnections : availableConnections)
 		.map((connection) => {
 			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.STRIPE) {
 				return { label: 'Stripe', value: connection.id, description: `Process payment through Stripe (${connection.name})` };
@@ -155,7 +164,10 @@ const RecordPaymentTopup: FC<Props> = ({
 			newErrors.payment_method_type = 'Payment method is required';
 		}
 
-		if (formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK && !formData.selected_connection_id) {
+		if (
+			(formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK || formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD) &&
+			!formData.selected_connection_id
+		) {
 			newErrors.selected_connection_id = 'Payment provider is required';
 		}
 
@@ -165,7 +177,6 @@ const RecordPaymentTopup: FC<Props> = ({
 					newErrors.recorded_at = 'Recorded date cannot be in the future';
 				}
 				break;
-			case PAYMENT_METHOD_TYPE.CARD:
 			case PAYMENT_METHOD_TYPE.ACH:
 				newErrors.payment_method_type = 'This payment method is not available yet';
 				break;
@@ -186,7 +197,7 @@ const RecordPaymentTopup: FC<Props> = ({
 				? availableConnections.find((conn) => conn.id === formData.selected_connection_id)
 				: null;
 
-			const isPaymentLink = !!selectedConnection;
+			const isPaymentLink = formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK;
 			let paymentUrls = {};
 
 			if (isPaymentLink) {
@@ -216,10 +227,7 @@ const RecordPaymentTopup: FC<Props> = ({
 					formData.recorded_at && {
 						recorded_at: formData.recorded_at,
 					}),
-				...(selectedConnection && {
-					payment_gateway: selectedConnection.provider_type,
-					payment_method_type: PAYMENT_METHOD_TYPE.PAYMENT_LINK,
-				}),
+				...(selectedConnection && { payment_gateway: selectedConnection.provider_type }),
 				idempotency_key: formData.reference_id,
 				metadata: {
 					...(formData.description?.trim() && { description: formData.description.trim() }),
@@ -233,7 +241,7 @@ const RecordPaymentTopup: FC<Props> = ({
 			return await PaymentApi.createPayment(payload);
 		},
 		onSuccess: (payment: Payment) => {
-			toast.success('Payment recorded successfully');
+			toast.success(payment.payment_status === PAYMENT_STATUS.PROCESSING ? t('payments.chargeSubmitted') : 'Payment recorded successfully');
 
 			onOpenChange(false);
 
@@ -340,6 +348,12 @@ const RecordPaymentTopup: FC<Props> = ({
 					</div>
 				);
 			case PAYMENT_METHOD_TYPE.CARD:
+				return (
+					<div className='space-y-3'>
+						<p className='text-xs text-muted-foreground'>{t('payments.chargeSavedCardHint')}</p>
+						{descriptionField}
+					</div>
+				);
 			case PAYMENT_METHOD_TYPE.ACH:
 				return (
 					<div className='space-y-3'>
@@ -396,16 +410,18 @@ const RecordPaymentTopup: FC<Props> = ({
 						error={errors.payment_method_type}
 					/>
 
-					{formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK && providerOptions.length > 0 && (
-						<Select
-							label={t('payments.paymentProvider')}
-							placeholder={t('payments.selectPaymentProvider')}
-							options={providerOptions}
-							value={formData.selected_connection_id}
-							onChange={(connectionId) => setFormData({ ...formData, selected_connection_id: connectionId })}
-							error={errors.selected_connection_id}
-						/>
-					)}
+					{(formData.payment_method_type === PAYMENT_METHOD_TYPE.PAYMENT_LINK ||
+						formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD) &&
+						providerOptions.length > 0 && (
+							<Select
+								label={t('payments.paymentProvider')}
+								placeholder={t('payments.selectPaymentProvider')}
+								options={providerOptions}
+								value={formData.selected_connection_id}
+								onChange={(connectionId) => setFormData({ ...formData, selected_connection_id: connectionId })}
+								error={errors.selected_connection_id}
+							/>
+						)}
 
 					{formData.payment_method_type && renderPaymentMethodFields()}
 

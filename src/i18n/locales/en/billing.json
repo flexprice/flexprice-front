@@ -616,6 +616,8 @@
 		"learnMore": "Learn More",
 		"recordedReceivedHint": "Optionally select the date when this payment was actually received",
 		"paymentMethodUnavailable": "{{method}} payment processing is not available yet. Please use offline payment method or credits instead.",
+		"chargeSavedCardHint": "Charges the customer's saved card or mandate with the selected provider. Razorpay charges settle in about 36 hours; above ₹15,000 the customer must approve the debit from their bank.",
+		"chargeSubmitted": "Charge submitted. The payment updates once the provider confirms it.",
 		"amountPlaceholder": "0.00",
 		"recordPaymentButton": "Record",
 		"amountDueInline": "Amount Due: {{amount}}",
