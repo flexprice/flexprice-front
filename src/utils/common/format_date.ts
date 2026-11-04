@@ -194,13 +194,14 @@ export function convertDateTimeToTimezone(date: Date, fromZone: DateTimezone, to
 	return dateTimeInZone(year, month, d, hours, minutes, seconds, toZone);
 }
 
-/** Format a date as "7 Mar" (day + short month) for billing period display. Pass `'utc'` (default) to render the UTC calendar day; `'local'` for the user's timezone. */
+/** Format a date as "7 Mar 2026" (day + short month + year) for billing period display. Pass `'utc'` (default) to render the UTC calendar day; `'local'` for the user's timezone. */
 export function formatBillingPeriodDate(date: string | Date, zone: DateTimezone = 'utc'): string {
 	const dateObj = typeof date === 'string' ? new Date(date) : date;
 	if (isNaN(dateObj.getTime())) return 'Invalid Date';
 	const day = zone === 'utc' ? dateObj.getUTCDate() : dateObj.getDate();
 	const month = dateObj.toLocaleDateString('en-US', { month: 'short', ...(zone === 'utc' ? { timeZone: 'UTC' } : {}) });
-	return `${day} ${month}`;
+	const year = zone === 'utc' ? dateObj.getUTCFullYear() : dateObj.getFullYear();
+	return `${day} ${month} ${year}`;
 }
 
 /**
@@ -223,7 +224,7 @@ export function toInclusivePeriodEnd(periodEnd: string | Date): Date {
 }
 
 /**
- * Format the last day an invoice period covers, as "31 Aug".
+ * Format the last day an invoice period covers, as "31 Aug 2026".
  *
  * Takes the exclusive `period_end` straight from the API, steps back one second, and names that
  * instant's UTC day. UTC because the shifted instant is only meaningful in the zone the boundary
@@ -233,7 +234,7 @@ export function formatPeriodEndDate(periodEnd: string | Date): string {
 	return formatBillingPeriodDate(toInclusivePeriodEnd(periodEnd), 'utc');
 }
 
-/** Format a billing period as "1 Jun - 31 Aug". The start keeps the viewer's local calendar day so IST (etc.) midnight boundaries (e.g. `…T18:30:00Z`) map to the intended day; the exclusive end is rendered inclusively — see {@link formatPeriodEndDate}. */
+/** Format a billing period as "1 Jun 2026 - 31 Aug 2026". The start keeps the viewer's local calendar day so IST (etc.) midnight boundaries (e.g. `…T18:30:00Z`) map to the intended day; the exclusive end is rendered inclusively — see {@link formatPeriodEndDate}. */
 export function formatBillingPeriod(periodStart: string, periodEnd: string): string {
 	return `${formatBillingPeriodDate(periodStart, 'local')} - ${formatPeriodEndDate(periodEnd)}`;
 }
