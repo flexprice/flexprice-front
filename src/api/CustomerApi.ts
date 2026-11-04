@@ -19,6 +19,7 @@ import { generateQueryParams } from '@/utils/common/api_helper';
 import { TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 
+
 class CustomerApi {
 	private static baseUrl = '/customers';
 
