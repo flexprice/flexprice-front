@@ -16,7 +16,7 @@ import { copyToClipboard } from '@/utils/common/helper_functions';
 import { hasGrantConfig, type Entitlement } from '@/models/Entitlement';
 import { formatAllowanceValue, formatAllowanceReset, formatGrantPeriod } from '@/utils/entitlement/allowanceLabel';
 import { ENTITLEMENT_AGGREGATION_MODE } from '@/models/Entitlement';
-import { formatCurrency } from '@/constants/common';
+import { getCurrencySymbol } from '@/constants/common';
 
 /** Plan/addon entitlement row with local override display fields applied. */
 export interface EnrichedEntitlementRow extends EntitlementResponse {
@@ -331,7 +331,8 @@ const EntitlementOverridesTable: FC<EntitlementOverridesTableProps> = ({
 			draft.aggregation_mode === ENTITLEMENT_AGGREGATION_MODE.PARALLEL
 				? t('entitlements.addDrawer.stackingParallel')
 				: t('entitlements.addDrawer.stackingAdditive');
-		return `${formatCurrency(draft.grant_quota, currency)} / ${formatGrantPeriod(draft, t)} · ${stacking}`;
+		// The raw quota, so a value finer than cents is shown as entered rather than rounded.
+		return `${getCurrencySymbol(currency)}${draft.grant_quota} / ${formatGrantPeriod(draft, t)} · ${stacking}`;
 	};
 
 	const columns: ColumnData<Row>[] = [

@@ -1,6 +1,7 @@
 import { Button, Input, Select, Textarea, PaymentUrlSuccessDialog, DatePicker, Dialog } from '@/components/atoms';
 import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
 import { FC, useState, useEffect, useMemo } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { PAYMENT_METHOD_TYPE, PAYMENT_DESTINATION_TYPE, Payment } from '@/models/Payment';
 import { WALLET_TYPE } from '@/models/Wallet';
@@ -117,7 +118,13 @@ const RecordPaymentTopup: FC<Props> = ({
 			? [{ label: 'Payment Link', value: PAYMENT_METHOD_TYPE.PAYMENT_LINK, description: 'Generate a payment link for online payment' }]
 			: []),
 		...(chargeConnections.length > 0
-			? [{ label: 'Charge Saved Method', value: PAYMENT_METHOD_TYPE.CARD, description: "Charge the customer's saved card or UPI mandate" }]
+			? [
+					{
+						label: t('payments.chargeSavedMethod'),
+						value: PAYMENT_METHOD_TYPE.CARD,
+						description: t('payments.chargeSavedMethodDescription'),
+					},
+				]
 			: []),
 	];
 
@@ -128,6 +135,7 @@ const RecordPaymentTopup: FC<Props> = ({
 		data: savedMethods,
 		isSuccess: savedMethodsLoaded,
 		isFetching: savedMethodsLoading,
+		refetch: refetchSavedMethods,
 	} = useQuery({
 		queryKey: ['customerPaymentMethods', customer_id, selectedConnection?.provider_type],
 		queryFn: () => CustomerApi.getPaymentMethods(customer_id, selectedConnection!.provider_type as PaymentGatewayType),
@@ -137,7 +145,7 @@ const RecordPaymentTopup: FC<Props> = ({
 	// Razorpay picks the mandate itself, so it gets one option per type; Stripe charges the exact card chosen.
 	const isRazorpay = selectedConnection?.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY;
 	const usableMethods = (savedMethods?.providers ?? [])
-		.flatMap((group) => group.items)
+		.flatMap((group) => group.items ?? [])
 		.filter(
 			(item) =>
 				item.can_auto_charge &&
@@ -149,40 +157,55 @@ const RecordPaymentTopup: FC<Props> = ({
 		: usableMethods;
 	const savedMethodOptions = chargeableMethods.map((item) => {
 		const sameType = usableMethods.filter((other) => other.type === item.type).length;
-		const name = item.type === PAYMENT_METHOD_TYPE.UPI ? 'UPI' : 'Card';
+		const name = item.type === PAYMENT_METHOD_TYPE.UPI ? t('payments.upiMethod') : t('payments.cardMethod');
 		const detail =
 			item.type === PAYMENT_METHOD_TYPE.UPI
 				? item.upi?.vpa && ` (${item.upi.vpa})`
 				: `${item.card?.last4 ? ` •••• ${item.card.last4}` : ''}${item.card?.brand ? ` (${item.card.brand})` : ''}`;
 		return {
 			value: item.id,
-			label: isRazorpay && sameType > 1 ? `${name} (${sameType} mandates)` : `${name}${detail || ''}`,
-			description: item.is_default ? 'Default' : undefined,
+			label: isRazorpay && sameType > 1 ? `${name} (${t('payments.mandateCount', { count: sameType })})` : `${name}${detail || ''}`,
+			description: item.is_default ? t('payments.defaultMethod') : undefined,
 		};
 	});
-	const noChargeableMethod = isSavedCharge && savedMethodsLoaded && !savedMethodsLoading && chargeableMethods.length === 0;
-	const selectedSavedMethod =
-		chargeableMethods.find((item) => item.id === formData.saved_method_id) ??
-		(chargeableMethods.length === 1 ? chargeableMethods[0] : chargeableMethods.find((item) => item.is_default));
+	// A provider that could not be read is not the same as a customer with no saved methods.
+	const savedMethodsLookupFailed =
+		isSavedCharge &&
+		savedMethodsLoaded &&
+		!savedMethodsLoading &&
+		chargeableMethods.length === 0 &&
+		(savedMethods?.providers ?? []).some((group) => group.error);
+	const noChargeableMethod =
+		isSavedCharge && savedMethodsLoaded && !savedMethodsLoading && chargeableMethods.length === 0 && !savedMethodsLookupFailed;
+	// Only fall back when nothing was chosen; a choice that vanished on refetch must be made again.
+	const selectedSavedMethod = formData.saved_method_id
+		? chargeableMethods.find((item) => item.id === formData.saved_method_id)
+		: chargeableMethods.length === 1
+			? chargeableMethods[0]
+			: chargeableMethods.find((item) => item.is_default);
 
+	// One key per unchanged saved-charge attempt, so a retry after a lost response cannot charge twice.
+	const attemptSignature = [isOpen, formData.amount, formData.selected_connection_id, selectedSavedMethod?.id].join('|');
+	const [chargeAttempt, setChargeAttempt] = useState(() => ({ signature: attemptSignature, key: uuidv4() }));
+	if (chargeAttempt.signature !== attemptSignature) {
+		setChargeAttempt({ signature: attemptSignature, key: uuidv4() });
+	}
+
+	const PROVIDER_LABELS: Partial<Record<CONNECTION_PROVIDER_TYPE, string>> = {
+		[CONNECTION_PROVIDER_TYPE.STRIPE]: 'Stripe',
+		[CONNECTION_PROVIDER_TYPE.RAZORPAY]: 'Razorpay',
+		[CONNECTION_PROVIDER_TYPE.NOMOD]: 'Nomod',
+		[CONNECTION_PROVIDER_TYPE.MOYASAR]: 'Moyasar',
+		[CONNECTION_PROVIDER_TYPE.PADDLE]: 'Paddle',
+	};
 	const providerOptions = (formData.payment_method_type === PAYMENT_METHOD_TYPE.CARD ? chargeConnections : availableConnections)
 		.map((connection) => {
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.STRIPE) {
-				return { label: 'Stripe', value: connection.id };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.RAZORPAY) {
-				return { label: 'Razorpay', value: connection.id };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.NOMOD) {
-				return { label: 'Nomod', value: connection.id };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.MOYASAR) {
-				return { label: 'Moyasar', value: connection.id };
-			}
-			if (connection.provider_type === CONNECTION_PROVIDER_TYPE.PADDLE) {
-				return { label: 'Paddle', value: connection.id };
-			}
-			return null;
+			const provider = PROVIDER_LABELS[connection.provider_type as CONNECTION_PROVIDER_TYPE];
+			if (!provider) return null;
+			// Two connections to one provider are only told apart by their names.
+			const name = connection.name?.trim();
+			const label = name && name.toLowerCase() !== provider.toLowerCase() ? `${provider} (${name})` : provider;
+			return { label, value: connection.id };
 		})
 		.filter((option): option is { label: string; value: string } => option !== null);
 
@@ -280,7 +303,7 @@ const RecordPaymentTopup: FC<Props> = ({
 						recorded_at: formData.recorded_at,
 					}),
 				...(selectedConnection && { payment_gateway: selectedConnection.provider_type }),
-				idempotency_key: formData.reference_id,
+				idempotency_key: isSavedCharge ? chargeAttempt.key : formData.reference_id,
 				metadata: {
 					...(formData.description?.trim() && { description: formData.description.trim() }),
 					...(formData.payment_method_type === PAYMENT_METHOD_TYPE.OFFLINE && { reference_id: formData.reference_id }),
@@ -294,6 +317,8 @@ const RecordPaymentTopup: FC<Props> = ({
 		},
 		onSuccess: (payment: Payment) => {
 			if (payment.payment_status === PAYMENT_STATUS.FAILED) {
+				// A declined charge is final; trying again is a new attempt.
+				setChargeAttempt((prev) => ({ ...prev, key: uuidv4() }));
 				toast.error(payment.error_message || t('payments.chargeFailed'));
 				onSuccess?.(payment);
 				return;
@@ -413,6 +438,13 @@ const RecordPaymentTopup: FC<Props> = ({
 									<LoaderCircleIcon className='w-4 h-4 animate-spin' />
 									{t('payments.loadingSavedMethods')}
 								</div>
+							) : savedMethodsLookupFailed ? (
+								<div className='flex items-center justify-between gap-2 text-sm text-danger-bright'>
+									<span>{t('payments.savedMethodsLookupFailed')}</span>
+									<Button variant='outline' size='sm' onClick={() => refetchSavedMethods()}>
+										{t('common:actions.retry')}
+									</Button>
+								</div>
 							) : (
 								<Select
 									label={t('payments.savedMethod')}
@@ -508,7 +540,13 @@ const RecordPaymentTopup: FC<Props> = ({
 						</Button>
 						<Button
 							onClick={handleSubmit}
-							disabled={isPending || !formData.payment_method_type || noChargeableMethod || (isSavedCharge && savedMethodsLoading)}
+							disabled={
+								isPending ||
+								!formData.payment_method_type ||
+								noChargeableMethod ||
+								savedMethodsLookupFailed ||
+								(isSavedCharge && savedMethodsLoading)
+							}
 							isLoading={isPending}>
 							{isPending && <LoaderCircleIcon className='w-4 h-4 animate-spin me-2' />}
 							{t('payments.recordPaymentButton')}

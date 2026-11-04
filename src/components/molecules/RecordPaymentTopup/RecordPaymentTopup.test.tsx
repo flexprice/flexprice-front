@@ -36,7 +36,7 @@ beforeAll(async () => {
 		lng: 'en',
 		ns: ['common', 'billing'],
 		defaultNS: 'common',
-		resources: { en: { common: { actions: { cancel: 'Cancel' } }, billing: en } },
+		resources: { en: { common: { actions: { cancel: 'Cancel', retry: 'Retry' } }, billing: en } },
 		interpolation: { escapeValue: false },
 	});
 	testI18n = instance;
@@ -82,7 +82,7 @@ const renderDialog = (currency = 'INR') =>
 const choose = async (comboboxIndex: number, optionName: string) => {
 	const user = userEvent.setup();
 	await user.click(screen.getAllByRole('combobox')[comboboxIndex]);
-	await user.click(await screen.findByRole('option', { name: new RegExp(optionName) }));
+	await user.click(await screen.findByRole('option', { name: (name) => name.includes(optionName) }));
 };
 
 describe('RecordPaymentTopup charge saved card', () => {
@@ -132,7 +132,7 @@ describe('RecordPaymentTopup charge saved card', () => {
 
 		await choose(0, 'Charge Saved Method');
 		await choose(1, 'Razorpay');
-		await choose(2, 'UPI \\(acme@okhdfc\\)');
+		await choose(2, 'UPI (acme@okhdfc)');
 		await userEvent.click(screen.getByRole('button', { name: 'Record' }));
 
 		await waitFor(() => expect(mockCreatePayment).toHaveBeenCalled());
@@ -200,6 +200,56 @@ describe('RecordPaymentTopup charge saved card', () => {
 		expect(mockCreatePayment).not.toHaveBeenCalled();
 	});
 
+	it('shows a lookup failure instead of the no-method state when the provider errors', async () => {
+		mockGetPaymentMethods.mockResolvedValue({ providers: [{ provider: 'razorpay', items: [], error: { message: 'timeout' } }] });
+		renderDialog();
+		await waitFor(() => expect(mockListPublished).toHaveBeenCalled());
+
+		await choose(0, 'Charge Saved Method');
+		await choose(1, 'Razorpay');
+
+		expect(await screen.findByText(en.payments.savedMethodsLookupFailed)).toBeInTheDocument();
+		expect(screen.queryByText(en.payments.noChargeableMethod)).not.toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Record' })).toBeDisabled();
+
+		mockGetPaymentMethods.mockResolvedValue(methods([card]));
+		await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
+		await waitFor(() => expect(screen.queryByText(en.payments.savedMethodsLookupFailed)).not.toBeInTheDocument());
+	});
+
+	it('reuses the idempotency key when a charge is retried unchanged', async () => {
+		mockCreatePayment.mockRejectedValueOnce(new Error('network down'));
+		renderDialog();
+		await waitFor(() => expect(mockListPublished).toHaveBeenCalled());
+
+		await choose(0, 'Charge Saved Method');
+		await choose(1, 'Razorpay');
+		await userEvent.click(screen.getByRole('button', { name: 'Record' }));
+		await waitFor(() => expect(mockToastError).toHaveBeenCalledWith('network down'));
+		await userEvent.click(screen.getByRole('button', { name: 'Record' }));
+
+		await waitFor(() => expect(mockCreatePayment).toHaveBeenCalledTimes(2));
+		const [first, second] = mockCreatePayment.mock.calls.map((call) => call[0].idempotency_key);
+		expect(first).toBeTruthy();
+		expect(second).toBe(first);
+	});
+
+	it('uses a new idempotency key after a declined charge', async () => {
+		mockCreatePayment.mockResolvedValueOnce({ id: 'pay_3', payment_status: 'FAILED', error_message: 'card declined' });
+		renderDialog();
+		await waitFor(() => expect(mockListPublished).toHaveBeenCalled());
+
+		await choose(0, 'Charge Saved Method');
+		await choose(1, 'Razorpay');
+		await userEvent.click(screen.getByRole('button', { name: 'Record' }));
+		await waitFor(() => expect(mockToastError).toHaveBeenCalledWith('card declined'));
+		await userEvent.click(screen.getByRole('button', { name: 'Record' }));
+
+		await waitFor(() => expect(mockCreatePayment).toHaveBeenCalledTimes(2));
+		const [first, second] = mockCreatePayment.mock.calls.map((call) => call[0].idempotency_key);
+		expect(second).not.toBe(first);
+	});
+
 	it('offers Razorpay for saved-method charges only on INR invoices', async () => {
 		mockListPublished.mockResolvedValue({
 			connections: [
@@ -212,8 +262,8 @@ describe('RecordPaymentTopup charge saved card', () => {
 
 		await choose(0, 'Charge Saved Method');
 		await userEvent.setup().click(screen.getAllByRole('combobox')[1]);
-		expect(await screen.findByRole('option', { name: 'Stripe' })).toBeInTheDocument();
-		expect(screen.queryByRole('option', { name: 'Razorpay' })).not.toBeInTheDocument();
+		expect(await screen.findByRole('option', { name: 'Stripe (Stripe prod)' })).toBeInTheDocument();
+		expect(screen.queryByRole('option', { name: /Razorpay/ })).not.toBeInTheDocument();
 	});
 
 	it('still creates a payment link through the selected gateway', async () => {
