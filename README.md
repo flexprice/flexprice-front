@@ -163,6 +163,10 @@ VITE_API_URL=http://localhost:8080/v1 or <your-backend-url>
 
 VITE_ENVIRONMENT=development
 
+# Optional: the new console (V2). Set, every page shows a
+# "Take me to the new UI" strip under the breadcrumbs.
+VITE_NEW_CONSOLE_URL=https://app.flexprice.io
+
 ```
 
 3. **Start Development**

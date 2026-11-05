@@ -9,6 +9,9 @@ declare const __APP_VERSION__: string;
 
 interface ImportMetaEnv {
 	readonly VITE_PADDLE_CLIENT_TOKEN: string;
+	/** The new console (V2), e.g. https://app.flexprice.io. Set, every page shows a
+	 * "Take me to the new UI" strip under the breadcrumbs; unset, no strip. */
+	readonly VITE_NEW_CONSOLE_URL?: string;
 	/** Flexprice's AWS account ID used in the AWS Marketplace trust-policy template, and in the GCP
 	 * Marketplace Workload Identity Federation setup script's --account-id. */
 	readonly VITE_FLEXPRICE_AWS_ACCOUNT_ID?: string;
