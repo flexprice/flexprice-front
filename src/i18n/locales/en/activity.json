@@ -1,0 +1,122 @@
+{
+	"ref": {
+		"deleted": "deleted"
+	},
+	"value": {
+		"on": "On",
+		"off": "Off"
+	},
+	"row": {
+		"changes_one": "{{count}} change",
+		"changes_other": "{{count}} changes",
+		"created": "Created",
+		"deleted": "Deleted"
+	},
+	"sheet": {
+		"field": "Field",
+		"value": "Value",
+		"before": "Before",
+		"after": "After",
+		"redacted": "redacted",
+		"title": "Activity",
+		"loading": "Loading…",
+		"beyondRetention": "This entry is older than the retention window and is no longer available.",
+		"who": "Who",
+		"actor": "Actor",
+		"ownedBy": "Owned by",
+		"source": "Source",
+		"when": "When",
+		"occurred": "Occurred",
+		"request": "Request",
+		"whatChanged": "What changed",
+		"recordDeleted": "Record deleted",
+		"notCaptured": "Changes not captured: {{reason}}",
+		"context": "Context",
+		"customer": "Customer",
+		"related": "Related changes in this request",
+		"noRelated": "No other changes in this request.",
+		"eyebrow": "Activity · {{id}}",
+		"subscription": "Subscription"
+	},
+	"list": {
+		"error": "Could not load activity.",
+		"retry": "Retry",
+		"empty": "No activity in this range.",
+		"loadMore": "Load more",
+		"today": "Today · {{date}}",
+		"yesterday": "Yesterday · {{date}}"
+	},
+	"verb": {
+		"created": "{{actor}} created {{entityType}} {{entity}}",
+		"updated": "{{actor}} updated {{entityType}} {{entity}}",
+		"deleted": "{{actor}} deleted {{entityType}} {{entity}}",
+		"paused": "{{actor}} paused {{entityType}} {{entity}}",
+		"resumed": "{{actor}} resumed {{entityType}} {{entity}}",
+		"cancelled": "{{actor}} cancelled {{entityType}} {{entity}}",
+		"plan_changed": "{{actor}} changed plan on {{entityType}} {{entity}}",
+		"finalized": "{{actor}} finalized {{entityType}} {{entity}}",
+		"voided": "{{actor}} voided {{entityType}} {{entity}}",
+		"paid": "{{actor}} marked {{entityType}} {{entity}} paid"
+	},
+	"entity": {
+		"customer": "Customer",
+		"subscription": "Subscription",
+		"wallet": "Wallet",
+		"invoice": "Invoice",
+		"plan": "Plan",
+		"price": "Price",
+		"payment": "Payment",
+		"wallet_transaction": "Wallet transaction",
+		"entitlement_grant": "Entitlement grant",
+		"invoice_line_item": "Invoice line item",
+		"subscription_line_item": "Subscription line item",
+		"payment_method": "Payment method",
+		"refund": "Refund",
+		"credit_note": "Credit note",
+		"checkout_session": "Checkout session",
+		"subscription_phase": "Subscription phase",
+		"subscription_schedule": "Subscription schedule",
+		"subscription_pause": "Subscription pause",
+		"credit_grant": "Credit grant",
+		"credit_grant_application": "Credit grant application",
+		"coupon_association": "Coupon association",
+		"coupon_application": "Coupon application",
+		"addon_association": "Addon association",
+		"tax_association": "Tax association"
+	},
+	"page": {
+		"title": "Activity Log",
+		"subtitle": "Who changed what in this environment. Activity is kept for 90 days."
+	},
+	"tab": {
+		"title": "Activity"
+	},
+	"toggle": {
+		"hideSystem": "Hide system changes"
+	},
+	"filters": {
+		"entityType": "Entity type",
+		"entity": "Entity",
+		"entitySearch": "Search…",
+		"entityIdPlaceholder": "Paste an ID",
+		"pickTypeFirst": "Pick a type first",
+		"actor": "Actor",
+		"action": "Action",
+		"date": "Date",
+		"any": "Any",
+		"customer": "Customer",
+		"request": "Request",
+		"removeCustomer": "Remove customer filter",
+		"removeRequest": "Remove request filter",
+		"clear": "Clear",
+		"needEntity": "Paste an entity ID to see {{type}} activity.",
+		"allTypes": "All types"
+	},
+	"actor": {
+		"user": "User",
+		"api_key": "API key",
+		"system": "System",
+		"customer_portal": "Customer portal"
+	},
+	"openInLog": "Open in activity log"
+}

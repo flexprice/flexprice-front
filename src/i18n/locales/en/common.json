@@ -323,7 +323,8 @@
 			"webhooks": "Webhooks",
 			"workflows": "Workflows",
 			"integrations": "Integrations",
-			"pricingWidget": "Pricing Widget"
+			"pricingWidget": "Pricing Widget",
+			"activityLog": "Activity Log"
 		}
 	},
 	"versionCheck": {

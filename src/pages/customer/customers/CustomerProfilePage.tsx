@@ -21,6 +21,7 @@ const TAB_SPECS = [
 	{ id: 'tax-association', labelKey: 'detail.tabs.taxAssociation' as const },
 	{ id: 'analytics', labelKey: 'detail.tabs.analytics' as const },
 	{ id: 'usage-events', labelKey: 'detail.tabs.usageEvents' as const },
+	{ id: 'activity', labelKey: 'detail.tabs.activity' as const },
 ] as const;
 
 type TabId = (typeof TAB_SPECS)[number]['id'];

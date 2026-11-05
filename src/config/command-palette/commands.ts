@@ -7,6 +7,7 @@ import {
 	CodeXml,
 	Puzzle,
 	GalleryHorizontalEnd,
+	History,
 	BarChart3,
 	Plus,
 	CreditCard,
@@ -516,5 +517,13 @@ export const commandPaletteCommands: CommandPaletteCommand[] = [
 		path: P['product-catalog-pricing-widget'],
 		keywords: ['pricing', 'widget', 'embed'],
 		icon: GalleryHorizontalEnd,
+	},
+	{
+		id: CommandPaletteCommandId.navActivityLog,
+		label: 'Activity Log',
+		group: CommandPaletteGroup.GoTo,
+		path: P['activity-log'],
+		keywords: ['activity', 'audit', 'log', 'history'],
+		icon: History,
 	},
 ];

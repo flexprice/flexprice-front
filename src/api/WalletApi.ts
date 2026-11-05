@@ -20,6 +20,10 @@ import { generateQueryParams } from '@/utils/common/api_helper';
 class WalletApi {
 	private static baseUrl = '/wallets';
 
+	static async getWalletById(id: string): Promise<Wallet> {
+		return await AxiosClient.get<Wallet>(`${this.baseUrl}/${id}`);
+	}
+
 	static async getCustomerWallets(data: GetCustomerWalletsPayload): Promise<Wallet[]> {
 		const url = generateQueryParams(`/customers${this.baseUrl}`, data);
 		return await AxiosClient.get<Wallet[]>(url);

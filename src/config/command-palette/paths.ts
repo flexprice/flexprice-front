@@ -41,6 +41,7 @@ export const commandPalettePaths = {
 	'tools-integrations-moyasar': '/tools/integrations/moyasar',
 	'tools-integrations-paddle': '/tools/integrations/paddle',
 	'product-catalog-pricing-widget': '/product-catalog/pricing-widget',
+	'activity-log': '/activity',
 } as const;
 
 export type CommandPalettePathKey = keyof typeof commandPalettePaths;
