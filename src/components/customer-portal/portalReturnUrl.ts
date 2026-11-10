@@ -82,8 +82,33 @@ export const recallSessionToken = (): string | null => {
  */
 const PRESERVED_PARAMS = ['section'];
 
+/** Which return address the provider sent the customer to. */
+export type CheckoutReturnOutcome = 'success' | 'failure';
+
+/** The return routes, under the portal's own path: `/customer-portal/checkout/success`. */
+const RETURN_PATH = /\/checkout\/(success|failure)\/?$/;
+
+/**
+ * The outcome named by a return route, or null on any other portal page.
+ *
+ * A hint for wording only. Providers send a customer to the success address while
+ * a payment is still processing, and to the cancel address when they leave
+ * checkout, so neither proves how the payment ended. The status API decides that.
+ */
+export const checkoutReturnOutcome = (pathname: string): CheckoutReturnOutcome | null => {
+	const match = RETURN_PATH.exec(pathname);
+	return match ? (match[1] as CheckoutReturnOutcome) : null;
+};
+
+/** The portal's own path, with any return route taken off: `/customer-portal`. */
+export const portalBasePath = (pathname: string): string => pathname.replace(RETURN_PATH, '').replace(/\/+$/, '') || '/';
+
 /**
  * The URL a payment provider should send the customer back to.
+ *
+ * Two addresses, one per outcome, passed as success_url and cancel_url. Each
+ * lands on a page that works without a portal session, so a customer who paid in
+ * another browser sees something sensible rather than an invalid-link error.
  *
  * Deliberately not window.location.href. The portal authenticates from a `token`
  * query parameter, so the current URL carries the customer's session token.
@@ -96,12 +121,13 @@ const PRESERVED_PARAMS = ['section'];
  * landing and can hand the result back to the tab the customer started from —
  * see checkoutHandoff.
  */
-export const portalReturnUrl = (): string => {
+export const portalReturnUrl = (outcome: CheckoutReturnOutcome): string => {
 	try {
 		const current = new URL(window.location.href);
 		// Rebuilt from the path rather than edited, so nothing unrecognised — the
 		// token included — can survive by being forgotten about here.
-		const url = new URL(current.pathname, current.origin);
+		const base = portalBasePath(current.pathname);
+		const url = new URL(`${base === '/' ? '' : base}/checkout/${outcome}`, current.origin);
 		PRESERVED_PARAMS.forEach((name) => {
 			const value = current.searchParams.get(name);
 			if (value !== null) url.searchParams.set(name, value);
@@ -109,6 +135,6 @@ export const portalReturnUrl = (): string => {
 		url.searchParams.set(CHECKOUT_RETURN_PARAM, '1');
 		return url.toString();
 	} catch {
-		return `${window.location.origin}?${CHECKOUT_RETURN_PARAM}=1`;
+		return `${window.location.origin}/customer-portal/checkout/${outcome}?${CHECKOUT_RETURN_PARAM}=1`;
 	}
 };

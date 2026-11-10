@@ -39,8 +39,8 @@ const usePayInvoice = (provider?: PaymentGatewayType) => {
 				// provider qualifies, so the choice is made here rather than left unset.
 				...(linkProvider ? { payment_provider: linkProvider } : {}),
 				idempotency_key: keys.get(invoiceId),
-				success_url: portalReturnUrl(),
-				cancel_url: portalReturnUrl(),
+				success_url: portalReturnUrl('success'),
+				cancel_url: portalReturnUrl('failure'),
 			});
 		},
 		onSuccess: async (response, invoiceId) => {

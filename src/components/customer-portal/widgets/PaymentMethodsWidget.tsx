@@ -151,8 +151,8 @@ const PaymentMethodsWidget = ({ label }: PaymentMethodsWidgetProps) => {
 		mutationFn: (provider: PaymentGatewayType) =>
 			CustomerPortalApi.addPaymentMethod({
 				payment_provider: provider,
-				success_url: portalReturnUrl(),
-				cancel_url: portalReturnUrl(),
+				success_url: portalReturnUrl('success'),
+				cancel_url: portalReturnUrl('failure'),
 			}),
 		onSuccess: async (response) => {
 			// A provider that vaults server-to-server returns type 'none' — there is

@@ -118,3 +118,18 @@ const PROVIDER_RETURN_PARAMS: ReadonlyArray<ReadonlyArray<string>> = [
 /** True when the URL carries a payment provider's return parameters. */
 export const hasProviderReturnParams = (params: URLSearchParams): boolean =>
 	PROVIDER_RETURN_PARAMS.some((names) => names.every((name) => params.has(name)));
+
+/**
+ * Outcomes a provider writes into the return URL when the payment did not go
+ * through: Moyasar's `status`, Razorpay's payment-link status. Stripe and Paddle
+ * say nothing here (their result arrives by webhook), so only a stated failure
+ * counts.
+ */
+const PROVIDER_FAILED_STATUS: ReadonlyArray<readonly [string, ReadonlyArray<string>]> = [
+	['status', ['failed', 'cancelled', 'canceled', 'expired', 'voided']],
+	['razorpay_payment_link_status', ['cancelled', 'expired', 'failed']],
+];
+
+/** True when the provider's return parameters say the payment failed or was abandoned. */
+export const providerReturnFailed = (params: URLSearchParams): boolean =>
+	PROVIDER_FAILED_STATUS.some(([name, failed]) => failed.includes((params.get(name) ?? '').toLowerCase()));

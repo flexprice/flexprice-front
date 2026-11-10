@@ -112,8 +112,8 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 					// asked of the customer, who should never learn the gateway.
 					...(effectiveProvider ? { payment_provider: effectiveProvider } : {}),
 					use_saved_method: useSavedMethod && !!chargeableMethod,
-					success_url: portalReturnUrl(),
-					cancel_url: portalReturnUrl(),
+					success_url: portalReturnUrl('success'),
+					cancel_url: portalReturnUrl('failure'),
 					// Reusing the idempotency key is safe and wanted: the rejected attempt
 					// created nothing, so this is still the same top-up, only now allowed
 					// to displace the stale session.
