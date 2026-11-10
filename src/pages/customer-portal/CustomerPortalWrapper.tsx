@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { rememberSessionToken, recallSessionToken } from '@/components/customer-portal/portalReturnUrl';
 import useCheckoutTabHandoff from '@/components/customer-portal/useCheckoutTabHandoff';
+import { hasProviderReturnParams } from '@/components/customer-portal/checkoutHandoff';
 import { useTranslation } from 'react-i18next';
-import { RefreshCw, Shield } from 'lucide-react';
+import { CreditCard, RefreshCw, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/atoms/Button';
@@ -17,6 +18,8 @@ import CustomerPortal from './CustomerPortal';
  *
  * Handles validation and error cases with proper UI components:
  * - Missing token: shows error card with refresh option
+ * - Missing token on a return from a payment provider: explains that the payment
+ *   is handled and how to get back in, instead of calling the link invalid
  */
 
 interface ErrorStateProps {
@@ -80,6 +83,21 @@ const CustomerPortalWrapper = () => {
 	// Nothing to show in a tab that is closing — and the invalid-link card in
 	// particular would be wrong, since this tab's job is already done.
 	if (isHandingOff) return null;
+
+	// Back from a payment provider, but this browser holds no session: the checkout
+	// opened in another browser (common on phones, where a link tapped inside an app
+	// opens its checkout in Safari), or the stored token expired. The payment itself
+	// is settled by the provider's webhook, not by this page, so telling the customer
+	// their link is invalid only alarms them after a payment that went through.
+	if (!token && (wasCheckoutReturn || hasProviderReturnParams(searchParams))) {
+		return (
+			<ErrorState
+				icon={<CreditCard className='h-9 w-9 text-zinc-700' />}
+				title={t('wrapper.checkoutReturnTitle')}
+				description={t('wrapper.checkoutReturnDescription')}
+			/>
+		);
+	}
 
 	// Validate required token parameter
 	if (!token) {

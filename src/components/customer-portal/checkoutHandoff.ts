@@ -68,3 +68,23 @@ export const consumeCheckoutReturnLoad = (): boolean => {
 		return false;
 	}
 };
+
+/**
+ * Query parameters payment providers add when they send a customer back.
+ *
+ * Our own marker is lost when a provider ignores the return URL we send and uses
+ * one saved on the connection instead (Moyasar's `success_url`, Paddle's
+ * `redirect_url`), so these are the only sign left that the visit is a return.
+ */
+const PROVIDER_RETURN_PARAMS: ReadonlyArray<ReadonlyArray<string>> = [
+	['razorpay_payment_id'],
+	['razorpay_payment_link_id'],
+	['session_id'],
+	['_ptxn'],
+	// Moyasar appends its payment id and outcome.
+	['id', 'status'],
+];
+
+/** True when the URL carries a payment provider's return parameters. */
+export const hasProviderReturnParams = (params: URLSearchParams): boolean =>
+	PROVIDER_RETURN_PARAMS.some((names) => names.every((name) => params.has(name)));
