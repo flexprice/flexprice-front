@@ -10,5 +10,5 @@ export enum COUPON_CADENCE {
 }
 
 export interface CouponRules {
-	[key: string]: any;
+	[key: string]: unknown;
 }

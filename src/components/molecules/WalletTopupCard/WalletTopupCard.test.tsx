@@ -52,7 +52,7 @@ vi.mock('@/components/atoms', async () => {
 		),
 	};
 });
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('@/core/services/tanstack/queryClient', () => ({ refetchQueries: vi.fn().mockResolvedValue(undefined) }));
 
 // The coupon picker (shared with subscriptions) is stubbed to a button that picks a fixed
 // coupon, so these tests cover what the card does with it rather than the Radix dialog.

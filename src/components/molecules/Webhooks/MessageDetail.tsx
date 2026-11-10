@@ -6,13 +6,8 @@ import CodeBlock from '@/components/atoms/CodeBlock';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, ChevronDown, RefreshCw } from 'lucide-react';
 import WebhookTimestamp from './WebhookTimestamp';
-import {
-	AttemptStatusChip,
-	AttemptReplayAction,
-	ATTEMPT_STATUS_FILTERS,
-	AttemptStatusFilterKey,
-	AttemptStatusFilters,
-} from './AttemptStatus';
+import { AttemptStatusChip, AttemptReplayAction, AttemptStatusFilters } from './AttemptStatus';
+import { ATTEMPT_STATUS_FILTERS, AttemptStatusFilterKey } from './attemptStatusFilters';
 
 interface Props {
 	messageId: string;

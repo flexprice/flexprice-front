@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import CouponApi from '@/api/CouponApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { useNavigate } from 'react-router';
 import { COUPON_TYPE, COUPON_CADENCE } from '@/types/common/Coupon';
 import { CreateCouponRequest, UpdateCouponRequest } from '@/types/dto/Coupon';

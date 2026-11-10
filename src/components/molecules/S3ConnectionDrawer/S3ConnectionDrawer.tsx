@@ -5,13 +5,29 @@ import { Switch } from '@/components/ui';
 import { useMutation } from '@tanstack/react-query';
 import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
-import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { CONNECTION_PROVIDER_TYPE, Connection } from '@/models';
+import { CreateConnectionPayload } from '@/types';
+
+interface S3SyncConfig {
+	s3?: { is_flexprice_managed?: boolean };
+}
+
+interface S3Connection extends Connection {
+	sync_config?: S3SyncConfig;
+}
+
+// A Flexprice-managed S3 connection sends only the `sync_config.s3` flag and no secrets, which
+// CreateConnectionPayload does not model; this is the shape this drawer actually sends.
+type S3CreateConnectionPayload = Omit<CreateConnectionPayload, 'encrypted_secret_data' | 'sync_config'> & {
+	encrypted_secret_data?: CreateConnectionPayload['encrypted_secret_data'];
+	sync_config?: S3SyncConfig;
+};
 
 interface S3ConnectionDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	connection?: any; // for editing
-	onSave: (connection: any) => void;
+	connection?: S3Connection | null; // for editing
+	onSave: (connection: Connection) => void;
 }
 
 interface S3FormData {
@@ -97,7 +113,7 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 
 	const { mutate: createConnection, isPending: isCreating } = useMutation({
 		mutationFn: async () => {
-			const payload: any = {
+			const payload: S3CreateConnectionPayload = {
 				name: formData.name,
 				provider_type: CONNECTION_PROVIDER_TYPE.S3,
 			};
@@ -119,7 +135,7 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 				};
 			}
 
-			return await ConnectionApi.Create(payload);
+			return await ConnectionApi.Create(payload as CreateConnectionPayload);
 		},
 		onSuccess: (response) => {
 			toast.success(t('connection.toast.created', { provider: 'S3' }));
@@ -137,7 +153,7 @@ const S3ConnectionDrawer: FC<S3ConnectionDrawerProps> = ({ isOpen, onOpenChange,
 				name: formData.name,
 			};
 
-			return await ConnectionApi.Update(connection.id, payload);
+			return await ConnectionApi.Update(connection!.id, payload);
 		},
 		onSuccess: (response) => {
 			toast.success(t('connection.toast.updated', { provider: 'S3' }));

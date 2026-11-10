@@ -14,7 +14,7 @@ import {
 	ExtendedPriceOverride,
 } from '@/utils';
 import { Info } from 'lucide-react';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui';
 import { Coupon } from '@/models';
 import { cn } from '@/lib/utils';

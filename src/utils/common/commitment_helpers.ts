@@ -453,9 +453,9 @@ export const extractLineItemCommitments = (
  * Used when loading existing subscription data
  */
 export const mergeCommitmentsIntoOverrides = (
-	priceOverrides: Record<string, any>,
+	priceOverrides: Record<string, ExtendedPriceOverride>,
 	commitments: LineItemCommitmentsMap,
-): Record<string, any> => {
+): Record<string, ExtendedPriceOverride> => {
 	const merged = { ...priceOverrides };
 
 	Object.entries(commitments).forEach(([priceId, commitment]) => {

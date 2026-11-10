@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { UserApi } from '@/api/UserApi';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { SETTINGS_MEMBERS_PAGE_SIZE } from '../constants';
 import { settingsQueryKeys } from '../queryKeys';
 import { CreateTenantUserRequest } from '@/types/dto/UserApi';

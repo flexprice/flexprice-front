@@ -1,7 +1,7 @@
 import { FC, useMemo } from 'react';
 import { Spacer, Button, Tooltip } from '@/components/atoms';
 import { DetailsCard, UpdateSubscriptionDrawer } from '@/components/molecules';
-import { getSubscriptionStatus } from '@/components/organisms/Subscription/SubscriptionTable';
+import { getSubscriptionStatus } from '@/components/organisms/Subscription/subscriptionStatus';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import formatDate from '@/utils/common/format_date';
 import { RouteNames } from '@/core/routes/Routes';

@@ -1,8 +1,9 @@
 import { Price, PRICE_UNIT_TYPE } from '@/models/Price';
 import { BILLING_MODEL, PRICE_TYPE, TIER_MODE, CreatePriceTier, TransformQuantity } from '@/models/Price';
 import { PriceUnit } from '@/models/PriceUnit';
+import type { Coupon } from '@/models/Coupon';
 import { getCurrencySymbol } from './helper_functions';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { ExtendedPriceOverride } from './price_override_helpers';
 import { PERCENTAGE_BILLING_MODEL, PercentageBillingModel, decimalAmountToPercentage, isPercentagePrice } from './percentage_price_helpers';
 
@@ -281,7 +282,7 @@ export const getActualPriceForTotal = (price: Price) => {
 	return result;
 };
 
-export const calculateDiscountedPrice = (price: Price, coupon: any) => {
+export const calculateDiscountedPrice = (price: Price, coupon: Coupon | null | undefined) => {
 	if (!coupon || price.type !== 'FIXED') return null;
 
 	const originalAmount = parseFloat(price.amount);

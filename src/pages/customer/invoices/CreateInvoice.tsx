@@ -85,7 +85,7 @@ const CreateInvoicePage: FC = () => {
 	useEffect(() => {
 		if (customerTaxAssociations?.items) {
 			setTaxOverrides(
-				customerTaxAssociations.items.map((item: any) => ({
+				customerTaxAssociations.items.map((item) => ({
 					tax_rate_code: item.tax_rate?.code ?? '',
 					currency: item.currency?.toLowerCase(),
 					auto_apply: item.auto_apply,

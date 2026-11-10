@@ -1,6 +1,6 @@
 import { Price } from '@/models/Price';
 import { FC, useState, useEffect, useMemo, type ReactNode } from 'react';
-import { Button, Input, Select, SelectOption, Spacer, DatePicker } from '@/components/atoms';
+import { Button, Input, Select, Spacer, DatePicker } from '@/components/atoms';
 import SelectFeature from '@/components/atoms/SelectFeature/SelectFeature';
 import SelectGroup from './SelectGroup';
 // import { Pencil, Trash2 } from 'lucide-react';
@@ -31,15 +31,8 @@ import {
 	withoutPercentageMetadata,
 } from '@/utils/common/percentage_price_helpers';
 import { useTranslation } from 'react-i18next';
+import { billingModels, PriceInternalState } from './priceFormConstants';
 
-/**
- * Enum for internal price states to avoid typos and provide better type safety
- */
-export enum PriceInternalState {
-	NEW = 'new',
-	EDIT = 'edit',
-	SAVED = 'saved',
-}
 interface Props {
 	onAdd: (price: InternalPrice) => void;
 	onUpdate: (price: InternalPrice) => void;
@@ -88,35 +81,6 @@ const normalizeTiers = (tiers: TieredPrice[]): PriceTier[] =>
 			flat_amount: tier.flat_amount,
 		};
 	});
-
-// TODO: Remove disabled once the feature is released
-export const billingModels: SelectOption[] = [
-	{
-		value: BILLING_MODEL.FLAT_FEE,
-		label: 'Flat Fee',
-		description: 'Charge a fixed amount for each unit of usage.',
-	},
-	{
-		value: BILLING_MODEL.PACKAGE,
-		label: 'Package',
-		description: 'Charge by package, bundle or group of units.',
-	},
-	{
-		value: BILLING_MODEL.TIERED,
-		label: 'Volume Tiered',
-		description: 'All units price based on final tier reached.',
-	},
-	{
-		value: 'SLAB_TIERED',
-		label: 'Slab Tiered',
-		description: 'Tiers apply progressively as quantity increases.',
-	}, // Maps to TIERED with SLAB tier_mode
-	{
-		value: PERCENTAGE_BILLING_MODEL,
-		label: 'Percentage Fee',
-		description: 'Charge a percentage of the billable value.',
-	}, // Maps to FLAT_FEE with the decimal equivalent + a percentage metadata marker
-];
 
 /**
  * The selector value for a price: PERCENTAGE for a flat fee tagged as percentage in metadata,
@@ -173,7 +137,7 @@ const UsagePricingForm: FC<Props> = ({
 		if (meterBucketSize) setBucketSize('');
 	}, [meterBucketSize]);
 
-	const [errors, setErrors] = useState<Partial<Record<keyof Price, any>>>({});
+	const [errors, setErrors] = useState<Partial<Record<keyof Price, string>>>({});
 	const [inputErrors, setInputErrors] = useState({
 		flatModelError: '',
 		packagedModelError: '',

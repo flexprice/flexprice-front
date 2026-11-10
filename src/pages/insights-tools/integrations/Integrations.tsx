@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import ConnectionApi from '@/api/ConnectionApi';
-import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
+import { Connection, CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 import StripeConnectionDrawer from '@/components/molecules/StripeConnectionDrawer';
 import RazorpayConnectionDrawer from '@/components/molecules/RazorpayConnectionDrawer';
 import ChargebeeConnectionDrawer from '@/components/molecules/ChargebeeConnectionDrawer';
@@ -41,7 +41,7 @@ const Integrations = () => {
 	const integrations = useIntegrationsCatalog();
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [activeIntegration, setActiveIntegration] = useState<Integration | null>(null);
-	const [editingConnection, setEditingConnection] = useState<any | null>(null);
+	const [editingConnection, setEditingConnection] = useState<Connection | undefined>(undefined);
 
 	const availableIntegrations = integrations.filter((i) => !i.premium && i.type === 'available');
 
@@ -56,7 +56,7 @@ const Integrations = () => {
 		}),
 	});
 
-	const connectionByProvider = new Map<string, any[]>();
+	const connectionByProvider = new Map<string, Connection[]>();
 	for (let idx = 0; idx < availableIntegrations.length; idx++) {
 		const integration = availableIntegrations[idx];
 		const listKey = integration.id;
@@ -108,7 +108,7 @@ const Integrations = () => {
 									isPreviewConnection={connection?.id === PREVIEW_MOCK_CONNECTION_ID}
 									onOpenDrawer={(mode) => {
 										setActiveIntegration(integration);
-										setEditingConnection(mode === 'edit' ? (connectionByProvider.get(integration.id)?.[0] ?? null) : null);
+										setEditingConnection(mode === 'edit' ? connectionByProvider.get(integration.id)?.[0] : undefined);
 										setIsDrawerOpen(true);
 									}}
 									onDeleted={() => {
@@ -140,7 +140,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -148,7 +148,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -158,7 +158,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -166,7 +166,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -176,7 +176,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -184,7 +184,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -194,7 +194,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -202,7 +202,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -212,7 +212,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -220,7 +220,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -230,7 +230,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -238,7 +238,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -248,7 +248,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -256,7 +256,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -266,7 +266,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -274,7 +274,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -284,7 +284,7 @@ const Integrations = () => {
 							onOpenChange={(open: boolean) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -292,7 +292,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -302,7 +302,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -310,7 +310,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -320,7 +320,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -328,7 +328,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -338,7 +338,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -346,7 +346,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -356,7 +356,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -364,7 +364,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -374,7 +374,7 @@ const Integrations = () => {
 							onOpenChange={(open) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -382,7 +382,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -392,7 +392,7 @@ const Integrations = () => {
 							onOpenChange={(open: boolean) => {
 								setIsDrawerOpen(open);
 								if (!open) {
-									setEditingConnection(null);
+									setEditingConnection(undefined);
 									setActiveIntegration(null);
 								}
 							}}
@@ -402,7 +402,7 @@ const Integrations = () => {
 							onSave={() => {
 								connectionQueries.forEach((q) => q.refetch?.());
 								setIsDrawerOpen(false);
-								setEditingConnection(null);
+								setEditingConnection(undefined);
 								setActiveIntegration(null);
 							}}
 						/>
@@ -416,7 +416,8 @@ const Integrations = () => {
 type IntegrationCardProps = {
 	integration: Integration;
 	connected: boolean;
-	connection: any | null;
+	/** The provider's first connection, or a `{ id, name }` stand-in when previewing */
+	connection: Pick<Connection, 'id' | 'name'> | null;
 	/** Mock connection used only for UI preview */
 	isPreviewConnection?: boolean;
 	onOpenDrawer?: (mode?: 'edit' | 'create') => void;

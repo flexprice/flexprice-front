@@ -7,7 +7,7 @@ import { RouteNames } from '@/core/routes/Routes';
 import formatDate from '@/utils/common/format_date';
 import SubscriptionApi from '@/api/SubscriptionApi';
 import CustomerApi from '@/api/CustomerApi';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import toast from 'react-hot-toast';
 import CustomerMultiSearchSelect from '@/components/molecules/Customer/CustomerMultiSearchSelect';
 import type { Customer } from '@/models';

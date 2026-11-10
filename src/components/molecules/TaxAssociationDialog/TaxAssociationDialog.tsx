@@ -103,7 +103,7 @@ const TaxAssociationDialog: FC<TaxAssociationDialogProps> = ({
 
 	// Handle field changes with error clearing
 	const handleFieldChange = useCallback(
-		(field: keyof FormData, value: any) => {
+		<K extends keyof FormData>(field: K, value: FormData[K]) => {
 			setFormData((prev) => ({ ...prev, [field]: value }));
 			// Clear error for this field when user starts typing
 			if (errors[field as keyof FormErrors]) {

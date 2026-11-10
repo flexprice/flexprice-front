@@ -1,7 +1,7 @@
 import { Toaster } from 'react-hot-toast';
 
 /** Shared toast config — used in App and Storybook. */
-export const appToastOptions = {
+const appToastOptions = {
 	duration: 4000,
 	style: {
 		maxWidth: 'min(calc(100vw - 32px), 520px)',

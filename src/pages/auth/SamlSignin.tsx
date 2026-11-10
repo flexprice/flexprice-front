@@ -17,16 +17,6 @@ import { config } from '@/config/config';
 export const SSO_TENANT_PARAM = 'sso';
 
 /**
- * Resolves which tenant the login-page SSO button should target. The URL param wins
- * (per-tenant links on a multi-tenant deployment); otherwise a build-time tenant lets
- * a single-tenant deployment show the button without a ?sso= URL param. Empty/whitespace
- * on both → undefined (no button).
- */
-export function resolveSsoTenantId(paramValue: string | null | undefined, envTenantId: string | undefined): string | undefined {
-	return paramValue?.trim() || envTenantId?.trim() || undefined;
-}
-
-/**
  * sessionStorage key marking that this browser tab started an SSO login.
  *
  * The callback stores whatever token it is handed, and it is a public route: without this, anyone

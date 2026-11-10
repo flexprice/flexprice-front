@@ -53,7 +53,7 @@ const CustomerTable: FC<Props> = ({ data, onEdit }) => {
 	const mappedData = data?.map((customer) => ({
 		...customer,
 	}));
-	const columns: ColumnData[] = [
+	const columns: ColumnData<Customer>[] = [
 		{ fieldName: 'name', title: t('list.columns.name'), width: '400px' },
 		{ fieldName: 'external_id', title: t('list.columns.externalId') },
 		{

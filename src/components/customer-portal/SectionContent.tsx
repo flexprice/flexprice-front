@@ -8,7 +8,8 @@ import { SectionConfig, TabConfig, DatePreset, UsageGraphConfig } from '@/types/
 import { DashboardAnalyticsRequest } from '@/types';
 import { WindowSize } from '@/models';
 import { DateRangePicker } from '@/components/atoms';
-import TabRenderer, { DEFAULT_USAGE_GRAPH_CONFIG } from './TabRenderer';
+import TabRenderer from './TabRenderer';
+import { DEFAULT_USAGE_GRAPH_CONFIG } from './constants';
 import UsageToolbar, { type UsageFeatureOption } from './UsageToolbar';
 import { portalPropertyKeysQueryKey } from './queryKeys';
 import { filterItemsByFeatureConfig } from '@/usage/adapters';

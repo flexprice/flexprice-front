@@ -4,9 +4,9 @@ import { cn } from '@/lib/utils';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
 import FeatureApi from '@/api/FeatureApi';
 import { useQuery } from '@tanstack/react-query';
-import { Gauge, Settings2, SquareCheckBig, Wrench } from 'lucide-react';
 import { FC, useMemo } from 'react';
 import { ENTITY_STATUS } from '@/models/base';
+import { getFeatureIcon } from './featureIcon';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -24,19 +24,6 @@ interface Props {
 	/** Popover align positioning */
 	popoverAlign?: 'start' | 'center' | 'end';
 }
-
-export const getFeatureIcon = (featureType: string) => {
-	const className = 'size-4 opacity-80 text-muted-foreground';
-	if (featureType === FEATURE_TYPE.BOOLEAN) {
-		return <SquareCheckBig className={className} />;
-	} else if (featureType === FEATURE_TYPE.METERED) {
-		return <Gauge className={className} />;
-	} else if (featureType === FEATURE_TYPE.STATIC) {
-		return <Wrench className={className} />;
-	} else if (featureType === FEATURE_TYPE.CONFIG) {
-		return <Settings2 className={className} />;
-	}
-};
 
 const SelectFeature: FC<Props> = ({
 	onChange,

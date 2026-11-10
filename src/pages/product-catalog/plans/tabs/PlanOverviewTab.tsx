@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { PlanPriceTable } from '@/components/organisms';
 import { PlanApi } from '@/api';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { Loader } from '@/components/atoms';
 import toast from 'react-hot-toast';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';

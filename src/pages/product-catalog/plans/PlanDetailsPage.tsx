@@ -28,20 +28,8 @@ import { Plan, ENTITY_STATUS } from '@/models';
 // Constants and utilities
 import { getPlanPriceSyncWorkflowFilters } from '@/constants/workflow';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
-import { INVOICE_CADENCE } from '@/models';
 import { DataType, FilterOperator, SortDirection } from '@/types/common/QueryBuilder';
 import { useTranslation } from 'react-i18next';
-
-export const formatInvoiceCadence = (cadence: string): string => {
-	switch (cadence.toUpperCase()) {
-		case INVOICE_CADENCE.ADVANCE:
-			return 'Advance';
-		case INVOICE_CADENCE.ARREAR:
-			return 'Arrear';
-		default:
-			return '--';
-	}
-};
 
 const tabs = [
 	{ id: '', label: 'Overview' },

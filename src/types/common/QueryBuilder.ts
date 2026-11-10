@@ -59,7 +59,7 @@ export enum FilterFieldType {
 }
 
 // Ultra-simple config - just provide searchFn
-export interface AsyncSearchConfig<T = any> {
+export interface AsyncSearchConfig<T = unknown> {
 	// Required: Your search function (handles empty query automatically)
 	searchFn: (query: string) => Promise<Array<SelectOption & { data: T }>>;
 

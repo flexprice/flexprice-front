@@ -28,7 +28,7 @@ vi.mock('@/core/services/error/ErrorLoggingService', () => ({
 	default: { logError: mockLogError },
 	errorLogger: { logError: mockLogError },
 }));
-vi.mock('../tanstack/ReactQueryProvider', () => ({ refetchQueries: mockRefetchQueries }));
+vi.mock('../tanstack/queryClient', () => ({ refetchQueries: mockRefetchQueries }));
 
 import { SUPPORT_CHAT_FLOW } from '@/config/support-chat';
 import { useSupportChat } from './useSupportChat';

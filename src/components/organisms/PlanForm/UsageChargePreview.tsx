@@ -3,7 +3,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import { InternalPrice } from './SetupChargesSection';
 import { ChargeValueCell } from '@/components/molecules';
-import { PRICE_UNIT_TYPE } from '@/models/Price';
+import { Price, PRICE_UNIT_TYPE } from '@/models/Price';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -33,7 +33,7 @@ const UsageChargePreview: FC<Props> = ({ charge: price, index, onDelete, onEdit,
 					{price.billing_model && (
 						<>
 							<span>•</span>
-							<ChargeValueCell data={{ ...price, currency: price.currency } as any} />
+							<ChargeValueCell data={{ ...price, currency: price.currency } as Price} />
 						</>
 					)}
 				</div>

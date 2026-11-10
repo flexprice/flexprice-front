@@ -101,14 +101,12 @@ const CreditGrantModal: React.FC<Props> = ({ data, isOpen, onOpenChange, onSave,
 
 		// Remove expiration_duration if not needed
 		if (sanitized.expiration_type !== CREDIT_GRANT_EXPIRATION_TYPE.DURATION) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { expiration_duration, ...rest } = sanitized;
 			return rest as InternalCreditGrantRequest;
 		}
 
 		// Remove period if not recurring
 		if (sanitized.cadence !== CREDIT_GRANT_CADENCE.RECURRING) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { period, ...rest } = sanitized;
 			return rest as InternalCreditGrantRequest;
 		}

@@ -3,7 +3,35 @@ import { ApiDocsSnippet } from '@/store/useApiDocsStore';
 
 const API_DOCS_URL = 'https://raw.githubusercontent.com/flexprice/flexprice-docs/main/api-reference/openapi.json';
 
-const resolveSchema = (schema: any, schemas: any): any => {
+interface OpenApiSchema {
+	$ref?: string;
+	example?: unknown;
+	type?: string;
+	properties?: Record<string, OpenApiSchema>;
+	items?: OpenApiSchema;
+}
+
+interface OpenApiOperation {
+	tags?: string[];
+	summary?: string;
+	description?: string;
+	requestBody?: {
+		content?: Record<string, { schema?: OpenApiSchema }>;
+	};
+}
+
+export interface OpenApiDocument {
+	servers?: Array<{ url?: string }>;
+	components?: {
+		schemas?: Record<string, OpenApiSchema>;
+	};
+	paths: Record<string, Record<string, OpenApiOperation>>;
+}
+
+/** Any non-null JSON value generated as an example for a schema. */
+type SchemaExample = NonNullable<unknown>;
+
+const resolveSchema = (schema: OpenApiSchema | undefined, schemas: Record<string, OpenApiSchema>): OpenApiSchema => {
 	if (!schema) return {};
 
 	if (schema.$ref) {
@@ -14,13 +42,13 @@ const resolveSchema = (schema: any, schemas: any): any => {
 	return schema;
 };
 
-const generateExample = (schema: any): any => {
+const generateExample = (schema: OpenApiSchema): SchemaExample => {
 	if (!schema || typeof schema !== 'object') return {};
 
 	if (schema.example) return schema.example;
 
 	if (schema.type === 'object' && schema.properties) {
-		return Object.fromEntries(Object.entries(schema.properties).map(([key, value]: [string, any]) => [key, generateExample(value)]));
+		return Object.fromEntries(Object.entries(schema.properties).map(([key, value]) => [key, generateExample(value)]));
 	}
 
 	if (schema.type === 'array' && schema.items) {
@@ -34,9 +62,9 @@ const generateExample = (schema: any): any => {
 	return {};
 };
 
-export const fetchAndExtractSnippetsByTags = async (tags: string[], json?: any): Promise<ApiDocsSnippet[]> => {
+export const fetchAndExtractSnippetsByTags = async (tags: string[], json?: OpenApiDocument): Promise<ApiDocsSnippet[]> => {
 	try {
-		let openApiJson: any = {};
+		let openApiJson: OpenApiDocument;
 
 		if (json) {
 			openApiJson = json;
@@ -49,14 +77,14 @@ export const fetchAndExtractSnippetsByTags = async (tags: string[], json?: any):
 		const schemas = openApiJson?.components?.schemas || {};
 		const snippets: ApiDocsSnippet[] = [];
 
-		Object.entries(openApiJson.paths).forEach(([path, methods]: [string, any]) => {
-			Object.entries(methods).forEach(([method, details]: [string, any]) => {
+		Object.entries(openApiJson.paths).forEach(([path, methods]) => {
+			Object.entries(methods).forEach(([method, details]) => {
 				if (!details.tags || !details.tags.some((tag: string) => tags.includes(tag))) return;
 
 				const url = `${baseUrl}${path}`;
 				let curlCommand = `curl --request ${method.toUpperCase()} \\\n  --url "${url}" \\\n`;
 
-				let requestBodyExample = {};
+				let requestBodyExample: SchemaExample = {};
 				if (details?.requestBody?.content?.['application/json']) {
 					const requestBodySchema = resolveSchema(details.requestBody.content['application/json'].schema, schemas);
 					requestBodyExample = generateExample(requestBodySchema);

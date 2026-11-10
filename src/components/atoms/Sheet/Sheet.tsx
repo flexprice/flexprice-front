@@ -5,8 +5,6 @@ import { hasRegisteredOpenModals, hasOpenOverlayInDom, registerModalOpen, useShe
 import { useLocaleStore } from '@/store/useLocaleStore';
 import { Direction } from '@/config/branding';
 
-export { useSheetOutsideDismissGuards };
-
 interface Props {
 	trigger?: ReactNode;
 	children?: ReactNode;

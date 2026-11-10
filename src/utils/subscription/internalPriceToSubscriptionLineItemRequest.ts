@@ -3,7 +3,7 @@ import type { CreatePriceTier } from '@/models/Price';
 import type { PriceBucketSize } from '@/models/Meter';
 import type { CreateSubscriptionLineItemRequest, SubscriptionPriceCreateRequest } from '@/types/dto/Subscription';
 import type { InternalPrice } from '@/components/organisms/PlanForm/SetupChargesSection';
-import { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
+import { PriceInternalState } from '@/components/organisms/PlanForm/priceFormConstants';
 
 function normalizePriceCurrency(currency?: string): string | undefined {
 	const normalized = currency?.trim().toLowerCase();

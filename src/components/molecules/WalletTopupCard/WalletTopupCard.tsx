@@ -8,7 +8,7 @@ import WalletApi from '@/api/WalletApi';
 import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { getCurrencySymbol } from '@/utils';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { WALLET_TRANSACTION_REASON, CONNECTION_PROVIDER_TYPE } from '@/models';
 import { getCurrencyAmountFromCredits } from '@/utils';
 import { TopupWalletPayload } from '@/types';

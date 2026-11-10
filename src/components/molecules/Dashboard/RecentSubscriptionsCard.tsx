@@ -99,7 +99,7 @@ export const RecentSubscriptionsCard: React.FC<RecentSubscriptionsCardProps> = (
 												borderRadius: '6px',
 												padding: '8px 12px',
 											}}
-											formatter={(value: any, _name: any, props: any) => [
+											formatter={(value, _name, props) => [
 												t('dashboardHome.subscriptionsChartTooltip', { count: Number(value) }),
 												props.payload.fullName,
 											]}

@@ -1,5 +1,5 @@
 import { Button, DatePicker, Input, Select } from '@/components/atoms';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { cn } from '@/lib/utils';
 import { Wallet, WALLET_TYPE } from '@/models';
 import WalletApi from '@/api/WalletApi';

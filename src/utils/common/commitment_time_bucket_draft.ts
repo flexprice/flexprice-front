@@ -1,4 +1,4 @@
-import { removeFormatting } from '@/components/atoms/Input/Input';
+import { removeFormatting } from '@/components/atoms/Input/inputFormatting';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { BUCKET_SIZE } from '@/models/Meter';
 import { INVOICE_CADENCE } from '@/models/Invoice';

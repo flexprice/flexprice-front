@@ -7,15 +7,26 @@ import { useMutation } from '@tanstack/react-query';
 import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle } from 'lucide-react';
-import { useUser } from '@/hooks/UserContext';
+import { useUser } from '@/hooks/useUserContext';
 import { useEnvironment } from '@/hooks/useEnvironment';
-import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { CONNECTION_PROVIDER_TYPE, Connection } from '@/models';
+import { CreateConnectionPayload, UpdateConnectionPayload } from '@/types';
+
+interface WhopConnection extends Connection {
+	encrypted_secret_data?: {
+		company_id?: string;
+		product_id?: string;
+	};
+	sync_config?: {
+		invoice?: { inbound: boolean; outbound: boolean };
+	};
+}
 
 interface WhopConnectionDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	connection?: any;
-	onSave: (connection: any) => void;
+	connection?: WhopConnection | null;
+	onSave: (connection: Connection) => void;
 }
 
 interface WhopFormData {
@@ -104,7 +115,7 @@ const WhopConnectionDrawer: FC<WhopConnectionDrawerProps> = ({ isOpen, onOpenCha
 
 	const { mutate: createConnection, isPending: isCreating } = useMutation({
 		mutationFn: async () => {
-			const payload: any = {
+			const payload: CreateConnectionPayload & { sync_config: NonNullable<CreateConnectionPayload['sync_config']> } = {
 				name: formData.name,
 				provider_type: CONNECTION_PROVIDER_TYPE.WHOP,
 				encrypted_secret_data: {
@@ -114,7 +125,7 @@ const WhopConnectionDrawer: FC<WhopConnectionDrawerProps> = ({ isOpen, onOpenCha
 					webhook_secret: formData.webhook_secret.trim(),
 					...(formData.product_id.trim() ? { product_id: formData.product_id.trim() } : {}),
 				},
-				sync_config: {} as Record<string, { inbound: boolean; outbound: boolean }>,
+				sync_config: {},
 			};
 			if (formData.sync_config.invoice) {
 				payload.sync_config.invoice = { inbound: false, outbound: true };
@@ -133,9 +144,11 @@ const WhopConnectionDrawer: FC<WhopConnectionDrawerProps> = ({ isOpen, onOpenCha
 
 	const { mutate: updateConnection, isPending: isUpdating } = useMutation({
 		mutationFn: async () => {
-			const payload: any = {
+			const payload: Pick<UpdateConnectionPayload, 'name' | 'encrypted_secret_data'> & {
+				sync_config: NonNullable<UpdateConnectionPayload['sync_config']>;
+			} = {
 				name: formData.name,
-				sync_config: {} as Record<string, { inbound: boolean; outbound: boolean }>,
+				sync_config: {},
 			};
 			if (formData.sync_config.invoice) {
 				payload.sync_config.invoice = { inbound: false, outbound: true };
@@ -154,7 +167,7 @@ const WhopConnectionDrawer: FC<WhopConnectionDrawerProps> = ({ isOpen, onOpenCha
 			if (Object.keys(whopUpdate).length > 0) {
 				payload.encrypted_secret_data = { whop: whopUpdate };
 			}
-			return await ConnectionApi.Update(connection.id, payload);
+			return await ConnectionApi.Update(connection!.id, payload);
 		},
 		onSuccess: (response) => {
 			toast.success(t('connection.toast.updated', { provider: 'Whop' }));

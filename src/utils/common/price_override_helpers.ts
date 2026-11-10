@@ -121,7 +121,7 @@ export const getLineItemOverrides = (
 				tierMode = TIER_MODE.VOLUME;
 			}
 
-			const result: any = {
+			const result: BackendSubscriptionLineItemOverrideRequest = {
 				price_id: priceId,
 				// Exclude quantity for USAGE type prices - quantity is determined by meter usage
 				...(override.quantity !== undefined && !isUsagePrice && { quantity: override.quantity }),
@@ -155,7 +155,7 @@ export const getLineItemOverrides = (
 				}
 			}
 
-			return result as BackendSubscriptionLineItemOverrideRequest;
+			return result;
 		});
 };
 

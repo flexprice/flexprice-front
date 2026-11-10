@@ -4,7 +4,7 @@ import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { ColumnData, TooltipCell } from '@/components/molecules/Table';
 import { QueryableDataArea } from '@/components/organisms';
 import WorkflowApi from '@/api/WorkflowApi';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { RefreshCw } from 'lucide-react';
 import { useMemo } from 'react';
 import {

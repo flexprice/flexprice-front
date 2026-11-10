@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
 import SubscriptionApi from '@/api/SubscriptionApi';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { refetchSubscriptionQueries } from '@/core/services/tanstack/queryKeys';
 import type { ExecuteSubscriptionModifyRequest, SubscriptionModifyResponse } from '@/types/dto/Subscription';
 

@@ -10,7 +10,8 @@ import toast from 'react-hot-toast';
 import { AddChargesButton, InternalPrice } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { currencyOptions } from '@/constants/constants';
 import { RecurringChargesForm } from '@/components/organisms/PlanForm';
-import UsagePricingForm, { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
+import UsagePricingForm from '@/components/organisms/PlanForm/UsagePricingForm';
+import { PriceInternalState } from '@/components/organisms/PlanForm/priceFormConstants';
 import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import { RectangleRadiogroup, RectangleRadiogroupOption } from '@/components/molecules';
@@ -19,16 +20,11 @@ import { INVOICE_CADENCE } from '@/models/Invoice';
 import { BILLING_MODEL, PRICE_TYPE, PRICE_ENTITY_TYPE, PRICE_UNIT_TYPE, BILLING_PERIOD } from '@/models/Price';
 import { PriceBucketSize } from '@/models/Meter';
 import { logger } from '@/utils/common/Logger';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { useTranslation } from 'react-i18next';
+import { ENTITY_TYPE } from './entityType';
 
 // ===== TYPES & CONSTANTS =====
-
-export enum ENTITY_TYPE {
-	PLAN = 'PLAN',
-	ADDON = 'ADDON',
-	COST_SHEET = 'COSTSHEET',
-}
 
 // Using PriceInternalState enum instead of local type
 

@@ -5,13 +5,8 @@ import { Loader, NoDataCard } from '@/components/atoms';
 import FlexpriceTable, { ColumnData } from '@/components/molecules/Table';
 import { useTranslation } from 'react-i18next';
 import WebhookTimestamp from './WebhookTimestamp';
-import {
-	AttemptStatusChip,
-	AttemptReplayAction,
-	ATTEMPT_STATUS_FILTERS,
-	AttemptStatusFilterKey,
-	AttemptStatusFilters,
-} from './AttemptStatus';
+import { AttemptStatusChip, AttemptReplayAction, AttemptStatusFilters } from './AttemptStatus';
+import { ATTEMPT_STATUS_FILTERS, AttemptStatusFilterKey } from './attemptStatusFilters';
 
 interface Props {
 	endpointId: string;

@@ -19,7 +19,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { RouteNames } from '@/core/routes/Routes';
 import { cn } from '@/lib/utils';
-import { getPaymentStatusChip } from '@/components/molecules/InvoiceTable/InvoiceTable';
+import { getPaymentStatusChip } from '@/components/molecules/InvoiceTable/invoiceStatusChips';
 import { INVOICE_STATUS, INVOICE_TYPE } from '@/models/Invoice';
 import { getTypographyClass } from '@/lib/typography';
 import RedirectCell from '@/components/molecules/Table/RedirectCell';

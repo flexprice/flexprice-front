@@ -15,7 +15,7 @@ const useQueryParams = <T extends Record<string, string>>(initialParams: T = {} 
 			if (key in initialParams) {
 				params[key as keyof T] = value as T[keyof T];
 			} else {
-				params[key as keyof T] = value as any;
+				params[key as keyof T] = value as T[keyof T];
 			}
 		});
 

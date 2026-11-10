@@ -6,7 +6,7 @@ import { Button, Select } from '@/components/atoms';
 import Dialog from '@/components/atoms/Dialog';
 import AddonApi from '@/api/AddonApi';
 import SubscriptionApi from '@/api/SubscriptionApi';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { Price } from '@/models/Price';
 import { AddonResponse } from '@/types/dto/Addon';

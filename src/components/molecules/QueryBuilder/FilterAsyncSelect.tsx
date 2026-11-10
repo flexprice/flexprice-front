@@ -9,7 +9,7 @@ import { debounce } from 'lodash';
 import { SelectOption } from '@/components/atoms/Select/SearchableSelect';
 import { useTranslation } from 'react-i18next';
 
-interface FilterAsyncSelectProps<T = any> {
+interface FilterAsyncSelectProps<T = unknown> {
 	value: string; // Just ID
 	searchFn: (query: string) => Promise<Array<SelectOption & { data: T }>>;
 	onChange: (value: string) => void;
@@ -20,7 +20,7 @@ interface FilterAsyncSelectProps<T = any> {
 	debounceTime?: number; // Default: 300
 }
 
-const FilterAsyncSelect = <T = any,>({
+const FilterAsyncSelect = <T = unknown,>({
 	value,
 	searchFn,
 	onChange,

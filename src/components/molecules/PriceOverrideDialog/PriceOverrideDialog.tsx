@@ -4,7 +4,7 @@ import { Dialog } from '@/components/atoms';
 import { Input, Button, Select, SelectOption, DatePicker } from '@/components/atoms';
 import { Price, BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
 import { PriceBucketSize } from '@/models/Meter';
-import { removeFormatting } from '@/components/atoms/Input/Input';
+import { removeFormatting } from '@/components/atoms/Input/inputFormatting';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { BUCKET_SIZE_NONE, priceBucketSizeOptionsWithNone } from '@/constants/constants';
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';

@@ -3,7 +3,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import TaxApi from '@/api/TaxApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { TAX_RATE_TYPE, TAX_RATE_SCOPE, TaxRate } from '@/models/Tax';
 import { CreateTaxRateRequest, UpdateTaxRateRequest } from '@/types/dto/tax';
 import { useTranslation } from 'react-i18next';

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { DayPicker } from 'react-day-picker';
 
 import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/buttonVariants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export type CalendarTimezone = 'local' | 'utc';

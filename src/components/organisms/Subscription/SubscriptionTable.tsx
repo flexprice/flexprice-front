@@ -1,13 +1,13 @@
 import { FC, useMemo, type ReactElement } from 'react';
-import { Subscription, SUBSCRIPTION_HIERARCHY_DISPLAY_KIND, SUBSCRIPTION_STATUS, SUBSCRIPTION_TYPE } from '@/models/Subscription';
+import { Subscription, SUBSCRIPTION_HIERARCHY_DISPLAY_KIND, SUBSCRIPTION_TYPE } from '@/models/Subscription';
 import { ColumnData, FlexpriceTable } from '@/components/molecules';
 import { Chip, Tooltip } from '@/components/atoms';
 import { formatBillingPeriodForDisplay } from '@/utils/common/helper_functions';
 import formatDate from '@/utils/common/format_date';
 import SubscriptionActionButton from './SubscriptionActionButton';
 import { Info } from 'lucide-react';
-import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
+import { getSubscriptionStatus } from './subscriptionStatus';
 
 export interface SubscriptionTableProps {
 	data: Subscription[];
@@ -24,44 +24,6 @@ function subscriptionHierarchyKind(row: Subscription): SUBSCRIPTION_HIERARCHY_DI
 	if (subType === SUBSCRIPTION_TYPE.DELEGATED_INVOICING) return SUBSCRIPTION_HIERARCHY_DISPLAY_KIND.DELEGATED_INVOICING;
 	return null;
 }
-
-export const getSubscriptionStatus = (status: string, t: TFunction) => {
-	switch (status) {
-		case SUBSCRIPTION_STATUS.ACTIVE:
-			return <Chip variant='success' label={t('common:status.active')} />;
-		case SUBSCRIPTION_STATUS.PAUSED:
-			return <Chip variant='warning' label={t('common:status.paused')} />;
-		case SUBSCRIPTION_STATUS.CANCELLED:
-			return <Chip variant='failed' label={t('common:status.cancelled')} />;
-		case SUBSCRIPTION_STATUS.INCOMPLETE:
-			return <Chip variant='warning' label={t('common:status.incomplete')} />;
-		case SUBSCRIPTION_STATUS.TRIALING:
-			return <Chip variant='warning' label={t('common:status.trialing')} />;
-		case SUBSCRIPTION_STATUS.DRAFT:
-			return <Chip variant='warning' label={t('common:status.draft')} />;
-		default:
-			return <Chip variant='default' label={t('common:status.inactive')} />;
-	}
-};
-
-export const formatSubscriptionStatus = (status: string, t: TFunction) => {
-	switch (status) {
-		case SUBSCRIPTION_STATUS.ACTIVE:
-			return t('common:status.active');
-		case SUBSCRIPTION_STATUS.PAUSED:
-			return t('common:status.paused');
-		case SUBSCRIPTION_STATUS.CANCELLED:
-			return t('common:status.cancelled');
-		case SUBSCRIPTION_STATUS.INCOMPLETE:
-			return t('common:status.incomplete');
-		case SUBSCRIPTION_STATUS.TRIALING:
-			return t('common:status.trialing');
-		case SUBSCRIPTION_STATUS.DRAFT:
-			return t('common:status.draft');
-		default:
-			return t('common:status.inactive');
-	}
-};
 
 const SubscriptionTable: FC<SubscriptionTableProps> = ({ data, onRowClick, allowRedirect = true, subscriptionOverrides }): ReactElement => {
 	const { t } = useTranslation(['common', 'customers']);

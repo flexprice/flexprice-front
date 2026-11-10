@@ -1,7 +1,7 @@
 import { Button, Dialog, FormHeader, Input, Label, SelectFeature, Spacer } from '@/components/atoms';
 import { JsonObject } from '@/types/common';
 import { JsonEditor } from '@/components/molecules/JsonEditor';
-import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
+import { getFeatureIcon } from '@/components/atoms/SelectFeature/featureIcon';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 import MeteredAllowanceFields from './MeteredAllowanceFields';
 import { deriveAllowanceMode, patchForMode } from './allowanceMode';
@@ -9,7 +9,7 @@ import { toCreateEntitlementRequest } from './entitlementRequest';
 import { blocksAnotherEntitlement } from './parallelEntitlements';
 import { formatAllowanceValue } from '@/utils/entitlement/allowanceLabel';
 
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { Entitlement, ENTITLEMENT_AGGREGATION_MODE, ENTITLEMENT_ENTITY_TYPE } from '@/models/Entitlement';
 import Feature, { FEATURE_TYPE } from '@/models/Feature';
 import EntitlementApi from '@/api/EntitlementApi';

@@ -7,7 +7,7 @@ import UpdateTenantDrawer from './UpdateTenantDrawer';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/api/UserApi', () => ({ UserApi: { updateUser: vi.fn().mockResolvedValue({}) } }));
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn() }));
+vi.mock('@/core/services/tanstack/queryClient', () => ({ refetchQueries: vi.fn() }));
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }));
 
 const address = {

@@ -42,7 +42,7 @@ vi.mock('@/core/services/tanstack/queryKeys', () => ({
 	refetchInvoiceQueries: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: vi.fn().mockResolvedValue(undefined),
 }));
 

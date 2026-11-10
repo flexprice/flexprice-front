@@ -4,7 +4,7 @@ import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { formatBillingPeriod } from '@/utils/common/format_date';
 import { INVOICE_STATUS, INVOICE_TYPE } from '@/models/Invoice';
 import { InvoiceListItem } from '@/types/dto';
-import { getPaymentStatusChip, getStatusChip } from './InvoiceTable';
+import { getPaymentStatusChip, getStatusChip } from './invoiceStatusChips';
 import Customer from '@/models/Customer';
 import { RouteNames } from '@/core/routes/Routes';
 import { useTranslation } from 'react-i18next';

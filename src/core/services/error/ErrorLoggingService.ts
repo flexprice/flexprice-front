@@ -1,6 +1,10 @@
 import { config } from '@/config/config';
 import posthog from 'posthog-js';
 
+/** Non-standard Chromium extensions not present in lib.dom typings. */
+type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } };
+type NavigatorWithConnection = Navigator & { connection?: { effectiveType?: string } };
+
 /**
  * ErrorLoggingService provides centralized error logging functionality
  * for the application, supporting multiple logging destinations.
@@ -28,13 +32,13 @@ export class ErrorLoggingService {
 	/**
 	 * Log an error with contextual information to all configured services
 	 */
-	public logError(error: Error, errorInfo?: React.ErrorInfo, additionalData?: Record<string, any>): string {
+	public logError(error: Error, errorInfo?: React.ErrorInfo, additionalData?: Record<string, unknown>): string {
 		// Generate a unique error ID for tracking
 		const errorId = `err_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
 		// Collect browser and performance information
 		const performanceData = window.performance?.timing;
-		const memoryData = (window.performance as any)?.memory;
+		const memoryData = (window.performance as PerformanceWithMemory | undefined)?.memory;
 
 		const errorPayload = {
 			message: error.message,
@@ -47,7 +51,7 @@ export class ErrorLoggingService {
 			errorId,
 			network: {
 				online: navigator.onLine,
-				connection: (navigator as any)?.connection?.effectiveType || 'unknown',
+				connection: (navigator as NavigatorWithConnection)?.connection?.effectiveType || 'unknown',
 			},
 			performance: {
 				loadTime: performanceData ? performanceData.loadEventEnd - performanceData.navigationStart : undefined,

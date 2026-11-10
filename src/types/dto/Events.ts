@@ -6,7 +6,7 @@ export type DebugTrackerStatus = 'unprocessed' | 'found' | 'not_found' | 'error'
 export interface EventDebugErrorDetail {
 	message: string;
 	internal_error?: string;
-	details?: Record<string, any>;
+	details?: Record<string, unknown>;
 }
 
 export interface EventDebugErrorResponse {
@@ -53,8 +53,8 @@ export interface EventDebugMeterMatchingResult {
 	matched_meters?: Array<{
 		meter_id: string;
 		event_name: string;
-		meter?: Record<string, any>;
-		filters?: Array<Record<string, any>>;
+		meter?: Record<string, unknown>;
+		filters?: Array<Record<string, unknown>>;
 	}>;
 	error?: EventDebugErrorResponse;
 }
@@ -65,7 +65,7 @@ export interface EventDebugPriceLookupResult {
 		price_id: string;
 		meter_id: string;
 		status?: string;
-		price?: Record<string, any>;
+		price?: Record<string, unknown>;
 	}>;
 	error?: EventDebugErrorResponse;
 }
@@ -80,7 +80,7 @@ export interface EventDebugSubscriptionLineItemLookupResult {
 		end_date?: string;
 		is_active_for_event?: boolean;
 		timestamp_within_range?: boolean;
-		subscription_line_item?: Record<string, any>;
+		subscription_line_item?: Record<string, unknown>;
 	}>;
 	error?: EventDebugErrorResponse;
 }

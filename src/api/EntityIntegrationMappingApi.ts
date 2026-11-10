@@ -8,7 +8,7 @@ export interface EntityIntegrationMapping {
 	entity_id: string;
 	integration_provider: string; // e.g., 'stripe', 'hubspot', 'razorpay'
 	external_id: string; // ID in the external system
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
 	created_at: string;
 	updated_at: string;
 }
@@ -18,7 +18,7 @@ export interface CreateEntityIntegrationMappingRequest {
 	entity_id: string;
 	integration_provider: string;
 	external_id: string;
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
 }
 
 export interface ListEntityIntegrationMappingsResponse {

@@ -3,8 +3,8 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
 interface ErrorStateProps {
-	error: any;
-	onError?: (error: any) => void;
+	error: unknown;
+	onError?: (error: unknown) => void;
 }
 
 const ErrorState = ({ error, onError }: ErrorStateProps) => {

@@ -3,7 +3,8 @@ import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/h
 import { billlingPeriodOptions } from '@/constants/constants';
 import { InternalPrice } from './SetupChargesSection';
 import type { CreatePriceTier } from '@/models/Price';
-import { PriceInternalState, PriceTier, billingModels } from './UsagePricingForm';
+import { PriceTier } from './UsagePricingForm';
+import { PriceInternalState, billingModels } from './priceFormConstants';
 import VolumeTieredPricingForm from './VolumeTieredPricingForm';
 import { CheckboxRadioGroup, FormHeader, Input, Spacer, Button, Select, DatePicker } from '@/components/atoms';
 import { Label } from '@/components/ui/label';
@@ -17,7 +18,7 @@ import { CurrencyPriceUnitSelector } from '@/components/molecules';
 import { CurrencyPriceUnitSelection, isPriceUnitOption } from '@/types/common';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calculator } from 'lucide-react';
-import { SubscriptionCalculatorContent } from '@/components/organisms/EntityChargesPage/SubscriptionCalculator';
+import { ContractTermValue, SubscriptionCalculatorContent } from '@/components/organisms/EntityChargesPage/SubscriptionCalculator';
 import { toast } from 'react-hot-toast';
 import {
 	PERCENTAGE_BILLING_MODEL,
@@ -464,7 +465,7 @@ const RecurringChargesForm = ({
 										currency={localPrice.currency || 'USD'}
 										initialAmount={localPrice.amount ?? ''}
 										initialContractTerms='ANNUAL'
-										planPeriod={(localPrice.billing_period as any) || 'ANNUAL'}
+										planPeriod={(localPrice.billing_period as ContractTermValue | undefined) || 'ANNUAL'}
 										onApply={(displayAmount) => {
 											setLocalPrice((prev) => ({ ...prev, amount: displayAmount }));
 											setCalculatorOpen(false);

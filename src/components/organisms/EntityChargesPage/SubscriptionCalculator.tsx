@@ -4,7 +4,7 @@ import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { useTranslation } from 'react-i18next';
 
 /** Month-equivalent for each billing period (used for conversion calculations) */
-export const PLAN_PERIOD_MONTHS = {
+const PLAN_PERIOD_MONTHS = {
 	DAILY: 1 / 30,
 	WEEKLY: 0.25, // 1 month = 4 weeks
 	MONTHLY: 1,
@@ -16,7 +16,7 @@ export const PLAN_PERIOD_MONTHS = {
 export type ContractTermValue = keyof typeof PLAN_PERIOD_MONTHS;
 
 /** Period options for contract terms (target display period), in display order */
-export const CONTRACT_TERM_ORDER: ContractTermValue[] = ['DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'ANNUAL'];
+const CONTRACT_TERM_ORDER: ContractTermValue[] = ['DAILY', 'WEEKLY', 'MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'ANNUAL'];
 
 interface SubscriptionCalculatorProps {
 	currency?: string;

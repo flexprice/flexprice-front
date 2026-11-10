@@ -87,7 +87,7 @@ export interface TopupWalletPayload {
 	expiry_date_utc?: string; // ISO string
 	/** When credits become available. Omitted when the operator leaves the field empty. */
 	effective_date?: string; // ISO-8601 UTC
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
 	idempotency_key?: string;
 	transaction_reason: WALLET_TRANSACTION_REASON;
 	/** Discounts the top-up invoice; credits are unchanged. Invoiced purchases only, not with checkout. */
@@ -155,7 +155,7 @@ export interface GetCustomerWalletsResponse extends BaseModel {
 	currency: string;
 	customer_id: string;
 	description: string;
-	metadata: Record<string, any>;
+	metadata: Record<string, unknown>;
 	name: string;
 	wallet_status: WALLET_STATUS;
 	wallet_type: WALLET_TYPE;

@@ -1,4 +1,4 @@
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 
 /**
  * Balance formatters for customer-facing surfaces.

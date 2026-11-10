@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { Button, Dialog, Tooltip } from '@/components/atoms';
 import { Copy, EyeOff, Pencil } from 'lucide-react';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { cn } from '@/lib/utils';
 import { copyToClipboard } from '@/utils/common/helper_functions';
 

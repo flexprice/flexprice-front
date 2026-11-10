@@ -10,7 +10,7 @@ import TaskApi from '@/api/TaskApi';
 import { ImportTask } from '@/models/ImportTask';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import useUser from '@/hooks/useUser';
 import { useEnvironment } from '@/hooks/useEnvironment';
 
@@ -157,7 +157,8 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 		[entityType, csvBoxCustomerId],
 	);
 
-	const [errors, seterrors] = useState({
+	// Cleared to {} before each import attempt, so every field is optional.
+	const [errors, seterrors] = useState<Partial<Record<'file' | 'entity_type' | 'file_type' | 'task_type', string>>>({
 		file: '',
 		entity_type: '',
 		file_type: '',
@@ -267,7 +268,7 @@ const ImportFileDrawer: FC<Props> = ({ isOpen, onOpenChange, taskId }) => {
 	);
 
 	const handleImport = (file?: Partial<ImportMeta>) => {
-		seterrors({} as any);
+		seterrors({});
 		if (!file && !uploadedFile) {
 			seterrors((prev) => ({ ...prev, file: t('import.validation.uploadFile') }));
 		}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveSsoTenantId } from './SamlSignin';
+import { resolveSsoTenantId } from './resolveSsoTenantId';
 
 describe('resolveSsoTenantId', () => {
 	it('prefers the URL param over the env tenant', () => {

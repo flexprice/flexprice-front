@@ -6,7 +6,7 @@ import EditSubscriptionCreditGrantModal from '@/components/molecules/CreditGrant
 import CancelCreditGrantModal from '@/components/molecules/CreditGrant/CancelCreditGrantModal';
 import { formatExpirationPeriod } from '@/utils/common/credit_grant_helpers';
 import { formatBillingPeriodForPrice } from '@/utils/common/helper_functions';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import type { CreditGrant } from '@/models';
 import { useTranslation } from 'react-i18next';
 

@@ -19,7 +19,8 @@ export { default as Features } from './features/Features';
 
 // Plans
 export { default as AddCharges } from './plans/AddCharges';
-export { default as PlanDetailsPage, formatInvoiceCadence } from './plans/PlanDetailsPage';
+export { default as PlanDetailsPage } from './plans/PlanDetailsPage';
+export { formatInvoiceCadence } from './plans/formatInvoiceCadence';
 export { default as Plans } from './plans/Plans';
 export { default as Pricing, PlanType } from './plans/Pricing';
 export { default as PlanOverviewTab } from './plans/tabs/PlanOverviewTab';

@@ -7,7 +7,7 @@ import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 import { uniqueId } from 'lodash';
 import CreditGrantApi from '@/api/CreditGrantApi';
 import { CreditGrantsTable, CreditGrantModal } from '@/components/molecules';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import toast from 'react-hot-toast';
 import {
 	CREDIT_GRANT_PERIOD_UNIT,
@@ -79,7 +79,6 @@ const PlanCreditGrantsTab = () => {
 	};
 
 	const handleSaveCreditGrant = (data: InternalCreditGrantRequest) => {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { id, ...createRequest } = data;
 		updatePlanWithCreditGrant(createRequest);
 	};

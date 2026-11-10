@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import AddonApi from '@/api/AddonApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';
 import { useTranslation } from 'react-i18next';

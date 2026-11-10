@@ -14,7 +14,7 @@ import {
 	supportsCommitmentTimeBuckets,
 	type CommitmentValidationTarget,
 } from '@/utils/common/commitment_helpers';
-import { removeFormatting } from '@/components/atoms/Input/Input';
+import { removeFormatting } from '@/components/atoms/Input/inputFormatting';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { BILLING_PERIOD } from '@/constants/constants';
 import { useTranslation } from 'react-i18next';

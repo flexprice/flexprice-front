@@ -1,5 +1,5 @@
 import { Button, FormHeader, Modal, Spacer } from '@/components/atoms';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { Wallet } from '@/models/Wallet';
 import WalletApi from '@/api/WalletApi';
 import { useMutation } from '@tanstack/react-query';

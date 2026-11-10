@@ -7,7 +7,7 @@ import { Button, Dialog, CopyIdButton } from '@/components/atoms';
 import RolePicker from '@/components/molecules/RolePicker/RolePicker';
 import { UserApi } from '@/api/UserApi';
 import { useRbacRoles } from '@/hooks/useRbacRoles';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { settingsQueryKeys } from '@/pages/settings/queryKeys';
 import type { HttpRejectedError } from '@/core/axios/types';
 import type { UpdateUserRolesErrorDetails } from '@/types/dto/UserApi';

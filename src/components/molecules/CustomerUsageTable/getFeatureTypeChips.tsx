@@ -1,5 +1,5 @@
 import { Chip } from '@/components/atoms';
-import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
+import { getFeatureIcon } from '@/components/atoms/SelectFeature/featureIcon';
 import { FEATURE_TYPE } from '@/models/Feature';
 import i18n from 'i18next';
 

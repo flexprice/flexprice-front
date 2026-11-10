@@ -1,4 +1,4 @@
-import { refetchQueries } from './ReactQueryProvider';
+import { refetchQueries } from './queryClient';
 
 /**
  * The same domain data is read under several different top-level query keys

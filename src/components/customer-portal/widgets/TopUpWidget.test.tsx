@@ -19,7 +19,7 @@ vi.mock('@/api/CustomerPortalApi', () => ({
 
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }));
 
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: vi.fn().mockResolvedValue(undefined),
 }));
 

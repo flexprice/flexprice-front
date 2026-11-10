@@ -11,7 +11,7 @@ import { useParams, useOutletContext, useNavigate } from 'react-router';
 import { Pencil, CreditCard, Share2 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { getTypographyClass } from '@/lib/typography';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { logger } from '@/utils/common/Logger';
 import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 import { useCustomerPortalUrl } from '@/hooks/useCustomerPortalUrl';

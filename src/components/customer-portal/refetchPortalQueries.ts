@@ -1,4 +1,4 @@
-import { queryClient, refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { queryClient, refetchQueries } from '@/core/services/tanstack/queryClient';
 import { PORTAL_BALANCE_QUERY_ROOTS, portalWalletsQueryKey } from './queryKeys';
 
 /**

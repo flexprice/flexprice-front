@@ -10,7 +10,7 @@ import { InvoiceDownloadFormatDialog } from '@/components/molecules';
 import { Invoice, INVOICE_STATUS } from '@/models/Invoice';
 import { PAYMENT_STATUS } from '@/constants/payment';
 import { formatDateShort, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { CreditCard, Download, Eye, MoreHorizontal, Receipt, Search, SearchX } from 'lucide-react';
 import EmptyState from '../EmptyState';
 import PortalSection from '../PortalSection';

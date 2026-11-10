@@ -9,19 +9,27 @@ import {
 	SCHEDULED_TASK_INTERVAL,
 	EXPORT_METADATA_ENTITY_TYPE,
 	ALLOWED_METADATA_ENTITY_TYPES,
+	Connection,
 } from '@/models';
 import { CreateScheduledTaskPayload } from '@/types/dto';
 import toast from 'react-hot-toast';
 import { ChevronDown, ChevronRight, Info, Plus, Trash2 } from 'lucide-react';
 import type { HttpRejectedError } from '@/core/axios/types';
 
+interface ExportConnection extends Connection {
+	sync_config?: { s3?: { is_flexprice_managed?: boolean } };
+}
+
+// Flexprice-managed S3 omits bucket, region and key_prefix, which CreateScheduledTaskPayload marks required.
+type ExportJobConfig = Partial<CreateScheduledTaskPayload['job_config']>;
+
 interface ExportDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	connectionId: string;
-	connection?: any; // Connection object to check if Flexprice Managed
+	connection?: ExportConnection; // Connection object to check if Flexprice Managed
 	exportTask?: ScheduledTask | null; // for editing
-	onSave: (exportTask: any) => void;
+	onSave: (exportTask: ScheduledTask) => void;
 }
 
 interface MetadataField {
@@ -239,7 +247,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 
 	const { mutate: createExport, isPending: isCreating } = useMutation({
 		mutationFn: async () => {
-			const jobConfig: any = {
+			const jobConfig: ExportJobConfig = {
 				compression: formData.compression,
 				encryption: formData.encryption,
 			};
@@ -267,7 +275,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 				entity_type: formData.entity_type,
 				interval: formData.interval,
 				enabled: formData.enabled,
-				job_config: jobConfig,
+				job_config: jobConfig as CreateScheduledTaskPayload['job_config'],
 			};
 
 			return await TaskApi.createScheduledTask(payload);
@@ -292,7 +300,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 
 	const { mutate: updateExport, isPending: isUpdating } = useMutation({
 		mutationFn: async () => {
-			const jobConfig: any = {
+			const jobConfig: ExportJobConfig = {
 				compression: formData.compression,
 				encryption: formData.encryption,
 			};
@@ -320,7 +328,7 @@ const ExportDrawer: FC<ExportDrawerProps> = ({ isOpen, onOpenChange, connectionI
 				entity_type: formData.entity_type,
 				interval: formData.interval,
 				enabled: formData.enabled,
-				job_config: jobConfig,
+				job_config: jobConfig as CreateScheduledTaskPayload['job_config'],
 			};
 
 			return await TaskApi.updateScheduledTask(exportTask!.id, payload);

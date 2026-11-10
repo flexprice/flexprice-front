@@ -1,6 +1,6 @@
 import SubscriptionApi from '@/api/SubscriptionApi';
 import { Button, DatePicker, FormHeader, Input, Label, Modal, Select, Toggle } from '@/components/atoms';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { refetchSubscriptionQueries } from '@/core/services/tanstack/queryKeys';
 import {
 	SUBSCRIPTION_CANCELLATION_TYPE,

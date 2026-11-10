@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Chip, Input, Loader, Select, Textarea } from '@/components/atoms';
 import { SettingsCardHeader, SettingsToggleRow } from '@/components/molecules';
-import { useUser as useUserContext } from '@/hooks/UserContext';
+import { useUser as useUserContext } from '@/hooks/useUserContext';
 import { config as appConfig } from '@/config/config';
 import { copyToClipboard } from '@/utils/common/helper_functions';
 import { SAML_DEFAULT_ROLES, isSameSamlConfig, isValidIdpSsoUrl, type SamlConfig, type SamlDefaultRole } from '@/types/dto/SamlConfig';

@@ -6,6 +6,7 @@ import { QueryableDataArea } from '@/components/organisms';
 import { buildGuides } from '@/constants/guides';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import InvoiceApi from '@/api/InvoiceApi';
+import type { InvoiceFilter } from '@/types/dto/InvoiceApi';
 import CustomerApi from '@/api/CustomerApi';
 import {
 	FilterField,
@@ -134,7 +135,7 @@ const InvoicesPage = () => {
 		setShowSubscriptionCustomerColumn(items.some(invoiceHasDistinctSubscriptionCustomer));
 	}, []);
 
-	const enrichedFetchFn = useCallback(async (params: any) => {
+	const enrichedFetchFn = useCallback(async (params: InvoiceFilter) => {
 		const result = await InvoiceApi.listInvoices({
 			...params,
 			invoice_status: Object.values(INVOICE_STATUS),

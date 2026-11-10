@@ -1,15 +1,9 @@
-import { createContext, useContext, useEffect, useState, FC, ReactNode } from 'react';
+import { useEffect, useState, FC, ReactNode } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 import { PortalConfig, DEFAULT_PORTAL_CONFIG } from '@/types/dto/PortalConfig';
 import { isColorDark, portalTokenOverrides, PORTAL_TOKEN_NAMES } from '@/components/customer-portal/portalTheme';
-
-interface PortalConfigContextProps {
-	config: PortalConfig;
-	isLoading: boolean;
-}
-
-const PortalConfigContext = createContext<PortalConfigContextProps | undefined>(undefined);
+import { PortalConfigContext, PortalConfigContextProps } from './usePortalConfig';
 
 interface PortalConfigProviderProps {
 	token: string;
@@ -85,12 +79,4 @@ export const PortalConfigProvider: FC<PortalConfigProviderProps> = ({ token, chi
 	};
 
 	return <PortalConfigContext.Provider value={value}>{children}</PortalConfigContext.Provider>;
-};
-
-export const usePortalConfig = (): PortalConfigContextProps => {
-	const context = useContext(PortalConfigContext);
-	if (!context) {
-		throw new Error('usePortalConfig must be used within a PortalConfigProvider');
-	}
-	return context;
 };

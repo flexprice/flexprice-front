@@ -6,7 +6,7 @@ import SelectGroup from '@/components/organisms/PlanForm/SelectGroup';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
 import { GROUP_ENTITY_TYPE } from '@/models/Group';
 import { RouteNames } from '@/core/routes/Routes';
-import { queryClient, refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { queryClient, refetchQueries } from '@/core/services/tanstack/queryClient';
 import { SIDEBAR_PRICING_PROMO_QUERY_KEY } from '@/hooks/useShouldShowSidebarPricingPromo';
 import { cn } from '@/lib/utils';
 import { FEATURE_TYPE } from '@/models/Feature';

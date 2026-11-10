@@ -50,7 +50,7 @@ import { isInheritedSubscription } from '@/utils/subscription/isInheritedSubscri
 import { stripDisplayMeterFromLineItemRequest } from '@/utils/subscription/internalPriceToSubscriptionLineItemRequest';
 import { getPriceTypeFromLineItem, lineItemToPrice } from '@/utils/subscription/lineItemToPrice';
 import { RouteNames } from '@/core/routes/Routes';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { refetchSubscriptionQueries } from '@/core/services/tanstack/queryKeys';
 import { ENTITY_STATUS, CreditGrant, CREDIT_GRANT_SCOPE } from '@/models';
 import { useSubscriptionEditCoreQuery } from '@/hooks/useSubscriptionEditCoreQuery';

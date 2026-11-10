@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
@@ -29,7 +29,7 @@ interface RenderColumn<T> extends BaseColumnData<T> {
 	render: (rowData: T) => ReactNode;
 }
 
-export type ColumnData<T = any> = FieldNameColumn<T> | RenderColumn<T>;
+export type ColumnData<T = unknown> = FieldNameColumn<T> | RenderColumn<T>;
 
 export interface FlexpriceTableProps<T> {
 	columns: ColumnData<T>[];
@@ -141,13 +141,18 @@ const TableCell = React.forwardRef<
 TableCell.displayName = 'TableCell';
 
 // Cell Content Components
-const CellContent: FC<{
-	row: any;
-	column: ColumnData<any>;
+const CellContent = <T,>({
+	row,
+	column,
+	colIndex,
+	onCellClick,
+}: {
+	row: T;
+	column: ColumnData<T>;
 	colIndex: number;
-	onCellClick?: (row: any, e: React.MouseEvent) => void;
-}> = ({ row, column, colIndex, onCellClick }) => {
-	const { fieldName: name, render, suffixIcon, fieldVariant = 'default' } = column;
+	onCellClick?: (row: T, e: React.MouseEvent) => void;
+}) => {
+	const { suffixIcon, fieldVariant = 'default' } = column;
 
 	const contentWrapperClasses = cn(
 		onCellClick && 'cursor-pointer',
@@ -156,20 +161,20 @@ const CellContent: FC<{
 		colIndex === 0 && '!ps-2',
 	);
 
-	if (render) {
+	if (column.render) {
 		return (
 			<div data-interactive={fieldVariant === 'interactive'} className={contentWrapperClasses}>
-				{render(row)}
+				{column.render(row)}
 				{suffixIcon && suffixIcon}
 			</div>
 		);
 	}
 
-	return <div className={contentWrapperClasses}>{row[name]}</div>;
+	return <div className={contentWrapperClasses}>{row[column.fieldName] as ReactNode}</div>;
 };
 
 // Main FlexpriceTable Component
-const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
+function FlexpriceTable<T>({
 	onRowClick,
 	isRowClickable,
 	columns,
@@ -178,9 +183,9 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 	hideBottomBorder = true,
 	variant = 'default',
 	tableClassName,
-}) => {
+}: FlexpriceTableProps<T>) {
 	const { t } = useTranslation('common');
-	const handleRowClick = (row: any, e: React.MouseEvent) => {
+	const handleRowClick = (row: T, e: React.MouseEvent) => {
 		const target = e.target as HTMLElement;
 
 		// Don't trigger row click if the click was on or within an interactive element
@@ -195,7 +200,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 		onRowClick?.(row);
 	};
 
-	const handleCellClick = (e: React.MouseEvent, row: any, onCellClick?: (row: any, e: React.MouseEvent) => void) => {
+	const handleCellClick = (e: React.MouseEvent, row: T, onCellClick?: (row: T, e: React.MouseEvent) => void) => {
 		const target = e.target as HTMLElement;
 
 		// Don't trigger cell click if the click was on or within an interactive element
@@ -244,7 +249,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 		</TableHeader>
 	);
 
-	const renderTableRow = (row: any, rowIndex: number) => {
+	const renderTableRow = (row: T, rowIndex: number) => {
 		const lastRow = rowIndex === data.length - 1;
 
 		return (
@@ -331,7 +336,7 @@ const FlexpriceTable: FC<FlexpriceTableProps<any>> = ({
 			</Table>
 		</div>
 	);
-};
+}
 
 export default FlexpriceTable;
 export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell };

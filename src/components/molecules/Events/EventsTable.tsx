@@ -12,7 +12,7 @@ interface Props {
 const EventsTable: FC<Props> = ({ data }) => {
 	const { t } = useTranslation(['developers', 'common']);
 
-	const columns: ColumnData[] = useMemo(
+	const columns: ColumnData<Event>[] = useMemo(
 		() => [
 			{
 				title: t('labels.eventId'),

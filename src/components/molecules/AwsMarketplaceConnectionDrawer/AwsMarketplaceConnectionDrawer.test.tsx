@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateExternalId } from './AwsMarketplaceConnectionDrawer';
+import { generateExternalId } from './generateExternalId';
 
 describe('generateExternalId', () => {
 	it('joins tenant and environment ids with an underscore', () => {

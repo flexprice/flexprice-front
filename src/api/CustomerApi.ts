@@ -19,7 +19,6 @@ import { generateQueryParams } from '@/utils/common/api_helper';
 import { TypedBackendFilter } from '@/types/formatters/QueryBuilder';
 import { DataType, FilterOperator } from '@/types/common/QueryBuilder';
 
-
 class CustomerApi {
 	private static baseUrl = '/customers';
 
@@ -113,8 +112,8 @@ class CustomerApi {
 	 * Get customer invoice summary
 	 * GET /customers/:id/invoices/summary
 	 */
-	public static async getCustomerInvoiceSummary(customerId: string): Promise<any> {
-		return await AxiosClient.get(`${this.baseUrl}/${customerId}/invoices/summary`);
+	public static async getCustomerInvoiceSummary(customerId: string): Promise<unknown> {
+		return await AxiosClient.get<unknown>(`${this.baseUrl}/${customerId}/invoices/summary`);
 	}
 
 	/**

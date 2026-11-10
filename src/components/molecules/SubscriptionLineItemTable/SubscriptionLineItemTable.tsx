@@ -25,10 +25,11 @@ import {
 	getPriceTypeLabel,
 } from '@/utils/common/helper_functions';
 import { resolveBucketSize } from '@/utils/common/commitment_helpers';
-import { PRICE_ENTITY_TYPE, PRICE_STATUS, PRICE_TYPE } from '@/models/Price';
+import { PRICE_ENTITY_TYPE, PRICE_STATUS } from '@/models/Price';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
 import LineItemWindowCommitmentViewDialog from '@/components/molecules/Subscription/LineItemWindowCommitmentViewDialog';
 import { lineItemHasCommitment } from '@/utils/subscription/subscription_line_item_commitment_helpers';
+import { getQuantityDisplayForLineItem } from './lineItemQuantityDisplay';
 interface Props {
 	data: LineItem[];
 	onEdit?: (lineItem: LineItem) => void;
@@ -50,15 +51,6 @@ interface Props {
 	onRemoveCoupon?: (lineItem: LineItem) => void;
 	/** Set of line item IDs that have an active coupon association — used to conditionally show "Remove coupon" */
 	lineItemIdsWithCoupon?: Set<string>;
-}
-
-/**
- * Quantity is only meaningful for FIXED charges — USAGE charges are billed
- * from metered consumption, so their quantity column shows "--" instead.
- */
-export function getQuantityDisplayForLineItem(row: Pick<LineItem, 'price_type' | 'quantity'>): string {
-	if (row.price_type !== PRICE_TYPE.FIXED) return '--';
-	return String(row.quantity);
 }
 
 interface LineItemWithStatus extends LineItem {

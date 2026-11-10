@@ -27,7 +27,7 @@ import formatDate from '@/utils/common/format_date';
 import toast from 'react-hot-toast';
 import { Copy, EyeOff, Pencil, WandSparkles } from 'lucide-react';
 import { BsThreeDots } from 'react-icons/bs';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { useTranslation } from 'react-i18next';
 
 const initialFilters: FilterCondition[] = [

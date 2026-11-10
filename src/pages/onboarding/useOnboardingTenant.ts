@@ -8,7 +8,7 @@ import TenantApi from '@/api/TenantApi';
 import OnboardingApi from '@/api/OnboardingApi';
 import { TenantMetadataKey } from '@/models';
 import useUser from '@/hooks/useUser';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { findBannedOrgNameWord, type OnboardingFormErrors } from './onboardingConstants';
 
 const useOnboardingTenant = () => {

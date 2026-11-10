@@ -19,7 +19,7 @@ vi.mock('react-hot-toast', () => ({
 	},
 }));
 
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: vi.fn(),
 }));
 

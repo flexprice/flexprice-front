@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 // every lazy-loaded page behind it) into this exported widget's bundle.
 import Card from '@/components/atoms/Card/Card';
 import Progress from '@/components/atoms/Progress/Progress';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { cn } from '@/lib/utils';
 import { useUsageT } from '../i18n';
 import { normalizeUsageQuotaItems } from '../schema';

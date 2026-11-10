@@ -1,7 +1,7 @@
 import { Button, Dialog, Input, Spacer, Textarea } from '@/components/atoms';
 import { PlanApi } from '@/api/PlanApi';
 import { RouteNames } from '@/core/routes/Routes';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { ClonePlanRequest, PlanResponse } from '@/types/dto';
 import { Plan } from '@/models/Plan';
 import { FC, useEffect, useState } from 'react';

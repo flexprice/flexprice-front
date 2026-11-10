@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@/components/ui';
 import { Blocks, Rocket, Server, ChevronsUpDown, Plus, Copy, Pencil } from 'lucide-react';
-import { useGlobalLoading } from '@/core/services/tanstack/ReactQueryProvider';
+import { useGlobalLoading } from '@/core/services/tanstack/useGlobalLoading';
 import useUser from '@/hooks/useUser';
 import { Select, SelectContent, useSidebar } from '@/components/ui';
 import * as SelectPrimitive from '@radix-ui/react-select';

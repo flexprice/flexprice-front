@@ -22,7 +22,7 @@ const TableArea = <T,>({ data, tableConfig, paginationConfig }: TableAreaProps<T
 			{paginationConfig?.unit && (
 				<>
 					<Spacer className='!h-4' />
-					<ShortPagination unit={paginationConfig.unit} totalItems={data?.pagination.total ?? 0} prefix={paginationConfig.prefix as any} />
+					<ShortPagination unit={paginationConfig.unit} totalItems={data?.pagination.total ?? 0} prefix={paginationConfig.prefix} />
 				</>
 			)}
 		</>

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, AlertTriangle, Info } from 'lucide-react';
 import Chip from '@/components/atoms/Chip';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { WalletAlertSettings } from '@/models/Wallet';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { computeWalletAlertStatus, getWalletAlertThresholdType } from '@/utils/wallet/walletAlertUtils';
