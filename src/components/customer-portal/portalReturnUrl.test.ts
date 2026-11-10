@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { portalReturnUrl, rememberSessionToken, recallSessionToken, forgetSessionToken } from './portalReturnUrl';
+import {
+	checkoutReturnOutcome,
+	portalBasePath,
+	portalReturnUrl,
+	rememberSessionToken,
+	recallSessionToken,
+	forgetSessionToken,
+} from './portalReturnUrl';
 
 const setUrl = (href: string) => {
 	Object.defineProperty(window, 'location', { configurable: true, value: new URL(href) });
@@ -15,14 +22,27 @@ describe('portalReturnUrl', () => {
 	// as a return URL puts it in their logs, the referrer chain and history.
 	it('strips the session token from the return URL', () => {
 		setUrl('https://portal.test/customer-portal?token=eyJhbGciOi.SECRET.sig');
-		const url = portalReturnUrl();
+		const url = portalReturnUrl('success');
 		expect(url).not.toContain('token');
 		expect(url).not.toContain('SECRET');
 	});
 
+	// One address per outcome, so the provider's cancel lands on its own page.
+	it('sends success and cancel to their own return routes', () => {
+		setUrl('https://portal.test/customer-portal?token=abc');
+		expect(new URL(portalReturnUrl('success')).pathname).toBe('/customer-portal/checkout/success');
+		expect(new URL(portalReturnUrl('failure')).pathname).toBe('/customer-portal/checkout/failure');
+	});
+
+	// A second checkout started from a return page must not nest the routes.
+	it('builds from the portal path when already on a return route', () => {
+		setUrl('https://portal.test/customer-portal/checkout/success?token=abc');
+		expect(new URL(portalReturnUrl('failure')).pathname).toBe('/customer-portal/checkout/failure');
+	});
+
 	it('keeps the section the customer was on', () => {
 		setUrl('https://portal.test/customer-portal?token=abc&section=credits');
-		expect(portalReturnUrl()).toContain('section=credits');
+		expect(portalReturnUrl('success')).toContain('section=credits');
 	});
 
 	// Providers append their own result parameters to the return URL. Building the
@@ -32,7 +52,7 @@ describe('portalReturnUrl', () => {
 	it("does not carry a provider's result parameters into the next return URL", () => {
 		setUrl('https://portal.test/customer-portal?id=db4zjKau&state=succeeded&id=z513cdK0&state=succeeded&section=credits');
 
-		const url = new URL(portalReturnUrl());
+		const url = new URL(portalReturnUrl('success'));
 
 		expect(url.searchParams.getAll('id')).toEqual([]);
 		expect(url.searchParams.getAll('state')).toEqual([]);
@@ -45,7 +65,7 @@ describe('portalReturnUrl', () => {
 	// so nothing new can leak by being forgotten here.
 	it('drops parameters it does not recognise', () => {
 		setUrl('https://portal.test/customer-portal?token=abc&utm_source=email&session_id=cs_live_1');
-		const url = portalReturnUrl();
+		const url = portalReturnUrl('success');
 		expect(url).not.toContain('utm_source');
 		expect(url).not.toContain('session_id');
 	});
@@ -81,5 +101,20 @@ describe('portalReturnUrl', () => {
 
 	it('returns null when nothing was stored', () => {
 		expect(recallSessionToken()).toBeNull();
+	});
+});
+
+describe('return routes', () => {
+	it('reads the outcome from the path', () => {
+		expect(checkoutReturnOutcome('/customer-portal/checkout/success')).toBe('success');
+		expect(checkoutReturnOutcome('/customer-portal/checkout/failure/')).toBe('failure');
+		expect(checkoutReturnOutcome('/customer-portal')).toBeNull();
+		expect(checkoutReturnOutcome('/customer-portal/checkout/other')).toBeNull();
+	});
+
+	it('strips the return route to find the portal path', () => {
+		expect(portalBasePath('/customer-portal/checkout/success')).toBe('/customer-portal');
+		expect(portalBasePath('/customer-portal')).toBe('/customer-portal');
+		expect(portalBasePath('/checkout/failure')).toBe('/');
 	});
 });

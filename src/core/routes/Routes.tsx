@@ -105,6 +105,9 @@ import { RouterErrorElement } from '@/components/atoms/ErrorBoundary';
 export const RouteNames = {
 	// customer portal
 	customerPortal: '/customer-portal',
+	// Where a payment provider sends the customer back: success_url and cancel_url.
+	customerPortalCheckoutSuccess: '/customer-portal/checkout/success',
+	customerPortalCheckoutFailure: '/customer-portal/checkout/failure',
 
 	home: '/',
 	login: '/login',
@@ -259,6 +262,15 @@ export const MainRouter: any = createBrowserRouter([
 	},
 	{
 		path: RouteNames.customerPortal,
+		element: <CustomerPortalWrapper />,
+	},
+	{
+		// Public: the return pages must work in a browser with no portal session.
+		path: RouteNames.customerPortalCheckoutSuccess,
+		element: <CustomerPortalWrapper />,
+	},
+	{
+		path: RouteNames.customerPortalCheckoutFailure,
 		element: <CustomerPortalWrapper />,
 	},
 	{

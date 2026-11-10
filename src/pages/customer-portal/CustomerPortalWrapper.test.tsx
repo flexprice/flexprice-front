@@ -10,7 +10,10 @@ vi.mock('@/hooks/useForceLightTheme', () => ({ useForceLightTheme: () => {} }));
 vi.mock('@/components/customer-portal/useCheckoutTabHandoff', () => ({ default: () => handoff }));
 vi.mock('./CustomerPortal', () => ({ default: ({ token }: { token: string }) => <p>portal for {token}</p> }));
 
-const Address = () => <output>{useLocation().search}</output>;
+const Address = () => {
+	const { pathname, search } = useLocation();
+	return <output>{pathname + search}</output>;
+};
 
 const renderAt = (path: string) =>
 	render(
@@ -64,5 +67,38 @@ describe('CustomerPortalWrapper', () => {
 		expect(screen.getByText('portal for kept')).toBeInTheDocument();
 		// Back in the address, so a reload of this tab still opens the portal.
 		expect(screen.getByRole('status')).toHaveTextContent('?token=kept');
+	});
+
+	describe('return routes', () => {
+		it('shows the confirming page on the success route when this browser has no session', () => {
+			renderAt('/customer-portal/checkout/success');
+			expect(screen.getByText('wrapper.checkoutReturnTitle')).toBeInTheDocument();
+			expect(screen.queryByText('wrapper.invalidLinkTitle')).not.toBeInTheDocument();
+		});
+
+		it('shows the not-completed page on the failure route', () => {
+			renderAt('/customer-portal/checkout/failure');
+			expect(screen.getByText('wrapper.checkoutReturnFailedTitle')).toBeInTheDocument();
+			expect(screen.queryByText('wrapper.checkoutReturnTitle')).not.toBeInTheDocument();
+		});
+
+		it('lets a provider that says the payment failed override the success route', () => {
+			renderAt('/customer-portal/checkout/success?razorpay_payment_link_status=cancelled&razorpay_payment_link_id=plink_1');
+			expect(screen.getByText('wrapper.checkoutReturnFailedTitle')).toBeInTheDocument();
+		});
+
+		it('opens the portal on its own path when the stored session is still here', () => {
+			// The real outcome then comes from the checkout status, not from the route.
+			localStorage.setItem('flexprice.portal.sessionToken', JSON.stringify({ token: 'kept', storedAt: Date.now() }));
+			renderAt('/customer-portal/checkout/failure?section=credits');
+			expect(screen.getByText('portal for kept')).toBeInTheDocument();
+			expect(screen.getByRole('status')).toHaveTextContent('/customer-portal?section=credits&token=kept');
+		});
+
+		it('moves a reload with a URL token off the return route', () => {
+			renderAt('/customer-portal/checkout/success?token=abc');
+			expect(screen.getByText('portal for abc')).toBeInTheDocument();
+			expect(screen.getByRole('status')).toHaveTextContent('/customer-portal?token=abc');
+		});
 	});
 });

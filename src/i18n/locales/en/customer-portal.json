@@ -3,10 +3,10 @@
 		"invalidLinkTitle": "Invalid Customer Portal Link",
 		"invalidLinkDescription": "Dashboard session token is missing from the URL. Please check your link and try again.",
 		"refreshPage": "Refresh Page",
-		"checkoutReturnTitle": "You're all set!",
-		"checkoutReturnDescription": "Head back to your billing portal to view your latest billing details.",
-		"checkoutReturnFailedTitle": "Back to billing",
-		"checkoutReturnFailedDescription": "Your checkout session has ended. Head back to your billing portal to view your latest billing details."
+		"checkoutReturnTitle": "We're confirming your payment",
+		"checkoutReturnDescription": "We check every payment with the payment provider before applying it. Once it's confirmed, it appears on your billing page. This usually takes a few minutes, and you don't need to do anything else. You can close this page.",
+		"checkoutReturnFailedTitle": "Payment not completed",
+		"checkoutReturnFailedDescription": "Checkout ended before the payment was confirmed. If you did complete the payment, it will still be applied, so check your billing page before trying again."
 	},
 	"footer": {
 		"poweredBy": "Powered by",
