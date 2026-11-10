@@ -28,9 +28,11 @@ interface ErrorStateProps {
 	description: string;
 	actionLabel?: string;
 	onAction?: () => void;
+	/** The icon's backdrop. Red for an error; neutral for a state that is not one. */
+	tone?: 'error' | 'neutral';
 }
 
-const ErrorState = ({ icon, title, description, actionLabel, onAction }: ErrorStateProps) => (
+const ErrorState = ({ icon, title, description, actionLabel, onAction, tone = 'error' }: ErrorStateProps) => (
 	<div className='min-h-screen flex items-center justify-center bg-[#fafafa] px-4 py-12 sm:px-6'>
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -39,7 +41,8 @@ const ErrorState = ({ icon, title, description, actionLabel, onAction }: ErrorSt
 			className='w-full max-w-lg'>
 			<Card className='bg-white border border-[#E9E9E9] rounded-xl shadow-sm'>
 				<CardHeader className='text-center pb-6 pt-10 px-8'>
-					<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#FEE2E2]/30'>
+					<div
+						className={`mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full ${tone === 'error' ? 'bg-[#FEE2E2]/30' : 'bg-zinc-100'}`}>
 						<div className='text-zinc-700'>{icon}</div>
 					</div>
 					<CardTitle className='text-[20px] font-medium text-zinc-950 mb-4 leading-normal'>{title}</CardTitle>
@@ -106,6 +109,9 @@ const CustomerPortalWrapper = () => {
 	if (!token && (wasCheckoutReturn || hasProviderReturnParams(searchParams))) {
 		return (
 			<ErrorState
+				// Neutral, not a success mark: being sent back says nothing about whether the
+				// payment went through. Only the checkout session can confirm that.
+				tone='neutral'
 				icon={<CreditCard className='h-9 w-9 text-zinc-700' />}
 				title={t('wrapper.checkoutReturnTitle')}
 				description={t('wrapper.checkoutReturnDescription')}
