@@ -10,6 +10,11 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
+    # zod 4 renames APIs the code uses (ZodError.errors, ZodTypeDef, one-argument
+    # z.record); a major bump needs its own change on develop, not a grouped bump.
+    ignore:
+      - dependency-name: "zod"
+        update-types: ["version-update:semver-major"]
     groups:
       npm:
         patterns:
