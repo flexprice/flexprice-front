@@ -9,6 +9,9 @@ import enPortal from '@/i18n/locales/en/customer-portal.json';
 import InvoicesWidget from './InvoicesWidget';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 
+// The checkout runs in this tab; the navigation itself is covered in goToPaymentUrl.test.
+const goToCheckout = vi.hoisted(() => vi.fn(() => true));
+vi.mock('@/components/customer-portal/goToCheckout', () => ({ goToCheckout }));
 vi.mock('@/api/CustomerPortalApi', () => ({
 	default: {
 		getInvoices: vi.fn(),
@@ -84,6 +87,7 @@ describe('InvoicesWidget', () => {
 	beforeEach(() => {
 		openSpy = vi.fn().mockReturnValue({} as Window);
 		vi.stubGlobal('open', openSpy);
+		goToCheckout.mockClear();
 		// jsdom's location is not writable; replace it so the redirect is observable.
 		Object.defineProperty(window, 'location', { configurable: true, value: { href: 'https://portal.test/invoices' } });
 		vi.mocked(CustomerPortalApi.getInvoices).mockResolvedValue({ items: [UNPAID, PAID] } as never);
@@ -173,7 +177,7 @@ describe('InvoicesWidget', () => {
 		const menu = await openRowMenu('INV-000484');
 		await userEvent.click(within(menu).getByRole('menuitem', { name: /pay now/i }));
 
-		await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://pay.test/link', '_blank', expect.any(String)));
+		await waitFor(() => expect(goToCheckout).toHaveBeenCalledWith('https://pay.test/link'));
 	});
 
 	// A retry must reuse the key, or the customer is charged twice for one invoice.

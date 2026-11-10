@@ -67,7 +67,7 @@ const CustomerPortalWrapper = () => {
 	// A provider redirect lands in the tab the checkout was opened in, not the one
 	// the customer left behind. That tab reports back and closes itself.
 	const { isHandingOff, wasCheckoutReturn } = useCheckoutTabHandoff();
-	const [searchParams] = useSearchParams();
+	const [searchParams, setSearchParams] = useSearchParams();
 	// The stored token is recovered only on a redirect landing, where the return
 	// URL deliberately omits it rather than handing the session to the payment
 	// provider. Recovering it for any tokenless visit meant the next person to open
@@ -79,6 +79,20 @@ const CustomerPortalWrapper = () => {
 	useEffect(() => {
 		if (urlToken) rememberSessionToken(urlToken);
 	}, [urlToken]);
+
+	// Back in the tab the customer started from, with the session restored from
+	// storage: put the token back in the address so a reload still opens the portal.
+	useEffect(() => {
+		if (urlToken || !token) return;
+		setSearchParams(
+			(params) => {
+				const next = new URLSearchParams(params);
+				next.set('token', token);
+				return next;
+			},
+			{ replace: true },
+		);
+	}, [urlToken, token, setSearchParams]);
 
 	// Nothing to show in a tab that is closing — and the invalid-link card in
 	// particular would be wrong, since this tab's job is already done.

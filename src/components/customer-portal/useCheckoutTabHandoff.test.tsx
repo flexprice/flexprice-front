@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { CHECKOUT_RETURN_PARAM } from './checkoutHandoff';
+import { CHECKOUT_RETURN_PARAM, markLeavingForCheckout } from './checkoutHandoff';
 import useCheckoutTabHandoff from './useCheckoutTabHandoff';
 
 const setUrl = (url: string) => window.history.replaceState(null, '', url);
@@ -8,6 +8,7 @@ const setUrl = (url: string) => window.history.replaceState(null, '', url);
 describe('useCheckoutTabHandoff', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
+		sessionStorage.clear();
 		setUrl('/customer-portal');
 	});
 	afterEach(() => vi.useRealTimers());
@@ -52,5 +53,20 @@ describe('useCheckoutTabHandoff', () => {
 		// Still true: the wrapper recovers the stored token only on such a landing,
 		// and this tab is now the one rendering the portal.
 		expect(result.current.wasCheckoutReturn).toBe(true);
+	});
+
+	// The checkout ran in this tab and the provider brought it back: this is the tab
+	// the customer started in, so it stays and shows the portal rather than closing.
+	it('stays open when this tab is the one that went to the checkout', () => {
+		markLeavingForCheckout();
+		setUrl(`/customer-portal?${CHECKOUT_RETURN_PARAM}=1`);
+		const close = vi.spyOn(window, 'close').mockImplementation(() => {});
+
+		const { result } = renderHook(() => useCheckoutTabHandoff());
+		act(() => void vi.runAllTimers());
+
+		expect(result.current.isHandingOff).toBe(false);
+		expect(result.current.wasCheckoutReturn).toBe(true);
+		expect(close).not.toHaveBeenCalled();
 	});
 });

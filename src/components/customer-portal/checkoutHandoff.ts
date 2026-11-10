@@ -16,6 +16,36 @@ export const CHECKOUT_RETURN_PARAM = 'fp_checkout_return';
 
 const CHANNEL_NAME = 'flexprice.portal.checkout';
 
+/** Set in a tab that sends itself to a checkout; the same tab finds it on return. */
+const LEFT_FOR_CHECKOUT_KEY = 'flexprice.portal.leftForCheckout';
+
+/**
+ * Note that this tab is about to go to a checkout and come back.
+ *
+ * Session storage survives a same-tab round trip but starts empty in a new tab,
+ * so on return it tells the tab that left (stay, show the portal) from a tab the
+ * provider opened (hand back and close).
+ */
+export const markLeavingForCheckout = () => {
+	try {
+		sessionStorage.setItem(LEFT_FOR_CHECKOUT_KEY, '1');
+	} catch {
+		// Blocked storage: the return is treated as a new tab, which still renders the
+		// portal when it cannot close.
+	}
+};
+
+/** True, once, when this tab is the one that left for the checkout. */
+export const consumeLeftForCheckout = (): boolean => {
+	try {
+		const left = sessionStorage.getItem(LEFT_FOR_CHECKOUT_KEY) !== null;
+		sessionStorage.removeItem(LEFT_FOR_CHECKOUT_KEY);
+		return left;
+	} catch {
+		return false;
+	}
+};
+
 const openChannel = (): BroadcastChannel | null => {
 	try {
 		return typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel(CHANNEL_NAME);

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { PaymentAction, SetupAction } from '@/types/dto/CustomerPortalBilling';
-import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
+import { goToCheckout } from '@/components/customer-portal/goToCheckout';
 
 /**
  * Follows a payment or setup action and keeps the URL visible.
@@ -20,7 +20,7 @@ const usePaymentAction = () => {
 		const url = action?.url;
 		if (!url) return false;
 		setActionUrl(url);
-		openPaymentUrl(url);
+		goToCheckout(url);
 		return true;
 	};
 

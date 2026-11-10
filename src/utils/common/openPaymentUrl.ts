@@ -55,3 +55,26 @@ export const navigateToPaymentUrl = (url: string): boolean => {
 	window.location.href = url;
 	return true;
 };
+
+/** True when this page runs inside another page's frame, where providers refuse to load. */
+const isFramed = (): boolean => {
+	try {
+		return window.top !== window.self;
+	} catch {
+		// A cross-origin parent cannot be read, which itself means framed.
+		return true;
+	}
+};
+
+/**
+ * Sends the customer to a payment page in this tab, so the provider brings them
+ * back to the same tab rather than opening a second copy of the page. Framed, it
+ * opens a new tab instead, since providers refuse to load inside a frame.
+ * `beforeLeave` runs only when this tab is about to navigate.
+ */
+export const goToPaymentUrl = (url: string, beforeLeave?: () => void): boolean => {
+	if (isFramed()) return openPaymentUrl(url);
+	if (!isSafePaymentUrl(url)) return false;
+	beforeLeave?.();
+	return navigateToPaymentUrl(url);
+};

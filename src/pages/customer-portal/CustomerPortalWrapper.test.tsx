@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, useLocation } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CustomerPortalWrapper from './CustomerPortalWrapper';
 
@@ -10,10 +10,13 @@ vi.mock('@/hooks/useForceLightTheme', () => ({ useForceLightTheme: () => {} }));
 vi.mock('@/components/customer-portal/useCheckoutTabHandoff', () => ({ default: () => handoff }));
 vi.mock('./CustomerPortal', () => ({ default: ({ token }: { token: string }) => <p>portal for {token}</p> }));
 
+const Address = () => <output>{useLocation().search}</output>;
+
 const renderAt = (path: string) =>
 	render(
 		<MemoryRouter initialEntries={[path]}>
 			<CustomerPortalWrapper />
+			<Address />
 		</MemoryRouter>,
 	);
 
@@ -53,5 +56,7 @@ describe('CustomerPortalWrapper', () => {
 		handoff.wasCheckoutReturn = true;
 		renderAt('/customer-portal');
 		expect(screen.getByText('portal for kept')).toBeInTheDocument();
+		// Back in the address, so a reload of this tab still opens the portal.
+		expect(screen.getByRole('status')).toHaveTextContent('?token=kept');
 	});
 });

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 import { portalReturnUrl } from '../portalReturnUrl';
-import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
+import { goToCheckout } from '@/components/customer-portal/goToCheckout';
 import { Button, Input, Toggle } from '@/components/atoms';
 import { refreshAfterPayment } from '../refetchPortalQueries';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
@@ -138,12 +138,11 @@ const TopUpForm = ({ wallet, onDone, onActionUrl }: TopUpFormProps) => {
 			// server-to-server — so an absent action means done, not broken.
 			if (action?.url) {
 				if (response.checkout_session?.id) rememberPendingCheckout(response.checkout_session.id);
-				// Surface the link first, then open it. Both, not either: the open runs in
-				// an async callback rather than the click, so a popup blocker can stop it,
-				// and the dialog stays on the page carrying the link either way — for a
-				// blocked open, and for coming back to it after the tab is closed.
+				// Surface the link first, then send this tab to it. The provider returns
+				// the customer to this same tab, where the pending checkout is followed.
+				// The dialog carries the link in case the page does not open.
 				onActionUrl?.(action.url);
-				openPaymentUrl(action.url);
+				goToCheckout(action.url);
 				return;
 			}
 

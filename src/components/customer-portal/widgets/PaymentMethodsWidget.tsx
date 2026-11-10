@@ -11,7 +11,7 @@ import { refetchPortalQueries } from '../refetchPortalQueries';
 import type { PaymentGatewayType, ProviderSavedPaymentMethods, SavedPaymentMethod } from '@/types/dto/CustomerPortalBilling';
 import { portalPaymentMethodsQueryKey } from '../queryKeys';
 import usePortalIntegrations from '../usePortalIntegrations';
-import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
+import { goToCheckout } from '@/components/customer-portal/goToCheckout';
 import CheckoutLinkDialog from './CheckoutLinkDialog';
 import EmptyState from '../EmptyState';
 import PortalSection from '../PortalSection';
@@ -158,13 +158,12 @@ const PaymentMethodsWidget = ({ label }: PaymentMethodsWidgetProps) => {
 			// A provider that vaults server-to-server returns type 'none' — there is
 			// nothing to redirect to, so refresh instead of waiting for a return trip.
 			if (response.action.type === 'redirect' && response.action.url) {
-				// A new tab, not this one: navigating away would unmount the portal, so a
-				// customer who abandons the provider's page has nothing to come back to.
-				// The link is shown as well, because the open runs in an async callback
-				// rather than the click and a popup blocker can stop it. Both paths refuse
-				// a non-http(s) scheme — the URL is an unconstrained API string.
+				// This tab goes to the card form and the provider brings it back here, so
+				// the customer never ends up with two portals open. The link is shown as
+				// well in case the page does not open. Both paths refuse a non-http(s)
+				// scheme — the URL is an unconstrained API string.
 				setSetupUrl(response.action.url);
-				openPaymentUrl(response.action.url);
+				goToCheckout(response.action.url);
 				return;
 			}
 			toast.success(t('paymentMethods.added'));
