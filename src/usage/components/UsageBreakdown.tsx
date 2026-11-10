@@ -11,7 +11,7 @@ import {
 	PortalTableHeader as TableHeader,
 	PortalTableRow as TableRow,
 } from '@/components/atoms/PortalTable/PortalTable';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { formatNumber, getCurrencySymbol } from '@/utils';
 import { cn } from '@/lib/utils';
 import EmptyState from '@/components/atoms/EmptyState/EmptyState';

@@ -4,7 +4,7 @@ import FlexpriceTable, { ColumnData } from '../Table';
 import { CreditGrant } from '@/models';
 import { formatExpirationPeriod } from '@/utils/common/credit_grant_helpers';
 import { formatBillingPeriodForPrice } from '@/utils/common/helper_functions';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import CreditGrantApi from '@/api/CreditGrantApi';
 import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

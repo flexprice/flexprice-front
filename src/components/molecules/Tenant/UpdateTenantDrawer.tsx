@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Country, State, City, IState } from 'country-state-city';
 import { z } from 'zod';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { logger } from '@/utils/common/Logger';
 import { User } from '@/models/User';
 import { UserApi } from '@/api/UserApi';
@@ -137,12 +137,13 @@ const useUpdateTenantForm = (tenantSchema: z.ZodTypeAny, initialData?: User) => 
 			if (keys.some((key) => UNSAFE_KEYS.has(key))) {
 				return newData;
 			}
-			let current: any = newData;
+			// Walk the dotted path through nested objects of the form state.
+			let current = newData as Record<string, unknown>;
 			for (let i = 0; i < keys.length - 1; i++) {
 				if (!current[keys[i]]) {
 					current[keys[i]] = {};
 				}
-				current = current[keys[i]];
+				current = current[keys[i]] as Record<string, unknown>;
 			}
 			current[keys[keys.length - 1]] = value;
 			return newData;

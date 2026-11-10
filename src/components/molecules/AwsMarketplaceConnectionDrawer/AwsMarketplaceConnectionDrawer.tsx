@@ -14,6 +14,7 @@ import { copyToClipboard } from '@/utils/common/helper_functions';
 import { cn } from '@/lib/utils';
 import useUser from '@/hooks/useUser';
 import useEnvironment from '@/hooks/useEnvironment';
+import { generateExternalId } from './generateExternalId';
 
 interface AwsMarketplaceConnectionDrawerProps {
 	isOpen: boolean;
@@ -43,14 +44,6 @@ const DEFAULT_AWS_MARKETPLACE_REGION = 'us-east-1';
 
 /** On-screen mask for variable values (real value is only ever copied, never shown). */
 const MASKED_VALUE = '••••••••••••';
-
-/**
- * Deterministic STS ExternalId scoped to the current tenant + environment.
- * Replaces a random UUID so the same org/env always gets a stable AssumeRole condition.
- */
-export const generateExternalId = (tenantId: string, environmentId: string): string => {
-	return `${tenantId}_${environmentId}`;
-};
 
 /** IAM permission policy — identical for every tenant. `BatchMeterUsage` is not resource-scopable. */
 const buildIamPolicy = () => ({

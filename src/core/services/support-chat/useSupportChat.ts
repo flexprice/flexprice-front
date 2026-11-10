@@ -9,7 +9,7 @@ import useUser from '@/hooks/useUser';
 import { SupportChatStatus, SupportChatStorageValue, SupportChatVisibility } from '@/models/SupportChat';
 import { TenantMetadataFlag, TenantMetadataKey } from '@/models/Tenant';
 import type { SupportChatAdapter } from './SupportChatAdapter';
-import { refetchQueries } from '../tanstack/ReactQueryProvider';
+import { refetchQueries } from '../tanstack/queryClient';
 
 type GtagFn = (...args: unknown[]) => void;
 

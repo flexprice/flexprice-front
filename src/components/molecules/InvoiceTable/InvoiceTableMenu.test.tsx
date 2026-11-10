@@ -35,7 +35,7 @@ vi.mock('react-router', async () => {
 	return { ...actual, useNavigate: () => vi.fn() };
 });
 vi.mock('@/hooks/useCurrentUserPermissions', () => ({ useCurrentUserPermissions: () => ({ can: () => true }) }));
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn() }));
+vi.mock('@/core/services/tanstack/queryClient', () => ({ refetchQueries: vi.fn() }));
 vi.mock('@/core/services/tanstack/queryKeys', () => ({ refetchInvoiceQueries: vi.fn() }));
 
 let testI18n: I18nInstance;

@@ -9,7 +9,7 @@ vi.mock('@/api/CustomerPortalApi', () => ({
 	default: { getCheckoutSession: vi.fn() },
 }));
 
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: vi.fn().mockResolvedValue(undefined),
 }));
 

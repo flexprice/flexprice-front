@@ -75,7 +75,7 @@ vi.mock('@/api/TaskApi', () => ({
 	},
 }));
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }));
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn() }));
+vi.mock('@/core/services/tanstack/queryClient', () => ({ refetchQueries: vi.fn() }));
 vi.mock('@/hooks/useUser', () => ({ default: () => ({ user: { tenant: { id: 'tenant-42' } } }) }));
 vi.mock('@/hooks/useEnvironment', () => ({
 	useEnvironment: () => ({ activeEnvironment: { id: 'env-prod' } }),

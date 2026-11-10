@@ -4,6 +4,10 @@ import i18n from 'i18next';
 import posthog from 'posthog-js';
 import { config } from '@/config/config';
 
+/** Non-standard Chromium extensions not present in lib.dom typings. */
+type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } };
+type NavigatorWithConnection = Navigator & { connection?: { effectiveType?: string } };
+
 interface Props {
 	children: ReactNode;
 	fallback?: ReactNode;
@@ -26,7 +30,7 @@ class PosthogErrorBoundary extends Component<Props, State> {
 		this.setState({ hasError: true, errorId });
 
 		const performanceData = window.performance?.timing;
-		const memoryData = (window.performance as any)?.memory;
+		const memoryData = (window.performance as PerformanceWithMemory | undefined)?.memory;
 
 		const errorPayload = {
 			event_type: '$exception',
@@ -40,7 +44,7 @@ class PosthogErrorBoundary extends Component<Props, State> {
 			errorId,
 			network: {
 				online: navigator.onLine,
-				connection: (navigator as any)?.connection?.effectiveType || 'unknown',
+				connection: (navigator as NavigatorWithConnection)?.connection?.effectiveType || 'unknown',
 			},
 			performance: {
 				loadTime: performanceData ? performanceData.loadEventEnd - performanceData.navigationStart : undefined,
@@ -52,7 +56,7 @@ class PosthogErrorBoundary extends Component<Props, State> {
 					}
 				: undefined,
 			framework: 'React',
-			reactVersion: (React as any).version,
+			reactVersion: React.version,
 			env: config.app.env,
 		};
 

@@ -16,7 +16,7 @@ const UsageTable: FC<UsageTableProps> = ({ data }) => {
 		amount: usage.display_amount,
 	}));
 
-	const columns: ColumnData[] = [
+	const columns: ColumnData<(typeof mappedData)[number]>[] = [
 		{
 			fieldName: 'name',
 			title: 'Feature Name',

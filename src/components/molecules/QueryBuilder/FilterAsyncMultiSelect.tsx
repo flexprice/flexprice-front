@@ -10,7 +10,7 @@ import { debounce } from 'lodash';
 import { SelectOption } from '@/components/atoms/Select/SearchableSelect';
 import { useTranslation } from 'react-i18next';
 
-interface FilterAsyncMultiSelectProps<T = any> {
+interface FilterAsyncMultiSelectProps<T = unknown> {
 	value: string[]; // Just IDs
 	searchFn: (query: string) => Promise<Array<SelectOption & { data: T }>>;
 	onChange: (value: string[]) => void;
@@ -21,7 +21,7 @@ interface FilterAsyncMultiSelectProps<T = any> {
 	debounceTime?: number; // Default: 300
 }
 
-const FilterAsyncMultiSelect = <T = any,>({
+const FilterAsyncMultiSelect = <T = unknown,>({
 	value = [],
 	searchFn,
 	onChange,

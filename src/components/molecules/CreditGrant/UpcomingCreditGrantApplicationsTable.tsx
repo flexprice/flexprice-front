@@ -4,7 +4,7 @@ import FlexpriceTable, { ColumnData, RedirectCell } from '../Table';
 import { CreditGrantApplication, APPLICATION_STATUS } from '@/models';
 import { formatDateShort } from '@/utils/common/helper_functions';
 import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { Card } from '@/components/atoms';
 import { useTranslation } from 'react-i18next';
 

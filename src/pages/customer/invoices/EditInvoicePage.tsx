@@ -23,7 +23,7 @@ import {
 } from '@/components/atoms';
 import { InvoiceLineItemTable } from '@/components/molecules';
 import { AddChargesButton } from '@/components/organisms/PlanForm/SetupChargesSection';
-import { getPaymentStatusChip, getStatusChip } from '@/components/molecules/InvoiceTable/InvoiceTable';
+import { getPaymentStatusChip, getStatusChip } from '@/components/molecules/InvoiceTable/invoiceStatusChips';
 import RedirectCell from '@/components/molecules/Table/RedirectCell';
 import InvoiceApi from '@/api/InvoiceApi';
 import { Invoice, INVOICE_STATUS, INVOICE_TYPE } from '@/models/Invoice';
@@ -37,7 +37,7 @@ import {
 	UpdateInvoicePayload,
 } from '@/types/dto';
 import { RouteNames } from '@/core/routes/Routes';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { refetchInvoiceQueries } from '@/core/services/tanstack/queryKeys';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';
 import formatDate, { formatBillingPeriod } from '@/utils/common/format_date';

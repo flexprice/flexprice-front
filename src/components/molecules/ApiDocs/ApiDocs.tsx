@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 import DocsDrawer from '../DocsDrawer/DocsDrawer';
 import { useApiDocsStore, ApiDocsSnippet } from '@/store/useApiDocsStore';
-import { useDocs } from '@/context/DocsContext';
+import { useDocs } from '@/context/useDocs';
 import { Button } from '@/components/atoms';
 import { Code2 } from 'lucide-react';
-import { fetchAndExtractSnippetsByTags } from './fetch_api_docs';
+import { fetchAndExtractSnippetsByTags, OpenApiDocument } from './fetch_api_docs';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -32,8 +32,10 @@ interface ApiDocsContentProps {
 	snippets?: ApiDocsSnippet[];
 }
 
-export const fetchApidocsJson = async (): Promise<any> => {
-	const { data } = await axios.get('https://raw.githubusercontent.com/flexprice/flexprice-docs/main/api-reference/openapi.json');
+const fetchApidocsJson = async (): Promise<OpenApiDocument> => {
+	const { data } = await axios.get<OpenApiDocument>(
+		'https://raw.githubusercontent.com/flexprice/flexprice-docs/main/api-reference/openapi.json',
+	);
 	return data;
 };
 

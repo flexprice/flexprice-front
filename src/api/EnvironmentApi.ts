@@ -40,7 +40,7 @@ class EnvironmentApi {
 	public static async getAllEnvironments(): Promise<ListEnvironmentResponse> {
 		try {
 			return await AxiosClient.get<ListEnvironmentResponse>(this.baseUrl);
-		} catch (error) {
+		} catch {
 			return { environments: [], total: 0 } as ListEnvironmentResponse;
 		}
 	}
@@ -48,7 +48,7 @@ class EnvironmentApi {
 	public static async getEnvironmentById(id: string): Promise<Environment | null> {
 		try {
 			return await AxiosClient.get<Environment>(`${this.baseUrl}/${id}`);
-		} catch (error) {
+		} catch {
 			return null;
 		}
 	}

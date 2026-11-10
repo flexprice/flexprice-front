@@ -3,19 +3,30 @@ import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
-import { useUser } from '@/hooks/UserContext';
+import { useUser } from '@/hooks/useUserContext';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { useMutation } from '@tanstack/react-query';
 import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle } from 'lucide-react';
-import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { CONNECTION_PROVIDER_TYPE, Connection } from '@/models';
+import { UpdateConnectionPayload } from '@/types';
+
+interface NomodConnection extends Connection {
+	encrypted_secret_data?: {
+		api_key?: string;
+		webhook_secret?: string;
+	};
+	sync_config?: {
+		invoice?: { inbound: boolean; outbound: boolean };
+	};
+}
 
 interface NomodConnectionDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	connection?: any; // for editing
-	onSave: (connection: any) => void;
+	connection?: NomodConnection | null; // for editing
+	onSave: (connection: Connection) => void;
 }
 
 interface NomodFormData {
@@ -149,9 +160,9 @@ const NomodConnectionDrawer: FC<NomodConnectionDrawerProps> = ({ isOpen, onOpenC
 
 	const { mutate: updateConnection, isPending: isUpdating } = useMutation({
 		mutationFn: async () => {
-			const payload: any = {
+			const payload: Pick<UpdateConnectionPayload, 'name'> & { sync_config: NonNullable<UpdateConnectionPayload['sync_config']> } = {
 				name: formData.name,
-				sync_config: {} as Record<string, { inbound: boolean; outbound: boolean }>,
+				sync_config: {},
 			};
 
 			// Only add invoice config if toggle is true
@@ -162,7 +173,7 @@ const NomodConnectionDrawer: FC<NomodConnectionDrawerProps> = ({ isOpen, onOpenC
 				};
 			}
 
-			return await ConnectionApi.Update(connection.id, payload);
+			return await ConnectionApi.Update(connection!.id, payload);
 		},
 		onSuccess: (response) => {
 			toast.success(t('connection.toast.updated', { provider: 'Nomod' }));

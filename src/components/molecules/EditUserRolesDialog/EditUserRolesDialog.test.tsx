@@ -16,7 +16,7 @@ vi.mock('react-hot-toast', () => ({
 }));
 
 const mockRefetchQueries = vi.fn();
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: (...args: unknown[]) => mockRefetchQueries(...args),
 }));
 

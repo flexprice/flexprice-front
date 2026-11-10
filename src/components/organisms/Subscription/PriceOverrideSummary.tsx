@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Price, PRICE_UNIT_TYPE } from '@/models/Price';
 import { SubscriptionLineItemOverrideRequest } from '@/utils/common/price_override_helpers';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import { isPercentagePrice } from '@/utils/common/percentage_price_helpers';
 import { formatPercentageAmount } from '@/utils/common/price_helpers';

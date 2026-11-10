@@ -9,7 +9,8 @@ export { default as CreateCustomerWalletModal } from './customers/CreateCustomer
 export { default as CustomerProfilePage } from './customers/CustomerProfilePage';
 export { default as CustomerInvoiceDetailsPage } from './customers/CustomerInvoiceDetailsPage';
 export { default as CustomerListPage } from './customers/CustomerListPage';
-export { default as CreateCustomerSubscriptionPage, SubscriptionPhaseState } from './customers/CreateCustomerSubscriptionPage';
+export { default as CreateCustomerSubscriptionPage } from './customers/CreateCustomerSubscriptionPage';
+export { SubscriptionPhaseState } from './customers/subscriptionPhaseState';
 export type { SubscriptionFormState } from './customers/CreateCustomerSubscriptionPage';
 export { default as CustomerSubscriptionDetailsPage } from './customers/CustomerSubscriptionDetailsPage';
 export { default as CustomerSubscriptionEditPage } from './customers/CustomerSubscriptionEditPage';

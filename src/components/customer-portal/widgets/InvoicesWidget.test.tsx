@@ -21,7 +21,7 @@ vi.mock('@/api/CustomerPortalApi', () => ({
 	},
 }));
 
-vi.mock('@/context/PortalConfigContext', () => ({
+vi.mock('@/context/usePortalConfig', () => ({
 	usePortalConfig: () => ({ config: {} }),
 }));
 

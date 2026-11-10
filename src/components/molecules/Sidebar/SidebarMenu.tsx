@@ -1,7 +1,8 @@
 'use client';
 
 import { FC, useState, useEffect } from 'react';
-import { SidebarGroup, SidebarMenu, useSidebar } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarMenu } from '@/components/ui/sidebar';
+import { useSidebar } from '@/components/ui/useSidebar';
 import SidebarItem from './SidebarItem';
 import { useLocation } from 'react-router';
 import { LucideIcon } from 'lucide-react';

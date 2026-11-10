@@ -3,20 +3,32 @@ import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
-import { useUser } from '@/hooks/UserContext';
+import { useUser } from '@/hooks/useUserContext';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { useMutation } from '@tanstack/react-query';
 import ConnectionApi from '@/api/ConnectionApi';
 import toast from 'react-hot-toast';
 import { Copy, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
-import { ChargebeeWebhookEvents, getDefaultChargebeeWebhookEvents, CreateConnectionPayload } from '@/types';
-import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { ChargebeeWebhookEvents, getDefaultChargebeeWebhookEvents, CreateConnectionPayload, UpdateConnectionPayload } from '@/types';
+import { CONNECTION_PROVIDER_TYPE, Connection } from '@/models';
+
+interface ChargebeeConnection extends Connection {
+	encrypted_secret_data?: {
+		api_key?: string;
+		site?: string;
+		webhook_username?: string;
+		webhook_password?: string;
+	};
+	sync_config?: {
+		invoice?: { inbound: boolean; outbound: boolean };
+	};
+}
 
 interface ChargebeeConnectionDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	connection?: any; // for editing
-	onSave: (connection: any) => void;
+	connection?: ChargebeeConnection | null; // for editing
+	onSave: (connection: Connection) => void;
 }
 
 interface ChargebeeFormData {
@@ -176,9 +188,9 @@ const ChargebeeConnectionDrawer: FC<ChargebeeConnectionDrawerProps> = ({ isOpen,
 
 	const { mutate: updateConnection, isPending: isUpdating } = useMutation({
 		mutationFn: async () => {
-			const payload: any = {
+			const payload: Pick<UpdateConnectionPayload, 'name'> & { sync_config: NonNullable<UpdateConnectionPayload['sync_config']> } = {
 				name: formData.name,
-				sync_config: {} as Record<string, { inbound: boolean; outbound: boolean }>,
+				sync_config: {},
 			};
 
 			// Only add invoice config if toggle is true
@@ -189,7 +201,7 @@ const ChargebeeConnectionDrawer: FC<ChargebeeConnectionDrawerProps> = ({ isOpen,
 				};
 			}
 
-			return await ConnectionApi.Update(connection.id, payload);
+			return await ConnectionApi.Update(connection!.id, payload);
 		},
 		onSuccess: (response) => {
 			toast.success(t('connection.toast.updated', { provider: CHARGEBEE_PROVIDER }));

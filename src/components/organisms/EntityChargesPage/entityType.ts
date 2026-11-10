@@ -1,0 +1,5 @@
+export enum ENTITY_TYPE {
+	PLAN = 'PLAN',
+	ADDON = 'ADDON',
+	COST_SHEET = 'COSTSHEET',
+}

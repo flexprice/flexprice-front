@@ -5,7 +5,7 @@ const WALLETS_KEY = 'portal-wallets';
 let cache: Record<string, unknown> = {};
 const refetchQueries = vi.fn();
 
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: (...args: unknown[]) => refetchQueries(...args),
 	queryClient: { getQueryData: (key: readonly string[]) => cache[key[0]] },
 }));

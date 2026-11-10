@@ -9,10 +9,12 @@ import { useQueryWithEmptyState } from '@/hooks/useQueryWithEmptyState';
 import { CustomerOrgTypeFilterValue } from '@/constants/customerOrgTypeFilter';
 import { hasOrgTypeInMetadataFilters, removeOrgTypeFromMetadataFilters } from '@/utils/customer/orgTypeMetadataFilterSync';
 import { FilterField, FilterCondition, SortOption } from '@/types/common/QueryBuilder';
+import { TypedBackendFilter, TypedBackendSort } from '@/types/formatters/QueryBuilder';
 import LoadingState from './LoadingState';
 import ErrorState from './ErrorState';
 import EmptyState from './EmptyState';
 import TableArea from './TableArea';
+import { TutorialCardItem } from './TutorialCards';
 
 /**
  * Configuration for filtering and sorting functionality.
@@ -42,6 +44,17 @@ export interface QueryConfig {
 	};
 }
 
+/** Params passed to the fetch functions: pagination, backend filters/sorts, plus `additionalQueryParams`. */
+export interface QueryableFetchParams {
+	limit: number;
+	offset: number;
+	filters: TypedBackendFilter[];
+	sort: TypedBackendSort[];
+	/** Set by the customer list through `additionalQueryParams` alongside `queryConfig.orgTypeMetadataFilter`. */
+	orgTypeFilter?: CustomerOrgTypeFilterValue | null;
+	[key: string]: unknown;
+}
+
 /**
  * Configuration for data fetching.
  * Defines how data is fetched from the API and cached.
@@ -50,23 +63,11 @@ export interface DataConfig<T> {
 	/** Unique key for React Query cache (e.g., 'fetchCustomers') */
 	queryKey: string;
 	/** Main function to fetch data. Receives pagination, filters, and sort params */
-	fetchFn: (params: {
-		limit: number;
-		offset: number;
-		filters: any[];
-		sort: any[];
-		[key: string]: any;
-	}) => Promise<{ items: T[]; pagination: { total?: number } }>;
+	fetchFn: (params: QueryableFetchParams) => Promise<{ items: T[]; pagination: { total?: number } }>;
 	/** Optional probe function to check if any data exists (for empty state detection) */
-	probeFetchFn?: (params: {
-		limit: number;
-		offset: number;
-		filters: any[];
-		sort: any[];
-		[key: string]: any;
-	}) => Promise<{ items: T[]; pagination: { total?: number } }>;
+	probeFetchFn?: (params: QueryableFetchParams) => Promise<{ items: T[]; pagination: { total?: number } }>;
 	/** Additional query parameters to pass to fetch functions */
-	additionalQueryParams?: Record<string, any>;
+	additionalQueryParams?: Record<string, unknown>;
 	/**
 	 * Called whenever the main query result changes, including when served from cache
 	 * (e.g. pagination or filter changes). Use to sync UI like dynamic table columns.
@@ -124,7 +125,7 @@ export interface EmptyStateConfig {
 	/** API documentation tags to show */
 	tags?: string[];
 	/** Tutorial cards to display */
-	tutorials?: any[];
+	tutorials?: TutorialCardItem[];
 	/** Custom React component to render instead of default empty state (takes priority) */
 	customComponent?: React.ReactNode;
 }
@@ -142,7 +143,7 @@ export interface EmptyStateConfig {
  * The component is optimized to only re-render the data area when query parameters change,
  * keeping the QueryBuilder stable to prevent unnecessary re-renders.
  */
-export interface QueryableDataAreaProps<T = any> {
+export interface QueryableDataAreaProps<T = unknown> {
 	/** Query configuration: filtering and sorting */
 	queryConfig: QueryConfig;
 	/** Data configuration: fetching and caching */
@@ -154,7 +155,7 @@ export interface QueryableDataAreaProps<T = any> {
 	/** Empty state configuration */
 	emptyStateConfig?: EmptyStateConfig;
 	/** Optional error handler callback */
-	onError?: (error: any) => void;
+	onError?: (error: unknown) => void;
 }
 
 // Stable QueryBuilder wrapper - memoized to prevent re-renders
@@ -197,16 +198,16 @@ const DataArea = <T,>({
 	showEmptyPage,
 	shouldShowLoading,
 }: {
-	sanitizedFilters: any[];
-	sanitizedSorts: any[];
+	sanitizedFilters: TypedBackendFilter[];
+	sanitizedSorts: TypedBackendSort[];
 	tableConfig: TableConfig<T>;
 	paginationConfig?: PaginationConfig;
 	reset: () => void;
 	emptyStateConfig?: EmptyStateConfig;
-	onError?: (error: any) => void;
+	onError?: (error: unknown) => void;
 	data: { items: T[]; pagination: { total?: number } } | undefined;
 	isError: boolean;
-	error: any;
+	error: unknown;
 	showEmptyPage: boolean;
 	shouldShowLoading: boolean;
 }) => {
@@ -270,7 +271,7 @@ const DataArea = <T,>({
  * />
  * ```
  */
-const QueryableDataArea = <T = any,>({
+const QueryableDataArea = <T = unknown,>({
 	queryConfig,
 	dataConfig,
 	tableConfig,
@@ -286,7 +287,7 @@ const QueryableDataArea = <T = any,>({
 	// Pagination
 	const { limit, offset, page, reset } = usePagination({
 		initialLimit: paginationConfig?.initialLimit ?? 10,
-		prefix: paginationConfig?.prefix as any,
+		prefix: paginationConfig?.prefix,
 	});
 
 	// Filter and sort state

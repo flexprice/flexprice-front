@@ -7,7 +7,7 @@ import { Check, Coins, Eye, Gauge, Info, Mail, MessageSquare, Phone, Sparkles, Z
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { formatBillingPeriodForPrice, getCurrencySymbol } from '@/utils/common/helper_functions';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { PlanType } from '@/constants/planTypes';
 import { cn } from '@/lib/utils';
 import { PRICE_TYPE } from '@/models/Price';

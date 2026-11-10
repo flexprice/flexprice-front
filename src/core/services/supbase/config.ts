@@ -1,5 +1,5 @@
 import { config, APP_ENV } from '@/config/config';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const isSelfHosted = config.app.env === APP_ENV.SelfHosted;
 
@@ -26,9 +26,11 @@ const createMockClient = () => {
 	};
 };
 
-const supabase =
+// The mock only implements the handful of methods the app touches when auth is not configured, so it is
+// not structurally a SupabaseClient; callers are typed against the real client either way.
+const supabase: SupabaseClient =
 	isSelfHosted || !config.auth.url || !config.auth.anonKey
-		? (createMockClient() as any)
+		? (createMockClient() as unknown as SupabaseClient)
 		: createClient(config.auth.url, config.auth.anonKey);
 
 export default supabase;

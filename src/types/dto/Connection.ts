@@ -161,7 +161,7 @@ export interface UpdateConnectionPayload {
 				environment?: 'sandbox' | 'production';
 				income_account_id?: string;
 		  }
-		| Record<string, any>;
+		| Record<string, unknown>;
 	sync_config?: {
 		plan?: {
 			inbound: boolean;

@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import FeatureApi from '@/api/FeatureApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { UpdateFeatureRequest } from '@/types/dto/Feature';
 import Feature from '@/models/Feature';
 import { GROUP_ENTITY_TYPE } from '@/models/Group';

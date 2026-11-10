@@ -1,20 +1,15 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useState, useEffect, useCallback, ReactNode } from 'react';
 import { logger } from '@/utils/common/Logger';
+import { ContextUser, UserContext } from './useUserContext';
 
 interface UserProviderProps {
 	children: ReactNode;
 }
 
-interface UserContextProp {
-	user: any;
-	setUser: (user: any) => void;
-}
-const UserContext = createContext<UserContextProp>({} as UserContextProp);
-
 export const UserProvider = ({ children }: UserProviderProps) => {
-	const [user, setUserState] = useState<any>({});
+	const [user, setUserState] = useState<ContextUser | null>({});
 
-	const setUser = useCallback((next: any) => {
+	const setUser = useCallback((next: ContextUser | null) => {
 		setUserState(next);
 		try {
 			if (next == null) {
@@ -31,7 +26,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		try {
 			const userData = localStorage.getItem('user');
 			if (userData) {
-				const parsed = JSON.parse(userData);
+				const parsed: ContextUser | null = JSON.parse(userData);
 				setUserState(parsed);
 			}
 		} catch (error) {
@@ -44,5 +39,3 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
 	return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
 };
-
-export const useUser = () => useContext(UserContext);

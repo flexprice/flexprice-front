@@ -19,7 +19,7 @@ import { formatDateTimeWithSecondsAndTimezone } from '@/utils/common/format_date
 import { RouteNames } from '@/core/routes/Routes';
 import { useNavigate } from 'react-router';
 import RedirectCell from '@/components/molecules/Table/RedirectCell';
-import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
+import { getFeatureIcon } from '@/components/atoms/SelectFeature/featureIcon';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import { Chip, Tooltip } from '@/components/atoms';
 import {

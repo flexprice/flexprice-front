@@ -6,7 +6,7 @@ import { BILLING_MODEL, Price, PRICE_UNIT_TYPE } from '@/models/Price';
 import { FC } from 'react';
 import { Pencil } from 'lucide-react';
 import { InternalPrice } from './SetupChargesSection';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { ChargeValueCell } from '@/components/molecules';
 import { isPercentagePrice } from '@/utils/common/percentage_price_helpers';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ const RecurringChargePreview: FC<Props> = ({ charge, onEditClicked, onDeleteClic
 
 		if (isCustom && charge.price_unit_config?.price_unit) {
 			// For custom price units, use price_unit_amount or price_unit_config.amount
-			const amount = (charge as any).price_unit_amount || charge.price_unit_config?.amount || charge.amount || '0';
+			const amount = charge.price_unit_amount || charge.price_unit_config?.amount || charge.amount || '0';
 			const priceUnitCode = charge.price_unit_config.price_unit;
 			// Use price unit code as symbol (or we could fetch the actual symbol if available)
 			const symbol = priceUnitCode;
@@ -70,7 +70,7 @@ const RecurringChargePreview: FC<Props> = ({ charge, onEditClicked, onDeleteClic
 							{formatAmount(displayInfo.amount)} / {formatBillingPeriodForPrice(charge.billing_period || '')}
 						</span>
 					) : (
-						<ChargeValueCell data={{ ...charge, currency: charge.currency } as any} />
+						<ChargeValueCell data={{ ...charge, currency: charge.currency } as Price} />
 					)}
 				</div>
 			</div>

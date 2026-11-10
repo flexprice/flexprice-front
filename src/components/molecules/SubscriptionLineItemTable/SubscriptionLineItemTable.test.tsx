@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { PRICE_TYPE } from '@/models/Price';
-import { getQuantityDisplayForLineItem } from './SubscriptionLineItemTable';
+import { getQuantityDisplayForLineItem } from './lineItemQuantityDisplay';
 
 describe('getQuantityDisplayForLineItem', () => {
 	it('returns the numeric quantity for a FIXED-type row', () => {

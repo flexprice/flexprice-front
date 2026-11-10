@@ -5,7 +5,7 @@ import { Coupon } from '@/models/Coupon';
 import { CouponModal } from '@/components/molecules';
 import formatCouponName from '@/utils/common/format_coupon_name';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { useQuery } from '@tanstack/react-query';
 import CouponApi from '@/api/CouponApi';
 import filterValidCoupons from '@/utils/helpers/coupons';

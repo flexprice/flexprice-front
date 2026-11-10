@@ -24,7 +24,7 @@ import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 import ConnectionApi from '@/api/ConnectionApi';
-import { CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
+import { Connection, CONNECTION_PROVIDER_TYPE } from '@/models/Connection';
 
 const IntegrationDetails = () => {
 	const { t } = useTranslation('settings');
@@ -38,7 +38,7 @@ const IntegrationDetails = () => {
 		name.toLowerCase() === 'zoho' ? CONNECTION_PROVIDER_TYPE.ZOHO_BOOKS : (name.toLowerCase() as CONNECTION_PROVIDER_TYPE);
 
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-	const [editingConnection, setEditingConnection] = useState<any | null>(null);
+	const [editingConnection, setEditingConnection] = useState<Connection | undefined>(undefined);
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 	const [connectionToDelete, setConnectionToDelete] = useState<{ id: string; name: string } | null>(null);
 
@@ -69,7 +69,7 @@ const IntegrationDetails = () => {
 	const handleSaveConnection = () => {
 		refetchConnections();
 		setIsDrawerOpen(false);
-		setEditingConnection(null);
+		setEditingConnection(undefined);
 	};
 
 	// Delete connection with confirmation
@@ -95,10 +95,10 @@ const IntegrationDetails = () => {
 
 	// Open drawer for add/edit
 	const handleAdd = () => {
-		setEditingConnection(null);
+		setEditingConnection(undefined);
 		setIsDrawerOpen(true);
 	};
-	const handleEdit = (connection: any) => {
+	const handleEdit = (connection: Connection) => {
 		setEditingConnection(connection);
 		setIsDrawerOpen(true);
 	};
@@ -168,7 +168,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -178,7 +178,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -188,7 +188,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -198,7 +198,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -208,7 +208,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -218,7 +218,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -228,7 +228,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -238,7 +238,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -248,7 +248,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -258,7 +258,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -268,7 +268,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					connection={editingConnection}
 					onSave={handleSaveConnection}
@@ -278,7 +278,7 @@ const IntegrationDetails = () => {
 					isOpen={isDrawerOpen}
 					onOpenChange={(open) => {
 						setIsDrawerOpen(open);
-						if (!open) setEditingConnection(null);
+						if (!open) setEditingConnection(undefined);
 					}}
 					provider={name}
 					providerName={integration.name}

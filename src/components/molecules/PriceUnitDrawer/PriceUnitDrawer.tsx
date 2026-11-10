@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { PriceUnitApi } from '@/api/PriceUnitApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { CreatePriceUnitRequest, UpdatePriceUnitRequest, PriceUnitResponse, CreatePriceUnitResponse } from '@/types/dto';
 import { currencyOptions } from '@/constants/constants';
 import { useTranslation } from 'react-i18next';

@@ -12,7 +12,7 @@ import CustomerUsage, {
 } from '@/models/CustomerUsage';
 import { ENTITLEMENT_AGGREGATION_MODE, GrantAllowanceState } from '@/models/Entitlement';
 import { formatCurrency } from '@/constants/common';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { getFeatureTypeChips } from './getFeatureTypeChips';

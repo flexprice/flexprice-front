@@ -22,7 +22,7 @@ vi.mock('@/api/CustomerPortalApi', () => ({
 	},
 }));
 
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: vi.fn().mockResolvedValue(undefined),
 }));
 

@@ -98,7 +98,11 @@ export default tseslint.config(
 			'react-hooks/config': 'warn',
 			'react-hooks/gating': 'warn',
 			'@typescript-eslint/no-explicit-any': 'warn',
-			'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+			'@typescript-eslint/no-unused-vars': [
+				'warn',
+				// Leaving a field out of a copy (`const { id: _id, ...rest } = x`) is deliberate, not dead code.
+				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_', ignoreRestSiblings: true },
+			],
 			'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 			'i18next/no-literal-string': noLiteralString,
 		},
@@ -110,6 +114,11 @@ export default tseslint.config(
 	{
 		files: ['**/*Demo.{ts,tsx}'],
 		rules: { 'i18next/no-literal-string': 'off' },
+	},
+	{
+		// The app entry mounts React and exports nothing by design, so there is no module for Fast Refresh to swap.
+		files: ['src/main.tsx'],
+		rules: { 'react-refresh/only-export-components': 'off' },
 	},
 	{
 		// The E2E suite runs in Node against a browser it drives, not in the app.

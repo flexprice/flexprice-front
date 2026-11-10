@@ -8,7 +8,7 @@ import { RefreshCw } from 'lucide-react';
 import { FilterField, FilterFieldType, DEFAULT_OPERATORS_PER_DATA_TYPE, DataType, FilterOperator, SortDirection } from '@/types';
 import useFilterSorting from '@/hooks/useFilterSorting';
 import { TypedBackendFilter } from '@/types';
-import { GetUsageByMeterPayload } from '@/types';
+import { GetUsageByMeterPayload, GetUsageByMeterResponse } from '@/types';
 import { formatDateShort } from '@/utils';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -80,7 +80,7 @@ const WINDOW_SIZE_KEYS = ['MINUTE', '15MIN', '30MIN', 'HOUR', '3HOUR', '6HOUR', 
 
 const QueryPage: React.FC = () => {
 	const { t } = useTranslation('developers');
-	const [usageData, setUsageData] = useState<any>(null);
+	const [usageData, setUsageData] = useState<GetUsageByMeterResponse | null>(null);
 	const [selectedMeter, setSelectedMeter] = useState<string | undefined>(undefined);
 	const [selectedFeature, setSelectedFeature] = useState<Feature | undefined>(undefined);
 	const [windowSize, setWindowSize] = useState<string>('MINUTE');
@@ -211,7 +211,7 @@ const QueryPage: React.FC = () => {
 		}
 	}, [apiParams, fetchUsage]);
 
-	const formattedData = usageData?.results?.map((item: any) => ({
+	const formattedData = usageData?.results?.map((item) => ({
 		date: apiParams.window_size === 'DAY' ? formatDateShort(item.window_size) : formatDateTime(item.window_size || ''),
 		value: item.value,
 	}));

@@ -1,14 +1,22 @@
 import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
+import { Connection } from '@/models';
+
+// A generic provider connection: any saved connection fields plus the API key this drawer collects.
+interface IntegrationDrawerConnection extends Partial<Connection> {
+	apiKey?: string;
+	code?: string;
+	provider?: string;
+}
 
 interface IntegrationDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
 	provider: string;
 	providerName: string;
-	connection?: any; // for editing
-	onSave: (connection: any) => void;
+	connection?: IntegrationDrawerConnection | null; // for editing
+	onSave: (connection: IntegrationDrawerConnection) => void;
 	trigger?: React.ReactNode;
 }
 

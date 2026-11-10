@@ -6,7 +6,7 @@ import { I18nextProvider } from 'react-i18next';
 import enPortal from '@/i18n/locales/en/customer-portal.json';
 import SubscriptionsWidget from './SubscriptionsWidget';
 
-vi.mock('@/context/PortalConfigContext', () => ({ usePortalConfig: () => ({ config: {} }) }));
+vi.mock('@/context/usePortalConfig', () => ({ usePortalConfig: () => ({ config: {} }) }));
 
 const SUB = {
 	id: 'subs_1',

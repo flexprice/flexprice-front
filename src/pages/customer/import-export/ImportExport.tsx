@@ -30,7 +30,7 @@ const ImportExport = () => {
 	const { limit, offset, page } = usePagination();
 	const { can } = useCurrentUserPermissions();
 	const canWriteTask = can('task', 'write');
-	const [activeTask, setactiveTask] = useState();
+	const [activeTask, setactiveTask] = useState<string | undefined>();
 
 	const columns: ColumnData<ImportTask>[] = useMemo(
 		() => [

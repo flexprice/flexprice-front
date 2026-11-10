@@ -4,11 +4,14 @@ export const generateExpandQueryParams = (expand: EXPAND[]): string => {
 	return expand.join(',');
 };
 
-export const generateQueryParams = (baseUrl: string, params: Record<string, any>): string => {
-	const queryParams = Object.keys(params)
-		.filter((key) => key && params[key] !== undefined && params[key] !== null)
+// `object` rather than `Record<string, unknown>` so callers can pass their filter interfaces directly.
+export const generateQueryParams = (baseUrl: string, params: object): string => {
+	const entries = params as Record<string, unknown>;
+	const queryParams = Object.keys(entries)
+		.filter((key) => key && entries[key] !== undefined && entries[key] !== null)
 		.map((key) => {
-			const value = Array.isArray(params[key]) ? params[key].join(',') : params[key];
+			const raw = entries[key];
+			const value = Array.isArray(raw) ? raw.join(',') : String(raw);
 			return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
 		})
 		.join('&');

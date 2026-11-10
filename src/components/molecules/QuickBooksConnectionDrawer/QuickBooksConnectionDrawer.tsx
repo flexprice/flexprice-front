@@ -5,11 +5,11 @@ import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
 import { useMutation } from '@tanstack/react-query';
 import ConnectionApi from '@/api/ConnectionApi';
-import OAuthApi from '@/api/OAuthApi';
+import OAuthApi, { InitiateOAuthRequest } from '@/api/OAuthApi';
 import toast from 'react-hot-toast';
 import { CONNECTION_PROVIDER_TYPE, Connection } from '@/models';
 import { useEnvironment } from '@/hooks/useEnvironment';
-import { useUser } from '@/hooks/UserContext';
+import { useUser } from '@/hooks/useUserContext';
 import { Copy, CheckCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { QuickBooksWebhookEvents, getDefaultQuickBooksWebhookEvents } from '@/types';
 
@@ -23,6 +23,16 @@ interface QuickBooksConnection extends Connection {
 		invoice?: { inbound: boolean; outbound: boolean };
 		payment?: { inbound: boolean; outbound: boolean };
 	};
+}
+
+// What this drawer sends on update: the existing secrets plus optional verifier token, and payment sync.
+interface QuickBooksUpdateConnectionPayload {
+	name: string;
+	encrypted_secret_data: NonNullable<QuickBooksConnection['encrypted_secret_data']> & {
+		provider_type: CONNECTION_PROVIDER_TYPE.QUICKBOOKS;
+		webhook_verifier_token?: string;
+	};
+	sync_config: NonNullable<QuickBooksConnection['sync_config']>;
 }
 
 interface QuickBooksConnectionDrawerProps {
@@ -163,16 +173,16 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 
 			// Get existing connection to preserve encrypted data
 			const existingConnection = await ConnectionApi.Get(connection.id);
-			const existingSecretData = (existingConnection as any).encrypted_secret_data || {};
+			const existingSecretData = (existingConnection as QuickBooksConnection).encrypted_secret_data || {};
 
-			const payload: any = {
+			const payload: QuickBooksUpdateConnectionPayload = {
 				name: formData.name,
 				encrypted_secret_data: {
 					provider_type: CONNECTION_PROVIDER_TYPE.QUICKBOOKS,
 					...existingSecretData,
 					income_account_id: formData.income_account_id || undefined,
 				},
-				sync_config: {} as Record<string, { inbound: boolean; outbound: boolean }>,
+				sync_config: {},
 			};
 
 			// Add webhook verifier token if provided
@@ -215,7 +225,7 @@ const QuickBooksConnectionDrawer: FC<QuickBooksConnectionDrawerProps> = ({ isOpe
 		mutationFn: async () => {
 			// Call new backend OAuth API
 			// Backend will securely store credentials and return OAuth URL
-			const payload: any = {
+			const payload: InitiateOAuthRequest = {
 				provider: 'quickbooks',
 				name: formData.name,
 				credentials: {

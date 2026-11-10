@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { PriceApi } from '@/api/PriceApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { UpdatePriceRequest } from '@/types/dto/Price';
 import { Price } from '@/models/Price';
 import { GROUP_ENTITY_TYPE } from '@/models/Group';

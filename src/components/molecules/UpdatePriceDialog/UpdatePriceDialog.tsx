@@ -3,7 +3,7 @@ import { Dialog } from '@/components/atoms';
 import { Input, Button, Select, SelectOption, DatePicker } from '@/components/atoms';
 import { Price, BILLING_MODEL, TIER_MODE, CreatePriceTier, TransformQuantity, PRICE_TYPE, PRICE_UNIT_TYPE } from '@/models/Price';
 import { PriceBucketSize } from '@/models/Meter';
-import { formatAmount, removeFormatting } from '@/components/atoms/Input/Input';
+import { formatAmount, removeFormatting } from '@/components/atoms/Input/inputFormatting';
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import VolumeTieredPricingForm from '@/components/organisms/PlanForm/VolumeTieredPricingForm';
 import { useMutation } from '@tanstack/react-query';

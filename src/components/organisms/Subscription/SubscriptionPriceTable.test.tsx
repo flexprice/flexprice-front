@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { resolveQuantityFromInput, isPriceCompatibleWithBillingPeriod } from './SubscriptionPriceTable';
+import { resolveQuantityFromInput } from '@/utils/subscription/quantityValidation';
+import { isPriceCompatibleWithBillingPeriod } from './priceBillingPeriodCompatibility';
 import { BILLING_PERIOD } from '@/constants/constants';
 
 describe('resolveQuantityFromInput', () => {

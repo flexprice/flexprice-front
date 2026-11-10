@@ -6,7 +6,7 @@ import { UserApi } from '@/api/UserApi';
 import { User } from '@/models';
 import { toast } from 'react-hot-toast';
 import { Copy, AlertTriangle, Eye, EyeOff, Info } from 'lucide-react';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { GetServiceAccountsResponse } from '@/types/dto/UserApi';
 import { useTranslation } from 'react-i18next';
 

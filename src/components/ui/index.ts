@@ -1,5 +1,6 @@
 export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './accordion';
-export { Badge, badgeVariants } from './badge';
+export { Badge } from './badge';
+export { badgeVariants } from './badgeVariants';
 export type { BadgeProps } from './badge';
 export {
 	Breadcrumb,
@@ -10,7 +11,8 @@ export {
 	BreadcrumbSeparator,
 	BreadcrumbEllipsis,
 } from './breadcrumb';
-export { Button, buttonVariants } from './button';
+export { Button } from './button';
+export { buttonVariants } from './buttonVariants';
 export type { ButtonProps } from './button';
 export { Calendar } from './calendar';
 export type { CalendarProps } from './calendar';
@@ -112,8 +114,8 @@ export {
 	SidebarRail,
 	SidebarSeparator,
 	SidebarTrigger,
-	useSidebar,
 } from './sidebar';
+export { useSidebar } from './useSidebar';
 export {
 	Sheet,
 	SheetPortal,

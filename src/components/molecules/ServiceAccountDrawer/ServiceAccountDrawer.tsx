@@ -5,7 +5,7 @@ import { UserApi } from '@/api/UserApi';
 import RbacApi, { RbacRole } from '@/api/RbacApi';
 import { toast } from 'react-hot-toast';
 import { AlertTriangle, Info } from 'lucide-react';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { useTranslation } from 'react-i18next';
 import { User } from '@/models';
 

@@ -23,7 +23,7 @@ import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import AddAddonDialog from './AddAddonDialog';
 import ConfigureAddonDialog from './ConfigureAddonDialog';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
 interface SubscriptionAddonsSectionProps {

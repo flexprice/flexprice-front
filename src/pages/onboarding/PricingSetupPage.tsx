@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, Check, Loader2, X } from 'lucide-react';
 import { RouteNames } from '@/core/routes/Routes';
-import { queryClient } from '@/core/services/tanstack/ReactQueryProvider';
+import { queryClient } from '@/core/services/tanstack/queryClient';
 import { SIDEBAR_PRICING_PROMO_QUERY_KEY } from '@/hooks/useShouldShowSidebarPricingPromo';
 import { parsePricingWithLLM } from '@/api/ai/llm';
 import { orchestrateSetup } from '@/api/ai/orchestrator';

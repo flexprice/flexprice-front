@@ -1,8 +1,7 @@
 import MainLayout from '@/layouts/MainLayout';
 import { createBrowserRouter, Navigate } from 'react-router';
 import AuthMiddleware from '../auth/AuthProvider';
-import { useUser } from '@/hooks/UserContext';
-import { TenantMetadataKey } from '@/models/Tenant';
+import DefaultRoute from './DefaultRoute';
 import { Suspense } from 'react';
 import { Loader } from '@/components/atoms';
 import { config } from '@/config/config';
@@ -210,14 +209,7 @@ export const RouteNames = {
 	checkout: '/checkout',
 };
 
-const DefaultRoute = () => {
-	const { user } = useUser();
-	const onboardingMetadata = user?.tenant?.metadata?.[TenantMetadataKey.ONBOARDING_COMPLETED];
-	const onboardingCompleted = onboardingMetadata === 'true';
-	return <Navigate to={onboardingCompleted ? RouteNames.homeDashboard : RouteNames.onboarding} />;
-};
-
-export const MainRouter: any = createBrowserRouter([
+export const MainRouter: ReturnType<typeof createBrowserRouter> = createBrowserRouter([
 	// public routes
 	{
 		path: RouteNames.login,

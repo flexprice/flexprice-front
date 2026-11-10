@@ -4,7 +4,7 @@ import SubscriptionDetailChargesSection from '@/components/molecules/Subscriptio
 import FlexpriceTable, { ColumnData, RedirectCell } from '@/components/molecules/Table';
 import { SubscriptionPreviewLineItemTable } from '@/components/molecules/InvoiceLineItemTable';
 import SubscriptionActionButton from '@/components/organisms/Subscription/SubscriptionActionButton';
-import { getSubscriptionStatus } from '@/components/organisms/Subscription/SubscriptionTable';
+import { getSubscriptionStatus } from '@/components/organisms/Subscription/subscriptionStatus';
 import { Skeleton } from '@/components/ui';
 import { RouteNames } from '@/core/routes/Routes';
 import { useBreadcrumbsStore } from '@/store/useBreadcrumbsStore';

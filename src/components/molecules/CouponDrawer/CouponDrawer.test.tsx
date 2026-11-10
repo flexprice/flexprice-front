@@ -13,7 +13,7 @@ import { ENTITY_STATUS } from '@/models';
 
 vi.mock('@/api/CouponApi', () => ({ default: { createCoupon: vi.fn(), updateCoupon: vi.fn() } }));
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }));
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn() }));
+vi.mock('@/core/services/tanstack/queryClient', () => ({ refetchQueries: vi.fn() }));
 vi.mock('@/core/services/supbase/config', () => ({ default: {} }));
 vi.mock('@/core/auth/AuthService', () => ({ default: {} }));
 vi.mock('react-router', async () => {

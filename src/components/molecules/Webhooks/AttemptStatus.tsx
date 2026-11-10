@@ -7,14 +7,7 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-export const ATTEMPT_STATUS_FILTERS = [
-	{ key: 'all', status: undefined },
-	{ key: 'succeeded', status: MessageStatus.Success },
-	{ key: 'failed', status: MessageStatus.Fail },
-] as const;
-
-export type AttemptStatusFilterKey = (typeof ATTEMPT_STATUS_FILTERS)[number]['key'];
+import { ATTEMPT_STATUS_FILTERS, AttemptStatusFilterKey } from './attemptStatusFilters';
 
 export const AttemptStatusFilters: FC<{ active: AttemptStatusFilterKey; onChange: (key: AttemptStatusFilterKey) => void }> = ({
 	active,

@@ -14,7 +14,7 @@ import { getPriceTypeFromLineItem, lineItemToPrice } from '@/utils/subscription/
 import { subscriptionLineItemListItemToLineItem } from '@/utils/subscription/subscriptionLineItemListItemToLineItem';
 import { PRICE_TYPE } from '@/models/Price';
 import { ExtendedPriceOverride } from '@/utils/common/price_override_helpers';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import toast from 'react-hot-toast';
 
 interface Props {

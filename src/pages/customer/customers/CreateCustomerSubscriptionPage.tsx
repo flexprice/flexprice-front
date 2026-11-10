@@ -13,7 +13,7 @@ import { UsageTable, SubscriptionForm } from '@/components/organisms';
 import { AlertTriangle } from 'lucide-react';
 
 import { AddonApi, CustomerApi, PlanApi, SubscriptionApi, TaxApi, CouponApi } from '@/api';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { RouteNames } from '@/core/routes/Routes';
 
 import type { SubscriptionEntitlementGrantDraft } from '@/types/dto/Entitlement';
@@ -45,6 +45,7 @@ import {
 } from '@/types/dto';
 import { FilterOperator, DataType } from '@/types/common/QueryBuilder';
 import { OverrideLineItemRequest, SubscriptionFxRateRow, SubscriptionPhaseCreateRequest } from '@/types/dto/Subscription';
+import type { LineItemCommitmentsMap } from '@/types/dto/LineItemCommitmentConfig';
 import type { AddedSubscriptionLineItem } from '@/components/organisms/Subscription/AddSubscriptionChargeDialog';
 
 import { cn } from '@/lib/utils';
@@ -67,6 +68,7 @@ import {
 	uniqueRecurringBillingPeriodsFromPrices,
 } from '@/utils/subscription/planPricesForSubscriptionUi';
 import { subscriptionHasSplittingCharge } from '@/utils/subscription/lineItemGrouping';
+import { SubscriptionPhaseState } from './subscriptionPhaseState';
 
 const SANDBOX_END_DATE_FORMAT: Intl.DateTimeFormatOptions = {
 	year: 'numeric',
@@ -93,12 +95,6 @@ type Params = {
 type CreateSubscriptionLocationState = {
 	returnTo?: string;
 };
-
-export enum SubscriptionPhaseState {
-	EDIT = 'edit',
-	SAVED = 'saved',
-	NEW = 'new',
-}
 
 export type SubscriptionFormState = {
 	selectedPlan: string;
@@ -446,7 +442,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 				entitlementOverrides: {},
 				creditGrants: (subscriptionData.details.credit_grants || []).map(creditGrantToInternal),
 				subscriptionEntitlementGrants: [],
-				enable_true_up: (subscriptionData.details as any).enable_true_up ?? false,
+				enable_true_up: subscriptionData.details.enable_true_up ?? false,
 				inheritanceCustomers: [],
 				...(() => {
 					const tpd = (subscriptionData.details as { trial_period_days?: number | null }).trial_period_days;
@@ -638,7 +634,7 @@ const CreateCustomerSubscriptionPage: React.FC = () => {
 		let finalCoupons: string[] | undefined;
 		let finalLineItemCoupons: Record<string, string[]> | undefined;
 		let finalOverrideLineItems: OverrideLineItemRequest[] | undefined;
-		let finalLineItemCommitments: Record<string, any> | undefined;
+		let finalLineItemCommitments: LineItemCommitmentsMap | undefined;
 		let sanitizedPhases: SubscriptionPhaseCreateRequest[] | undefined;
 		/**
 		 * When user opted in additional-cadence prices, send the full authoritative list

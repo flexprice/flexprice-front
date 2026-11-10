@@ -3,7 +3,7 @@ import { FC, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Sheet, Spacer } from '@/components/atoms';
 import { Switch } from '@/components/ui';
-import { useUser } from '@/hooks/UserContext';
+import { useUser } from '@/hooks/useUserContext';
 import { useEnvironment } from '@/hooks/useEnvironment';
 import { useMutation } from '@tanstack/react-query';
 import ConnectionApi from '@/api/ConnectionApi';
@@ -15,16 +15,24 @@ import {
 	getPlanWebhookEvents,
 	getSubscriptionWebhookEvents,
 	getInvoiceWebhookEvents,
+	UpdateConnectionPayload,
 } from '@/types';
-import { CONNECTION_PROVIDER_TYPE } from '@/models';
+import { CONNECTION_PROVIDER_TYPE, Connection } from '@/models';
+
+// Secrets are read from the top level when editing; the API does not return them, so they fall back to ''.
+interface StripeConnection extends Connection {
+	secret_key?: string;
+	webhook_secret?: string;
+	sync_config?: UpdateConnectionPayload['sync_config'];
+}
 
 const STRIPE_PROVIDER = 'Stripe';
 
 interface StripeConnectionDrawerProps {
 	isOpen: boolean;
 	onOpenChange: (open: boolean) => void;
-	connection?: any; // for editing
-	onSave: (connection: any) => void;
+	connection?: StripeConnection | null; // for editing
+	onSave: (connection: Connection) => void;
 }
 
 interface StripeFormData {
@@ -241,7 +249,7 @@ const StripeConnectionDrawer: FC<StripeConnectionDrawerProps> = ({ isOpen, onOpe
 				},
 			};
 
-			return await ConnectionApi.Update(connection.id, payload);
+			return await ConnectionApi.Update(connection!.id, payload);
 		},
 		onSuccess: (response) => {
 			toast.success(t('integrations.stripe.toast.stripeUpdated'));

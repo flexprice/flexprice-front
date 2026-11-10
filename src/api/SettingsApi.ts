@@ -3,13 +3,13 @@ import { isHttpNotFoundError } from '@/core/axios/types';
 
 export interface Setting {
 	key: string;
-	value: any;
+	value: unknown;
 	created_at?: string;
 	updated_at?: string;
 }
 
 export interface UpdateSettingRequest {
-	value: any;
+	value: unknown;
 }
 
 class SettingsApi {

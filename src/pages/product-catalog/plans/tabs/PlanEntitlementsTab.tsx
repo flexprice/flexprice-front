@@ -171,7 +171,7 @@ const PlanEntitlementsTab = () => {
 	return (
 		<>
 			<AddEntitlementDrawer
-				selectedFeatures={entitlements?.map((v: any) => v.feature)}
+				selectedFeatures={entitlements?.map((v) => v.feature)}
 				entitlements={entitlements}
 				planId={planId!}
 				entityType={ENTITLEMENT_ENTITY_TYPE.PLAN}

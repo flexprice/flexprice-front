@@ -7,7 +7,7 @@ import { ENTITY_STATUS, Plan } from '@/models';
 import formatDate from '@/utils/common/format_date';
 import formatChips from '@/utils/common/format_chips';
 import { getTypographyClass } from '@/lib/typography';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { PlanApi } from '@/api';
 import { useState, useEffect } from 'react';
 import { logger } from '@/utils/common/Logger';

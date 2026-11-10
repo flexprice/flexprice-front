@@ -1,4 +1,4 @@
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import type { Invoice } from '@/models/Invoice';
 import { SUBSCRIPTION_MODIFY_INVOICE_RESOURCE_ACTION, SUBSCRIPTION_MODIFY_LINE_ITEM_ACTION } from '@/models';
 import type { ChangedInvoice, ChangedLineItem } from '@/types/dto/Subscription';

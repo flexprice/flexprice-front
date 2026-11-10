@@ -9,7 +9,7 @@ import { CreateCustomerRequest, UpdateCustomerRequest } from '@/types/dto/Custom
 import { Plus } from 'lucide-react';
 import { Country, State, City, IState } from 'country-state-city';
 import { z } from 'zod';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { logger } from '@/utils/common/Logger';
 import { currencyOptions } from '@/constants/constants';
 import { BILLING_CURRENCY_NONE, billingCurrencyPayload } from '@/utils/fx/customerBillingCurrency';

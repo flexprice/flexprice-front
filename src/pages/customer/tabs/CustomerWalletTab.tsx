@@ -40,8 +40,8 @@ import { EllipsisVertical, Info, Pencil, Trash2, Wallet as WalletIcon, Bell, Min
 import { getCurrencySymbol } from '@/utils/common/helper_functions';
 import useQueryParams from '@/hooks/useQueryParams';
 import { DetailsCard } from '@/components/molecules';
-import { formatAmount } from '@/components/atoms/Input/Input';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { logger } from '@/utils/common/Logger';
 import { PremiumFeatureIcon } from '@/components/molecules/PremiumFeature/PremiumFeature';
 import { useTranslation } from 'react-i18next';

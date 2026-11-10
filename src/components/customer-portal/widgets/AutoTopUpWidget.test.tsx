@@ -13,7 +13,7 @@ vi.mock('@/api/CustomerPortalApi', () => ({
 	default: { getWallets: vi.fn(), updateAutoTopup: vi.fn(), getPaymentMethods: vi.fn(), getIntegrations: vi.fn() },
 }));
 
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({
+vi.mock('@/core/services/tanstack/queryClient', () => ({
 	refetchQueries: vi.fn().mockResolvedValue(undefined),
 }));
 

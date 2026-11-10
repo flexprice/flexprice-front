@@ -57,6 +57,15 @@ const Harness = ({
 	);
 };
 
+type TestHook = ReturnType<typeof useFilterSortingWithPersistence> & {
+	reset: () => void;
+	page: number;
+	setPage: (n: number) => void;
+};
+
+/** The harness publishes the hook's latest values on `window` so assertions can read them. */
+const testWindow = window as Window & { __testHook?: TestHook };
+
 const HarnessInner = ({ initialFilters, initialSorts }: { initialFilters: FilterCondition[]; initialSorts: SortOption[] }) => {
 	const hook = useFilterSortingWithPersistence({ initialFilters, initialSorts, persistenceKey: KEY });
 	const { reset, page, setPage } = usePagination();
@@ -64,14 +73,14 @@ const HarnessInner = ({ initialFilters, initialSorts }: { initialFilters: Filter
 
 	// Expose hook internals via data attributes for assertions
 	useEffect(() => {
-		(window as any).__testHook = { ...hook, reset, page, setPage };
+		testWindow.__testHook = { ...hook, reset, page, setPage };
 	});
 
 	// Mirrors QueryableDataArea's intentional pattern: reset only when filters/sorts change,
 	// not when `reset` is recreated due to a page change.
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		reset();
+		// eslint-disable-next-line react-hooks/exhaustive-deps -- deliberately omits `reset`, as QueryableDataArea does
 	}, [hook.filters, hook.sorts]);
 
 	return (
@@ -88,19 +97,14 @@ const getSearch = () => screen.getByTestId('search').textContent ?? '';
 const getFilters = (): FilterCondition[] => JSON.parse(screen.getByTestId('filters').textContent ?? '[]');
 const getSorts = (): SortOption[] => JSON.parse(screen.getByTestId('sorts').textContent ?? '[]');
 const getPage = () => screen.getByTestId('page').textContent;
-const hook = () =>
-	(window as any).__testHook as ReturnType<typeof useFilterSortingWithPersistence> & {
-		reset: () => void;
-		page: number;
-		setPage: (n: number) => void;
-	};
+const hook = () => testWindow.__testHook as TestHook;
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe('useFilterSortingWithPersistence', () => {
 	afterEach(() => {
 		sessionStorage.clear();
-		delete (window as any).__testHook;
+		delete testWindow.__testHook;
 	});
 
 	// Scenario 1

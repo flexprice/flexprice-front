@@ -4,7 +4,7 @@ import { Loader, Page } from '@/components/atoms';
 import toast from 'react-hot-toast';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import OAuthApi from '@/api/OAuthApi';
+import OAuthApi, { type CompleteOAuthRequest } from '@/api/OAuthApi';
 
 const QuickBooksOAuthCallback = () => {
 	const { t } = useTranslation('settings');
@@ -101,7 +101,7 @@ const QuickBooksOAuthCallback = () => {
 				throw new Error('Missing Zoho organization ID');
 			}
 
-			const payload: any = {
+			const payload: CompleteOAuthRequest = {
 				provider,
 				session_id: sessionId,
 				code,
@@ -109,9 +109,9 @@ const QuickBooksOAuthCallback = () => {
 			};
 
 			if (isQuickBooks) {
-				payload.realm_id = realmId;
+				payload.realm_id = realmId ?? undefined;
 			} else {
-				payload.organization_id = zohoOrganizationId;
+				payload.organization_id = zohoOrganizationId ?? undefined;
 				payload.organization_name = zohoOrganizationName || undefined;
 				payload.location = location || undefined;
 				payload.accounts_server = accountsServer || undefined;

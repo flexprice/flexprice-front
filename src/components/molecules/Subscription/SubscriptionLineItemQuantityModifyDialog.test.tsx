@@ -24,7 +24,7 @@ const { mockPreview, mockExecute } = vi.hoisted(() => ({
 vi.mock('@/api/SubscriptionApi', () => ({
 	default: { previewSubscriptionModify: mockPreview, executeSubscriptionModify: mockExecute },
 }));
-vi.mock('@/core/services/tanstack/ReactQueryProvider', () => ({ refetchQueries: vi.fn() }));
+vi.mock('@/core/services/tanstack/queryClient', () => ({ refetchQueries: vi.fn() }));
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }));
 vi.mock('@/core/services/supbase/config', () => ({ default: {} }));
 vi.mock('@/core/auth/AuthService', () => ({ default: {} }));

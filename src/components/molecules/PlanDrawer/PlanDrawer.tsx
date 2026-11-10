@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { PlanApi } from '@/api/PlanApi';
 import toast from 'react-hot-toast';
-import { queryClient, refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { queryClient, refetchQueries } from '@/core/services/tanstack/queryClient';
 import { SIDEBAR_PRICING_PROMO_QUERY_KEY } from '@/hooks/useShouldShowSidebarPricingPromo';
 import { useNavigate } from 'react-router';
 import { RouteNames } from '@/core/routes/Routes';

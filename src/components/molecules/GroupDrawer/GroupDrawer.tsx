@@ -5,7 +5,7 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { GroupApi } from '@/api/GroupApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { CreateGroupRequest, UpdateGroupRequest, GroupResponse } from '@/types/dto';
 import { useTranslation } from 'react-i18next';
 

@@ -9,7 +9,7 @@ import OAuthApi from '@/api/OAuthApi';
 import toast from 'react-hot-toast';
 import { CONNECTION_PROVIDER_TYPE, Connection } from '@/models';
 import { useEnvironment } from '@/hooks/useEnvironment';
-import { useUser } from '@/hooks/UserContext';
+import { useUser } from '@/hooks/useUserContext';
 import { CheckCircle, Copy } from 'lucide-react';
 
 interface ZohoBooksConnection extends Connection {

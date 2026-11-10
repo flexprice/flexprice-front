@@ -1,7 +1,7 @@
 import axiosClient from './config';
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-type DataObject = Record<string, any>;
+type DataObject = object;
 
 /**
  * Removes null, undefined, and empty string from payload (so they are omitted from JSON).
@@ -36,19 +36,19 @@ export class AxiosClient {
 	}
 
 	// T is the expected response type, D is the type of the data being sent
-	public async post<T, D extends DataObject = any>(url: string, data?: D, config?: AxiosRequestConfig): Promise<T> {
+	public async post<T, D extends DataObject = DataObject>(url: string, data?: D, config?: AxiosRequestConfig): Promise<T> {
 		const sanitizedData = sanitizeData(data);
 		const response: AxiosResponse<T> = await this.getClient().post(url, sanitizedData, config);
 		return response as T;
 	}
 
-	public async patch<T, D extends DataObject = any>(url: string, data?: D): Promise<T> {
+	public async patch<T, D extends DataObject = DataObject>(url: string, data?: D): Promise<T> {
 		const sanitizedData = sanitizeData(data);
 		const response: AxiosResponse<T> = await this.getClient().patch(url, sanitizedData);
 		return response as T;
 	}
 
-	public async put<T, D extends DataObject = any>(
+	public async put<T, D extends DataObject = DataObject>(
 		url: string,
 		data?: D,
 		config?: AxiosRequestConfig & { allowEmptyKeys?: string[] },
@@ -63,7 +63,7 @@ export class AxiosClient {
 		return response as T;
 	}
 
-	public async delete<T, D extends DataObject = any>(url: string, data?: D): Promise<T> {
+	public async delete<T, D extends DataObject = DataObject>(url: string, data?: D): Promise<T> {
 		const sanitizedData = sanitizeData(data);
 		const response: AxiosResponse<T> = await this.getClient().delete(url, { data: sanitizedData });
 		return response as T;
@@ -75,19 +75,19 @@ export class AxiosClient {
 		return response as T;
 	}
 
-	public static async post<T, D extends DataObject = any>(url: string, data?: D, config?: AxiosRequestConfig): Promise<T> {
+	public static async post<T, D extends DataObject = DataObject>(url: string, data?: D, config?: AxiosRequestConfig): Promise<T> {
 		const sanitizedData = sanitizeData(data);
 		const response: AxiosResponse<T> = await axiosClient.post(url, sanitizedData, config);
 		return response as T;
 	}
 
-	public static async patch<T, D extends DataObject = any>(url: string, data?: D): Promise<T> {
+	public static async patch<T, D extends DataObject = DataObject>(url: string, data?: D): Promise<T> {
 		const sanitizedData = sanitizeData(data);
 		const response: AxiosResponse<T> = await axiosClient.patch(url, sanitizedData);
 		return response as T;
 	}
 
-	public static async put<T, D extends DataObject = any>(
+	public static async put<T, D extends DataObject = DataObject>(
 		url: string,
 		data?: D,
 		config?: AxiosRequestConfig & { allowEmptyKeys?: string[] },
@@ -98,7 +98,7 @@ export class AxiosClient {
 		return response as T;
 	}
 
-	public static async delete<T, D extends DataObject = any>(url: string, data?: D): Promise<T> {
+	public static async delete<T, D extends DataObject = DataObject>(url: string, data?: D): Promise<T> {
 		const sanitizedData = sanitizeData(data);
 		const response: AxiosResponse<T> = await axiosClient.delete(url, { data: sanitizedData });
 		return response as T;

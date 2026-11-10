@@ -24,7 +24,7 @@ import {
 import { ENTITY_STATUS } from '@/models';
 import { toSentenceCase } from '@/utils/common/helper_functions';
 import formatDate from '@/utils/common/format_date';
-import { getFeatureIcon } from '@/components/atoms/SelectFeature/SelectFeature';
+import { getFeatureIcon } from '@/components/atoms/SelectFeature/featureIcon';
 import { searchGroupsForFilter } from '@/utils/filterSearchHelpers';
 
 const initialFilters: FilterCondition[] = [

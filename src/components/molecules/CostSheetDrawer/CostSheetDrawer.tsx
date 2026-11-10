@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import CostSheetApi from '@/api/CostSheetApi';
 import toast from 'react-hot-toast';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { CreateCostSheetRequest, UpdateCostSheetRequest } from '@/types/dto/CostSheet';
 import { useTranslation } from 'react-i18next';
 

@@ -16,7 +16,7 @@ import {
 } from '@/components/molecules';
 import { Dialog } from '@/components/ui';
 import { PriceApi } from '@/api/PriceApi';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { DeletePriceRequest } from '@/types/dto';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { RouteNames } from '@/core/routes/Routes';

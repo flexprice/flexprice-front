@@ -12,7 +12,7 @@ import ConnectionApi from '@/api/ConnectionApi';
 
 vi.mock('@/api/ConnectionApi', () => ({ default: { Get: vi.fn(), Create: vi.fn(), Update: vi.fn() } }));
 vi.mock('react-hot-toast', () => ({ default: { success: vi.fn(), error: vi.fn() } }));
-vi.mock('@/hooks/UserContext', () => ({ useUser: () => ({ user: { tenant: { id: 'tenant-1' } } }) }));
+vi.mock('@/hooks/useUserContext', () => ({ useUser: () => ({ user: { tenant: { id: 'tenant-1' } } }) }));
 vi.mock('@/hooks/useEnvironment', () => ({ useEnvironment: () => ({ activeEnvironment: { id: 'env-1' } }) }));
 
 const CONNECTION_ID = 'conn_moyasar_1';

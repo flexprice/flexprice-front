@@ -9,7 +9,7 @@ import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { SelectOption } from './SearchableSelect';
 
-export interface SearchConfig<T = any> {
+export interface SearchConfig<T = unknown> {
 	/** Function that performs the search and returns objects with SelectOption format */
 	searchFn: (query: string) => Promise<Array<SelectOption & { data: T }>>;
 	/**
@@ -70,9 +70,9 @@ export interface OptionsConfig {
 	isRadio?: boolean;
 }
 
-export interface AsyncSearchableSelectProps<T = any> {
+export interface AsyncSearchableSelectProps<T = unknown> {
 	/** Search configuration */
-	search: SearchConfig;
+	search: SearchConfig<T>;
 	/** Value extraction configuration */
 	extractors: ExtractorsConfig<T>;
 	/** Display configuration */
@@ -87,7 +87,7 @@ export interface AsyncSearchableSelectProps<T = any> {
 	disabled?: boolean;
 }
 
-const AsyncSearchableSelect = <T = any,>({
+const AsyncSearchableSelect = <T = unknown,>({
 	search,
 	extractors,
 	display = {},

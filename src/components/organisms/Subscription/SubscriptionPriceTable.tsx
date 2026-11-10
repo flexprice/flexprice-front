@@ -22,32 +22,12 @@ import { formatPercentageAmount } from '@/utils/common/price_helpers';
 import { isPercentagePrice } from '@/utils/common/percentage_price_helpers';
 import { formatBillingPeriodForPrice } from '@/utils/common/helper_functions';
 import { resolveBucketSize } from '@/utils/common/commitment_helpers';
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { BILLING_PERIOD, BUCKET_SIZE_NONE } from '@/constants/constants';
-import { isCadenceCompatible } from '@/utils/subscription/cadenceCompatibility';
-import { isOneTimePlanPrice } from '@/utils/subscription/planPricesForSubscriptionUi';
 import { useTranslation } from 'react-i18next';
-import { resolveQuantityFromInput } from '@/utils/subscription/quantityValidation';
-
-export { resolveQuantityFromInput };
+import { isPriceCompatibleWithBillingPeriod } from './priceBillingPeriodCompatibility';
 
 const DEFAULT_ROW_LIMIT = 5;
-
-/**
- * Whether a price belongs in the table for the selected subscription billing period.
- * isCadenceCompatible always returns false for ONETIME (it only reasons about the
- * recurring scale), so one-time prices must be kept explicitly, or they silently drop
- * out of the table whenever a billing period filter is active.
- */
-export function isPriceCompatibleWithBillingPeriod(
-	price: Pick<Price, 'billing_period' | 'billing_period_count'>,
-	billingPeriod: string,
-	billingPeriodCount?: number,
-): boolean {
-	return (
-		isOneTimePlanPrice(price) || isCadenceCompatible(billingPeriod, billingPeriodCount, price.billing_period, price.billing_period_count)
-	);
-}
 
 type ChargeTableData = {
 	priceId: string;

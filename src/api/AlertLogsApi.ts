@@ -10,7 +10,7 @@ export interface AlertLog {
 	message: string;
 	severity: 'info' | 'warning' | 'error' | 'critical';
 	status: 'active' | 'resolved' | 'acknowledged';
-	metadata?: Record<string, any>;
+	metadata?: Record<string, unknown>;
 	created_at: string;
 	updated_at: string;
 }

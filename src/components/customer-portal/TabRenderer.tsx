@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
-import { TabConfig, UsageGraphConfig } from '@/types/dto/PortalConfig';
+import { TabConfig } from '@/types/dto/PortalConfig';
+import { DEFAULT_USAGE_GRAPH_CONFIG } from './constants';
 import { DashboardAnalyticsRequest } from '@/types';
 import { SubscriptionResponse } from '@/types/dto/Subscription';
 import { CustomerUsage } from '@/models';
@@ -26,15 +27,6 @@ const FallbackLoader = () => (
 		<Loader />
 	</div>
 );
-
-// Exported so SectionContent can fall back to the same defaults when a section has a
-// metric_cards tab but no usage_graph tab to source date-filter config from.
-export const DEFAULT_USAGE_GRAPH_CONFIG: UsageGraphConfig = {
-	date_presets: ['last_7_days', 'last_30_days'],
-	default_preset: 'last_7_days',
-	allow_custom_date_range: false,
-	feature_filter_mode: 'all',
-};
 
 interface TabRendererProps {
 	tab: TabConfig;

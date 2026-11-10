@@ -49,9 +49,9 @@ import { FEATURE_TYPE } from '@/models/Feature';
 import { formatMeterUsageResetPeriodToDisplay } from '@/types/formatters/Feature';
 
 // Local utilities
-import { formatAmount } from '@/components/atoms/Input/Input';
+import { formatAmount } from '@/components/atoms/Input/inputFormatting';
 import { ApiDocsSnippet } from '@/store/useApiDocsStore';
-import { refetchQueries } from '@/core/services/tanstack/ReactQueryProvider';
+import { refetchQueries } from '@/core/services/tanstack/queryClient';
 import { ENTITY_STATUS } from '@/models/base';
 import { EntitlementResponse } from '@/types/dto';
 import { METER_AGGREGATION_TYPE } from '@/models/Meter';
@@ -59,15 +59,15 @@ import { ENTITLEMENT_ENTITY_TYPE, PRICE_ENTITY_TYPE } from '@/models';
 import { PriceApi } from '@/api/PriceApi';
 import { formatBillingPeriodForDisplay } from '@/utils/common/helper_functions';
 import { ChargeValueCell } from '@/components/molecules';
-import { formatInvoiceCadence } from '@/pages/product-catalog/plans/PlanDetailsPage';
+import { formatInvoiceCadence } from '@/pages/product-catalog/plans/formatInvoiceCadence';
 import { AlertSettings } from '@/models/Feature';
 import { generateExpandQueryParams } from '@/utils/common/api_helper';
 import { EXPAND } from '@/models/expand';
-import { GetPriceResponse } from '@/types/dto/Price';
+import { PriceResponse } from '@/types/dto/Price';
 import { useTranslation } from 'react-i18next';
 import { useCurrentUserPermissions } from '@/hooks/useCurrentUserPermissions';
 
-export const formatAggregationType = (data: string): string => {
+const formatAggregationType = (data: string): string => {
 	const aggregationTypeMap: Record<string, string> = {
 		[METER_AGGREGATION_TYPE.SUM]: 'Sum',
 		[METER_AGGREGATION_TYPE.COUNT]: 'Count',
@@ -81,10 +81,10 @@ export const formatAggregationType = (data: string): string => {
 	return aggregationTypeMap[data] || data;
 };
 
-const priceColumns: ColumnData<GetPriceResponse>[] = [
+const priceColumns: ColumnData<PriceResponse>[] = [
 	{
 		title: 'Plan/Addon',
-		render: (row: GetPriceResponse) => {
+		render: (row: PriceResponse) => {
 			return (
 				<RedirectCell
 					redirectUrl={
@@ -410,8 +410,10 @@ const FeatureDetails = () => {
 							setShowAlertDialog(false);
 							refetchQueries(['fetchFeatureDetails', featureId]);
 							toast.success('Alert settings updated successfully');
-						} catch (e: any) {
-							const errorMessage = e?.response?.data?.error?.message || e?.message || 'Failed to update alert settings';
+						} catch (e: unknown) {
+							// Rejections are axios-shaped (`response.data.error.message`) or plain Errors; every level is optional.
+							const err = e as { message?: string; response?: { data?: { error?: { message?: string } } } } | null | undefined;
+							const errorMessage = err?.response?.data?.error?.message || err?.message || 'Failed to update alert settings';
 							toast.error(errorMessage);
 						}
 					}}

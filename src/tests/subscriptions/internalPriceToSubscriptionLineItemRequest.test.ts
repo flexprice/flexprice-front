@@ -7,7 +7,7 @@ import {
 	subscriptionLineItemToInternalPrice,
 	type AddedSubscriptionLineItem,
 } from '@/utils/subscription/internalPriceToSubscriptionLineItemRequest';
-import { PriceInternalState } from '@/components/organisms/PlanForm/UsagePricingForm';
+import { PriceInternalState } from '@/components/organisms/PlanForm/priceFormConstants';
 
 describe('internalPriceToSubscriptionLineItemRequest fixed charges', () => {
 	it('includes transform_quantity for package fixed charges', () => {
