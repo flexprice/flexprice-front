@@ -3,6 +3,7 @@ import {
 	announceCheckoutReturn,
 	consumeCheckoutReturnLoad,
 	hasProviderReturnParams,
+	providerReturnFailed,
 	subscribeToCheckoutReturn,
 	CHECKOUT_RETURN_PARAM,
 } from './checkoutHandoff';
@@ -69,4 +70,21 @@ describe('hasProviderReturnParams', () => {
 	it.each([[''], ['section=credits'], ['id=only_an_id']])('ignores %s', (query) => {
 		expect(hasProviderReturnParams(new URLSearchParams(query))).toBe(false);
 	});
+});
+
+describe('providerReturnFailed', () => {
+	it.each([
+		['id=pay_1&status=failed'],
+		['id=pay_1&status=Cancelled'],
+		['razorpay_payment_link_id=plink_1&razorpay_payment_link_status=expired'],
+	])('reads %s as a failed payment', (query) => {
+		expect(providerReturnFailed(new URLSearchParams(query))).toBe(true);
+	});
+
+	it.each([['id=pay_1&status=paid'], ['session_id=cs_1'], ['_ptxn=txn_1'], ['fp_checkout_return=1']])(
+		'does not read %s as a failure',
+		(query) => {
+			expect(providerReturnFailed(new URLSearchParams(query))).toBe(false);
+		},
+	);
 });

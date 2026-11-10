@@ -4,7 +4,9 @@
 		"invalidLinkDescription": "رمز جلسة لوحة التحكم غير موجود في عنوان URL. يُرجى التحقق من الرابط والمحاولة مرة أخرى.",
 		"refreshPage": "تحديث الصفحة",
 		"checkoutReturnTitle": "كل شيء جاهز!",
-		"checkoutReturnDescription": "عُد إلى بوابة الفوترة لعرض أحدث تفاصيل الفوترة."
+		"checkoutReturnDescription": "عُد إلى بوابة الفوترة لعرض أحدث تفاصيل الفوترة.",
+		"checkoutReturnFailedTitle": "العودة إلى الفوترة",
+		"checkoutReturnFailedDescription": "انتهت جلسة الدفع. عُد إلى بوابة الفوترة لعرض أحدث تفاصيل الفوترة."
 	},
 	"footer": {
 		"poweredBy": "مدعوم بواسطة",

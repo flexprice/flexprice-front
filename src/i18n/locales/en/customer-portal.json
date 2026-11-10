@@ -4,7 +4,9 @@
 		"invalidLinkDescription": "Dashboard session token is missing from the URL. Please check your link and try again.",
 		"refreshPage": "Refresh Page",
 		"checkoutReturnTitle": "You're all set!",
-		"checkoutReturnDescription": "Head back to your billing portal to view your latest billing details."
+		"checkoutReturnDescription": "Head back to your billing portal to view your latest billing details.",
+		"checkoutReturnFailedTitle": "Back to billing",
+		"checkoutReturnFailedDescription": "Your checkout session has ended. Head back to your billing portal to view your latest billing details."
 	},
 	"footer": {
 		"poweredBy": "Powered by",

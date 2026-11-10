@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { rememberSessionToken, recallSessionToken } from '@/components/customer-portal/portalReturnUrl';
 import useCheckoutTabHandoff from '@/components/customer-portal/useCheckoutTabHandoff';
-import { hasProviderReturnParams } from '@/components/customer-portal/checkoutHandoff';
+import { hasProviderReturnParams, providerReturnFailed } from '@/components/customer-portal/checkoutHandoff';
 import { useTranslation } from 'react-i18next';
-import { RefreshCw, Shield } from 'lucide-react';
+import { CreditCard, RefreshCw, Shield } from 'lucide-react';
 import successConfetti from '@/assets/images/success-confetti.svg';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -112,12 +112,22 @@ const CustomerPortalWrapper = () => {
 	// is settled by the provider's webhook, not by this page, so telling the customer
 	// their link is invalid only alarms them after a payment that went through.
 	if (!token && (wasCheckoutReturn || hasProviderReturnParams(searchParams))) {
+		// A provider that says the payment failed gets a neutral page, never the tick.
+		const failed = providerReturnFailed(searchParams);
 		return (
 			<ErrorState
 				icon={null}
-				illustration={<img src={successConfetti} alt='' aria-hidden='true' className='mx-auto mb-2 h-32 w-32' />}
-				title={t('wrapper.checkoutReturnTitle')}
-				description={t('wrapper.checkoutReturnDescription')}
+				illustration={
+					failed ? (
+						<div className='mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100'>
+							<CreditCard className='h-9 w-9 text-zinc-700' aria-hidden='true' />
+						</div>
+					) : (
+						<img src={successConfetti} alt='' aria-hidden='true' className='mx-auto mb-2 h-32 w-32' />
+					)
+				}
+				title={t(failed ? 'wrapper.checkoutReturnFailedTitle' : 'wrapper.checkoutReturnTitle')}
+				description={t(failed ? 'wrapper.checkoutReturnFailedDescription' : 'wrapper.checkoutReturnDescription')}
 				footer={
 					<p className='mt-6 text-center text-xs text-content-tertiary'>
 						{t('footer.poweredBy')}{' '}

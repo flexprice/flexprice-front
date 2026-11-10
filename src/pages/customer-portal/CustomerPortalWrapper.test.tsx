@@ -51,6 +51,12 @@ describe('CustomerPortalWrapper', () => {
 		expect(screen.getByText('wrapper.checkoutReturnTitle')).toBeInTheDocument();
 	});
 
+	it('shows a neutral page, not the success one, when the provider says the payment failed', () => {
+		renderAt('/customer-portal?id=pay_123&status=failed');
+		expect(screen.getByText('wrapper.checkoutReturnFailedTitle')).toBeInTheDocument();
+		expect(screen.queryByText('wrapper.checkoutReturnTitle')).not.toBeInTheDocument();
+	});
+
 	it('restores the stored token on a checkout return', () => {
 		localStorage.setItem('flexprice.portal.sessionToken', JSON.stringify({ token: 'kept', storedAt: Date.now() }));
 		handoff.wasCheckoutReturn = true;
