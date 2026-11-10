@@ -7,7 +7,7 @@ import {
 	recallSessionToken,
 } from '@/components/customer-portal/portalReturnUrl';
 import useCheckoutTabHandoff from '@/components/customer-portal/useCheckoutTabHandoff';
-import { hasProviderReturnParams, providerReturnFailed } from '@/components/customer-portal/checkoutHandoff';
+import { CHECKOUT_RETURN_PARAM, hasProviderReturnParams, providerReturnFailed } from '@/components/customer-portal/checkoutHandoff';
 import { useTranslation } from 'react-i18next';
 import { Clock, CreditCard, RefreshCw, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -106,6 +106,9 @@ const CustomerPortalWrapper = () => {
 		if (!token || (urlToken && !returnOutcome)) return;
 		const next = new URLSearchParams(searchParams);
 		next.set('token', token);
+		// The router still holds the marker the hand-off stripped from history;
+		// carrying it over would make a reload hand off and try to close again.
+		next.delete(CHECKOUT_RETURN_PARAM);
 		navigate({ pathname: portalBasePath(pathname), search: `?${next.toString()}` }, { replace: true });
 	}, [urlToken, token, returnOutcome, pathname, searchParams, navigate]);
 

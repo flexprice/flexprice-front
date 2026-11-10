@@ -90,7 +90,7 @@ describe('CustomerPortalWrapper', () => {
 		it('opens the portal on its own path when the stored session is still here', () => {
 			// The real outcome then comes from the checkout status, not from the route.
 			localStorage.setItem('flexprice.portal.sessionToken', JSON.stringify({ token: 'kept', storedAt: Date.now() }));
-			renderAt('/customer-portal/checkout/failure?section=credits');
+			renderAt('/customer-portal/checkout/failure?section=credits&fp_checkout_return=1');
 			expect(screen.getByText('portal for kept')).toBeInTheDocument();
 			expect(screen.getByRole('status')).toHaveTextContent('/customer-portal?section=credits&token=kept');
 		});
