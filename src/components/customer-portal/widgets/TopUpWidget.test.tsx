@@ -10,6 +10,9 @@ import TopUpWidget from './TopUpWidget';
 import toast from 'react-hot-toast';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 
+// The checkout runs in this tab; the navigation itself is covered in goToPaymentUrl.test.
+const goToCheckout = vi.hoisted(() => vi.fn(() => true));
+vi.mock('@/components/customer-portal/goToCheckout', () => ({ goToCheckout }));
 vi.mock('@/api/CustomerPortalApi', () => ({
 	default: { getWallets: vi.fn(), topUpWallet: vi.fn(), getPaymentMethods: vi.fn(), getIntegrations: vi.fn() },
 }));
@@ -58,6 +61,7 @@ describe('TopUpWidget', () => {
 	beforeEach(() => {
 		openSpy = vi.fn().mockReturnValue({} as Window);
 		vi.stubGlobal('open', openSpy);
+		goToCheckout.mockClear();
 		vi.mocked(CustomerPortalApi.getWallets).mockResolvedValue([WALLET] as never);
 		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue({
 			payment_integrations: [
@@ -109,7 +113,7 @@ describe('TopUpWidget', () => {
 		await enterCredits('50');
 		await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
 
-		await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://checkout.test/session', '_blank', expect.any(String)));
+		await waitFor(() => expect(goToCheckout).toHaveBeenCalledWith('https://checkout.test/session'));
 		expect(await screen.findByText('https://checkout.test/session')).toBeInTheDocument();
 	});
 
@@ -186,7 +190,7 @@ describe('TopUpWidget', () => {
 			await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
 
 			expect(await screen.findByText('A payment is already in progress')).toBeInTheDocument();
-			expect(openSpy).not.toHaveBeenCalled();
+			expect(goToCheckout).not.toHaveBeenCalled();
 			expect(toast.success).not.toHaveBeenCalled();
 		});
 
@@ -194,9 +198,9 @@ describe('TopUpWidget', () => {
 		// be mid-capture. The open happens in an async callback, so a popup blocker can
 		// stop it; without the link on screen the customer is left with only the
 		// destructive exit.
-		it('leaves the existing payment reachable by hand when the popup is blocked', async () => {
+		it('leaves the existing payment reachable by hand when the page does not open', async () => {
 			vi.mocked(CustomerPortalApi.topUpWallet).mockResolvedValue(BLOCKED as never);
-			openSpy.mockReturnValue(null);
+			goToCheckout.mockReturnValueOnce(false);
 
 			renderWidget();
 			await enterCredits('10');
@@ -205,7 +209,7 @@ describe('TopUpWidget', () => {
 
 			await userEvent.click(screen.getByRole('button', { name: /continue that payment/i }));
 
-			expect(openSpy).toHaveBeenCalledWith('https://checkout.test/existing', '_blank', expect.any(String));
+			expect(goToCheckout).toHaveBeenCalledWith('https://checkout.test/existing');
 			expect(screen.getByText('https://checkout.test/existing')).toBeInTheDocument();
 		});
 
@@ -237,7 +241,7 @@ describe('TopUpWidget', () => {
 			// The rejected attempt created nothing, so this is still the same top-up.
 			expect(retryPayload.idempotency_key).toBe(firstPayload.idempotency_key);
 
-			await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://checkout.test/new', '_blank', expect.any(String)));
+			await waitFor(() => expect(goToCheckout).toHaveBeenCalledWith('https://checkout.test/new'));
 		});
 
 		// A superseded session is a success, not a conflict: the retry must fall
@@ -255,7 +259,7 @@ describe('TopUpWidget', () => {
 			await enterCredits('10');
 			await userEvent.click(screen.getByRole('button', { name: /pay now/i }));
 
-			await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://checkout.test/new', '_blank', expect.any(String)));
+			await waitFor(() => expect(goToCheckout).toHaveBeenCalledWith('https://checkout.test/new'));
 			expect(screen.queryByText('A payment is already in progress')).not.toBeInTheDocument();
 		});
 	});

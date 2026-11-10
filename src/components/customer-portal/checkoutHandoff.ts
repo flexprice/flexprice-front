@@ -16,6 +16,36 @@ export const CHECKOUT_RETURN_PARAM = 'fp_checkout_return';
 
 const CHANNEL_NAME = 'flexprice.portal.checkout';
 
+/** Set in a tab that sends itself to a checkout; the same tab finds it on return. */
+const LEFT_FOR_CHECKOUT_KEY = 'flexprice.portal.leftForCheckout';
+
+/**
+ * Note that this tab is about to go to a checkout and come back.
+ *
+ * Session storage survives a same-tab round trip but starts empty in a new tab,
+ * so on return it tells the tab that left (stay, show the portal) from a tab the
+ * provider opened (hand back and close).
+ */
+export const markLeavingForCheckout = () => {
+	try {
+		sessionStorage.setItem(LEFT_FOR_CHECKOUT_KEY, '1');
+	} catch {
+		// Blocked storage: the return is treated as a new tab, which still renders the
+		// portal when it cannot close.
+	}
+};
+
+/** True, once, when this tab is the one that left for the checkout. */
+export const consumeLeftForCheckout = (): boolean => {
+	try {
+		const left = sessionStorage.getItem(LEFT_FOR_CHECKOUT_KEY) !== null;
+		sessionStorage.removeItem(LEFT_FOR_CHECKOUT_KEY);
+		return left;
+	} catch {
+		return false;
+	}
+};
+
 const openChannel = (): BroadcastChannel | null => {
 	try {
 		return typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel(CHANNEL_NAME);
@@ -68,3 +98,23 @@ export const consumeCheckoutReturnLoad = (): boolean => {
 		return false;
 	}
 };
+
+/**
+ * Query parameters payment providers add when they send a customer back.
+ *
+ * Our own marker is lost when a provider ignores the return URL we send and uses
+ * one saved on the connection instead (Moyasar's `success_url`, Paddle's
+ * `redirect_url`), so these are the only sign left that the visit is a return.
+ */
+const PROVIDER_RETURN_PARAMS: ReadonlyArray<ReadonlyArray<string>> = [
+	['razorpay_payment_id'],
+	['razorpay_payment_link_id'],
+	['session_id'],
+	['_ptxn'],
+	// Moyasar appends its payment id and outcome.
+	['id', 'status'],
+];
+
+/** True when the URL carries a payment provider's return parameters. */
+export const hasProviderReturnParams = (params: URLSearchParams): boolean =>
+	PROVIDER_RETURN_PARAMS.some((names) => names.every((name) => params.has(name)));

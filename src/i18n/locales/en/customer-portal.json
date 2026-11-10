@@ -2,7 +2,9 @@
 	"wrapper": {
 		"invalidLinkTitle": "Invalid Customer Portal Link",
 		"invalidLinkDescription": "Dashboard session token is missing from the URL. Please check your link and try again.",
-		"refreshPage": "Refresh Page"
+		"refreshPage": "Refresh Page",
+		"checkoutReturnTitle": "You're back from checkout",
+		"checkoutReturnDescription": "If you completed a payment, it's being applied to your account. To see your updated balance, open your billing portal link again."
 	},
 	"footer": {
 		"poweredBy": "Powered by",

@@ -9,6 +9,9 @@ import enPortal from '@/i18n/locales/en/customer-portal.json';
 import PaymentMethodsWidget from './PaymentMethodsWidget';
 import CustomerPortalApi from '@/api/CustomerPortalApi';
 
+// The checkout runs in this tab; the navigation itself is covered in goToPaymentUrl.test.
+const goToCheckout = vi.hoisted(() => vi.fn(() => true));
+vi.mock('@/components/customer-portal/goToCheckout', () => ({ goToCheckout }));
 vi.mock('@/api/CustomerPortalApi', () => ({
 	default: {
 		getIntegrations: vi.fn(),
@@ -74,6 +77,7 @@ describe('PaymentMethodsWidget', () => {
 	beforeEach(() => {
 		openSpy = vi.fn().mockReturnValue({} as Window);
 		vi.stubGlobal('open', openSpy);
+		goToCheckout.mockClear();
 		vi.mocked(CustomerPortalApi.getIntegrations).mockResolvedValue(FULL_CAPABILITIES as never);
 		Object.defineProperty(window, 'location', { configurable: true, value: { href: 'https://portal.test/methods' } });
 	});
@@ -173,7 +177,7 @@ describe('PaymentMethodsWidget', () => {
 
 	// A new tab, so abandoning the provider's page still leaves the portal behind;
 	// the link is shown too, since the open can be blocked.
-	it('opens a redirect action in a new tab and keeps the link on the page', async () => {
+	it('sends this tab to a redirect action and keeps the link on the page', async () => {
 		vi.mocked(CustomerPortalApi.getPaymentMethods).mockResolvedValue({ providers: [] } as never);
 		vi.mocked(CustomerPortalApi.addPaymentMethod).mockResolvedValue({
 			provider: 'chargebee',
@@ -183,7 +187,7 @@ describe('PaymentMethodsWidget', () => {
 		renderWidget();
 		await userEvent.click(await screen.findByRole('button', { name: /add card/i }));
 
-		await waitFor(() => expect(openSpy).toHaveBeenCalledWith('https://vault.test/setup', '_blank', expect.any(String)));
+		await waitFor(() => expect(goToCheckout).toHaveBeenCalledWith('https://vault.test/setup'));
 		expect(await screen.findByText('https://vault.test/setup')).toBeInTheDocument();
 		// The portal must still be mounted — that is the point of not navigating.
 		expect(window.location.href).toBe('https://portal.test/methods');

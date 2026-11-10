@@ -7,7 +7,7 @@ import { portalReturnUrl } from '../portalReturnUrl';
 import type { PaymentGatewayType } from '@/types/dto/CustomerPortalBilling';
 import usePortalIntegrations from '../usePortalIntegrations';
 import { refreshAfterPayment } from '../refetchPortalQueries';
-import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
+import { goToCheckout } from '@/components/customer-portal/goToCheckout';
 
 /**
  * Starts payment for an invoice and follows the returned action.
@@ -47,7 +47,7 @@ const usePayInvoice = (provider?: PaymentGatewayType) => {
 			const url = response.payment_action?.url;
 			if (url) {
 				setActionUrl(url);
-				openPaymentUrl(url);
+				goToCheckout(url);
 				return;
 			}
 			keys.delete(invoiceId);

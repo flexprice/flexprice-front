@@ -2,7 +2,9 @@
 	"wrapper": {
 		"invalidLinkTitle": "رابط بوابة العميل غير صالح",
 		"invalidLinkDescription": "رمز جلسة لوحة التحكم غير موجود في عنوان URL. يُرجى التحقق من الرابط والمحاولة مرة أخرى.",
-		"refreshPage": "تحديث الصفحة"
+		"refreshPage": "تحديث الصفحة",
+		"checkoutReturnTitle": "لقد عدت من صفحة الدفع",
+		"checkoutReturnDescription": "إذا أكملت عملية دفع، فسيتم تطبيقها على حسابك. لعرض رصيدك المحدّث، افتح رابط بوابة الفوترة مرة أخرى."
 	},
 	"footer": {
 		"poweredBy": "مدعوم بواسطة",

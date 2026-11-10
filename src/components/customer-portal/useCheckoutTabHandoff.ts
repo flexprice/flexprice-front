@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { announceCheckoutReturn, consumeCheckoutReturnLoad } from './checkoutHandoff';
+import { announceCheckoutReturn, consumeCheckoutReturnLoad, consumeLeftForCheckout } from './checkoutHandoff';
 
 /** How long to wait for the browser to honour window.close() before giving up. */
 const CLOSE_GRACE_MS = 800;
@@ -15,8 +15,10 @@ const CLOSE_GRACE_MS = 800;
 const ANNOUNCE_SETTLE_MS = 150;
 
 /**
- * On a provider redirect landing, hand the result to the tab the customer started
- * from and close this one.
+ * On a provider redirect landing in a tab other than the one the customer started
+ * from (the portal was framed, so the checkout opened in a new tab), hand the
+ * result back and close this one. A tab that went to the checkout itself and came
+ * back just shows the portal.
  *
  * Returns true while the handoff is in flight so the caller can render nothing
  * rather than flashing a second copy of the portal — or, worse, the invalid-link
@@ -37,7 +39,15 @@ const useCheckoutTabHandoff = (): CheckoutTabHandoff => {
 	// Read synchronously during the first render: an effect would let the page
 	// paint before the marker is consumed.
 	const [wasCheckoutReturn] = useState(() => consumeCheckoutReturnLoad());
-	const [isHandingOff, setIsHandingOff] = useState(wasCheckoutReturn);
+	// The tab that went to the checkout itself is the one the customer started in:
+	// it stays and shows the portal. Only a tab the provider opened hands back.
+	const [returnedToSameTab] = useState(() => wasCheckoutReturn && consumeLeftForCheckout());
+	const [isHandingOff, setIsHandingOff] = useState(wasCheckoutReturn && !returnedToSameTab);
+
+	// Other portal tabs on this account still refresh when the customer is back.
+	useEffect(() => {
+		if (returnedToSameTab) announceCheckoutReturn();
+	}, [returnedToSameTab]);
 
 	useEffect(() => {
 		if (!isHandingOff) return;

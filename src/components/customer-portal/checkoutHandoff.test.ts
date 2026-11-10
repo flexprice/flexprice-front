@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { announceCheckoutReturn, consumeCheckoutReturnLoad, subscribeToCheckoutReturn, CHECKOUT_RETURN_PARAM } from './checkoutHandoff';
+import {
+	announceCheckoutReturn,
+	consumeCheckoutReturnLoad,
+	hasProviderReturnParams,
+	subscribeToCheckoutReturn,
+	CHECKOUT_RETURN_PARAM,
+} from './checkoutHandoff';
 
 const setUrl = (url: string) => window.history.replaceState(null, '', url);
 
@@ -46,5 +52,21 @@ describe('checkoutHandoff', () => {
 		unsubscribe();
 
 		received.forEach((message) => expect(message).toEqual({ type: 'checkout-returned' }));
+	});
+});
+
+describe('hasProviderReturnParams', () => {
+	it.each([
+		['razorpay_payment_id=pay_1&razorpay_signature=x'],
+		['razorpay_payment_link_id=plink_1'],
+		['session_id=cs_test_1'],
+		['_ptxn=txn_1'],
+		['id=pay_1&status=paid'],
+	])('recognises %s', (query) => {
+		expect(hasProviderReturnParams(new URLSearchParams(query))).toBe(true);
+	});
+
+	it.each([[''], ['section=credits'], ['id=only_an_id']])('ignores %s', (query) => {
+		expect(hasProviderReturnParams(new URLSearchParams(query))).toBe(false);
 	});
 });

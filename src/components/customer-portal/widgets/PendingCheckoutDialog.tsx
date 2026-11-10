@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Copy, ExternalLink, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button, Dialog } from '@/components/atoms';
-import { openPaymentUrl } from '@/utils/common/openPaymentUrl';
+import { goToCheckout } from '@/components/customer-portal/goToCheckout';
 import type { PortalCheckoutSession } from '@/types/dto/CustomerPortalBilling';
 
 interface PendingCheckoutDialogProps {
@@ -59,7 +59,7 @@ const PendingCheckoutDialog = ({ session, onOpenChange, onStartNew, isStartingNe
 					<>
 						<p className='text-xs break-all rounded-md p-3 bg-surface-subtle text-content-secondary'>{url}</p>
 						<div className='flex items-center gap-2'>
-							<Button onClick={() => openPaymentUrl(url)} prefixIcon={<ExternalLink />} disabled={isStartingNew}>
+							<Button onClick={() => goToCheckout(url)} prefixIcon={<ExternalLink />} disabled={isStartingNew}>
 								{t('pendingCheckout.continueExisting')}
 							</Button>
 							<Button variant='outline' onClick={copy} prefixIcon={<Copy />} disabled={isStartingNew}>
