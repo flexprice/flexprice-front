@@ -80,27 +80,18 @@ export const recallSessionToken = (): string | null => {
  * `?id=…&state=succeeded&id=…&state=succeeded&…`. There is no fixed set of names
  * to strip, so only what we recognise is kept.
  */
-const PRESERVED_PARAMS = ['section'];
+const PRESERVED_PARAMS = ['token', 'section'];
 
 /**
  * The URL a payment provider should send the customer back to.
  *
- * Deliberately not window.location.href. The portal authenticates from a `token`
- * query parameter, so the current URL carries the customer's session token.
- * Sending that as success_url hands the session to the provider, and from there
- * into its redirect logs, the referrer chain and browser history — anyone holding
- * the URL could act as that customer until it expires. The token is left out here
- * and restored from storage on return.
- *
- * A marker is added in its place so the returning tab knows it is a redirect
- * landing and can hand the result back to the tab the customer started from —
- * see checkoutHandoff.
+ * Carries the session `token` so the return lands authenticated, plus a marker so
+ * the returning tab knows it is a redirect landing — see checkoutHandoff.
  */
 export const portalReturnUrl = (): string => {
 	try {
 		const current = new URL(window.location.href);
-		// Rebuilt from the path rather than edited, so nothing unrecognised — the
-		// token included — can survive by being forgotten about here.
+		// Rebuilt from the path rather than edited, so nothing unrecognised survives.
 		const url = new URL(current.pathname, current.origin);
 		PRESERVED_PARAMS.forEach((name) => {
 			const value = current.searchParams.get(name);
