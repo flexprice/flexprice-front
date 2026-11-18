@@ -22,6 +22,21 @@ export const findBannedOrgNameWord = (name: string): string | undefined => {
 	return BANNED_ORG_NAME_WORDS.find((word) => new RegExp(`\\b${word}\\b`, 'i').test(normalized));
 };
 
+/**
+ * True when `value` parses as an absolute URL served over http(s).
+ * The org URL input is `type='url' required`, but the onboarding form has no
+ * `<form>` element, so native constraint validation never runs and we must
+ * check the format ourselves before persisting it.
+ */
+export const isValidHttpUrl = (value: string): boolean => {
+	try {
+		const { protocol } = new URL(value.trim());
+		return protocol === 'http:' || protocol === 'https:';
+	} catch {
+		return false;
+	}
+};
+
 export type OnboardingFormErrors = {
 	orgName?: string;
 	orgUrl?: string;
