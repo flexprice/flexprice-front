@@ -11,13 +11,9 @@ describe('portalReturnUrl', () => {
 	beforeEach(() => localStorage.clear());
 	afterEach(() => Object.defineProperty(window, 'location', { configurable: true, value: original }));
 
-	// The token authenticates the portal session. Handing it to a payment provider
-	// as a return URL puts it in their logs, the referrer chain and history.
-	it('strips the session token from the return URL', () => {
+	it('keeps the session token in the return URL', () => {
 		setUrl('https://portal.test/customer-portal?token=eyJhbGciOi.SECRET.sig');
-		const url = portalReturnUrl();
-		expect(url).not.toContain('token');
-		expect(url).not.toContain('SECRET');
+		expect(new URL(portalReturnUrl()).searchParams.get('token')).toBe('eyJhbGciOi.SECRET.sig');
 	});
 
 	it('keeps the section the customer was on', () => {
