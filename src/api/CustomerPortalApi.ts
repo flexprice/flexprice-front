@@ -62,7 +62,8 @@ class CustomerPortalApi {
 	 * Get usage summary for the authenticated customer
 	 */
 	public static async getUsageSummary(query?: GetCustomerUsageSummaryRequest): Promise<GetUsageSummaryResponse> {
-		const url = generateQueryParams(`${this.baseUrl}/usage`, query || {});
+		// refresh_grants measures grant usage now instead of returning the last alert run's snapshot.
+		const url = generateQueryParams(`${this.baseUrl}/usage`, { ...query, refresh_grants: true });
 		return await AxiosClient.get<GetUsageSummaryResponse>(url);
 	}
 

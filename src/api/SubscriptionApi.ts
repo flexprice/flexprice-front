@@ -229,10 +229,11 @@ class SubscriptionApi {
 	// =============================================================================
 
 	/**
-	 * Get subscription entitlements
+	 * Get subscription entitlements. refresh_grants measures grant usage now instead of
+	 * returning the last alert run's snapshot (up to ~5 minutes old).
 	 */
 	public static async getSubscriptionEntitlements(subscriptionId: string) {
-		return await AxiosClient.get<GetSubscriptionEntitlementsResponse>(`${this.baseUrl}/${subscriptionId}/entitlements`);
+		return await AxiosClient.get<GetSubscriptionEntitlementsResponse>(`${this.baseUrl}/${subscriptionId}/entitlements?refresh_grants=true`);
 	}
 
 	// =============================================================================

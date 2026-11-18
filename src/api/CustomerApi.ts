@@ -93,8 +93,9 @@ class CustomerApi {
 		return await AxiosClient.get(`${this.baseUrl}/${payload.customer_id}/entitlements`);
 	}
 
+	// refresh_grants measures grant usage now instead of returning the last alert run's snapshot.
 	public static async getUsageSummary(payload: GetCustomerEntitlementPayload): Promise<GetUsageSummaryResponse> {
-		return await AxiosClient.get(`${this.baseUrl}/${payload.customer_id}/usage`);
+		return await AxiosClient.get(`${this.baseUrl}/${payload.customer_id}/usage?refresh_grants=true`);
 	}
 
 	/**
