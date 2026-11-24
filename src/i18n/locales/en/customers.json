@@ -45,7 +45,8 @@
 			"information": "Information",
 			"taxAssociation": "Tax",
 			"analytics": "Analytics",
-			"usageEvents": "Usage Events"
+			"usageEvents": "Usage Events",
+			"activity": "Activity"
 		},
 		"invoiceTabs": {
 			"overview": "Overview",

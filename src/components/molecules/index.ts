@@ -211,3 +211,6 @@ export { default as DebugMenu } from './DebugMenu';
 
 // Webhooks
 export { EndpointsTable, AddEndpointForm, EventCatalogBrowser, MessageLogsTable, ActivityOverview } from './Webhooks';
+
+// Activity log
+export { ActivityList, ActivityRow, ActivityDetailSheet, ChangesTable, ActorBadge } from './Activity';

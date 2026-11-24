@@ -41,6 +41,7 @@ export { default as CustomerInvoiceTab } from './tabs/CustomerInvoiceTab';
 export { default as CustomerOverviewTab } from './tabs/CustomerOverviewTab';
 export { default as CustomerTaxAssociationTab } from './tabs/CustomerTaxAssociationTab';
 export { default as CustomerWalletTab } from './tabs/CustomerWalletTab';
+export { default as CustomerActivityTab } from './tabs/CustomerActivityTab';
 
 // Taxes
 export { default as TaxrateDetailsPage } from './taxes/TaxrateDetailsPage';

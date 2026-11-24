@@ -7,6 +7,7 @@ export type RbacAction = 'read' | 'write';
 
 // Mirrors internal/types/rbac.go's Entity constants exactly — keep in sync with the backend.
 export type RbacEntity =
+	| 'activity'
 	| 'user'
 	| 'environment'
 	| 'event'
