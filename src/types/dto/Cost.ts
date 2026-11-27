@@ -91,6 +91,9 @@ export interface GetDetailedCostAnalyticsResponse {
 	roi: string; // decimal.Decimal represented as string ((Revenue - Cost) / Cost)
 	roi_percent: string; // decimal.Decimal represented as string (ROI * 100)
 
+	// Set when cost could not be computed; cost, margin and ROI are then zero placeholders
+	cost_unavailable_reason?: string;
+
 	currency: string;
 	start_time: string;
 	end_time: string;
