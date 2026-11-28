@@ -402,7 +402,8 @@ const CustomerAnalyticsTab = () => {
 								{costData &&
 									(() => {
 										const costUnavailable = !!costData.cost_unavailable_reason;
-										const totalRevenue = parseFloat(costData.total_revenue || '0');
+										// Without a currency there is no amount to show.
+										const totalRevenue = costData.currency ? parseFloat(costData.total_revenue || '0') : null;
 										const totalCost = costUnavailable ? null : parseFloat(costData.total_cost || '0');
 										const margin = costUnavailable ? null : parseFloat(costData.margin || '0');
 										const marginPercent = costUnavailable ? null : parseFloat(costData.margin_percent || '0');
