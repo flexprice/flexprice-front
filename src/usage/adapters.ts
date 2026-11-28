@@ -35,7 +35,7 @@ export function adaptMetricCards(
 	if (config.show_revenue_metric && costData) {
 		items.push({ id: 'revenue', titleKey: 'revenue', value: parseFloat(costData.total_revenue), currency });
 	}
-	if (config.show_cost_metrics && costData) {
+	if (config.show_cost_metrics && costData && !costData.cost_unavailable_reason) {
 		const margin = parseFloat(costData.margin);
 		const marginPercent = parseFloat(costData.margin_percent);
 		items.push({ id: 'cost', titleKey: 'cost', value: parseFloat(costData.total_cost), currency });

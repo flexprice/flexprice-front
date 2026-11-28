@@ -10,6 +10,7 @@ import { Feature } from '@/models';
 import { ApiDocsContent, MetricCard } from '@/components/molecules';
 import { API_DOCS_TAGS } from '@/constants/apiDocsTags';
 import { CostDataTable } from '@/components/molecules';
+import { AlertTriangle } from 'lucide-react';
 
 const CostAnalyticsPage: React.FC = () => {
 	const { t } = useTranslation('developers');
@@ -148,10 +149,12 @@ const CostAnalyticsPage: React.FC = () => {
 							{/* Summary Metrics */}
 							<div className='pt-9'>
 								{(() => {
-									const totalRevenue = parseFloat(costData.total_revenue || '0');
-									const totalCost = parseFloat(costData.total_cost || '0');
-									const margin = parseFloat(costData.margin || '0');
-									const marginPercent = parseFloat(costData.margin_percent || '0');
+									const costUnavailable = !!costData.cost_unavailable_reason;
+									// Without a currency there is no amount to show.
+									const totalRevenue = costData.currency ? parseFloat(costData.total_revenue || '0') : null;
+									const totalCost = costUnavailable ? null : parseFloat(costData.total_cost || '0');
+									const margin = costUnavailable ? null : parseFloat(costData.margin || '0');
+									const marginPercent = costUnavailable ? null : parseFloat(costData.margin_percent || '0');
 
 									return (
 										<div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
@@ -161,19 +164,25 @@ const CostAnalyticsPage: React.FC = () => {
 												title={t('usage.costAnalytics.marginMetric')}
 												value={margin}
 												currency={costData.currency}
-												showChangeIndicator={true}
-												isNegative={margin < 0}
+												showChangeIndicator={margin != null}
+												isNegative={margin != null && margin < 0}
 											/>
 											<MetricCard
 												title={t('usage.costAnalytics.marginPercentMetric')}
 												value={marginPercent}
 												isPercent={true}
-												showChangeIndicator={true}
-												isNegative={marginPercent < 0}
+												showChangeIndicator={marginPercent != null}
+												isNegative={marginPercent != null && marginPercent < 0}
 											/>
 										</div>
 									);
 								})()}
+								{costData.cost_unavailable_reason && (
+									<div className='mt-3 flex items-start gap-2 rounded-md border border-warning-line bg-warning-muted p-3'>
+										<AlertTriangle className='mt-0.5 h-4 w-4 shrink-0 text-warning-bright' />
+										<p className='text-sm text-warning-deep'>{costData.cost_unavailable_reason}</p>
+									</div>
+								)}
 							</div>
 
 							{/* Cost Data Table */}
